@@ -48,7 +48,7 @@
 <div id="root">
     <header class="ecl-site-header-core" data-ecl-auto-init="SiteHeaderCore" data-ecl-has-menu="" data-ecl-auto-initialized="true">
         <div class="ecl-site-header-core__container ecl-container">
-            <div class="ecl-site-header-core__top"><a href="/component-library/example" class="ecl-link ecl-link--standalone ecl-site-header-core__logo-link" aria-label="Home (European Commission)"><img alt="European Commission logo" title="Home (European Commission)" class="ecl-site-header-core__logo-image ecl-site-header-core__logo-image-desktop" src="static/media/logo-ec--en.5055ef4f.svg"></a>
+            <div class="ecl-site-header-core__top"><a href="/component-library/example" class="ecl-link ecl-link--standalone ecl-site-header-core__logo-link" aria-label="Home (European Commission)"><img alt="European Commission logo" title="Home (European Commission)" class="ecl-site-header-core__logo-image ecl-site-header-core__logo-image-desktop" src="{{asset('static/media/logo-ec--en.5055ef4f.svg')}}"></a>
                 <div class="ecl-site-header-core__action">
                     <div class="ecl-site-header-core__login-container"><a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle" href="{{route('dashboard')}}">
                             <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false" aria-hidden="true">
@@ -99,7 +99,7 @@
         <div class="ecl-container ecl-footer-core__container">
             <div class="ecl-footer-core__row">
                 <div class="ecl-footer-core__column">
-                    <div class="ecl-footer-core__section"><a href="/component-library/example" class="ecl-link ecl-link--standalone ecl-footer-core__logo-link" aria-label="European&#x20;Commission"><img alt="European Commission logo" title="European Commission" class="ecl-footer-core__logo-image-desktop" src="static/media/logo-ec--en.10f5072b.svg"/></a>
+                    <div class="ecl-footer-core__section"><a href="/component-library/example" class="ecl-link ecl-link--standalone ecl-footer-core__logo-link" aria-label="European&#x20;Commission"><img alt="European Commission logo" title="European Commission" class="ecl-footer-core__logo-image-desktop" src="{{asset('static/media/logo-ec--en.10f5072b.svg')}}"/></a>
                         <h2 class="ecl-footer-core__title"><a href="/component-library/example" class="ecl-link ecl-link--standalone ecl-footer-core__title-link">European Commission website</a></h2>
                         <div class="ecl-footer-core__description">This site is managed by the Directorate-General for Communication</div>
                     </div>

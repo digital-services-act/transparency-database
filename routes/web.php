@@ -21,4 +21,6 @@ Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'das
     ->middleware('cas.auth')
     ->name('dashboard');
 
+Route::get('/mount', [\App\Http\Controllers\TestController::class, 'mount']);
+
 
