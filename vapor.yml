@@ -1,5 +1,6 @@
 id: 40750
 name: transparency-register
+default-environment: production
 environments:
   production:
     database: dsa-db
