@@ -11,10 +11,13 @@
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
         "laravel/vapor-core": "^2.26",
+        "laravel/vapor-ui": "^1.7",
         "subfission/cas": "^4.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
+        "jasonmccreary/laravel-test-assertions": "^2.1",
+        "laravel-shift/blueprint": "^2.4",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",

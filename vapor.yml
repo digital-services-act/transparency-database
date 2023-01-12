@@ -1,15 +1,23 @@
-id: 40750
-name: transparency-register
-default-environment: production
+id: 40918
+name: DSA-POC
+default-environment: staging
 environments:
-  production:
-    database: dsa-db
-    memory: 1024
-    cli-memory: 512
-    runtime: 'php-8.1:al2'
-    build:
-      - 'composer install'
-      - 'php artisan event:cache'
-      # - 'npm ci && npm run build && rm -rf node_modules'
-    deploy:
-      - 'php artisan migrate --force'
+    production:
+        database: my-test-database
+        domain: digital.services-act.eu
+        memory: 1024
+        cli-memory: 512
+        runtime: 'php-8.1:al2'
+        build:
+            - 'composer install --no-dev'
+            - 'php artisan event:cache'
+    staging:
+        database: my-test-database
+        memory: 1024
+        cli-memory: 512
+        runtime: 'php-8.1:al2'
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+            - 'php artisan event:cache'
+        deploy:
+            - 'php artisan migrate --force'
