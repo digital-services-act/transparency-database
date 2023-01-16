@@ -82,6 +82,8 @@
                     <ul class="ecl-menu__list">
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a href="{{route('welcome')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a></li>
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a href="{{route('dashboard')}}" class="ecl-menu__link" data-ecl-menu-link="">Dashboard</a></li>
+                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a href="{{route('notice.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Notices</a></li>
+                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a href="{{route('entity.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Entities</a></li>
 
                     </ul>
                 </section>

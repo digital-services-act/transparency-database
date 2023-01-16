@@ -12,3 +12,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+.env.staging
+/draft.yaml
+/.blueprint
