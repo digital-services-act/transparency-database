@@ -12,9 +12,12 @@
         "laravel/tinker": "^2.7",
         "laravel/vapor-core": "^2.26",
         "laravel/vapor-ui": "^1.7",
-        "subfission/cas": "^4.3"
+        "luilliarcec/laravel-table": "^4.0",
+        "subfission/cas": "^4.3",
+        "timwassenburg/laravel-pivot-table-generator": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.7",
         "fakerphp/faker": "^1.9.1",
         "jasonmccreary/laravel-test-assertions": "^2.1",
         "laravel-shift/blueprint": "^2.4",

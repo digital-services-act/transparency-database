@@ -23,3 +23,8 @@ Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'das
 
 
 
+
+Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
+
+Route::resource('notice', App\Http\Controllers\NoticeController::class)->except('edit', 'update', 'destroy');
+
