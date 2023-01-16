@@ -42,8 +42,7 @@ class NoticeStoreRequest extends FormRequest
             'toc_contractual_ground' => ['string', 'max:255'],
             'toc_explanation' => ['string'],
             'redress' => ['in:Internal Mechanism,Out Of Court Settlement,Other'],
-            'redress_more' => ['string'],
-            'language' => ['required', 'string', 'max:50'],
+            'redress_more' => ['string']
         ];
     }
 }

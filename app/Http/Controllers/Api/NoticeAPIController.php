@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\NoticeStoreRequest;
 use App\Models\Notice;
 use Illuminate\Http\Request;
 
-class NoticeController extends Controller
+class NoticeAPIController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -40,13 +41,17 @@ class NoticeController extends Controller
 
     /**
      * @param \App\Http\Requests\NoticeStoreRequest $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(NoticeStoreRequest $request)
     {
 
         $notice = Notice::create($request->validated());
 
-        return redirect()->route('notice.index');
+        return response()->json([
+            'status' => true,
+            'message' => "Notice Created successfully!",
+            'notice' => $notice
+        ], 200);
     }
 }
