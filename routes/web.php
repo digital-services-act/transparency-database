@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+Route::get('/test/token', [\App\Http\Controllers\TestController::class, 'token'])->name('token');
 
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])
     ->middleware('cas.auth')

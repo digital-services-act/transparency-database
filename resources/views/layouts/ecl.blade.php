@@ -37,7 +37,7 @@
             media="print"
         />
 
-        <title>{{ config('app.name') }}</title>
+{{--        <title>{{ config('app.name') }}</title>--}}
 
         @section('extra-head')
         @show
@@ -139,7 +139,7 @@
 </div>
 
 
-<script src="{{asset('js/svg4everybody.min.js')}}"></script>
+{{--<script src="{{asset('js/svg4everybody.min.js')}}"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 <script
     src="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.2.4/ec/scripts/ecl-ec.js"
@@ -150,7 +150,7 @@
 
 
 <script>
-    svg4everybody({polyfill: true});
+    // svg4everybody({polyfill: true});
     ECL.autoInit();
 </script>
 
