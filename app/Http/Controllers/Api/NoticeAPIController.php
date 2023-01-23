@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NoticeStoreRequest;
+use App\Http\Resources\NoticeResource;
 use App\Models\Notice;
 use Illuminate\Http\Request;
 
@@ -32,11 +33,12 @@ class NoticeAPIController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Notice $notice
-     * @return \Illuminate\Http\Response
+     * @return NoticeResource
      */
-    public function show(Request $request, Notice $notice)
+    public function show($id)
     {
-        return view('notice.show', compact('notice'));
+        return new NoticeResource(Notice::findOrFail($id)->load('entities'));
+
     }
 
     /**

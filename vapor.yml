@@ -3,13 +3,14 @@ name: DSA-POC
 default-environment: staging
 environments:
     production:
-        database: my-test-database
+        balancer: dsa-prod-load-balancer
+        database: dsa-serverless
         domain: digital.services-act.eu
         memory: 1024
         cli-memory: 512
         runtime: 'php-8.1:al2'
         build:
-            - 'composer install --no-dev'
+            - 'composer install'
             - 'php artisan event:cache'
     staging:
         database: my-test-database
