@@ -9,7 +9,7 @@
 
                 @foreach($notices as $notice)
                     <li>
-                        {{$notice->title}}
+                        <a href="/notice/{{$notice->id}}">{{$notice->title}}</a>
                         @if($notice->entities)
                             <ul>
                                 @foreach($notice->entities as $entity)

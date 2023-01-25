@@ -34,6 +34,8 @@ class CreateNoticesTable extends Migration
             $table->longText('toc_explanation')->nullable();
             $table->enum('redress', ["Internal Mechanism","Out Of Court Settlement","Other"])->nullable();
             $table->longText('redress_more')->nullable();
+            $table->integer('user_id');
+            $table->string('method')->default('API');
             $table->timestamps();
         });
     }

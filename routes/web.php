@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+    return view('home');
+})->name('home');
 
 Route::get('/test/token', [\App\Http\Controllers\TestController::class, 'token'])->name('token');
-
+//
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])
     ->middleware('cas.auth')
     ->name('dashboard');
