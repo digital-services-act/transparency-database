@@ -71,7 +71,7 @@
 
         <div class="ecl-container">
             <h3 class="ecl-u-type-heading-3">Main Information</h3>
-
+            <x-info-line title="Sent by" :content="$notice->user->name"></x-info-line>
             <x-info-line title="Body" :content="$notice->body"></x-info-line>
             <x-info-line title="Language" :content="$notice->language"></x-info-line>
             <x-info-line title="Date Sent" :content="$notice->date_sent"></x-info-line>

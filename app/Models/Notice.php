@@ -36,6 +36,7 @@ class Notice extends Model
         'toc_explanation',
         'redress',
         'redress_more',
+        'user_id'
     ];
 
     /**
@@ -82,5 +83,9 @@ class Notice extends Model
     public function entities()
     {
         return $this->belongsToMany(Entity::class)->withPivot('role');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

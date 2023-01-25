@@ -48,7 +48,9 @@ class NoticeAPIController extends Controller
     public function store(NoticeStoreRequest $request)
     {
 
-        $notice = Notice::create($request->validated());
+        $validated = $request->safe()->merge(['user_id' => auth()->id()]);
+
+        $notice = Notice::create($validated->toArray());
 
         return response()->json([
             'status' => true,

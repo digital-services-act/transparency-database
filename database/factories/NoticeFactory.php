@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -41,6 +42,7 @@ class NoticeFactory extends Factory
             'illegal_content_explanation' => $this->faker->text,
             'toc_contractual_ground' => $this->faker->regexify('[A-Za-z0-9]{255}'),
             'toc_explanation' => $this->faker->text,
+            'user_id' => User::factory(),
             'redress' => $this->faker->randomElement(["Internal Mechanism","Out Of Court Settlement","Other"]),
             'redress_more' => $this->faker->text,
         ];

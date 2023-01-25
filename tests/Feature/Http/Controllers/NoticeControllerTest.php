@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Notice;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -77,14 +78,19 @@ class NoticeControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $language = $this->faker->word;
 
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
         $response = $this->post(route('notice.store'), [
             'title' => $title,
             'language' => $language,
+            'user_id' => $user->id,
         ]);
 
         $notices = Notice::query()
             ->where('title', $title)
             ->where('language', $language)
+            ->where('user_id', $user->id)
             ->get();
         $this->assertCount(1, $notices);
         $notice = $notices->first();
