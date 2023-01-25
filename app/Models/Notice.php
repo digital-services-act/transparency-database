@@ -16,28 +16,7 @@ class Notice extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'title',
-        'body',
-        'language',
-        'date_sent',
-        'date_enacted',
-        'date_abolished',
-        'countries_list',
-        'source',
-        'payment_status',
-        'restriction_type',
-        'restriction_type_other',
-        'automated_detection',
-        'automated_detection_more',
-        'illegal_content_legal_ground',
-        'illegal_content_explanation',
-        'toc_contractual_ground',
-        'toc_explanation',
-        'redress',
-        'redress_more',
-        'user_id'
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast to native types.

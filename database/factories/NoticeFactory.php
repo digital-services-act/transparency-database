@@ -45,6 +45,7 @@ class NoticeFactory extends Factory
             'user_id' => User::factory(),
             'redress' => $this->faker->randomElement(["Internal Mechanism","Out Of Court Settlement","Other"]),
             'redress_more' => $this->faker->text,
+            'method' => $this->faker->randomElement(["API","WebForm","Other"]),
         ];
     }
 }
