@@ -42,7 +42,7 @@ class NoticeFactory extends Factory
             'illegal_content_explanation' => $this->faker->text,
             'toc_contractual_ground' => $this->faker->regexify('[A-Za-z0-9]{255}'),
             'toc_explanation' => $this->faker->text,
-            'user_id' => User::factory(),
+            'user_id' => rand(1,20),
             'redress' => $this->faker->randomElement(["Internal Mechanism","Out Of Court Settlement","Other"]),
             'redress_more' => $this->faker->text,
             'method' => $this->faker->randomElement(["API","WebForm","Other"]),

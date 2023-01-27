@@ -41,7 +41,7 @@ class NoticeStoreRequest extends FormRequest
             'illegal_content_explanation' => ['string'],
             'toc_contractual_ground' => ['string', 'max:255'],
             'toc_explanation' => ['string'],
-            'redress' => ['in:Internal Mechanism,Out Of Court Settlement,Other'],
+            'redress' => ['in:Internal Mechanism,Out Of Court Settlement,other'],
             'redress_more' => ['string'],
             'user_id' => ['integer'],
         ];
