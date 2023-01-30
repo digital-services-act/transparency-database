@@ -1,5 +1,6 @@
 @extends('layouts/ecl')
 
+@section('title', 'Notices')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>

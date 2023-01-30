@@ -1,5 +1,7 @@
 @extends('layouts/ecl')
 
+@section('title', 'Create a Notice')
+
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
     <x-ecl.breadcrumb label="Notices" url="{{ route('notice.index') }}" />
