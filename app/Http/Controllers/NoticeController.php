@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\NoticeStoreRequest;
 use App\Models\Notice;
 use Illuminate\Http\Request;
+use Symfony\Component\Intl\Languages;
 
 class NoticeController extends Controller
 {
@@ -25,7 +26,14 @@ class NoticeController extends Controller
      */
     public function create(Request $request)
     {
-        return view('notice.create');
+        $languages = Languages::getNames();
+        $languages = array_map(function($key, $value){
+            return ['value' => $key, 'label' => $value];
+        }, array_keys($languages), array_values($languages));
+
+        return view('notice.create', [
+            'languages' => $languages
+        ]);
     }
 
     /**
