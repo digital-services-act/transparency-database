@@ -7,11 +7,10 @@
             <nav class="ecl-breadcrumb ecl-page-header__breadcrumb" aria-label="You&#x20;are&#x20;here&#x3A;"
                  data-ecl-breadcrumb="true" data-ecl-auto-init="Breadcrumb">
                 <ol class="ecl-breadcrumb__container" style="padding:0">
-                    <li class="ecl-breadcrumb__segment" data-ecl-breadcrumb-item="static"><a href="{{route('home')}}"
-                                                                                             class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-breadcrumb__link">Home</a>
-                        <svg class="ecl-icon ecl-icon--2xs ecl-icon--rotate-90 ecl-breadcrumb__icon" focusable="false"
-                             aria-hidden="true" role="presentation">
-                            <use xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>
+                    <li class="ecl-breadcrumb__segment" data-ecl-breadcrumb-item="static">
+                        <a href="{{route('home')}}" class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-breadcrumb__link">Home</a>
+                        <svg class="ecl-icon ecl-icon--2xs ecl-icon--rotate-90 ecl-breadcrumb__icon" focusable="false" aria-hidden="true" role="presentation">
+                            <x-ecl.icon icon="corner-arrow" />
                         </svg>
                     </li>
                     {{--                    <li class="ecl-breadcrumb__segment ecl-breadcrumb__segment--ellipsis" data-ecl-breadcrumb-ellipsis><button class="ecl-button ecl-button--ghost ecl-breadcrumb__ellipsis" type="button" data-ecl-breadcrumb-ellipsis-button aria-label="Click&#x20;to&#x20;expand">…</button><svg class="ecl-icon ecl-icon--2xs ecl-icon--rotate-90 ecl-breadcrumb__icon" focusable="false" aria-hidden="true" role="presentation">--}}
@@ -26,9 +25,7 @@
                     {{--                    <li class="ecl-breadcrumb__segment" data-ecl-breadcrumb-item="static"><a href="/component-library/example#zkh7p" class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-breadcrumb__link">How the Commission is organised</a><svg class="ecl-icon ecl-icon--2xs ecl-icon--rotate-90 ecl-breadcrumb__icon" focusable="false" aria-hidden="true" role="presentation">--}}
                     {{--                            <use xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>--}}
                     {{--                        </svg></li>--}}
-                    <li class="ecl-breadcrumb__segment ecl-breadcrumb__current-page" data-ecl-breadcrumb-item="static"
-                        aria-current="page">Notice of Statement
-                    </li>
+                    <li class="ecl-breadcrumb__segment ecl-breadcrumb__current-page" data-ecl-breadcrumb-item="static" aria-current="page">Notice of Statement</li>
                 </ol>
             </nav>
             <div style="padding:0;position:relative;">
@@ -110,7 +107,7 @@
             <x-info-line title="Terms of Copyright Contractual Ground" :content="$notice->toc_contractual_ground"></x-info-line>
             <x-info-line title="Redress Mechanism" :content="$notice->redress"></x-info-line>
             <x-info-line title="Redress Mechanism: More Info" :content="$notice->redress_more"></x-info-line>
-            
+
         </div>
     </div>
 
