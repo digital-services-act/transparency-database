@@ -7,6 +7,7 @@ use App\Models\Notice;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Symfony\Component\Intl\Countries;
@@ -61,23 +62,36 @@ class NoticeController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\NoticeStoreRequest $request
-     * @return \Illuminate\Http\Response
+     * @param NoticeStoreRequest $request
+     *
+     * @return RedirectResponse
      */
-    public function store(NoticeStoreRequest $request)
+    public function store(NoticeStoreRequest $request): RedirectResponse
     {
 
-        $notice = Notice::create(
-            $request->safe()->merge([
-                'user_id' => auth()->user()->id,
-                'method' => Notice::METHOD_FORM
-            ])->toArray()
-        );
+        $validated = $request->safe()->merge([
+            'user_id' => auth()->user()->id,
+            'method' => Notice::METHOD_FORM
+        ])->toArray();
+
+        $validated['date_sent'] = $this->sanitizeDate($validated['date_sent'] ?? null);
+        $validated['date_enacted'] = $this->sanitizeDate($validated['date_enacted'] ?? null);
+        $validated['date_abolished'] = $this->sanitizeDate($validated['date_abolished'] ?? null);
+
+        $notice = Notice::create($validated);
 
         return redirect()->route('notice.index');
     }
 
-    private function prepareOptions()
+    private function sanitizeDate($date)
+    {
+        return $date ? Carbon::createFromFormat('d-m-Y', $date)->format('Y-m-d 00:00:00') : null;
+    }
+
+    /**
+     * @return array
+     */
+    private function prepareOptions(): array
     {
         // Prepare Options
         $languages = Languages::getNames();

@@ -71,19 +71,29 @@
 
         <div class="ecl-container">
             <h3 class="ecl-u-type-heading-3">Main Information</h3>
+
             <x-info-line title="Sent by" :content="$notice->user->name"></x-info-line>
             <x-info-line title="Method" :content="$notice->method"></x-info-line>
             <x-info-line title="Language" :content="$notice->language"></x-info-line>
             <x-info-line title="Body" :content="$notice->body"></x-info-line>
             <x-info-line title="Restriction Type" :content="$notice->restriction_type"></x-info-line>
             <x-info-line title="Restriction Type Other" :content="$notice->restriction_type_other"></x-info-line>
-            <x-info-line title="Date Sent" :content="$notice->date_sent"></x-info-line>
-            @if($notice->date_enacted)
-            <x-info-line title="Start Date" :content="$notice->date_enacted"></x-info-line>
-            @endif
-            <x-info-line title="End Date" :content="$notice->date_abolished"></x-info-line>
 
-            <x-info-line title="Countries List" :content="$notice->countries_list"></x-info-line>
+
+            @if($notice->date_sent)
+                <x-info-line title="Date Sent" :content="$notice->date_sent->format('d-m-Y')"></x-info-line>
+            @endif
+
+            @if($notice->date_enacted)
+                <x-info-line title="Start Date" :content="$notice->date_enacted->format('d-m-Y')"></x-info-line>
+            @endif
+
+            @if($notice->date_abolished)
+                <x-info-line title="End Date" :content="$notice->date_abolished->format('d-m-Y')"></x-info-line>
+            @endif
+
+
+            <x-info-line title="Countries List" content="{{ implode(', ', $notice->getCountriesListNames()) }}"></x-info-line>
             <x-info-line title="Source" :content="$notice->source"></x-info-line>
             <x-info-line title="Payment Status" :content="$notice->payment_status"></x-info-line>
 
@@ -91,6 +101,7 @@
             <h3 class="ecl-u-type-heading-3">
                 Additional Information
             </h3>
+
             <x-info-line title="Automated Detection" :content="$notice->automated_detection"></x-info-line>
             <x-info-line title="Automated Detection: More Info" :content="$notice->automated_detection_more"></x-info-line>
             <x-info-line title="Illegal Content Explanation" :content="$notice->illegal_content_explanation"></x-info-line>
@@ -99,15 +110,8 @@
             <x-info-line title="Terms of Copyright Contractual Ground" :content="$notice->toc_contractual_ground"></x-info-line>
             <x-info-line title="Redress Mechanism" :content="$notice->redress"></x-info-line>
             <x-info-line title="Redress Mechanism: More Info" :content="$notice->redress_more"></x-info-line>
-
-
-
-
-
-
-
+            
         </div>
-
     </div>
 
 

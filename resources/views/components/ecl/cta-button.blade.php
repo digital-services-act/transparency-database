@@ -1,2 +1,2 @@
 @props(['url' => null, 'label' => 'label', 'priority' => 'secondary'])
-<button type="button" onClick="document.location.href = '{{ $url }}'" class="ecl-u-mt-l ecl-u-f-r ecl-button ecl-button--{{ $priority }}">{{ $label }}</button>
+<button type="button" onClick="document.location.href = '{{ $url }}'" class="ecl-button ecl-button--{{ $priority }}">{{ $label }}</button>

@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\HtmlString;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use Laravel\Scout\Attributes\SearchUsingPrefix;
 use Laravel\Scout\Searchable;
+use Symfony\Component\Intl\Countries;
 
 class Notice extends Model
 {
@@ -78,9 +80,9 @@ class Notice extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'date_sent' => 'timestamp',
-        'date_enacted' => 'timestamp',
-        'date_abolished' => 'timestamp',
+        'date_sent' => 'datetime:Y-m-d H:i:s',
+        'date_enacted' => 'datetime:Y-m-d H:i:s',
+        'date_abolished' => 'datetime:Y-m-d H:i:s',
         'countries_list' => 'array'
     ];
 
@@ -103,32 +105,16 @@ class Notice extends Model
     }
 
     /**
-     * @return \Closure
+     * @return array
      */
-    public function formatTimeStamp(): \Closure
+    public function getCountriesListNames(): array
     {
-        return fn($value) => $value ? Carbon::parse($value)->format('d-m-Y H:m') : null;
-    }
-
-    protected function dateSent(): Attribute
-    {
-        return Attribute::make(
-            get: $this->formatTimeStamp(),
-        );
-    }
-
-    protected function dateEnacted(): Attribute
-    {
-        return Attribute::make(
-            get: $this->formatTimeStamp(),
-        );
-    }
-
-    protected function dateAbolished(): Attribute
-    {
-        return Attribute::make(
-            get: $this->formatTimeStamp(),
-        );
+        if ($this->countries_list) {
+            return array_map(function($iso){
+                return Countries::getName($iso);
+            }, $this->countries_list);
+        }
+        return [];
     }
 
     public function entities()
@@ -139,5 +125,4 @@ class Notice extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
-
 }

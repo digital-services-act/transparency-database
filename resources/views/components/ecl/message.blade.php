@@ -17,9 +17,9 @@
         @if(!is_array($message))
             {{ $message }}
         @else
-            <ul>
-                <li>
-                    {!! implode('</li><li>', $message) !!}
+            <ul class="ecl-unordered-list">
+                <li class="ecl-unordered-list__item">
+                    {!! implode('</li><li class="ecl-unordered-list__item">', $message) !!}
                 </li>
             </ul>
         @endif

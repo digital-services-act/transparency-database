@@ -6,7 +6,7 @@
 <x-ecl.datepicker label="Date Enacted" id="date_enacted" name="date_enacted" value="{{ $notice->date_enacted }}" />
 <x-ecl.datepicker label="Date Abolished" id="date_abolished" name="date_abolished" value="{{ $notice->date_abolished }}" />
 
-<x-ecl.select-multiple label="Countries" name="countries_list[]" id="countries_list" :options="$options['countries']" :default="$notice->countries_list" />
+<x-ecl.select-multiple label="Countries" name="countries_list" id="countries_list" :options="$options['countries']" :default="$notice->countries_list" />
 
 <x-ecl.radio label="Source" name="source" id="source" :options="$options['sources']" default="{{ $notice->source }}" />
 <x-ecl.radio label="Payment Status" name="payment_status" id="payment_status" :options="$options['payment_statuses']" default="{{ $notice->payment_status }}" />

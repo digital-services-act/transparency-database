@@ -5,9 +5,11 @@
     <div class="ecl-row">
         <div class="ecl-col-12">
 
-            <x-ecl.cta-button label="Create a Notice" url="{{ route('notice.create') }}" />
-            <h1>Notices</h1>
+            <div class="ecl-u-mt-l ecl-u-f-r">
+                <x-ecl.cta-button label="Create a Notice" url="{{ route('notice.create') }}" />
+            </div>
 
+            <h1>Notices</h1>
             <ul>
 
                 @foreach($notices as $notice)

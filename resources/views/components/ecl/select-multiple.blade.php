@@ -4,7 +4,7 @@
     <x-ecl.help :help=$help />
     <x-ecl.error-feedback :name=$name />
     <div class="ecl-select__container ecl-select__container--{{ $size }}">
-        <select name="{{ $name }}" id="{{ $id }}" class="ecl-select" @if($required)required=""@endif multiple=""
+        <select name="{{ $name }}[]" id="{{ $id }}" class="ecl-select" @if($required)required=""@endif multiple=""
                 data-ecl-auto-init="Select" data-ecl-select-multiple=""
                 data-ecl-select-default="Select an item" data-ecl-select-search="Enter keyword"
                 data-ecl-select-no-results="No results found" data-ecl-select-all="Select all"
