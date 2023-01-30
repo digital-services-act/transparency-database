@@ -1,15 +1,8 @@
-@props(['label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'size' => 'l', 'placeholder' => ''])
+@props(['label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'size' => 'l', 'placeholder' => '', 'value' => null])
 
 <div class="ecl-form-group ecl-u-mb-l">
-    <label for="{{ $id }}" class="ecl-form-label @error($name)ecl-form-label--invalid @enderror">{{ $label }}@if($required)<span class="ecl-form-label__required"> *</span>@else<span class="ecl-form-label__optional"> (optional)</span>@endif</label>
-    @if($help)<div class="ecl-help-block">{{ $help }}</div>@endif
-    @error($name)
-    <div class="ecl-feedback-message">
-        <svg class="ecl-icon ecl-icon--m ecl-feedback-message__icon" focusable="false" aria-hidden="true">
-            <x-ecl.icon icon="error"/>
-        </svg>
-        {{ $message }}
-    </div>
-    @enderror
-    <input type="text" name="{{ $name }}" id="{{ $id  }}" class="ecl-text-input ecl-text-input--{{ $size }} @error($name)ecl-text-input--invalid @enderror" placeholder="{{ $placeholder }}" value="{{old($name)}}"/>
+    <x-ecl.label :label=$label :for=$id :name=$name :required=$required />
+    <x-ecl.help :help=$help />
+    <x-ecl.error-feedback :name=$name />
+    <input type="text" name="{{ $name }}" id="{{ $id  }}" class="ecl-text-input ecl-text-input--{{ $size }} @error($name)ecl-text-input--invalid @enderror" placeholder="{{ $placeholder }}" value="{{old($name, $value)}}"/>
 </div>

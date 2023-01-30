@@ -1,2 +1,2 @@
-@props(['icon' => 'global'])
-<use xlink:href="{{ asset('/static/media/icons.148a2e16.svg#' . $icon) }}"></use>
+@props(['icon' => 'global', 'set' => '1fa1778b'])
+<use xlink:href="{{ asset('/static/media/icons.'. $set .'.svg#' . $icon) }}"></use>

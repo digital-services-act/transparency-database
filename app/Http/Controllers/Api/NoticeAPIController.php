@@ -8,6 +8,7 @@ use App\Http\Resources\NoticeResource;
 use App\Models\Notice;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Mockery\Matcher\Not;
 
 class NoticeAPIController extends Controller
 {
@@ -56,8 +57,8 @@ class NoticeAPIController extends Controller
         $validated = $request->safe()->merge(
             [
                 'user_id' => $random,
+                'method' => Notice::METHOD_API,
                 'title' => "Claim #". rand(1000,200000) . ' - ' . $user->name
-
             ]);
 
         $notice = Notice::create($validated->toArray());

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Notice;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NoticeStoreRequest extends FormRequest
@@ -30,10 +31,10 @@ class NoticeStoreRequest extends FormRequest
             'date_sent' => [''],
             'date_enacted' => [''],
             'date_abolished' => [''],
-            'countries_list' => ['string', 'max:255'],
-            'source' => ['in:Article 16,voluntary own-initiative investigation'],
-            'payment_status' => ['in:suspension,termination,other'],
-            'restriction_type' => ['in:removed,disabled,demoted,other'],
+            'countries_list' => ['array', 'max:20'],
+            'source' => ['in:' . implode(',',Notice::SOURCES)],
+            'payment_status' => ['in:' . implode(',',Notice::PAYMENT_STATUES)],
+            'restriction_type' => ['in:' . implode(',',Notice::RESTRICTION_TYPES)],
             'restriction_type_other' => ['string'],
             'automated_detection' => ['in:Yes,No,Partial'],
             'automated_detection_more' => ['string'],
@@ -41,7 +42,7 @@ class NoticeStoreRequest extends FormRequest
             'illegal_content_explanation' => ['string'],
             'toc_contractual_ground' => ['string', 'max:255'],
             'toc_explanation' => ['string'],
-            'redress' => ['in:Internal Mechanism,Out Of Court Settlement,other'],
+            'redress' => ['in:' . implode(',', Notice::REDRESSES)],
             'redress_more' => ['string'],
             'user_id' => ['integer'],
         ];
