@@ -36,11 +36,12 @@ class NoticeSeeder extends Seeder
      */
     public function run()
     {
-        Notice::factory()->count(100)
-            ->hasAttached(
-                Entity::factory()->count(2),
-                ['role' => $this->faker->randomElement(["principal", "agent", "recipient", "sender", "target", "issuing_court", "plaintiff", "defendant","submitter"])]
-            )
+
+        Notice::factory()->count(10)
+//            ->hasAttached(
+//                Entity::where('id',rand(1,20))->get(),
+//                ['role' => $this->faker->randomElement(["principal", "agent", "recipient", "sender", "target", "issuing_court", "plaintiff", "defendant","submitter"])]
+//            )
             ->create();
     }
 }
