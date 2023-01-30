@@ -5,12 +5,12 @@
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
     <x-ecl.breadcrumb label="Notices" url="{{ route('notice.index') }}" />
-    <x-ecl.breadcrumb label="Notice details" />
+    <x-ecl.breadcrumb label="Notice details: {{$notice->title}}" />
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-page-header__title">Notice Details: {{$notice->title}}</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1">Notice Details: {{$notice->title}}</h1>
 
     @if(! $notice->entities->isEmpty())
 

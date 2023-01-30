@@ -10,7 +10,7 @@
 
 @section('content')
 
-    <h1>Create a Notice</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1">Create a Notice</h1>
 
     @if ($errors->any())
         <x-ecl.message type="error" icon="error" title="Errors in the form" :message="$errors->all()" />

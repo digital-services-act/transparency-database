@@ -15,7 +15,7 @@
         <x-ecl.cta-button label="Create a Notice" url="{{ route('notice.create') }}"/>
     </div>
 
-    <h1 class="ecl-page-header__title">Notices</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1">Notices</h1>
 
     <x-notices-table :notices=$notices />
 
