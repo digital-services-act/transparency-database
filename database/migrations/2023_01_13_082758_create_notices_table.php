@@ -27,7 +27,7 @@ class CreateNoticesTable extends Migration
             $table->enum('payment_status', \App\Models\Notice::PAYMENT_STATUES)->nullable();
             $table->enum('restriction_type', \App\Models\Notice::RESTRICTION_TYPES)->nullable();
             $table->longText('restriction_type_other')->nullable();
-            $table->enum('automated_detection', ["Yes","No","Partial"])->nullable();
+            $table->enum('automated_detection', \App\Models\Notice::AUTOMATED_DETECTIONS)->nullable();
             $table->longText('automated_detection_more')->nullable();
             $table->string('illegal_content_legal_ground', 255)->nullable();
             $table->longText('illegal_content_explanation')->nullable();

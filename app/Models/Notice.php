@@ -17,14 +17,21 @@ class Notice extends Model
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
+
     public const SOURCE_ARTICLE_16 = 'Article 16';
     public const SOURCE_VOLUNTARY = 'voluntary own-initiative investigation';
-    public const SOURCES = [Notice::SOURCE_ARTICLE_16, Notice::SOURCE_VOLUNTARY];
+    public const SOURCES = [
+        Notice::SOURCE_ARTICLE_16,
+        Notice::SOURCE_VOLUNTARY];
 
     public const PAYMENT_STATUS_SUSPENSION = 'suspension';
     public const PAYMENT_STATUS_TERMINATION = 'termination';
     public const PAYMENT_STATUS_OTHER = 'other';
-    public const PAYMENT_STATUES = [Notice::PAYMENT_STATUS_SUSPENSION, Notice::PAYMENT_STATUS_TERMINATION, Notice::PAYMENT_STATUS_OTHER];
+    public const PAYMENT_STATUES = [
+        Notice::PAYMENT_STATUS_SUSPENSION,
+        Notice::PAYMENT_STATUS_TERMINATION,
+        Notice::PAYMENT_STATUS_OTHER
+    ];
 
     public const RESTRICTION_TYPE_REMOVED = 'removed';
     public const RESTRICTION_TYPE_DISABLED = 'disabled';
