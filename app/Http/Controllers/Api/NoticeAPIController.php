@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\NoticeStoreRequest;
 use App\Http\Resources\NoticeResource;
 use App\Models\Notice;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class NoticeAPIController extends Controller
@@ -48,7 +49,16 @@ class NoticeAPIController extends Controller
     public function store(NoticeStoreRequest $request)
     {
 
-        $validated = $request->safe()->merge(['user_id' => auth()->id()]);
+        //We got 20 companies in the database, let's pick a random one
+//        $validated = $request->safe()->merge(['user_id' => auth()->id()]);
+        $random = rand(1,20);
+        $user = User::firstWhere('id','=',$random);
+        $validated = $request->safe()->merge(
+            [
+                'user_id' => $random,
+                'title' => "Claim #". rand(1000,200000) . ' - ' . $user->name
+
+            ]);
 
         $notice = Notice::create($validated->toArray());
 

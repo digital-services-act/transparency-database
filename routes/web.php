@@ -25,7 +25,7 @@ Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'das
     ->middleware('cas.auth')
     ->name('dashboard');
 
-
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
 
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');

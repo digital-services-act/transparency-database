@@ -6,10 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
+use Laravel\Scout\Searchable;
 
 class Notice extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -31,11 +35,29 @@ class Notice extends Model
     ];
 
     /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'notices_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'title' => $this->title,
+            'body' => $this->body
+        ];
+    }
+
+    /**
      * @return \Closure
      */
     public function formatTimeStamp(): \Closure
     {
-        return fn($value) => Carbon::parse($value)->format('d-m-Y H:m');
+        return fn($value) => $value ? Carbon::parse($value)->format('d-m-Y H:m') : null;
     }
 
     protected function dateSent(): Attribute
@@ -67,4 +89,5 @@ class Notice extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
 }

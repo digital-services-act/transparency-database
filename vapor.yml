@@ -11,7 +11,6 @@ environments:
         runtime: 'php-8.1:al2'
         build:
             - 'composer install'
-            - 'php artisan event:cache'
     staging:
         database: my-test-database
         memory: 1024
@@ -20,8 +19,6 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
-        deploy:
-            - 'php artisan migrate --force'
     alain:
       database: dsa-alain
       memory: 1024
@@ -30,5 +27,3 @@ environments:
       build:
         - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
         - 'php artisan event:cache'
-      deploy:
-        - 'php artisan migrate --force'
