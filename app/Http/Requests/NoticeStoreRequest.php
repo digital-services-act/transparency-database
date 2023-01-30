@@ -26,7 +26,7 @@ class NoticeStoreRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'body' => ['string'],
+            'body' => ['string', 'nullable'],
             'language' => ['required', 'string', 'max:50'],
             'date_sent' => [''],
             'date_enacted' => [''],
@@ -35,16 +35,15 @@ class NoticeStoreRequest extends FormRequest
             'source' => ['in:' . implode(',',Notice::SOURCES)],
             'payment_status' => ['in:' . implode(',',Notice::PAYMENT_STATUES)],
             'restriction_type' => ['in:' . implode(',',Notice::RESTRICTION_TYPES)],
-            'restriction_type_other' => ['string'],
-            'automated_detection' => ['in:Yes,No,Partial'],
-            'automated_detection_more' => ['string'],
-            'illegal_content_legal_ground' => ['string', 'max:255'],
-            'illegal_content_explanation' => ['string'],
-            'toc_contractual_ground' => ['string', 'max:255'],
-            'toc_explanation' => ['string'],
+            'restriction_type_other' => ['string', 'nullable'],
+            'automated_detection' => ['in:'. implode(',', Notice::AUTOMATED_DETECTIONS)],
+            'automated_detection_more' => ['string','nullable'],
+            'illegal_content_legal_ground' => ['string', 'max:255', 'nullable'],
+            'illegal_content_explanation' => ['string', 'nullable'],
+            'toc_contractual_ground' => ['string', 'max:255', 'nullable'],
+            'toc_explanation' => ['string', 'nullable'],
             'redress' => ['in:' . implode(',', Notice::REDRESSES)],
-            'redress_more' => ['string'],
-            'user_id' => ['integer'],
+            'redress_more' => ['string', 'nullable'],
         ];
     }
 }
