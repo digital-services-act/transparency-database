@@ -167,7 +167,18 @@
     </header>
 
     <div class="ecl-container ecl-u-mb-xl">
-        @yield('content')
+        <div class="ecl-row">
+            <div class="ecl-col-12">
+
+                <nav class="ecl-breadcrumb ecl-page-header__breadcrumb" aria-label="You&#x20;are&#x20;here&#x3A;" data-ecl-breadcrumb="true" data-ecl-auto-init="Breadcrumb">
+                    <ol class="ecl-breadcrumb__container">
+                        @yield('breadcrumbs')
+                    </ol>
+                </nav>
+
+                @yield('content')
+            </div>
+        </div>
     </div>
 
 

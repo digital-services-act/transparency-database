@@ -1,20 +1,25 @@
 @extends('layouts/ecl')
 
+@section('breadcrumbs')
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
+    <x-ecl.breadcrumb label="Notices" url="{{ route('notice.index') }}" />
+    <x-ecl.breadcrumb label="Create a Notice" />
+@endsection
+
 @section('content')
-    <div class="ecl-row">
-        <div class="ecl-col-12">
-            <h1>Create a Notice</h1>
 
-            @if ($errors->any())
-                <x-ecl.message type="error" icon="error" title="Errors in the form" :message="$errors->all()" />
-            @endif
+    <h1>Create a Notice</h1>
 
-            <form method="post" action="{{route('notice.store')}}">
-                @csrf
-                <x-notice-form :notice=$notice :options=$options />
-                <x-ecl.button label="Create Notice" />
-            </form>
-        </div>
-    </div>
+    @if ($errors->any())
+        <x-ecl.message type="error" icon="error" title="Errors in the form" :message="$errors->all()" />
+    @endif
+
+    <form method="post" action="{{route('notice.store')}}">
+        @csrf
+        <x-notice-form :notice=$notice :options=$options />
+        <x-ecl.button label="Create Notice" />
+    </form>
+
+
 @endsection
 
