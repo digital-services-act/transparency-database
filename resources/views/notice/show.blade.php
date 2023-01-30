@@ -16,10 +16,10 @@
 
         <h2 class="ecl-u-type-heading-2">Entities</h2>
         @foreach($notice->entities as $entity)
-            <div
-                class="ecl-u-pa-xs ecl-u-type-l">
-                <span class="ecl-label ecl-label--medium">{{$entity->kind}}</span> {{$entity->name}} <span
-                    class="ecl-u-pa-xs ecl-u-type-xs">({{$entity->pivot->role}})</span>
+            <div class="ecl-u-pa-xs ecl-u-type-l">
+                <span class="ecl-label ecl-label--medium">{{$entity->kind}}</span>
+                {{$entity->name}}
+                <span class="ecl-u-pa-xs ecl-u-type-xs">({{$entity->pivot->role}})</span>
             </div>
         @endforeach
 
