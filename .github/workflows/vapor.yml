@@ -37,6 +37,7 @@ jobs:
       - name: Run Testsuite
         run: vendor/bin/phpunit tests/
   deploy:
+    needs: phpunit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
