@@ -49,19 +49,14 @@ class NoticeAPIController extends Controller
      */
     public function store(NoticeStoreRequest $request)
     {
-
-        //We got 20 companies in the database, let's pick a random one
-//        $validated = $request->safe()->merge(['user_id' => auth()->id()]);
-        $random = rand(1,20);
-        $user = User::firstWhere('id','=',$random);
         $validated = $request->safe()->merge(
             [
-                'user_id' => $random,
+                'user_id' => auth()->user()->id,
                 'method' => Notice::METHOD_API,
-                'title' => "Claim #". rand(1000,200000) . ' - ' . $user->name
-            ]);
+            ]
+        )->toArray();
 
-        $notice = Notice::create($validated->toArray());
+        $notice = Notice::create($validated);
 
         return response()->json([
             'status' => true,
