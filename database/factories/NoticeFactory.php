@@ -31,7 +31,7 @@ class NoticeFactory extends Factory
             'date_sent' => Carbon::createMidnightDate($this->faker->date())->addHours($this->faker->numberBetween(3,23))->addMinutes($this->faker->numberBetween(0,59))->addSeconds($this->faker->numberBetween(0,59)),
             'date_enacted' => Carbon::createMidnightDate($this->faker->date())->addHours($this->faker->numberBetween(3,23))->addMinutes($this->faker->numberBetween(0,59))->addSeconds($this->faker->numberBetween(0,59)),
             'date_abolished' => Carbon::createMidnightDate($this->faker->date())->addHours($this->faker->numberBetween(3,23))->addMinutes($this->faker->numberBetween(0,59))->addSeconds($this->faker->numberBetween(0,59)),
-            'countries_list' => $this->faker->regexify('[A-Za-z0-9]{255}'),
+            'countries_list' => ["US","BE","GB","FR","DE"],
             'source' => $this->faker->randomElement(["Article 16","voluntary own-initiative investigation"]),
             'payment_status' => $this->faker->randomElement(["suspension","termination","other"]),
             'restriction_type' => $this->faker->randomElement(["removed","disabled","demoted","other"]),

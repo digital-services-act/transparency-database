@@ -1,14 +1,20 @@
 @extends('layouts/ecl')
 
+@section('title', 'Profile Dashboard')
+
+@section('breadcrumbs')
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Profile Dashboard" />
+@endsection
+
+
 @section('content')
 
-    <div class="ecl-row">
-        <div class="ecl-col-12">
-            <h1>Welcome to the Dashboard</h1>
+
+            <h1>Profile Dashboard</h1>
             <p>
                 Dashboard content
             </p>
-        </div>
-    </div>
+
 
 @endsection

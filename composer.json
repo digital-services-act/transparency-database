@@ -15,6 +15,7 @@
         "laravel/vapor-ui": "^1.7",
         "luilliarcec/laravel-table": "^4.0",
         "subfission/cas": "^4.3",
+        "symfony/intl": "^6.0",
         "timwassenburg/laravel-pivot-table-generator": "^1.0"
     },
     "require-dev": {

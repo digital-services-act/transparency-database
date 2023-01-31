@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Notice;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NoticeStoreRequest extends FormRequest
@@ -25,25 +26,24 @@ class NoticeStoreRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'body' => ['string'],
+            'body' => ['string', 'nullable'],
             'language' => ['required', 'string', 'max:50'],
-            'date_sent' => [''],
-            'date_enacted' => [''],
-            'date_abolished' => [''],
-            'countries_list' => ['string', 'max:255'],
-            'source' => ['in:Article 16,voluntary own-initiative investigation'],
-            'payment_status' => ['in:suspension,termination,other'],
-            'restriction_type' => ['in:removed,disabled,demoted,other'],
-            'restriction_type_other' => ['string'],
-            'automated_detection' => ['in:Yes,No,Partial'],
-            'automated_detection_more' => ['string'],
-            'illegal_content_legal_ground' => ['string', 'max:255'],
-            'illegal_content_explanation' => ['string'],
-            'toc_contractual_ground' => ['string', 'max:255'],
-            'toc_explanation' => ['string'],
-            'redress' => ['in:Internal Mechanism,Out Of Court Settlement,other'],
-            'redress_more' => ['string'],
-            'user_id' => ['integer'],
+            'date_sent' => ['date_format:d-m-Y', 'nullable'],
+            'date_enacted' => ['date_format:d-m-Y', 'nullable'],
+            'date_abolished' => ['date_format:d-m-Y', 'nullable'],
+            'countries_list' => ['array', 'max:20'],
+            'source' => ['in:' . implode(',',Notice::SOURCES)],
+            'payment_status' => ['in:' . implode(',',Notice::PAYMENT_STATUES)],
+            'restriction_type' => ['in:' . implode(',',Notice::RESTRICTION_TYPES)],
+            'restriction_type_other' => ['string', 'nullable'],
+            'automated_detection' => ['in:'. implode(',', Notice::AUTOMATED_DETECTIONS)],
+            'automated_detection_more' => ['string','nullable'],
+            'illegal_content_legal_ground' => ['string', 'max:255', 'nullable'],
+            'illegal_content_explanation' => ['string', 'nullable'],
+            'toc_contractual_ground' => ['string', 'max:255', 'nullable'],
+            'toc_explanation' => ['string', 'nullable'],
+            'redress' => ['in:' . implode(',', Notice::REDRESSES)],
+            'redress_more' => ['string', 'nullable'],
         ];
     }
 }

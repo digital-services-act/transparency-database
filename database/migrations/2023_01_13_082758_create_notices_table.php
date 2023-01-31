@@ -17,23 +17,27 @@ class CreateNoticesTable extends Migration
             $table->id();
             $table->string('title', 255);
             $table->longText('body')->nullable();
-            $table->fullText('body');
+
+            if (env('APP_ENV') != 'testing') {
+                $table->fullText('body');
+            }
+
             $table->string('language', 50);
             $table->timestamp('date_sent')->nullable();
             $table->timestamp('date_enacted')->nullable();
             $table->timestamp('date_abolished')->nullable();
             $table->string('countries_list', 255)->nullable();
-            $table->enum('source', ["Article 16","voluntary own-initiative investigation"])->nullable();
-            $table->enum('payment_status', ["suspension","termination","other"])->nullable();
-            $table->enum('restriction_type', ["removed","disabled","demoted","other"])->nullable();
+            $table->enum('source', \App\Models\Notice::SOURCES)->nullable();
+            $table->enum('payment_status', \App\Models\Notice::PAYMENT_STATUES)->nullable();
+            $table->enum('restriction_type', \App\Models\Notice::RESTRICTION_TYPES)->nullable();
             $table->longText('restriction_type_other')->nullable();
-            $table->enum('automated_detection', ["Yes","No","Partial"])->nullable();
+            $table->enum('automated_detection', \App\Models\Notice::AUTOMATED_DETECTIONS)->nullable();
             $table->longText('automated_detection_more')->nullable();
             $table->string('illegal_content_legal_ground', 255)->nullable();
             $table->longText('illegal_content_explanation')->nullable();
             $table->string('toc_contractual_ground', 255)->nullable();
             $table->longText('toc_explanation')->nullable();
-            $table->enum('redress', ["Internal Mechanism","Out Of Court Settlement","Other"])->nullable();
+            $table->enum('redress', \App\Models\Notice::REDRESSES)->nullable();
             $table->longText('redress_more')->nullable();
             $table->integer('user_id');
             $table->string('method')->default('API');
