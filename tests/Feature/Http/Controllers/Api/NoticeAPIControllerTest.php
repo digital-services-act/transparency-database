@@ -19,6 +19,33 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function must_be_authenticated()
+    {
+        $this->seed();
+
+        $title = $this->faker->sentence(4);
+        $language = 'en';
+
+        $this->assertCount(10, Notice::all());
+
+        $response = $this->post(route('api.notice.store'), [
+            'title' => $title,
+            'language' => $language,
+            'date_sent' => '2023-01-01 00:00:00',
+            'date_enacted' => '2023-01-02 00:00:00',
+            'date_abolished' => '2023-01-03 00:00:00',
+            'source' => Notice::SOURCE_ARTICLE_16
+        ],[
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        
+    }
+
+    /**
+     * @test
+     */
     public function store_saves()
     {
         $this->seed();
@@ -34,11 +61,12 @@ class NoticeAPIControllerTest extends TestCase
         $response = $this->post(route('api.notice.store'), [
             'title' => $title,
             'language' => $language,
-            'user_id' => $user->id,
             'date_sent' => '2023-01-01 00:00:00',
             'date_enacted' => '2023-01-02 00:00:00',
             'date_abolished' => '2023-01-03 00:00:00',
             'source' => Notice::SOURCE_ARTICLE_16
+        ],[
+            'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_OK);
 
