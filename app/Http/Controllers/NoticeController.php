@@ -16,22 +16,18 @@ use Symfony\Component\Intl\Languages;
 class NoticeController extends Controller
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return View|Factory|Application
      */
-    public function index(Request $request)
+    public function index(): View|Factory|Application
     {
-        $notices = Notice::with('entities')->orderByDesc('id')->paginate(50);
-
+        $notices = Notice::with('entities')->paginate(50);
         return view('notice.index', compact('notices'));
     }
 
     /**
-     * @param Request $request
-     *
-     * @return Application|Factory|View
+     * @return Factory|View|Application
      */
-    public function create(Request $request)
+    public function create(): Factory|View|Application
     {
         // Dummy Notice to pre fill the form.
         $notice = new Notice();
@@ -52,11 +48,11 @@ class NoticeController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Notice $notice
-     * @return \Illuminate\Http\Response
+     * @param Notice $notice
+     *
+     * @return Factory|View|Application
      */
-    public function show(Request $request, Notice $notice)
+    public function show(Notice $notice): Factory|View|Application
     {
         return view('notice.show', compact('notice'));
     }
@@ -83,7 +79,7 @@ class NoticeController extends Controller
         return redirect()->route('notice.index');
     }
 
-    private function sanitizeDate($date)
+    private function sanitizeDate($date): ?string
     {
         return $date ? Carbon::createFromFormat('d-m-Y', $date)->format('Y-m-d 00:00:00') : null;
     }

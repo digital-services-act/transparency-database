@@ -17,7 +17,11 @@ class CreateNoticesTable extends Migration
             $table->id();
             $table->string('title', 255);
             $table->longText('body')->nullable();
-            $table->fullText('body');
+
+            if (env('APP_ENV') != 'testing') {
+                $table->fullText('body');
+            }
+
             $table->string('language', 50);
             $table->timestamp('date_sent')->nullable();
             $table->timestamp('date_enacted')->nullable();

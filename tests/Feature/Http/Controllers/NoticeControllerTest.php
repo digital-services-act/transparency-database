@@ -48,6 +48,8 @@ class NoticeControllerTest extends TestCase
      */
     public function show_displays_view()
     {
+        $this->seed();
+
         $notice = Notice::factory()->create();
 
         $response = $this->get(route('notice.show', $notice));
