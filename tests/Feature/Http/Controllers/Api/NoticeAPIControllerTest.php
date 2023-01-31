@@ -19,7 +19,7 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function gets_a_notice()
+    public function api_notice_show_works()
     {
         $user = $this->signIn();
         $notice = Notice::create([
@@ -38,8 +38,10 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function notice_show_requires_auth()
+    public function api_notice_show_requires_auth()
     {
+        // not signing in.
+
         $notice = Notice::create([
             'title' => 'Testing Title',
             'language' => 'en',
@@ -55,7 +57,7 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function must_be_authenticated()
+    public function api_notice_store_requires_auth()
     {
         $this->seed();
 
@@ -83,7 +85,7 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves()
+    public function api_notice_store_works()
     {
         $this->seed();
 
@@ -119,7 +121,7 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_rejects_bad_languages()
+    public function request_rejects_bad_languages()
     {
         $this->signIn();
         $response = $this->post(route('api.notice.store'), [
@@ -141,7 +143,7 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_rejects_bad_countries()
+    public function request_rejects_bad_countries()
     {
         $this->signIn();
         $response = $this->post(route('api.notice.store'), [
@@ -159,5 +161,4 @@ class NoticeAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The selected countries list is invalid.', $response->json('message'));
     }
-
 }
