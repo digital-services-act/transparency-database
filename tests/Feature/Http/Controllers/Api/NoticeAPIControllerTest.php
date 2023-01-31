@@ -52,7 +52,7 @@ class NoticeAPIControllerTest extends TestCase
         $this->seed();
 
         $title = $this->faker->sentence(4);
-        $language = 'en';
+        $language = 'fr';
 
         $user = $this->signIn();
 
@@ -63,7 +63,8 @@ class NoticeAPIControllerTest extends TestCase
             'date_sent' => '2023-01-01 00:00:00',
             'date_enacted' => '2023-01-02 00:00:00',
             'date_abolished' => '2023-01-03 00:00:00',
-            'source' => Notice::SOURCE_ARTICLE_16
+            'source' => Notice::SOURCE_ARTICLE_16,
+            'countries_list' => ['US', 'FR'],
         ],[
             'Accept' => 'application/json'
         ]);
@@ -73,9 +74,54 @@ class NoticeAPIControllerTest extends TestCase
         $notice = Notice::find($response->json('notice')['id']);
         $this->assertNotNull($notice);
         $this->assertEquals('API', $notice->method);
-        $this->assertEquals($user->name, $notice->user->name);
+        $this->assertEquals($user->id, $notice->user->id);
         $this->assertEquals('2023-01-03 00:00:00', $notice->date_abolished);
         $this->assertInstanceOf(Carbon::class, $notice->date_abolished);
-
     }
+
+
+    /**
+     * @test
+     */
+    public function it_rejects_bad_languages()
+    {
+        $this->signIn();
+        $response = $this->post(route('api.notice.store'), [
+            'title' => 'A Test Title',
+            'language' => 'bad_language',
+            'date_sent' => '2023-01-01 00:00:00',
+            'date_enacted' => '2023-01-02 00:00:00',
+            'date_abolished' => '2023-01-03 00:00:00',
+            'source' => Notice::SOURCE_ARTICLE_16,
+            'countries_list' => ['US', 'FR'],
+        ],[
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The selected language is invalid.', $response->json('message'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_rejects_bad_countries()
+    {
+        $this->signIn();
+        $response = $this->post(route('api.notice.store'), [
+            'title' => 'A Test Title',
+            'language' => 'fr',
+            'date_sent' => '2023-01-01 00:00:00',
+            'date_enacted' => '2023-01-02 00:00:00',
+            'date_abolished' => '2023-01-03 00:00:00',
+            'source' => Notice::SOURCE_ARTICLE_16,
+            'countries_list' => ['US', 'INVALID COUNTRY'],
+        ],[
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The selected countries list is invalid.', $response->json('message'));
+    }
+
 }

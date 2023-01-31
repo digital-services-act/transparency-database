@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
+use Tests\Feature\Http\Controllers\Api\NoticeAPIControllerTest;
 use Tests\TestCase;
 
 /**
@@ -24,12 +25,25 @@ class NoticeControllerTest extends TestCase
     public function index_displays_view()
     {
         $notices = Notice::factory()->count(3)->create();
-
         $response = $this->get(route('notice.index'));
-
         $response->assertOk();
         $response->assertViewIs('notice.index');
         $response->assertViewHas('notices');
+    }
+
+    /**
+     * @test
+     */
+    public function index_does_not_auth()
+    {
+        // The cas is set to masquerade in testing mode.
+        // So when we make a call to a cas middleware route we get logged in.
+        // If we make a call to a non cas route nothing should happen.
+        $u = auth()->user();
+        $this->assertNull($u);
+        $response = $this->get(route('notice.index'));
+        $u = auth()->user();
+        $this->assertNull($u);
     }
 
 
@@ -39,11 +53,26 @@ class NoticeControllerTest extends TestCase
     public function create_displays_view()
     {
         $user = $this->signIn();
-
         $response = $this->get(route('notice.create'));
-
         $response->assertOk();
         $response->assertViewIs('notice.create');
+    }
+
+    /**
+     * @test
+     */
+    public function create_must_be_authenticated()
+    {
+        // The cas is set to masquerade in testing mode.
+        // So when we make a call to a cas middleware route we get logged in.
+        // Thus before we make this call we are nobody
+        $u = auth()->user();
+        $this->assertNull($u);
+        $response = $this->get(route('notice.create'));
+
+        // After we made this call we are somebody
+        $u = auth()->user();
+        $this->assertNotNull($u);
     }
 
 
@@ -53,9 +82,7 @@ class NoticeControllerTest extends TestCase
     public function show_displays_view()
     {
         $this->seed();
-
         $notice = Notice::factory()->create();
-
         $response = $this->get(route('notice.show', $notice));
 
         $response->assertOk();
@@ -78,9 +105,12 @@ class NoticeControllerTest extends TestCase
 
     /**
      * @test
+     * @see NoticeAPIControllerTest
      */
     public function store_saves_and_redirects()
     {
+        // This is a basic test that the normal controller is working.
+        // For more advanced testing on the request and such, see the API testing.
         $title = $this->faker->sentence(4);
         $language = 'en';
 
@@ -88,6 +118,8 @@ class NoticeControllerTest extends TestCase
 
         $this->assertCount(0, Notice::all());
 
+        // When making notices via the FORM
+        // The dates come in as d-m-Y from the ECL datepicker.
         $response = $this->post(route('notice.store'), [
             'title' => $title,
             'language' => $language,
@@ -102,7 +134,7 @@ class NoticeControllerTest extends TestCase
         $notice = Notice::latest()->first();
         $this->assertNotNull($notice);
         $this->assertEquals('FORM', $notice->method);
-        $this->assertEquals($user->name, $notice->user->name);
+        $this->assertEquals($user->id, $notice->user->id);
         $this->assertEquals('2023-01-03 00:00:00', $notice->date_abolished);
         $this->assertInstanceOf(Carbon::class, $notice->date_abolished);
 
