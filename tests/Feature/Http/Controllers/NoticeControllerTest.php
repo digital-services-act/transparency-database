@@ -3,10 +3,8 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Notice;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\Feature\Http\Controllers\Api\NoticeAPIControllerTest;
