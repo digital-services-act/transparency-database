@@ -141,6 +141,10 @@
                     </ol>
                 </nav>
 
+                @if(session('success'))
+                    <x-ecl.message type="success" icon="success" title="Success" :message="session('success')" />
+                @endif
+
                 @yield('content')
             </div>
         </div>

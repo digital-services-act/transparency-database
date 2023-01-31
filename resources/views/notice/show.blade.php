@@ -10,7 +10,7 @@
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1">Notice Details: {{$notice->title}}</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Notice Details: {{$notice->title}}</h1>
 
     @if(! $notice->entities->isEmpty())
 

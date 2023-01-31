@@ -15,7 +15,7 @@
         <div class="ecl-message__title">{{ $title }}</div>
         <div class="ecl-message__description">
         @if(!is_array($message))
-            {{ $message }}
+            {!! $message !!}
         @else
             <ul class="ecl-unordered-list">
                 <li class="ecl-unordered-list__item">

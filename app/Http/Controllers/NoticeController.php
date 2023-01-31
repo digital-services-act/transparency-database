@@ -20,7 +20,7 @@ class NoticeController extends Controller
      */
     public function index(): View|Factory|Application
     {
-        $notices = Notice::with('entities')->paginate(50);
+        $notices = Notice::with('entities')->orderBy('id', 'desc')->paginate(50);
         return view('notice.index', compact('notices'));
     }
 
@@ -76,7 +76,8 @@ class NoticeController extends Controller
 
         $notice = Notice::create($validated);
 
-        return redirect()->route('notice.index');
+        $url = route('notice.show', [$notice]);
+        return redirect()->route('notice.index')->with('success', 'The notice has been created: <a href="' . $url . '">' . $notice->title . '</a>');
     }
 
     private function sanitizeDate($date): ?string
