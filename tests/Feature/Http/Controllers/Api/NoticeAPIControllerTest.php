@@ -19,6 +19,42 @@ class NoticeAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function gets_a_notice()
+    {
+        $user = $this->signIn();
+        $notice = Notice::create([
+            'title' => 'Testing Title',
+            'language' => 'en',
+            'user_id' => $user->id
+        ]);
+
+        $response = $this->get(route('api.notice.show', [$notice]),[
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($notice->title, $response->json('title'));
+    }
+
+    /**
+     * @test
+     */
+    public function notice_show_requires_auth()
+    {
+        $notice = Notice::create([
+            'title' => 'Testing Title',
+            'language' => 'en',
+            'user_id' => 7
+        ]);
+
+        $response = $this->get(route('api.notice.show', [$notice]),[
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @test
+     */
     public function must_be_authenticated()
     {
         $this->seed();

@@ -37,10 +37,9 @@ class NoticeAPIController extends Controller
      * @param \App\Models\Notice $notice
      * @return NoticeResource
      */
-    public function show($id)
+    public function show(Notice $notice)
     {
-        return new NoticeResource(Notice::findOrFail($id)->load('entities'));
-
+        return $notice;
     }
 
     /**
