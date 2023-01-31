@@ -38,19 +38,7 @@ class NoticeControllerTest extends TestCase
      */
     public function create_displays_view()
     {
-        $a = env('CAS_MASQUERADE');
-        $this->assertEquals('testuser', $a);
-
-        $user = User::create([
-            'name' => "Test User",
-            'email' => "testuser@testuser.org",
-            'email_verified_at' => "2023-01-31T11:35:55.000000Z",
-            'eu_login_username' => "testuser",
-            'password' => 'testpassword'
-        ]);
-
-        $this->actingAs($user);
-        $this->be($user);
+        $user = $this->signIn();
 
         $response = $this->get(route('notice.create'));
 
@@ -93,25 +81,12 @@ class NoticeControllerTest extends TestCase
      */
     public function store_saves_and_redirects()
     {
-
         $title = $this->faker->sentence(4);
         $language = 'en';
 
-
-        $user = User::create([
-            'name' => "Test User",
-            'email' => "retta.cremin@example.org",
-            'email_verified_at' => "2023-01-31T11:35:55.000000Z",
-            'eu_login_username' => "testuser",
-            'password' => 'testpassword'
-        ]);
-
-        $this->actingAs($user);
-        $this->be($user);
+        $user = $this->signIn();
 
         $this->assertCount(0, Notice::all());
-
-
 
         $response = $this->post(route('notice.store'), [
             'title' => $title,

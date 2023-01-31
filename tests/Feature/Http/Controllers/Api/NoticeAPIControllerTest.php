@@ -26,8 +26,9 @@ class NoticeAPIControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $language = 'en';
 
-        $this->assertCount(10, Notice::all());
+        // Not signing in.
 
+        $this->assertCount(10, Notice::all());
         $response = $this->post(route('api.notice.store'), [
             'title' => $title,
             'language' => $language,
@@ -53,11 +54,9 @@ class NoticeAPIControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $language = 'en';
 
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $user = $this->signIn();
 
         $this->assertCount(10, Notice::all());
-
         $response = $this->post(route('api.notice.store'), [
             'title' => $title,
             'language' => $language,
