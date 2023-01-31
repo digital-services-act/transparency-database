@@ -6,6 +6,8 @@ use App\Models\Notice;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
@@ -36,6 +38,20 @@ class NoticeControllerTest extends TestCase
      */
     public function create_displays_view()
     {
+        $a = env('CAS_MASQUERADE');
+        $this->assertEquals('testuser', $a);
+
+        $user = User::create([
+            'name' => "Test User",
+            'email' => "testuser@testuser.org",
+            'email_verified_at' => "2023-01-31T11:35:55.000000Z",
+            'eu_login_username' => "testuser",
+            'password' => 'testpassword'
+        ]);
+
+        $this->actingAs($user);
+        $this->be($user);
+
         $response = $this->get(route('notice.create'));
 
         $response->assertOk();
@@ -77,25 +93,43 @@ class NoticeControllerTest extends TestCase
      */
     public function store_saves_and_redirects()
     {
-        $title = $this->faker->sentence(4);
-        $language = $this->faker->word;
 
-        $user = User::factory()->create();
+        $title = $this->faker->sentence(4);
+        $language = 'en';
+
+
+        $user = User::create([
+            'name' => "Test User",
+            'email' => "retta.cremin@example.org",
+            'email_verified_at' => "2023-01-31T11:35:55.000000Z",
+            'eu_login_username' => "testuser",
+            'password' => 'testpassword'
+        ]);
+
         $this->actingAs($user);
+        $this->be($user);
+
+        $this->assertCount(0, Notice::all());
+
+
 
         $response = $this->post(route('notice.store'), [
             'title' => $title,
             'language' => $language,
-            'user_id' => $user->id,
+            'date_sent' => '01-01-2023',
+            'date_enacted' => '02-01-2023',
+            'date_abolished' => '03-01-2023',
+            'source' => Notice::SOURCE_ARTICLE_16
         ]);
 
-        $notices = Notice::query()
-            ->where('title', $title)
-            ->where('language', $language)
-            ->where('user_id', $user->id)
-            ->get();
-        $this->assertCount(1, $notices);
-        $notice = $notices->first();
+
+        $this->assertCount(1, Notice::all());
+        $notice = Notice::latest()->first();
+        $this->assertNotNull($notice);
+        $this->assertEquals('FORM', $notice->method);
+        $this->assertEquals($user->name, $notice->user->name);
+        $this->assertEquals('2023-01-03 00:00:00', $notice->date_abolished);
+        $this->assertInstanceOf(Carbon::class, $notice->date_abolished);
 
         $response->assertRedirect(route('notice.index'));
     }

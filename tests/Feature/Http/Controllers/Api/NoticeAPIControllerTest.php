@@ -77,5 +77,6 @@ class NoticeAPIControllerTest extends TestCase
         $this->assertEquals($user->name, $notice->user->name);
         $this->assertEquals('2023-01-03 00:00:00', $notice->date_abolished);
         $this->assertInstanceOf(Carbon::class, $notice->date_abolished);
+
     }
 }

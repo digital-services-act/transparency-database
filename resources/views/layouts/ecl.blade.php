@@ -145,6 +145,10 @@
                     <x-ecl.message type="success" icon="success" title="Success" :message="session('success')" />
                 @endif
 
+                @if ($errors->any())
+                    <x-ecl.message type="error" icon="error" title="Errors" :message="$errors->all()" />
+                @endif
+
                 @yield('content')
             </div>
         </div>

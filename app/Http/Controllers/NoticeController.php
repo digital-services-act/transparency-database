@@ -64,7 +64,6 @@ class NoticeController extends Controller
      */
     public function store(NoticeStoreRequest $request): RedirectResponse
     {
-
         $validated = $request->safe()->merge([
             'user_id' => auth()->user()->id,
             'method' => Notice::METHOD_FORM
