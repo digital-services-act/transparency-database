@@ -23,10 +23,10 @@
 
     </style>
 
-    <div class="ecl-row ecl-u-mt-l">
+    <div class="ecl-row">
         <div class="ecl-col-l-3">
             <nav data-ecl-auto-init="InpageNavigation" class="ecl-inpage-navigation" data-ecl-inpage-navigation="true">
-                <div class="ecl-inpage-navigation__title">Page contents</div>
+                <div class="ecl-inpage-navigation__title ecl-u-mt-l">Page contents</div>
 
                 <div class="ecl-inpage-navigation__body">
                     <div id="toc-area">
