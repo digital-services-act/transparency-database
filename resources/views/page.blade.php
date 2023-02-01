@@ -11,7 +11,7 @@
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1">{{ $page_title }}</h1>
+{{--    <h1 class="ecl-page-header__title ecl-u-type-heading-1">{{ $page_title }}</h1>--}}
 
     <style>
 
