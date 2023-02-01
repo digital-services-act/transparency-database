@@ -34,6 +34,8 @@ Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])
 Route::get('/notice', [\App\Http\Controllers\NoticeController::class, 'index'])->name('notice.index');
 Route::get('/notice/{notice}', [\App\Http\Controllers\NoticeController::class, 'show'])->name('notice.show');
 
+Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+
 
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
 
