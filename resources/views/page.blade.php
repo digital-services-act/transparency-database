@@ -14,18 +14,13 @@
     <h1 class="ecl-page-header__title ecl-u-type-heading-1">{{ $page_title }}</h1>
 
     <style>
-        pre {
-            background-color: black;
-            color: white;
-            padding: 5px;
-            word-wrap: normal;
-            overflow-x: auto;
-        }
 
         code {
-            background-color: black;
-            color: white;
+            background: #2b2b2b;
+            color: #f8f8f2;
+            padding: .1em;
         }
+
     </style>
 
     <div class="ecl-row ecl-u-mt-l">
@@ -50,6 +45,9 @@
         </div>
     </div>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 
     <script>
@@ -82,6 +80,7 @@
             $('#toc-list').append('<li><a href="#'+id+'">' + t + '</a></li>');
           });
         });
+        hljs.highlightAll();
     </script>
 
 @endsection
