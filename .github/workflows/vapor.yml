@@ -45,6 +45,7 @@ jobs:
           QUEUE_CONNECTION: sync
           SESSION_DRIVER: array
           CAS_MASQUERADE: some-user
+          CAS_VALIDATION: some-validation
         run: php artisan test
   deploy:
     needs: phpunit
