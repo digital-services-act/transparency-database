@@ -41,7 +41,7 @@ jobs:
           BCRYPT_ROUNDS: 4
           CACHE_DRIVER: array
           DB_CONNECTION: sqlite
-          DB_DATABASE: memory
+          DB_DATABASE: :memory:
           QUEUE_CONNECTION: sync
           SESSION_DRIVER: array
           CAS_MASQUERADE: some-user
