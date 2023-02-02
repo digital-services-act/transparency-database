@@ -34,7 +34,17 @@ jobs:
           cp .env.ci .env
           php artisan key:generate
 
-      - name: Run Testsuite
+      - name: Run Testsuite       
+        env:
+          APP_URL: http://localhost
+          APP_ENV: testing
+          BCRYPT_ROUNDS: 4
+          CACHE_DRIVER: array
+          DB_CONNECTION: sqlite
+          DB_DATABASE: memory
+          QUEUE_CONNECTION: sync
+          SESSION_DRIVER: array
+          CAS_MASQUERADE: some-user
         run: php artisan test
   deploy:
     needs: phpunit
