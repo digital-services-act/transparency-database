@@ -34,7 +34,6 @@ class CasManager
         }
 
 
-        $this->configureCas($this->config['cas_proxy'] ? 'proxy' : 'client');
 
 
 
@@ -54,7 +53,9 @@ class CasManager
             );
         }
 
+        $this->configureCas($this->config['cas_proxy'] ? 'proxy' : 'client');
         $this->configureCasValidation();
+
         // set login and logout URLs of the CAS server
         phpCAS::setServerLoginURL($this->config['cas_login_url']);
 
