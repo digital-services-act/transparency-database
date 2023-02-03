@@ -22,10 +22,10 @@ Route::get('/', function () {
 
 Route::get('/test/token', [\App\Http\Controllers\TestController::class, 'token'])->name('token');
 
-
+Route::get('/notice/create', [\App\Http\Controllers\NoticeController::class, 'create'])->name('notice.create')->middleware('cas.auth');
 
 Route::middleware(['cas.auth'])->group(function() {
-    Route::get('/notice/create', [\App\Http\Controllers\NoticeController::class, 'create'])->name('notice.create');
+
     Route::post('/notice', [\App\Http\Controllers\NoticeController::class, 'store'])->name('notice.store');
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
 });

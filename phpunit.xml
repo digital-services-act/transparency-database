@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         processIsolation="true"
+         processIsolation="false"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -29,6 +29,8 @@
         <env name="MAIL_DRIVER" value="array"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="CAS_MASQUERADE" value="testuser"/>
+        <env name="CAS_MASQUERADE" value="some-user"/>
+        <env name="CAS_VALIDATION" value="self"/>
+
     </php>
 </phpunit>
