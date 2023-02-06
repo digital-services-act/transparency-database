@@ -8,6 +8,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
 
+use function PHPUnit\Framework\assertCount;
+
+
 uses(AdditionalAssertions::class);
 uses(RefreshDatabase::class);
 uses(WithFaker::class);
@@ -20,6 +23,7 @@ it('should display view', function(){
     $response->assertViewHas('notices');
 });
 
+
 it('does not auth on index', function(){
     $u = auth()->user();
     $this->assertNull($u);
@@ -28,12 +32,13 @@ it('does not auth on index', function(){
     $this->assertNull($u);
 });
 
-it('create requires and auth', function(){
+it('requires authentication to see the create page', function(){
     // The cas is set to masquerade in testing mode.
     // So when we make a call to a cas middleware route we get logged in.
     // Thus before we make this call we are nobody
     $u = auth()->user();
     $this->assertNull($u);
+
     $response = $this->get(route('notice.create'));
 
     // After we made this call we are somebody
@@ -42,7 +47,7 @@ it('create requires and auth', function(){
 });
 
 
-it('should display create view', function () {
+it('should display the create view', function () {
     $user = $this->signIn();
     $response = $this->get(route('notice.create'));
     $response->assertOk();
@@ -50,7 +55,7 @@ it('should display create view', function () {
 });
 
 
-it('requires to be authenticated to create a notice', function () {
+it('requires authentication to create a notice', function () {
     // The cas is set to masquerade in testing mode.
     // So when we make a call to a cas middleware route we get logged in.
     // Thus before we make this call we are nobody
