@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "cweagans/composer-patches": "^1.7",
         "erusev/parsedown": "^1.7",
         "graham-campbell/markdown": "^14.0",
         "guzzlehttp/guzzle": "^7.2",
@@ -69,12 +70,20 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "patches": {
+            "apereo/phpcas": {
+                "Ignored Client Error": "patches/apereo-phpcas.diff"
+            }
         }
     },
     "config": {
         "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
+        "preferred-install": "source",
+        "sort-packages": true,
+        "allow-plugins": {
+            "cweagans/composer-patches": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
