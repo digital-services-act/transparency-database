@@ -1,0 +1,12 @@
+diff --git a/source/CAS.php b/source/CAS.php
+index 8243a83..836ba6e 100644
+--- a/source/CAS.php
++++ b/source/CAS.php
+@@ -350,7 +350,7 @@ class phpCAS
+         $changeSessionID = true, \SessionHandlerInterface $sessionHandler = null
+     ) {
+         phpCAS :: traceBegin();
+-        if (is_object(self::$_PHPCAS_CLIENT)) {
++        if (is_object(self::$_PHPCAS_CLIENT) && env('APP_ENV') != 'testing') {
+             phpCAS :: error(self::$_PHPCAS_INIT_CALL['method'] . '() has already been called (at ' . self::$_PHPCAS_INIT_CALL['file'] . ':' . self::$_PHPCAS_INIT_CALL['line'] . ')');
+         }
