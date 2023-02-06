@@ -82,7 +82,8 @@
         "preferred-install": "source",
         "sort-packages": true,
         "allow-plugins": {
-            "cweagans/composer-patches": true
+            "cweagans/composer-patches": true,
+            "pestphp/pest-plugin": true
         }
     },
     "minimum-stability": "dev",
