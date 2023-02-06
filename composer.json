@@ -42,10 +42,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "vendor-fix/CasManager.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -73,7 +70,10 @@
         },
         "patches": {
             "apereo/phpcas": {
-                "Ignored Client Error": "patches/apereo-phpcas.diff"
+                "Ignore and bypass Session": "patches/apereo-phpcas.diff"
+            },
+            "subfission/cas": {
+                "ServerBaseUrl": "patches/subfission-cas.diff"
             }
         }
     },
