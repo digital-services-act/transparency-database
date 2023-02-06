@@ -27,7 +27,7 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="CAS_MASQUERADE" value="some-user"/>
-        <env name="CAS_VALIDATION" value="self"/>
+        <env name="CAS_VALIDATION" value="null"/>
 
     </php>
 </phpunit>
