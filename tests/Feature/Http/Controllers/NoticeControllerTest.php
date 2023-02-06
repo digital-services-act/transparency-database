@@ -20,6 +20,28 @@ it('should display view', function(){
     $response->assertViewHas('notices');
 });
 
+it('does not auth on index', function(){
+    $u = auth()->user();
+    $this->assertNull($u);
+    $response = $this->get(route('notice.index'));
+    $u = auth()->user();
+    $this->assertNull($u);
+});
+
+it('create requires and auth', function(){
+    // The cas is set to masquerade in testing mode.
+    // So when we make a call to a cas middleware route we get logged in.
+    // Thus before we make this call we are nobody
+    $u = auth()->user();
+    $this->assertNull($u);
+    $response = $this->get(route('notice.create'));
+
+    // After we made this call we are somebody
+    $u = auth()->user();
+    $this->assertNotNull($u);
+});
+
+
 it('should display create view', function () {
     $user = $this->signIn();
     $response = $this->get(route('notice.create'));
