@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use App\Models\Notice;
+use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -14,36 +14,36 @@ use Tests\TestCase;
 uses(RefreshDatabase::class);
 uses(WithFaker::class);
 
-it('should make api notice work', function () {
+it('should make api statement work', function () {
     $user = $this->signIn();
-    $notice = Notice::create([
+    $statement = Statement::create([
         'title' => 'Testing Title',
         'language' => 'en',
         'user_id' => $user->id
     ]);
 
-    $response = $this->get(route('api.notice.show', [$notice]), [
+    $response = $this->get(route('api.statement.show', [$statement]), [
         'Accept' => 'application/json'
     ]);
     $response->assertStatus(Response::HTTP_OK);
-    $this->assertEquals($notice->title, $response->json('title'));
+    $this->assertEquals($statement->title, $response->json('title'));
 });
 
-it('requires auth to create a notice', function () {
+it('requires auth to create a statement', function () {
     // not signing in.
-    $notice = Notice::create([
+    $statement = Statement::create([
         'title' => 'Testing Title',
         'language' => 'en',
         'user_id' => 7
     ]);
 
-    $response = $this->get(route('api.notice.show', [$notice]), [
+    $response = $this->get(route('api.statement.show', [$statement]), [
         'Accept' => 'application/json'
     ]);
     $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 });
 
-it('requires auth to store a notice', function () {
+it('requires auth to store a statement', function () {
     $this->seed();
 
     $title = $this->faker->sentence(4);
@@ -51,14 +51,14 @@ it('requires auth to store a notice', function () {
 
     // Not signing in.
 
-    $this->assertCount(10, Notice::all());
-    $response = $this->post(route('api.notice.store'), [
+    $this->assertCount(10, Statement::all());
+    $response = $this->post(route('api.statement.store'), [
         'title' => $title,
         'language' => $language,
         'date_sent' => '2023-01-01 00:00:00',
         'date_enacted' => '2023-01-02 00:00:00',
         'date_abolished' => '2023-01-03 00:00:00',
-        'source' => Notice::SOURCE_ARTICLE_16
+        'source' => Statement::SOURCE_ARTICLE_16
     ], [
         'Accept' => 'application/json'
     ]);
@@ -66,7 +66,7 @@ it('requires auth to store a notice', function () {
     $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 });
 
-it('stores a notice', function () {
+it('stores a statement', function () {
     $this->seed();
 
     $title = $this->faker->sentence(4);
@@ -74,39 +74,39 @@ it('stores a notice', function () {
 
     $user = $this->signIn();
 
-    $this->assertCount(10, Notice::all());
-    $response = $this->post(route('api.notice.store'), [
+    $this->assertCount(10, Statement::all());
+    $response = $this->post(route('api.statement.store'), [
         'title' => $title,
         'language' => $language,
         'date_sent' => '2023-01-01 00:00:00',
         'date_enacted' => '2023-01-02 00:00:00',
         'date_abolished' => '2023-01-03 00:00:00',
-        'source' => Notice::SOURCE_ARTICLE_16,
+        'source' => Statement::SOURCE_ARTICLE_16,
         'countries_list' => ['US', 'FR'],
     ], [
         'Accept' => 'application/json'
     ]);
     $response->assertStatus(Response::HTTP_OK);
 
-    $this->assertCount(11, Notice::all());
-    $notice = Notice::find($response->json('notice')['id']);
-    $this->assertNotNull($notice);
-    $this->assertEquals('API', $notice->method);
-    $this->assertEquals($user->id, $notice->user->id);
-    $this->assertEquals('2023-01-03 00:00:00', $notice->date_abolished);
-    $this->assertInstanceOf(Carbon::class, $notice->date_abolished);
+    $this->assertCount(11, Statement::all());
+    $statement = Statement::find($response->json('statement')['id']);
+    $this->assertNotNull($statement);
+    $this->assertEquals('API', $statement->method);
+    $this->assertEquals($user->id, $statement->user->id);
+    $this->assertEquals('2023-01-03 00:00:00', $statement->date_abolished);
+    $this->assertInstanceOf(Carbon::class, $statement->date_abolished);
 });
 
 
 it('should reject bad languages', function () {
     $this->signIn();
-    $response = $this->post(route('api.notice.store'), [
+    $response = $this->post(route('api.statement.store'), [
         'title' => 'A Test Title',
         'language' => 'bad_language',
         'date_sent' => '2023-01-01 00:00:00',
         'date_enacted' => '2023-01-02 00:00:00',
         'date_abolished' => '2023-01-03 00:00:00',
-        'source' => Notice::SOURCE_ARTICLE_16,
+        'source' => Statement::SOURCE_ARTICLE_16,
         'countries_list' => ['US', 'FR'],
     ], [
         'Accept' => 'application/json'
@@ -118,13 +118,13 @@ it('should reject bad languages', function () {
 
 it('should reject bad countries', function () {
     $this->signIn();
-    $response = $this->post(route('api.notice.store'), [
+    $response = $this->post(route('api.statement.store'), [
         'title' => 'A Test Title',
         'language' => 'fr',
         'date_sent' => '2023-01-01 00:00:00',
         'date_enacted' => '2023-01-02 00:00:00',
         'date_abolished' => '2023-01-03 00:00:00',
-        'source' => Notice::SOURCE_ARTICLE_16,
+        'source' => Statement::SOURCE_ARTICLE_16,
         'countries_list' => ['US', 'INVALID COUNTRY'],
     ], [
         'Accept' => 'application/json'

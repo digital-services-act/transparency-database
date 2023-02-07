@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('notice/{notice}', ['App\Http\Controllers\Api\NoticeAPIController','show'])->middleware('auth:sanctum')->name('api.notice.show');
-Route::post('notice/create', ['App\Http\Controllers\Api\NoticeAPIController','store'])->middleware('auth:sanctum')->name('api.notice.store');
+Route::get('statement/{statement}', ['App\Http\Controllers\Api\StatementAPIController','show'])->middleware('auth:sanctum')->name('api.statement.show');
+Route::post('statement/create', ['App\Http\Controllers\Api\StatementAPIController','store'])->middleware('auth:sanctum')->name('api.statement.store');
 
 

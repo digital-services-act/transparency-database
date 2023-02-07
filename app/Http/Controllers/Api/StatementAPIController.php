@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\NoticeStoreRequest;
-use App\Http\Resources\NoticeResource;
-use App\Models\Notice;
+use App\Http\Requests\statementStoreRequest;
+use App\Http\Resources\statementResource;
+use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Mockery\Matcher\Not;
 
-class NoticeAPIController extends Controller
+class StatementAPIController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -18,9 +18,9 @@ class NoticeAPIController extends Controller
      */
     public function index(Request $request)
     {
-        $notices = Notice::with('entities')->paginate(50);
+        $statements = Statement::with('entities')->paginate(50);
 
-        return view('notice.index', compact('notices'));
+        return view('statement.index', compact('statements'));
     }
 
     /**
@@ -29,38 +29,38 @@ class NoticeAPIController extends Controller
      */
     public function create(Request $request)
     {
-        return view('notice.create');
+        return view('statement.create');
     }
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Notice $notice
-     * @return NoticeResource
+     * @param \App\Models\Statement $statement
+     * @return statementResource
      */
-    public function show(Notice $notice)
+    public function show(Statement $statement)
     {
-        return $notice;
+        return $statement;
     }
 
     /**
-     * @param \App\Http\Requests\NoticeStoreRequest $request
+     * @param \App\Http\Requests\statementStoreRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(NoticeStoreRequest $request)
+    public function store(statementStoreRequest $request)
     {
         $validated = $request->safe()->merge(
             [
                 'user_id' => auth()->user()->id,
-                'method' => Notice::METHOD_API,
+                'method' => Statement::METHOD_API,
             ]
         )->toArray();
 
-        $notice = Notice::create($validated);
+        $statement = Statement::create($validated);
 
         return response()->json([
             'status' => true,
-            'message' => "Notice Created successfully!",
-            'notice' => $notice
+            'message' => "statement Created successfully!",
+            'statement' => $statement
         ], 200);
     }
 }

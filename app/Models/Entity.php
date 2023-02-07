@@ -36,8 +36,8 @@ class Entity extends Model
         'id' => 'integer',
     ];
 
-    public function notices()
+    public function statements()
     {
-        return $this->belongsToMany(Notice::class)->withPivot('role');
+        return $this->belongsToMany(Statement::class)->withPivot('role');
     }
 }

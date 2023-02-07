@@ -6,16 +6,16 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Notice;
+use App\Models\Statement;
 
-class NoticeFactory extends Factory
+class StatementFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Notice::class;
+    protected $model = Statement::class;
 
     /**
      * Define the model's default state.

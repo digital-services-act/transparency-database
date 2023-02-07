@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEntityNoticeTable extends Migration
+class CreateEntityStatementTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateEntityNoticeTable extends Migration
      */
     public function up()
     {
-        Schema::create('entity_notice', function (Blueprint $table) {
+        Schema::create('entity_statement', function (Blueprint $table) {
             $table->foreignId('entity_id')->onDelete('cascade');
-            $table->foreignId('notice_id')->onDelete('cascade');
+            $table->foreignId('statement_id')->onDelete('cascade');
             $table->enum('role', ["principal", "agent", "recipient", "sender", "target", "issuing_court", "plaintiff", "defendant","submitter"])->nullable();
         });
     }
@@ -27,6 +27,6 @@ class CreateEntityNoticeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('entity_notice');
+        Schema::dropIfExists('entity_statement');
     }
 }
