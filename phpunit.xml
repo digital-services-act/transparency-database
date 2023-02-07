@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         processIsolation="false"
+         processIsolation="true"
 >
     <testsuites>
         <testsuite name="Feature">
