@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Symfony\Component\Intl\Countries;
 
-class Notice extends Model
+class Statement extends Model
 {
     use HasFactory, Searchable;
 
@@ -17,16 +17,16 @@ class Notice extends Model
     public const SOURCE_ARTICLE_16 = 'Article 16';
     public const SOURCE_VOLUNTARY = 'voluntary own-initiative investigation';
     public const SOURCES = [
-        Notice::SOURCE_ARTICLE_16,
-        Notice::SOURCE_VOLUNTARY];
+        Statement::SOURCE_ARTICLE_16,
+        Statement::SOURCE_VOLUNTARY];
 
     public const PAYMENT_STATUS_SUSPENSION = 'suspension';
     public const PAYMENT_STATUS_TERMINATION = 'termination';
     public const PAYMENT_STATUS_OTHER = 'other';
     public const PAYMENT_STATUES = [
-        Notice::PAYMENT_STATUS_SUSPENSION,
-        Notice::PAYMENT_STATUS_TERMINATION,
-        Notice::PAYMENT_STATUS_OTHER
+        Statement::PAYMENT_STATUS_SUSPENSION,
+        Statement::PAYMENT_STATUS_TERMINATION,
+        Statement::PAYMENT_STATUS_OTHER
     ];
 
     public const RESTRICTION_TYPE_REMOVED = 'removed';
@@ -34,10 +34,10 @@ class Notice extends Model
     public const RESTRICTION_TYPE_DEMOTED = 'demoted';
     public const RESTRICTION_TYPE_OTHER = 'other';
     public const RESTRICTION_TYPES = [
-        Notice::RESTRICTION_TYPE_REMOVED,
-        Notice::RESTRICTION_TYPE_DISABLED,
-        Notice::RESTRICTION_TYPE_DEMOTED,
-        Notice::RESTRICTION_TYPE_OTHER
+        Statement::RESTRICTION_TYPE_REMOVED,
+        Statement::RESTRICTION_TYPE_DISABLED,
+        Statement::RESTRICTION_TYPE_DEMOTED,
+        Statement::RESTRICTION_TYPE_OTHER
     ];
 
 
@@ -45,18 +45,18 @@ class Notice extends Model
     public const AUTOMATED_DETECTIONS_NO = 'No';
     public const AUTOMATED_DETECTIONS_PARTIAL = 'Partial';
     public const AUTOMATED_DETECTIONS = [
-        Notice::AUTOMATED_DETECTIONS_YES,
-        Notice::AUTOMATED_DETECTIONS_NO,
-        Notice::AUTOMATED_DETECTIONS_PARTIAL,
+        Statement::AUTOMATED_DETECTIONS_YES,
+        Statement::AUTOMATED_DETECTIONS_NO,
+        Statement::AUTOMATED_DETECTIONS_PARTIAL,
     ];
 
     public const REDRESS_INTERNAL_MECHANISM = 'Internal Mechanism';
     public const REDRESS_INTERNAL_OUTOFCOURT = 'Out Of Court Settlement';
     public const REDRESS_INTERNAL_OTHER = 'Other';
     public const REDRESSES = [
-        Notice::REDRESS_INTERNAL_MECHANISM,
-        Notice::REDRESS_INTERNAL_OUTOFCOURT,
-        Notice::REDRESS_INTERNAL_OTHER
+        Statement::REDRESS_INTERNAL_MECHANISM,
+        Statement::REDRESS_INTERNAL_OUTOFCOURT,
+        Statement::REDRESS_INTERNAL_OTHER
     ];
 
 
@@ -87,7 +87,7 @@ class Notice extends Model
      */
     public function searchableAs()
     {
-        return 'notices_index';
+        return 'statements_body_fulltext';
     }
 
     public function toSearchableArray()

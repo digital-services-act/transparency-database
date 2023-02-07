@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notice;
+use App\Models\Statement;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -12,7 +12,7 @@ class SearchController extends Controller
 
         $query = $request->get('query');
 
-        $results =  Notice::search($query)->paginate(10);
+        $results =  Statement::search($query)->paginate(10);
 
         return view('search.results', compact('results','query'));
 

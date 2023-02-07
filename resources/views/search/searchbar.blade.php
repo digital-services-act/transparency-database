@@ -14,7 +14,7 @@
                                            class="ecl-form-label ecl-search-form__label">Search</label><input
                 type="search" id="search-input-id" name="query"
                 class="ecl-text-input ecl-text-input--m ecl-search-form__text-input"
-                placeholder="Search for a notice or entity"/>
+                placeholder="Search for a statement or entity"/>
         </div>
         <button class="ecl-button ecl-button--search ecl-search-form__button" type="submit"
                 aria-label="Search"><span class="ecl-button__container"><span

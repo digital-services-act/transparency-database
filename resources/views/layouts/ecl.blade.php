@@ -122,10 +122,13 @@
                             <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
                         </li>
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                            <a href="{{route('notice.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Notices</a>
+                            <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
                         </li>
+{{--                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
+{{--                            <a href="{{route('page.show', ['documentation'])}}" class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>--}}
+{{--                        </li>         --}}
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                            <a href="{{route('page.show', ['documentation'])}}" class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
+                            <a target="_blank" href="https://github.com/DG-CNECT/dsa-module2/wiki/DSA-Transparency-Database---API-Documentation" class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
                         </li>
                     </ul>
 

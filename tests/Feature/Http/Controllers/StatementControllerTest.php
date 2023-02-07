@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\Notice;
+use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
@@ -16,18 +16,18 @@ uses(RefreshDatabase::class);
 uses(WithFaker::class);
 
 it('should display view', function(){
-    $notices = Notice::factory()->count(3)->create();
-    $response = $this->get(route('notice.index'));
+    $statements = Statement::factory()->count(3)->create();
+    $response = $this->get(route('statement.index'));
     $response->assertOk();
-    $response->assertViewIs('notice.index');
-    $response->assertViewHas('notices');
+    $response->assertViewIs('statement.index');
+    $response->assertViewHas('statements');
 });
 
 
 it('does not auth on index', function(){
     $u = auth()->user();
     $this->assertNull($u);
-    $response = $this->get(route('notice.index'));
+    $response = $this->get(route('statement.index'));
     $u = auth()->user();
     $this->assertNull($u);
 });
@@ -39,7 +39,7 @@ it('requires authentication to see the create page', function(){
     $u = auth()->user();
     $this->assertNull($u);
 
-    $response = $this->get(route('notice.create'));
+    $response = $this->get(route('statement.create'));
 
     // After we made this call we are somebody
     $u = auth()->user();
@@ -49,19 +49,19 @@ it('requires authentication to see the create page', function(){
 
 it('should display the create view', function () {
     $user = $this->signIn();
-    $response = $this->get(route('notice.create'));
+    $response = $this->get(route('statement.create'));
     $response->assertOk();
-    $response->assertViewIs('notice.create');
+    $response->assertViewIs('statement.create');
 });
 
 
-it('requires authentication to create a notice', function () {
+it('requires authentication to create a statement', function () {
     // The cas is set to masquerade in testing mode.
     // So when we make a call to a cas middleware route we get logged in.
     // Thus before we make this call we are nobody
     $u = auth()->user();
     $this->assertNull($u);
-    $response = $this->get(route('notice.create'));
+    $response = $this->get(route('statement.create'));
 
     // After we made this call we are somebody
     $u = auth()->user();
@@ -70,20 +70,20 @@ it('requires authentication to create a notice', function () {
 
 it('should display show view', function () {
     $this->seed();
-    $notice = Notice::factory()->create();
-    $response = $this->get(route('notice.show', $notice));
+    $statement = Statement::factory()->create();
+    $response = $this->get(route('statement.show', $statement));
 
     $response->assertOk();
-    $response->assertViewIs('notice.show');
-    $response->assertViewHas('notice');
+    $response->assertViewIs('statement.show');
+    $response->assertViewHas('statement');
 });
 
 
 it('should use form request validation', function () {
     $this->assertActionUsesFormRequest(
-        \App\Http\Controllers\NoticeController::class,
+        \App\Http\Controllers\StatementController::class,
         'store',
-        \App\Http\Requests\NoticeStoreRequest::class
+        \App\Http\Requests\StatementStoreRequest::class
     );
 });
 
@@ -95,27 +95,27 @@ it('should save and redirect', function () {
 
     $user = $this->signIn();
 
-    $this->assertCount(0, Notice::all());
+    $this->assertCount(0, Statement::all());
 
-    // When making notices via the FORM
+    // When making statements via the FORM
     // The dates come in as d-m-Y from the ECL datepicker.
-    $response = $this->post(route('notice.store'), [
+    $response = $this->post(route('statement.store'), [
         'title' => $title,
         'language' => $language,
         'date_sent' => '01-01-2023',
         'date_enacted' => '02-01-2023',
         'date_abolished' => '03-01-2023',
-        'source' => Notice::SOURCE_ARTICLE_16
+        'source' => Statement::SOURCE_ARTICLE_16
     ]);
 
 
-    $this->assertCount(1, Notice::all());
-    $notice = Notice::latest()->first();
-    $this->assertNotNull($notice);
-    $this->assertEquals('FORM', $notice->method);
-    $this->assertEquals($user->id, $notice->user->id);
-    $this->assertEquals('2023-01-03 00:00:00', $notice->date_abolished);
-    $this->assertInstanceOf(Carbon::class, $notice->date_abolished);
+    $this->assertCount(1, Statement::all());
+    $statement = Statement::latest()->first();
+    $this->assertNotNull($statement);
+    $this->assertEquals('FORM', $statement->method);
+    $this->assertEquals($user->id, $statement->user->id);
+    $this->assertEquals('2023-01-03 00:00:00', $statement->date_abolished);
+    $this->assertInstanceOf(Carbon::class, $statement->date_abolished);
 
-    $response->assertRedirect(route('notice.index'));
+    $response->assertRedirect(route('statement.index'));
 });
