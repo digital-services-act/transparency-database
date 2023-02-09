@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,5 +40,11 @@ Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show']
 
 
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
+
+Route::get('/testteamslogging', function(){
+    $message = 'Test is working! It is now: ' . Carbon::now();
+    Log::info($message);
+    return $message;
+});
 
 

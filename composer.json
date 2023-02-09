@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "cweagans/composer-patches": "^1.7",
+        "erusev/parsedown": "^1.7",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
@@ -14,7 +16,9 @@
         "laravel/vapor-core": "^2.26",
         "laravel/vapor-ui": "^1.7",
         "luilliarcec/laravel-table": "^4.0",
-        "spatie/laravel-permission": "^5.9",
+        "margatampu/laravel-teams-logging": "^1.2",
+        "sebbmeyer/laravel-teams-connector": "^0.6.2",
+        "sebbmeyer/php-microsoft-teams-connector": "^0.2.2",
         "subfission/cas": "^4.3",
         "symfony/intl": "^6.0",
         "timwassenburg/laravel-pivot-table-generator": "^1.0"
@@ -36,10 +40,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "vendor-fix/CasManager.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -64,12 +65,24 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "patches": {
+            "apereo/phpcas": {
+                "Ignore and bypass Session": "patches/apereo-phpcas.diff"
+            },
+            "subfission/cas": {
+                "ServerBaseUrl": "patches/subfission-cas.diff"
+            }
         }
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "cweagans/composer-patches": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
