@@ -47,4 +47,10 @@ Route::get('/testteamslogging', function(){
     return $message;
 });
 
+Route::get('/env', function(){
+    $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
+    Log::info($message);
+    return $message;
+});
+
 
