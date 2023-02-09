@@ -4,10 +4,7 @@ use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
-$stack_channels = ['single'];
-if (env('APP_ENV') == 'production' || env('APP_ENV') == 'staging') {
-    $stack_channels[] = ['teams'];
-}
+
 
 return [
 
@@ -55,7 +52,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => $stack_channels,
+            'channels' => env('APP_ENV') != 'local' ? ['single', 'teams'] : ['single'],
             'ignore_exceptions' => false,
         ],
 
