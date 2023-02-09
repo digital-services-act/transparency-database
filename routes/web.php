@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,5 +39,10 @@ Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show']
 
 
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
+
+Route::get('/testteams', function(){
+    $st = \App\Models\Statement::where('hhhh', 8)->get();
+    return "Sent";
+});
 
 

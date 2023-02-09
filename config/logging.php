@@ -50,7 +50,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single','teams'],
             'ignore_exceptions' => false,
         ],
 
@@ -113,6 +113,14 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+        'teams' => [
+            'driver'    => 'custom',
+            'via'       => \MargaTampu\LaravelTeamsLogging\LoggerChannel::class,
+            'level'     => 'debug',
+            'url'       => env('MICROSOFT_TEAMS_WEBHOOK'),
+            'style'     => 'simple',    // Available style is 'simple' and 'card', default is 'simple'
+            'name'      => 'DSA Transparency'
         ],
     ],
 
