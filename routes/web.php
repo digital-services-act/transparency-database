@@ -41,8 +41,10 @@ Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show']
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
 
 Route::get('/testteams', function(){
-    $st = \App\Models\Statement::where('hhhh', 8)->get();
+
+    Log::channel('teams')->info('Test is working!');
     return "Sent";
+
 });
 
 

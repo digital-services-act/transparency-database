@@ -120,7 +120,7 @@ return [
             'level'     => 'debug',
             'url'       => env('MICROSOFT_TEAMS_WEBHOOK'),
             'style'     => 'simple',    // Available style is 'simple' and 'card', default is 'simple'
-            'name'      => 'DSA Transparency'
+            'name'      => 'DSA Module 2 ('.env('APP_ENV').')'
         ],
     ],
 
