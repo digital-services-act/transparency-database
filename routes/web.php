@@ -40,11 +40,10 @@ Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show']
 
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
 
-Route::get('/testteams', function(){
-
-    Log::channel('teams')->info('Test is working!');
-    return "Sent";
-
+Route::get('/testteamslogging', function(){
+    $message = 'Test is working! It is now: ' . \Illuminate\Support\Carbon::now();
+    Log::channel('stack')->info($message);
+    return $message;
 });
 
 
