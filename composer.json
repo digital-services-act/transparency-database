@@ -21,7 +21,8 @@
         "sebbmeyer/php-microsoft-teams-connector": "^0.2.2",
         "subfission/cas": "^4.3",
         "symfony/intl": "^6.0",
-        "timwassenburg/laravel-pivot-table-generator": "^1.0"
+        "timwassenburg/laravel-pivot-table-generator": "^1.0",
+        "spatie/laravel-permission": "^5.9"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
