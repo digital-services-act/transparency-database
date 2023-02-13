@@ -48,20 +48,6 @@ class User extends Authenticatable
     public static function firstOrCreateByAttributes($attributes)
     {
 
-        if (cas()->isMasquerading()) {
-            return User::firstOrCreate(
-                [
-                    'eu_login_username' => cas()->user(),
-                ],
-                [
-                    'name' => cas()->user(),
-                    'email'=> cas()->user() . '@masquerade.com',
-                    'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-                ]
-            );
-        }
-
-
         $attributes['password'] = Str::random(16);
         if (isset($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
             if (isset($attributes['domainUsername'])) $username = $attributes['domainUsername'];
@@ -71,12 +57,16 @@ class User extends Authenticatable
                 : (isset($attributes['name'])
                     ? $attributes['name']
                     : '');
+            if (session()->has('impersonate')) {
+                $user = User::where('id', session()->get('impersonate'))->first();
+                $username = $user->eu_login_username;
+            }
         }
 
 
         $user = User::firstOrCreate(
             [
-                'eu_login_username' => $username,
+                'eu_login_username' => $username ?? session()->get('cas_user'),
             ],
             $attributes
         );
@@ -84,5 +74,56 @@ class User extends Authenticatable
 
         return $user;
 
+    }
+
+//    public static function firstOrCreateByAttributes($attributes)
+//    {
+//
+//        if (cas()->isMasquerading()) {
+//            return User::firstOrCreate(
+//                [
+//                    'eu_login_username' => cas()->user(),
+//                ],
+//                [
+//                    'name' => cas()->user(),
+//                    'email'=> cas()->user() . '@masquerade.com',
+//                    'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+//                ]
+//            );
+//        }
+//
+//
+//        $attributes['password'] = Str::random(16);
+//        if (isset($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
+//            if (isset($attributes['domainUsername'])) $username = $attributes['domainUsername'];
+//            if (isset($attributes['eu_login_username'])) $username = $attributes['eu_login_username'];
+//            $attributes['name'] = isset($attributes['firstName']) && isset($attributes['lastName'])
+//                ? $attributes['firstName'] . ' ' . $attributes['lastName']
+//                : (isset($attributes['name'])
+//                    ? $attributes['name']
+//                    : '');
+//        }
+//
+//
+//        $user = User::firstOrCreate(
+//            [
+//                'eu_login_username' => $username,
+//            ],
+//            $attributes
+//        );
+//
+//
+//        return $user;
+//
+//    }
+
+    public function setImpersonating($id)
+    {
+        session()->put('impersonate', $id);
+    }
+
+    public function stopImpersonating()
+    {
+        session()->forget('impersonate');
     }
 }
