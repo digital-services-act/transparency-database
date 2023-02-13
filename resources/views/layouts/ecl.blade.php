@@ -10,25 +10,25 @@
 
         <link
             rel="stylesheet"
-            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.6.0/ec/styles/optional/ecl-ec-default.css"
+            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.7.0/ec/styles/optional/ecl-ec-default.css"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.6.0/ec/styles/optional/ecl-reset.css"
+            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.7.0/ec/styles/optional/ecl-reset.css"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.6.0/ec/styles/ecl-ec.css"
+            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.7.0/ec/styles/ecl-ec.css"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.6.0/ec/styles/ecl-ec-print.css"
+            href="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.7.0/ec/styles/ecl-ec-print.css"
             crossorigin="anonymous"
             media="print"
         />
@@ -291,14 +291,14 @@
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
 <script
-    src="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.6.0/ec/scripts/ecl-ec.js"
+    src="https://cdn1.fpfis.tech.ec.europa.eu/ecl/v3.7.0/ec/scripts/ecl-ec.js"
     crossorigin="anonymous"
 ></script>
 
 
 <script>
-    // svg4everybody({polyfill: true});
-    // ECL.autoInit();
+    svg4everybody({polyfill: true});
+    ECL.autoInit();
 </script>
 
 
