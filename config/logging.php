@@ -52,7 +52,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => env('APP_ENV') != 'local' ? ['single', 'teams'] : ['single'],
+            'channels' => env('APP_ENV') != 'local' ? ['stderr', 'single', 'teams'] : ['stderr', 'single'],
             'ignore_exceptions' => false,
         ],
 
@@ -122,7 +122,7 @@ return [
             'level'     => 'debug',
             'url'       => env('MICROSOFT_TEAMS_WEBHOOK'),
             'style'     => 'simple',    // Available style is 'simple' and 'card', default is 'simple'
-            'name'      => 'DSA Module 2 ('.env('APP_ENV').')'
+            'name'      => 'DSA M2 ('.env('APP_ENV').')'
         ],
     ],
 
