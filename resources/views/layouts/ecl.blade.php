@@ -54,8 +54,7 @@
                     </a>
                     <div class="ecl-site-header__action">
                         <div class="ecl-site-header-core__login-container">
-                            <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle"
-                               href="{{ route('dashboard') }}">
+                            <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle">
 
                                 <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
                                      aria-hidden="true">
@@ -63,7 +62,35 @@
                                 </svg>
 
                                 @auth
-                                    {{auth()->user()->name}}
+                                    <div class="ecl-form-group ecl-u-mv-xs">
+                                        <form action="{{route('impersonate')}}" method="POST">
+                                            @csrf
+                                            <div class="ecl-select__container ecl-select__container--sm"><select class="ecl-select"
+                                                                                                                 id="select-default"
+                                                                                                                 name="username"
+                                                                                                                 onchange="this.form.submit()">
+
+                                                    @foreach($profiles as $profile)
+                                                        <option value="{{$profile->eu_login_username}}"
+                                                                @if(auth()->user()->eu_login_username == $profile->eu_login_username) selected @endif>
+                                                            {{$profile->name}}
+                                                        </option>
+                                                    @endforeach
+
+
+
+                                                </select>
+                                                <div class="ecl-select__icon">
+                                                    <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape"
+                                                         focusable="false" aria-hidden="true">
+                                                        <use
+                                                            xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
                                 @elseauth
                                     Log In
                                 @endauth
@@ -145,37 +172,7 @@
                         </div>
 
 
-                        @auth
-                            <div class="ecl-form-group ecl-u-mv-xs">
-                                <form action="{{route('impersonate')}}" method="POST">
-                                    @csrf
-                                    <div class="ecl-select__container ecl-select__container--sm"><select class="ecl-select"
-                                                                                                         id="select-default"
-                                                                                                         name="username"
-                                                                                                         onchange="this.form.submit()">
 
-                                            @foreach($profiles as $profile)
-                                                <option value="{{$profile->eu_login_username}}"
-                                                        @if(auth()->user()->eu_login_username == $profile->eu_login_username) selected @endif>
-                                                    {{$profile->name}}
-                                                </option>
-                                            @endforeach
-
-
-
-                                        </select>
-                                        <div class="ecl-select__icon">
-                                            <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape"
-                                                 focusable="false" aria-hidden="true">
-                                                <use
-                                                    xlink:href="{{asset('static/media/icons.148a2e16.svg#corner-arrow')}}"></use>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </form>
-
-                            </div>
-                    @endauth
                 </section>
 
 
