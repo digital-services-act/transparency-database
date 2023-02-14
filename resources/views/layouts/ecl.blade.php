@@ -125,10 +125,12 @@
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
                                 </li>
+
 {{--                                <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
 {{--                                    <a href="{{route('page.show', ['documentation'])}}" class="ecl-menu__link"--}}
 {{--                                       data-ecl-menu-link="">Documentation</a>--}}
 {{--                                </li>--}}
+
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a target="_blank"
                                        href="https://github.com/DG-CNECT/dsa-module2/wiki/DSA-Transparency-Database---API-Documentation"
@@ -167,8 +169,7 @@
                                         <div class="ecl-select__icon">
                                             <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape"
                                                  focusable="false" aria-hidden="true">
-                                                <use
-                                                    xlink:href="{{asset('static/media/icons.148a2e16.svg#corner-arrow')}}"></use>
+                                                <x-ecl.icon icon="corner-arrow" />
                                             </svg>
                                         </div>
                                     </div>

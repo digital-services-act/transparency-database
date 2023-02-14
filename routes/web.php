@@ -24,12 +24,20 @@ Route::get('/', function () {
 
 Route::get('/test/token', [\App\Http\Controllers\TestController::class, 'token'])->name('token');
 
-Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create')->middleware('cas.auth');
+
 
 Route::middleware(['cas.auth'])->group(function() {
 
+    Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
     Route::post('/statement', [\App\Http\Controllers\StatementController::class, 'store'])->name('statement.store');
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::post('/impersonate', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
+    Route::get('/impersonate/stop', [\App\Http\Controllers\ImpersonateController::class, 'stopImpersonate'])->name('impersonate_stop');
+
+    Route::resource('role', \App\Http\Controllers\RoleController::class);
+    Route::resource('permission', \App\Http\Controllers\PermissionController::class);
+    Route::resource('user', \App\Http\Controllers\UserController::class);
+
 });
 
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
@@ -47,8 +55,6 @@ Route::get('/testteamslogging', function(){
     return $message;
 });
 
-Route::post('/impersonate', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->middleware('cas.auth')->name('impersonate');
-Route::get('/impersonate/stop', [\App\Http\Controllers\ImpersonateController::class, 'stopImpersonate'])->middleware('cas.auth')->name('impersonate_stop');
 
 Route::get('/env', function(){
     $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
