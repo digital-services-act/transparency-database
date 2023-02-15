@@ -74,4 +74,6 @@ Route::middleware(['cas.auth'])->group(function() {
 //    return $message;
 //});
 
+Route::get('/reset-roles-and-permissions', [\App\Http\Controllers\TestController::class, 'resetRolesAndPermissions']);
+
 
