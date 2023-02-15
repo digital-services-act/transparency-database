@@ -149,7 +149,7 @@
 
                         </div>
 
-
+                            @auth
 {{--                        @can('impersonate')--}}
                             <div class="ecl-form-group ecl-u-mv-xs">
                                 <form action="{{route('impersonate')}}" method="POST">
@@ -180,6 +180,7 @@
 
                             </div>
 {{--                        @endcan--}}
+                            @endauth
                 </section>
 
 
