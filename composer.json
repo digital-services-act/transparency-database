@@ -5,17 +5,16 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^10.0",
+        "laravel/sanctum": "^3.2",
+        "laravel/tinker": "^2.8",
         "cweagans/composer-patches": "^1.7",
         "erusev/parsedown": "^1.7",
-        "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^9.2",
-        "laravel/sanctum": "^2.14.1",
         "laravel/scout": "^9.8",
-        "laravel/tinker": "^2.7",
         "laravel/vapor-core": "^2.26",
         "laravel/vapor-ui": "^1.7",
-        "luilliarcec/laravel-table": "^4.0",
         "margatampu/laravel-teams-logging": "^1.2",
         "sebbmeyer/laravel-teams-connector": "^0.6.2",
         "sebbmeyer/php-microsoft-teams-connector": "^0.2.2",
@@ -25,16 +24,18 @@
         "spatie/laravel-permission": "^5.9"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.7",
-        "brianium/paratest": "^6.4",
         "fakerphp/faker": "^1.9.1",
-        "jasonmccreary/laravel-test-assertions": "^2.1",
-        "laravel-shift/blueprint": "^2.4",
-        "laravel/sail": "^1.0.1",
+        "laravel/pint": "^1.0",
+        "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.0",
+        "spatie/laravel-ignition": "^2.0",
+        "barryvdh/laravel-debugbar": "^3.7",
+        "brianium/paratest": "^7.0",
+        "jasonmccreary/laravel-test-assertions": "^2.2",
+        "laravel-shift/blueprint": "^2.4"
+
     },
     "autoload": {
         "psr-4": {
