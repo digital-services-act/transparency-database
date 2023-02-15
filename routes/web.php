@@ -17,20 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-
-
-Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
-Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
-Route::get('/statement/{statement}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
-Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
-
-
-// What are we doing here?
-Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
-
 
 Route::middleware(['cas.auth'])->group(function() {
 
@@ -57,6 +43,22 @@ Route::middleware(['cas.auth'])->group(function() {
     });
 
 });
+
+
+Route::get('/', function () {
+    return view('home');
+})->name('home');
+
+
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
+Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
+Route::get('/statement/{statement}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
+Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+
+
+// What are we doing here?
+Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
+
 
 
 
