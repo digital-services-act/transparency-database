@@ -11,7 +11,7 @@
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Edit a Role</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Edit "{{ $role->name }}" Role</h1>
 
     <form method="post" action="{{ route('role.update', [$role]) }}">
         @method('PUT')

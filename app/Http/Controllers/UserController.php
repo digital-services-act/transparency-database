@@ -87,7 +87,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $options = [];
-        $roles = Role::all();
+        $roles = Role::orderBy('name')->get();
         return view('user.edit', [
             'user' => $user,
             'options' => $options,
@@ -109,8 +109,8 @@ class UserController extends Controller
         $validated = $request->safe()->merge([
 
         ])->toArray();
-//        $user->name = $validated['name'];
-//        $user->save();
+        $user->name = $validated['name'];
+        $user->save();
         $user->roles()->detach();
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);

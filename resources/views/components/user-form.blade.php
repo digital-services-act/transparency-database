@@ -1,5 +1,6 @@
 @props(['user' => null, 'options' => null, 'roles' => []])
 
+<x-ecl.textfield label="Name" name="name" id="name" required=true value="{{ $user->name }}" />
 
 <h3 class="ecl-u-type-heading-3 ecl-u-mb-l">"{{ $user->name }}" Roles</h3>
 

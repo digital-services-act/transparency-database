@@ -119,9 +119,11 @@
                     <div class="demo-container ecl-u-d-flex ecl-u-justify-content-between">
                         <div>
                             <ul class="ecl-menu__list">
+
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
                                 </li>
+
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
                                 </li>
@@ -136,6 +138,7 @@
                                        href="https://github.com/DG-CNECT/dsa-module2/wiki/DSA-Transparency-Database---API-Documentation"
                                        class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
                                 </li>
+
                                 @can('view dashboard')
                                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
                                             href="{{route('dashboard')}}" class="ecl-menu__link"
@@ -147,7 +150,7 @@
                         </div>
 
 
-                        @auth
+{{--                        @can('impersonate')--}}
                             <div class="ecl-form-group ecl-u-mv-xs">
                                 <form action="{{route('impersonate')}}" method="POST">
                                     @csrf
@@ -176,7 +179,7 @@
                                 </form>
 
                             </div>
-                    @endauth
+{{--                        @endcan--}}
                 </section>
 
 

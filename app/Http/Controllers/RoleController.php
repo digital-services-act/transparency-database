@@ -22,7 +22,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::paginate(20);
+        $roles = Role::orderBy('name', 'asc')->paginate(20);
         return view('role.index', [
             'roles' => $roles
         ]);
@@ -36,7 +36,7 @@ class RoleController extends Controller
     public function create()
     {
         $role = new Role();
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('name')->get();
         $options = [];
         return view('role.create', [
             'role' => $role,
@@ -87,7 +87,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('name')->get();
         $options = [];
         return view('role.edit', [
             'role' => $role,

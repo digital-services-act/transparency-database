@@ -14,6 +14,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    public const API_TOKEN_KEY = 'api-token';
+
     /**
      * The attributes that are mass assignable.
      *
