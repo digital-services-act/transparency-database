@@ -1,3 +1,4 @@
+@props(['statement' => null, 'options' => null])
 <x-ecl.textfield label="Title" name="title" id="title" required=true value="{{ $statement->title }}"/>
 <x-ecl.textarea label="Body" name="body" id="body" value="{{ $statement->body }}" />
 <x-ecl.select label="Language" name="language" id="language" :options="$options['languages']" required=true default="{{ $statement->language }}" />

@@ -54,7 +54,8 @@
                     </a>
                     <div class="ecl-site-header__action">
                         <div class="ecl-site-header-core__login-container">
-                            <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle">
+                            <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle"
+                               href="{{ route('dashboard') }}">
 
                                 <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
                                      aria-hidden="true">
@@ -62,35 +63,7 @@
                                 </svg>
 
                                 @auth
-                                    <div class="ecl-form-group ecl-u-mv-xs">
-                                        <form action="{{route('impersonate')}}" method="POST">
-                                            @csrf
-                                            <div class="ecl-select__container ecl-select__container--sm"><select class="ecl-select"
-                                                                                                                 id="select-default"
-                                                                                                                 name="username"
-                                                                                                                 onchange="this.form.submit()">
-
-                                                    @foreach($profiles as $profile)
-                                                        <option value="{{$profile->eu_login_username}}"
-                                                                @if(auth()->user()->eu_login_username == $profile->eu_login_username) selected @endif>
-                                                            {{$profile->name}}
-                                                        </option>
-                                                    @endforeach
-
-
-
-                                                </select>
-                                                <div class="ecl-select__icon">
-                                                    <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape"
-                                                         focusable="false" aria-hidden="true">
-                                                        <use
-                                                            xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </form>
-
-                                    </div>
+                                    {{auth()->user()->name}}
                                 @elseauth
                                     Log In
                                 @endauth
@@ -146,21 +119,26 @@
                     <div class="demo-container ecl-u-d-flex ecl-u-justify-content-between">
                         <div>
                             <ul class="ecl-menu__list">
+
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
                                 </li>
+
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
                                 </li>
+
 {{--                                <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
 {{--                                    <a href="{{route('page.show', ['documentation'])}}" class="ecl-menu__link"--}}
 {{--                                       data-ecl-menu-link="">Documentation</a>--}}
 {{--                                </li>--}}
+
                                 <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                                     <a target="_blank"
                                        href="https://github.com/DG-CNECT/dsa-module2/wiki/DSA-Transparency-Database---API-Documentation"
                                        class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
                                 </li>
+
                                 @can('view dashboard')
                                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
                                             href="{{route('dashboard')}}" class="ecl-menu__link"
@@ -171,8 +149,38 @@
 
                         </div>
 
+                            @auth
+{{--                        @can('impersonate')--}}
+                            <div class="ecl-form-group ecl-u-mv-xs">
+                                <form action="{{route('impersonate')}}" method="POST">
+                                    @csrf
+                                    <div class="ecl-select__container ecl-select__container--sm"><select class="ecl-select"
+                                                                                                         id="select-default"
+                                                                                                         name="username"
+                                                                                                         onchange="this.form.submit()">
+
+                                            @foreach($profiles as $profile)
+                                                <option value="{{$profile->eu_login_username}}"
+                                                        @if(auth()->user()->eu_login_username == $profile->eu_login_username) selected @endif>
+                                                    {{$profile->name}}
+                                                </option>
+                                            @endforeach
 
 
+
+                                        </select>
+                                        <div class="ecl-select__icon">
+                                            <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape"
+                                                 focusable="false" aria-hidden="true">
+                                                <x-ecl.icon icon="corner-arrow" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+{{--                        @endcan--}}
+                            @endauth
                 </section>
 
 

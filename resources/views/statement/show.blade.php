@@ -28,7 +28,9 @@
 
     <h2 class="ecl-u-type-heading-2">Main Information</h2>
 
-    <x-info-line title="Sent by" :content="$statement->user->name"></x-info-line>
+    @if($statement->user)
+        <x-info-line title="Sent by" :content="$statement->user?->name"></x-info-line>
+    @endif
     <x-info-line title="Method" :content="$statement->method"></x-info-line>
     <x-info-line title="Language" :content="$statement->language"></x-info-line>
     <x-info-line title="Body" :content="$statement->body"></x-info-line>

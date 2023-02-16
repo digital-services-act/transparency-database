@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\StatementAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function(){
+
+    Route::get('statement/{statement}', [StatementAPIController::class,'show'])->name('api.statement.show');
+    Route::post('statement/create', [StatementAPIController::class,'store'])->name('api.statement.store');
+
 });
-
-Route::get('statement/{statement}', ['App\Http\Controllers\Api\StatementAPIController','show'])->middleware('auth:sanctum')->name('api.statement.show');
-Route::post('statement/create', ['App\Http\Controllers\Api\StatementAPIController','store'])->middleware('auth:sanctum')->name('api.statement.store');
-
 

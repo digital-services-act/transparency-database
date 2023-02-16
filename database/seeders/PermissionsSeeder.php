@@ -23,39 +23,65 @@ use PlatformsTrait;
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // create permissions
-        Permission::create(['name' => 'view dashboard']);
-        Permission::create(['name' => 'create tokens']);
-        Permission::create(['name' => 'manage own token']);
-        Permission::create(['name' => 'generate reports']);
+        self::resetRolesAndPermissions();
 
-        // create roles and assign existing permissions
-        $platform_role = Role::create(['name' => 'platform']);
-        $platform_role->givePermissionTo('view dashboard');
-        $platform_role->givePermissionTo('manage own token');
+    }
 
-        $ec_role = Role::create(['name' => 'european commission']);
-        $ec_role->givePermissionTo('view dashboard');
-        $ec_role->givePermissionTo('create tokens');
-
-        $research_role = Role::create(['name' => 'researcher']);
-        $research_role->givePermissionTo('view dashboard');
-        $research_role->givePermissionTo('generate reports');
-
-
-        // create demo platforms
-        foreach ($this->getPlatforms() as $platform_name) {
-            $this->createPlatform($platform_role, $platform_name);
+    public static function resetRolesAndPermissions()
+    {
+        $users = User::all();
+        /** @var User $user */
+        foreach ($users as $user)
+        {
+            $user->roles()->detach();
         }
 
-        $user = \App\Models\User::factory()->create([
-            'name' => 'COM User',
-            'email' => 'user@ec.europa.eu',
-            'eu_login_username' => 'com-user'
+        Role::query()->delete();
+        Permission::query()->delete();
+
+        $admin = Role::create([
+            'name' => 'Admin'
         ]);
-        $user->assignRole($ec_role);
 
+        $user = Role::create([
+            'name' => 'User'
+        ]);
 
+        $contributor = Role::create([
+            'name' => 'Contributor'
+        ]);
+
+        $permissions = [
+            'administrate',
+            'create statements',
+            'generate reports',
+            'impersonate',
+            'view dashboard',
+            'view statements'
+        ];
+
+        foreach ($permissions as $permission_name)
+        {
+            $permission = Permission::create(['name' => $permission_name]);
+            $admin->givePermissionTo($permission);
+        }
+
+        $user->givePermissionTo('view statements');
+        $user->givePermissionTo('view dashboard');
+        $user->givePermissionTo('view dashboard');
+
+        $contributor->givePermissionTo('view statements');
+        $contributor->givePermissionTo('view dashboard');
+        $contributor->givePermissionTo('view dashboard');
+        $contributor->givePermissionTo('generate reports');
+        $contributor->givePermissionTo('create statements');
+
+        $users = User::all();
+        /** @var User $user */
+        foreach ($users as $user)
+        {
+            $user->assignRole('Admin');
+        }
     }
 
     /**

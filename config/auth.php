@@ -40,6 +40,11 @@ return [
             'driver' => 'eu-login',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+            'hash' => true,
+        ],
     ],
 
     /*

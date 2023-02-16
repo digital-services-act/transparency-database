@@ -3,8 +3,11 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Statement;
+use App\Models\User;
+use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
 
@@ -50,8 +53,12 @@ class StatementControllerTest extends TestCase
      */
     public function create_displays_view()
     {
+        /** @var User $user */
         $user = $this->signIn();
-        $response = $this->get(route('statement.create'));
+        PermissionsSeeder::resetRolesAndPermissions();
+        $user->assignRole('Admin');
+
+        $response = $this->get('/statement/create');
         $response->assertOk();
         $response->assertViewIs('statement.create');
     }
@@ -66,7 +73,9 @@ class StatementControllerTest extends TestCase
         // Thus before we make this call we are nobody
         $u = auth()->user();
         $this->assertNull($u);
+
         $response = $this->get(route('statement.create'));
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
 
         // After we made this call we are somebody
         $u = auth()->user();
@@ -81,6 +90,7 @@ class StatementControllerTest extends TestCase
     {
         $this->seed();
         $statement = Statement::factory()->create();
+        $user = $this->signIn();
         $response = $this->get(route('statement.show', $statement));
 
         $response->assertOk();
@@ -112,7 +122,10 @@ class StatementControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $language = 'en';
 
+        PermissionsSeeder::resetRolesAndPermissions();
+        /** @var User $user */
         $user = $this->signIn();
+        $user->assignRole('Admin');
 
         $this->assertCount(0, Statement::all());
 
