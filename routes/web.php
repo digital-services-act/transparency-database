@@ -98,6 +98,8 @@ Route::get('/reset-entire-application', function() {
     // Delete all the users and recreate the cas masq user.
     User::query()->delete();
 
+    \Laravel\Sanctum\PersonalAccessToken::query()->delete();
+
     $user = User::factory()->create([
         'name' => $cas->user(),
         'eu_login_username' => $cas->user(),
