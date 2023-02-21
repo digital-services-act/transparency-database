@@ -83,5 +83,9 @@ Route::get('/make-a-bunch-of-statements', function(){
     \App\Models\Statement::factory()->count(500)->create();
     return "DONE";
 });
+Route::get('/make-a-bunch-of-users', function(){
+    \App\Models\User::factory()->count(20)->create();
+    return "DONE";
+});
 
 
