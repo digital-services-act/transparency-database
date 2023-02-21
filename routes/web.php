@@ -1,9 +1,9 @@
 <?php
 
+use App\Models\Statement;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
+use Database\Seeders\PermissionsSeeder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,14 +78,31 @@ Route::resource('entity', App\Http\Controllers\EntityController::class)->except(
 //    return $message;
 //});
 
-Route::get('/reset-roles-and-permissions', [\App\Http\Controllers\TestController::class, 'resetRolesAndPermissions']);
+Route::get('/reset-roles-and-permissions', function() {
+    PermissionsSeeder::resetRolesAndPermissions();
+    return "DONE";
+});
 Route::get('/make-a-bunch-of-statements', function(){
-    \App\Models\Statement::factory()->count(500)->create();
+    Statement::factory()->count(500)->create();
     return "DONE";
 });
 Route::get('/make-a-bunch-of-users', function(){
-    \App\Models\User::factory()->count(20)->create();
+    User::factory()->count(20)->create();
     return "DONE";
+});
+
+Route::get('/reset-entire-application', function() {
+    User::query()->delete();
+    User::factory()->count(20)->create();
+    PermissionsSeeder::resetRolesAndPermissions();
+    Statement::query()->delete();
+    Statement::factory()->count(100)->create();
+    session()->invalidate();
+
+    $user = User::all()->random();
+    session()->put('impersonate', $user->id);
+
+    return redirect('/');
 });
 
 
