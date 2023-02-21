@@ -96,7 +96,7 @@ Route::get('/reset-entire-application', function() {
     User::factory()->count(20)->create();
     PermissionsSeeder::resetRolesAndPermissions();
     Statement::query()->delete();
-    Statement::factory()->count(100)->create();
+    Statement::factory()->count(200)->create();
     session()->invalidate();
 
     $user = User::all()->random();
