@@ -74,6 +74,7 @@
                             </div>
                         </form>
 
+
                         {{--                        @endcan--}}
                     @endauth
 
@@ -91,9 +92,11 @@
                     @if ($errors->any())
                         <x-ecl.message type="error" icon="error" title="Errors" :message="$errors->all()"/>
                     @endif
-
+                </div>
+            </div>
+            <div class="ecl-row">
+                <div class="ecl-col-12">
                     @yield('content')
-
                 </div>
             </div>
         </div>
