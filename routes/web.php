@@ -92,14 +92,24 @@ Route::get('/make-a-bunch-of-users', function(){
 });
 
 Route::get('/reset-entire-application', function() {
+
+    $cas = app('cas');
+
+    // Delete all the users and recreate the cas masq user.
     User::query()->delete();
+
+    $user = User::factory()->create([
+        'name' => $cas->user(),
+        'eu_login_username' => $cas->user(),
+    ]);
+
+
     User::factory()->count(20)->create();
     PermissionsSeeder::resetRolesAndPermissions();
     Statement::query()->delete();
     Statement::factory()->count(200)->create();
     session()->invalidate();
 
-    $user = User::all()->random();
     session()->put('impersonate', $user->id);
 
     return redirect('/');
