@@ -36,6 +36,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::resource('permission', \App\Http\Controllers\PermissionController::class);
         Route::resource('user', \App\Http\Controllers\UserController::class);
         Route::get('logs', [\App\Http\Controllers\LogsController::class, 'index'])->name('logs')->can('view logs');
+        Route::get('reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports')->can('view reports');
     });
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
@@ -78,5 +79,9 @@ Route::resource('entity', App\Http\Controllers\EntityController::class)->except(
 //});
 
 Route::get('/reset-roles-and-permissions', [\App\Http\Controllers\TestController::class, 'resetRolesAndPermissions']);
+Route::get('/make-a-bunch-of-statements', function(){
+    \App\Models\Statement::factory()->count(500)->create();
+    return "DONE";
+});
 
 

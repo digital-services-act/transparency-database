@@ -32,7 +32,7 @@
         <x-info-line title="Sent by" :content="$statement->user?->name"></x-info-line>
     @endif
     <x-info-line title="Method" :content="$statement->method"></x-info-line>
-    <x-info-line title="Language" :content="$statement->language"></x-info-line>
+    <x-info-line title="Language" :content="$statement->getLanguageName()"></x-info-line>
     <x-info-line title="Body" :content="$statement->body"></x-info-line>
     <x-info-line title="Restriction Type" :content="$statement->restriction_type"></x-info-line>
     <x-info-line title="Restriction Type Other" :content="$statement->restriction_type_other"></x-info-line>
@@ -43,11 +43,11 @@
     @endif
 
     @if($statement->date_enacted)
-        <x-info-line title="Start Date" :content="$statement->date_enacted->format('d-m-Y')"></x-info-line>
+        <x-info-line title="Date Enacted" :content="$statement->date_enacted->format('d-m-Y')"></x-info-line>
     @endif
 
     @if($statement->date_abolished)
-        <x-info-line title="End Date" :content="$statement->date_abolished->format('d-m-Y')"></x-info-line>
+        <x-info-line title="Date Abolished" :content="$statement->date_abolished->format('d-m-Y')"></x-info-line>
     @endif
 
 

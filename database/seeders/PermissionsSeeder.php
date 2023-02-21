@@ -54,6 +54,7 @@ use PlatformsTrait;
         $permissions = [
             'administrate',
             'view logs',
+            'view reports',
             'create statements',
             'generate reports',
             'impersonate',
