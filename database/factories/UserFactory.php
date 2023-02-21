@@ -42,7 +42,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->randomElement($this->social_media_names),
+            'name' => $this->faker->randomElement($this->social_media_names) . $this->faker->randomNumber(2),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'eu_login_username' => $this->faker->unique()->words(2,true),
