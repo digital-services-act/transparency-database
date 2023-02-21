@@ -50,7 +50,7 @@ class StatementFactory extends Factory
             'restriction_type_other' => $this->faker->text,
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_detection_more' => $this->faker->text,
-            'illegal_content_legal_ground' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'illegal_content_legal_ground' => $this->faker->randomElement(Statement::IC_LEGAL_GROUNDS),
             'illegal_content_explanation' => $this->faker->text,
             'toc_contractual_ground' => $this->faker->regexify('[A-Za-z0-9]{50}'),
             'toc_explanation' => $this->faker->text,

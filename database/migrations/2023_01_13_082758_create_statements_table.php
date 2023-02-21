@@ -33,7 +33,7 @@ class CreateStatementsTable extends Migration
             $table->longText('restriction_type_other')->nullable();
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS)->nullable();
             $table->longText('automated_detection_more')->nullable();
-            $table->string('illegal_content_legal_ground', 255)->nullable();
+            $table->enum('illegal_content_legal_ground', \App\Models\Statement::IC_LEGAL_GROUNDS)->nullable();
             $table->longText('illegal_content_explanation')->nullable();
             $table->string('toc_contractual_ground', 255)->nullable();
             $table->longText('toc_explanation')->nullable();

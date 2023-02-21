@@ -62,6 +62,16 @@ class Statement extends Model
         Statement::REDRESS_INTERNAL_OTHER
     ];
 
+    public const IC_LEGAL_GROUND_MISINFORMATION = 'misinformation';
+    public const IC_LEGAL_GROUND_OFFENDING = 'offending content';
+    public const IC_LEGAL_GROUND_PERSONAL = 'personal privacy';
+    public const IC_LEGAL_GROUND_ABUSIVE = 'abusive';
+    public const IC_LEGAL_GROUNDS = [
+        Statement::IC_LEGAL_GROUND_MISINFORMATION,
+        Statement::IC_LEGAL_GROUND_OFFENDING,
+        Statement::IC_LEGAL_GROUND_PERSONAL,
+        Statement::IC_LEGAL_GROUND_ABUSIVE
+    ];
 
     /**
      * The attributes that are mass assignable.
