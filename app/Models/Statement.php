@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory, Searchable, LogsActivity;
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
@@ -79,6 +81,12 @@ class Statement extends Model
         'date_abolished' => 'datetime:Y-m-d H:i:s',
         'countries_list' => 'array'
     ];
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 
     /**
      * Get the name of the index associated with the model.

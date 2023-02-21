@@ -58,7 +58,7 @@ class StatementControllerTest extends TestCase
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
 
-        $response = $this->get('/statement/create');
+        $response = $this->get(route('statement.create'));
         $response->assertOk();
         $response->assertViewIs('statement.create');
     }
