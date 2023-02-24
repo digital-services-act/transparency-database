@@ -28,12 +28,12 @@ class CreateStatementsTable extends Migration
             $table->timestamp('date_abolished')->nullable();
             $table->string('countries_list', 255)->nullable();
             $table->enum('source', \App\Models\Statement::SOURCES)->nullable();
-            $table->enum('payment_status', \App\Models\Statement::PAYMENT_STATUES)->nullable();
-            $table->enum('restriction_type', \App\Models\Statement::RESTRICTION_TYPES)->nullable();
+//            $table->enum('payment_status', \App\Models\Statement::PAYMENT_STATUES)->nullable();
+//            $table->enum('restriction_type', \App\Models\Statement::RESTRICTION_TYPES)->nullable();
             $table->longText('restriction_type_other')->nullable();
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS)->nullable();
             $table->longText('automated_detection_more')->nullable();
-            $table->enum('illegal_content_legal_ground', \App\Models\Statement::IC_LEGAL_GROUNDS)->nullable();
+//            $table->enum('illegal_content_legal_ground', \App\Models\Statement::IC_LEGAL_GROUNDS)->nullable();
             $table->longText('illegal_content_explanation')->nullable();
             $table->string('toc_contractual_ground', 255)->nullable();
             $table->longText('toc_explanation')->nullable();
