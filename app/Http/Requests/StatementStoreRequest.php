@@ -28,7 +28,7 @@ class StatementStoreRequest extends FormRequest
     public function rules()
     {
 //        $languages = Languages::getLanguageCodes();
-//        $countries = Countries::getCountryCodes();
+        $european_country_codes = Statement::EUROPEAN_COUNTRY_CODES;
 
         return [
 //            'title' => ['required', 'string', 'max:255'],
@@ -37,7 +37,7 @@ class StatementStoreRequest extends FormRequest
 //            'date_sent' => ['date', 'nullable'],
 //            'date_enacted' => ['date', 'nullable'],
 //            'date_abolished' => ['date', 'nullable'],
-//            'countries_list' => ['array', 'max:20', $this->in($countries)],
+            'countries_list' => ['array', 'max:28', $this->in($european_country_codes)],
 //            'source' => ['required', $this->in(Statement::SOURCES)],
 //            'payment_status' => [$this->in(Statement::PAYMENT_STATUES)],
 //            'restriction_type' => [$this->in(Statement::RESTRICTION_TYPES)],
