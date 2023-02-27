@@ -16,5 +16,13 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::factory()->count(20)->create();
+
+        //Create fake admin for masquerade purposes
+        User::factory()->create([
+            'eu_login_username'=>'dsa-poc-user',
+            'email'=>'dsa-poc-user@dsa.eu',
+            'name'=>'DSA Administrator'
+        ]);
+
     }
 }

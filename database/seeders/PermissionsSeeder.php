@@ -82,7 +82,8 @@ use PlatformsTrait;
         /** @var User $user */
         foreach ($users as $user)
         {
-            $user->assignRole('Admin');
+            if ($user->email == 'dsa-poc-user@dsa.eu') $user->assignRole('Admin');
+            $user->assignRole('Contributor');
         }
     }
 
