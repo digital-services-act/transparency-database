@@ -13,11 +13,13 @@
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Create a statement</h1>
 
-    <form method="post" action="{{route('statement.store')}}">
+    <form method="post" action="{{route('statement.store')}}" id="create-statement-form">
         @csrf
         <x-statement-form :statement=$statement :options=$options />
-        <x-ecl.button label="Create statement" />
+        <x-ecl.button label="Create statement" type="submit"/>
     </form>
+
+
 
 
 @endsection

@@ -8,7 +8,8 @@
                 data-ecl-auto-init="Select" data-ecl-select-multiple=""
                 data-ecl-select-default="{{$select_item}}" data-ecl-select-search="{{$enter_keyword}}"
                 data-ecl-select-no-results="No results found" data-ecl-select-all="{{$select_all}}"
-                data-ecl-select-clear-all="Clear all" data-ecl-select-close="Close">
+                data-ecl-select-clear-all="Clear all" data-ecl-select-close="Close"
+        >
             @foreach($options as $option)
                 <option @if(in_array($option['value'], old($name, $default)))selected="" @endif value="{{ $option['value'] }}">{{ $option['label'] }}</option>
             @endforeach
