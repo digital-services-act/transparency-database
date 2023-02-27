@@ -43,17 +43,6 @@ class Statement extends Model
         'REDRESS_JUDICIAL' => Statement::REDRESS_JUDICIAL,
         'REDRESS_OTHER' => Statement::REDRESS_OTHER
     ];
-//
-//    public const IC_LEGAL_GROUND_MISINFORMATION = 'misinformation';
-//    public const IC_LEGAL_GROUND_OFFENDING = 'offending content';
-//    public const IC_LEGAL_GROUND_PERSONAL = 'personal privacy';
-//    public const IC_LEGAL_GROUND_ABUSIVE = 'abusive';
-//    public const IC_LEGAL_GROUNDS = [
-//        Statement::IC_LEGAL_GROUND_MISINFORMATION,
-//        Statement::IC_LEGAL_GROUND_OFFENDING,
-//        Statement::IC_LEGAL_GROUND_PERSONAL,
-//        Statement::IC_LEGAL_GROUND_ABUSIVE
-//    ];
 
     public const DECISION_GROUNDS = [
         'ILLEGAL_CONTENT' => 'Illegal Content',
@@ -136,11 +125,6 @@ class Statement extends Model
             'title' => $this->title,
             'body' => $this->body
         ];
-    }
-
-    public function getLanguageName(): string
-    {
-        return Languages::getName($this->language);
     }
 
     /**

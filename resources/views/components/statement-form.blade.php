@@ -24,10 +24,9 @@
 <hr>
 <x-ecl.radio label="Was the decision taken in respect of content detected or identified using automated means " name="automated_detection" id="automated_detection" :options="$options['automated_detections']" default="{{ $statement->automated_detection }}" />
 <hr>
-<x-ecl.select label="Information on possible redress available to the recipient of the decision taken" name="redresses" id="redresses" :options="$options['redresses']"  />
+<x-ecl.select label="Information on possible redress available to the recipient of the decision taken" name="redress" id="redress" :options="$options['redresses']"  />
 
 <x-ecl.textarea label="More Info" name="redress_more" id="redress_more" value="{{ $statement->redress_more }}" />
-
 
 <script type="text/javascript">
 

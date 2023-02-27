@@ -50,18 +50,18 @@ class User extends Authenticatable
     public static function firstOrCreateByAttributes($attributes)
     {
 
-//        if (cas()->isMasquerading()) {
-//            return User::firstOrCreate(
-//                [
-//                    'eu_login_username' => cas()->user(),
-//                ],
-//                [
-//                    'name' => cas()->user(),
-//                    'email' => cas()->user() . '@masquerade.com',
-//                    'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-//                ]
-//            );
-//        }
+        if (cas()->isMasquerading() && !session()->has('impersonate')) {
+            return User::firstOrCreate(
+                [
+                    'eu_login_username' => cas()->user(),
+                ],
+                [
+                    'name' => cas()->user(),
+                    'email' => cas()->user() . '@masquerade.com',
+                    'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                ]
+            );
+        }
 
         if (session()->has('impersonate')) {
             $user = User::where('id', session()->get('impersonate'))->first();
