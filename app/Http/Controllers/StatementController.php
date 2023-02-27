@@ -71,10 +71,9 @@ class StatementController extends Controller
             'method' => Statement::METHOD_FORM
         ])->toArray();
 
-        dd($validated);
 
-        $validated['date_sent'] = $this->sanitizeDate($validated['date_sent'] ?? null);
-        $validated['date_enacted'] = $this->sanitizeDate($validated['date_enacted'] ?? null);
+//        $validated['date_sent'] = $this->sanitizeDate($validated['date_sent'] ?? null);
+//        $validated['date_enacted'] = $this->sanitizeDate($validated['date_enacted'] ?? null);
         $validated['date_abolished'] = $this->sanitizeDate($validated['date_abolished'] ?? null);
 
         $statement = Statement::create($validated);
