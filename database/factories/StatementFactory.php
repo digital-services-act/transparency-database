@@ -37,26 +37,28 @@ class StatementFactory extends Factory
         $user_id = User::all()->random()->id;
 
         return [
-            'title' => $this->faker->sentence(4),
-            'body' => $this->faker->text,
-            'language' => $this->faker->randomElement(["en", "fr", "de", "es", "nl", "it"]),
-            'date_sent' => Carbon::createMidnightDate($date_sent),
-            'date_enacted' => Carbon::createMidnightDate($date_enacted),
-            'date_abolished' => Carbon::createMidnightDate($date_abolished),
-            'countries_list' => $this->faker->randomElements(["US","BE","GB","FR","DE","IT","NL","ES"], rand(1, 8)),
-            'source' => $this->faker->randomElement(Statement::SOURCES),
-            'payment_status' => $this->faker->randomElement(Statement::PAYMENT_STATUES),
-            'restriction_type' => $this->faker->randomElement(Statement::RESTRICTION_TYPES),
-            'restriction_type_other' => $this->faker->text,
-            'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
-            'automated_detection_more' => $this->faker->text,
-            'illegal_content_legal_ground' => $this->faker->randomElement(Statement::IC_LEGAL_GROUNDS),
+
+
+            'decision_taken' => $this->faker->randomElement(array_keys(Statement::DECISIONS)),
+            'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
+            'illegal_content_legal_ground' => $this->faker->text,
             'illegal_content_explanation' => $this->faker->text,
-            'toc_contractual_ground' => $this->faker->regexify('[A-Za-z0-9]{50}'),
-            'toc_explanation' => $this->faker->text,
-            'user_id' => $user_id,
-            'redress' => $this->faker->randomElement(Statement::REDRESSES),
+            'incompatible_content_ground' => $this->faker->text,
+            'incompatible_content_explanation' => $this->faker->text,
+
+            'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
+
+            'date_abolished' => Carbon::createMidnightDate($date_abolished),
+
+            'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
+            'source_identity' => $this->faker->text,
+            'source_other' => $this->faker->text,
+
+            'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
+
+            'redress' => $this->faker->randomElement(array_keys(Statement::REDRESSES)),
             'redress_more' => $this->faker->text,
+            'user_id' => $user_id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
         ];
     }

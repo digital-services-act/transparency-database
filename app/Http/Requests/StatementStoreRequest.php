@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Statement;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Languages;
 
@@ -26,34 +27,30 @@ class StatementStoreRequest extends FormRequest
      */
     public function rules()
     {
-        $languages = Languages::getLanguageCodes();
-        $countries = Countries::getCountryCodes();
 
         return [
-            'title' => ['required', 'string', 'max:255'],
-            'body' => ['string', 'nullable'],
-            'language' => ['required', $this->in($languages)],
-            'date_sent' => ['date', 'nullable'],
-            'date_enacted' => ['date', 'nullable'],
+
+            'decision_taken' => [$this->in(array_keys(Statement::DECISIONS))],
+            'decision_ground' => [$this->in(array_keys(Statement::DECISION_GROUNDS))],
+            'illegal_content_legal_ground' => ['required_if:decision_ground,ILLEGAL_CONTENT'],
+            'illegal_content_explanation' => ['required_if:decision_ground,ILLEGAL_CONTENT'],
+            'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT'],
+            'incompatible_content_explanation' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT'],
+            'countries_list' => ['array', 'max:28', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'date_abolished' => ['date', 'nullable'],
-            'countries_list' => ['array', 'max:20', $this->in($countries)],
-            'source' => ['required', $this->in(Statement::SOURCES)],
-            'payment_status' => [$this->in(Statement::PAYMENT_STATUES)],
-            'restriction_type' => [$this->in(Statement::RESTRICTION_TYPES)],
-            'restriction_type_other' => ['string', 'nullable'],
-            'automated_detection' => [$this->in(Statement::AUTOMATED_DETECTIONS)],
-            'automated_detection_more' => ['string','nullable'],
-            'illegal_content_legal_ground' => ['string', 'max:255', 'nullable'],
-            'illegal_content_explanation' => ['string', 'nullable'],
-            'toc_contractual_ground' => ['string', 'max:255', 'nullable'],
-            'toc_explanation' => ['string', 'nullable'],
-            'redress' => [$this->in(Statement::REDRESSES)],
-            'redress_more' => ['string', 'nullable'],
+            'source' => ['required', $this->in(array_keys(Statement::SOURCES))],
+            'source_identity' => ['string','nullable'],
+            'source_other' => ['string','nullable'],
+            'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
+            'redress' => [$this->in(Statement::REDRESSES), 'nullable'],
+            'redress_more' => ['string','nullable'],
+
+
         ];
     }
 
     private function in($array)
     {
-        return 'in:' . implode(',',$array);
+        return 'in:' . implode(',', $array);
     }
 }
