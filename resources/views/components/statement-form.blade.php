@@ -1,11 +1,20 @@
 @props(['statement' => null, 'options' => null])
 
-<x-ecl.select label="Decision Taken" name="decision_taken" id="decision_taken" :options="$options['decisions']"
-              required=true default="{{ $statement->language }}" size="xl"/>
+<x-ecl.select label="Decision Taken"
+              name="decision_taken"
+              id="decision_taken"
+              :options="$options['decisions']"
+              required=true default="{{ $statement->language }}"
+              size="xl"/>
 <hr>
-<x-ecl.select label="Ground for Decision" name="decision_ground" id="decision_ground"
-              :options="$options['decision_grounds']" required=true/>
-    <x-ecl.textfield label="Legal ground relied on" name="illegal_content_legal_ground"
+<x-ecl.select label="Ground for Decision"
+              name="decision_ground"
+              id="decision_ground"
+              :options="$options['decision_grounds']"
+              required=true/>
+
+    <x-ecl.textfield label="Legal ground relied on"
+                     name="illegal_content_legal_ground"
                      id="illegal_content_legal_ground"/>
     <x-ecl.textarea label="Explanation of why the content is considered to be illegal on that ground"
                     name="illegal_content_explanation" id="illegal_content_explanation"/>
@@ -20,7 +29,7 @@
                            select_all="European Union" select_item="Select a member state"
                            enter_keyword="Enter a country name"/>
     <hr>
-    {{--<x-ecl.datepicker label="Start of Decision" id="date_enacted" name="date_enacted" value="{{ $statement->date_enacted }}" />--}}
+
     <x-ecl.datepicker label="Duration of the decision - leave blank for indefinite" id="date_abolished"
                       name="date_abolished" value="{{ $statement->date_abolished }}"/>
     <hr>
@@ -29,61 +38,74 @@
         <x-ecl.textfield label="Only if strictly necessary, identity of the notifier" name="source_identity"
                          id="source_identity"/>
         <x-ecl.textfield label="Other" name="source_other" id="source_other" required=true/>
-        <hr>
-        <x-ecl.radio label="Was the decision taken in respect of content detected or identified using automated means "
-                     name="automated_detection" id="automated_detection" :options="$options['automated_detections']"
-                     default="{{ $statement->automated_detection }}"/>
-        <hr>
-        <x-ecl.select label="Information on possible redress available to the recipient of the decision taken"
-                      name="redress"
-                      id="redress" :options="$options['redresses']"/>
+            <hr>
+            <x-ecl.radio
+                label="Was the decision taken in respect of content detected or identified using automated means "
+                name="automated_detection" id="automated_detection" :options="$options['automated_detections']"
+                default="{{ $statement->automated_detection }}"/>
+            <hr>
+            <x-ecl.select label="Information on possible redress available to the recipient of the decision taken"
+                          name="redress"
+                          id="redress" :options="$options['redresses']"/>
 
-        <x-ecl.textarea label="More Info" name="redress_more" id="redress_more" value="{{ $statement->redress_more }}"/>
+            <x-ecl.textarea label="More Info" name="redress_more" id="redress_more"
+                            value="{{ $statement->redress_more }}"/>
 
-        <script type="text/javascript">
 
-            function initFields() {
+            <script type="text/javascript">
 
-                document.getElementById('div_illegal_content_legal_ground').style.display = 'none';
-                document.getElementById('div_illegal_content_explanation').style.display = 'none';
-                document.getElementById('div_incompatible_content_ground').style.display = 'none';
-                document.getElementById('div_incompatible_content_explanation').style.display = 'none';
+                let form = document.getElementById("create-statement-form");
 
-                document.getElementById('div_source_identity').style.display = 'none';
-                document.getElementById('div_source_other').style.display = 'none';
+                form.addEventListener('submit', function (event) {
 
-                document.getElementById('div_redress_more').style.display = 'none';
+                    //Do not submit the form if we click on the Close button from the multiple selects in ECL
+                    if (event.submitter.innerText === 'Close') {
+                        event.preventDefault();
+                    }
 
-                if (document.getElementById('decision_ground').value === 'ILLEGAL_CONTENT') {
-                    document.getElementById('div_illegal_content_legal_ground').style.display = 'block';
-                    document.getElementById('div_illegal_content_explanation').style.display = 'block';
+                });
+
+                function initFields() {
+
+                    document.getElementById('div_illegal_content_legal_ground').style.display = 'none';
+                    document.getElementById('div_illegal_content_explanation').style.display = 'none';
+                    document.getElementById('div_incompatible_content_ground').style.display = 'none';
+                    document.getElementById('div_incompatible_content_explanation').style.display = 'none';
+
+                    document.getElementById('div_source_identity').style.display = 'none';
+                    document.getElementById('div_source_other').style.display = 'none';
+
+                    document.getElementById('div_redress_more').style.display = 'none';
+
+                    if (document.getElementById('decision_ground').value === 'ILLEGAL_CONTENT') {
+                        document.getElementById('div_illegal_content_legal_ground').style.display = 'block';
+                        document.getElementById('div_illegal_content_explanation').style.display = 'block';
+                    }
+
+                    if (document.getElementById('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
+                        document.getElementById('div_incompatible_content_ground').style.display = 'block';
+                        document.getElementById('div_incompatible_content_explanation').style.display = 'block';
+                    }
+
+                    if (document.getElementById('source').value === 'SOURCE_ARTICLE_16') {
+                        document.getElementById('div_source_identity').style.display = 'block';
+                    }
+
+                    if (document.getElementById('source').value === 'SOURCE_OTHER') {
+                        document.getElementById('div_source_other').style.display = 'block';
+                    }
+
+                    if (document.getElementById('redress').value !== '') {
+                        document.getElementById('div_redress_more').style.display = 'block';
+                    }
                 }
 
-                if (document.getElementById('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
-                    document.getElementById('div_incompatible_content_ground').style.display = 'block';
-                    document.getElementById('div_incompatible_content_explanation').style.display = 'block';
-                }
 
-                if (document.getElementById('source').value === 'SOURCE_ARTICLE_16') {
-                    document.getElementById('div_source_identity').style.display = 'block';
-                }
+                initFields();
 
-                if (document.getElementById('source').value === 'SOURCE_OTHER') {
-                    document.getElementById('div_source_other').style.display = 'block';
-                }
+                document.getElementById('decision_ground').addEventListener('change', initFields);
 
-                if (document.getElementById('redress').value !== '') {
-                    document.getElementById('div_redress_more').style.display = 'block';
-                }
-            }
+                document.getElementById('source').addEventListener('change', initFields);
 
-
-
-            initFields();
-
-            document.getElementById('decision_ground').addEventListener('change', initFields);
-
-            document.getElementById('source').addEventListener('change', initFields);
-
-            document.getElementById('redress').addEventListener('change', initFields);
-        </script>
+                document.getElementById('redress').addEventListener('change', initFields);
+            </script>
