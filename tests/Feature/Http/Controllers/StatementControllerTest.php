@@ -133,12 +133,14 @@ class StatementControllerTest extends TestCase
         // When making statements via the FORM
         // The dates come in as d-m-Y from the ECL datepicker.
         $response = $this->post(route('statement.store'), [
-            'title' => $title,
-            'language' => $language,
-            'date_sent' => '01-01-2023',
-            'date_enacted' => '02-01-2023',
+            'decision_taken' => 'DECISION_ALL',
+            'decision_ground' => 'ILLEGAL_CONTENT',
+            'illegal_content_legal_ground' => 'foo',
+            'illegal_content_explanation' => 'bar',
+            'countries_list' => ['BE','FR'],
             'date_abolished' => '03-01-2023',
-            'source' => Statement::SOURCE_ARTICLE_16
+            'source' => 'SOURCE_ARTICLE_16',
+            'automated_detection' => 'Yes'
         ]);
 
 

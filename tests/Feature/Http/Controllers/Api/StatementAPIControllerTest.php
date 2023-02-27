@@ -3,10 +3,12 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Models\Statement;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
@@ -15,23 +17,40 @@ class StatementAPIControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
+    private array $required_fields;
+    private Statement $statement;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->required_fields = [
+            'decision_taken' => 'DECISION_ALL',
+            'decision_ground' => 'ILLEGAL_CONTENT',
+            'illegal_content_legal_ground' => 'foo',
+            'illegal_content_explanation' => 'bar',
+            'source' => 'SOURCE_ARTICLE_16',
+            'automated_detection' => 'No',
+            'user_id' => 1,
+
+        ];
+
+
+    }
+
     /**
      * @test
      */
     public function api_statement_show_works()
     {
-        $user = $this->signIn();
-        $statement = Statement::create([
-            'title' => 'Testing Title',
-            'language' => 'en',
-            'user_id' => $user->id
-        ]);
-
-        $response = $this->get(route('api.statement.show', [$statement]),[
+        $this->signIn(User::whereId(1)->first());
+        $this->statement = Statement::create($this->required_fields);
+        $response = $this->get(route('api.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($statement->title, $response->json('title'));
+        $this->assertEquals($this->statement->user_id, $response->json('user_id'));
     }
 
     /**
@@ -39,15 +58,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_show_requires_auth()
     {
-        // not signing in.
+        $this->statement = Statement::create($this->required_fields);
 
-        $statement = Statement::create([
-            'title' => 'Testing Title',
-            'language' => 'en',
-            'user_id' => 7
-        ]);
-
-        $response = $this->get(route('api.statement.show', [$statement]),[
+        $response = $this->get(route('api.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -66,14 +79,7 @@ class StatementAPIControllerTest extends TestCase
         // Not signing in.
 
         $this->assertCount(10, Statement::all());
-        $response = $this->post(route('api.statement.store'), [
-            'title' => $title,
-            'language' => $language,
-            'date_sent' => '2023-01-01 00:00:00',
-            'date_enacted' => '2023-01-02 00:00:00',
-            'date_abolished' => '2023-01-03 00:00:00',
-            'source' => Statement::SOURCE_ARTICLE_16
-        ],[
+        $response = $this->post(route('api.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
 
@@ -94,15 +100,11 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signIn();
 
         $this->assertCount(10, Statement::all());
-        $response = $this->post(route('api.statement.store'), [
-            'title' => $title,
-            'language' => $language,
-            'date_sent' => '2023-01-01 00:00:00',
-            'date_enacted' => '2023-01-02 00:00:00',
+
+        $fields = array_merge($this->required_fields, [
             'date_abolished' => '2023-01-03 00:00:00',
-            'source' => Statement::SOURCE_ARTICLE_16,
-            'countries_list' => ['US', 'FR'],
-        ],[
+        ]);
+        $response = $this->post(route('api.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_OK);
@@ -120,44 +122,21 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function request_rejects_bad_languages()
-    {
-        $this->signIn();
-        $response = $this->post(route('api.statement.store'), [
-            'title' => 'A Test Title',
-            'language' => 'bad_language',
-            'date_sent' => '2023-01-01 00:00:00',
-            'date_enacted' => '2023-01-02 00:00:00',
-            'date_abolished' => '2023-01-03 00:00:00',
-            'source' => Statement::SOURCE_ARTICLE_16,
-            'countries_list' => ['US', 'FR'],
-        ],[
-            'Accept' => 'application/json'
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertEquals('The selected language is invalid.', $response->json('message'));
-    }
-
-    /**
-     * @test
-     */
     public function request_rejects_bad_countries()
     {
         $this->signIn();
-        $response = $this->post(route('api.statement.store'), [
-            'title' => 'A Test Title',
-            'language' => 'fr',
-            'date_sent' => '2023-01-01 00:00:00',
-            'date_enacted' => '2023-01-02 00:00:00',
-            'date_abolished' => '2023-01-03 00:00:00',
-            'source' => Statement::SOURCE_ARTICLE_16,
-            'countries_list' => ['US', 'INVALID COUNTRY'],
-        ],[
+
+        $fields = array_merge($this->required_fields, [
+
+            'countries_list' => ['XY', 'ZZ'],
+        ]);
+        $response = $this->post(route('api.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The selected countries list is invalid.', $response->json('message'));
     }
+
+
 }
