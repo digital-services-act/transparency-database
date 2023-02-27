@@ -53,8 +53,10 @@
     @endif
 
     <x-info-line title="Method" :content="$statement->method"></x-info-line>
+    @if($statement->redress)
     <x-info-line title="Information on possible redress available to the recipient of the decision taken" :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>
     <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>
+    @endif
 
 
 

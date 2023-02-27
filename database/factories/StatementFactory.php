@@ -24,6 +24,7 @@ class StatementFactory extends Factory
      */
     public function definition()
     {
+
         $date_sent = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
         $date_enacted = $date_sent->clone();
         $date_abolished = $date_sent->clone();

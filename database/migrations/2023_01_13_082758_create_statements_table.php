@@ -19,10 +19,10 @@ class CreateStatementsTable extends Migration
             $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
 
-            $table->string('illegal_content_legal_ground');
-            $table->string('illegal_content_explanation',500);
-            $table->string('incompatible_content_ground');
-            $table->string('incompatible_content_explanation',500);
+            $table->string('illegal_content_legal_ground')->nullable();
+            $table->string('illegal_content_explanation',500)->nullable();
+            $table->string('incompatible_content_ground')->nullable();
+            $table->string('incompatible_content_explanation',500)->nullable();
 
             $table->string('countries_list', 255)->nullable();
             $table->timestamp('date_abolished')->nullable();

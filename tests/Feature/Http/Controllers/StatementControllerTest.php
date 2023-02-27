@@ -25,6 +25,7 @@ class StatementControllerTest extends TestCase
      */
     public function index_displays_view()
     {
+        $this->seed();
         $statements = Statement::factory()->count(3)->create();
         $response = $this->get(route('statement.index'));
         $response->assertOk();
