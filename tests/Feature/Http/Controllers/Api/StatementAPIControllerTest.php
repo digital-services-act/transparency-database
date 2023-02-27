@@ -94,9 +94,6 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->seed();
 
-        $title = $this->faker->sentence(4);
-        $language = 'fr';
-
         $user = $this->signIn();
 
         $this->assertCount(10, Statement::all());
@@ -127,7 +124,6 @@ class StatementAPIControllerTest extends TestCase
         $this->signIn();
 
         $fields = array_merge($this->required_fields, [
-
             'countries_list' => ['XY', 'ZZ'],
         ]);
         $response = $this->post(route('api.statement.store'), $fields, [
@@ -137,6 +133,60 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The selected countries list is invalid.', $response->json('message'));
     }
+
+    /**
+     * @test
+     */
+    public function store_does_not_save_optional_fields_non_related_to_illegal_content()
+    {
+        $this->signIn();
+
+        $extra_fields = [
+            'incompatible_content_ground' => 'foobar',
+            'incompatible_content_explanation' => 'foobar2',
+        ];
+
+        $fields = array_merge($this->required_fields, $extra_fields);
+        $response = $this->post(route('api.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $statement = Statement::find($response->json('statement')['id']);
+        $this->assertNull($statement->incompatible_content_ground);
+        $this->assertNull($statement->incompatible_content_explanation);
+
+    }
+
+
+    /**
+     * @test
+     */
+    public function store_does_not_save_optional_fields_non_related_to_incompatible_content()
+    {
+        $this->signIn();
+
+        $extra_fields = [
+            'decision_ground' => 'INCOMPATIBLE_CONTENT',
+            'incompatible_content_ground' => 'foobar',
+            'incompatible_content_explanation' => 'foobar2',
+        ];
+
+        $fields = array_merge($this->required_fields, $extra_fields);
+        $response = $this->post(route('api.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $statement = Statement::find($response->json('statement')['id']);
+        $this->assertNull($statement->illegal_content_legal_ground);
+        $this->assertNull($statement->illegal_content_explanation);
+
+    }
+
+
 
 
 }
