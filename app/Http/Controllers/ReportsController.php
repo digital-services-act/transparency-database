@@ -15,18 +15,21 @@ class ReportsController extends Controller
     public function index(Request $request)
     {
 
-        $title = "Statements Created";
-        $chart_options = [
-            'chart_title' => $title,
-            'report_type' => 'group_by_date',
-            'model' => 'App\Models\Statement',
-            'group_by_field' => 'created_at',
-            'group_by_period' => 'month',
-            'chart_type' => 'bar',
-        ];
-        $chart = new LaravelChart($chart_options);
+        if (!$request->get('chart', false)) {
+            $title         = "Statements Created";
+            $chart_options = [
+                'chart_title'     => $title,
+                'report_type'     => 'group_by_date',
+                'model'           => 'App\Models\Statement',
+                'group_by_field'  => 'created_at',
+                'group_by_period' => 'month',
+                'chart_type'      => 'bar',
+            ];
+            $chart         = new LaravelChart($chart_options);
+        }
 
         if ($request->get('chart') == 'statements-by-source') {
+            $title = "Statements by Source";
             $sources = Statement::SOURCES;
             $chart_options = [];
             $colors = ['SOURCE_ARTICLE_16' => 'black', 'SOURCE_VOLUNTARY' => 'blue', 'SOURCE_OTHER' => 'red'];
@@ -47,6 +50,7 @@ class ReportsController extends Controller
         }
 
         if ($request->get('chart') == 'statements-by-redress') {
+            $title = "Statements by Redress";
             $sources = Statement::REDRESSES;
             $chart_options = [];
             $colors = ['REDRESS_INTERNAL_MECHANISM' => 'black', 'REDRESS_OUT_OF_COURT' => 'blue', 'REDRESS_JUDICIAL' => 'red', 'REDRESS_OTHER' => 'yellow'];
@@ -67,7 +71,7 @@ class ReportsController extends Controller
         }
 
         if ($request->get('chart') == 'statements-by-method') {
-            $title = "Statements Created by Method";
+            $title = "Statements by Method";
             $chart_options1 = [
                 'chart_title' => 'Statements Created by Form',
                 'chart_type' => 'line',

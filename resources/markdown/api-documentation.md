@@ -108,9 +108,11 @@ the database:
 The attributes of the statement take on two main forms.
 
 * free textual, limited to 500 characters.
-* limited, the value provided needs to be one of allowed options
+* limited, the value provided needs to be one of the allowed options
 
-
+When submitting statements please take care to not submit ANY personal data. On a
+regular basis we will do checks on the database to ensure that no personal data has been
+submitted. However, we kindly ask that you help us out by not submitting any.
 
 ### Decision Taken (decision_taken)
 
@@ -156,19 +158,22 @@ This is required if the ILLEGAL_CONTENT was the decision_ground. It is the legal
 
 This is a small optional text that explains why the content was illegal.
 
-
 ### Incompatible Content Ground (incompatible_content_ground)
 
-This is required if the INCOMPATIBLE_CONTENT was the decision_ground. It is the reference to contractual ground.
+This is required if INCOMPATIBLE_CONTENT was the decision_ground. 
+It is the reference to contractual ground.
 
 ### Incompatible_Content_Explanation (incompatible_content_explanation)
 
-This is a small optional text that explains why the content is considered as incompatible on that ground.
+This is a small optional text that explains why the content is 
+considered as incompatible on that ground.
 
 ### Countries List (countries_list)
 
-This is a required array of countries involved each value must be the 2 letter iso code 
+This is a required array of countries involved. Each value must be the 2 letter iso code 
 for the country and the countries must be EU countries.
+
+Allowed values are:
 
 @php echo implode(', ', \App\Models\Statement::EUROPEAN_COUNTRY_CODES); @endphp
 
@@ -182,7 +187,8 @@ The ```HH:MM:SS``` is optional and may be omitted.
 
 ### Source (source)
 
-This is a required field and tells us the facts and circumstances relied on in taking the decision.
+This is a required field and tells us the facts and circumstances 
+relied upon in taking the decision.
 
 The value provided must be one of the following:
 
@@ -266,7 +272,7 @@ $body = '{
   "redress": "REDRESS_INTERNAL_MECHANISM",
   "redress_more": "redress_more"
 }';
-$request = new Request('POST', 'https://transparency.test/api/statement/create', $headers, $body);
+$request = new Request('POST', '{{$baseurl}}/api/statement/create', $headers, $body);
 $res = $client->sendAsync($request)->wait();
 echo $res->getBody();
 ```
@@ -274,7 +280,7 @@ echo $res->getBody();
 ### Curl
 
 ```shell
-curl --location 'https://transparency.test/api/statement/create' \
+curl --location '{{$baseurl}}/api/statement/create' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer <YOUR_TOKEN_HERE>' \
 --header 'Content-Type: application/json' \
@@ -307,7 +313,7 @@ curl --location 'https://transparency.test/api/statement/create' \
 import http.client
 import json
 
-conn = http.client.HTTPSConnection("transparency.test")
+conn = http.client.HTTPSConnection("{{str_replace("https://", "", $baseurl)}}")
 payload = json.dumps({
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
@@ -346,7 +352,7 @@ OkHttpClient client = new OkHttpClient().newBuilder().build();
 MediaType mediaType = MediaType.parse("application/json");
 RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
 Request request = new Request.Builder()
-  .url("https://transparency.test/api/statement/create")
+  .url("{{$baseurl}}/api/statement/create")
   .method("POST", body)
   .addHeader("Accept", "application/json")
   .addHeader("Authorization", "Bearer <YOUR_TOKEN_HERE>")

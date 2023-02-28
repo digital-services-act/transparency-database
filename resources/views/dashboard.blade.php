@@ -68,7 +68,7 @@
             @else
                 <p class="ecl-u-type-paragraph">
                     You currently have a token for the API. However if you have lost the key or would like to
-                    generate a new one, click the button below and new one will be shown here.
+                    generate a new one, click the button below. This will invalidate any old tokens.
                 </p>
                 <p class="ecl-u-type-paragraph">
                     <form method="POST" action="{{ route('new-token') }}">
@@ -78,10 +78,15 @@
                 </p>
             @endif
 
-            <h3>How to use the API</h3>
-            <p class="ecl-u-type-paragraph">
-                <a href="{{ route('dashboard.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>
-            </p>
+            @can('create statements')
+                <h2 class="ecl-u-type-heading-2">How to use the API</h2>
+                <p class="ecl-u-type-paragraph">
+                    Would you like to create statements using the API?
+                </p>
+                <p class="ecl-u-type-paragraph">
+                    <a href="{{ route('dashboard.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>
+                </p>
+            @endcan
         </div>
     </div>
 
