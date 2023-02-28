@@ -30,14 +30,16 @@ To create a statement of reason using the API you will need to make a
 ```POST``` request to this endpoint.
 
 <pre>
-    {{$baseurl}}/api/statement
+    {{$baseurl}}/api/statement/create
 </pre>
 
-For this request you will need to provide authorization and the accept in the headers of the request:
+For this request you will need to provide authorization, accept, and content type 
+headers of the request:
 
 <pre>
     Authorization: Bearer YOUR_TOKEN
     Accept: application/json
+    Content-Type: application/json
 </pre>
 
 The body of your request needs to be a json encoded payload with the information of the statement
@@ -62,24 +64,59 @@ Example
     "source_other": "source other",
     "automated_detection": "No",
     "redress": "REDRESS_INTERNAL_MECHANISM",
-    "redress_more": "redress_more",
+    "redress_more": "redress_more"
 }
 ```
 
 ### The Response
 
-When the request has been and it is correct, a response of ```OK```
+When the request has been and it is correct, a response of ```201``` ```Created``` will be
+sent back.
+
+You will also receive a payload with a status, a message, and the statement as created in
+the database:
+
+```json
+{
+    "status": true,
+    "message": "statement created successfully!",
+    "statement": {
+        "decision_taken": "DECISION_TERMINATION",
+        "decision_ground": "INCOMPATIBLE_CONTENT",
+        "incompatible_content_ground": "incompatible content ground",
+        "incompatible_content_explanation": "incompatible content explanation",
+        "countries_list": [
+            "PT",
+            "ES",
+            "DE"
+        ],
+        "date_abolished": "2022-12-01 17:52:24",
+        "source": "SOURCE_VOLUNTARY",
+        "source_identity": "source identity",
+        "automated_detection": "No",
+        "redress": "REDRESS_INTERNAL_MECHANISM",
+        "redress_more": "redress_more"
+    }
+}
+```
+
+<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call to an API you should always validate that you did receive the proper status, '201 Created'." close="" />
+
 
 ## Statement Attributes Explained
 
-In order to provide statistics and gain insights into the statements of reason we require that
-certain attributes of a statement be limited to specific values. This means that we can then
-later quantify and filter statements based on common shared values for certain attributes. Other
-attributes of a statement are simply textual fields. Typically with a limit of 500 characters.
+The attributes of the statement take on two main forms.
+
+* free textual, limited to 500 characters.
+* limited, the value provided needs to be one of allowed options
+
+
 
 ### Decision Taken (decision_taken)
 
-This is a required attribute and it tells us what sort of a decision was taken.
+This is a required attribute and it tells us what sort of a decision was taken. 
+
+The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
@@ -96,6 +133,8 @@ This is a required attribute and it tells us what sort of a decision was taken.
 ### Decision Ground (decision_ground)
 
 This is a required attribute and it tells us which ground the decision was based on.
+
+The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
@@ -145,6 +184,8 @@ The ```HH:MM:SS``` is optional and may be omitted.
 
 This is a required field and tells us the facts and circumstances relied on in taking the decision.
 
+The value provided must be one of the following:
+
 <ul class='ecl-unordered-list'>
 @php
     foreach (\App\Models\Statement::SOURCES as $key => $value) {
@@ -174,6 +215,8 @@ content detected or identified using automated means.
 
 This is an optional field and tells us the possible redress available to the recipient of the decision taken.
 
+The value provided must be one of the following:
+
 <ul class='ecl-unordered-list'>
 @php
     foreach (\App\Models\Statement::REDRESSES as $key => $value) {
@@ -189,5 +232,125 @@ This is an optional field and tells us the possible redress available to the rec
 
 This is an optional field and describes more information about the redress.
 
-## Examples (PHP, cUrl, Python, Java)
+## Code Examples
 
+Below are various examples how to make this API call in different programming languages.
+
+### PHP (guzzle)
+
+```php
+<?php
+$client = new Client();
+$headers = [
+  'Accept' => 'application/json',
+  'Authorization' => 'Bearer <YOUR_TOKEN_HERE>',
+  'Content-Type' => 'application/json'
+];
+$body = '{
+  "decision_taken": "DECISION_TERMINATION",
+  "decision_ground": "INCOMPATIBLE_CONTENT",
+  "illegal_content_legal_ground": "illegal content legal ground",
+  "illegal_content_explanation": "illegal content explanation",
+  "incompatible_content_ground": "incompatible content ground",
+  "incompatible_content_explanation": "incompatible content explanation",
+  "countries_list": [
+    "PT",
+    "ES",
+    "DE"
+  ],
+  "date_abolished": "2022-12-01 17:52:24",
+  "source": "SOURCE_VOLUNTARY",
+  "source_identity": "source identity",
+  "source_other": "source other",
+  "automated_detection": "No",
+  "redress": "REDRESS_INTERNAL_MECHANISM",
+  "redress_more": "redress_more"
+}';
+$request = new Request('POST', 'https://transparency.test/api/statement/create', $headers, $body);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+### Curl
+
+```shell
+curl --location 'https://transparency.test/api/statement/create' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer <YOUR_TOKEN_HERE>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "decision_taken": "DECISION_TERMINATION",
+    "decision_ground": "INCOMPATIBLE_CONTENT",
+    "illegal_content_legal_ground": "illegal content legal ground",
+    "illegal_content_explanation": "illegal content explanation",
+    "incompatible_content_ground": "incompatible content ground",
+    "incompatible_content_explanation": "incompatible content explanation",
+    "countries_list": [
+        "PT",
+        "ES",
+        "DE"
+    ],
+    "date_abolished": "2022-12-01 17:52:24",
+    "source": "SOURCE_VOLUNTARY",
+    "source_identity": "source identity",
+    "source_other": "source other",
+    "automated_detection": "No",
+    "redress": "REDRESS_INTERNAL_MECHANISM",
+    "redress_more": "redress_more"
+}'
+```
+
+
+### Python
+
+```php
+import http.client
+import json
+
+conn = http.client.HTTPSConnection("transparency.test")
+payload = json.dumps({
+  "decision_taken": "DECISION_TERMINATION",
+  "decision_ground": "INCOMPATIBLE_CONTENT",
+  "illegal_content_legal_ground": "illegal content legal ground",
+  "illegal_content_explanation": "illegal content explanation",
+  "incompatible_content_ground": "incompatible content ground",
+  "incompatible_content_explanation": "incompatible content explanation",
+  "countries_list": [
+    "PT",
+    "ES",
+    "DE"
+  ],
+  "date_abolished": "2022-12-01 17:52:24",
+  "source": "SOURCE_VOLUNTARY",
+  "source_identity": "source identity",
+  "source_other": "source other",
+  "automated_detection": "No",
+  "redress": "REDRESS_INTERNAL_MECHANISM",
+  "redress_more": "redress_more"
+})
+headers = {
+  'Accept': 'application/json',
+  'Authorization': 'Bearer <YOUR_TOKEN_HERE>',
+  'Content-Type': 'application/json'
+}
+conn.request("POST", "/api/statement/create", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+
+
+### Java
+```javascript
+OkHttpClient client = new OkHttpClient().newBuilder().build();
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
+Request request = new Request.Builder()
+  .url("https://transparency.test/api/statement/create")
+  .method("POST", body)
+  .addHeader("Accept", "application/json")
+  .addHeader("Authorization", "Bearer <YOUR_TOKEN_HERE>")
+  .addHeader("Content-Type", "application/json")
+  .build();
+Response response = client.newCall(request).execute();
+```
