@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Models\Statement;
 use App\Models\User;
+use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -38,12 +39,14 @@ class StatementAPIControllerTest extends TestCase
 
     }
 
+
     /**
      * @test
      */
     public function api_statement_show_works()
     {
-        $this->signIn(User::whereId(1)->first());
+
+        $this->signInAsAdmin();
         $this->statement = Statement::create($this->required_fields);
         $response = $this->get(route('api.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
@@ -93,7 +96,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->seed();
 
-        $user = $this->signIn();
+        $user = $this->signInAsAdmin();
 
         $this->assertCount(200, Statement::all());
 
@@ -103,7 +106,7 @@ class StatementAPIControllerTest extends TestCase
         $response = $this->post(route('api.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(201, Statement::all());
         $statement = Statement::find($response->json('statement')['id']);
@@ -120,7 +123,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function request_rejects_bad_countries()
     {
-        $this->signIn();
+        $this->signInAsAdmin();
 
         $fields = array_merge($this->required_fields, [
             'countries_list' => ['XY', 'ZZ'],
@@ -138,7 +141,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_illegal_content()
     {
-        $this->signIn();
+        $this->signInAsAdmin();
 
         $extra_fields = [
             'incompatible_content_ground' => 'foobar',
@@ -150,7 +153,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_CREATED);
 
         $statement = Statement::find($response->json('statement')['id']);
         $this->assertNull($statement->incompatible_content_ground);
@@ -164,7 +167,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_incompatible_content()
     {
-        $this->signIn();
+        $this->signInAsAdmin();
 
         $extra_fields = [
             'decision_ground' => 'INCOMPATIBLE_CONTENT',
@@ -177,7 +180,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_CREATED);
 
         $statement = Statement::find($response->json('statement')['id']);
         $this->assertNull($statement->illegal_content_legal_ground);

@@ -3,12 +3,19 @@
 namespace Tests;
 
 use App\Models\User;
+use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected function signInAsAdmin($user = null){
+        $user = $this->signIn($user);
+        PermissionsSeeder::resetRolesAndPermissions();
+        $user->assignRole('Admin');
+        return $user;
+    }
 
     protected function signIn($user = null)
     {
@@ -18,7 +25,6 @@ abstract class TestCase extends BaseTestCase
             'eu_login_username' => "testuser",
             'password' => 'testpassword'
         ]);
-        $user->assignRole('Admin');
         $this->actingAs($user);
 
         return $user;
