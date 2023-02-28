@@ -35,8 +35,6 @@ class StatementAPIControllerTest extends TestCase
             'automated_detection' => 'No',
             'user_id' => 1,
         ];
-
-
     }
 
 
@@ -45,14 +43,13 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_show_works()
     {
-
         $this->signInAsAdmin();
         $this->statement = Statement::create($this->required_fields);
         $response = $this->get(route('api.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($this->statement->user_id, $response->json('user_id'));
+        $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
     }
 
     /**
@@ -61,7 +58,6 @@ class StatementAPIControllerTest extends TestCase
     public function api_statement_show_requires_auth()
     {
         $this->statement = Statement::create($this->required_fields);
-
         $response = $this->get(route('api.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
@@ -106,6 +102,52 @@ class StatementAPIControllerTest extends TestCase
         $response = $this->post(route('api.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(201, Statement::all());
+        $statement = Statement::find($response->json('statement')['id']);
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+        $this->assertEquals('2023-01-03 00:00:00', $statement->date_abolished);
+        $this->assertInstanceOf(Carbon::class, $statement->date_abolished);
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_json_store_works()
+    {
+        $this->seed();
+
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(200, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'date_abolished' => '2023-01-03 00:00:00',
+        ]);
+
+        $object = new \stdClass();
+        foreach ($fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+
+        $response = $this->call(
+            'POST',
+            route('api.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(201, Statement::all());
