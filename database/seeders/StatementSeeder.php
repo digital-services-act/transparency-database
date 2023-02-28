@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Entity;
 use App\Models\Statement;
 use Faker\Generator;
 use Illuminate\Container\Container;
@@ -36,12 +35,7 @@ class StatementSeeder extends Seeder
      */
     public function run()
     {
-
-        Statement::factory()->count(10)
-//            ->hasAttached(
-//                Entity::where('id',rand(1,20))->get(),
-//                ['role' => $this->faker->randomElement(["principal", "agent", "recipient", "sender", "target", "issuing_court", "plaintiff", "defendant","submitter"])]
-//            )
-            ->create();
+        Statement::query()->delete();
+        Statement::factory()->count(200)->create();
     }
 }

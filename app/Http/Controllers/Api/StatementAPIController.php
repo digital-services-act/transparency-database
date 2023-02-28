@@ -7,35 +7,17 @@ use App\Http\Requests\StatementStoreRequest;
 use App\Http\Resources\StatementResource;
 use App\Models\Statement;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Mockery\Matcher\Not;
 
 class StatementAPIController extends Controller
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        $statements = Statement::with('entities')->paginate(50);
-
-        return view('statement.index', compact('statements'));
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        return view('statement.create');
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Statement $statement
-     * @return statementResource
+     * @param Statement $statement
+     *
+     * @return Statement
      */
     public function show(Statement $statement)
     {
@@ -43,8 +25,8 @@ class StatementAPIController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\StatementStoreRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param StatementStoreRequest $request
+     * @return JsonResponse
      */
     public function store(StatementStoreRequest $request)
     {
@@ -59,8 +41,8 @@ class StatementAPIController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => "statement Created successfully!",
+            'message' => "statement created successfully!",
             'statement' => $statement
-        ], 200);
+        ], Response::HTTP_CREATED);
     }
 }

@@ -43,12 +43,23 @@
 
 
 
+
     <div class="ecl-row">
         <div class="ecl-col-12">
             <h2 class="ecl-u-type-heading-2">Your API Token</h2>
             @if($token_plain_text)
                 <p class="ecl-u-type-paragraph">
-                    Your token for accessing the API is: <pre>{{ $token_plain_text }}</pre>
+                    Your token for accessing the API is: <pre id="plaintoken">{{ $token_plain_text }}</pre>
+                    <button class="btn" onclick="copyContent()">Copy To Clipboard</button>
+                    <script>
+                      let text = document.getElementById('plaintoken').innerHTML;
+                      const copyContent = async () => {
+                        try {
+                          await navigator.clipboard.writeText(text);
+                        } catch (err) {
+                        }
+                      }
+                    </script>
                 </p>
                 <p class="ecl-u-type-paragraph">
                     Copy this and use it in your api calls, do not leave or refresh the page until you have copied it
@@ -66,6 +77,11 @@
                     </form>
                 </p>
             @endif
+
+            <h3>How to use the API</h3>
+            <p class="ecl-u-type-paragraph">
+                <a href="{{ route('dashboard.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>
+            </p>
         </div>
     </div>
 

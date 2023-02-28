@@ -27,11 +27,9 @@ class StatementStoreRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
-
-            'decision_taken' => [$this->in(array_keys(Statement::DECISIONS))],
-            'decision_ground' => [$this->in(array_keys(Statement::DECISION_GROUNDS))],
+            'decision_taken' => ['required', $this->in(array_keys(Statement::DECISIONS))],
+            'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
             'illegal_content_legal_ground' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
             'illegal_content_explanation' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
             'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
@@ -44,8 +42,6 @@ class StatementStoreRequest extends FormRequest
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
             'redress_more' => ['string','nullable'],
-
-
         ];
     }
 

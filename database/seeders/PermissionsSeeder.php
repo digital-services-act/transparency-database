@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -22,9 +21,7 @@ use PlatformsTrait;
     public function run()
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
-
         self::resetRolesAndPermissions();
-
     }
 
     public static function resetRolesAndPermissions()
@@ -56,7 +53,6 @@ use PlatformsTrait;
             'view logs',
             'view reports',
             'create statements',
-            'generate reports',
             'impersonate',
             'view dashboard',
             'view statements'
@@ -70,12 +66,11 @@ use PlatformsTrait;
 
         $user->givePermissionTo('view statements');
         $user->givePermissionTo('view dashboard');
-        $user->givePermissionTo('view dashboard');
+
 
         $contributor->givePermissionTo('view statements');
         $contributor->givePermissionTo('view dashboard');
-        $contributor->givePermissionTo('view dashboard');
-        $contributor->givePermissionTo('generate reports');
+        $contributor->givePermissionTo('view reports');
         $contributor->givePermissionTo('create statements');
 
         $users = User::all();
@@ -85,21 +80,5 @@ use PlatformsTrait;
             if ($user->email == 'dsa-poc-user@dsa.eu') $user->assignRole('Admin');
             $user->assignRole('Contributor');
         }
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder $platform_role
-     * @param string $platform_name
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Factories\HasFactory|\Illuminate\Database\Eloquent\Model|mixed
-     */
-    private function createPlatform(\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder $platform_role, $platform_name): mixed
-    {
-        $user = User::factory()->state([
-            'name' => $platform_name,
-            'email' => "fake-user@" . strtolower($platform_name) . ".com",
-            'eu_login_username' => strtolower($platform_name) . "@" .  strtolower($platform_name) . ".com",
-        ])->create();
-        $user->assignRole($platform_role);
-        return $user;
     }
 }

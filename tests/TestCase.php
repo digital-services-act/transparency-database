@@ -18,7 +18,9 @@ abstract class TestCase extends BaseTestCase
             'eu_login_username' => "testuser",
             'password' => 'testpassword'
         ]);
+        $user->assignRole('Admin');
         $this->actingAs($user);
+
         return $user;
     }
 

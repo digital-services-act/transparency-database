@@ -33,7 +33,6 @@ class StatementAPIControllerTest extends TestCase
             'source' => 'SOURCE_ARTICLE_16',
             'automated_detection' => 'No',
             'user_id' => 1,
-
         ];
 
 
@@ -78,7 +77,7 @@ class StatementAPIControllerTest extends TestCase
 
         // Not signing in.
 
-        $this->assertCount(10, Statement::all());
+        $this->assertCount(200, Statement::all());
         $response = $this->post(route('api.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
@@ -96,7 +95,7 @@ class StatementAPIControllerTest extends TestCase
 
         $user = $this->signIn();
 
-        $this->assertCount(10, Statement::all());
+        $this->assertCount(200, Statement::all());
 
         $fields = array_merge($this->required_fields, [
             'date_abolished' => '2023-01-03 00:00:00',
@@ -106,7 +105,7 @@ class StatementAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertCount(11, Statement::all());
+        $this->assertCount(201, Statement::all());
         $statement = Statement::find($response->json('statement')['id']);
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);

@@ -16,6 +16,12 @@ class Statement extends Model
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
+    public const METHOD_EDELIVERY = 'EDELIVERY';
+    public const METHODS = [
+        'METHOD_FORM' => Statement::METHOD_FORM,
+        'METHOD_API' => Statement::METHOD_API,
+        'METHOD_EDELIVERY' => Statement::METHOD_EDELIVERY
+    ];
 
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
@@ -44,9 +50,11 @@ class Statement extends Model
         'REDRESS_OTHER' => Statement::REDRESS_OTHER
     ];
 
+    public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
+    public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [
-        'ILLEGAL_CONTENT' => 'Illegal Content',
-        'INCOMPATIBLE_CONTENT' => 'Content incompatible with terms and conditions'
+        'ILLEGAL_CONTENT' => Statement::DECISION_GROUND_ILLEGAL_CONTENT,
+        'INCOMPATIBLE_CONTENT' => Statement::DECISION_GROUND_INCOMPATIBLE_CONTENT
     ];
 
 
@@ -78,8 +86,7 @@ class Statement extends Model
 
 
     public const EUROPEAN_COUNTRY_CODES = [
-        'AT', 'BE', 'BG', 'HR', 'CY', 'FR', 'CZ', 'DK', 'EE', 'FI', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO'
-        , 'SK', 'SI', 'ES', 'SE', 'GB'
+        'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'
     ];
 
 

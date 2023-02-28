@@ -3,8 +3,9 @@
 use App\Models\Statement;
 use App\Models\User;
 use Database\Seeders\PermissionsSeeder;
-use Illuminate\Support\Facades\Auth;
+use Database\Seeders\UserSeeder;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +56,9 @@ Route::get('/', function () {
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
 Route::get('/statement/{statement}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
+
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
 
 // What are we doing here?
@@ -65,6 +68,11 @@ Route::resource('entity', App\Http\Controllers\EntityController::class)->except(
 
 
 // Chain Saw Routes
+// This is a collection of routes used for demos and testing
+// As is chain saw routes wield amazing power
+// They can also cut your arm off!
+// They should never ever be open to the production version
+
 //Route::get('/testteamslogging', function(){
 //    $message = 'Test is working! It is now: ' . Carbon::now();
 //    Log::info($message);
@@ -92,28 +100,12 @@ Route::get('/make-a-bunch-of-users', function(){
 });
 
 Route::get('/reset-entire-application', function() {
-
-    $cas = app('cas');
-
-    // Delete all the users and recreate the cas masq user.
-    User::query()->delete();
-
-    \Laravel\Sanctum\PersonalAccessToken::query()->delete();
-
-    $user = User::factory()->create([
-        'name' => $cas->user(),
-        'eu_login_username' => $cas->user(),
-    ]);
-
-
-    User::factory()->count(20)->create();
+    UserSeeder::resetUsers();
     PermissionsSeeder::resetRolesAndPermissions();
     Statement::query()->delete();
     Statement::factory()->count(200)->create();
     session()->invalidate();
-
-    session()->put('impersonate', $user->id);
-
+    session()->put('impersonate', User::all()->last()->id);
     return redirect('/');
 });
 

@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function(){
 
-    Route::get('statement/{statement}', [StatementAPIController::class,'show'])->name('api.statement.show');
-    Route::post('statement/create', [StatementAPIController::class,'store'])->name('api.statement.store');
+    Route::get('statement/{statement}', [StatementAPIController::class,'show'])->name('api.statement.show')->can('view statements');
+    Route::post('statement/create', [StatementAPIController::class,'store'])->name('api.statement.store')->can('create statements');
 
 });
 
