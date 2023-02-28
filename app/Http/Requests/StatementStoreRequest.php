@@ -45,7 +45,7 @@ class StatementStoreRequest extends FormRequest
         ];
     }
 
-    private function in($array)
+    private function in($array): string
     {
         return 'in:' . implode(',', $array);
     }

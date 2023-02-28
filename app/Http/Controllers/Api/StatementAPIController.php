@@ -4,13 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatementStoreRequest;
-use App\Http\Resources\StatementResource;
 use App\Models\Statement;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Mockery\Matcher\Not;
 
 class StatementAPIController extends Controller
 {
@@ -19,7 +15,7 @@ class StatementAPIController extends Controller
      *
      * @return Statement
      */
-    public function show(Statement $statement)
+    public function show(Statement $statement): Statement
     {
         return $statement;
     }
@@ -28,7 +24,7 @@ class StatementAPIController extends Controller
      * @param StatementStoreRequest $request
      * @return JsonResponse
      */
-    public function store(StatementStoreRequest $request)
+    public function store(StatementStoreRequest $request): JsonResponse
     {
         $validated = $request->safe()->merge(
             [

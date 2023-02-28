@@ -110,6 +110,13 @@ class Statement extends Model
         'countries_list' => 'array'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'method',
+        'user_id'
+    ];
+
 
     public function getActivitylogOptions(): LogOptions
     {
