@@ -61,6 +61,7 @@ class StatementFactory extends Factory
             'redress_more' => $this->faker->text,
             'user_id' => $user_id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
+            'created_at' => $date_sent
         ];
     }
 }
