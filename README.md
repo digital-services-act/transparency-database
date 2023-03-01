@@ -66,7 +66,9 @@ $BROWSER 'http://127.0.0.1:8000'
     $ php artisan test
 
 #### Parallelizing Tests
+
 You can speed up tests by running them in parallel:
+
     $ php artisan test --parallel
 
 DSA Transparency API
