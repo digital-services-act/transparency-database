@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\Statement;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
+use Database\Seeders\PermissionsSeeder;
+use Database\Seeders\UserSeeder;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,8 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::resource('role', \App\Http\Controllers\RoleController::class);
         Route::resource('permission', \App\Http\Controllers\PermissionController::class);
         Route::resource('user', \App\Http\Controllers\UserController::class);
+        Route::get('logs', [\App\Http\Controllers\LogsController::class, 'index'])->name('logs')->can('view logs');
+        Route::get('reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports')->can('view reports');
     });
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
@@ -53,7 +56,9 @@ Route::get('/', function () {
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
 Route::get('/statement/{statement}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
+
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
 
 // What are we doing here?
@@ -63,6 +68,11 @@ Route::resource('entity', App\Http\Controllers\EntityController::class)->except(
 
 
 // Chain Saw Routes
+// This is a collection of routes used for demos and testing
+// As is chain saw routes wield amazing power
+// They can also cut your arm off!
+// They should never ever be open to the production version
+
 //Route::get('/testteamslogging', function(){
 //    $message = 'Test is working! It is now: ' . Carbon::now();
 //    Log::info($message);
@@ -76,6 +86,27 @@ Route::resource('entity', App\Http\Controllers\EntityController::class)->except(
 //    return $message;
 //});
 
-Route::get('/reset-roles-and-permissions', [\App\Http\Controllers\TestController::class, 'resetRolesAndPermissions']);
+Route::get('/reset-roles-and-permissions', function() {
+    PermissionsSeeder::resetRolesAndPermissions();
+    return "DONE";
+});
+Route::get('/make-a-bunch-of-statements', function(){
+    Statement::factory()->count(500)->create();
+    return "DONE";
+});
+Route::get('/make-a-bunch-of-users', function(){
+    User::factory()->count(20)->create();
+    return "DONE";
+});
+
+Route::get('/reset-entire-application', function() {
+    UserSeeder::resetUsers();
+    PermissionsSeeder::resetRolesAndPermissions();
+    Statement::query()->delete();
+    Statement::factory()->count(200)->create();
+    session()->invalidate();
+    session()->put('impersonate', User::all()->last()->id);
+    return redirect('/');
+});
 
 

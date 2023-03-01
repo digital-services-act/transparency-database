@@ -1,9 +1,10 @@
-@props(['type' => 'info', 'icon' => 'information', 'title' => 'title', 'message' => 'message'])
+@props(['type' => 'info', 'icon' => 'information', 'title' => 'title', 'message' => 'message', 'close' => true])
 <div class="ecl-message ecl-message--{{ $type }} ecl-u-mb-l" data-ecl-message="" role="alert" data-ecl-auto-init="Message">
     <svg class="ecl-icon ecl-icon--l ecl-message__icon" focusable="false" aria-hidden="true">
         <x-ecl.icon icon="{{ $icon }}" />
     </svg>
     <div class="ecl-message__content">
+        @if($close)
         <button class="ecl-button ecl-button--ghost ecl-message__close" type="button" data-ecl-message-close="">
             <span class="ecl-button__container">
                 <span class="ecl-button__label" data-ecl-label="true">Close</span>
@@ -12,6 +13,7 @@
                 </svg>
             </span>
         </button>
+        @endif
         <div class="ecl-message__title">{{ $title }}</div>
         <div class="ecl-message__description">
         @if(!is_array($message))

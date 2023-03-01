@@ -24,28 +24,44 @@ class StatementFactory extends Factory
      */
     public function definition()
     {
+
+        $date_sent = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
+        $date_enacted = $date_sent->clone();
+        $date_abolished = $date_sent->clone();
+
+        $days_to_add = $this->faker->randomNumber(2);
+        $days_to_add_add = $days_to_add + $this->faker->randomNumber(2);
+
+        $date_enacted->addDays($days_to_add);
+        $date_abolished->addDays($days_to_add_add);
+
+        $user_id = User::all()->random()->id;
+
         return [
-            'title' => $this->faker->sentence(4),
-            'body' => $this->faker->text,
-            'language' => $this->faker->regexify('[A-Za-z0-9]{50}'),
-            'date_sent' => Carbon::createMidnightDate($this->faker->date())->addHours($this->faker->numberBetween(3,23))->addMinutes($this->faker->numberBetween(0,59))->addSeconds($this->faker->numberBetween(0,59)),
-            'date_enacted' => Carbon::createMidnightDate($this->faker->date())->addHours($this->faker->numberBetween(3,23))->addMinutes($this->faker->numberBetween(0,59))->addSeconds($this->faker->numberBetween(0,59)),
-            'date_abolished' => Carbon::createMidnightDate($this->faker->date())->addHours($this->faker->numberBetween(3,23))->addMinutes($this->faker->numberBetween(0,59))->addSeconds($this->faker->numberBetween(0,59)),
-            'countries_list' => ["US","BE","GB","FR","DE"],
-            'source' => $this->faker->randomElement(["Article 16","voluntary own-initiative investigation"]),
-            'payment_status' => $this->faker->randomElement(["suspension","termination","other"]),
-            'restriction_type' => $this->faker->randomElement(["removed","disabled","demoted","other"]),
-            'restriction_type_other' => $this->faker->text,
-            'automated_detection' => $this->faker->randomElement(["Yes","No","Partial"]),
-            'automated_detection_more' => $this->faker->text,
-            'illegal_content_legal_ground' => $this->faker->regexify('[A-Za-z0-9]{255}'),
-            'illegal_content_explanation' => $this->faker->text,
-            'toc_contractual_ground' => $this->faker->regexify('[A-Za-z0-9]{255}'),
-            'toc_explanation' => $this->faker->text,
-            'user_id' => rand(1,20),
-            'redress' => $this->faker->randomElement(["Internal Mechanism","Out Of Court Settlement","Other"]),
-            'redress_more' => $this->faker->text,
-            'method' => $this->faker->randomElement(["API","WebForm","Other"]),
+
+
+            'decision_taken' => $this->faker->randomElement(array_keys(Statement::DECISIONS)),
+            'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
+            'illegal_content_legal_ground' => $this->faker->text(),
+            'illegal_content_explanation' => $this->faker->text(),
+            'incompatible_content_ground' => $this->faker->text(),
+            'incompatible_content_explanation' => $this->faker->text(),
+
+            'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
+
+            'date_abolished' => Carbon::createMidnightDate($date_abolished),
+
+            'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
+            'source_identity' => $this->faker->text(),
+            'source_other' => $this->faker->text(),
+
+            'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
+
+            'redress' => $this->faker->randomElement(array_keys(Statement::REDRESSES)),
+            'redress_more' => $this->faker->text(),
+            'user_id' => $user_id,
+            'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
+            'created_at' => $date_sent
         ];
     }
 }

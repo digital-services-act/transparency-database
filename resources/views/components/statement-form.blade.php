@@ -1,27 +1,111 @@
 @props(['statement' => null, 'options' => null])
-<x-ecl.textfield label="Title" name="title" id="title" required=true value="{{ $statement->title }}"/>
-<x-ecl.textarea label="Body" name="body" id="body" value="{{ $statement->body }}" />
-<x-ecl.select label="Language" name="language" id="language" :options="$options['languages']" required=true default="{{ $statement->language }}" />
 
-<x-ecl.datepicker label="Date Sent" id="date_sent" name="date_sent" value="{{ $statement->date_sent }}" />
-<x-ecl.datepicker label="Date Enacted" id="date_enacted" name="date_enacted" value="{{ $statement->date_enacted }}" />
-<x-ecl.datepicker label="Date Abolished" id="date_abolished" name="date_abolished" value="{{ $statement->date_abolished }}" />
+<x-ecl.select label="Decision Taken"
+              name="decision_taken"
+              id="decision_taken"
+              :options="$options['decisions']"
+              required=true default="{{ $statement->language }}"
+              size="xl"/>
+<hr>
+<x-ecl.select label="Ground for Decision"
+              name="decision_ground"
+              id="decision_ground"
+              :options="$options['decision_grounds']"
+              required=true/>
 
-<x-ecl.select-multiple label="Countries" name="countries_list" id="countries_list" :options="$options['countries']" :default="$statement->countries_list" />
+    <x-ecl.textfield label="Legal ground relied on"
+                     name="illegal_content_legal_ground"
+                     id="illegal_content_legal_ground"/>
+    <x-ecl.textarea label="Explanation of why the content is considered to be illegal on that ground"
+                    name="illegal_content_explanation" id="illegal_content_explanation"/>
+    <x-ecl.textfield label="Reference to contractual ground" name="incompatible_content_ground"
+                     id="incompatible_content_ground"/>
+    <x-ecl.textarea label="Explanation of why the content is considered as incompatible on that ground"
+                    name="incompatible_content_explanation" id="incompatible_content_explanation"/>
+    <hr>
 
-<x-ecl.radio label="Source" name="source" id="source" :options="$options['sources']" default="{{ $statement->source }}" />
-<x-ecl.radio label="Payment Status" name="payment_status" id="payment_status" :options="$options['payment_statuses']" default="{{ $statement->payment_status }}" />
-<x-ecl.radio label="Restriction Type" name="restriction_type" id="restriction_type" :options="$options['restriction_types']" default="{{ $statement->restriction_type }}" />
-<x-ecl.textfield label="Restriction Type Other" name="restriction_type_other" id="restriction_type_other" value="{{ $statement->restriction_type_other }}"/>
+    <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
+                           :options="$options['countries']" :default="$statement->countries_list" required="true"
+                           select_all="European Union" select_item="Select a member state"
+                           enter_keyword="Enter a country name"/>
+    <hr>
 
-<x-ecl.radio label="Automated Detection" name="automated_detection" id="automated_detection" :options="$options['automated_detections']" default="{{ $statement->automated_detection }}" />
-<x-ecl.textarea label="Automated Detection More" name="automated_detection_more" id="automated_detection_more" value="{{ $statement->automated_detection_more }}" />
+    <x-ecl.datepicker label="Duration of the decision - leave blank for indefinite" id="date_abolished"
+                      name="date_abolished" value="{{ $statement->date_abolished }}"/>
+    <hr>
+    <x-ecl.select label="Facts and circumstances relied on in taking the decision" name="source" id="source"
+                  :options="$options['sources']" required=true/>
+        <x-ecl.textfield label="Only if strictly necessary, identity of the notifier" name="source_identity"
+                         id="source_identity"/>
+        <x-ecl.textfield label="Other" name="source_other" id="source_other" required=true/>
+            <hr>
+            <x-ecl.radio
+                label="Was the decision taken in respect of content detected or identified using automated means "
+                name="automated_detection" id="automated_detection" :options="$options['automated_detections']"
+                default="{{ $statement->automated_detection }}"/>
+            <hr>
+            <x-ecl.select label="Information on possible redress available to the recipient of the decision taken"
+                          name="redress"
+                          id="redress" :options="$options['redresses']"/>
 
-<x-ecl.textfield label="Illegal Content Legal Ground" name="illegal_content_legal_ground" id="illegal_content_legal_ground" value="{{ $statement->illegal_content_legal_ground }}"/>
-<x-ecl.textarea label="Illegal Content Explanation" name="illegal_content_explanation" id="illegal_content_explanation" value="{{ $statement->illegal_content_explanation }}" />
+            <x-ecl.textarea label="More Info" name="redress_more" id="redress_more"
+                            value="{{ $statement->redress_more }}"/>
 
-<x-ecl.textfield label="TOC Contractual Ground" name="toc_contractual_ground" id="toc_contractual_ground" value="{{ $statement->toc_contractual_ground }}"/>
-<x-ecl.textarea label="TOC Explanation" name="toc_explanation" id="toc_explanation" value="{{ $statement->toc_explanation }}" />
 
-<x-ecl.radio label="Redress" name="redress" id="redress" :options="$options['redresses']" default="{{ $statement->redress }}" />
-<x-ecl.textarea label="Redress More" name="redress_more" id="redress_more" value="{{ $statement->redress_more }}" />
+            <script type="text/javascript">
+
+                let form = document.getElementById("create-statement-form");
+
+                form.addEventListener('submit', function (event) {
+
+                    //Do not submit the form if we click on the Close button from the multiple selects in ECL
+                    if (event.submitter.innerText === 'Close') {
+                        event.preventDefault();
+                    }
+
+                });
+
+                function initFields() {
+
+                    document.getElementById('div_illegal_content_legal_ground').style.display = 'none';
+                    document.getElementById('div_illegal_content_explanation').style.display = 'none';
+                    document.getElementById('div_incompatible_content_ground').style.display = 'none';
+                    document.getElementById('div_incompatible_content_explanation').style.display = 'none';
+
+                    document.getElementById('div_source_identity').style.display = 'none';
+                    document.getElementById('div_source_other').style.display = 'none';
+
+                    document.getElementById('div_redress_more').style.display = 'none';
+
+                    if (document.getElementById('decision_ground').value === 'ILLEGAL_CONTENT') {
+                        document.getElementById('div_illegal_content_legal_ground').style.display = 'block';
+                        document.getElementById('div_illegal_content_explanation').style.display = 'block';
+                    }
+
+                    if (document.getElementById('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
+                        document.getElementById('div_incompatible_content_ground').style.display = 'block';
+                        document.getElementById('div_incompatible_content_explanation').style.display = 'block';
+                    }
+
+                    if (document.getElementById('source').value === 'SOURCE_ARTICLE_16') {
+                        document.getElementById('div_source_identity').style.display = 'block';
+                    }
+
+                    if (document.getElementById('source').value === 'SOURCE_OTHER') {
+                        document.getElementById('div_source_other').style.display = 'block';
+                    }
+
+                    if (document.getElementById('redress').value !== '') {
+                        document.getElementById('div_redress_more').style.display = 'block';
+                    }
+                }
+
+
+                initFields();
+
+                document.getElementById('decision_ground').addEventListener('change', initFields);
+
+                document.getElementById('source').addEventListener('change', initFields);
+
+                document.getElementById('redress').addEventListener('change', initFields);
+            </script>

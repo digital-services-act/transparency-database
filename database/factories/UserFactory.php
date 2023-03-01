@@ -10,6 +10,30 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+
+    private $social_media_names = [
+        'Facebook',
+        'WhatsApp',
+        'Instagram',
+        'YouTube',
+        'Twitter',
+        'LinkedIn',
+        'Messenger',
+        'Snapchat',
+        'Telegram',
+        'Quora',
+        'Medium',
+        'WeChat',
+        'Hike',
+        'Viber',
+        'Pinterest',
+        'Line',
+        'Tumblr',
+        'Planoly',
+        'Tiktok',
+        'Reddit'
+    ];
+
     /**
      * Define the model's default state.
      *
@@ -18,7 +42,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->randomElement($this->social_media_names) . $this->faker->randomNumber(2),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'eu_login_username' => $this->faker->unique()->words(2,true),

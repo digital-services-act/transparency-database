@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Statement;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Blade;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -19,7 +21,7 @@ class PageController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function show(string $page): View|Factory|Application
+    public function show(string $page, $view = 'page'): View|Factory|Application
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
@@ -28,14 +30,26 @@ class PageController extends Controller
 
         $page_content = '';
         $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
+
+        $view_data = [
+            'page_title' => $page_title,
+            'baseurl' => route('home'),
+        ];
+
         if (file_exists($page)) {
             $page_content = $this->convertMdFile($page);
+            // This way blade stuff in the markdown also works.
+            $page_content = Blade::render($page_content, $view_data);
         }
 
-        return view('page', [
-            'page_title' => $page_title,
-            'page_content' => $page_content
-        ]);
+        $view_data['page_content'] = $page_content;
+
+        return view($view, $view_data);
+    }
+
+    public function dashboardShow(string $page)
+    {
+        return $this->show($page, 'dashboard-page');
     }
 
 

@@ -1,4 +1,4 @@
-@props(['label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => []])
+@props(['enter_keyword'=>'Enter keyword','select_item'=>'Select an Item','select_all' => 'Select All', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => []])
 <div class="ecl-form-group ecl-u-mb-l">
     <x-ecl.label :label=$label :for=$id :name=$name :required=$required />
     <x-ecl.help :help=$help />
@@ -6,9 +6,10 @@
     <div class="ecl-select__container ecl-select__container--{{ $size }}">
         <select name="{{ $name }}[]" id="{{ $id }}" class="ecl-select" @if($required)required=""@endif multiple=""
                 data-ecl-auto-init="Select" data-ecl-select-multiple=""
-                data-ecl-select-default="Select an item" data-ecl-select-search="Enter keyword"
-                data-ecl-select-no-results="No results found" data-ecl-select-all="Select all"
-                data-ecl-select-clear-all="Clear all" data-ecl-select-close="Close">
+                data-ecl-select-default="{{$select_item}}" data-ecl-select-search="{{$enter_keyword}}"
+                data-ecl-select-no-results="No results found" data-ecl-select-all="{{$select_all}}"
+                data-ecl-select-clear-all="Clear all" data-ecl-select-close="Close"
+        >
             @foreach($options as $option)
                 <option @if(in_array($option['value'], old($name, $default)))selected="" @endif value="{{ $option['value'] }}">{{ $option['label'] }}</option>
             @endforeach

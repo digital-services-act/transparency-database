@@ -10,7 +10,7 @@
                         aria-label="Go to previous page"><svg
                             class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-link__icon"
                             focusable="false" aria-hidden="true">
-                        <use xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>
+                            <x-ecl.icon icon="corner-arrow" />
                     </svg><span class="ecl-link__label">Previous</span></span></li>
             @else
                 <li class="ecl-pagination__item ecl-pagination__item--previous"><a
@@ -19,7 +19,7 @@
                         aria-label="Go to previous page">
                         <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-link__icon"
                              focusable="false" aria-hidden="true">
-                            <use xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>
+                            <x-ecl.icon icon="corner-arrow" />
                         </svg>
                         <span class="ecl-link__label">Previous</span></a></li>
             @endif
@@ -63,7 +63,7 @@
                         <svg
                             class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-link__icon" focusable="false"
                             aria-hidden="true">
-                            <use xlink:href="{{asset('static/media/icons.1fa1778b.svg#corner-arrow')}}"></use>
+                            <x-ecl.icon icon="corner-arrow" />
                         </svg>
                     </a></li>
             @else
