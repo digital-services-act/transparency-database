@@ -44,7 +44,8 @@ headers of the request:
 
 The body of your request needs to be a json encoded payload with the information of the statement
 
-Example
+Example JSON payload body:
+
 ```json
 {
     "decision_taken": "DECISION_TERMINATION",
