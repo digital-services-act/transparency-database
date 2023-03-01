@@ -114,8 +114,7 @@ class Statement extends Model
         'created_at',
         'updated_at',
         'method',
-        'user_id',
-        'id'
+        'user_id'
     ];
 
 
