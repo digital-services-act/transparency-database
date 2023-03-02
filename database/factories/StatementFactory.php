@@ -42,23 +42,23 @@ class StatementFactory extends Factory
 
             'decision_taken' => $this->faker->randomElement(array_keys(Statement::DECISIONS)),
             'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
-            'illegal_content_legal_ground' => $this->faker->text(),
-            'illegal_content_explanation' => $this->faker->text(),
-            'incompatible_content_ground' => $this->faker->text(),
-            'incompatible_content_explanation' => $this->faker->text(),
+            'illegal_content_legal_ground' => $this->faker->text(100),
+            'illegal_content_explanation' => $this->faker->text(100),
+            'incompatible_content_ground' => $this->faker->text(100),
+            'incompatible_content_explanation' => $this->faker->text(100),
 
             'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
 
             'date_abolished' => Carbon::createMidnightDate($date_abolished),
 
             'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
-            'source_identity' => $this->faker->text(),
-            'source_other' => $this->faker->text(),
+            'source_identity' => $this->faker->text(100),
+            'source_other' => $this->faker->text(100),
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
 
             'redress' => $this->faker->randomElement(array_keys(Statement::REDRESSES)),
-            'redress_more' => $this->faker->text(),
+            'redress_more' => $this->faker->text(100),
             'user_id' => $user_id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
             'created_at' => $date_sent
