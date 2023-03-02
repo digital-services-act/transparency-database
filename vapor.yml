@@ -1,6 +1,6 @@
 id: 40918
 name: DSA-POC
-default-environment: staging
+default-environment: dev
 environments:
     production:
         balancer: dsa-prod-load-balancer
@@ -19,11 +19,11 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
-    alain:
-      database: dsa-alain
-      memory: 1024
-      cli-memory: 512
-      runtime: 'php-8.1:al2'
-      build:
-        - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
-        - 'php artisan event:cache'
+    dev:
+        database: dsa-dev
+        memory: 1024
+        cli-memory: 512
+        runtime: 'php-8.1:al2'
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+            - 'php artisan event:cache'

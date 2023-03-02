@@ -34,7 +34,7 @@ jobs:
           cp .env.ci .env
           php artisan key:generate
 
-      - name: Run Testsuite       
+      - name: Run Testsuite
         env:
           APP_URL: http://localhost
           APP_ENV: testing
@@ -64,6 +64,6 @@ jobs:
       - name: Install Project Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Deploy Environment
-        run: vapor deploy staging
+        run: vapor deploy dev
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
