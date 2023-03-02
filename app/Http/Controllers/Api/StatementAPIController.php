@@ -10,20 +10,11 @@ use Illuminate\Http\Response;
 
 class StatementAPIController extends Controller
 {
-    /**
-     * @param Statement $statement
-     *
-     * @return Statement
-     */
     public function show(Statement $statement): Statement
     {
         return $statement;
     }
-
-    /**
-     * @param StatementStoreRequest $request
-     * @return JsonResponse
-     */
+    
     public function store(StatementStoreRequest $request): JsonResponse
     {
         $validated = $request->safe()->merge(
