@@ -8,11 +8,9 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use NunoMaduro\Collision\Adapters\Phpunit\State;
 use Symfony\Component\Intl\Countries;
-use Symfony\Component\Intl\Languages;
+
 
 class StatementController extends Controller
 {
@@ -30,16 +28,9 @@ class StatementController extends Controller
      */
     public function create(): Factory|View|Application
     {
-        // Dummy Statement to pre fill the form.
         $statement = new Statement();
         $statement->language = 'en';
-        //$statement->date_sent = Carbon::now();
         $statement->countries_list = [];
-//        $statement->source = Statement::SOURCE_ARTICLE_16;
-//        $statement->payment_status = Statement::PAYMENT_STATUS_SUSPENSION;
-//        $statement->restriction_type = Statement::RESTRICTION_TYPE_REMOVED;
-//        $statement->automated_detection = Statement::AUTOMATED_DETECTIONS_YES;
-//        $statement->redress = Statement::REDRESS_INTERNAL_MECHANISM;
 
         $options = $this->prepareOptions();
         return view('statement.create', [
@@ -94,27 +85,15 @@ class StatementController extends Controller
     private function prepareOptions(): array
     {
         // Prepare Options
-//        $languages = Languages::getNames();
-//        $languages = array_map(function($key, $value){
-//            return ['value' => $key, 'label' => $value];
-//        }, array_keys($languages), array_values($languages));
-//
 
         $european_countries_list = $this->getEuropean_countries_list();
 
         $countries = $this->mapForSelectWithKeys($european_countries_list);
-//
-//        $sources = array_map(function($source) {return ['value' => $source, 'label' => $source];},Statement::SOURCES);
-//        $payment_statuses = array_map(function($payment_status) {return ['value' => $payment_status, 'label' => $payment_status];},Statement::PAYMENT_STATUES);
-//        $restriction_types = array_map(function($restriction_type) {return ['value' => $restriction_type, 'label' => $restriction_type];},Statement::RESTRICTION_TYPES);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
 
         array_map(function ($automated_detection) {
             return ['value' => $automated_detection, 'label' => $automated_detection];
         }, Statement::AUTOMATED_DETECTIONS);
-//        $redresses = array_map(function($redress) {return ['value' => $redress, 'label' => $redress];},Statement::REDRESSES);
-
-//        $decisions = array_map(function($decisions) {return ['value' => $decisions, 'label' => $decisions];},Statement::DECISIONS);
 
         $decisions = $this->mapForSelectWithKeys(Statement::DECISIONS);
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
