@@ -8,9 +8,7 @@
         </div>
         <div class="ecl-col-8">
             <div class="ecl-u-pa-xs ecl-u-type-color-black ecl-u-type-l">
-
-                {{new \Illuminate\Support\HtmlString(nl2br(e($content)))}}
-
+                {{  $content }}
             </div>
         </div>
     </div>

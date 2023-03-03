@@ -8,7 +8,6 @@ use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Symfony\Component\Intl\Countries;
-use Symfony\Component\Intl\Languages;
 
 class Statement extends Model
 {
