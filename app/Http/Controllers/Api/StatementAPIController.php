@@ -14,7 +14,7 @@ class StatementAPIController extends Controller
     {
         return $statement;
     }
-    
+
     public function store(StatementStoreRequest $request): JsonResponse
     {
         $validated = $request->safe()->merge(

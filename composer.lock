@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2993a4c5fac44d8a2dfa71d600988610",
+    "content-hash": "a3f447725a9cd1c061fa5cfaff9a62be",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -3484,6 +3484,55 @@
                 }
             ],
             "time": "2023-02-25T19:38:58+00:00"
+        },
+        {
+            "name": "profclems/postman-collection-generator",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/profclems/postman-collection-generator.git",
+                "reference": "11e39284aaf84bec60fb02601034d3a796b96240"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/profclems/postman-collection-generator/zipball/11e39284aaf84bec60fb02601034d3a796b96240",
+                "reference": "11e39284aaf84bec60fb02601034d3a796b96240",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Profclems\\PostmanCollectionGenerator\\PostmanCollectionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Profclems\\PostmanCollectionGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Clement Sam",
+                    "email": "clementsam75@gmail.com"
+                }
+            ],
+            "description": "A package that automatically generate postman collection from laravel api/web routes",
+            "support": {
+                "issues": "https://github.com/profclems/postman-collection-generator/issues",
+                "source": "https://github.com/profclems/postman-collection-generator/tree/v1.2.0"
+            },
+            "time": "2021-02-22T21:31:20+00:00"
         },
         {
             "name": "psr/container",
