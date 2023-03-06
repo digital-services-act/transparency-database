@@ -4,13 +4,13 @@
               name="decision_taken"
               id="decision_taken"
               :options="$options['decisions']"
-              required="true" default="{{ $statement->language }}"
+              required="true" default="{{ $statement->decision_taken }}"
               size="xl" />
 <hr>
 
 <x-ecl.select label="Ground for Decision"
               name="decision_ground"
-              id="decision_ground"
+              id="decision_ground" default="{{ $statement->decision_ground }}"
               :options="$options['decision_grounds']"
               required="true" />
 
@@ -87,42 +87,42 @@
           hide('div_source_other');
           hide('div_redress_more');
 
-          if (getebi('decision_ground').value === 'ILLEGAL_CONTENT') {
+          if (ge('decision_ground').value === 'ILLEGAL_CONTENT') {
               show('div_illegal_content_legal_ground');
               show('div_illegal_content_explanation');
           }
 
-          if (getebi('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
+          if (ge('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
               show('div_incompatible_content_ground');
               show('div_incompatible_content_explanation');
           }
 
-          if (getebi('source').value === 'SOURCE_ARTICLE_16') {
+          if (ge('source').value === 'SOURCE_ARTICLE_16') {
               show('div_source_identity');
           }
 
-          if (getebi('source').value === 'SOURCE_OTHER') {
+          if (ge('source').value === 'SOURCE_OTHER') {
               show('div_source_other');
           }
 
-          if (getebi('redress').value !== '') {
+          if (ge('redress').value !== '') {
               show('div_redress_more');
           }
       }
 
-      function getebi(id)
+      function ge(id)
       {
         return document.getElementById(id);
       }
 
       function hide(id)
       {
-        getebi(id).classList.add('ecl-u-d-none');
+        ge(id).classList.add('ecl-u-d-none');
       }
 
       function show(id)
       {
-        getebi(id).classList.remove('ecl-u-d-none');
+        ge(id).classList.remove('ecl-u-d-none');
       }
 
 

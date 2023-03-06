@@ -29,7 +29,6 @@ class StatementController extends Controller
     public function create(): Factory|View|Application
     {
         $statement = new Statement();
-        $statement->language = 'en';
         $statement->countries_list = [];
 
         $options = $this->prepareOptions();
