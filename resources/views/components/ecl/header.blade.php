@@ -1,9 +1,7 @@
 <header class="ecl-site-header" data-ecl-auto-init="SiteHeader">
     <div class="ecl-site-header__header">
         <div class="ecl-site-header__container ecl-container">
-
             <div class="ecl-site-header__top">
-
                 <a href="{{ route('home') }}" class="ecl-link ecl-link--standalone ecl-site-header__logo-link" aria-label="European Commission">
                     <img alt="European Commission logo"
                          title="European Commission"
@@ -14,25 +12,19 @@
                 <div class="ecl-site-header__action">
                     <div class="ecl-site-header-core__login-container">
                         <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle" href="{{ route('dashboard') }}">
-
                             <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
                                  aria-hidden="true">
                                 <x-ecl.icon icon="log-in"/>
                             </svg>
-
                             @auth
-                                {{auth()->user()->name}}
+                                <x-impersonate />
                             @elseauth
                                 Log In
                             @endauth
-
                         </a>
                     </div>
-
-                    @include('search.searchbar')
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -41,7 +33,6 @@
             <div class="ecl-site-header__site-name">DSA Transparency Database</div>
         </div>
     </div>
-
 
     <nav class="ecl-menu ecl-menu--group1" data-ecl-menu="" data-ecl-auto-init="Menu" aria-expanded="false">
         <div class="ecl-menu__overlay" data-ecl-menu-overlay=""></div>

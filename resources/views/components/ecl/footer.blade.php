@@ -121,7 +121,7 @@
                                     aria-label="Link to Follow the European Commission on social media"><span class="ecl-link__label">Follow
                   the European Commission on social media</span><svg class="ecl-icon ecl-icon--2xs ecl-link__icon"
                                                                      focusable="false" aria-hidden="true">
-                                    <use xlink:href="/component-library/dist/media/icons.eae40d34.svg#external"></use>
+                                    <use xlink:href="{{ asset('static/media/icons.eae40d34.svg#external') }}"></use>
                                 </svg></a></li>
                         <li class="ecl-site-footer__list-item"><a href="https://commission.europa.eu/resources-partners_en"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link">Resources for partners</a></li>

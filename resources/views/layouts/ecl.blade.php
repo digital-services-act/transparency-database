@@ -41,50 +41,15 @@
 
         <x-ecl.header />
 
-
         <div class="ecl-container ecl-u-mb-xl">
             <div class="ecl-row">
                 <div class="ecl-col-12">
-
-
-
-                    @auth
-                        {{--                        @can('impersonate')--}}
-
-                        <form class="ecl-u-f-r ecl-u-mt-l" action="{{route('impersonate')}}" method="POST">
-                            @csrf
-                            <div class="ecl-form-group">
-                                <div class="ecl-select__container ecl-select__container--m">
-                                    <select class="ecl-select" id="select-default" name="username" onchange="this.form.submit()">
-
-                                        @foreach($profiles as $profile)
-                                            <option value="{{$profile->eu_login_username}}"
-                                                    @if(auth()->user()->eu_login_username == $profile->eu_login_username) selected @endif>
-                                                {{$profile->name}}
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-                                    <div class="ecl-select__icon">
-                                        <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape" focusable="false" aria-hidden="true">
-                                            <x-ecl.icon icon="corner-arrow" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-
-
-                        {{--                        @endcan--}}
-                    @endauth
-
-                        <nav class="ecl-breadcrumb ecl-page-header__breadcrumb" aria-label="You&#x20;are&#x20;here&#x3A;"
-                             data-ecl-breadcrumb="true" data-ecl-auto-init="Breadcrumb">
-                            <ol class="ecl-breadcrumb__container">
-                                @yield('breadcrumbs')
-                            </ol>
-                        </nav>
-
+                    <nav class="ecl-breadcrumb ecl-page-header__breadcrumb" aria-label="You&#x20;are&#x20;here&#x3A;"
+                         data-ecl-breadcrumb="true" data-ecl-auto-init="Breadcrumb">
+                        <ol class="ecl-breadcrumb__container">
+                            @yield('breadcrumbs')
+                        </ol>
+                    </nav>
                     @if(session('success'))
                         <x-ecl.message type="success" icon="success" title="Success" :message="session('success')"/>
                     @endif
@@ -100,10 +65,7 @@
                 </div>
             </div>
         </div>
-
-
         <x-ecl.footer />
-
     </div>
 
 
@@ -115,14 +77,10 @@
     src="{{ asset('static/scripts/ecl-ec.js') }}"
     crossorigin="anonymous"
 ></script>
-
-
 <script>
     svg4everybody({polyfill: true});
     ECL.autoInit();
 </script>
-
-
 </body>
 </html>
 
