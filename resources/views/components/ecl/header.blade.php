@@ -16,11 +16,13 @@
                                  aria-hidden="true">
                                 <x-ecl.icon icon="log-in"/>
                             </svg>
+
                             @auth
-                                <x-impersonate />
-                            @elseauth
-                                Log In
+                                {{ auth()->user()->name }} &nbsp; <x-impersonate />
                             @endauth
+                            @guest
+                                Log In
+                            @endguest
                         </a>
                     </div>
                 </div>
