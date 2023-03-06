@@ -15,12 +15,14 @@
 
     <form method="post" action="{{route('statement.store')}}" id="create-statement-form">
         @csrf
-        <x-statement-form :statement=$statement :options=$options />
-        <x-ecl.button label="Create statement" type="submit"/>
+        <x-statement-form :statement="$statement" :options="$options" />
+{{--        <x-ecl.button label="Create statement" type="submit" id="submitter"/>--}}
     </form>
 
+    <button class="ecl-button ecl-button--primary" onClick="document.getElementById('create-statement-form').submit();">Create Statement</button>
+    <script>
 
-
+    </script>
 
 @endsection
 

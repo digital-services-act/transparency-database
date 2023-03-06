@@ -1,5 +1,5 @@
-<footer class="ecl-footer-core">
-    <div class="ecl-container ecl-footer-core__container">
+<footer class="ecl-site-footer">
+    <div class="ecl-container ecl-site-footer__container">
         <div class="ecl-footer-core__row">
 
             <div class="ecl-footer-core__column">
@@ -8,12 +8,11 @@
                        aria-label="European&#x20;Commission">
                         <img alt="European Commission logo" title="European Commission"
                              class="ecl-footer-core__logo-image-desktop"
-                             src="{{asset('static/media/logo-ec--en.10f5072b.svg')}}"/>
+                             src="{{asset('static/media/logo-ec--en.65cfd447.svg')}}"/>
                     </a>
 
                     <h2 class="ecl-footer-core__title">
-                        <a href="/" class="ecl-link ecl-link--standalone ecl-footer-core__title-link">European
-                            Commission website</a>
+                        <a href="/" class="ecl-link ecl-link--standalone ecl-footer-core__title-link">European Commission website</a>
                     </h2>
 
                     <div class="ecl-footer-core__description">This site is managed by the Directorate-General for

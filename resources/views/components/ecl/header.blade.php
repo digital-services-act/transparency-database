@@ -8,7 +8,7 @@
                     <img alt="European Commission logo"
                          title="European Commission"
                          class="ecl-site-header__logo-image ecl-site-header__logo-image-desktop"
-                         src="{{asset('static/media/logo-ec--en.5055ef4f.svg')}}"/>
+                         src="{{asset('static/media/logo-ec--en.65cfd447.svg')}}"/>
                 </a>
 
                 <div class="ecl-site-header__action">
