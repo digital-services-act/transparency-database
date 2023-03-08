@@ -19,7 +19,6 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "luilliarcec/laravel-table": "^4.0",
         "margatampu/laravel-teams-logging": "^1.2",
-        "profclems/postman-collection-generator": "^1.2",
         "sebbmeyer/laravel-teams-connector": "^0.6.2",
         "sebbmeyer/php-microsoft-teams-connector": "^0.2.2",
         "spatie/laravel-activitylog": "^4.7",
