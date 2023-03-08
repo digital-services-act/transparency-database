@@ -16,6 +16,7 @@
         "laravel/vapor-core": "^2.26",
         "laravel/vapor-ui": "^1.7",
         "laraveldaily/laravel-charts": "^0.1.29",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "luilliarcec/laravel-table": "^4.0",
         "margatampu/laravel-teams-logging": "^1.2",
         "profclems/postman-collection-generator": "^1.2",
