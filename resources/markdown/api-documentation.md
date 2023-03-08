@@ -97,6 +97,7 @@ the database:
         "automated_detection": "No",
         "redress": "REDRESS_INTERNAL_MECHANISM",
         "redress_more": "redress_more"
+        "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3"
     }
 }
 ```
