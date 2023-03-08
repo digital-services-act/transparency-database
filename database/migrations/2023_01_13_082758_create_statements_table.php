@@ -16,6 +16,8 @@ class CreateStatementsTable extends Migration
         Schema::create('statements', function (Blueprint $table) {
             $table->id();
 
+            $table->string('uuid', 36)->index('uuidindex');
+
             $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
 

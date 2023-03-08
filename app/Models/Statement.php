@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -94,7 +95,10 @@ class Statement extends Model
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $guarded = [
+        'id',
+        'uuid'
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -113,13 +117,22 @@ class Statement extends Model
         'created_at',
         'updated_at',
         'method',
-        'user_id'
+        'user_id',
+        'id'
     ];
 
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($statement){
+            $statement->uuid = Str::uuid();
+        });
     }
 
     /**
