@@ -95,7 +95,7 @@ class StatementAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(201, Statement::all());
-        $statement = Statement::find($response->json('statement')['id']);
+        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
@@ -135,7 +135,7 @@ class StatementAPIControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(201, Statement::all());
-        $statement = Statement::find($response->json('statement')['id']);
+        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
@@ -174,7 +174,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $statement = Statement::find($response->json('statement')['id']);
+        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
         $this->assertNull($statement->incompatible_content_ground);
         $this->assertNull($statement->incompatible_content_explanation);
     }
@@ -196,7 +196,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $statement = Statement::find($response->json('statement')['id']);
+        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
         $this->assertNull($statement->illegal_content_legal_ground);
         $this->assertNull($statement->illegal_content_explanation);
     }
