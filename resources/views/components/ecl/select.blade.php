@@ -7,7 +7,7 @@
         <select name="{{ $name }}" id="{{ $id }}" class="ecl-select" @if($required)required=""@endif>
             <option selected disabled value="">Choose here</option>
             @foreach($options as $option)
-                <option @if(old($name, $default) == $option['value'])selected="" @endif value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                <option @if(old($name, $default) == $option['value'])selected="" @endif value="{{ $option['value'] }}">{{ ucfirst($option['label']) }}</option>
             @endforeach
         </select>
         <div class="ecl-select__icon">
