@@ -194,6 +194,7 @@ class Statement extends Model
      */
     public function getSelfAttribute(): string
     {
-        return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
+        //return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
+        return route('api.'.config('app.api.version').'.statement.show', [$this]);
     }
 }
