@@ -121,6 +121,11 @@ class Statement extends Model
         'id'
     ];
 
+    protected $appends = [
+        'permalink',
+        'self'
+    ];
+
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -174,5 +179,21 @@ class Statement extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPermalinkAttribute(): string
+    {
+        return route('statement.show', [$this]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelfAttribute(): string
+    {
+        return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
     }
 }

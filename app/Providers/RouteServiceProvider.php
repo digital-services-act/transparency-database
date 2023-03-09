@@ -19,6 +19,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
 
+
+    protected $apiNamespace ='App\Http\Controllers\Api';
+
     /**
      * Define your route model bindings, pattern filters, etc.
      *
@@ -32,6 +35,8 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
+
+            $this->mapApiVersionedRoutes();
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
@@ -52,5 +57,27 @@ class RouteServiceProvider extends ServiceProvider
                 return response('Limit Reached. Please do not overload the API', 429, $headers);
             });
         });
+    }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiVersionedRoutes()
+    {
+        $versions = config('app.api_versions');
+
+        foreach ($versions as $v) {
+            Route::group([
+                'middleware' => ['api', 'api_version:v'.$v],
+                'namespace'  => "{$this->apiNamespace}\\v".$v,
+                'prefix'     => 'api/v'.$v,
+            ], function ($router) use($v) {
+                require base_path('routes/api_v'.$v.'.php');
+            });
+        }
     }
 }

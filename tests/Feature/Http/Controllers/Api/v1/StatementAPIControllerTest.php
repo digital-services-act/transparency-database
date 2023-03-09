@@ -1,17 +1,15 @@
 <?php
 
-namespace Tests\Feature\Http\Controllers\Api;
+namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Statement;
-use App\Models\User;
-use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Mail;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
+
 
 
 class StatementAPIControllerTest extends TestCase
@@ -45,7 +43,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->signInAsAdmin();
         $this->statement = Statement::create($this->required_fields);
-        $response = $this->get(route('api.statement.show', [$this->statement]), [
+        $response = $this->get(route('api.v1.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_OK);
@@ -58,7 +56,7 @@ class StatementAPIControllerTest extends TestCase
     public function api_statement_show_requires_auth()
     {
         $this->statement = Statement::create($this->required_fields);
-        $response = $this->get(route('api.statement.show', [$this->statement]), [
+        $response = $this->get(route('api.v1.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -73,7 +71,7 @@ class StatementAPIControllerTest extends TestCase
 
         // Not signing in.
         $this->assertCount(200, Statement::all());
-        $response = $this->post(route('api.statement.store'), $this->required_fields, [
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -90,12 +88,12 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'date_abolished' => '2023-01-03 00:00:00',
         ]);
-        $response = $this->post(route('api.statement.store'), $fields, [
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(201, Statement::all());
-        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
@@ -121,7 +119,7 @@ class StatementAPIControllerTest extends TestCase
         $json = json_encode($object);
         $response = $this->call(
             'POST',
-            route('api.statement.store'),
+            route('api.v1.statement.store'),
             [],
             [],
             [],
@@ -135,7 +133,7 @@ class StatementAPIControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(201, Statement::all());
-        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
@@ -152,7 +150,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'countries_list' => ['XY', 'ZZ'],
         ]);
-        $response = $this->post(route('api.statement.store'), $fields, [
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -170,11 +168,11 @@ class StatementAPIControllerTest extends TestCase
             'incompatible_content_explanation' => 'foobar2',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
-        $response = $this->post(route('api.statement.store'), $fields, [
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNull($statement->incompatible_content_ground);
         $this->assertNull($statement->incompatible_content_explanation);
     }
@@ -192,11 +190,11 @@ class StatementAPIControllerTest extends TestCase
             'incompatible_content_explanation' => 'foobar2',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
-        $response = $this->post(route('api.statement.store'), $fields, [
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $statement = Statement::where('uuid', $response->json('statement')['uuid'])->first();
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNull($statement->illegal_content_legal_ground);
         $this->assertNull($statement->illegal_content_explanation);
     }

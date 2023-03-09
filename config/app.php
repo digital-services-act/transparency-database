@@ -144,6 +144,22 @@ return [
     ],
 
     /*
+    |-------------------------------------------
+    | Current API Version
+    |-------------------------------------------
+    | That is the default API version of your API (Last version).
+    */
+    'api_latest'  => '1',
+
+    /*
+    |-------------------------------------------
+    | Possible API versions
+    |-------------------------------------------
+    | Specify which versions of the api should be enabled in the RSP.
+    */
+    'api_versions' => [1],
+
+    /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------

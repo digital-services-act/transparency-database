@@ -14,11 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// These are unversioned api routes
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('statement/{statement:uuid}', [StatementAPIController::class,'show'])->name('api.v1.statement.show')->can('view statements');
+    Route::post('statement', [StatementAPIController::class,'store'])->name('api.v1.statement.store')->can('create statements');
+});
 
-//Route::middleware('auth:sanctum')->group(function(){
-//    Route::get('statement/{statement:uuid}', [StatementAPIController::class,'show'])->name('api.statement.show')->can('view statements');
-//    Route::post('statement', [StatementAPIController::class,'store'])->name('api.statement.store')->can('create statements');
-//});
-
-Route::get('ping',function() {return response()->json('pong');});

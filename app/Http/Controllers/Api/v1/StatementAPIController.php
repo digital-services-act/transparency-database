@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatementStoreRequest;
@@ -26,10 +26,6 @@ class StatementAPIController extends Controller
 
         $statement = Statement::create($validated);
 
-        return response()->json([
-            'status' => true,
-            'message' => "statement created successfully!",
-            'statement' => $statement
-        ], Response::HTTP_CREATED);
+        return response()->json($statement, Response::HTTP_CREATED);
     }
 }

@@ -30,7 +30,7 @@ To create a statement of reason using the API you will need to make a
 ```POST``` request to this endpoint.
 
 <pre>
-    {{$baseurl}}/api/statement/create
+    {{route('api.v'.config('app.api_latest').'.statement.store')}}
 </pre>
 
 For this request you will need to provide authorization, accept, and content type 
@@ -74,31 +74,26 @@ Example JSON payload body:
 When the request has been and it is correct, a response of ```201``` ```Created``` will be
 sent back.
 
-You will also receive a payload with a status, a message, and the statement as created in
-the database:
+You will also receive a payload with the statement as created in the database:
 
 ```json
 {
-    "status": true,
-    "message": "statement created successfully!",
-    "statement": {
-        "decision_taken": "DECISION_TERMINATION",
-        "decision_ground": "INCOMPATIBLE_CONTENT",
-        "incompatible_content_ground": "incompatible content ground",
-        "incompatible_content_explanation": "incompatible content explanation",
-        "countries_list": [
-            "PT",
-            "ES",
-            "DE"
-        ],
-        "date_abolished": "2022-12-01 17:52:24",
-        "source": "SOURCE_VOLUNTARY",
-        "source_identity": "source identity",
-        "automated_detection": "No",
-        "redress": "REDRESS_INTERNAL_MECHANISM",
-        "redress_more": "redress_more"
-        "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3"
-    }
+    "decision_taken": "DECISION_TERMINATION",
+    "decision_ground": "INCOMPATIBLE_CONTENT",
+    "incompatible_content_ground": "incompatible content ground",
+    "incompatible_content_explanation": "incompatible content explanation",
+    "countries_list": [
+        "PT",
+        "ES",
+        "DE"
+    ],
+    "date_abolished": "2022-12-01 17:52:24",
+    "source": "SOURCE_VOLUNTARY",
+    "source_identity": "source identity",
+    "automated_detection": "No",
+    "redress": "REDRESS_INTERNAL_MECHANISM",
+    "redress_more": "redress_more"
+    "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3"
 }
 ```
 
