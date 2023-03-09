@@ -8,74 +8,114 @@
 	},
 	"item": [
 		{
-			"name": "Get Statement",
+			"name": "Create Statement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"",
+							"const responseJson = pm.response.json();",
+							"pm.environment.set(\"statement_uuid\", responseJson.uuid);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
-					"accept": true
+					"accept-encoding": true,
+					"accept": true,
+					"content-type": true
 				}
 			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Accept",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://{{hostname}}/api/statement/:statement_id",
+					"raw": "https://{{hostname}}/api/{{api_version}}/statement",
 					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
 					"path": [
 						"api",
-						"statement",
-						":statement_id"
-					],
-					"variable": [
-						{
-							"key": "statement_id",
-							"value": "{{statement_id}}",
-							"description": "The id of the statement"
-						}
+						"{{api_version}}",
+						"statement"
 					]
 				},
-				"description": "Retrieve the information of a statement of reason from the database."
+				"description": "Create a statement of reason in the database. A JSON payload body is sent with the attributes defined."
 			},
 			"response": [
 				{
-					"name": "Get Statement",
+					"name": "Create Statement",
 					"originalRequest": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Accept",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "https://<api_host_name>/api/statement/200",
+							"raw": "https://{{hostname}}/api/statement",
 							"protocol": "https",
 							"host": [
-								"<api_host_name>"
+								"{{hostname}}"
 							],
 							"path": [
 								"api",
-								"statement",
-								"200"
+								"statement"
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
+					"status": "Created",
+					"code": 201,
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
 							"key": "Date",
-							"value": "Thu, 02 Mar 2023 08:32:14 GMT"
+							"value": "Thu, 09 Mar 2023 08:30:00 GMT"
 						},
 						{
 							"key": "Server",
@@ -103,7 +143,7 @@
 						},
 						{
 							"key": "phpdebugbar-id",
-							"value": "X382299d65cba69cf564befa4652155c2"
+							"value": "X977d767b08d55ec483b325c8de90852f"
 						},
 						{
 							"key": "Access-Control-Allow-Origin",
@@ -127,103 +167,107 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"id\": 200,\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}"
+					"body": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\",\n    \"uuid\": \"b95feda2-f806-4992-88af-457af7910e9d\"\n}"
 				}
 			]
 		},
 		{
-			"name": "Create Statement",
+			"name": "Get Statement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test('The response statement was the correct id', ()=>{",
+							"  const responseJson = pm.response.json();",
+							"  pm.expect(responseJson.statement.id).to.eql(pm.environment.get('statement_id'));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
-					"accept-encoding": true,
-					"accept": true,
-					"content-type": true
+					"accept": true
 				}
 			},
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Accept",
 						"value": "application/json",
 						"type": "text"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "https://{{hostname}}/api/statement/create",
+					"raw": "https://{{hostname}}/api/{{api_version}}/statement/:statement_uuid",
 					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
 					"path": [
 						"api",
+						"{{api_version}}",
 						"statement",
-						"create"
+						":statement_uuid"
+					],
+					"variable": [
+						{
+							"key": "statement_uuid",
+							"value": "{{statement_uuid}}",
+							"description": "The uuid that identifies each statement"
+						}
 					]
 				},
-				"description": "Create a statement of reason in the database. A JSON payload body is sent with the attributes defined."
+				"description": "Retrieve the information of a statement of reason from the database."
 			},
 			"response": [
 				{
-					"name": "Create Statement",
+					"name": "Get Statement",
 					"originalRequest": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Accept",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "https://transparency.test/api/statement/create",
+							"raw": "https://{{hostname}}/api/statement/:statement_uuid",
 							"protocol": "https",
 							"host": [
-								"transparency",
-								"test"
+								"{{hostname}}"
 							],
 							"path": [
 								"api",
 								"statement",
-								"create"
+								":statement_uuid"
+							],
+							"variable": [
+								{
+									"key": "statement_uuid",
+									"value": "{{statement_uuid}}",
+									"description": "The uuid that identifies each statement"
+								}
 							]
 						}
 					},
-					"status": "Created",
-					"code": 201,
+					"status": "OK",
+					"code": 200,
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
 							"key": "Date",
-							"value": "Thu, 02 Mar 2023 08:32:38 GMT"
+							"value": "Thu, 09 Mar 2023 08:30:23 GMT"
 						},
 						{
 							"key": "Server",
@@ -251,7 +295,7 @@
 						},
 						{
 							"key": "phpdebugbar-id",
-							"value": "X75664262a0d311451b981ee9e9a4ab97"
+							"value": "Xce4b0c9025f80ee4cc57a2516547e27b"
 						},
 						{
 							"key": "Access-Control-Allow-Origin",
@@ -275,7 +319,120 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"status\": true,\n    \"message\": \"statement created successfully!\",\n    \"statement\": {\n        \"decision_taken\": \"DECISION_TERMINATION\",\n        \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n        \"incompatible_content_ground\": \"incompatible content ground\",\n        \"incompatible_content_explanation\": \"incompatible content explanation\",\n        \"countries_list\": [\n            \"PT\",\n            \"ES\",\n            \"DE\"\n        ],\n        \"date_abolished\": \"2022-12-01 00:00:00\",\n        \"source\": \"SOURCE_VOLUNTARY\",\n        \"source_identity\": \"source identity\",\n        \"automated_detection\": \"No\",\n        \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n        \"redress_more\": \"redress_more\",\n        \"id\": 201\n    }\n}"
+					"body": "{\n    \"uuid\": \"b95feda2-f806-4992-88af-457af7910e9d\",\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": null,\n    \"illegal_content_explanation\": null,\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Ping",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{hostname}}/api/ping",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"api",
+						"ping"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ping",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{hostname}}/api/ping",
+							"protocol": "https",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"ping"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 09 Mar 2023 09:48:48 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.54 (Unix) OpenSSL/1.0.2u PHP/8.1.13 mod_wsgi/3.5 Python/2.7.18 mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.13"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "1000"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "999"
+						},
+						{
+							"key": "phpdebugbar-id",
+							"value": "Xdaf7ca525a1ac829c859169b5e669a95"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "\"pong\""
 				}
 			]
 		}
