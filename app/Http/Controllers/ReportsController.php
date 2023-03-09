@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Statement;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
@@ -12,21 +15,21 @@ class ReportsController extends Controller
     /**
      * @throws Exception
      */
-    public function index(Request $request)
+    public function index(Request $request): Factory|View|Application
     {
 
-        if (!$request->get('chart', false)) {
-            $title         = "Statements Created";
-            $chart_options = [
-                'chart_title'     => $title,
-                'report_type'     => 'group_by_date',
-                'model'           => 'App\Models\Statement',
-                'group_by_field'  => 'created_at',
-                'group_by_period' => 'month',
-                'chart_type'      => 'bar',
-            ];
-            $chart         = new LaravelChart($chart_options);
-        }
+
+        $title         = "Statements Created";
+        $chart_options = [
+            'chart_title'     => $title,
+            'report_type'     => 'group_by_date',
+            'model'           => 'App\Models\Statement',
+            'group_by_field'  => 'created_at',
+            'group_by_period' => 'month',
+            'chart_type'      => 'bar',
+        ];
+        $chart         = new LaravelChart($chart_options);
+
 
         if ($request->get('chart') == 'statements-by-source') {
             $title = "Statements by Source";

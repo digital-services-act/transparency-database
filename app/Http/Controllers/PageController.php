@@ -2,26 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Statement;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Blade;
-use League\CommonMark\CommonMarkConverter;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use Parsedown;
-use Spatie\CommonMarkShikiHighlighter\HighlightCodeExtension;
-
 
 class PageController extends Controller
 {
     /**
      * @param string $page
+     * @param string $view
      *
      * @return Application|Factory|View
      */
-    public function show(string $page, $view = 'page'): View|Factory|Application
+    public function show(string $page, string $view = 'page'): View|Factory|Application
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
@@ -47,7 +42,7 @@ class PageController extends Controller
         return view($view, $view_data);
     }
 
-    public function dashboardShow(string $page)
+    public function dashboardShow(string $page): Factory|View|Application
     {
         return $this->show($page, 'dashboard-page');
     }
@@ -63,16 +58,5 @@ class PageController extends Controller
             }
             return $matches[0];
         }, $parsedown->text(file_get_contents($file)));
-    }
-
-
-    private function convertToHtml(string $markdown, string $theme = 'github-dark'): string
-    {
-        $commonMarkConverter = new CommonMarkConverter();
-        $environment = $commonMarkConverter->getEnvironment();
-        $environment->addExtension(new HighlightCodeExtension($theme));
-        $environment->addExtension(new CommonMarkCoreExtension());
-
-        return $commonMarkConverter->convert($markdown);
     }
 }

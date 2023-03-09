@@ -18,7 +18,7 @@ class PermissionController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(): Factory|View|Application
     {
         $permissions = Permission::orderBy('name', 'asc')->paginate(20);
         return view('permission.index', [
@@ -31,7 +31,7 @@ class PermissionController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
         $permission = new Permission();
         $options = [];
@@ -48,14 +48,12 @@ class PermissionController extends Controller
      *
      * @return RedirectResponse
      */
-    public function store(PermissionStoreRequest $request)
+    public function store(PermissionStoreRequest $request): RedirectResponse
     {
         $validated = $request->safe()->merge([
-
         ])->toArray();
 
-        /** @var Permission $permission */
-        $permission = Permission::create(['name' => $validated['name']]);
+        Permission::create(['name' => $validated['name']]);
         return redirect()->route('permission.index')->with('success', 'The permission has been created');
     }
 
@@ -66,7 +64,7 @@ class PermissionController extends Controller
      *
      * @return RedirectResponse
      */
-    public function show(Permission $permission)
+    public function show(Permission $permission): RedirectResponse
     {
         return redirect()->route('permission.index');
     }
@@ -78,7 +76,7 @@ class PermissionController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function edit(Permission $permission)
+    public function edit(Permission $permission): View|Factory|Application
     {
         $options = [];
         return view('permission.edit', [
@@ -96,7 +94,7 @@ class PermissionController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(PermissionUpdateRequest $request, Permission $permission)
+    public function update(PermissionUpdateRequest $request, Permission $permission): RedirectResponse
     {
         $validated = $request->safe()->merge([
 
@@ -113,7 +111,7 @@ class PermissionController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Permission $permission)
+    public function destroy(Permission $permission): RedirectResponse
     {
         $permission->delete();
         return redirect()->route('permission.index')->with('success', 'The permission has been deleted');
