@@ -35,23 +35,8 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: php artisan test --parallel
-
-  deploy:
-    needs: laravel-tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          tools: composer:v2
-          coverage: none
       - name: Require Vapor CLI
         run: composer global require laravel/vapor-cli
-      - name: Install Project Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Deploy Environment
         run: vapor deploy dev
         env:
