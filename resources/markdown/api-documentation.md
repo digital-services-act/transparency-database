@@ -37,7 +37,7 @@ For this request you will need to provide authorization, accept, and content typ
 headers of the request:
 
 <pre>
-    Authorization: Bearer YOUR_TOKEN
+    Authorization: Bearer <YOUR_TOKEN>
     Accept: application/json
     Content-Type: application/json
 </pre>
@@ -71,7 +71,7 @@ Example JSON payload body:
 
 ### The Response
 
-When the request has been and it is correct, a response of ```201``` ```Created``` will be
+When the request has been sent and it is correct, a response of ```201``` ```Created``` will be
 sent back.
 
 You will also receive a payload with the statement as created in the database:
@@ -94,13 +94,22 @@ You will also receive a payload with the statement as created in the database:
     "redress": "REDRESS_INTERNAL_MECHANISM",
     "redress_more": "redress_more"
     "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3"
+    "permalink": "{{$baseurl}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3"
+    "self": "{{$baseurl}}/api/v{{config('app.api_latest')}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3"
 }
 ```
 
 <x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call to an API you should always validate that you did receive the proper status, '201 Created'." close="" />
 
+## UUID
 
-## Statement Attributes Explained
+Every statement created in the database receives an UUID which identifies the statement uniquely.
+
+This UUID is then used in the urls for retrieving and viewing the statement online.
+
+These urls are present in the response after creating as the "uuid", "permalink" and "self" attributes.
+
+## Statement Attributes
 
 The attributes of the statement take on two main forms.
 
