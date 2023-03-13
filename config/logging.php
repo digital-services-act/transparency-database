@@ -52,7 +52,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => env('APP_ENV') != 'local' ? ['stderr', 'single', 'teams'] : ['stderr', 'single'],
+            'channels' => env('APP_ENV') != 'local' && env('APP_ENV') != 'testing' ? ['stderr', 'single', 'teams'] : ['stderr', 'single'],
             'ignore_exceptions' => false,
         ],
 

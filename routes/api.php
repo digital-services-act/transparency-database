@@ -21,4 +21,4 @@ use Illuminate\Support\Facades\Route;
 //    Route::post('statement', [StatementAPIController::class,'store'])->name('api.statement.store')->can('create statements');
 //});
 
-Route::get('ping',function() {return response()->json('pong');});
+Route::get('ping',function() {return response()->json(["you_say" => "ping", "i_say" => "pong"]);});

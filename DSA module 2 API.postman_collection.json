@@ -384,7 +384,7 @@
 					"header": [
 						{
 							"key": "Date",
-							"value": "Thu, 09 Mar 2023 09:48:48 GMT"
+							"value": "Mon, 13 Mar 2023 19:29:05 GMT"
 						},
 						{
 							"key": "Server",
@@ -408,7 +408,7 @@
 						},
 						{
 							"key": "phpdebugbar-id",
-							"value": "Xdaf7ca525a1ac829c859169b5e669a95"
+							"value": "X7324373e055389dfdf28078453cd7293"
 						},
 						{
 							"key": "Access-Control-Allow-Origin",
@@ -432,7 +432,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "\"pong\""
+					"body": "{\n    \"you_say\": \"ping\",\n    \"i_say\": \"pong\"\n}"
 				}
 			]
 		}

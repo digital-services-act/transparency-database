@@ -4,6 +4,8 @@ use App\Models\Statement;
 use App\Models\User;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 
@@ -73,11 +75,11 @@ Route::resource('entity', App\Http\Controllers\EntityController::class)->except(
 // They can also cut your arm off!
 // They should never ever be open to the production version
 
-//Route::get('/testteamslogging', function(){
-//    $message = 'Test is working! It is now: ' . Carbon::now();
-//    Log::info($message);
-//    return $message;
-//});
+Route::get('/testteamslogging', function(){
+    $message = 'Test is working! It is now: ' . Carbon::now();
+    Log::info($message);
+    return $message;
+});
 //
 //
 //Route::get('/env', function(){
