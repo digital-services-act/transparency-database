@@ -66,6 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cas.auth'  => EULoginAuth::class,
         'cas.guest' => \Subfission\Cas\Middleware\RedirectCASAuthenticated::class,
-        'api_version' => \App\Http\Middleware\APIversion::class,
+        'api_version' => \App\Http\Middleware\APIVersion::class,
     ];
 }

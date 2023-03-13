@@ -1,68 +1,42 @@
 name: Laravel
-
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  phpunit:
-      runs-on: ubuntu-latest
-      container:
-        image: kirschbaumdevelopment/laravel-test-runner:8.1
-
-      services:
-        mysql:
-          image: mysql:8.0
-          env:
-            MYSQL_ROOT_PASSWORD: password
-            MYSQL_DATABASE: test
-          ports:
-            - 33306:3306
-          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      steps:
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-
-      - name: Install composer dependencies
-        run: |
-          composer install --no-scripts
-
-      - name: Prepare Laravel Application
-        run: |
-          cp .env.ci .env
-          php artisan key:generate
-
-      - name: Run Testsuite
-        env:
-          APP_URL: http://localhost
-          APP_ENV: testing
-          BCRYPT_ROUNDS: 4
-          CACHE_DRIVER: array
-          DB_CONNECTION: sqlite
-          DB_DATABASE: ":memory:"
-          QUEUE_CONNECTION: sync
-          SESSION_DRIVER: array
-          CAS_MASQUERADE: some-user
-          CAS_VALIDATION: some-validation
-        run: php artisan test
-  deploy:
-    needs: phpunit
+  laravel-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
-          php-version: 8.1
+          php-version: '8.1'
           tools: composer:v2
-          coverage: none
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Prepare Laravel Application
+        run: cp .env.ci .env
+      - name: Install Dependencies
+        run: |
+          php --version
+          composer install -n --prefer-dist
+      - name: Generate key
+        run: php artisan key:generate
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test --parallel
       - name: Require Vapor CLI
         run: composer global require laravel/vapor-cli
-      - name: Install Project Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Deploy Environment
         run: vapor deploy dev
         env:

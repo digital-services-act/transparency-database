@@ -73,7 +73,7 @@ class Statement extends Model
         Statement::INCOMPATIBLE_CONTENT_EXPLANATION,
     ];
 
-    public const DECISION_ALL = 'any restrictions of the visibility of specific items of information provided by the recipient of the service, including removal of content, disabling access to content, or demoting content';
+    public const DECISION_ALL = 'Any restrictions on visibility, such as removing, disabling, or demoting content provided by the service recipient.';
     public const DECISION_MONETARY = 'suspension, termination or other restriction of monetary payments';
     public const DECISION_PROVISION = 'suspension or termination of the provision of the service in whole or in part';
     public const DECISION_TERMINATION = 'suspension or termination of the recipient of the service\'s account';
