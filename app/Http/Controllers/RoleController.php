@@ -8,8 +8,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -20,7 +18,7 @@ class RoleController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(): Factory|View|Application
     {
         $roles = Role::orderBy('name', 'asc')->paginate(20);
         return view('role.index', [
@@ -33,7 +31,7 @@ class RoleController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
         $role = new Role();
         $permissions = Permission::orderBy('name')->get();
@@ -52,12 +50,12 @@ class RoleController extends Controller
      *
      * @return RedirectResponse
      */
-    public function store(RoleStoreRequest $request)
+    public function store(RoleStoreRequest $request): RedirectResponse
     {
         $validated = $request->safe()->merge([
 
         ])->toArray();
-        //dd($validated);
+
         /** @var Role $role */
         $role = Role::create(['name' => $validated['name']]);
         foreach ($validated['permissions'] as $id) {
@@ -73,7 +71,7 @@ class RoleController extends Controller
      *
      * @return RedirectResponse
      */
-    public function show(Role $role)
+    public function show(Role $role): RedirectResponse
     {
         return redirect()->route('role.index');
     }
@@ -85,7 +83,7 @@ class RoleController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function edit(Role $role)
+    public function edit(Role $role): View|Factory|Application
     {
         $permissions = Permission::orderBy('name')->get();
         $options = [];
@@ -105,7 +103,7 @@ class RoleController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(RoleUpdateRequest $request, Role $role)
+    public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
     {
         $validated = $request->safe()->merge([
 
@@ -126,7 +124,7 @@ class RoleController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role): RedirectResponse
     {
         $role->delete();
         return redirect()->route('role.index')->with('success', 'The role has been deleted');

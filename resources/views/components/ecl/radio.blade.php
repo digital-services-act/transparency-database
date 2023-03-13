@@ -5,6 +5,7 @@
     <x-ecl.label type="legend" :label=$label :for=$id :name=$name :required=$required />
 
     <x-ecl.help :help=$help />
+    <x-ecl.error-feedback :name=$name />
 
     @foreach($options as $option)
         <div class="ecl-radio">

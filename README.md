@@ -1,64 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+DSA Transparency Database [![Laravel](https://github.com/DG-CNECT/dsa-module2/actions/workflows/vapor.yml/badge.svg?branch=main)](https://github.com/DG-CNECT/dsa-module2/actions/workflows/vapor.yml)
+=========================
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The DSA Transparency database collects and analyzes statements of reasons, helping Internet users to know their rights and understand the law. These data enable us to study the prevalence of legal threats and let Internet users see the source of content removals.
 
-## About Laravel
+Automated Submissions and Search Using the API
+==============================================
+The main [Transparency Database](https://digital.service-act.eu/) has an API that allows individuals and organizations that receive large numbers of notices to submit them without using the web interface. The API also provides an easy way for researchers to search the database. Members of the public can test the database, but will likely need to request an API key from the DSA team to receive a token that provides full access. To learn about the capabilities of the API, you can consult the [API documentation](https://wandering-mountain-xa4vca0rl0ff.vapor-farm-g1.com/dashboard/page/api-documentation).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Development
+===========
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* php 8.1
+* Mysql 8
 
-## Learning Laravel
+#### Pre-requisites
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* [Composer](https://getcomposer.org/)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Setup
 
-## Laravel Sponsors
+### Step 1
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Begin by cloning this repository to your machine, and installing Composer dependencies.
 
-### Premium Partners
+```bash
+git clone https://github.com/DG-CNECT/dsa-module2
+cd dsa-module2 && composer install 
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Step 2
 
-## Contributing
+Create `.env` based on `.env.example` file, and add your database credentials and the email that will be set as administrator.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+### Step 3
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Create the database with the default values
 
-## Security Vulnerabilities
+### Step 4
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Bootstrap the application
 
-## License
+```bash
+php artisan key:generate
+chmod -R 777 storage
+php artisan migrate:fresh --seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Running the app
+
+```bash
+php artisan serve
+```
+
+#### Viewing the app
+
+```
+$BROWSER 'http://127.0.0.1:8000'
+```
+
+#### Running Tests
+
+    $ php artisan test
+
+#### Parallelizing Tests
+
+You can speed up tests by running them in parallel:
+
+    $ php artisan test --parallel
+
+DSA Transparency API
+====================
+You can search the database and, if you have a contributor token, add to the database using our API.
+
+The DSA Transparency API is documented here: https://wandering-mountain-xa4vca0rl0ff.vapor-farm-g1.com/dashboard/page/api-documentation
+
+License
+=======
+
+DSA Database is licensed under GPLv2. See LICENSE.txt for more information.

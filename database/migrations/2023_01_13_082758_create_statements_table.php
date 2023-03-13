@@ -15,30 +15,29 @@ class CreateStatementsTable extends Migration
     {
         Schema::create('statements', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255);
-            $table->longText('body')->nullable();
 
-            if (env('APP_ENV') != 'testing') {
-                $table->fullText('body');
-            }
+            $table->string('uuid', 36)->index('uuidindex');
 
-            $table->string('language', 50);
-            $table->timestamp('date_sent')->nullable();
-            $table->timestamp('date_enacted')->nullable();
-            $table->timestamp('date_abolished')->nullable();
-            $table->string('countries_list', 255)->nullable();
-            $table->enum('source', \App\Models\Statement::SOURCES)->nullable();
-            $table->enum('payment_status', \App\Models\Statement::PAYMENT_STATUES)->nullable();
-            $table->enum('restriction_type', \App\Models\Statement::RESTRICTION_TYPES)->nullable();
-            $table->longText('restriction_type_other')->nullable();
-            $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS)->nullable();
-            $table->longText('automated_detection_more')->nullable();
+            $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
+            $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
+
             $table->string('illegal_content_legal_ground', 255)->nullable();
-            $table->longText('illegal_content_explanation')->nullable();
-            $table->string('toc_contractual_ground', 255)->nullable();
-            $table->longText('toc_explanation')->nullable();
-            $table->enum('redress', \App\Models\Statement::REDRESSES)->nullable();
-            $table->longText('redress_more')->nullable();
+            $table->string('illegal_content_explanation',500)->nullable();
+            $table->string('incompatible_content_ground', 255)->nullable();
+            $table->string('incompatible_content_explanation',500)->nullable();
+
+            $table->string('countries_list', 255)->nullable();
+            $table->timestamp('date_abolished')->nullable();
+
+            $table->enum('source', array_keys(\App\Models\Statement::SOURCES));
+            $table->string('source_identity', 255)->nullable();
+            $table->string('source_other', 255)->nullable();
+
+            $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
+
+            $table->enum('redress', array_keys(\App\Models\Statement::REDRESSES))->nullable();
+            $table->string('redress_more', 255)->nullable();
+
             $table->integer('user_id');
             $table->string('method')->default('API');
             $table->timestamps();
