@@ -11,19 +11,38 @@
 
                 <div class="ecl-site-header__action">
                     <div class="ecl-site-header-core__login-container">
-                        <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle" href="{{ route('dashboard') }}">
-                            <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
-                                 aria-hidden="true">
-                                <x-ecl.icon icon="log-in"/>
-                            </svg>
 
-                            @auth
-                                {{ auth()->user()->name }} &nbsp; <x-impersonate />
-                            @endauth
-                            @guest
-                                Log In
-                            @endguest
-                        </a>
+                        <div class="ecl-u-d-flex ecl-u-flex-row-reverse">
+
+                            <div class="">
+
+                                @auth
+                                    <x-impersonate />
+                                @endauth
+
+                            </div>
+
+                            <div class="">
+
+                                <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle" href="{{ route('dashboard') }}">
+                                    <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
+                                         aria-hidden="true">
+                                        <x-ecl.icon icon="log-in"/>
+                                    </svg>
+
+                                    @auth
+                                        {{ auth()->user()->name }} &nbsp;
+                                    @endauth
+                                    @guest
+                                        Log In
+                                    @endguest
+                                </a>
+
+
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
