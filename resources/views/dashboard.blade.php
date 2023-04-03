@@ -11,15 +11,14 @@
 @section('content')
 
 
-    <div style="position:absolute; margin-right: 0; right: 0;">
+    <div style="position: absolute; right: 15px;">
         <p>
-            Currently In: <strong>{{ env('APP_ENV') == 'staging' ? 'sandbox' : env('APP_ENV') }}</strong><br />
-            Goto: 
+            Current Environment: <strong>{{ env('APP_ENV') == 'staging' ? 'sandbox' : env('APP_ENV') }}</strong><br />
+            Goto:
             @if(env('APP_ENV') != 'production')<a target="_blank" href="{{ env('PRODUCTION_URL') }}">production</a>@endif
             @if(env('APP_ENV') != 'staging')<a target="_blank" href="{{ env('SANDBOX_URL') }}">sandbox</a>@endif
         <p>
     </div>
-
 
     <h1>Dashboard</h1>
 
