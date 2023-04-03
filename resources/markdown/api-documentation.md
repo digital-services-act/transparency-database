@@ -169,7 +169,7 @@ This is a small optional text that explains why the content was illegal.
 This is required if INCOMPATIBLE_CONTENT was the decision_ground. 
 It is the reference to contractual ground.
 
-### Incompatible_Content_Explanation (incompatible_content_explanation)
+### Incompatible Content Explanation (incompatible_content_explanation)
 
 This is a small optional text that explains why the content is 
 considered as incompatible on that ground.

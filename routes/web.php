@@ -82,11 +82,11 @@ Route::get('/testteamslogging', function(){
 });
 //
 //
-//Route::get('/env', function(){
-//    $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
-//    Log::info($message);
-//    return $message;
-//});
+Route::get('/env', function(){
+    $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
+    Log::error($message);
+    return $message;
+});
 
 Route::get('/reset-roles-and-permissions', function() {
     PermissionsSeeder::resetRolesAndPermissions();
