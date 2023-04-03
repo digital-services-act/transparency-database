@@ -12,7 +12,7 @@
 
 
     <div style="position: absolute; right: 15px;">
-        <p>
+        <p style="text-align: right;">
             Current Environment: <strong>{{ env('APP_ENV') == 'staging' ? 'sandbox' : env('APP_ENV') }}</strong><br />
             Goto:
             @if(env('APP_ENV') != 'production')<a target="_blank" href="{{ env('PRODUCTION_URL') }}">production</a>@endif
