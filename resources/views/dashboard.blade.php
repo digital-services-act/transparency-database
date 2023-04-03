@@ -10,6 +10,16 @@
 
 @section('content')
 
+
+    <div style="position:absolute; margin-right: 0; right: 0;">
+        <p>
+            Environment: <strong>{{ env('APP_ENV') == 'staging' ? 'sandbox' : env('APP_ENV') }}</strong><br />
+            @if(env('APP_ENV') != 'production')<a target="_blank" href="{{ env('PRODUCTION_URL') }}">production</a>@endif
+            @if(env('APP_ENV') != 'staging')| <a target="_blank" href="{{ env('SANDBOX_URL') }}">sandbox</a>@endif
+        <p>
+    </div>
+
+
     <h1>Dashboard</h1>
 
     @can('administrate')
@@ -43,9 +53,10 @@
 
 
 
-
+    @can('create statements')
     <div class="ecl-row">
         <div class="ecl-col-12">
+
             <h2 class="ecl-u-type-heading-2">Your API Token</h2>
             @if($token_plain_text)
                 <p class="ecl-u-type-paragraph">
@@ -78,7 +89,7 @@
                 </p>
             @endif
 
-            @can('create statements')
+
                 <h2 class="ecl-u-type-heading-2">How to use the API</h2>
                 <p class="ecl-u-type-paragraph">
                     Would you like to create statements using the API?
@@ -86,8 +97,9 @@
                 <p class="ecl-u-type-paragraph">
                     <a href="{{ route('dashboard.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>
                 </p>
-            @endcan
+
         </div>
     </div>
+    @endcan
 
 @endsection

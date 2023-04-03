@@ -25,20 +25,13 @@ class StatementFactory extends Factory
     public function definition()
     {
 
-        $date_sent = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
-        $date_enacted = $date_sent->clone();
-        $date_abolished = $date_sent->clone();
+        $base_date = $this->faker->dateTimeBetween('-1 years');
 
-        $days_to_add = $this->faker->randomNumber(2);
-        $days_to_add_add = $days_to_add + $this->faker->randomNumber(2);
-
-        $date_enacted->addDays($days_to_add);
-        $date_abolished->addDays($days_to_add_add);
+        $date_sent = $date_abolished = $base_date->format('YmdHis');
 
         $user_id = User::all()->random()->id;
 
         return [
-
 
             'decision_taken' => $this->faker->randomElement(array_keys(Statement::DECISIONS)),
             'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
