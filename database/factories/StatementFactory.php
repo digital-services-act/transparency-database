@@ -27,7 +27,7 @@ class StatementFactory extends Factory
 
         $base_date = $this->faker->dateTimeBetween('-1 years');
 
-        $date_sent = $date_abolished = $base_date->format('YmdHis');
+        $date_sent = $date_abolished = $base_date->format('Y-m-d G:i:s');
 
         $user_id = User::all()->random()->id;
 

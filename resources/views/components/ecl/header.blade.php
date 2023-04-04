@@ -12,18 +12,9 @@
                 <div class="ecl-site-header__action">
                     <div class="ecl-site-header-core__login-container">
 
-                        <div class="ecl-u-d-flex ecl-u-flex-row-reverse">
+                        <div class="ecl-u-d-flex ecl-u-justify-content-end">
 
                             <div class="">
-
-                                @auth
-                                    <x-impersonate />
-                                @endauth
-
-                            </div>
-
-                            <div class="">
-
                                 <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle" href="{{ route('dashboard') }}">
                                     <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
                                          aria-hidden="true">
@@ -37,12 +28,15 @@
                                         Log In
                                     @endguest
                                 </a>
+                            </div>
 
-
+                            <div class="">
+                                @auth
+                                    <x-impersonate />
+                                @endauth
                             </div>
 
                         </div>
-
                     </div>
                 </div>
             </div>
