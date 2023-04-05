@@ -133,6 +133,7 @@ class ReportsController extends Controller
                     'model' => 'App\Models\Statement',
                     'group_by_field' => 'created_at',
                     'group_by_period' => 'month',
+                    'hidden' => true,
                 ];
             }
             $chart = new LaravelChart(

@@ -105,7 +105,7 @@ Route::get('/reset-entire-application', function() {
     UserSeeder::resetUsers();
     PermissionsSeeder::resetRolesAndPermissions();
     Statement::query()->delete();
-    Statement::factory()->count(200)->create();
+    Statement::factory()->count(2000)->create();
     session()->invalidate();
     session()->put('impersonate', User::all()->last()->id);
     return redirect('/');
