@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('reset-application')->environments(['staging'])->weeklyOn('Sunday');
+        $schedule->command('reset-application')->environments(['staging'])->weekly();
     }
 
     /**
