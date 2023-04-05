@@ -27,15 +27,20 @@ class GiveRole extends Command
      */
     public function handle(): void
     {
-        $role = Role::findByName($this->argument('role'));
+        try {
+            $role = Role::findByName($this->argument('role'));
+        } catch (\Exception $e) {
+            $this->error('The role was not found.');
+            return;
+        }
         /** @var User $user */
         $user = User::where('email', $this->argument('email'))->first();
 
-        if ($role && $user) {
+        if ($user) {
             $user->assignRole($role);
             $this->info('The role was given to the user.');
         } else {
-            $this->error('The role or user was not found.');
+            $this->error('The user was not found.');
         }
     }
 }
