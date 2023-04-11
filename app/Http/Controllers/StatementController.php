@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Symfony\Component\Intl\Countries;
 
@@ -17,9 +18,15 @@ class StatementController extends Controller
     /**
      * @return View|Factory|Application
      */
-    public function index(): View|Factory|Application
+    public function index(Request $request): View|Factory|Application
     {
         $statements = Statement::with('entities')->orderBy('id', 'desc')->paginate(50);
+        if ($request->get('s')) {
+            $statements = Statement::with('entities')->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
+            {
+                $query->where('name', 'LIKE', '%' . $request->get('s') . '%');
+            })->paginate(50)->withQueryString();;
+        }
         return view('statement.index', compact('statements'));
     }
 

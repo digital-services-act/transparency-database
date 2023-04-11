@@ -47,12 +47,12 @@
         <div class="ecl-col-4">
             <a class="ecl-button ecl-button--primary" href="{{ route('user.index') }}">Users</a>
         </div>
-        <div class="ecl-col-4">
-            <a class="ecl-button ecl-button--primary" href="{{ route('role.index') }}">Roles</a>
-        </div>
-        <div class="ecl-col-4">
-            <a class="ecl-button ecl-button--primary" href="{{ route('permission.index') }}">Permissions</a>
-        </div>
+{{--        <div class="ecl-col-4">--}}
+{{--            <a class="ecl-button ecl-button--primary" href="{{ route('role.index') }}">Roles</a>--}}
+{{--        </div>--}}
+{{--        <div class="ecl-col-4">--}}
+{{--            <a class="ecl-button ecl-button--primary" href="{{ route('permission.index') }}">Permissions</a>--}}
+{{--        </div>--}}
     </div>
     @endcan
 
