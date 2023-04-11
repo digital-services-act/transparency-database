@@ -39,7 +39,7 @@
                     <td class="ecl-table__cell">
                         {{ $log->subject_id }}
                         @if($log->subject_type == 'App\Models\Statement')
-                            <a class="ecl-link" href="{{ route('statement.show', ['statement' => $log->subject_id]) }}">
+                            <a class="ecl-link" href="{{ route('statement.show', ['statement' => \App\Models\Statement::find($log->subject_id)?->uuid]) }}">
                                 view
                             </a>
                         @endif
