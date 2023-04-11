@@ -20,7 +20,7 @@ class UserController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index(Request $request)
+    public function index(Request $request): View|Factory|Application
     {
         $users = User::query();
         if ($request->get('s')) {
@@ -38,7 +38,7 @@ class UserController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
         $user = new User();
         $options = [];
