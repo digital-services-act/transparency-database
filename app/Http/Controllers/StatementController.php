@@ -20,13 +20,15 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = Statement::with('entities')->orderBy('id', 'desc')->paginate(50);
+        $statements = Statement::with('entities');
         if ($request->get('s')) {
             $statements = Statement::with('entities')->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
             {
                 $query->where('name', 'LIKE', '%' . $request->get('s') . '%');
-            })->paginate(50)->withQueryString();;
+            });
         }
+
+        $statements = $statements->orderBy('id', 'DESC')->paginate(50)->withQueryString();
         return view('statement.index', compact('statements'));
     }
 

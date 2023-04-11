@@ -22,10 +22,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::paginate(10);
+        $users = User::query();
         if ($request->get('s')) {
-            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->orWhere('email', 'like', '%' . $request->get('s') . '%')->paginate(10)->withQueryString();
+            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->orWhere('email', 'like', '%' . $request->get('s') . '%');
         }
+        $users = $users->paginate(50)->withQueryString();
+
         return view('user.index', [
             'users' => $users
         ]);

@@ -16,7 +16,11 @@
             <td class="ecl-table__cell"><a class="ecl-link" href="{{ route('statement.show', [$statement]) }}">{{ $statement->uuid }}</a></td>
             <td class="ecl-table__cell">{{ $statement->created_at }}</td>
             <td class="ecl-table__cell"></td>
-            <td class="ecl-table__cell"></td>
+            <td class="ecl-table__cell">
+                @can('administrate')
+                    edit / delete
+                @endcan
+            </td>
         </tr>
     @endforeach
     </tbody>
