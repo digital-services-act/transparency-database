@@ -9,6 +9,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 
@@ -19,9 +20,12 @@ class UserController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
         $users = User::paginate(10);
+        if ($request->get('s')) {
+            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->paginate(10);
+        }
         return view('user.index', [
             'users' => $users
         ]);

@@ -12,15 +12,20 @@
 @section('content')
 
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
-        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>
+        <form method="get">
+            <x-ecl.textfield name="s" label="Search <a href='{{ route('user.index') }}'>clear</a>" placeholder="search by email and name" justlabel="true" value="{{ request()->get('s', '') }}" />
+        </form>
     </div>
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Users</h1>
 
-    <p>
+    <p class="ecl-u-type-paragraph">
         Manage the users of the application below.
     </p>
 
+    <p class="ecl-u-type-paragraph">
+        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>
+    </p>
 
     <table class="ecl-table ecl-table--zebra">
         <thead class="ecl-table__head">
