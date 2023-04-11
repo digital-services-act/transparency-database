@@ -44,7 +44,9 @@ Route::middleware(['cas.auth'])->group(function() {
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
         Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/api', [\App\Http\Controllers\DashboardController::class, 'apiIndex'])->name('api-index');
         Route::post('/new-token', [\App\Http\Controllers\DashboardController::class, 'newToken'])->name('new-token');
+        Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
     });
 
 });
@@ -60,7 +62,7 @@ Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'ind
 Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
 
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
-Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
+
 
 
 // What are we doing here?

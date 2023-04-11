@@ -20,6 +20,16 @@ class DashboardController extends Controller
      */
     public function dashboard(Request $request): Factory|View|Application
     {
+        return view('dashboard');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Factory|View|Application
+     */
+    public function apiIndex(Request $request): Factory|View|Application
+    {
         $token_plain_text = null;
         /** @var PersonalAccessToken $token */
         $token = $request->user()->tokens()->where('name', User::API_TOKEN_KEY)->get()->last();
@@ -28,7 +38,7 @@ class DashboardController extends Controller
             $token_plain_text = $request->user()->createToken(User::API_TOKEN_KEY)->plainTextToken;
         }
 
-        return view('dashboard', [
+        return view('api', [
             'token_plain_text' => $token_plain_text
         ]);
     }
@@ -41,6 +51,6 @@ class DashboardController extends Controller
     public function newToken(Request $request): Redirector|Application|RedirectResponse
     {
         $request->user()->tokens()->delete();
-        return redirect(route('dashboard'));
+        return redirect(route('api-index'));
     }
 }
