@@ -13,7 +13,7 @@
 
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
         <form method="get">
-            <x-ecl.textfield name="s" label="Search <a href='{{ route('user.index') }}'>clear</a>" placeholder="search by email and name" justlabel="true" value="{{ request()->get('s', '') }}" />
+            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('user.index') }}'>clear</a>" placeholder="search by email and name" justlabel="true" value="{{ request()->get('s', '') }}" />
         </form>
     </div>
 
@@ -31,7 +31,7 @@
         <thead class="ecl-table__head">
         <tr class="ecl-table__row">
             <th class="ecl-table__header">User</th>
-            <th class="ecl-table__header"></th>
+            <th class="ecl-table__header">Email</th>
             <th class="ecl-table__header"></th>
             <th class="ecl-table__header"></th>
             <th class="ecl-table__header">Actions</th>
@@ -41,7 +41,7 @@
         @foreach($users as $user)
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell">{{ $user->name }}</td>
-                <td class="ecl-table__cell"></td>
+                <td class="ecl-table__cell">{{ $user->email }}</td>
                 <td class="ecl-table__cell"></td>
                 <td class="ecl-table__cell"></td>
                 <td class="ecl-table__cell">

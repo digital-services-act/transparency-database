@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $users = User::paginate(10);
         if ($request->get('s')) {
-            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->paginate(10);
+            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->orWhere('email', 'like', '%' . $request->get('s') . '%')->paginate(10);
         }
         return view('user.index', [
             'users' => $users
