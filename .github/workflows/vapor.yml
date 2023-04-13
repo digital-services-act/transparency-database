@@ -14,12 +14,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1
-      - name: Prepare Laravel Application
-        run: cp .env.ci .env
       - name: Install Dependencies
         run: |
           php --version
           composer install -n --prefer-dist
+      - name: Prepare Laravel Application
+        run: cp .env.ci .env
       - name: Generate key
         run: php artisan key:generate
       - name: Directory Permissions
