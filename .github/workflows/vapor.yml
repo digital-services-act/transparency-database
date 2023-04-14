@@ -30,9 +30,9 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: php artisan test --parallel
-      - name: Require Vapor CLI
-        run: composer global require laravel/vapor-cli
-      - name: Deploy Environment
-        run: vapor deploy dev
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+#      - name: Require Vapor CLI
+#        run: composer global require laravel/vapor-cli
+#      - name: Deploy Environment
+#        run: vapor deploy dev
+#        env:
+#          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
