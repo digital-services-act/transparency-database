@@ -29,10 +29,10 @@ Route::middleware(['cas.auth'])->group(function() {
     });
 
 
-    //Route::group(['middleware' => ['can:impersonate']], function(){
+//    Route::group(['middleware' => ['can:impersonate']], function(){
         Route::post('/impersonate', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
         Route::get('/impersonate/stop', [\App\Http\Controllers\ImpersonateController::class, 'stopImpersonate'])->name('impersonate_stop');
-    //});
+//    });
 
     Route::group(['middleware' => ['can:administrate']], function(){
         Route::resource('role', \App\Http\Controllers\RoleController::class);
@@ -62,11 +62,12 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
+Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
+Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+
 
 // What are we doing here?
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
-
-
 
 
 // Chain Saw Routes
