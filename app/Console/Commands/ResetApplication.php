@@ -31,6 +31,6 @@ class ResetApplication extends Command
         UserSeeder::resetUsers();
         PermissionsSeeder::resetRolesAndPermissions();
         Statement::query()->delete();
-        Statement::factory()->count(2000)->create();
+        Statement::factory()->count(1000)->create();
     }
 }
