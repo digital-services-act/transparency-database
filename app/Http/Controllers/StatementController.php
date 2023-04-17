@@ -21,15 +21,17 @@ class StatementController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         $statements = Statement::query();
+
+
+        if ($request->get('automated_detection')) {
+            $statements->whereIn('automated_detection', $request->get('automated_detection'));
+        }
+
         if ($request->get('s')) {
             $statements->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
             {
                 $query->where('name', 'LIKE', '%' . $request->get('s') . '%');
             });
-        }
-
-        if ($request->get('automated_detection')) {
-            $statements->whereIn('automated_detection', $request->get('automated_detection'));
         }
 
         $options = $this->prepareOptions();
