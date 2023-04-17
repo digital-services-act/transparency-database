@@ -3,8 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Statement;
-use Database\Factories\StatementFactory;
-use Database\Seeders\StatementSeeder;
 use Illuminate\Console\Command;
 
 class GenerateStatements extends Command
