@@ -133,8 +133,6 @@ class StatementControllerTest extends TestCase
     {
         // This is a basic test that the normal controller is working.
         // For more advanced testing on the request and such, see the API testing.
-        $title = $this->faker->sentence(4);
-        $language = 'en';
 
         PermissionsSeeder::resetRolesAndPermissions();
         /** @var User $user */
@@ -147,7 +145,6 @@ class StatementControllerTest extends TestCase
         // The dates come in as d-m-Y from the ECL datepicker.
         $response = $this->post(route('statement.store'), $this->dummy_attributes);
 
-
         $this->assertCount(1, Statement::all());
         $statement = Statement::latest()->first();
         $this->assertNotNull($statement);
@@ -158,7 +155,4 @@ class StatementControllerTest extends TestCase
 
         $response->assertRedirect(route('statement.index'));
     }
-
-
-
 }

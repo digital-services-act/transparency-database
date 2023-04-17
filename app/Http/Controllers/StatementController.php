@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
+use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -15,49 +16,21 @@ use Symfony\Component\Intl\Countries;
 
 class StatementController extends Controller
 {
+    protected StatementQueryService $statement_query_service;
+
+    public function __construct(StatementQueryService $statement_query_service)
+    {
+        $this->statement_query_service = $statement_query_service;
+    }
+
     /**
+     * @param Request $request
+     *
      * @return View|Factory|Application
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = Statement::query();
-
-        if ($request->get('automated_detection')) {
-            $statements->whereIn('automated_detection', $request->get('automated_detection'));
-        }
-
-        if ($request->get('automated_takedown')) {
-            $statements->whereIn('automated_takedown', $request->get('automated_takedown'));
-        }
-
-        if ($request->get('decision_ground')) {
-            $statements->whereIn('decision_ground', $request->get('decision_ground'));
-        }
-
-        if ($request->get('platform_type')) {
-            $statements->whereIn('platform_type', $request->get('platform_type'));
-        }
-
-        if ($request->get('created_at_start')) {
-            $statements->where('created_at', '>=', Carbon::createFromFormat('d-m-Y', $request->get('created_at_start')));
-        }
-
-        if ($request->get('created_at_end')) {
-            $statements->where('created_at', '<=', Carbon::createFromFormat('d-m-Y', $request->get('created_at_end')));
-        }
-
-        if ($request->get('countries_list')) {
-            foreach ($request->get('countries_list') as $country) {
-                $statements->where('countries_list', 'LIKE', '%"'.$country.'"%');
-            }
-        }
-
-        if ($request->get('s')) {
-            $statements->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
-            {
-                $query->where('name', 'LIKE', '%' . $request->get('s') . '%');
-            });
-        }
+        $statements = $this->statement_query_service->query($request->all());
 
         $options = $this->prepareOptions();
 
