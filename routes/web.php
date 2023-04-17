@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['cas.auth'])->group(function() {
 
+    Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [\App\Http\Controllers\StatementController::class, 'store'])->name('statement.store');
@@ -62,8 +65,7 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
-Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
-Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+
 
 
 // What are we doing here?
