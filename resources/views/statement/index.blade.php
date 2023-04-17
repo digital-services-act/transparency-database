@@ -35,13 +35,34 @@
 
                     <p class="ecl-u-type-paragraph">
                         <x-ecl.checkboxes
-                            label="Automated Detection:"
+                                label="Ground for Decision"
+                                justlabel="true"
+                                name="decision_ground"
+                                id="decision_ground"
+                                :default="request()->get('decision_ground', [])"
+                                :options="$options['decision_grounds']"
+                        />
+
+                        <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
+                                               justlabel="true"
+                                               :options="$options['countries']" :default="request()->get('countries_list', [])"
+                                               select_all="European Union" select_item="Select a member state"
+                                               enter_keyword="Enter a country name" />
+
+                        <x-ecl.checkboxes
+                            label="Automated Detection"
                             justlabel="true"
                             name="automated_detection"
                             id="automated_detection"
                             :options="$options['automated_detections']"
                             :default="request()->get('automated_detection', [])"
                         />
+
+                        <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"
+                                          name="created_at_start" :value="request()->get('created_at_start', '')" />
+
+                        <x-ecl.datepicker label="Created End" id="created_at_end" justlabel="true"
+                                          name="created_at_end" :value="request()->get('created_at_end', '')" />
 
                         <x-ecl.button label="search" />
                     </p>

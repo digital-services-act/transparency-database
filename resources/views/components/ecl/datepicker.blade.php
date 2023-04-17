@@ -1,6 +1,6 @@
-@props(['size' => 'l', 'required' => false, 'help' => false, 'label' => 'label', 'required' => false, 'name' => 'name', 'id' => 'id', 'value' => null])
+@props(['size' => 'l', 'required' => false, 'help' => false, 'label' => 'label', 'required' => false, 'name' => 'name', 'id' => 'id', 'value' => null, 'justlabel' => false])
 <div class="ecl-form-group ecl-u-mb-l">
-    <x-ecl.label :label=$label :required=$required :name=$name :for=$id />
+    <x-ecl.label :label=$label :required=$required :name=$name :for=$id :justlabel="$justlabel" />
     <x-ecl.help :help=$help />
     <div class="ecl-datepicker">
         <input type="text"

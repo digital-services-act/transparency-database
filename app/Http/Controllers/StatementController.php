@@ -27,6 +27,24 @@ class StatementController extends Controller
             $statements->whereIn('automated_detection', $request->get('automated_detection'));
         }
 
+        if ($request->get('decision_ground')) {
+            $statements->whereIn('decision_ground', $request->get('decision_ground'));
+        }
+
+        if ($request->get('created_at_start')) {
+            $statements->where('created_at', '>=', Carbon::createFromFormat('d-m-Y', $request->get('created_at_start')));
+        }
+
+        if ($request->get('created_at_end')) {
+            $statements->where('created_at', '<=', Carbon::createFromFormat('d-m-Y', $request->get('created_at_end')));
+        }
+
+        if ($request->get('countries_list')) {
+            foreach ($request->get('countries_list') as $country) {
+                $statements->where('countries_list', 'LIKE', '%"'.$country.'"%');
+            }
+        }
+
         if ($request->get('s')) {
             $statements->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
             {
