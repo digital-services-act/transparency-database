@@ -22,13 +22,20 @@ class StatementController extends Controller
     {
         $statements = Statement::query();
 
-
         if ($request->get('automated_detection')) {
             $statements->whereIn('automated_detection', $request->get('automated_detection'));
         }
 
+        if ($request->get('automated_takedown')) {
+            $statements->whereIn('automated_takedown', $request->get('automated_takedown'));
+        }
+
         if ($request->get('decision_ground')) {
             $statements->whereIn('decision_ground', $request->get('decision_ground'));
+        }
+
+        if ($request->get('platform_type')) {
+            $statements->whereIn('platform_type', $request->get('platform_type'));
         }
 
         if ($request->get('created_at_start')) {
@@ -126,6 +133,8 @@ class StatementController extends Controller
 
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
+        $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
+        $platform_types = $this->mapForSelectWithKeys(Statement::PLATFORM_TYPES);
 
         array_map(function ($automated_detection) {
             return ['value' => $automated_detection, 'label' => $automated_detection];
@@ -145,6 +154,8 @@ class StatementController extends Controller
         return compact(
             'countries',
             'automated_detections',
+            'automated_takedowns',
+            'platform_types',
             'decisions',
             'decision_grounds',
             'illegal_content_fields',

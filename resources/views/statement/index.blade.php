@@ -12,6 +12,9 @@
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
         <form method="get">
             <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('statement.index') }}'>clear</a>" placeholder="search by name and uuid" justlabel="true" value="{{ request()->get('s', '') }}" />
+            <div class="ecl-u-f-r">
+                <x-ecl.button label="search" />
+            </div>
             <div class="ecl-expandable" data-ecl-expandable="true" data-ecl-auto-init="Expandable">
                 <button class="ecl-button ecl-button--secondary ecl-expandable__toggle"
                         type="button"
@@ -31,7 +34,7 @@
                         </svg>
                     </span>
                 </button>
-                <div id="expandable-search-content" class="ecl-expandable__content" hidden="">
+                <div id="expandable-search-content" class="ecl-u-mt-s ecl-expandable__content ecl-u-border-s-all ecl-u-bg-white ecl-u-pa-s" style="position: absolute;" hidden="">
 
                     <p class="ecl-u-type-paragraph">
                         <x-ecl.checkboxes
@@ -41,6 +44,15 @@
                                 id="decision_ground"
                                 :default="request()->get('decision_ground', [])"
                                 :options="$options['decision_grounds']"
+                        />
+
+                        <x-ecl.checkboxes
+                                label="Platform Type"
+                                justlabel="true"
+                                name="platform_type"
+                                id="platform_type"
+                                :default="request()->get('platform_type', [])"
+                                :options="$options['platform_types']"
                         />
 
                         <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
@@ -58,13 +70,21 @@
                             :default="request()->get('automated_detection', [])"
                         />
 
+                        <x-ecl.checkboxes
+                                label="Automated Take-down"
+                                justlabel="true"
+                                name="automated_takedown"
+                                id="automated_takedown"
+                                :options="$options['automated_takedowns']"
+                                :default="request()->get('automated_takedown', [])"
+                        />
+
                         <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"
                                           name="created_at_start" :value="request()->get('created_at_start', '')" />
 
                         <x-ecl.datepicker label="Created End" id="created_at_end" justlabel="true"
                                           name="created_at_end" :value="request()->get('created_at_end', '')" />
 
-                        <x-ecl.button label="search" />
                     </p>
 
                 </div>

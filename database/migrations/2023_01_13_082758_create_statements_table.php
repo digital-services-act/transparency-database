@@ -20,6 +20,7 @@ class CreateStatementsTable extends Migration
 
             $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
+            $table->enum('platform_type', array_keys(\App\Models\Statement::PLATFORM_TYPES));
 
             $table->string('illegal_content_legal_ground', 255)->nullable();
             $table->string('illegal_content_explanation',500)->nullable();
@@ -34,6 +35,7 @@ class CreateStatementsTable extends Migration
             $table->string('source_other', 255)->nullable();
 
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
+            $table->enum('automated_takedown', \App\Models\Statement::AUTOMATED_TAKEDOWNS);
 
             $table->enum('redress', array_keys(\App\Models\Statement::REDRESSES))->nullable();
             $table->string('redress_more', 255)->nullable();

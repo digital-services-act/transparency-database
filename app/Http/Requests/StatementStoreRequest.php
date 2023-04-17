@@ -27,6 +27,7 @@ class StatementStoreRequest extends FormRequest
         return [
             'decision_taken' => ['required', $this->in(array_keys(Statement::DECISIONS))],
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
+            'platform_type' => ['required', $this->in(array_keys(Statement::PLATFORM_TYPES))],
             'illegal_content_legal_ground' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
             'illegal_content_explanation' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
             'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
@@ -37,6 +38,7 @@ class StatementStoreRequest extends FormRequest
             'source_identity' => ['string','nullable'],
             'source_other' => ['required_if:source,SOURCE_OTHER','exclude_unless:source,SOURCE_OTHER'],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
+            'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
             'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
             'redress_more' => ['string','nullable'],
         ];

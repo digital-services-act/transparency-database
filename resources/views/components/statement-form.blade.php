@@ -8,6 +8,15 @@
               size="xl" />
 <hr>
 
+<x-ecl.select label="Platform Type"
+              name="platform_type"
+              id="platform_type"
+              :options="$options['platform_types']"
+              required="true" default="{{ $statement->platform_type }}"
+              size="xl" />
+
+<hr>
+
 <x-ecl.select label="Ground for Decision"
               name="decision_ground"
               id="decision_ground" default="{{ $statement->decision_ground }}"
@@ -44,11 +53,19 @@
 
 <hr>
 
-<x-ecl.radio label="Was the decision taken in respect of content detected or identified using automated means "
+<x-ecl.radio label="Was the decision taken in respect of automatically detected means "
              name="automated_detection"
              id="automated_detection"
              :options="$options['automated_detections']"
              default="{{ $statement->automated_detection }}"
+             required="true"
+/>
+
+<x-ecl.radio label="Was the take-down performed using automated means "
+             name="automated_takedown"
+             id="automated_takedown"
+             :options="$options['automated_takedowns']"
+             default="{{ $statement->automated_takedown }}"
              required="true"
 />
 

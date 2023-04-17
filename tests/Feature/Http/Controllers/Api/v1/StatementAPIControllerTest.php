@@ -27,10 +27,12 @@ class StatementAPIControllerTest extends TestCase
         $this->required_fields = [
             'decision_taken' => 'DECISION_ALL',
             'decision_ground' => 'ILLEGAL_CONTENT',
+            'platform_type' => 'SOCIAL_MEDIA',
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'source' => 'SOURCE_ARTICLE_16',
             'automated_detection' => 'No',
+            'automated_takedown' => 'Yes',
             'user_id' => 1,
         ];
     }

@@ -38,6 +38,24 @@ class Statement extends Model
         Statement::AUTOMATED_DETECTIONS_YES,
         Statement::AUTOMATED_DETECTIONS_NO,
     ];
+
+    public const AUTOMATED_TAKEDOWN_YES = 'Yes';
+    public const AUTOMATED_TAKEDOWN_NO = 'No';
+    public const AUTOMATED_TAKEDOWNS = [
+        Statement::AUTOMATED_TAKEDOWN_YES,
+        Statement::AUTOMATED_TAKEDOWN_NO,
+    ];
+
+    public const PLATFORM_TYPE_SOCIAL_MEDIA = 'Social Media';
+    public const PLATFORM_TYPE_VIDEO = 'Video';
+    public const PLATFORM_TYPE_MUSIC = 'Music';
+    public const PLATFORM_TYPE_PHOTOGRAPHY = 'Photography';
+    public const PLATFORM_TYPES = [
+        'SOCIAL_MEDIA' => Statement::PLATFORM_TYPE_SOCIAL_MEDIA,
+        'VIDEO' => Statement::PLATFORM_TYPE_VIDEO,
+        'MUSIC' => Statement::PLATFORM_TYPE_MUSIC,
+        'PHOTOGRAPHY' => Statement::PLATFORM_TYPE_PHOTOGRAPHY,
+    ];
 //
     public const REDRESS_INTERNAL_MECHANISM = 'Internal complaint-handling mechanism';
     public const REDRESS_OUT_OF_COURT = 'Out-of-court dispute settlement';

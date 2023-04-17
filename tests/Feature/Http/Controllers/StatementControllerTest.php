@@ -20,6 +20,19 @@ class StatementControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
+    protected $dummy_attributes = [
+        'decision_taken' => 'DECISION_ALL',
+        'decision_ground' => 'ILLEGAL_CONTENT',
+        'platform_type' => 'SOCIAL_MEDIA',
+        'illegal_content_legal_ground' => 'foo',
+        'illegal_content_explanation' => 'bar',
+        'countries_list' => ['BE','FR'],
+        'date_abolished' => '03-01-2023',
+        'source' => 'SOURCE_ARTICLE_16',
+        'automated_detection' => 'Yes',
+        'automated_takedown' => 'Yes'
+    ];
+
     /**
      * @test
      */
@@ -132,16 +145,7 @@ class StatementControllerTest extends TestCase
 
         // When making statements via the FORM
         // The dates come in as d-m-Y from the ECL datepicker.
-        $response = $this->post(route('statement.store'), [
-            'decision_taken' => 'DECISION_ALL',
-            'decision_ground' => 'ILLEGAL_CONTENT',
-            'illegal_content_legal_ground' => 'foo',
-            'illegal_content_explanation' => 'bar',
-            'countries_list' => ['BE','FR'],
-            'date_abolished' => '03-01-2023',
-            'source' => 'SOURCE_ARTICLE_16',
-            'automated_detection' => 'Yes'
-        ]);
+        $response = $this->post(route('statement.store'), $this->dummy_attributes);
 
 
         $this->assertCount(1, Statement::all());

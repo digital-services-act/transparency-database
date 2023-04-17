@@ -37,6 +37,10 @@
 
     <x-info-line title="Ground for Decision"
                  :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
+
+    <x-info-line title="Platform Type"
+                 :content="\App\Models\Statement::PLATFORM_TYPES[$statement->platform_type]"></x-info-line>
+
     <x-info-line title="Legal ground relied on" :content="$statement->illegal_content_legal_ground"></x-info-line>
     <x-info-line title="Explanation of why the content is considered to be illegal on that ground"
                  :content="$statement->illegal_content_explanation"></x-info-line>
@@ -54,6 +58,7 @@
     <x-info-line title="Other Source" :content="$statement->source_other"></x-info-line>
 
     <x-info-line title="Automated Detection" :content="$statement->automated_detection"></x-info-line>
+    <x-info-line title="Automated Take-down" :content="$statement->automated_takedown"></x-info-line>
 
     @if($statement->date_abolished)
         <x-info-line title="Valid until" :content="$statement->date_abolished->format('d-m-Y')"></x-info-line>

@@ -80,6 +80,7 @@ You will also receive a payload with the statement as created in the database:
 {
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
+    "platform_type": "SOCIAL_MEDIA",
     "incompatible_content_ground": "incompatible content ground",
     "incompatible_content_explanation": "incompatible content explanation",
     "countries_list": [
@@ -91,6 +92,7 @@ You will also receive a payload with the statement as created in the database:
     "source": "SOURCE_VOLUNTARY",
     "source_identity": "source identity",
     "automated_detection": "No",
+    "automated_takedown": "Yes",
     "redress": "REDRESS_INTERNAL_MECHANISM",
     "redress_more": "redress_more"
     "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3"
@@ -156,6 +158,23 @@ The value provided must be one of the following:
 </ul>
 
 
+### Platform Type (platform_type)
+
+This is a required attribute and it tells us what sort of platform was in question.
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::PLATFORM_TYPES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 ### Illegal Content Legal Ground (illegal_content_legal_ground)
 
 This is required if the ILLEGAL_CONTENT was the decision_ground. It is the legal ground relied on.
@@ -220,8 +239,12 @@ This is an optional textual field and it identifies the source of this statement
 ### Automated Detection (automated_detection)
 
 This is a required attribute and it must be in the form "Yes" or "No".
-This indicates to us that decision taken in respect of 
-content detected or identified using automated means.
+This indicates to us that decision taken in respect of automatically detected means.
+
+### Automated Take-Down (automated_takedown)
+
+This is a required attribute and it must be in the form "Yes" or "No".
+This indicates to us that take-down was performed using automated means.
 
 ### Redress (redress)
 
@@ -261,6 +284,7 @@ $headers = [
 $body = '{
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
+  "platform_type": "SOCIAL_MEDIA",
   "illegal_content_legal_ground": "illegal content legal ground",
   "illegal_content_explanation": "illegal content explanation",
   "incompatible_content_ground": "incompatible content ground",
@@ -275,6 +299,7 @@ $body = '{
   "source_identity": "source identity",
   "source_other": "source other",
   "automated_detection": "No",
+  "automated_takedown": "Yes",
   "redress": "REDRESS_INTERNAL_MECHANISM",
   "redress_more": "redress_more"
 }';
@@ -293,20 +318,22 @@ curl --location '{{$baseurl}}/api/statement/create' \
 --data '{
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
+    "platform_type": "SOCIAL_MEDIA",
     "illegal_content_legal_ground": "illegal content legal ground",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content ground",
     "incompatible_content_explanation": "incompatible content explanation",
     "countries_list": [
-        "PT",
-        "ES",
-        "DE"
+    "PT",
+    "ES",
+    "DE"
     ],
     "date_abolished": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
     "source_identity": "source identity",
     "source_other": "source other",
     "automated_detection": "No",
+    "automated_takedown": "Yes",
     "redress": "REDRESS_INTERNAL_MECHANISM",
     "redress_more": "redress_more"
 }'
@@ -323,6 +350,7 @@ conn = http.client.HTTPSConnection("{{str_replace("https://", "", $baseurl)}}")
 payload = json.dumps({
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
+  "platform_type": "SOCIAL_MEDIA",
   "illegal_content_legal_ground": "illegal content legal ground",
   "illegal_content_explanation": "illegal content explanation",
   "incompatible_content_ground": "incompatible content ground",
@@ -337,6 +365,7 @@ payload = json.dumps({
   "source_identity": "source identity",
   "source_other": "source other",
   "automated_detection": "No",
+  "automated_takedown": "Yes",
   "redress": "REDRESS_INTERNAL_MECHANISM",
   "redress_more": "redress_more"
 })
@@ -356,7 +385,7 @@ print(data.decode("utf-8"))
 ```javascript
 OkHttpClient client = new OkHttpClient().newBuilder().build();
 MediaType mediaType = MediaType.parse("application/json");
-RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
+RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"platform_type\": \"SOCIAL_MEDIA\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
 Request request = new Request.Builder()
   .url("{{$baseurl}}/api/statement/create")
   .method("POST", body)
