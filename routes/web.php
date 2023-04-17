@@ -55,6 +55,7 @@ Route::middleware(['cas.auth'])->group(function() {
 
 });
 
+Route::any('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', function () {
     return view('home');
