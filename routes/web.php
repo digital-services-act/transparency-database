@@ -23,16 +23,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['cas.auth'])->group(function() {
 
+    Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [\App\Http\Controllers\StatementController::class, 'store'])->name('statement.store');
     });
 
 
-    //Route::group(['middleware' => ['can:impersonate']], function(){
+//    Route::group(['middleware' => ['can:impersonate']], function(){
         Route::post('/impersonate', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
         Route::get('/impersonate/stop', [\App\Http\Controllers\ImpersonateController::class, 'stopImpersonate'])->name('impersonate_stop');
-    //});
+//    });
 
     Route::group(['middleware' => ['can:administrate']], function(){
         Route::resource('role', \App\Http\Controllers\RoleController::class);
@@ -65,10 +68,10 @@ Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show']
 
 
 
+
+
 // What are we doing here?
 Route::resource('entity', App\Http\Controllers\EntityController::class)->except('edit', 'update', 'destroy');
-
-
 
 
 // Chain Saw Routes
