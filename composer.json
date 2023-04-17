@@ -90,7 +90,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "cweagans/composer-patches": true
+            "cweagans/composer-patches": true,
+            "cyclonedx/cyclonedx-php-composer": true
         }
     },
     "minimum-stability": "dev",

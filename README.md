@@ -1,4 +1,4 @@
-DSA Transparency Database [![Laravel](https://github.com/DG-CNECT/dsa-module2/actions/workflows/vapor.yml/badge.svg?branch=main)](https://github.com/DG-CNECT/dsa-module2/actions/workflows/vapor.yml)
+DSA Transparency Database [![Laravel](https://github.com/digital-services-act/transparency-database/actions/workflows/vapor.yml/badge.svg?branch=main)](https://github.com/digital-services-act/transparency-database/actions/workflows/vapor.yml)
 =========================
 
 The DSA Transparency database collects and analyzes statements of reasons, helping Internet users to know their rights and understand the law. These data enable us to study the prevalence of legal threats and let Internet users see the source of content removals.
