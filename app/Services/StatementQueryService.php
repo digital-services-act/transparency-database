@@ -34,10 +34,12 @@ class StatementQueryService
         }
 
         if ($filters['created_at_start'] ?? null) {
+            // ECL sends in the date as d-m-Y
             $statements->where('created_at', '>=', Carbon::createFromFormat('d-m-Y', $filters['created_at_start']));
         }
 
         if ($filters['created_at_end'] ?? null) {
+            // ECL sends in the date as d-m-Y
             $statements->where('created_at', '<=', Carbon::createFromFormat('d-m-Y', $filters['created_at_end']));
         }
 
