@@ -96,18 +96,20 @@
                         {{--                                       data-ecl-menu-link="">Documentation</a>--}}
                         {{--                                </li>--}}
 
+                        @can('view dashboard')
+                            <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
+                                    href="{{route('dashboard')}}" class="ecl-menu__link"
+                                    data-ecl-menu-link="">Dashboard</a>
+                            </li>
+                        @endcan
+
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                            <a target="_blank"
-                               href="https://github.com/DG-CNECT/dsa-module2/wiki/DSA-Transparency-Database---API-Documentation"
+                            <a
+                               href="{{ route('dashboard.page.show', ['api-documentation']) }}"
                                class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
                         </li>
 
-                        @can('view dashboard')
-                            <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
-                                        href="{{route('dashboard')}}" class="ecl-menu__link"
-                                        data-ecl-menu-link="">Dashboard</a>
-                            </li>
-                        @endcan
+
 
                     </ul>
             </section>
