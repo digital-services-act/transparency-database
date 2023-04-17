@@ -20,16 +20,24 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = Statement::with('entities');
+        $statements = Statement::query();
         if ($request->get('s')) {
-            $statements = Statement::with('entities')->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
+            $statements->where('uuid', 'like', '%' . $request->get('s') . '%')->orWhereHas('user', function($query) use($request)
             {
                 $query->where('name', 'LIKE', '%' . $request->get('s') . '%');
             });
         }
 
+        if ($request->get('automated_detection')) {
+            $statements->whereIn('automated_detection', $request->get('automated_detection'));
+        }
+
+        $options = $this->prepareOptions();
+
+        $total = $statements->count();
+
         $statements = $statements->orderBy('id', 'DESC')->paginate(50)->withQueryString();
-        return view('statement.index', compact('statements'));
+        return view('statement.index', compact('statements', 'options', 'total'));
     }
 
     /**

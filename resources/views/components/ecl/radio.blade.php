@@ -1,4 +1,4 @@
-@props(['label' => 'label', 'id' => 'id', 'name' => 'name', 'required' => true, 'help' => null, 'options' => [], 'default' => null])
+@props(['label' => 'label', 'id' => 'id', 'name' => 'name', 'required' => false, 'help' => null, 'options' => [], 'default' => null])
 
 <fieldset class="ecl-form-group ecl-u-mb-l" aria-describedby="helper-id-1">
 
