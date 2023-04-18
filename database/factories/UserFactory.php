@@ -12,6 +12,7 @@ class UserFactory extends Factory
 {
 
     private $social_media_names = [
+        'Discord',
         'Facebook',
         'WhatsApp',
         'Instagram',
@@ -31,8 +32,7 @@ class UserFactory extends Factory
         'Tumblr',
         'Planoly',
         'Tiktok',
-        'Reddit',
-        'Discord'
+        'Reddit'
     ];
 
     /**

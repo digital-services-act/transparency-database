@@ -11,7 +11,7 @@
 
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
         <form method="get">
-            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('statement.index') }}'>clear</a>" placeholder="search by name and uuid" justlabel="true" value="{{ request()->get('s', '') }}" />
+            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('statement.index') }}'>clear</a>" placeholder="search by creator" justlabel="true" value="{{ request()->get('s', '') }}" />
             <div class="ecl-u-f-r">
                 <x-ecl.button label="search" />
             </div>

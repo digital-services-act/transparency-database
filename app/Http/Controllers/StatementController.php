@@ -36,7 +36,8 @@ class StatementController extends Controller
 
         $total = $statements->count();
 
-        $statements = $statements->orderBy('id', 'DESC')->paginate(50)->withQueryString();
+        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
+
         return view('statement.index', compact('statements', 'options', 'total'));
     }
 

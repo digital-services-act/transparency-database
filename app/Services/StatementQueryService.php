@@ -35,12 +35,12 @@ class StatementQueryService
 
         if ($filters['created_at_start'] ?? null) {
             // ECL sends in the date as d-m-Y
-            $statements->where('created_at', '>=', Carbon::createFromFormat('d-m-Y', $filters['created_at_start']));
+            $statements->where('created_at', '>=', Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00'));
         }
 
         if ($filters['created_at_end'] ?? null) {
             // ECL sends in the date as d-m-Y
-            $statements->where('created_at', '<=', Carbon::createFromFormat('d-m-Y', $filters['created_at_end']));
+            $statements->where('created_at', '<=', Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59'));
         }
 
         if ($filters['countries_list'] ?? null) {
@@ -50,11 +50,9 @@ class StatementQueryService
         }
 
         if ($filters['s'] ?? null) {
-            $statements->where(function($query) use($statements, $filters) {
-                $query->where('uuid', 'like', '%' . $filters['s'] . '%')->orWhereHas('user', function($query_inner) use($filters)
-                {
-                    $query_inner->where('name', 'LIKE', '%' . $filters['s'] . '%');
-                });
+            $statements->whereHas('user', function($query) use($filters)
+            {
+                $query->where('name', 'LIKE', '%' . $filters['s'] . '%');
             });
         }
 
