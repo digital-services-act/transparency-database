@@ -24,6 +24,15 @@ __Each time you generate a new token the old token becomes invalid!__
 
 <x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies calls to the API as you! Do not share this token with other entities. They will be able to impersonate and act as you!" close="" />
 
+## Sandbox
+
+We highly encourage all users of the API to first test and try out their API code using the sandbox version of 
+the application. This is a copy of the application and it is reset and blanked out each week. If your code if
+is working there, then the only difference to the production version will be the URL endpoint and 
+the token used.
+
+<a href="{{ env('SANDBOX_URL') }}" target="_blank">SANDBOX VERSION</a>
+
 ## Creating a Statement
 
 To create a statement of reason using the API you will need to make a
