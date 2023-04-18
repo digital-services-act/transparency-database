@@ -3,6 +3,7 @@
 namespace Tests\Feature\Services;
 
 
+use App\Models\Statement;
 use App\Services\StatementQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -58,5 +59,78 @@ class StatementQueryServiceTest extends TestCase
         $total = $automated_count + $manual_count;
 
         $this->assertEquals(200, $total);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_countries_list()
+    {
+        $filters = [
+            'countries_list' => ["FR", "DE", "NL", "XX"]
+        ];
+        // The XX should be filtered out... ;)
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertEquals('select * from "statements" where "countries_list" LIKE ? and "countries_list" LIKE ? and "countries_list" LIKE ?', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_created_at_start()
+    {
+        $filters = [
+            'created_at_start' => "20-5-2021"
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertEquals('select * from "statements" where "created_at" >= ?', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_created_at_end()
+    {
+        $filters = [
+            'created_at_end' => "20-5-2021"
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertEquals('select * from "statements" where "created_at" <= ?', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_s()
+    {
+        $filters = [
+            's' => "test"
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertEquals('select * from "statements" where exists (select * from "users" where "statements"."user_id" = "users"."id" and "name" LIKE ?)', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_decision_ground()
+    {
+        $filters = [
+            'decision_ground' => array_keys(Statement::DECISION_GROUNDS)
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertStringContainsString('select * from "statements" where "decision_ground" in (?', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_platform_type()
+    {
+        $filters = [
+            'platform_type' => array_keys(Statement::PLATFORM_TYPES)
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertStringContainsString('select * from "statements" where "platform_type" in (?', $sql);
     }
 }
