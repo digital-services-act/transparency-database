@@ -34,7 +34,7 @@
                         </svg>
                     </span>
                 </button>
-                <div id="expandable-search-content" class="ecl-u-mt-s ecl-expandable__content ecl-u-border-s-all ecl-u-bg-white ecl-u-pa-s" style="position: absolute;" hidden="">
+                <div id="expandable-search-content" class="ecl-u-mt-s ecl-expandable__content ecl-u-border-s-all ecl-u-bg-white ecl-u-pa-s" style="position: absolute;z-index: 5000;" hidden="">
 
                     <p class="ecl-u-type-paragraph">
                         <x-ecl.checkboxes
