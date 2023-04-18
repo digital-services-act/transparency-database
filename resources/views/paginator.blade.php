@@ -5,13 +5,13 @@
         <ul class="ecl-pagination__list">
             @if ($paginator->onFirstPage())
 
-                <li class="ecl-pagination__item ecl-pagination__item--previous"><span
-                        class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-before ecl-pagination__link"
-                        aria-label="Go to previous page"><svg
-                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-link__icon"
-                            focusable="false" aria-hidden="true">
-                            <x-ecl.icon icon="corner-arrow" />
-                    </svg><span class="ecl-link__label">Previous</span></span></li>
+{{--                <li class="ecl-pagination__item ecl-pagination__item--previous"><span--}}
+{{--                        class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-before ecl-pagination__link"--}}
+{{--                        aria-label="Go to previous page"><svg--}}
+{{--                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-link__icon"--}}
+{{--                            focusable="false" aria-hidden="true">--}}
+{{--                            <x-ecl.icon icon="corner-arrow" />--}}
+{{--                    </svg><span class="ecl-link__label">Previous</span></span></li>--}}
             @else
                 <li class="ecl-pagination__item ecl-pagination__item--previous"><a
                         href="{{ $paginator->previousPageUrl() }}"
@@ -67,10 +67,10 @@
                         </svg>
                     </a></li>
             @else
-                <span
-                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md">
-                    {!! __('pagination.next') !!}
-                </span>
+{{--                <span--}}
+{{--                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md">--}}
+{{--                    {!! __('pagination.next') !!}--}}
+{{--                </span>--}}
             @endif
 
         </ul>
