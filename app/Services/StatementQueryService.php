@@ -16,7 +16,6 @@ class StatementQueryService
         'automated_takedown',
         'created_at_start',
         'created_at_end',
-        'created_at_end',
         'decision_ground',
         'platform_type',
         'countries_list',
