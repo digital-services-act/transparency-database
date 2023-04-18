@@ -14,7 +14,7 @@ class ResetApplication extends Command
      *
      * @var string
      */
-    protected $signature = 'reset-application {--force}';
+    protected $signature = 'reset-application {--force} {--reallyforce}';
 
     /**
      * The console command description.
@@ -28,13 +28,16 @@ class ResetApplication extends Command
      */
     public function handle(): void
     {
-        if (env('APP_ENV') != 'production' || $this->option('force')) {
+        if (env('APP_ENV') != 'production' || ($this->option('force') && $this->option('reallyforce'))) {
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();
             Statement::query()->delete();
             Statement::factory()->count(1000)->create();
         } else {
-            $this->error('Oh hell no, we do not run this in production. I might do it if you use the force.');
+            $this->error('Oh hell no!');
+            $this->error('We do not run this in production.');
+            $this->error('I might do it if you use the force.');
+            $this->error('Even then, you are going to have to really force it.');
         }
     }
 }
