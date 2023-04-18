@@ -5,10 +5,22 @@ namespace App\Services;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class StatementQueryService
 {
+    protected array $allowed_filters = [
+        's',
+        'automated_detection',
+        'automated_takedown',
+        'created_at_start',
+        'created_at_end',
+        'created_at_end',
+        'decision_ground',
+        'platform_type',
+        'countries_list',
+    ];
     /**
      * @param array $filters
      *
@@ -18,13 +30,15 @@ class StatementQueryService
     {
         $statements = Statement::query();
 
-        foreach ($filters as $filter_key => $filter_value) {
+        foreach ($this->allowed_filters as $filter_key)
+        if (isset($filters[$filter_key]) && $filters[$filter_key]) {
             $method = 'apply' . ucfirst(Str::camel($filter_key))     . 'Filter';
-            if (method_exists($this, $method) && $filter_value) {
+            if (method_exists($this, $method)) {
                 try {
-                    $this->$method($statements, $filter_value);
-                } catch (\TypeError $e) {
-
+                    $this->$method($statements, $filters[$filter_key]);
+                }
+                catch (\TypeError|\Exception $e) {
+                    Log::error("Statement Query Service Error: " . $e->getMessage());
                 }
             }
         }
@@ -110,10 +124,8 @@ class StatementQueryService
      */
     public function applyCreatedAtStartFilter(Builder $query, string $filter_value): void
     {
-        try {
-            $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value . ' 00:00:00');
-            $query->where('created_at', '>=', $date);
-        } catch (\Exception $e) {}
+        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value . ' 00:00:00');
+        $query->where('created_at', '>=', $date);
     }
 
     /**
@@ -124,10 +136,8 @@ class StatementQueryService
      */
     public function applyCreatedAtEndFilter(Builder $query, string $filter_value): void
     {
-        try {
-            $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value . ' 23:59:59');
-            $query->where('created_at', '<=', $date);
-        } catch (\Exception $e) {}
+        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value . ' 23:59:59');
+        $query->where('created_at', '<=', $date);
     }
 
     /**
