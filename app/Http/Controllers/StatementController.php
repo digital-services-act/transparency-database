@@ -30,7 +30,7 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = $this->statement_query_service->query($request->all());
+        $statements = $this->statement_query_service->query($request->query());
 
         $options = $this->prepareOptions();
 
