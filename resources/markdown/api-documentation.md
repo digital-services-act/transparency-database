@@ -59,6 +59,7 @@ Example JSON payload body:
 {
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
+    "platform_type": "SOCIAL_MEDIA",
     "illegal_content_legal_ground": "illegal content legal ground",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content ground",
@@ -73,6 +74,7 @@ Example JSON payload body:
     "source_identity": "source identity",
     "source_other": "source other",
     "automated_detection": "No",
+    "automated_takedown": "Yes",
     "redress": "REDRESS_INTERNAL_MECHANISM",
     "redress_more": "redress_more"
 }
