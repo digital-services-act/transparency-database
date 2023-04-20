@@ -43,6 +43,10 @@ class CreateStatementsTable extends Migration
             $table->integer('user_id');
             $table->string('method')->default('API');
             $table->timestamps();
+
+            // disable until we need, for now sqlite can't handle this.
+//            $table->fullText('illegal_content_explanation');
+//            $table->fullText('incompatible_content_explanation');
         });
     }
 

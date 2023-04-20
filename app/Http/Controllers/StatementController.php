@@ -140,14 +140,24 @@ class StatementController extends Controller
         );
     }
 
-    private function mapForSelectWithoutKeys($array)
+    /**
+     * @param $array
+     *
+     * @return array
+     */
+    private function mapForSelectWithoutKeys($array): array
     {
         return array_map(function ($value) {
             return ['value' => $value, 'label' => $value];
         }, $array);
     }
 
-    private function mapForSelectWithKeys($array)
+    /**
+     * @param $array
+     *
+     * @return array
+     */
+    private function mapForSelectWithKeys($array): array
     {
         return array_map(function ($key, $value) {
             return ['value' => $key, 'label' => $value];
@@ -157,7 +167,7 @@ class StatementController extends Controller
     /**
      * @return string[]
      */
-    public function getEuropean_countries_list(): array
+    private function getEuropean_countries_list(): array
     {
         $european_country_codes = Statement::EUROPEAN_COUNTRY_CODES;
 

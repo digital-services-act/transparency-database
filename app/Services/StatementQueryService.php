@@ -12,7 +12,7 @@ class StatementQueryService
 {
     // These are the filters that we are allowed to filter on.
     // If there is to be a new filter, then add it here first and then make
-    // a function
+    // a function. new_attribute -> applyNewAttributeFilter()
 
     private array $allowed_filters = [
         's',
@@ -34,14 +34,14 @@ class StatementQueryService
     {
         $statements = Statement::query();
 
-        foreach ($this->allowed_filters as $filter_key)
-        if (isset($filters[$filter_key]) && $filters[$filter_key]) {
-            $method = 'apply' . ucfirst(Str::camel($filter_key))     . 'Filter';
-            try {
-                $this->$method($statements, $filters[$filter_key]);
-            }
-            catch (\TypeError|\Exception $e) {
-                Log::error("Statement Query Service Error: " . $e->getMessage());
+        foreach ($this->allowed_filters as $filter_key) {
+            if (isset($filters[$filter_key]) && $filters[$filter_key]) {
+                $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
+                try {
+                    $this->$method($statements, $filters[$filter_key]);
+                } catch (\TypeError|\Exception $e) {
+                    Log::error("Statement Query Service Error: " . $e->getMessage());
+                }
             }
         }
 
@@ -56,10 +56,13 @@ class StatementQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        $query->whereHas('user', function($inner_query) use($filter_value)
-        {
+        $query->whereHas('user', function($inner_query) use($filter_value) {
             $inner_query->where('name', 'LIKE', '%' . $filter_value . '%');
         });
+
+        // Turn this on when you want to search the explanation fields.
+//        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();
+//        $query->whereIn('id', $ids);
     }
 
     /**

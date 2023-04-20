@@ -165,15 +165,31 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statements_body_fulltext';
+        return 'statements_index';
     }
 
     public function toSearchableArray()
     {
         return [
-            'title' => $this->title,
-            'body' => $this->body
+            'illegal_content_explanation' => $this->illegal_content_explanation,
+            'incompatible_content_explanation' => $this->incompatible_content_explanation
         ];
+    }
+
+    /**
+     * Get the value used to index the model.
+     */
+    public function getScoutKey(): mixed
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Get the key name used to index the model.
+     */
+    public function getScoutKeyName(): mixed
+    {
+        return 'uuid';
     }
 
     /**
