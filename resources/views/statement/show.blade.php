@@ -52,7 +52,7 @@
     <x-info-line title="Explanation of why the content is considered as incompatible on that ground"
                  :content="$statement->incompatible_content_explanation"></x-info-line>
 
-    <h2 class="ecl-u-type-heading-2">Additional Information</h2>
+    <h2 class="ecl-u-type-heading-2"><a style="text-decoration: none;color: #404040;" href="{{route('statement.show-details', [$statement])}}">Additional Information</a></h2>
 
     <x-info-line title="Facts and circumstances relied on in taking the decision"
                  :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
