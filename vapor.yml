@@ -2,6 +2,22 @@ id: 40918
 name: DSA-POC
 default-environment: dev
 environments:
+    acc:
+        database: dsa-acc
+        memory: 1024
+        cli-memory: 512
+        runtime: 'php-8.2:al2-arm'
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+            - 'php artisan event:cache'
+    dev:
+        database: dsa-dev
+        memory: 1024
+        cli-memory: 512
+        runtime: 'php-8.2:al2-arm'
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+            - 'php artisan event:cache'
     production:
         balancer: dsa-prod-load-balancer
         database: dsa-serverless
@@ -16,14 +32,6 @@ environments:
         memory: 1024
         cli-memory: 512
         runtime: 'php-8.1:al2'
-        build:
-            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
-            - 'php artisan event:cache'
-    dev:
-        database: dsa-dev
-        memory: 1024
-        cli-memory: 512
-        runtime: 'php-8.2:al2-arm'
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'

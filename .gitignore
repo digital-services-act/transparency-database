@@ -13,6 +13,9 @@ yarn-error.log
 /.idea
 /.vscode
 .env.staging
+.env.production
+.env.dev
+.env.acc
 /draft.yaml
 /.blueprint
 test-results
