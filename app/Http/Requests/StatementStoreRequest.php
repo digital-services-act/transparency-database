@@ -41,6 +41,7 @@ class StatementStoreRequest extends FormRequest
             'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
             'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
             'redress_more' => ['string','nullable'],
+            'statement_of_reason' => ['string','nullable'],
         ];
     }
 

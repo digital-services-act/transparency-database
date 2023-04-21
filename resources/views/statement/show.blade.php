@@ -32,6 +32,9 @@
         <x-info-line title="Sent by" :content="$statement->user?->name"></x-info-line>
     @endif
 
+    <x-info-line title="Reception Date"
+                 :content="$statement->created_at->format('d-m-Y g:i A')"></x-info-line>
+
     <x-info-line title="Decision Taken"
                  :content="\App\Models\Statement::DECISIONS[$statement->decision_taken]"></x-info-line>
 
@@ -70,6 +73,11 @@
         <x-info-line title="Information on possible redress available to the recipient of the decision taken"
                      :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>
         <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>
+    @endif
+
+    @if($details && $statement->statement_of_reason)
+        <x-info-line title="Statement"
+                     :content="$statement->statement_of_reason"></x-info-line>
     @endif
 
 @endsection

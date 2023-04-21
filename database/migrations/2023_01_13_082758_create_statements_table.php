@@ -44,6 +44,8 @@ class CreateStatementsTable extends Migration
             $table->string('method')->default('API');
             $table->timestamps();
 
+            $table->text('statement_of_reason')->nullable();
+
             // disable until we need, for now sqlite can't handle this.
 //            $table->fullText('illegal_content_explanation');
 //            $table->fullText('incompatible_content_explanation');

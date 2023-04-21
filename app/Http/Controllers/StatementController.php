@@ -61,9 +61,10 @@ class StatementController extends Controller
      *
      * @return Factory|View|Application
      */
-    public function show(Statement $statement): Factory|View|Application
+    public function show(Statement $statement, Request $request): Factory|View|Application
     {
-        return view('statement.show', compact('statement'));
+        $details = $request->input('details', false);
+        return view('statement.show', compact(['statement','details']));
     }
 
     /**
