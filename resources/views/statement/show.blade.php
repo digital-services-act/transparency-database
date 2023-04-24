@@ -32,6 +32,9 @@
         <x-info-line title="Sent by" :content="$statement->user?->name"></x-info-line>
     @endif
 
+    <x-info-line title="Reception Date"
+                 :content="$statement->created_at->format('d-m-Y g:i A')"></x-info-line>
+
     <x-info-line title="Decision Taken"
                  :content="\App\Models\Statement::DECISIONS[$statement->decision_taken]"></x-info-line>
 
@@ -51,6 +54,11 @@
 
     <h2 class="ecl-u-type-heading-2">Additional Information</h2>
 
+
+    <x-info-line title="Infringing URL"
+                 :content="$statement->url"></x-info-line>
+
+
     <x-info-line title="Facts and circumstances relied on in taking the decision"
                  :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
     <x-info-line title="Only if strictly necessary, identity of the notifier"
@@ -66,10 +74,15 @@
 
     <x-info-line title="Method" :content="$statement->method"></x-info-line>
 
-    @if($statement->redress)
-        <x-info-line title="Information on possible redress available to the recipient of the decision taken"
-                     :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>
-        <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>
+{{--    @if($statement->redress)--}}
+{{--        <x-info-line title="Information on possible redress available to the recipient of the decision taken"--}}
+{{--                     :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>--}}
+{{--        <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>--}}
+{{--    @endif--}}
+
+    @if($statement->statement_of_reason)
+        <x-info-line title="Original Statement of Reason"
+                     :content="$statement->statement_of_reason"></x-info-line>
     @endif
 
 @endsection

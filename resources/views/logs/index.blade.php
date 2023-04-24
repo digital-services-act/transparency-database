@@ -38,8 +38,9 @@
                     <td class="ecl-table__cell">{{ str_replace("App\\Models\\", "", $log->subject_type) }}</td>
                     <td class="ecl-table__cell">
                         {{ $log->subject_id }}
-                        @if($log->subject_type == 'App\Models\Statement')
-                            <a class="ecl-link" href="{{ route('statement.show', ['statement' => \App\Models\Statement::find($log->subject_id)?->uuid]) }}">
+
+                        @if($log->subject_type == 'App\Models\Statement' && \App\Models\Statement::find($log->subject_id))
+                            <a class="ecl-link" href="{{ route('statement.show', ['statement' => \App\Models\Statement::find($log->subject_id)->uuid]) }}">
                                 view
                             </a>
                         @endif

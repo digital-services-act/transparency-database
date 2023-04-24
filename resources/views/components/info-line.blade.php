@@ -8,7 +8,7 @@
         </div>
         <div class="ecl-col-8">
             <div class="ecl-u-pa-xs ecl-u-type-color-black ecl-u-type-l">
-                {{  $content }}
+                {!!  nl2br(e($content)) !!}
             </div>
         </div>
     </div>

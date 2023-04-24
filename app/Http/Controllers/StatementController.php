@@ -63,7 +63,7 @@ class StatementController extends Controller
      */
     public function show(Statement $statement): Factory|View|Application
     {
-        return view('statement.show', compact('statement'));
+        return view('statement.show', compact(['statement']));
     }
 
     /**
