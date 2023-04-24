@@ -75,8 +75,8 @@ Example JSON payload body:
     "source_other": "source other",
     "automated_detection": "No",
     "automated_takedown": "Yes",
-    "redress": "REDRESS_INTERNAL_MECHANISM",
-    "redress_more": "redress_more"
+    "statement_of_reason": "Free text with the actual statement of reason",
+    "url": "https://theurl.com"
 }
 ```
 
@@ -105,9 +105,9 @@ You will also receive a payload with the statement as created in the database:
     "automated_detection": "No",
     "automated_takedown": "Yes",
     "redress": "REDRESS_INTERNAL_MECHANISM",
-    "redress_more": "redress_more"
-    "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3"
-    "permalink": "{{$baseurl}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3"
+    "redress_more": "redress_more",
+    "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3",
+    "permalink": "{{$baseurl}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3",
     "self": "{{$baseurl}}/api/v{{config('app.api_latest')}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3"
 }
 ```
@@ -257,26 +257,13 @@ This indicates to us that decision taken in respect of automatically detected me
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that take-down was performed using automated means.
 
-### Redress (redress)
+### Statement of Reason (statement_of_reason)
+This is an optional attribute.
+This contains the data sent by the platform to the user with the details of the infringement. 
 
-This is an optional field and tells us the possible redress available to the recipient of the decision taken.
-
-The value provided must be one of the following:
-
-<ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::REDRESSES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
-</ul>
-
-### Redress More (redress_more)
-
-This is an optional field and describes more information about the redress.
+### URL (url)
+This is an optional attribute.
+This contains the URL to the data that has been moderated.
 
 ## Code Examples
 
@@ -311,8 +298,9 @@ $body = '{
   "source_other": "source other",
   "automated_detection": "No",
   "automated_takedown": "Yes",
-  "redress": "REDRESS_INTERNAL_MECHANISM",
-  "redress_more": "redress_more"
+  "statement_of_reason": "Free text with the actual statement of reason",
+  "url": "https://theurl.com"
+
 }';
 $request = new Request('POST', '{{$baseurl}}/api/statement/create', $headers, $body);
 $res = $client->sendAsync($request)->wait();
@@ -345,8 +333,8 @@ curl --location '{{$baseurl}}/api/statement/create' \
     "source_other": "source other",
     "automated_detection": "No",
     "automated_takedown": "Yes",
-    "redress": "REDRESS_INTERNAL_MECHANISM",
-    "redress_more": "redress_more"
+    "statement_of_reason": "Free text with the actual statement of reason",
+    "url": "https://theurl.com"
 }'
 ```
 
@@ -377,8 +365,8 @@ payload = json.dumps({
   "source_other": "source other",
   "automated_detection": "No",
   "automated_takedown": "Yes",
-  "redress": "REDRESS_INTERNAL_MECHANISM",
-  "redress_more": "redress_more"
+  "statement_of_reason": "Free text with the actual statement of reason",
+  "url": "https://theurl.com"
 })
 headers = {
   'Accept': 'application/json',
