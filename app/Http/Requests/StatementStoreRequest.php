@@ -42,6 +42,7 @@ class StatementStoreRequest extends FormRequest
             'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
             'redress_more' => ['string','nullable'],
             'statement_of_reason' => ['string','nullable'],
+            'url' => ['string','nullable'],
         ];
     }
 

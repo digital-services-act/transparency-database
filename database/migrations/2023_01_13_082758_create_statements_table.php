@@ -45,6 +45,7 @@ class CreateStatementsTable extends Migration
             $table->timestamps();
 
             $table->text('statement_of_reason')->nullable();
+            $table->string('url')->nullable();
 
             // disable until we need, for now sqlite can't handle this.
 //            $table->fullText('illegal_content_explanation');

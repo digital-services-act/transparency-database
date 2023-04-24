@@ -52,7 +52,12 @@
     <x-info-line title="Explanation of why the content is considered as incompatible on that ground"
                  :content="$statement->incompatible_content_explanation"></x-info-line>
 
-    <h2 class="ecl-u-type-heading-2"><a style="text-decoration: none;color: #404040;" href="{{route('statement.show-details', [$statement])}}">Additional Information</a></h2>
+    <h2 class="ecl-u-type-heading-2">Additional Information</h2>
+
+
+    <x-info-line title="Infringing URL"
+                 :content="$statement->url"></x-info-line>
+
 
     <x-info-line title="Facts and circumstances relied on in taking the decision"
                  :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
@@ -69,14 +74,14 @@
 
     <x-info-line title="Method" :content="$statement->method"></x-info-line>
 
-    @if($statement->redress)
-        <x-info-line title="Information on possible redress available to the recipient of the decision taken"
-                     :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>
-        <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>
-    @endif
+{{--    @if($statement->redress)--}}
+{{--        <x-info-line title="Information on possible redress available to the recipient of the decision taken"--}}
+{{--                     :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>--}}
+{{--        <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>--}}
+{{--    @endif--}}
 
-    @if($details && $statement->statement_of_reason)
-        <x-info-line title="Statement"
+    @if($statement->statement_of_reason)
+        <x-info-line title="Original Statement of Reason"
                      :content="$statement->statement_of_reason"></x-info-line>
     @endif
 

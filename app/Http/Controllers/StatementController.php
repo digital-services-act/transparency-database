@@ -63,19 +63,7 @@ class StatementController extends Controller
      */
     public function show(Statement $statement): Factory|View|Application
     {
-        $details = false;
-        return view('statement.show', compact(['statement', 'details']));
-    }
-
-    /**
-     * @param Statement $statement
-     *
-     * @return Factory|View|Application
-     */
-    public function show_details(Statement $statement): Factory|View|Application
-    {
-        $details = true;
-        return view('statement.show', compact(['statement', 'details']));
+        return view('statement.show', compact(['statement']));
     }
 
     /**
