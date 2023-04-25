@@ -206,6 +206,11 @@ class Statement extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function platform()
+    {
+        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
+    }
+
     /**
      * @return string
      */

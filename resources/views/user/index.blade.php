@@ -13,7 +13,7 @@
 
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
         <form method="get">
-            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('user.index') }}'>clear</a>" placeholder="search by email and name" justlabel="true" value="{{ request()->get('s', '') }}" />
+            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('user.index') }}'>clear</a>" placeholder="search by email/name/platform" justlabel="true" value="{{ request()->get('s', '') }}" />
         </form>
     </div>
 

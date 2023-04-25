@@ -57,11 +57,11 @@ class StatementQueryService
      */
     private function applyPlatformIdFilter(Builder $query, int $filter_value): void
     {
-        $query->whereHas('user', function($inner_query) use($filter_value) {
-            $inner_query->whereHas('platform', function($inner_inner_query) use($filter_value) {
-                $inner_inner_query->where('id', $filter_value);
-            });
+
+        $query->whereHas('platform', function($inner_query) use($filter_value) {
+            $inner_query->where('platforms.id', $filter_value);
         });
+
 
         // Turn this on when you want to search the explanation fields.
 //        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();

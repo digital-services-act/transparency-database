@@ -25,8 +25,11 @@ class UserController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         $users = User::query();
-        if ($request->get('s')) {
-            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->orWhere('email', 'like', '%' . $request->get('s') . '%');
+        $s = $request->get('s');
+        if ($s) {
+            $users->where('name', 'like', '%' . $s . '%')->orWhere('email', 'like', '%' . $s . '%')->orWhereHas('platform', function($inner_query) use ($s){
+                $inner_query->where('name', 'like', '%' . $s . '%');
+            });
         }
         $users = $users->paginate(50)->withQueryString();
 
