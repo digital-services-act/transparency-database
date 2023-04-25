@@ -41,6 +41,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::resource('role', \App\Http\Controllers\RoleController::class);
         Route::resource('permission', \App\Http\Controllers\PermissionController::class);
         Route::resource('user', \App\Http\Controllers\UserController::class);
+        Route::resource('platform', \App\Http\Controllers\PlatformController::class);
         Route::get('logs', [\App\Http\Controllers\LogsController::class, 'index'])->name('logs')->can('view logs');
     });
 

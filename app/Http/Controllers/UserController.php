@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Platform;
+use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -136,8 +137,13 @@ class UserController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
+        // Delete statements that this guy made.
+        Statement::query()->whereHas('user', function($inner_query) use($user) {
+            $inner_query->where('id', $user->id);
+        })->delete();
+
         $user->delete();
         return redirect()->route('user.index')->with('success', 'The user has been deleted');
     }

@@ -25,10 +25,21 @@ class Platform extends Model implements AttachableInterface
         'PHOTOGRAPHY' => self::PLATFORM_TYPE_PHOTOGRAPHY,
     ];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'id'
+    ];
+
+
+
+
     public function __construct(array $attributes = [])
     {
         $this->hasAttachedFile('icon');
-
         parent::__construct($attributes);
     }
 }
