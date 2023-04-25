@@ -20,7 +20,7 @@ class CreateStatementsTable extends Migration
 
             $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
-            $table->enum('platform_type', array_keys(\App\Models\Statement::PLATFORM_TYPES));
+
 
             $table->string('illegal_content_legal_ground', 255)->nullable();
             $table->string('illegal_content_explanation',500)->nullable();

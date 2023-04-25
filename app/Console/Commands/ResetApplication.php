@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Statement;
 use Database\Seeders\PermissionsSeeder;
+use Database\Seeders\PlatformSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Console\Command;
 
@@ -29,6 +30,7 @@ class ResetApplication extends Command
     public function handle(): void
     {
         if (env('APP_ENV') != 'production' || ($this->option('force') && $this->option('reallyforce'))) {
+            PlatformSeeder::resetPlatforms();
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();
             Statement::query()->delete();

@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "cweagans/composer-patches": "^1.7",
+        "czim/laravel-paperclip": "^5.0",
         "erusev/parsedown": "^1.7",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",

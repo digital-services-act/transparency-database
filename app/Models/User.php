@@ -132,4 +132,9 @@ class User extends Authenticatable
     {
         session()->forget('impersonate');
     }
+
+    public function platform()
+    {
+        return $this->hasOne(Platform::class, 'id', 'platform_id');
+    }
 }

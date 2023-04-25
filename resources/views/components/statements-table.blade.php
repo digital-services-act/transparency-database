@@ -12,9 +12,9 @@
     <tbody class="ecl-table__body">
     @foreach($statements as $statement)
         <tr class="ecl-table__row">
-            <td class="ecl-table__cell">{{$statement->user->name}}</td>
+            <td class="ecl-table__cell">{{$statement->user->platform->name}}</td>
             <td class="ecl-table__cell"><a class="ecl-link" href="{{ route('statement.show', [$statement]) }}">{{ $statement->uuid }}</a></td>
-            <td class="ecl-table__cell">{{ \App\Models\Statement::PLATFORM_TYPES[$statement->platform_type] }}</td>
+            <td class="ecl-table__cell">{{ \App\Models\Platform::PLATFORM_TYPES[$statement->user->platform->type] }}</td>
             <td class="ecl-table__cell">{{ $statement->created_at }}</td>
             <td class="ecl-table__cell">
                 @can('administrate')

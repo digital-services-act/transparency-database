@@ -7,6 +7,7 @@ environments:
         memory: 1024
         cli-memory: 512
         runtime: 'php-8.2:al2-arm'
+        storage: sor-dsa-m2-acc
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
@@ -15,6 +16,7 @@ environments:
         memory: 1024
         cli-memory: 512
         runtime: 'php-8.2:al2-arm'
+        storage: sor-dsa-m2-dev
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
@@ -25,6 +27,7 @@ environments:
         memory: 1024
         cli-memory: 512
         runtime: 'php-8.1:al2'
+        storage: sor-dsa-m2-production
         build:
             - 'composer install'
     staging:
@@ -32,6 +35,7 @@ environments:
         memory: 1024
         cli-memory: 512
         runtime: 'php-8.1:al2'
+        storage: sor-dsa-m2-staging
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'

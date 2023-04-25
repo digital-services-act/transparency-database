@@ -3,6 +3,7 @@
 namespace Tests\Feature\Services;
 
 
+use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -128,7 +129,7 @@ class StatementQueryServiceTest extends TestCase
     public function it_filters_on_platform_type()
     {
         $filters = [
-            'platform_type' => array_keys(Statement::PLATFORM_TYPES)
+            'platform_type' => array_keys(Platform::PLATFORM_TYPES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
         $this->assertStringContainsString('select * from "statements" where "platform_type" in (?', $sql);

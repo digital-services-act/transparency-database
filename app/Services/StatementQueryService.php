@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -115,9 +116,15 @@ class StatementQueryService
      */
     private function applyPlatformTypeFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::PLATFORM_TYPES));
+        $filter_values_validated = array_intersect($filter_value, array_keys(Platform::PLATFORM_TYPES));
         if ($filter_values_validated) {
-            $query->whereIn('platform_type', $filter_value);
+            foreach ($filter_values_validated as $filter_value) {
+                $query->whereHas('user', function ($inner_query) use ($filter_value) {
+                    $inner_query->whereHas('platform', function ($inner_inner_query) use ($filter_value) {
+                        $inner_inner_query->where('type', $filter_value);
+                    });
+                });
+            }
         }
     }
 

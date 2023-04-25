@@ -35,7 +35,6 @@ class StatementFactory extends Factory
 
             'decision_taken' => $this->faker->randomElement(array_keys(Statement::DECISIONS)),
             'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
-            'platform_type' => $this->faker->randomElement(array_keys(Statement::PLATFORM_TYPES)),
             'illegal_content_legal_ground' => $this->faker->text(100),
             'illegal_content_explanation' => $this->faker->text(100),
             'incompatible_content_ground' => $this->faker->text(100),
@@ -45,7 +44,7 @@ class StatementFactory extends Factory
 
             'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
 
-            'date_abolished' => Carbon::createMidnightDate($date_abolished),
+            'date_abolished' => $date_abolished,
 
             'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
             'source_identity' => $this->faker->text(100),
