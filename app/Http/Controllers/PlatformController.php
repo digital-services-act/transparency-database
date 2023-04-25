@@ -131,21 +131,10 @@ class PlatformController extends Controller
      */
     public function destroy(Platform $platform): RedirectResponse
     {
-        // Delete the statements for this platform.
-        Statement::query()->whereHas('user', function($inner_query) use($platform) {
-            $inner_query->whereHas('platform', function($inner_inner_query) use($platform) {
-               $inner_inner_query->where('id', $platform->id);
-            });
-        })->delete();
-
-        // Delete all users of this platform.
-        User::query()->whereHas('platform', function($inner_query) use($platform) {
-            $inner_query->where('id', $platform->id);
-        })->delete();
-
+        $platform->statements()->delete();
+        $platform->users()->delete();
         // delete the platform.
         $platform->delete();
-
         // Carry on
         return redirect()->route('platform.index')->with('success', 'The platform has been deleted');
     }

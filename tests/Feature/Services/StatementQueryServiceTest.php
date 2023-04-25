@@ -102,13 +102,13 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_s()
+    public function it_filters_on_platform_id()
     {
         $filters = [
-            's' => "test"
+            'platform_id' => 1
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where exists (select * from "users" where "statements"."user_id" = "users"."id" and "name" LIKE ?)', $sql);
+        $this->assertEquals('select * from "statements" where exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "id" = ?))', $sql);
     }
 
     /**
@@ -132,6 +132,6 @@ class StatementQueryServiceTest extends TestCase
             'platform_type' => array_keys(Platform::PLATFORM_TYPES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" where "platform_type" in (?', $sql);
+        $this->assertStringContainsString('select * from "statements" where exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?)) and exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?)) and exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?)) and exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?))', $sql);
     }
 }

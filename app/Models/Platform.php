@@ -42,4 +42,14 @@ class Platform extends Model implements AttachableInterface
         $this->hasAttachedFile('icon');
         parent::__construct($attributes);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'platform_id', 'id');
+    }
+
+    public function statements()
+    {
+        return $this->hasManyThrough(Statement::class, User::class, 'platform_id', 'user_id', 'id', 'id');
+    }
 }

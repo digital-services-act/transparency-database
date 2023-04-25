@@ -137,4 +137,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
+
+    public function statements()
+    {
+        return $this->hasMany(Statement::class, 'user_id', 'id');
+    }
 }

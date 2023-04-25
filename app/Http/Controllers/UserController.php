@@ -140,10 +140,7 @@ class UserController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         // Delete statements that this guy made.
-        Statement::query()->whereHas('user', function($inner_query) use($user) {
-            $inner_query->where('id', $user->id);
-        })->delete();
-
+        $user->statements()->delete();
         $user->delete();
         return redirect()->route('user.index')->with('success', 'The user has been deleted');
     }
