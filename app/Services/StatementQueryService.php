@@ -16,7 +16,7 @@ class StatementQueryService
     // a function. new_attribute -> applyNewAttributeFilter()
 
     private array $allowed_filters = [
-        's',
+        'platform_id',
         'automated_detection',
         'automated_takedown',
         'created_at_start',
@@ -51,14 +51,16 @@ class StatementQueryService
 
     /**
      * @param Builder $query
-     * @param string $filter_value
+     * @param int $filter_value
      *
      * @return void
      */
-    private function applySFilter(Builder $query, string $filter_value): void
+    private function applyPlatformIdFilter(Builder $query, int $filter_value): void
     {
         $query->whereHas('user', function($inner_query) use($filter_value) {
-            $inner_query->where('name', 'LIKE', '%' . $filter_value . '%');
+            $inner_query->whereHas('platform', function($inner_inner_query) use($filter_value) {
+                $inner_inner_query->where('id', $filter_value);
+            });
         });
 
         // Turn this on when you want to search the explanation fields.

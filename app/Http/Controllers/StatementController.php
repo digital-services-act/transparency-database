@@ -111,6 +111,14 @@ class StatementController extends Controller
         $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
         $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
 
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+            return [
+                'value' => $platform->id,
+                'label' => $platform->name
+            ];
+        })->toArray();
+        array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+
         array_map(function ($automated_detection) {
             return ['value' => $automated_detection, 'label' => $automated_detection];
         }, Statement::AUTOMATED_DETECTIONS);
@@ -137,7 +145,8 @@ class StatementController extends Controller
             'incompatible_content_fields',
             'sources',
             'sources_other',
-            'redresses'
+            'redresses',
+            'platforms',
         );
     }
 
