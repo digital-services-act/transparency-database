@@ -42,10 +42,13 @@ class CreateStatementsTable extends Migration
 
             $table->integer('user_id');
             $table->string('method')->default('API');
-            $table->timestamps();
+
 
             $table->text('statement_of_reason')->nullable();
             $table->string('url')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes();
 
             // disable until we need, for now sqlite can't handle this.
 //            $table->fullText('illegal_content_explanation');

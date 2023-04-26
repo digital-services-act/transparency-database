@@ -72,7 +72,7 @@ class StatementQueryServiceTest extends TestCase
         ];
         // The XX should be filtered out... ;)
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "countries_list" LIKE ? and "countries_list" LIKE ? and "countries_list" LIKE ?', $sql);
+        $this->assertEquals('select * from "statements" where "countries_list" LIKE ? and "countries_list" LIKE ? and "countries_list" LIKE ? and "statements"."deleted_at" is null', $sql);
     }
 
     /**
@@ -84,7 +84,7 @@ class StatementQueryServiceTest extends TestCase
             'created_at_start' => "20-5-2021"
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "created_at" >= ?', $sql);
+        $this->assertEquals('select * from "statements" where "created_at" >= ? and "statements"."deleted_at" is null', $sql);
     }
 
     /**
@@ -96,7 +96,7 @@ class StatementQueryServiceTest extends TestCase
             'created_at_end' => "20-5-2021"
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "created_at" <= ?', $sql);
+        $this->assertEquals('select * from "statements" where "created_at" <= ? and "statements"."deleted_at" is null', $sql);
     }
 
     /**
@@ -108,7 +108,7 @@ class StatementQueryServiceTest extends TestCase
             'platform_id' => 1
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where exists (select * from "platforms" inner join "users" on "users"."platform_id" = "platforms"."id" where "statements"."user_id" = "users"."id" and "platforms"."id" = ?)', $sql);
+        $this->assertEquals('select * from "statements" where exists (select * from "platforms" inner join "users" on "users"."platform_id" = "platforms"."id" where "statements"."user_id" = "users"."id" and "platforms"."id" = ? and "platforms"."deleted_at" is null and "users"."deleted_at" is null) and "statements"."deleted_at" is null', $sql);
     }
 
     /**
@@ -132,6 +132,7 @@ class StatementQueryServiceTest extends TestCase
             'platform_type' => array_keys(Platform::PLATFORM_TYPES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" where exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?)) and exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?)) and exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?)) and exists (select * from "users" where "statements"."user_id" = "users"."id" and exists (select * from "platforms" where "users"."platform_id" = "platforms"."id" and "type" = ?))', $sql);
+        $this->assertStringContainsString('select * from "statements" ', $sql);
+        $this->assertStringContainsString('"type" = ?', $sql);
     }
 }

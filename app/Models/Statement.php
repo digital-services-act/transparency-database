@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
@@ -13,7 +14,7 @@ use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable, LogsActivity;
+    use HasFactory, Searchable, LogsActivity, SoftDeletes;
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';

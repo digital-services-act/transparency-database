@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignIdFor(Platform::class, 'platform_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

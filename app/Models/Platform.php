@@ -6,12 +6,11 @@ use Czim\Paperclip\Contracts\AttachableInterface;
 use Czim\Paperclip\Model\PaperclipTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Platform extends Model implements AttachableInterface
 {
-    use HasFactory;
-
-    use PaperclipTrait;
+    use HasFactory, PaperclipTrait, SoftDeletes;
 
     public const PLATFORM_TYPE_SOCIAL_MEDIA = 'Social Media';
     public const PLATFORM_TYPE_VIDEO = 'Video';
