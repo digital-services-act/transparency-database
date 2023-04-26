@@ -145,28 +145,4 @@ class PlatformController extends Controller
 
         return compact('platform_types');
     }
-
-    /**
-     * @param $array
-     *
-     * @return array
-     */
-    private function mapForSelectWithoutKeys($array): array
-    {
-        return array_map(function ($value) {
-            return ['value' => $value, 'label' => $value];
-        }, $array);
-    }
-
-    /**
-     * @param array $array
-     *
-     * @return array
-     */
-    private function mapForSelectWithKeys(array $array): array
-    {
-        return array_map(function ($key, $value) {
-            return ['value' => $key, 'label' => $value];
-        }, array_keys($array), array_values($array));
-    }
 }

@@ -19,9 +19,8 @@ class LoginController extends Controller
         $validated_data_that_was_sent_in_via_the_form = $request->validate([
             'username' => 'required',
         ]);
-//dd($validated_data_that_was_sent_in_via_the_form['username']);
+
         $the_desired_user_to_impersonate = User::firstWhere('name', 'LIKE', '%'.$validated_data_that_was_sent_in_via_the_form['username'].'%');
-//dd($the_desired_user_to_impersonate);
 
         if (!$the_desired_user_to_impersonate) return back()->withErrors('Wrong Credentials');
         if ($the_desired_user_to_impersonate) {

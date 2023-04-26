@@ -149,41 +149,4 @@ class StatementController extends Controller
             'platforms',
         );
     }
-
-    /**
-     * @param $array
-     *
-     * @return array
-     */
-    private function mapForSelectWithoutKeys($array): array
-    {
-        return array_map(function ($value) {
-            return ['value' => $value, 'label' => $value];
-        }, $array);
-    }
-
-    /**
-     * @param $array
-     *
-     * @return array
-     */
-    private function mapForSelectWithKeys($array): array
-    {
-        return array_map(function ($key, $value) {
-            return ['value' => $key, 'label' => $value];
-        }, array_keys($array), array_values($array));
-    }
-
-    /**
-     * @return string[]
-     */
-    private function getEuropean_countries_list(): array
-    {
-        $european_country_codes = Statement::EUROPEAN_COUNTRY_CODES;
-
-        $european_countries_list = array_filter(Countries::getNames(), function ($country_code) use ($european_country_codes) {
-            return in_array($country_code, $european_country_codes);
-        }, ARRAY_FILTER_USE_KEY);
-        return $european_countries_list;
-    }
 }
