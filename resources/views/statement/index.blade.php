@@ -11,7 +11,11 @@
 
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
         <form method="get">
-            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('statement.index') }}'>clear</a>" placeholder="search by creator" justlabel="true" value="{{ request()->get('s', '') }}" />
+
+
+            <x-ecl.select name="platform_id" label="Search <a class='ecl-link' href='{{ route('statement.index') }}'>clear</a>" justlabel="true" :options="$options['platforms']" :default="request()->get('platform_id', '')" />
+
+
             <div class="ecl-u-f-r">
                 <x-ecl.button label="search" />
             </div>

@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
     public static function resetUsers()
     {
         // Delete all the users and recreate the cas masq user.
-        User::query()->delete();
+        User::query()->forceDelete();
         PersonalAccessToken::query()->delete();
 
         User::factory()->count(20)->create();

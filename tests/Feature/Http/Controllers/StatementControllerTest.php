@@ -67,6 +67,7 @@ class StatementControllerTest extends TestCase
      */
     public function create_displays_view()
     {
+        $this->seed();
         /** @var User $user */
         $user = $this->signIn();
         PermissionsSeeder::resetRolesAndPermissions();
@@ -82,6 +83,7 @@ class StatementControllerTest extends TestCase
      */
     public function create_must_be_authenticated()
     {
+        $this->seed();
         // The cas is set to masquerade in testing mode.
         // So when we make a call to a cas middleware route we get logged in.
         // Thus before we make this call we are nobody
@@ -131,21 +133,22 @@ class StatementControllerTest extends TestCase
      */
     public function store_saves_and_redirects()
     {
+        $this->seed();
         // This is a basic test that the normal controller is working.
         // For more advanced testing on the request and such, see the API testing.
-
         PermissionsSeeder::resetRolesAndPermissions();
         /** @var User $user */
         $user = $this->signIn();
         $user->assignRole('Admin');
 
-        $this->assertCount(0, Statement::all());
+        // 200 from seeding.
+        $this->assertCount(200, Statement::all());
 
         // When making statements via the FORM
         // The dates come in as d-m-Y from the ECL datepicker.
         $response = $this->post(route('statement.store'), $this->dummy_attributes);
 
-        $this->assertCount(1, Statement::all());
+        $this->assertCount(201, Statement::all());
         $statement = Statement::latest()->first();
         $this->assertNotNull($statement);
         $this->assertEquals('FORM', $statement->method);

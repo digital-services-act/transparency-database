@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StatementStoreRequest;
+use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -108,7 +109,15 @@ class StatementController extends Controller
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
-        $platform_types = $this->mapForSelectWithKeys(Statement::PLATFORM_TYPES);
+        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
+
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+            return [
+                'value' => $platform->id,
+                'label' => $platform->name
+            ];
+        })->toArray();
+        array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
 
         array_map(function ($automated_detection) {
             return ['value' => $automated_detection, 'label' => $automated_detection];
@@ -136,7 +145,8 @@ class StatementController extends Controller
             'incompatible_content_fields',
             'sources',
             'sources_other',
-            'redresses'
+            'redresses',
+            'platforms',
         );
     }
 

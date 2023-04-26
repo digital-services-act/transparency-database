@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Platform;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserUpdateRequest extends FormRequest
+class PlatformUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +26,13 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => ['string', 'required', 'max:255'],
-            'platform_id' => ['int', 'nullable'],
-            'roles' => ['required', 'array']
+            'url' => ['url', 'required', 'max:255'],
+            'type' => ['required', $this->in(array_keys(Platform::PLATFORM_TYPES))],
         ];
+    }
+
+    private function in($array): string
+    {
+        return 'in:' . implode(',', $array);
     }
 }

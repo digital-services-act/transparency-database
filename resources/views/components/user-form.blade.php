@@ -2,7 +2,16 @@
 
 <x-ecl.textfield label="Name" name="name" id="name" required=true value="{{ $user->name }}" />
 
-<h3 class="ecl-u-type-heading-3 ecl-u-mb-l">"{{ $user->name }}" Roles</h3>
+
+<h3 class="ecl-u-type-heading-3 ecl-u-mb-l">Platform</h3>
+
+<x-ecl.select label="Platform"
+              name="platform_id"
+              id="platform_id" default="{{ $user->platform_id }}"
+              :options="$options['platforms']"
+              required="false" />
+
+<h3 class="ecl-u-type-heading-3 ecl-u-mb-l">Roles</h3>
 
 <ul class="ecl-unordered-list ecl-unordered-list--no-bullet ecl-u-mb-l">
     @foreach($roles as $role)

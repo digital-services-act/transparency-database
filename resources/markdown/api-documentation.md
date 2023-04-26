@@ -168,24 +168,6 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-
-### Platform Type (platform_type)
-
-This is a required attribute and it tells us what sort of platform was in question.
-
-The value provided must be one of the following:
-
-<ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::PLATFORM_TYPES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
-</ul>
-
 ### Illegal Content Legal Ground (illegal_content_legal_ground)
 
 This is required if the ILLEGAL_CONTENT was the decision_ground. It is the legal ground relied on.

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -15,7 +16,7 @@ class StatementQueryService
     // a function. new_attribute -> applyNewAttributeFilter()
 
     private array $allowed_filters = [
-        's',
+        'platform_id',
         'automated_detection',
         'automated_takedown',
         'created_at_start',
@@ -50,15 +51,17 @@ class StatementQueryService
 
     /**
      * @param Builder $query
-     * @param string $filter_value
+     * @param int $filter_value
      *
      * @return void
      */
-    private function applySFilter(Builder $query, string $filter_value): void
+    private function applyPlatformIdFilter(Builder $query, int $filter_value): void
     {
-        $query->whereHas('user', function($inner_query) use($filter_value) {
-            $inner_query->where('name', 'LIKE', '%' . $filter_value . '%');
+
+        $query->whereHas('platform', function($inner_query) use($filter_value) {
+            $inner_query->where('platforms.id', $filter_value);
         });
+
 
         // Turn this on when you want to search the explanation fields.
 //        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();
@@ -115,9 +118,15 @@ class StatementQueryService
      */
     private function applyPlatformTypeFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::PLATFORM_TYPES));
+        $filter_values_validated = array_intersect($filter_value, array_keys(Platform::PLATFORM_TYPES));
         if ($filter_values_validated) {
-            $query->whereIn('platform_type', $filter_value);
+            foreach ($filter_values_validated as $filter_value) {
+                $query->whereHas('user', function ($inner_query) use ($filter_value) {
+                    $inner_query->whereHas('platform', function ($inner_inner_query) use ($filter_value) {
+                        $inner_inner_query->where('type', $filter_value);
+                    });
+                });
+            }
         }
     }
 

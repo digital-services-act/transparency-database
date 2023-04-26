@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\Platform;
+use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -23,8 +25,11 @@ class UserController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         $users = User::query();
-        if ($request->get('s')) {
-            $users = User::where('name', 'like', '%' . $request->get('s') . '%')->orWhere('email', 'like', '%' . $request->get('s') . '%');
+        $s = $request->get('s');
+        if ($s) {
+            $users->where('name', 'like', '%' . $s . '%')->orWhere('email', 'like', '%' . $s . '%')->orWhereHas('platform', function($inner_query) use ($s){
+                $inner_query->where('name', 'like', '%' . $s . '%');
+            });
         }
         $users = $users->paginate(50)->withQueryString();
 
@@ -41,7 +46,7 @@ class UserController extends Controller
     public function create(): View|Factory|Application
     {
         $user = new User();
-        $options = [];
+        $options = $this->prepareOptions();
         $roles = Role::all();
         return view('user.create', [
             'user' => $user,
@@ -64,7 +69,10 @@ class UserController extends Controller
         ])->toArray();
 
         /** @var User $user */
-        $user = User::create(['name' => $validated['name']]);
+        $user = User::create([
+            'name' => $validated['name'],
+            'platform_id' => $validated['platform_id']
+        ]);
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
         }
@@ -92,7 +100,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $options = [];
+        $options = $this->prepareOptions();
         $roles = Role::orderBy('name')->get();
         return view('user.edit', [
             'user' => $user,
@@ -116,6 +124,7 @@ class UserController extends Controller
 
         ])->toArray();
         $user->name = $validated['name'];
+        $user->platform_id = $validated['platform_id'];
         $user->save();
         $user->roles()->detach();
         foreach ($validated['roles'] as $id) {
@@ -131,9 +140,24 @@ class UserController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
+        // Delete statements that this guy made.
+        $user->statements()->delete();
         $user->delete();
         return redirect()->route('user.index')->with('success', 'The user has been deleted');
+    }
+
+    private function prepareOptions()
+    {
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+            return [
+                'value' => $platform->id,
+                'label' => $platform->name
+            ];
+        })->toArray();
+        array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+
+        return compact('platforms');
     }
 }

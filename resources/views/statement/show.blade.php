@@ -29,7 +29,7 @@
     <h2 class="ecl-u-type-heading-2">Main Information</h2>
 
     @if($statement->user)
-        <x-info-line title="Sent by" :content="$statement->user?->name"></x-info-line>
+        <x-info-line title="Sent by" :content="$statement->user->platform->name"></x-info-line>
     @endif
 
     <x-info-line title="Reception Date"
@@ -42,7 +42,7 @@
                  :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
 
     <x-info-line title="Platform Type"
-                 :content="\App\Models\Statement::PLATFORM_TYPES[$statement->platform_type]"></x-info-line>
+                 :content="\App\Models\Platform::PLATFORM_TYPES[$statement->user->platform->type]"></x-info-line>
 
     <x-info-line title="Legal ground relied on" :content="$statement->illegal_content_legal_ground"></x-info-line>
     <x-info-line title="Explanation of why the content is considered to be illegal on that ground"

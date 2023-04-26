@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
@@ -13,7 +14,7 @@ use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable, LogsActivity;
+    use HasFactory, Searchable, LogsActivity, SoftDeletes;
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
@@ -47,17 +48,7 @@ class Statement extends Model
         Statement::AUTOMATED_TAKEDOWN_NO,
     ];
 
-    public const PLATFORM_TYPE_SOCIAL_MEDIA = 'Social Media';
-    public const PLATFORM_TYPE_VIDEO = 'Video';
-    public const PLATFORM_TYPE_MUSIC = 'Music';
-    public const PLATFORM_TYPE_PHOTOGRAPHY = 'Photography';
-    public const PLATFORM_TYPES = [
-        'SOCIAL_MEDIA' => Statement::PLATFORM_TYPE_SOCIAL_MEDIA,
-        'VIDEO' => Statement::PLATFORM_TYPE_VIDEO,
-        'MUSIC' => Statement::PLATFORM_TYPE_MUSIC,
-        'PHOTOGRAPHY' => Statement::PLATFORM_TYPE_PHOTOGRAPHY,
-    ];
-//
+
     public const REDRESS_INTERNAL_MECHANISM = 'Internal complaint-handling mechanism';
     public const REDRESS_OUT_OF_COURT = 'Out-of-court dispute settlement';
     public const REDRESS_JUDICIAL = 'Judicial redress';
@@ -214,6 +205,11 @@ class Statement extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function platform()
+    {
+        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
     }
 
     /**
