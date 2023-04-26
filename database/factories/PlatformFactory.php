@@ -13,27 +13,25 @@ class PlatformFactory extends Factory
 {
 
     private $platform_names = [
-        'Discord',
+        'Alibaba AliExpress',
+        'Amazon Store',
+        'Apple AppStore',
+        'Booking.com',
         'Facebook',
-        'WhatsApp',
+        'Google Play',
+        'Google Maps',
+        'Google Shopping',
         'Instagram',
-        'YouTube',
-        'Twitter',
         'LinkedIn',
-        'Messenger',
-        'Snapchat',
-        'Telegram',
-        'Quora',
-        'Medium',
-        'WeChat',
-        'Hike',
-        'Viber',
         'Pinterest',
-        'Line',
-        'Tumblr',
-        'Planoly',
-        'Tiktok',
-        'Reddit'
+        'Snapchat',
+        'TikTok',
+        'Twitter',
+        'Wikipedia',
+        'YouTube',
+        'Zalando',
+        'Bing',
+        'Google Search',
     ];
 
     /**
