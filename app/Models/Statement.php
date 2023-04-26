@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -120,11 +119,14 @@ class Statement extends Model
         'date_sent' => 'datetime:Y-m-d H:i:s',
         'date_enacted' => 'datetime:Y-m-d H:i:s',
         'date_abolished' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'update_at' => 'datetime:Y-m-d H:i:s',
         'countries_list' => 'array'
     ];
 
     protected $hidden = [
-        'created_at',
+        'deleted_at',
         'updated_at',
         'method',
         'user_id',
@@ -135,7 +137,6 @@ class Statement extends Model
         'permalink',
         'self'
     ];
-
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -225,13 +226,6 @@ class Statement extends Model
      */
     public function getSelfAttribute(): string
     {
-//        return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
-        return route('api.'.config('app.api.version').'.statement.show', [$this]);
-    }
-
-
-    public function getCreatedAtAttribute($date)
-    {
-        return Carbon::parse($date)->setTimezone('Europe/Brussels');
+        return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
     }
 }
