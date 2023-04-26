@@ -18,7 +18,7 @@ class Controller extends BaseController
      *
      * @return array
      */
-    private function mapForSelectWithoutKeys($array): array
+    protected function mapForSelectWithoutKeys($array): array
     {
         return array_map(function ($value) {
             return ['value' => $value, 'label' => $value];
@@ -30,7 +30,7 @@ class Controller extends BaseController
      *
      * @return array
      */
-    private function mapForSelectWithKeys($array): array
+    protected function mapForSelectWithKeys($array): array
     {
         return array_map(function ($key, $value) {
             return ['value' => $key, 'label' => $value];
@@ -40,7 +40,7 @@ class Controller extends BaseController
     /**
      * @return string[]
      */
-    private function getEuropean_countries_list(): array
+    protected function getEuropean_countries_list(): array
     {
         $european_country_codes = Statement::EUROPEAN_COUNTRY_CODES;
 
