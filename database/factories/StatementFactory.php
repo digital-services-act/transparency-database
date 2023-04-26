@@ -25,7 +25,7 @@ class StatementFactory extends Factory
     public function definition()
     {
 
-        $base_date = $this->faker->dateTimeBetween('-1 years');
+        $base_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
 
         $date_sent = $date_abolished = $base_date->format('Y-m-d G:i:s');
 

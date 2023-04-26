@@ -33,7 +33,7 @@ class ResetApplication extends Command
             PlatformSeeder::resetPlatforms();
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();
-            Statement::query()->delete();
+            Statement::query()->forceDelete();
             Statement::factory()->count(1000)->create();
         } else {
             $this->error('Oh hell no!');

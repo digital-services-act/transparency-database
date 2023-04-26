@@ -19,7 +19,7 @@ class PlatformSeeder extends Seeder
 
     public static function resetPlatforms()
     {
-        Platform::query()->delete();
+        Platform::query()->forceDelete();
         Platform::factory()->count(20)->create();
     }
 
