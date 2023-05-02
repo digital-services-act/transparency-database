@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 
 class StatementController extends Controller
@@ -37,6 +38,22 @@ class StatementController extends Controller
         $total = $statements->count();
 
         $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
+
+
+        //https://similarity.cnect.eu/#
+        if ($request->get('s')) {
+            /*
+             * MIME Type: application/x-www-form-urlencoded
+                model: h2020
+                similarity: hate
+             */
+            $response = Http::post('https://similarity.cnect.eu/#',[
+                'model' => 'h2020',
+                'similarity' => $request->get('s')
+            ]);
+            //dd($response->body());
+        }
+
 
         return view('statement.index', compact('statements', 'options', 'total'));
     }
@@ -116,7 +133,8 @@ class StatementController extends Controller
                 'label' => $platform->name
             ];
         })->toArray();
-        array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+        //array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+
 
         array_map(function ($automated_detection) {
             return ['value' => $automated_detection, 'label' => $automated_detection];

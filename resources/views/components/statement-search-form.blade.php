@@ -32,7 +32,11 @@
 
             <p class="ecl-u-type-paragraph">
 
-                <x-ecl.select name="platform_id" label="Platform" justlabel="true" :options="$options['platforms']" :default="request()->get('platform_id', '')" />
+                <x-ecl.select-multiple label="Platform" name="platform_id" id="platform_id"
+                                        justlabel="true"
+                                        :options="$options['platforms']" :default="request()->get('platform_id', [])"
+                                        select_all="All platforms" select_item="Select one or more platforms"
+                                        enter_keyword="Enter a platform name" />
 
                 <x-ecl.checkboxes
                         label="Ground for Decision"

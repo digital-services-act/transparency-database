@@ -1,8 +1,8 @@
 @props(['enter_keyword'=>'Enter keyword','select_item'=>'Select an Item', 'justlabel' => false, 'select_all' => 'Select All', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => []])
-<div class="ecl-form-group ecl-u-mb-l" id="multisel">
+<div class="ecl-form-group ecl-u-mb-l" id="{{ $id }}-multisel">
     <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" />
     <x-ecl.help :help="$help" />
-    <x-ecl.error-feedback :name=$name />
+    <x-ecl.error-feedback :name="$name" />
     <div class="ecl-select__container ecl-select__container--{{ $size }}">
         <select name="{{ $name }}[]" id="{{ $id }}" class="ecl-select" @if($required)required="" @endif multiple=""
                 data-ecl-auto-init="Select" data-ecl-select-multiple=""
