@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -226,5 +227,10 @@ class Statement extends Model
     public function getSelfAttribute(): string
     {
         return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
+    }
+
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->setTimezone('Europe/Brussels');
     }
 }

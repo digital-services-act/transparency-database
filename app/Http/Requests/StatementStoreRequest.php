@@ -38,8 +38,8 @@ class StatementStoreRequest extends FormRequest
             'source_other' => ['required_if:source,SOURCE_OTHER','exclude_unless:source,SOURCE_OTHER'],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
-            'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
-            'redress_more' => ['string','nullable'],
+//            'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
+//            'redress_more' => ['string','nullable'],
             'statement_of_reason' => ['string','nullable'],
             'url' => ['string','nullable'],
         ];
