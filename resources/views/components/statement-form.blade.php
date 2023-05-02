@@ -26,13 +26,13 @@
 <x-ecl.textfield label="Legal ground relied on" name="illegal_content_legal_ground" id="illegal_content_legal_ground" required="true"/>
 
 <x-ecl.textarea label="Explanation of why the content is considered to be illegal on that ground"
-                name="illegal_content_explanation" id="illegal_content_explanation" />
+                name="illegal_content_explanation" id="illegal_content_explanation" required="true"/>
 
 <x-ecl.textfield label="Reference to contractual ground" name="incompatible_content_ground"
                  id="incompatible_content_ground" required="true"/>
 
 <x-ecl.textarea label="Explanation of why the content is considered as incompatible on that ground"
-                name="incompatible_content_explanation" id="incompatible_content_explanation" />
+                name="incompatible_content_explanation" id="incompatible_content_explanation" required="true"/>
 <hr>
 
 <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
@@ -72,12 +72,19 @@
 
 <hr>
 
-<x-ecl.select label="Information on possible redress available to the recipient of the decision taken"
-              name="redress"
-              id="redress" :options="$options['redresses']"/>
+{{--<x-ecl.select label="Information on possible redress available to the recipient of the decision taken"--}}
+{{--              name="redress"--}}
+{{--              id="redress" :options="$options['redresses']"/>--}}
 
-<x-ecl.textarea label="More Info" name="redress_more" id="redress_more"
-                value="{{ $statement->redress_more }}"/>
+{{--<x-ecl.textarea label="More Info" name="redress_more" id="redress_more"--}}
+{{--                value="{{ $statement->redress_more }}"/>--}}
+
+<x-ecl.textfield label="Infringing URL" name="url"
+                 id="url"/>
+
+<x-ecl.textarea label="Original Statement of Reason"
+                name="statement_of_reason" id="statement_of_reason" />
+<hr>
 
     <script type="text/javascript">
 
@@ -102,7 +109,7 @@
           hide('div_incompatible_content_explanation');
           hide('div_source_identity');
           hide('div_source_other');
-          hide('div_redress_more');
+          // hide('div_redress_more');
 
           if (ge('decision_ground').value === 'ILLEGAL_CONTENT') {
               show('div_illegal_content_legal_ground');
@@ -122,9 +129,9 @@
               show('div_source_other');
           }
 
-          if (ge('redress').value !== '') {
-              show('div_redress_more');
-          }
+          // if (ge('redress').value !== '') {
+          //     show('div_redress_more');
+          // }
       }
 
       function ge(id)
@@ -147,6 +154,6 @@
 
       document.getElementById('decision_ground').addEventListener('change', initFields);
       document.getElementById('source').addEventListener('change', initFields);
-      document.getElementById('redress').addEventListener('change', initFields);
+      // document.getElementById('redress').addEventListener('change', initFields);
 
     </script>
