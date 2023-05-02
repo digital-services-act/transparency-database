@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use stdClass;
 
 
 class StatementController extends Controller
@@ -40,22 +41,34 @@ class StatementController extends Controller
         $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
 
 
-        //https://similarity.cnect.eu/#
+        $similarity_results = false;
         if ($request->get('s')) {
-            /*
-             * MIME Type: application/x-www-form-urlencoded
-                model: h2020
-                similarity: hate
-             */
-            $response = Http::post('https://similarity.cnect.eu/#',[
-                'model' => 'h2020',
-                'similarity' => $request->get('s')
-            ]);
-            //dd($response->body());
+
+            // Actual Request
+            $payload = new stdClass();
+            $payload->service = 'similarity';
+            $payload->text = $request->get('s');
+            $payload->parameters = new stdClass();
+            $payload->parameters->lang = 'en';
+
+            $payload = json_encode($payload);
+
+            $headers = [];
+            $headers['x-api-key'] = config('services.drivein.key');
+            $headers['Accept'] = 'application/json';
+
+            $response = Http::withHeaders($headers)
+                            ->withBody($payload, 'application/json')
+                            ->post(config('services.drivein.base'));
+
+            $similarity_results = $response->json('result');
+            $similarity_results = array_map(function($item){
+                return str_replace("_", " ", $item);
+            }, $similarity_results);
         }
 
 
-        return view('statement.index', compact('statements', 'options', 'total'));
+        return view('statement.index', compact('statements', 'options', 'total', 'similarity_results'));
     }
 
     /**
