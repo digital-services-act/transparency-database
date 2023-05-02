@@ -8,7 +8,7 @@
         </div>
         <div class="ecl-col-8">
             <div class="ecl-u-pa-xs ecl-u-type-color-black ecl-u-type-l">
-                {!!  nl2br(e($content)) !!}
+                {!!  nl2br($content) !!}
             </div>
         </div>
     </div>

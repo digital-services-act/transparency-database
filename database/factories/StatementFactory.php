@@ -39,7 +39,7 @@ class StatementFactory extends Factory
             'illegal_content_explanation' => $this->faker->text(100),
             'incompatible_content_ground' => $this->faker->text(100),
             'incompatible_content_explanation' => $this->faker->text(100),
-            'statement_of_reason' => $this->faker->text(500),
+            'statement_of_reason' => $this->faker->realText(500),
             'url' => $this->faker->url,
 
             'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),

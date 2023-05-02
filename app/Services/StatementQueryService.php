@@ -16,6 +16,7 @@ class StatementQueryService
     // a function. new_attribute -> applyNewAttributeFilter()
 
     private array $allowed_filters = [
+        's',
         'platform_id',
         'automated_detection',
         'automated_takedown',
@@ -49,6 +50,20 @@ class StatementQueryService
         return $statements;
     }
 
+
+    /**
+     * @param Builder $query
+     * @param int $filter_value
+     *
+     * @return void
+     */
+    private function applySFilter(Builder $query, string $filter_value): void
+    {
+        // Turn this on when you want to search the SOR field.
+        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();
+        $query->whereIn('id', $ids);
+    }
+
     /**
      * @param Builder $query
      * @param int $filter_value
@@ -57,7 +72,6 @@ class StatementQueryService
      */
     private function applyPlatformIdFilter(Builder $query, int $filter_value): void
     {
-
         $query->whereHas('platform', function($inner_query) use($filter_value) {
             $inner_query->where('platforms.id', $filter_value);
         });

@@ -164,8 +164,7 @@ class Statement extends Model
     public function toSearchableArray()
     {
         return [
-            'illegal_content_explanation' => $this->illegal_content_explanation,
-            'incompatible_content_explanation' => $this->incompatible_content_explanation
+            'statement_of_reason' => $this->statement_of_reason,
         ];
     }
 
