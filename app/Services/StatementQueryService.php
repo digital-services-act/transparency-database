@@ -38,7 +38,6 @@ class StatementQueryService
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                Log::info($filters[$filter_key]);
                 try {
                     $this->$method($statements, $filters[$filter_key]);
                 } catch (\TypeError|\Exception $e) {
