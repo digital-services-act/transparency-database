@@ -105,10 +105,10 @@ class StatementQueryServiceTest extends TestCase
     public function it_filters_on_platform_id()
     {
         $filters = [
-            'platform_id' => 1
+            'platform_id' => [1]
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where exists (select * from "platforms" inner join "users" on "users"."platform_id" = "platforms"."id" where "statements"."user_id" = "users"."id" and "platforms"."id" = ? and "platforms"."deleted_at" is null and "users"."deleted_at" is null) and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements" where exists (select * from "platforms" inner join "users" on "users"."platform_id" = "platforms"."id" where "statements"."user_id" = "users"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null and "users"."deleted_at" is null) and "statements"."deleted_at" is null', $sql);
     }
 
     /**
