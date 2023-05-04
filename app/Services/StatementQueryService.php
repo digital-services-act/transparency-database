@@ -143,14 +143,12 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Platform::PLATFORM_TYPES));
         if ($filter_values_validated) {
-            foreach ($filter_values_validated as $filter_value) {
-                $query->whereHas('user', function ($inner_query) use ($filter_value) {
-                    $inner_query->whereHas('platform', function ($inner_inner_query) use ($filter_value) {
-                        $inner_inner_query->where('type', $filter_value);
-                    });
-                });
-            }
+            $query->whereHas('platform', function($inner_query) use($filter_values_validated) {
+                $inner_query->whereIn('platforms.type', $filter_values_validated);
+            });
         }
+
+
     }
 
     /**

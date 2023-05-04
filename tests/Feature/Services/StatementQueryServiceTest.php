@@ -145,6 +145,6 @@ class StatementQueryServiceTest extends TestCase
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
         $this->assertStringContainsString('select * from "statements" ', $sql);
-        $this->assertStringContainsString('"type" = ?', $sql);
+        $this->assertStringContainsString('"type" in (?', $sql);
     }
 }
