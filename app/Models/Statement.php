@@ -99,6 +99,30 @@ class Statement extends Model
         'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'
     ];
 
+    public const SOR_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
+    public const SOR_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (race, gender identity, sexual orientation, religion, disability)';
+    public const SOR_CATEGORY_COUNTERFEIT = 'Counterfeit goods (e.g. fake perfume, fake designer brands)';
+    public const SOR_CATEGORY_FRAUD = 'Scams, frauds, subscription traps or other illegal commercial practices';
+    public const SOR_CATEGORY_TERRORISM = 'Terrorist content (extremists, hate groups)';
+    public const SOR_CATEGORY_CHILD_SAFETY = 'Child safety (child nudity, sexual abuse, unsolicited contact with minors)';
+    public const SOR_CATEGORY_NON_CONSENT = 'Non-consensual nudity (hidden camera, deepfake, revenge porn, upskirts)';
+    public const SOR_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (denying tragic events, synthetic media, false context)';
+    public const SOR_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (spam, platform manipulation)';
+    public const SOR_CATEGORIES = [
+        'PIRACY' => Statement::SOR_CATEGORY_PIRACY,
+        'DISCRIMINATION' => Statement::SOR_CATEGORY_DISCRIMINATION,
+        'COUNTERFEIT' => Statement::SOR_CATEGORY_COUNTERFEIT,
+        'FRAUD' => Statement::SOR_CATEGORY_FRAUD,
+        'TERRORISM' => Statement::SOR_CATEGORY_TERRORISM,
+        'CHILD_SAFETY' => Statement::SOR_CATEGORY_CHILD_SAFETY,
+        'NON_CONSENT' => Statement::SOR_CATEGORY_NON_CONSENT,
+        'MISINFORMATION' => Statement::SOR_CATEGORY_MISINFORMATION,
+        'VIOLATION_TOS' => Statement::SOR_CATEGORY_VIOLATION_TOS,
+    ];
+
+
+
+
 
     /**
      * The attributes that are mass assignable.
