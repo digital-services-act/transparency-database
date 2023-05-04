@@ -45,7 +45,23 @@ class StatementController extends Controller
             $similarity_results = $this->getSimilarityWords($request->get('s'));
         }
 
-        return view('statement.index', compact('statements', 'options', 'total', 'similarity_results'));
+        return view('statement.index', compact(
+            'statements',
+            'options',
+            'total',
+            'similarity_results'
+        ));
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return View|Factory|Application
+     */
+    public function search(Request $request): View|Factory|Application
+    {
+        $options = $this->prepareOptions();
+        return view('statement.search', compact('options'));
     }
 
     /**
@@ -163,6 +179,7 @@ class StatementController extends Controller
 
         $decisions = $this->mapForSelectWithKeys(Statement::DECISIONS);
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
+        $categories = $this->mapForSelectWithKeys(Statement::SOR_CATEGORIES);
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
@@ -179,6 +196,7 @@ class StatementController extends Controller
             'platform_types',
             'decisions',
             'decision_grounds',
+            'categories',
             'illegal_content_fields',
             'incompatible_content_fields',
             'sources',

@@ -23,6 +23,12 @@
               :options="$options['decision_grounds']"
               required="true" />
 
+<x-ecl.select label="Category"
+              name="category"
+              id="category" default="{{ $statement->category }}"
+              :options="$options['categories']"
+              required="true" />
+
 <x-ecl.textfield label="Legal ground relied on" name="illegal_content_legal_ground" id="illegal_content_legal_ground" required="true"/>
 
 <x-ecl.textarea label="Explanation of why the content is considered to be illegal on that ground"

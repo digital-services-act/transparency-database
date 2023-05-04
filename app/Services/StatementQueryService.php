@@ -23,6 +23,7 @@ class StatementQueryService
         'created_at_start',
         'created_at_end',
         'decision_ground',
+        'categories',
         'platform_type',
         'countries_list',
     ];
@@ -115,6 +116,20 @@ class StatementQueryService
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_GROUNDS));
         if ($filter_values_validated) {
             $query->whereIn('decision_ground', $filter_value);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyCategoriesFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOR_CATEGORIES));
+        if ($filter_values_validated) {
+            $query->whereIn('category', $filter_value);
         }
     }
 

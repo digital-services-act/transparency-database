@@ -59,7 +59,7 @@ Example JSON payload body:
 {
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
-    "platform_type": "SOCIAL_MEDIA",
+    "category": "FRAUD",
     "illegal_content_legal_ground": "illegal content legal ground",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content ground",
@@ -91,7 +91,7 @@ You will also receive a payload with the statement as created in the database:
 {
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
-    "platform_type": "SOCIAL_MEDIA",
+    "category": "FRAUD",
     "incompatible_content_ground": "incompatible content ground",
     "incompatible_content_explanation": "incompatible content explanation",
     "countries_list": [
@@ -160,6 +160,24 @@ The value provided must be one of the following:
 <ul class='ecl-unordered-list'>
 @php
     foreach (\App\Models\Statement::DECISION_GROUNDS as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
+
+### Category (category)
+
+This is a required attribute and it tells us which category the statment belongs to.
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::SOR_CATEGORIES as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -264,7 +282,7 @@ $headers = [
 $body = '{
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
-  "platform_type": "SOCIAL_MEDIA",
+  "category": "FRAUD",
   "illegal_content_legal_ground": "illegal content legal ground",
   "illegal_content_explanation": "illegal content explanation",
   "incompatible_content_ground": "incompatible content ground",
@@ -299,7 +317,7 @@ curl --location '{{$baseurl}}/api/statement/create' \
 --data '{
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
-    "platform_type": "SOCIAL_MEDIA",
+    "category": "FRAUD",
     "illegal_content_legal_ground": "illegal content legal ground",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content ground",
@@ -331,7 +349,7 @@ conn = http.client.HTTPSConnection("{{str_replace("https://", "", $baseurl)}}")
 payload = json.dumps({
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
-  "platform_type": "SOCIAL_MEDIA",
+  "category": "FRAUD",
   "illegal_content_legal_ground": "illegal content legal ground",
   "illegal_content_explanation": "illegal content explanation",
   "incompatible_content_ground": "incompatible content ground",
@@ -366,7 +384,7 @@ print(data.decode("utf-8"))
 ```javascript
 OkHttpClient client = new OkHttpClient().newBuilder().build();
 MediaType mediaType = MediaType.parse("application/json");
-RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"platform_type\": \"SOCIAL_MEDIA\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
+RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"category\": \"FRAUD\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
 Request request = new Request.Builder()
   .url("{{$baseurl}}/api/statement/create")
   .method("POST", body)

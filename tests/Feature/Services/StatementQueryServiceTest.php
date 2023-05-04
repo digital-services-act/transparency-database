@@ -126,6 +126,18 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
+    public function it_filters_on_category()
+    {
+        $filters = [
+            'categories' => array_keys(Statement::SOR_CATEGORIES)
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertStringContainsString('select * from "statements" where "category" in (?', $sql);
+    }
+
+    /**
+     * @test
+     */
     public function it_filters_on_platform_type()
     {
         $filters = [

@@ -35,6 +35,7 @@ class StatementFactory extends Factory
 
             'decision_taken' => $this->faker->randomElement(array_keys(Statement::DECISIONS)),
             'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
+            'category' => $this->faker->randomElement(array_keys(Statement::SOR_CATEGORIES)),
             'illegal_content_legal_ground' => $this->faker->text(100),
             'illegal_content_explanation' => $this->faker->text(100),
             'incompatible_content_ground' => $this->faker->text(100),

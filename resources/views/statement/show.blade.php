@@ -41,6 +41,9 @@
     <x-info-line title="Ground for Decision"
                  :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
 
+    <x-info-line title="Category"
+                 :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
+
     <x-info-line title="Platform Type"
                  :content="\App\Models\Platform::PLATFORM_TYPES[$statement->user->platform->type]"></x-info-line>
 
