@@ -8,25 +8,10 @@
               size="xl" />
 <hr>
 
-<x-ecl.select label="Platform Type"
-              name="platform_type"
-              id="platform_type"
-              :options="$options['platform_types']"
-              required="true" default="{{ $statement->platform_type }}"
-              size="xl" />
-
-<hr>
-
 <x-ecl.select label="Ground for Decision"
               name="decision_ground"
               id="decision_ground" default="{{ $statement->decision_ground }}"
               :options="$options['decision_grounds']"
-              required="true" />
-
-<x-ecl.select label="Category"
-              name="category"
-              id="category" default="{{ $statement->category }}"
-              :options="$options['categories']"
               required="true" />
 
 <x-ecl.textfield label="Legal ground relied on" name="illegal_content_legal_ground" id="illegal_content_legal_ground" required="true"/>
@@ -39,6 +24,14 @@
 
 <x-ecl.textarea label="Explanation of why the content is considered as incompatible on that ground"
                 name="incompatible_content_explanation" id="incompatible_content_explanation" required="true"/>
+<hr>
+
+<x-ecl.select label="Category"
+              name="category"
+              id="category" default="{{ $statement->category }}"
+              :options="$options['categories']"
+              required="true" />
+
 <hr>
 
 <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
@@ -55,7 +48,7 @@
 
 <x-ecl.textfield label="Only if strictly necessary, identity of the notifier" name="source_identity" id="source_identity" />
 
-<x-ecl.textfield label="Other" name="source_other" id="source_other" required="true" />
+<x-ecl.textfield label="Own voluntary initiative" name="source_own_voluntary" id="source_own_voluntary" />
 
 <hr>
 
@@ -78,18 +71,10 @@
 
 <hr>
 
-{{--<x-ecl.select label="Information on possible redress available to the recipient of the decision taken"--}}
-{{--              name="redress"--}}
-{{--              id="redress" :options="$options['redresses']"/>--}}
-
-{{--<x-ecl.textarea label="More Info" name="redress_more" id="redress_more"--}}
-{{--                value="{{ $statement->redress_more }}"/>--}}
 
 <x-ecl.textfield label="Infringing URL" name="url"
                  id="url"/>
 
-<x-ecl.textarea label="Original Statement of Reason"
-                name="statement_of_reason" id="statement_of_reason" />
 <hr>
 
     <script type="text/javascript">
@@ -114,7 +99,7 @@
           hide('div_incompatible_content_ground');
           hide('div_incompatible_content_explanation');
           hide('div_source_identity');
-          hide('div_source_other');
+          hide('div_source_own_voluntary');
           // hide('div_redress_more');
 
           if (ge('decision_ground').value === 'ILLEGAL_CONTENT') {
@@ -131,13 +116,10 @@
               show('div_source_identity');
           }
 
-          if (ge('source').value === 'SOURCE_OTHER') {
-              show('div_source_other');
+          if (ge('source').value === 'SOURCE_VOLUNTARY') {
+              show('div_source_own_voluntary');
           }
 
-          // if (ge('redress').value !== '') {
-          //     show('div_redress_more');
-          // }
       }
 
       function ge(id)
@@ -155,11 +137,9 @@
         ge(id).classList.remove('ecl-u-d-none');
       }
 
-
       initFields();
 
       document.getElementById('decision_ground').addEventListener('change', initFields);
       document.getElementById('source').addEventListener('change', initFields);
-      // document.getElementById('redress').addEventListener('change', initFields);
 
     </script>

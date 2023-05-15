@@ -20,8 +20,8 @@ class CreateStatementsTable extends Migration
 
             $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
-            $table->enum('category', array_keys(\App\Models\Statement::SOR_CATEGORIES));
 
+            $table->enum('category', array_keys(\App\Models\Statement::SOR_CATEGORIES));
 
             $table->string('illegal_content_legal_ground', 255)->nullable();
             $table->string('illegal_content_explanation',500)->nullable();
@@ -33,19 +33,14 @@ class CreateStatementsTable extends Migration
 
             $table->enum('source', array_keys(\App\Models\Statement::SOURCES));
             $table->string('source_identity', 255)->nullable();
-            $table->string('source_other', 255)->nullable();
+            $table->string('source_own_voluntary', 255)->nullable();
 
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
             $table->enum('automated_takedown', \App\Models\Statement::AUTOMATED_TAKEDOWNS);
 
-            $table->enum('redress', array_keys(\App\Models\Statement::REDRESSES))->nullable();
-            $table->string('redress_more', 255)->nullable();
-
             $table->integer('user_id');
             $table->string('method')->default('API');
 
-
-            $table->text('statement_of_reason')->nullable();
             $table->string('url')->nullable();
 
             $table->timestamps();
