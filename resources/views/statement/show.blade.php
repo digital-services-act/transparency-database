@@ -64,9 +64,14 @@
 
     <x-info-line title="Facts and circumstances relied on in taking the decision"
                  :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
-    <x-info-line title="Only if strictly necessary, identity of the notifier"
-                 :content="$statement->source_identity"></x-info-line>
-    <x-info-line title="Other Source" :content="$statement->source_other"></x-info-line>
+
+    @if($statement->source == 'SOURCE_ARTICLE_16')
+        <x-info-line title="Only if strictly necessary, identity of the notifier" :content="$statement->source_identity"></x-info-line>
+    @endif
+
+    @if($statement->source == 'SOURCE_VOLUNTARY')
+        <x-info-line title="Own Voluntary Source" :content="$statement->source_own_voluntary"></x-info-line>
+    @endif
 
     <x-info-line title="Automated Detection" :content="$statement->automated_detection"></x-info-line>
     <x-info-line title="Automated Take-down" :content="$statement->automated_takedown"></x-info-line>
