@@ -27,11 +27,12 @@ class Statement extends Model
 
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
-    public const SOURCE_OTHER = 'Other';
+    //public const SOURCE_OTHER = 'Other';
+
     public const SOURCES = [
         'SOURCE_ARTICLE_16' => Statement::SOURCE_ARTICLE_16,
         'SOURCE_VOLUNTARY' => Statement::SOURCE_VOLUNTARY,
-        'SOURCE_OTHER' => Statement::SOURCE_OTHER
+        //'SOURCE_OTHER' => Statement::SOURCE_OTHER
     ];
 
     public const AUTOMATED_DETECTIONS_YES = 'Yes';
@@ -39,6 +40,14 @@ class Statement extends Model
     public const AUTOMATED_DETECTIONS = [
         Statement::AUTOMATED_DETECTIONS_YES,
         Statement::AUTOMATED_DETECTIONS_NO,
+    ];
+
+
+    public const AUTOMATED_DECISIONS_YES = 'Yes';
+    public const AUTOMATED_DECISIONS_NO = 'No';
+    public const AUTOMATED_DECISIONS = [
+        Statement::AUTOMATED_DECISIONS_YES,
+        Statement::AUTOMATED_DECISIONS_NO,
     ];
 
     public const AUTOMATED_TAKEDOWN_YES = 'Yes';
@@ -191,6 +200,8 @@ class Statement extends Model
         return [
             'illegal_content_explanation' => $this->illegal_content_explanation,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
+            'source_identity' => $this->source_identity,
+            'source_own_voluntary' => $this->source_own_voluntary,
         ];
     }
 

@@ -49,10 +49,11 @@ class StatementFactory extends Factory
             'date_abolished' => $date_abolished,
 
             'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
-            'source_identity' => $this->faker->text(100),
-            'source_own_voluntary' => $this->faker->text(100),
+            'source_identity' => $this->faker->realText(500),
+            'source_own_voluntary' => $this->faker->realText(500),
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
+            'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),
             'automated_takedown' => $this->faker->randomElement(Statement::AUTOMATED_TAKEDOWNS),
 
 

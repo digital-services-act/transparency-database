@@ -32,10 +32,11 @@ class CreateStatementsTable extends Migration
             $table->timestamp('date_abolished')->nullable();
 
             $table->enum('source', array_keys(\App\Models\Statement::SOURCES));
-            $table->string('source_identity', 255)->nullable();
-            $table->string('source_own_voluntary', 255)->nullable();
+            $table->string('source_identity', 500)->nullable();
+            $table->string('source_own_voluntary', 500)->nullable();
 
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
+            $table->enum('automated_decision', \App\Models\Statement::AUTOMATED_DECISIONS);
             $table->enum('automated_takedown', \App\Models\Statement::AUTOMATED_TAKEDOWNS);
 
             $table->integer('user_id');

@@ -161,6 +161,7 @@ class StatementController extends Controller
 
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
+        $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
         $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
 
@@ -185,13 +186,14 @@ class StatementController extends Controller
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
 
         $sources = $this->mapForSelectWithKeys(Statement::SOURCES);
-        $sources_other = Statement::SOURCE_OTHER;
+        //$sources_other = Statement::SOURCE_OTHER;
 
         $redresses = $this->mapForSelectWithKeys(Statement::REDRESSES);
 
         return compact(
             'countries',
             'automated_detections',
+            'automated_decisions',
             'automated_takedowns',
             'platform_types',
             'decisions',
@@ -200,7 +202,6 @@ class StatementController extends Controller
             'illegal_content_fields',
             'incompatible_content_fields',
             'sources',
-            'sources_other',
             'redresses',
             'platforms',
         );

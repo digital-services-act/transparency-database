@@ -10,87 +10,56 @@
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statement Details: {{$statement->title}}</h1>
-
-    @if(! $statement->entities->isEmpty())
-
-        <h2 class="ecl-u-type-heading-2">Entities</h2>
-        @foreach($statement->entities as $entity)
-            <div class="ecl-u-pa-xs ecl-u-type-l">
-                <span class="ecl-label ecl-label--medium">{{$entity->kind}}</span>
-                {{$entity->name}}
-                <span class="ecl-u-pa-xs ecl-u-type-xs">({{$entity->pivot->role}})</span>
-            </div>
-        @endforeach
-
-    @endif
-
-
-    <h2 class="ecl-u-type-heading-2">Main Information</h2>
-
-    @if($statement->user)
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statement Details: {{$statement->uuid}}</h1>
+    
+    @if($statement->user && $statement->user->platform)
         <x-info-line title="Sent by" :content="$statement->user->platform->name"></x-info-line>
     @endif
 
-    <x-info-line title="Reception Date"
-                 :content="$statement->created_at->format('d-m-Y g:i A')"></x-info-line>
+    @if($statement->user && $statement->user->platform)
+        <x-info-line title="Platform Type" :content="\App\Models\Platform::PLATFORM_TYPES[$statement->user->platform->type]"></x-info-line>
+    @endif
 
-    <x-info-line title="Decision Taken"
-                 :content="\App\Models\Statement::DECISIONS[$statement->decision_taken]"></x-info-line>
+    <x-info-line title="Received" :content="$statement->created_at->format('d-m-Y g:i A')"></x-info-line>
 
-    <x-info-line title="Ground for Decision"
-                 :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
+    <x-info-line title="Decision Taken" :content="\App\Models\Statement::DECISIONS[$statement->decision_taken]"></x-info-line>
 
-    <x-info-line title="Category"
-                 :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
+    <x-info-line title="Ground for Decision" :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
 
-    <x-info-line title="Platform Type"
-                 :content="\App\Models\Platform::PLATFORM_TYPES[$statement->user->platform->type]"></x-info-line>
+    @if($statement->decision_ground == \App\Models\Statement::DECISION_GROUND_ILLEGAL_CONTENT)
+        <x-info-line title="Legal ground relied on" :content="$statement->illegal_content_legal_ground"></x-info-line>
+        <x-info-line title="Explanation of why the content is considered to be illegal on that ground" :content="$statement->illegal_content_explanation"></x-info-line>
+    @endif
 
-    <x-info-line title="Legal ground relied on" :content="$statement->illegal_content_legal_ground"></x-info-line>
-    <x-info-line title="Explanation of why the content is considered to be illegal on that ground"
-                 :content="$statement->illegal_content_explanation"></x-info-line>
-    <x-info-line title="Reference to contractual ground"
-                 :content="$statement->incompatible_content_ground"></x-info-line>
-    <x-info-line title="Explanation of why the content is considered as incompatible on that ground"
-                 :content="$statement->incompatible_content_explanation"></x-info-line>
+    @if($statement->decision_ground == \App\Models\Statement::DECISION_GROUND_INCOMPATIBLE_CONTENT)
+        <x-info-line title="Reference to contractual ground" :content="$statement->incompatible_content_ground"></x-info-line>
+        <x-info-line title="Explanation of why the content is considered as incompatible on that ground" :content="$statement->incompatible_content_explanation"></x-info-line>
+    @endif
 
-    <h2 class="ecl-u-type-heading-2">Additional Information</h2>
+    <x-info-line title="Category" :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
 
+    <x-info-line title="Infringing URL" :content="$statement->url"></x-info-line>
 
-    <x-info-line title="Infringing URL"
-                 :content="$statement->url"></x-info-line>
+    <x-info-line title="Facts and circumstances relied on in taking the decision" :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
 
-
-    <x-info-line title="Facts and circumstances relied on in taking the decision"
-                 :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
-
-    @if($statement->source == 'SOURCE_ARTICLE_16')
+    @if($statement->source == 'SOURCE_ARTICLE_16' && $statement->source_identity)
         <x-info-line title="Only if strictly necessary, identity of the notifier" :content="$statement->source_identity"></x-info-line>
     @endif
 
-    @if($statement->source == 'SOURCE_VOLUNTARY')
+    @if($statement->source == 'SOURCE_VOLUNTARY' && $statement->source_own_voluntary)
         <x-info-line title="Own Voluntary Source" :content="$statement->source_own_voluntary"></x-info-line>
     @endif
 
     <x-info-line title="Automated Detection" :content="$statement->automated_detection"></x-info-line>
+    <x-info-line title="Automated Decision" :content="$statement->automated_decision"></x-info-line>
     <x-info-line title="Automated Take-down" :content="$statement->automated_takedown"></x-info-line>
 
     @if($statement->date_abolished)
-        <x-info-line title="Valid until" :content="$statement->date_abolished->format('d-m-Y')"></x-info-line>
+        <x-info-line title="Abolished until" :content="$statement->date_abolished->format('d-m-Y')"></x-info-line>
     @endif
 
-    <x-info-line title="Method" :content="$statement->method"></x-info-line>
-
-{{--    @if($statement->redress)--}}
-{{--        <x-info-line title="Information on possible redress available to the recipient of the decision taken"--}}
-{{--                     :content="\App\Models\Statement::REDRESSES[$statement->redress]"></x-info-line>--}}
-{{--        <x-info-line title="More Information on redress" :content="$statement->redress_more"></x-info-line>--}}
-{{--    @endif--}}
-
-    @if($statement->statement_of_reason)
-        <x-info-line title="Original Statement of Reason"
-                     :content="$statement->statement_of_reason"></x-info-line>
+    @if(!$statement->date_abolished)
+        <x-info-line title="Abolished until" content="indefinite"></x-info-line>
     @endif
 
 @endsection

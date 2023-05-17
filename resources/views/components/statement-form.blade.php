@@ -17,13 +17,13 @@
 <x-ecl.textfield label="Legal ground relied on" name="illegal_content_legal_ground" id="illegal_content_legal_ground" required="true"/>
 
 <x-ecl.textarea label="Explanation of why the content is considered to be illegal on that ground"
-                name="illegal_content_explanation" id="illegal_content_explanation" required="true"/>
+                name="illegal_content_explanation" id="illegal_content_explanation" required="true" />
 
 <x-ecl.textfield label="Reference to contractual ground" name="incompatible_content_ground"
-                 id="incompatible_content_ground" required="true"/>
+                 id="incompatible_content_ground" required="true" />
 
 <x-ecl.textarea label="Explanation of why the content is considered as incompatible on that ground"
-                name="incompatible_content_explanation" id="incompatible_content_explanation" required="true"/>
+                name="incompatible_content_explanation" id="incompatible_content_explanation" required="true" />
 <hr>
 
 <x-ecl.select label="Category"
@@ -35,7 +35,7 @@
 <hr>
 
 <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
-                       :options="$options['countries']" :default="$statement->countries_list" required="true"
+                       :options="$options['countries']" :default="$statement->countries_list"
                        select_all="European Union" select_item="Select a member state"
                        enter_keyword="Enter a country name" />
 <hr>
@@ -46,13 +46,13 @@
 
 <x-ecl.select label="Facts and circumstances relied on in taking the decision" name="source" id="source" :options="$options['sources']" required="true" />
 
-<x-ecl.textfield label="Only if strictly necessary, identity of the notifier" name="source_identity" id="source_identity" />
+<x-ecl.textarea label="Only if strictly necessary, identity of the notifier" name="source_identity" id="source_identity" required="true" />
 
-<x-ecl.textfield label="Own voluntary initiative" name="source_own_voluntary" id="source_own_voluntary" />
+<x-ecl.textarea label="Own voluntary initiative" name="source_own_voluntary" id="source_own_voluntary" required="true" />
 
 <hr>
 
-<x-ecl.radio label="Was the decision taken in respect of automatically detected means "
+<x-ecl.radio label="Was the detection taken in respect of automated means"
              name="automated_detection"
              id="automated_detection"
              :options="$options['automated_detections']"
@@ -60,14 +60,21 @@
              required="true"
 />
 
-<x-ecl.radio label="Was the take-down performed using automated means "
+<x-ecl.radio label="Was the decision taken in respect of automated means"
+             name="automated_decision"
+             id="automated_decision"
+             :options="$options['automated_decisions']"
+             default="{{ $statement->automated_decision }}"
+             required="true"
+/>
+
+<x-ecl.radio label="Was the take-down performed using automated means"
              name="automated_takedown"
              id="automated_takedown"
              :options="$options['automated_takedowns']"
              default="{{ $statement->automated_takedown }}"
              required="true"
 />
-
 
 <hr>
 
