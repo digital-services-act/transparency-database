@@ -30,7 +30,9 @@ class StatementControllerTest extends TestCase
         'countries_list' => ['BE','FR'],
         'date_abolished' => '03-01-2023',
         'source' => 'SOURCE_ARTICLE_16',
+        'source_identity' => 'notifier',
         'automated_detection' => 'Yes',
+        'automated_decision' => 'Yes',
         'automated_takedown' => 'Yes'
     ];
 

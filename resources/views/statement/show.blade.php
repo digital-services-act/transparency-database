@@ -11,7 +11,7 @@
 @section('content')
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statement Details: {{$statement->uuid}}</h1>
-    
+
     @if($statement->user && $statement->user->platform)
         <x-info-line title="Sent by" :content="$statement->user->platform->name"></x-info-line>
     @endif

@@ -32,7 +32,9 @@ class StatementAPIControllerTest extends TestCase
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'source' => 'SOURCE_ARTICLE_16',
+            'source_identity' => 'notifier',
             'automated_detection' => 'No',
+            'automated_decision' => 'No',
             'automated_takedown' => 'Yes',
             'user_id' => 1,
         ];
