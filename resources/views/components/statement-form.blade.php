@@ -37,7 +37,7 @@
 <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
                        :options="$options['countries']" :default="$statement->countries_list"
                        select_all="European Union" select_item="Select a member state"
-                       enter_keyword="Enter a country name" />
+                       enter_keyword="Enter a country name" required="true" />
 <hr>
 
 <x-ecl.datepicker label="Duration of the decision - leave blank for indefinite" id="date_abolished"
@@ -46,9 +46,12 @@
 
 <x-ecl.select label="Facts and circumstances relied on in taking the decision" name="source" id="source" :options="$options['sources']" required="true" />
 
-<x-ecl.textarea label="Only if strictly necessary, identity of the notifier" name="source_identity" id="source_identity" required="true" />
 
-<x-ecl.textarea label="Own voluntary initiative" name="source_own_voluntary" id="source_own_voluntary" required="true" />
+
+<x-ecl.textarea label="Please give an explanation of the notice (only if strictly necessary, identity of the notifier)." name="source_identity" id="source_identity" required="true" />
+
+
+<x-ecl.textarea label="Please give an explanation of own voluntary initiative:" name="source_own_voluntary" id="source_own_voluntary" required="true" />
 
 <hr>
 
@@ -79,8 +82,7 @@
 <hr>
 
 
-<x-ecl.textfield label="Infringing URL" name="url"
-                 id="url"/>
+<x-ecl.textfield label="Infringing URL/Hyperlink" name="url" id="url" required="true"/>
 
 <hr>
 

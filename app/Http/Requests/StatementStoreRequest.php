@@ -32,7 +32,7 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'incompatible_content_explanation' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'category' => ['required', $this->in(array_keys(Statement::SOR_CATEGORIES))],
-            'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
+            'countries_list' => ['array', 'required', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'date_abolished' => ['date', 'nullable'],
             'source' => ['required', $this->in(array_keys(Statement::SOURCES))],
             'source_identity' => ['required_if:source,SOURCE_ARTICLE_16','exclude_unless:source,SOURCE_ARTICLE_16'],
@@ -42,7 +42,7 @@ class StatementStoreRequest extends FormRequest
             'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
 //            'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
 //            'redress_more' => ['string','nullable'],
-            'url' => ['string','nullable'],
+            'url' => ['url','required'],
         ];
     }
 
