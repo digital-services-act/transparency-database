@@ -75,7 +75,6 @@ Example JSON payload body:
     "automated_detection": "No",
     "automated_decision": "No",
     "automated_takedown": "Yes",
-    "statement_of_reason": "Free text with the actual statement of reason",
     "url": "https://theurl.com"
 }
 ```
