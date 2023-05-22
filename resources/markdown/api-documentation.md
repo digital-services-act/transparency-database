@@ -71,9 +71,9 @@ Example JSON payload body:
     ],
     "date_abolished": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
-    "source_identity": "source identity",
-    "source_other": "source other",
+    "source_explanation": "source explanation",
     "automated_detection": "No",
+    "automated_decision": "No",
     "automated_takedown": "Yes",
     "statement_of_reason": "Free text with the actual statement of reason",
     "url": "https://theurl.com"
@@ -101,11 +101,11 @@ You will also receive a payload with the statement as created in the database:
     ],
     "date_abolished": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
-    "source_identity": "source identity",
+    "source_explanation": "source explanation",
     "automated_detection": "No",
+    "automated_decision": "No",
     "automated_takedown": "Yes",
-    "redress": "REDRESS_INTERNAL_MECHANISM",
-    "redress_more": "redress_more",
+    "url": "https://theurl.com"
     "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3",
     "permalink": "{{$baseurl}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3",
     "self": "{{$baseurl}}/api/v{{config('app.api_latest')}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3"
@@ -239,30 +239,28 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Source Other (source_other)
+### Source Explanation (source_explanation)
 
-This is a required textual field if the source above was SOURCE_OTHER.
-
-### Source Identity (source_identity)
-
-This is an optional textual field and it identifies the source of this statement.
+This is a required textual field to describe the source of the statement of reason.
 
 ### Automated Detection (automated_detection)
 
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision taken in respect of automatically detected means.
 
+### Automated Decision (automated_decision)
+
+This is a required attribute and it must be in the form "Yes" or "No".
+This indicates to us that decision carried out automatically.
+
+
 ### Automated Take-Down (automated_takedown)
 
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that take-down was performed using automated means.
 
-### Statement of Reason (statement_of_reason)
-This is an optional attribute.
-This contains the data sent by the platform to the user with the details of the infringement. 
-
 ### URL (url)
-This is an optional attribute.
+This is an required attribute.
 This contains the URL to the data that has been moderated.
 
 ## Code Examples
@@ -294,11 +292,10 @@ $body = '{
   ],
   "date_abolished": "2022-12-01 17:52:24",
   "source": "SOURCE_VOLUNTARY",
-  "source_identity": "source identity",
-  "source_other": "source other",
+  "source_explanation": "source explanation",
   "automated_detection": "No",
+  "automated_decision": "No",
   "automated_takedown": "Yes",
-  "statement_of_reason": "Free text with the actual statement of reason",
   "url": "https://theurl.com"
 
 }';
@@ -329,11 +326,10 @@ curl --location '{{$baseurl}}/api/statement/create' \
     ],
     "date_abolished": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
-    "source_identity": "source identity",
-    "source_other": "source other",
+    "source_explanation": "source explanation",
     "automated_detection": "No",
+    "automated_decision": "No",
     "automated_takedown": "Yes",
-    "statement_of_reason": "Free text with the actual statement of reason",
     "url": "https://theurl.com"
 }'
 ```
@@ -361,11 +357,10 @@ payload = json.dumps({
   ],
   "date_abolished": "2022-12-01 17:52:24",
   "source": "SOURCE_VOLUNTARY",
-  "source_identity": "source identity",
-  "source_other": "source other",
+  "source_explanation": "source explanation",
   "automated_detection": "No",
+  "automated_decision": "No",
   "automated_takedown": "Yes",
-  "statement_of_reason": "Free text with the actual statement of reason",
   "url": "https://theurl.com"
 })
 headers = {
@@ -377,20 +372,4 @@ conn.request("POST", "/api/statement/create", payload, headers)
 res = conn.getresponse()
 data = res.read()
 print(data.decode("utf-8"))
-```
-
-
-### Java
-```javascript
-OkHttpClient client = new OkHttpClient().newBuilder().build();
-MediaType mediaType = MediaType.parse("application/json");
-RequestBody body = RequestBody.create(mediaType, "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"category\": \"FRAUD\",\n    \"illegal_content_legal_ground\": \"illegal content legal ground\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content ground\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-12-01 17:52:24\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_identity\": \"source identity\",\n    \"source_other\": \"source other\",\n    \"automated_detection\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"redress\": \"REDRESS_INTERNAL_MECHANISM\",\n    \"redress_more\": \"redress_more\"\n}");
-Request request = new Request.Builder()
-  .url("{{$baseurl}}/api/statement/create")
-  .method("POST", body)
-  .addHeader("Accept", "application/json")
-  .addHeader("Authorization", "Bearer <YOUR_TOKEN_HERE>")
-  .addHeader("Content-Type", "application/json")
-  .build();
-Response response = client.newCall(request).execute();
 ```
