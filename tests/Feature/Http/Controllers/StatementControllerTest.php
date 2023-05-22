@@ -28,9 +28,10 @@ class StatementControllerTest extends TestCase
         'illegal_content_legal_ground' => 'foo',
         'illegal_content_explanation' => 'bar',
         'countries_list' => ['BE','FR'],
+        'url' => 'https://www.test.com',
         'date_abolished' => '03-01-2023',
         'source' => 'SOURCE_ARTICLE_16',
-        'source_identity' => 'notifier',
+        'source_explanation' => 'source explanation',
         'automated_detection' => 'Yes',
         'automated_decision' => 'Yes',
         'automated_takedown' => 'Yes'

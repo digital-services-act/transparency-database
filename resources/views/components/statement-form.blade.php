@@ -48,10 +48,10 @@
 
 
 
-<x-ecl.textarea label="Please give an explanation of the notice (only if strictly necessary, identity of the notifier)." name="source_identity" id="source_identity" required="true" />
+<x-ecl.textarea label="Please give an explanation of the notice (only if strictly necessary, identity of the notifier)." name="source_explanation" id="source_explanation_article_16" required="true" />
 
 
-<x-ecl.textarea label="Please give an explanation of own voluntary initiative:" name="source_own_voluntary" id="source_own_voluntary" required="true" />
+<x-ecl.textarea label="Please give an explanation of own voluntary initiative:" name="source_explanation" id="source_explanation_own" required="true" />
 
 <hr>
 
@@ -102,13 +102,12 @@
 
       function initFields() {
 
-
           hide('div_illegal_content_legal_ground');
           hide('div_illegal_content_explanation');
           hide('div_incompatible_content_ground');
           hide('div_incompatible_content_explanation');
-          hide('div_source_identity');
-          hide('div_source_own_voluntary');
+          hide('div_source_explanation_article_16');
+          hide('div_source_explanation_own');
           // hide('div_redress_more');
 
           if (ge('decision_ground').value === 'ILLEGAL_CONTENT') {
@@ -122,11 +121,11 @@
           }
 
           if (ge('source').value === 'SOURCE_ARTICLE_16') {
-              show('div_source_identity');
+              show('div_source_explanation_article_16');
           }
 
           if (ge('source').value === 'SOURCE_VOLUNTARY') {
-              show('div_source_own_voluntary');
+              show('div_source_explanation_own');
           }
 
       }

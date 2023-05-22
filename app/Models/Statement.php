@@ -200,8 +200,7 @@ class Statement extends Model
         return [
             'illegal_content_explanation' => $this->illegal_content_explanation,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
-            'source_identity' => $this->source_identity,
-            'source_own_voluntary' => $this->source_own_voluntary,
+            'source_explanation' => $this->source_identity
         ];
     }
 

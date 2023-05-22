@@ -26,12 +26,12 @@
 
     <x-info-line title="Ground for Decision" :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
 
-    @if($statement->decision_ground == \App\Models\Statement::DECISION_GROUND_ILLEGAL_CONTENT)
+    @if($statement->decision_ground == 'ILLEGAL_CONTENT')
         <x-info-line title="Legal ground relied on" :content="$statement->illegal_content_legal_ground"></x-info-line>
         <x-info-line title="Explanation of why the content is considered to be illegal on that ground" :content="$statement->illegal_content_explanation"></x-info-line>
     @endif
 
-    @if($statement->decision_ground == \App\Models\Statement::DECISION_GROUND_INCOMPATIBLE_CONTENT)
+    @if($statement->decision_ground == 'INCOMPATIBLE_CONTENT')
         <x-info-line title="Reference to contractual ground" :content="$statement->incompatible_content_ground"></x-info-line>
         <x-info-line title="Explanation of why the content is considered as incompatible on that ground" :content="$statement->incompatible_content_explanation"></x-info-line>
     @endif
@@ -42,12 +42,12 @@
 
     <x-info-line title="Facts and circumstances relied on in taking the decision" :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
 
-    @if($statement->source == 'SOURCE_ARTICLE_16' && $statement->source_identity)
-        <x-info-line title="Only if strictly necessary, identity of the notifier" :content="$statement->source_identity"></x-info-line>
+    @if($statement->source == 'SOURCE_ARTICLE_16' && $statement->source_explanation)
+        <x-info-line title="Article 16 Explanation" :content="$statement->source_explanation"></x-info-line>
     @endif
 
-    @if($statement->source == 'SOURCE_VOLUNTARY' && $statement->source_own_voluntary)
-        <x-info-line title="Own Voluntary Source" :content="$statement->source_own_voluntary"></x-info-line>
+    @if($statement->source == 'SOURCE_VOLUNTARY' && $statement->source_explanation)
+        <x-info-line title="Own Voluntary Source Explanation" :content="$statement->source_explanation"></x-info-line>
     @endif
 
     <x-info-line title="Automated Detection" :content="$statement->automated_detection"></x-info-line>
