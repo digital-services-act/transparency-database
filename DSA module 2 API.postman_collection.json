@@ -50,7 +50,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}",
+					"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"category\": \"PIRACY\",\n    \"url\": \"https://theurl.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -90,7 +90,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}",
+							"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"category\": \"PIRACY\",\n    \"url\": \"https://theurl.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -98,13 +98,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{hostname}}/api/statement",
+							"raw": "https://{{hostname}}/api/{{api_version}}/statement",
 							"protocol": "https",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"api",
+								"{{api_version}}",
 								"statement"
 							]
 						}
@@ -115,7 +116,7 @@
 					"header": [
 						{
 							"key": "Date",
-							"value": "Thu, 09 Mar 2023 08:30:00 GMT"
+							"value": "Tue, 23 May 2023 07:30:06 GMT"
 						},
 						{
 							"key": "Server",
@@ -139,11 +140,11 @@
 						},
 						{
 							"key": "X-RateLimit-Remaining",
-							"value": "999"
+							"value": "998"
 						},
 						{
 							"key": "phpdebugbar-id",
-							"value": "X977d767b08d55ec483b325c8de90852f"
+							"value": "X4ec00793ddbd06dcfad24ea37d1358c5"
 						},
 						{
 							"key": "Access-Control-Allow-Origin",
@@ -167,7 +168,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\",\n    \"uuid\": \"b95feda2-f806-4992-88af-457af7910e9d\"\n}"
+					"body": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"category\": \"PIRACY\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"url\": \"https://theurl.com\",\n    \"uuid\": \"418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"created_at\": \"2023-05-23T07:30:07.000000Z\",\n    \"permalink\": \"https://transparency.test/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"self\": \"https://transparency.test/api/v1/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\"\n}"
 				}
 			]
 		},
@@ -242,13 +243,14 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{hostname}}/api/statement/:statement_uuid",
+							"raw": "https://{{hostname}}/api/{{api_version}}/statement/:statement_uuid",
 							"protocol": "https",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"api",
+								"{{api_version}}",
 								"statement",
 								":statement_uuid"
 							],
@@ -267,7 +269,7 @@
 					"header": [
 						{
 							"key": "Date",
-							"value": "Thu, 09 Mar 2023 08:30:23 GMT"
+							"value": "Tue, 23 May 2023 07:30:39 GMT"
 						},
 						{
 							"key": "Server",
@@ -291,11 +293,11 @@
 						},
 						{
 							"key": "X-RateLimit-Remaining",
-							"value": "998"
+							"value": "999"
 						},
 						{
 							"key": "phpdebugbar-id",
-							"value": "Xce4b0c9025f80ee4cc57a2516547e27b"
+							"value": "Xcc5beac11491f10ffc59c0388fa1b0d4"
 						},
 						{
 							"key": "Access-Control-Allow-Origin",
@@ -319,7 +321,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"uuid\": \"b95feda2-f806-4992-88af-457af7910e9d\",\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": null,\n    \"illegal_content_explanation\": null,\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_OTHER\",\n    \"source_identity\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"redress\": \"REDRESS_OTHER\",\n    \"redress_more\": \"Ea accusamus sed accusamus atque quia. Sequi officiis itaque velit.\"\n}"
+					"body": "{\n    \"uuid\": \"418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"category\": \"PIRACY\",\n    \"illegal_content_legal_ground\": null,\n    \"illegal_content_explanation\": null,\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"url\": \"https://theurl.com\",\n    \"created_at\": \"2023-05-23T07:30:07.000000Z\",\n    \"permalink\": \"https://transparency.test/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"self\": \"https://transparency.test/api/v1/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\"\n}"
 				}
 			]
 		},
