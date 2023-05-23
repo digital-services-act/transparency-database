@@ -20,12 +20,14 @@ class StatementQueryService
         'platform_id',
         'automated_detection',
         'automated_takedown',
+        'automated_decision',
         'created_at_start',
         'created_at_end',
         'decision_ground',
         'categories',
         'platform_type',
         'countries_list',
+        'source'
     ];
 
     /**
@@ -77,6 +79,21 @@ class StatementQueryService
         });
     }
 
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applySourceFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOURCES));
+        if ($filter_values_validated) {
+            $query->whereIn('source', $filter_values_validated);
+        }
+    }
+
     /**
      * @param Builder $query
      * @param array $filter_value
@@ -88,6 +105,20 @@ class StatementQueryService
         $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DETECTIONS);
         if ($filter_values_validated) {
             $query->whereIn('automated_detection', $filter_values_validated);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyAutomatedDecisionFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DECISIONS);
+        if ($filter_values_validated) {
+            $query->whereIn('automated_decision', $filter_values_validated);
         }
     }
 

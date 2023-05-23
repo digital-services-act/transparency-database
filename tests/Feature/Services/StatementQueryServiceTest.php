@@ -65,6 +65,20 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
+    public function it_filters_on_automated_decision()
+    {
+        $this->seed(); // 200 statements
+        $automated_count = $this->statement_query_service->query(['automated_decision' => ['Yes']])->count();
+        $manual_count = $this->statement_query_service->query(['automated_decision' => ['No']])->count();
+
+        $total = $automated_count + $manual_count;
+
+        $this->assertEquals(200, $total);
+    }
+
+    /**
+     * @test
+     */
     public function it_filters_on_countries_list()
     {
         $filters = [
@@ -121,6 +135,18 @@ class StatementQueryServiceTest extends TestCase
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
         $this->assertStringContainsString('select * from "statements" where "decision_ground" in (?', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_source()
+    {
+        $filters = [
+            'source' => array_keys(Statement::SOURCES)
+        ];
+        $sql = $this->statement_query_service->query($filters)->toSql();
+        $this->assertStringContainsString('select * from "statements" where "source" in (?', $sql);
     }
 
     /**

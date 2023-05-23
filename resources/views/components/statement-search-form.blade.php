@@ -77,12 +77,30 @@
         />
 
         <x-ecl.checkboxes
+                label="Automated Decision"
+                justlabel="true"
+                name="automated_decision"
+                id="automated_decision"
+                :options="$options['automated_decisions']"
+                :default="request()->get('automated_decision', [])"
+        />
+
+        <x-ecl.checkboxes
                 label="Automated Take-down"
                 justlabel="true"
                 name="automated_takedown"
                 id="automated_takedown"
                 :options="$options['automated_takedowns']"
                 :default="request()->get('automated_takedown', [])"
+        />
+
+        <x-ecl.checkboxes
+                label="Source"
+                justlabel="true"
+                name="source"
+                id="source"
+                :options="$options['sources']"
+                :default="request()->get('source', [])"
         />
 
         <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"
