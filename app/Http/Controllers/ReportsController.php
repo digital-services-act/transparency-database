@@ -48,7 +48,7 @@ class ReportsController extends Controller
             $title = "Statements by Source";
             $sources = Statement::SOURCES;
             $chart_options = [];
-            $colors = ['SOURCE_ARTICLE_16' => 'black', 'SOURCE_VOLUNTARY' => 'blue', 'SOURCE_OTHER' => 'red'];
+            $colors = ['SOURCE_ARTICLE_16' => 'black', 'SOURCE_VOLUNTARY' => 'blue'];
             foreach ($sources as $key => $source) {
                 $chart_options[] = [
                     'chart_title' => $source,
@@ -63,30 +63,10 @@ class ReportsController extends Controller
                     'group_by_period' => 'month',
                 ];
             }
-            $chart = new LaravelChart($chart_options[0], $chart_options[1], $chart_options[2]);
+            $chart = new LaravelChart($chart_options[0], $chart_options[1]);
         }
 
-        if ($request->get('chart') == 'statements-by-redress') {
-            $title = "Statements by Redress";
-            $sources = Statement::REDRESSES;
-            $chart_options = [];
-            $colors = ['REDRESS_INTERNAL_MECHANISM' => 'black', 'REDRESS_OUT_OF_COURT' => 'blue', 'REDRESS_JUDICIAL' => 'red', 'REDRESS_OTHER' => 'yellow'];
-            foreach ($sources as $key => $source) {
-                $chart_options[] = [
-                    'chart_title' => $source,
-                    'chart_type' => 'line',
-                    'where_raw'  => $own,
-                    'conditions'            => [
-                        ['name' => $source, 'condition' => 'redress = \''.$key.'\'', 'color' => $colors[$key], 'fill' => true]
-                    ],
-                    'report_type' => 'group_by_date',
-                    'model' => 'App\Models\Statement',
-                    'group_by_field' => 'created_at',
-                    'group_by_period' => 'month',
-                ];
-            }
-            $chart = new LaravelChart($chart_options[0], $chart_options[1], $chart_options[2], $chart_options[3]);
-        }
+
 
         if ($request->get('chart') == 'statements-by-country') {
             $title = "Statements by Country";

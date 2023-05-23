@@ -74,7 +74,6 @@
         <a href="?chart=statements-by-source#graphs" class="ecl-button--primary ecl-button">by Source</a>
         <a href="?chart=statements-by-country#graphs" class="ecl-button--primary ecl-button">by Country</a>
         <a href="?chart=statements-by-automatic-detection#graphs" class="ecl-button--primary ecl-button">by Automatic Detection</a>
-{{--        <a href="?chart=statements-by-redress" class="ecl-button--primary ecl-button">by Redress</a>--}}
     </div>
 
     <h2 class="ecl-u-type-heading-2">{{ $title }}</h2>
