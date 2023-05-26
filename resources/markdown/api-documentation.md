@@ -252,7 +252,6 @@ This indicates to us that decision taken in respect of automatically detected me
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision carried out automatically.
 
-
 ### Automated Take-Down (automated_takedown)
 
 This is a required attribute and it must be in the form "Yes" or "No".

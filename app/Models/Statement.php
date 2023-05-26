@@ -57,18 +57,6 @@ class Statement extends Model
         Statement::AUTOMATED_TAKEDOWN_NO,
     ];
 
-
-    public const REDRESS_INTERNAL_MECHANISM = 'Internal complaint-handling mechanism';
-    public const REDRESS_OUT_OF_COURT = 'Out-of-court dispute settlement';
-    public const REDRESS_JUDICIAL = 'Judicial redress';
-    public const REDRESS_OTHER = 'Other';
-    public const REDRESSES = [
-        'REDRESS_INTERNAL_MECHANISM' => Statement::REDRESS_INTERNAL_MECHANISM,
-        'REDRESS_OUT_OF_COURT' => Statement::REDRESS_OUT_OF_COURT,
-        'REDRESS_JUDICIAL' => Statement::REDRESS_JUDICIAL,
-        'REDRESS_OTHER' => Statement::REDRESS_OTHER
-    ];
-
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [
@@ -105,7 +93,33 @@ class Statement extends Model
 
 
     public const EUROPEAN_COUNTRY_CODES = [
-        'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'
+        'AT',
+        'BE',
+        'BG',
+        'CY',
+        'CZ',
+        'DE',
+        'DK',
+        'EE',
+        'ES',
+        'FI',
+        'FR',
+        'GR',
+        'HR',
+        'HU',
+        'IE',
+        'IT',
+        'LT',
+        'LU',
+        'LV',
+        'MT',
+        'NL',
+        'PL',
+        'PT',
+        'RO',
+        'SE',
+        'SI',
+        'SK'
     ];
 
     public const SOR_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
