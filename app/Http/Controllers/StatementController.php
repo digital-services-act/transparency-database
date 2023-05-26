@@ -186,9 +186,6 @@ class StatementController extends Controller
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
 
         $sources = $this->mapForSelectWithKeys(Statement::SOURCES);
-        //$sources_other = Statement::SOURCE_OTHER;
-
-        $redresses = $this->mapForSelectWithKeys(Statement::REDRESSES);
 
         return compact(
             'countries',
@@ -202,7 +199,6 @@ class StatementController extends Controller
             'illegal_content_fields',
             'incompatible_content_fields',
             'sources',
-            'redresses',
             'platforms',
         );
     }
