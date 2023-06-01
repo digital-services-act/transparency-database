@@ -37,7 +37,7 @@
 <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
                        :options="$options['countries']" :default="$statement->countries_list"
                        select_all="European Union" select_item="Select a member state"
-                       enter_keyword="Enter a country name" required="true" />
+                       enter_keyword="Enter a country name" required="false" />
 <hr>
 
 <x-ecl.datepicker label="Duration of the decision - leave blank for indefinite" id="date_abolished"
@@ -55,7 +55,7 @@
 
 <hr>
 
-<x-ecl.radio label="Was the detection taken in respect of automated means"
+<x-ecl.radio label="Was the content detected using automated means?"
              name="automated_detection"
              id="automated_detection"
              :options="$options['automated_detections']"
