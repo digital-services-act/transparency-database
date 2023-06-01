@@ -131,6 +131,7 @@ class Statement extends Model
     public const SOR_CATEGORY_NON_CONSENT = 'Non-consensual nudity (hidden camera, deepfake, revenge porn, upskirts)';
     public const SOR_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (denying tragic events, synthetic media, false context)';
     public const SOR_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (spam, platform manipulation)';
+    public const SOR_UNCATEGORISED = 'Uncategorised';
     public const SOR_CATEGORIES = [
         'PIRACY' => Statement::SOR_CATEGORY_PIRACY,
         'DISCRIMINATION' => Statement::SOR_CATEGORY_DISCRIMINATION,
@@ -141,6 +142,7 @@ class Statement extends Model
         'NON_CONSENT' => Statement::SOR_CATEGORY_NON_CONSENT,
         'MISINFORMATION' => Statement::SOR_CATEGORY_MISINFORMATION,
         'VIOLATION_TOS' => Statement::SOR_CATEGORY_VIOLATION_TOS,
+        'UNCATEGORISED' =>Statement::SOR_UNCATEGORISED
     ];
 
 
