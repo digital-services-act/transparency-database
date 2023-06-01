@@ -32,7 +32,7 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'incompatible_content_explanation' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'category' => ['required', $this->in(array_keys(Statement::SOR_CATEGORIES))],
-            'countries_list' => ['array', 'required', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
+            'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'date_abolished' => ['date', 'nullable'],
             'source' => ['required', $this->in(array_keys(Statement::SOURCES))],
             'source_explanation' => ['required'],
