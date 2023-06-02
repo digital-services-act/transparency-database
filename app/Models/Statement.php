@@ -166,9 +166,8 @@ class Statement extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'date_sent' => 'datetime:Y-m-d H:i:s',
-        'date_enacted' => 'datetime:Y-m-d H:i:s',
-        'date_abolished' => 'datetime:Y-m-d H:i:s',
+        'start_date' => 'datetime:Y-m-d H:i:s',
+        'end_date' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',
         'update_at' => 'datetime:Y-m-d H:i:s',

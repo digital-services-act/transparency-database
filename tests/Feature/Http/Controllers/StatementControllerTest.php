@@ -29,7 +29,8 @@ class StatementControllerTest extends TestCase
         'illegal_content_explanation' => 'bar',
         'countries_list' => ['BE','FR'],
         'url' => 'https://www.test.com',
-        'date_abolished' => '03-01-2023',
+        'start_date' => '03-01-2023',
+        'end_date' => '13-01-2023',
         'source' => 'SOURCE_ARTICLE_16',
         'source_explanation' => 'source explanation',
         'automated_detection' => 'Yes',
@@ -157,8 +158,10 @@ class StatementControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('FORM', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->date_abolished);
-        $this->assertInstanceOf(Carbon::class, $statement->date_abolished);
+        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
 
         $response->assertRedirect(route('statement.index'));
     }

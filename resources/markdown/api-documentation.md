@@ -70,7 +70,7 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
-    "date_abolished": "2022-12-01 17:52:24",
+    "start_date": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
     "source_explanation": "source explanation",
     "automated_detection": "No",
@@ -100,7 +100,7 @@ You will also receive a payload with the statement as created in the database:
         "ES",
         "DE"
     ],
-    "date_abolished": "2022-12-01 17:52:24",
+    "start_date": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
     "source_explanation": "source explanation",
     "automated_detection": "No",
@@ -220,9 +220,19 @@ Allowed values are:
 
 @php echo implode(', ', \App\Models\Statement::EUROPEAN_COUNTRY_CODES); @endphp
 
-### Date Abolished (date_abolished)
+### Start Date (start_date)
 
 This is the date and time that this decision took place. The date needs to take the form of:
+
+```YYYY-MM-DD HH:MM:SS```
+
+The ```HH:MM:SS``` is optional and may be omitted.
+
+### End Date (end_date)
+
+This is the date and time that this decision ends. Leave blank for indefinite. 
+
+The date needs to take the form of:
 
 ```YYYY-MM-DD HH:MM:SS```
 
@@ -296,7 +306,7 @@ $body = '{
     "ES",
     "DE"
   ],
-  "date_abolished": "2022-12-01 17:52:24",
+  "start_date": "2022-12-01 17:52:24",
   "source": "SOURCE_VOLUNTARY",
   "source_explanation": "source explanation",
   "automated_detection": "No",
@@ -330,7 +340,7 @@ curl --location '{{$baseurl}}/api/statement/create' \
     "ES",
     "DE"
     ],
-    "date_abolished": "2022-12-01 17:52:24",
+    "start_date": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
     "source_explanation": "source explanation",
     "automated_detection": "No",
@@ -361,7 +371,7 @@ payload = json.dumps({
     "ES",
     "DE"
   ],
-  "date_abolished": "2022-12-01 17:52:24",
+  "start_date": "2022-12-01 17:52:24",
   "source": "SOURCE_VOLUNTARY",
   "source_explanation": "source explanation",
   "automated_detection": "No",

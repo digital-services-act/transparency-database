@@ -30,7 +30,9 @@ class CreateStatementsTable extends Migration
             $table->boolean('incompatible_content_illegal')->nullable();
 
             $table->string('countries_list', 255)->nullable();
-            $table->timestamp('date_abolished')->nullable();
+
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
 
             $table->enum('source', array_keys(\App\Models\Statement::SOURCES));
             $table->string('source_explanation', 500)->nullable();
