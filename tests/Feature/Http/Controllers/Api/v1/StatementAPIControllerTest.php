@@ -34,7 +34,7 @@ class StatementAPIControllerTest extends TestCase
             'url' => 'https://www.test.com',
             'countries_list' => ['BE', 'DE', 'FR'],
             'source' => 'SOURCE_ARTICLE_16',
-            'source_explanation' => 'source explanation',
+            'decision_facts' => 'decision and facts',
             'automated_detection' => 'No',
             'automated_decision' => 'No',
             'automated_takedown' => 'Yes',

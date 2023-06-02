@@ -51,7 +51,7 @@ class StatementFactory extends Factory
             'end_date' => $end_date,
 
             'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
-            'source_explanation' => $this->faker->realText(500),
+            'decision_facts' => $this->faker->realText(500),
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),

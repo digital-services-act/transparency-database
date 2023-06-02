@@ -43,15 +43,17 @@
 
     <x-info-line title="Infringing URL" :content="$statement->url"></x-info-line>
 
-    <x-info-line title="Facts and circumstances relied on in taking the decision" :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
+    <x-info-line title="Facts and circumstances relied on in taking the decision" :content="$statement->decision_facts"></x-info-line>
 
-    @if($statement->source == 'SOURCE_ARTICLE_16' && $statement->source_explanation)
-        <x-info-line title="Article 16 Explanation" :content="$statement->source_explanation"></x-info-line>
-    @endif
+    <x-info-line title="Decision source" :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
 
-    @if($statement->source == 'SOURCE_VOLUNTARY' && $statement->source_explanation)
-        <x-info-line title="Own Voluntary Source Explanation" :content="$statement->source_explanation"></x-info-line>
-    @endif
+{{--    @if($statement->source == 'SOURCE_ARTICLE_16' && $statement->source_explanation)--}}
+{{--        <x-info-line title="Article 16 Explanation" :content="$statement->source_explanation"></x-info-line>--}}
+{{--    @endif--}}
+
+{{--    @if($statement->source == 'SOURCE_VOLUNTARY' && $statement->source_explanation)--}}
+{{--        <x-info-line title="Own Voluntary Source Explanation" :content="$statement->source_explanation"></x-info-line>--}}
+{{--    @endif--}}
 
     <x-info-line title="Automated Detection" :content="$statement->automated_detection"></x-info-line>
     <x-info-line title="Automated Decision" :content="$statement->automated_decision"></x-info-line>

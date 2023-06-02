@@ -71,8 +71,8 @@ Example JSON payload body:
         "DE"
     ],
     "start_date": "2022-12-01 17:52:24",
+    "decision_facts": "facts about the decision",
     "source": "SOURCE_VOLUNTARY",
-    "source_explanation": "source explanation",
     "automated_detection": "No",
     "automated_decision": "No",
     "automated_takedown": "Yes",
@@ -102,7 +102,7 @@ You will also receive a payload with the statement as created in the database:
     ],
     "start_date": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
-    "source_explanation": "source explanation",
+    "decision_facts": "facts about the decision",
     "automated_detection": "No",
     "automated_decision": "No",
     "automated_takedown": "Yes",
@@ -238,7 +238,12 @@ The date needs to take the form of:
 
 The ```HH:MM:SS``` is optional and may be omitted.
 
-### Source (source)
+### Facts and circumstances relied on in taking the decision (decision_facts)
+
+This is a required textual field to describe the facts and circumstances relied on in taking the decision.
+
+
+### Notification source (source)
 
 This is a required field and tells us the facts and circumstances 
 relied upon in taking the decision.
@@ -256,9 +261,6 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Source Explanation (source_explanation)
-
-This is a required textual field to describe the source of the statement of reason.
 
 ### Automated Detection (automated_detection)
 
@@ -308,7 +310,7 @@ $body = '{
   ],
   "start_date": "2022-12-01 17:52:24",
   "source": "SOURCE_VOLUNTARY",
-  "source_explanation": "source explanation",
+  "decision_facts": "facts about the decision",
   "automated_detection": "No",
   "automated_decision": "No",
   "automated_takedown": "Yes",
@@ -342,7 +344,7 @@ curl --location '{{$baseurl}}/api/statement/create' \
     ],
     "start_date": "2022-12-01 17:52:24",
     "source": "SOURCE_VOLUNTARY",
-    "source_explanation": "source explanation",
+    "decision_facts": "facts about the decision",
     "automated_detection": "No",
     "automated_decision": "No",
     "automated_takedown": "Yes",
@@ -373,7 +375,7 @@ payload = json.dumps({
   ],
   "start_date": "2022-12-01 17:52:24",
   "source": "SOURCE_VOLUNTARY",
-  "source_explanation": "source explanation",
+  "decision_facts": "facts about the decision",
   "automated_detection": "No",
   "automated_decision": "No",
   "automated_takedown": "Yes",

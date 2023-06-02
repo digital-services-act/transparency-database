@@ -50,14 +50,16 @@
                   name="end_date" value="{{ $statement->end_date }}" />
 <hr>
 
-<x-ecl.select label="Facts and circumstances relied on in taking the decision" name="source" id="source" :options="$options['sources']" required="true" />
+<x-ecl.textarea label="Facts and circumstances relied on in taking the decision" name="decision_facts" id="decision_facts" required="true" />
+
+<x-ecl.select label="Notification source" name="source" id="source" :options="$options['sources']" required="true" />
+
+{{--<x-ecl.textarea label="Explanation of the notice (only if strictly necessary, identity of the notifier)." name="notice_explanation" id="notice_explanation" required="true" />--}}
 
 
 
-<x-ecl.textarea label="Please give an explanation of the notice (only if strictly necessary, identity of the notifier)." name="source_explanation" id="source_explanation_article_16" required="true" />
 
-
-<x-ecl.textarea label="Please give an explanation of own voluntary initiative:" name="source_explanation" id="source_explanation_own" required="true" />
+{{--<x-ecl.textarea label="Please give an explanation of own voluntary initiative:" name="source_explanation" id="source_explanation_own" required="true" />--}}
 
 <hr>
 
@@ -114,8 +116,8 @@
           hide('div_incompatible_content_ground');
           hide('div_incompatible_content_explanation');
           hide('div_incompatible_content_illegal');
-          hide('div_source_explanation_article_16');
-          hide('div_source_explanation_own');
+          // hide('div_source_explanation_article_16');
+          // hide('div_source_explanation_own');
           // hide('div_redress_more');
 
           if (ge('decision_ground').value === 'ILLEGAL_CONTENT') {
@@ -129,13 +131,13 @@
               show('div_incompatible_content_illegal');
           }
 
-          if (ge('source').value === 'SOURCE_ARTICLE_16') {
-              show('div_source_explanation_article_16');
-          }
-
-          if (ge('source').value === 'SOURCE_VOLUNTARY') {
-              show('div_source_explanation_own');
-          }
+          // if (ge('source').value === 'SOURCE_ARTICLE_16') {
+          //     show('div_source_explanation_article_16');
+          // }
+          //
+          // if (ge('source').value === 'SOURCE_VOLUNTARY') {
+          //     show('div_source_explanation_own');
+          // }
 
       }
 
