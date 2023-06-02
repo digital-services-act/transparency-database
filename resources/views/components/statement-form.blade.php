@@ -66,7 +66,7 @@
              required="true"
 />
 
-<x-ecl.radio label="Was the decision taken in respect of automated means"
+<x-ecl.radio label="Was the decision taken using automated means?"
              name="automated_decision"
              id="automated_decision"
              :options="$options['automated_decisions']"
@@ -74,7 +74,7 @@
              required="true"
 />
 
-<x-ecl.radio label="Was the take-down performed using automated means"
+<x-ecl.radio label="Was the content taken down using automated means?"
              name="automated_takedown"
              id="automated_takedown"
              :options="$options['automated_takedowns']"
