@@ -32,7 +32,7 @@ class StatementControllerTest extends TestCase
         'start_date' => '03-01-2023',
         'end_date' => '13-01-2023',
         'source' => 'SOURCE_ARTICLE_16',
-        'source_explanation' => 'source explanation',
+        'decision_facts' => 'Facts and circumstances',
         'automated_detection' => 'Yes',
         'automated_decision' => 'Yes',
         'automated_takedown' => 'Yes'

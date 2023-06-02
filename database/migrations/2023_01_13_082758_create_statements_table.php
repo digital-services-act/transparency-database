@@ -34,8 +34,10 @@ class CreateStatementsTable extends Migration
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
 
+            $table->string('decision_facts', 500);
+
             $table->enum('source', array_keys(\App\Models\Statement::SOURCES));
-            $table->string('source_explanation', 500)->nullable();
+//            $table->string('source_explanation', 500)->nullable();
 
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
             $table->enum('automated_decision', \App\Models\Statement::AUTOMATED_DECISIONS);

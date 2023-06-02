@@ -26,13 +26,13 @@ class Statement extends Model
     ];
 
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
+    public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
-    //public const SOURCE_OTHER = 'Other';
 
     public const SOURCES = [
         'SOURCE_ARTICLE_16' => Statement::SOURCE_ARTICLE_16,
+        'SOURCE_TRUSTED_FLAGGER' => Statement::SOURCE_TRUSTED_FLAGGER,
         'SOURCE_VOLUNTARY' => Statement::SOURCE_VOLUNTARY,
-        //'SOURCE_OTHER' => Statement::SOURCE_OTHER
     ];
 
     public const AUTOMATED_DETECTIONS_YES = 'Yes';
@@ -215,7 +215,7 @@ class Statement extends Model
         return [
             'illegal_content_explanation' => $this->illegal_content_explanation,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
-            'source_explanation' => $this->source_identity
+            'decision_facts' => $this->decision_facts
         ];
     }
 
