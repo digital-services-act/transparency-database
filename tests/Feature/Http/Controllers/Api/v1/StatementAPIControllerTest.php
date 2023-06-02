@@ -39,6 +39,7 @@ class StatementAPIControllerTest extends TestCase
             'automated_decision' => 'No',
             'automated_takedown' => 'Yes',
             'user_id' => 1,
+            'start_date' => '03-01-2023'
         ];
     }
 
@@ -93,7 +94,8 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
         $this->assertCount(200, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'date_abolished' => '2023-01-03 00:00:00',
+            'start_date' => '2023-01-03 00:00:00',
+            'end_date' => '2023-01-13 00:00:00',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -104,8 +106,10 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->date_abolished);
-        $this->assertInstanceOf(Carbon::class, $statement->date_abolished);
+        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
+        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
 
     /**
@@ -117,7 +121,8 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
         $this->assertCount(200, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'date_abolished' => '2023-01-03 00:00:00',
+            'start_date' => '2023-01-03 00:00:00',
+            'end_date' => '2023-01-13 00:00:00',
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -144,8 +149,10 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->date_abolished);
-        $this->assertInstanceOf(Carbon::class, $statement->date_abolished);
+        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
 
     /**

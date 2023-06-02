@@ -43,8 +43,11 @@
                        enter_keyword="Enter a country name" required="false" />
 <hr>
 
-<x-ecl.datepicker label="Duration of the decision - leave blank for indefinite" id="date_abolished"
-                  name="date_abolished" value="{{ $statement->date_abolished }}" />
+<x-ecl.datepicker label="Start date of the decision" id="start_date"
+                  name="start_date" value="{{ $statement->start_date }}" required="true"/>
+
+<x-ecl.datepicker label="End date of the decision - leave blank for indefinite" id="end_date"
+                  name="end_date" value="{{ $statement->end_date }}" />
 <hr>
 
 <x-ecl.select label="Facts and circumstances relied on in taking the decision" name="source" id="source" :options="$options['sources']" required="true" />

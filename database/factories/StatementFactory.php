@@ -27,7 +27,7 @@ class StatementFactory extends Factory
 
         $base_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
 
-        $date_sent = $date_abolished = $base_date->format('Y-m-d G:i:s');
+        $start_date = $end_date = $base_date->format('Y-m-d G:i:s');
 
         $user_id = User::all()->random()->id;
 
@@ -47,7 +47,8 @@ class StatementFactory extends Factory
 
             'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
 
-            'date_abolished' => $date_abolished,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
 
             'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
             'source_explanation' => $this->faker->realText(500),
@@ -59,7 +60,7 @@ class StatementFactory extends Factory
 
             'user_id' => $user_id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
-            'created_at' => $date_sent
+            'created_at' => $base_date
         ];
     }
 }

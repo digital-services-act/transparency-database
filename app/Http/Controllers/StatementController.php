@@ -136,7 +136,8 @@ class StatementController extends Controller
 
 //        $validated['date_sent'] = $this->sanitizeDate($validated['date_sent'] ?? null);
 //        $validated['date_enacted'] = $this->sanitizeDate($validated['date_enacted'] ?? null);
-        $validated['date_abolished'] = $this->sanitizeDate($validated['date_abolished'] ?? null);
+        $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
+        $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
 
         $statement = Statement::create($validated);
 

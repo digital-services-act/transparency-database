@@ -57,11 +57,13 @@
     <x-info-line title="Automated Decision" :content="$statement->automated_decision"></x-info-line>
     <x-info-line title="Automated Take-down" :content="$statement->automated_takedown"></x-info-line>
 
-    @if($statement->date_abolished)
-        <x-info-line title="Abolished until" :content="$statement->date_abolished->format('d-m-Y')"></x-info-line>
+    @if($statement->start_date)
+        <x-info-line title="Abolished since" :content="$statement->start_date->format('d-m-Y')"></x-info-line>
     @endif
 
-    @if(!$statement->date_abolished)
+    @if($statement->end_date)
+        <x-info-line title="Abolished until" :content="$statement->end_date->format('d-m-Y')"></x-info-line>
+    @else
         <x-info-line title="Abolished until" content="indefinite"></x-info-line>
     @endif
 
