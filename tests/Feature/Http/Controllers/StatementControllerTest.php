@@ -23,6 +23,7 @@ class StatementControllerTest extends TestCase
     protected $dummy_attributes = [
         'decision_taken' => 'DECISION_ALL',
         'decision_ground' => 'ILLEGAL_CONTENT',
+        'content_type' => 'VIDEO',
         'category' => 'FRAUD',
         'platform_type' => 'SOCIAL_MEDIA',
         'illegal_content_legal_ground' => 'foo',

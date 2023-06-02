@@ -59,6 +59,7 @@ Example JSON payload body:
 {
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
+    "content_type": "VIDEO",
     "category": "FRAUD",
     "illegal_content_legal_ground": "illegal content legal ground",
     "illegal_content_explanation": "illegal content explanation",
@@ -106,7 +107,7 @@ You will also receive a payload with the statement as created in the database:
     "automated_detection": "No",
     "automated_decision": "No",
     "automated_takedown": "Yes",
-    "url": "https://theurl.com"
+    "url": "https://theurl.com",
     "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3",
     "permalink": "{{$baseurl}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3",
     "self": "{{$baseurl}}/api/v{{config('app.api_latest')}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3"
@@ -194,9 +195,26 @@ This is boolean that states if the incompatible content is also illegal.
 
 Allowed values are: true, false
 
+### Content Type (content_type)
+
+This is a required attribute, and it tells us what type of content is targeted by the statement of reason.
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::CONTENT_TYPES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 ### Category (category)
 
-This is a required attribute and it tells us which category the statment belongs to.
+This is a required attribute, and it tells us which category the statement belongs to.
 
 The value provided must be one of the following:
 
@@ -298,6 +316,7 @@ $headers = [
 $body = '{
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
+  "content_type": "VIDEO",
   "category": "FRAUD",
   "illegal_content_legal_ground": "illegal content legal ground",
   "illegal_content_explanation": "illegal content explanation",
@@ -332,6 +351,7 @@ curl --location '{{$baseurl}}/api/statement/create' \
 --data '{
     "decision_taken": "DECISION_TERMINATION",
     "decision_ground": "INCOMPATIBLE_CONTENT",
+    "content_type": "VIDEO",
     "category": "FRAUD",
     "illegal_content_legal_ground": "illegal content legal ground",
     "illegal_content_explanation": "illegal content explanation",
@@ -363,6 +383,7 @@ conn = http.client.HTTPSConnection("{{str_replace("https://", "", $baseurl)}}")
 payload = json.dumps({
   "decision_taken": "DECISION_TERMINATION",
   "decision_ground": "INCOMPATIBLE_CONTENT",
+  "content_type": "VIDEO",
   "category": "FRAUD",
   "illegal_content_legal_ground": "illegal content legal ground",
   "illegal_content_explanation": "illegal content explanation",

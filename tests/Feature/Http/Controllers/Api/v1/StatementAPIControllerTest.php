@@ -35,6 +35,7 @@ class StatementAPIControllerTest extends TestCase
             'countries_list' => ['BE', 'DE', 'FR'],
             'source' => 'SOURCE_ARTICLE_16',
             'decision_facts' => 'decision and facts',
+            'content_type' => 'VIDEO',
             'automated_detection' => 'No',
             'automated_decision' => 'No',
             'automated_takedown' => 'Yes',

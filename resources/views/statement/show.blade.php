@@ -39,6 +39,8 @@
 
 
 
+    <x-info-line title="Content Type" :content="\App\Models\Statement::CONTENT_TYPES[$statement->content_type]"></x-info-line>
+
     <x-info-line title="Category" :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
 
     <x-info-line title="Infringing URL" :content="$statement->url"></x-info-line>

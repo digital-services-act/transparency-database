@@ -35,6 +35,18 @@ class Statement extends Model
         'SOURCE_VOLUNTARY' => Statement::SOURCE_VOLUNTARY,
     ];
 
+    public const CONTENT_TYPE_TEXT = 'Text';
+    public const CONTENT_TYPE_VIDEO = 'Video';
+    public const CONTENT_TYPE_IMAGE = 'Image';
+    public const CONTENT_TYPE_OTHER = 'Other';
+
+    public const CONTENT_TYPES = [
+        'TEXT' => Statement::CONTENT_TYPE_TEXT,
+        'VIDEO' => Statement::CONTENT_TYPE_VIDEO,
+        'IMAGE' => Statement::CONTENT_TYPE_IMAGE,
+        'OTHER' => Statement::CONTENT_TYPE_OTHER,
+    ];
+
     public const AUTOMATED_DETECTIONS_YES = 'Yes';
     public const AUTOMATED_DETECTIONS_NO = 'No';
     public const AUTOMATED_DETECTIONS = [
