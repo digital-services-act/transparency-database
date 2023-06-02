@@ -64,6 +64,7 @@ Example JSON payload body:
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content ground",
     "incompatible_content_explanation": "incompatible content explanation",
+    "incompatible_content_illegal": false,
     "countries_list": [
         "PT",
         "ES",
@@ -93,6 +94,7 @@ You will also receive a payload with the statement as created in the database:
     "category": "FRAUD",
     "incompatible_content_ground": "incompatible content ground",
     "incompatible_content_explanation": "incompatible content explanation",
+    "incompatible_content_illegal": false,
     "countries_list": [
         "PT",
         "ES",
@@ -168,23 +170,6 @@ The value provided must be one of the following:
 </ul>
 
 
-### Category (category)
-
-This is a required attribute and it tells us which category the statment belongs to.
-
-The value provided must be one of the following:
-
-<ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::SOR_CATEGORIES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
-</ul>
-
 ### Illegal Content Legal Ground (illegal_content_legal_ground)
 
 This is required if the ILLEGAL_CONTENT was the decision_ground. It is the legal ground relied on.
@@ -202,6 +187,29 @@ It is the reference to contractual ground.
 
 This is a small optional text that explains why the content is 
 considered as incompatible on that ground.
+
+### Incompatible Content Illegal (incompatible_content_illegal)
+
+This is boolean that states if the incompatible content is also illegal.
+
+Allowed values are: true, false
+
+### Category (category)
+
+This is a required attribute and it tells us which category the statment belongs to.
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::SOR_CATEGORIES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
 
 ### Countries List (countries_list)
 

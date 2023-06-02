@@ -31,6 +31,7 @@ class StatementStoreRequest extends FormRequest
             'illegal_content_explanation' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
             'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'incompatible_content_explanation' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
+            'incompatible_content_illegal' => ['boolean','nullable','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'category' => ['required', $this->in(array_keys(Statement::SOR_CATEGORIES))],
             'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'date_abolished' => ['date', 'nullable'],
@@ -39,8 +40,6 @@ class StatementStoreRequest extends FormRequest
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(Statement::AUTOMATED_DECISIONS)],
             'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
-//            'redress' => [$this->in(array_keys(Statement::REDRESSES)), 'nullable'],
-//            'redress_more' => ['string','nullable'],
             'url' => ['url','required'],
         ];
     }

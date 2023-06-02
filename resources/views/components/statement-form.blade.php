@@ -24,6 +24,9 @@
 
 <x-ecl.textarea label="Explanation of why the content is considered as incompatible on that ground"
                 name="incompatible_content_explanation" id="incompatible_content_explanation" required="true" />
+
+<x-ecl.checkbox label="Is the content considered as illegal ?"
+                name="incompatible_content_illegal" id="incompatible_content_illegal" required="false" />
 <hr>
 
 <x-ecl.select label="Category"
@@ -104,8 +107,10 @@
 
           hide('div_illegal_content_legal_ground');
           hide('div_illegal_content_explanation');
+
           hide('div_incompatible_content_ground');
           hide('div_incompatible_content_explanation');
+          hide('div_incompatible_content_illegal');
           hide('div_source_explanation_article_16');
           hide('div_source_explanation_own');
           // hide('div_redress_more');
@@ -118,6 +123,7 @@
           if (ge('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
               show('div_incompatible_content_ground');
               show('div_incompatible_content_explanation');
+              show('div_incompatible_content_illegal');
           }
 
           if (ge('source').value === 'SOURCE_ARTICLE_16') {

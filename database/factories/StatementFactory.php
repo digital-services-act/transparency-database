@@ -41,6 +41,7 @@ class StatementFactory extends Factory
             'illegal_content_explanation' => $this->faker->realText(500),
             'incompatible_content_ground' => $this->faker->text(100),
             'incompatible_content_explanation' => $this->faker->realText(500),
+            'incompatible_content_illegal' => $this->faker->boolean,
 
             'url' => $this->faker->url,
 
