@@ -164,14 +164,14 @@ class StatementController extends Controller
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
-        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
+        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
 
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
-            return [
-                'value' => $platform->id,
-                'label' => $platform->name
-            ];
-        })->toArray();
+//        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+//            return [
+//                'value' => $platform->id,
+//                'label' => $platform->name
+//            ];
+//        })->toArray();
         //array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
 
 
@@ -193,14 +193,13 @@ class StatementController extends Controller
             'automated_detections',
             'automated_decisions',
             'automated_takedowns',
-            'platform_types',
             'decisions',
             'decision_grounds',
             'categories',
             'illegal_content_fields',
             'incompatible_content_fields',
             'sources',
-            'platforms',
+            'content_types',
         );
     }
 }

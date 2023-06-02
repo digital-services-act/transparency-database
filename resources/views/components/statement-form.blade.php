@@ -29,6 +29,12 @@
                 name="incompatible_content_illegal" id="incompatible_content_illegal" required="false" />
 <hr>
 
+<x-ecl.select label="Content Type"
+              name="content_type"
+              id="content_type"
+              :options="$options['content_types']"
+              required="true" />
+<hr>
 <x-ecl.select label="Category"
               name="category"
               id="category" default="{{ $statement->category }}"
