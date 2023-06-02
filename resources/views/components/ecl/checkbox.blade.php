@@ -1,5 +1,5 @@
 @props(['label' => null, 'name' => null, 'id' => null, 'checked' => false, 'value' => null])
-<div class="ecl-checkbox">
+<div class="ecl-checkbox" id="div_{{$id}}">
     <input class="ecl-checkbox__input"
            id="{{ $id }}"
            name="{{ $name }}"

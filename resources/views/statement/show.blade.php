@@ -34,7 +34,10 @@
     @if($statement->decision_ground == 'INCOMPATIBLE_CONTENT')
         <x-info-line title="Reference to contractual ground" :content="$statement->incompatible_content_ground"></x-info-line>
         <x-info-line title="Explanation of why the content is considered as incompatible on that ground" :content="$statement->incompatible_content_explanation"></x-info-line>
+        <x-info-line title="Is the content also illegal ?" :content="$statement->incompatible_content_illegal?'Yes':'No'"></x-info-line>
     @endif
+
+
 
     <x-info-line title="Category" :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
 

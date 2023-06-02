@@ -27,6 +27,7 @@ class CreateStatementsTable extends Migration
             $table->string('illegal_content_explanation',500)->nullable();
             $table->string('incompatible_content_ground', 255)->nullable();
             $table->string('incompatible_content_explanation',500)->nullable();
+            $table->boolean('incompatible_content_illegal')->nullable();
 
             $table->string('countries_list', 255)->nullable();
             $table->timestamp('date_abolished')->nullable();
