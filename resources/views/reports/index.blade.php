@@ -68,7 +68,7 @@
 
     <div>
         <a href="?#graphs" class="ecl-button--primary ecl-button">Statements</a>
-        <a href="?chart=statements-by-decision#graphs" class="ecl-button--primary ecl-button">by Decision</a>
+{{--        <a href="?chart=statements-by-decision#graphs" class="ecl-button--primary ecl-button">by Decision</a>--}}
         <a href="?chart=statements-by-ground#graphs" class="ecl-button--primary ecl-button">by Ground</a>
         <a href="?chart=statements-by-method#graphs" class="ecl-button--primary ecl-button">by Method</a>
         <a href="?chart=statements-by-source#graphs" class="ecl-button--primary ecl-button">by Source</a>

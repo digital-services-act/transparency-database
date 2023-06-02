@@ -1,11 +1,35 @@
 @props(['statement' => null, 'options' => null])
 
-<x-ecl.select label="Decision Taken"
-              name="decision_taken"
-              id="decision_taken"
-              :options="$options['decisions']"
-              required="true" default="{{ $statement->decision_taken }}"
-              size="xl" />
+<h4>Decision Taken</h4>
+<x-ecl.select label="Visibility restriction of specific items of information provided by the recipient of the service"
+              name="decision_visibility"
+              id="decision_visibility"
+              :options="$options['decisions_visibility']"
+              default="{{ $statement->decision_visibility }}"
+               />
+
+<x-ecl.select label="Monetary payments suspension, termination or other restriction"
+              name="decision_monetary"
+              id="decision_monetary"
+              :options="$options['decisions_monetary']"
+              default="{{ $statement->decision_monetary }}"
+               />
+
+<x-ecl.select label="Suspension or termination of the provision of the service"
+              name="decision_provision"
+              id="decision_provision"
+              :options="$options['decisions_provision']"
+              default="{{ $statement->decision_provision }}"
+               />
+
+<x-ecl.select label="Suspension or termination of the recipient of the service's account."
+              name="decision_account"
+              id="decision_account"
+              :options="$options['decisions_account']"
+              default="{{ $statement->decision_account }}"
+               />
+
+
 <hr>
 
 <x-ecl.select label="Ground for Decision"

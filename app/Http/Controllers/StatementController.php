@@ -179,7 +179,12 @@ class StatementController extends Controller
             return ['value' => $automated_detection, 'label' => $automated_detection];
         }, Statement::AUTOMATED_DETECTIONS);
 
-        $decisions = $this->mapForSelectWithKeys(Statement::DECISIONS);
+//        $decisions = $this->mapForSelectWithKeys(Statement::DECISIONS);
+        $decisions_visibility = $this->mapForSelectWithKeys(Statement::DECISIONS_VISIBILITY);
+        $decisions_monetary = $this->mapForSelectWithKeys(Statement::DECISIONS_MONETARY);
+        $decisions_provision = $this->mapForSelectWithKeys(Statement::DECISIONS_PROVISION);
+        $decisions_account = $this->mapForSelectWithKeys(Statement::DECISIONS_ACCOUNT);
+
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::SOR_CATEGORIES);
 
@@ -193,7 +198,11 @@ class StatementController extends Controller
             'automated_detections',
             'automated_decisions',
             'automated_takedowns',
-            'decisions',
+            'decisions_visibility',
+            'decisions_monetary',
+            'decisions_provision',
+            'decisions_account',
+//            'decisions',
             'decision_grounds',
             'categories',
             'illegal_content_fields',

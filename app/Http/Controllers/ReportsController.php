@@ -147,28 +147,28 @@ class ReportsController extends Controller
             );
         }
 
-        if ($request->get('chart') == 'statements-by-decision') {
-            $title = "Statements by Decisions";
-            $decisions = Statement::DECISIONS;
-            $chart_options = [];
-            $colors = ['DECISION_ALL' => 'black', 'DECISION_MONETARY' => 'blue', 'DECISION_PROVISION' => 'red', 'DECISION_TERMINATION' => 'yellow'];
-            foreach ($decisions as $key => $decision) {
-                $decision = str_replace("'", "", $decision); // Meh, charts can't handle the '
-                $chart_options[] = [
-                    'chart_title' => $decision,
-                    'chart_type' => 'line',
-                    'where_raw'  => $own,
-                    'conditions'            => [
-                        ['name' => $decision, 'condition' => 'decision_taken = \''.$key.'\'', 'color' => $colors[$key], 'fill' => true]
-                    ],
-                    'report_type' => 'group_by_date',
-                    'model' => 'App\Models\Statement',
-                    'group_by_field' => 'created_at',
-                    'group_by_period' => 'month',
-                ];
-            }
-            $chart = new LaravelChart($chart_options[0], $chart_options[1], $chart_options[2], $chart_options[3]);
-        }
+//        if ($request->get('chart') == 'statements-by-decision') {
+//            $title = "Statements by Decisions";
+//            $decisions = Statement::DECISIONS;
+//            $chart_options = [];
+//            $colors = ['DECISION_ALL' => 'black', 'DECISION_MONETARY' => 'blue', 'DECISION_PROVISION' => 'red', 'DECISION_TERMINATION' => 'yellow'];
+//            foreach ($decisions as $key => $decision) {
+//                $decision = str_replace("'", "", $decision); // Meh, charts can't handle the '
+//                $chart_options[] = [
+//                    'chart_title' => $decision,
+//                    'chart_type' => 'line',
+//                    'where_raw'  => $own,
+//                    'conditions'            => [
+//                        ['name' => $decision, 'condition' => 'decision_taken = \''.$key.'\'', 'color' => $colors[$key], 'fill' => true]
+//                    ],
+//                    'report_type' => 'group_by_date',
+//                    'model' => 'App\Models\Statement',
+//                    'group_by_field' => 'created_at',
+//                    'group_by_period' => 'month',
+//                ];
+//            }
+//            $chart = new LaravelChart($chart_options[0], $chart_options[1], $chart_options[2], $chart_options[3]);
+//        }
 
         if ($request->get('chart') == 'statements-by-ground') {
             $title = "Statements by Ground";
@@ -223,7 +223,7 @@ class ReportsController extends Controller
                 'conditions'            => [
                     ['name' => 'Form', 'condition' => 'method = \'FORM\'', 'color' => 'black', 'fill' => true],
 //                    ['name' => 'API', 'condition' => 'method = \'API\'', 'color' => 'blue', 'fill' => true],
-//                    ['name' => 'eDelivery', 'condition' => 'method = \'EDELIVERY\'', 'color' => 'red', 'fill' => true],
+
                 ],
                 'report_type' => 'group_by_date',
                 'model' => 'App\Models\Statement',
@@ -236,29 +236,15 @@ class ReportsController extends Controller
                 'where_raw'  => $own,
                 'conditions'            => [
 //                    ['name' => 'Form', 'condition' => 'method = \'FORM\'', 'color' => 'black', 'fill' => true],
-                    ['name' => 'API', 'condition' => 'method = \'API\'', 'color' => 'blue', 'fill' => true],
-//                    ['name' => 'eDelivery', 'condition' => 'method = \'EDELIVERY\'', 'color' => 'red', 'fill' => true],
+                    ['name' => 'API', 'condition' => 'method = \'API\'', 'color' => 'blue', 'fill' => true]
                 ],
                 'report_type' => 'group_by_date',
                 'model' => 'App\Models\Statement',
                 'group_by_field' => 'created_at',
                 'group_by_period' => 'month',
             ];
-            $chart_options3 = [
-                'chart_title' => 'Statements Created by eDelivery',
-                'chart_type' => 'line',
-                'where_raw'  => $own,
-                'conditions'            => [
-//                    ['name' => 'Form', 'condition' => 'method = \'FORM\'', 'color' => 'black', 'fill' => true],
-//                    ['name' => 'API', 'condition' => 'method = \'API\'', 'color' => 'blue', 'fill' => true],
-                    ['name' => 'eDelivery', 'condition' => 'method = \'EDELIVERY\'', 'color' => 'red', 'fill' => true],
-                ],
-                'report_type' => 'group_by_date',
-                'model' => 'App\Models\Statement',
-                'group_by_field' => 'created_at',
-                'group_by_period' => 'month',
-            ];
-            $chart = new LaravelChart($chart_options1, $chart_options2, $chart_options3);
+
+            $chart = new LaravelChart($chart_options1, $chart_options2);
         }
 
         return view('reports.index', [

@@ -18,7 +18,11 @@ class CreateStatementsTable extends Migration
 
             $table->string('uuid', 36)->index('uuidindex');
 
-            $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
+            $table->enum('decision_visibility', array_keys(\App\Models\Statement::DECISIONS_VISIBILITY))->nullable();
+            $table->enum('decision_monetary', array_keys(\App\Models\Statement::DECISIONS_MONETARY))->nullable();
+            $table->enum('decision_provision', array_keys(\App\Models\Statement::DECISIONS_PROVISION))->nullable();
+            $table->enum('decision_account', array_keys(\App\Models\Statement::DECISIONS_ACCOUNT))->nullable();
+//            $table->enum('decision_taken', array_keys(\App\Models\Statement::DECISIONS));
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
 
             $table->enum('category', array_keys(\App\Models\Statement::SOR_CATEGORIES));

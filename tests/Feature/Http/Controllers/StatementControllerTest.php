@@ -21,7 +21,7 @@ class StatementControllerTest extends TestCase
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
     protected $dummy_attributes = [
-        'decision_taken' => 'DECISION_ALL',
+        'decision_visibility' => 'CONTENT_DISABLED',
         'decision_ground' => 'ILLEGAL_CONTENT',
         'content_type' => 'VIDEO',
         'category' => 'FRAUD',

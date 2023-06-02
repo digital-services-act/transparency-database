@@ -25,7 +25,12 @@ class StatementStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'decision_taken' => ['required', $this->in(array_keys(Statement::DECISIONS))],
+            'decision_visibility' => [ $this->in(array_keys(Statement::DECISIONS_VISIBILITY)),'required_without_all:decision_monetary,decision_provision,decision_account'],
+            'decision_monetary' => [ $this->in(array_keys(Statement::DECISIONS_MONETARY)),'required_without_all:decision_visibility,decision_provision,decision_account'],
+            'decision_provision' => [ $this->in(array_keys(Statement::DECISIONS_PROVISION)),'required_without_all:decision_visibility,decision_monetary,decision_account'],
+            'decision_account' => [ $this->in(array_keys(Statement::DECISIONS_ACCOUNT)),'required_without_all:decision_visibility,decision_monetary,decision_provision'],
+
+
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
             'illegal_content_legal_ground' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
             'illegal_content_explanation' => ['required_if:decision_ground,ILLEGAL_CONTENT','exclude_unless:decision_ground,ILLEGAL_CONTENT'],
