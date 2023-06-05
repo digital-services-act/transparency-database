@@ -165,14 +165,15 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
+        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
 
-//        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
-//            return [
-//                'value' => $platform->id,
-//                'label' => $platform->name
-//            ];
-//        })->toArray();
-        //array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+            return [
+                'value' => $platform->id,
+                'label' => $platform->name
+            ];
+        })->toArray();
+        array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
 
 
         array_map(function ($automated_detection) {
@@ -202,13 +203,14 @@ class StatementController extends Controller
             'decisions_monetary',
             'decisions_provision',
             'decisions_account',
-//            'decisions',
             'decision_grounds',
             'categories',
             'illegal_content_fields',
             'incompatible_content_fields',
             'sources',
             'content_types',
+            'platforms',
+            'platform_types',
         );
     }
 }
