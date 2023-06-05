@@ -9,7 +9,7 @@ efficiency and allows for automation.
 When your account is given the ability to use the API then you are able to
 generate a private secure token that will allow you to use the API.
 
-This token looks something like this: 
+This token looks something like this:
 
 <pre>
     X|ybqkCFX7ZkIFoLxtI0VAk1JBzMR9jVk4c4EU
@@ -22,13 +22,14 @@ This token will be shown one time, so it will need to be copied and stored safel
 
 __Each time you generate a new token the old token becomes invalid!__
 
-<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies calls to the API as you! Do not share this token with other entities. They will be able to impersonate and act as you!" close="" />
+<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies calls to the API as
+you! Do not share this token with other entities. They will be able to impersonate and act as you!" close="" />
 
 ## Sandbox
 
-We highly encourage all users of the API to first test and try out their API code using the sandbox version of 
+We highly encourage all users of the API to first test and try out their API code using the sandbox version of
 the application. This is a copy of the application and it is reset and blanked out each week. If your code if
-is working there, then the only difference to the production version will be the URL endpoint and 
+is working there, then the only difference to the production version will be the URL endpoint and
 the token used.
 
 <a href="{{ env('SANDBOX_URL') }}" target="_blank">SANDBOX VERSION</a>
@@ -42,7 +43,7 @@ To create a statement of reason using the API you will need to make a
     {{route('api.v'.config('app.api_latest').'.statement.store')}}
 </pre>
 
-For this request you will need to provide authorization, accept, and content type 
+For this request you will need to provide authorization, accept, and content type
 headers of the request:
 
 <pre>
@@ -57,7 +58,10 @@ Example JSON payload body:
 
 ```json
 {
-    "decision_taken": "DECISION_TERMINATION",
+    "decision_visibility": "CONTENT_DISABLED",
+    "decision_monetary": "MONETARY_TERMINATION",
+    "decision_provision": "PARTIAL_TERMINATION",
+    "decision_account": "ACCOUNT_TERMINATED",
     "decision_ground": "INCOMPATIBLE_CONTENT",
     "content_type": "VIDEO",
     "category": "FRAUD",
@@ -90,7 +94,10 @@ You will also receive a payload with the statement as created in the database:
 
 ```json
 {
-    "decision_taken": "DECISION_TERMINATION",
+    "decision_visibility": "CONTENT_DISABLED",
+    "decision_monetary": "MONETARY_TERMINATION",
+    "decision_provision": "PARTIAL_TERMINATION",
+    "decision_account": "ACCOUNT_TERMINATED",
     "decision_ground": "INCOMPATIBLE_CONTENT",
     "category": "FRAUD",
     "incompatible_content_ground": "incompatible content ground",
@@ -114,7 +121,8 @@ You will also receive a payload with the statement as created in the database:
 }
 ```
 
-<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call to an API you should always validate that you did receive the proper status, '201 Created'." close="" />
+<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call to an API you should
+always validate that you did receive the proper status, '201 Created'." close="" />
 
 ## UUID
 
@@ -135,15 +143,18 @@ When submitting statements please take care to not submit ANY personal data. On 
 regular basis we will do checks on the database to ensure that no personal data has been
 submitted. However, we kindly ask that you help us out by not submitting any.
 
-### Decision Taken (decision_taken)
+### Decision Visibility (decision_visibility)
 
-This is a required attribute and it tells us what sort of a decision was taken. 
+This attribute tells us the visibility restriction of specific items of information provided by the
+recipient of the service.
+
+This attribute is mandatory only if the following fields are empty: decision_monetary, decision_provision and decision_account
 
 The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::DECISIONS as $key => $value) {
+    foreach (\App\Models\Statement::DECISIONS_VISIBILITY as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -152,16 +163,17 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+### Decision about the content visibility (decision_monetary)
 
-### Decision Ground (decision_ground)
+This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
 
-This is a required attribute and it tells us which ground the decision was based on.
+This attribute is mandatory only if the following fields are empty: decision_visibility, decision_provision and decision_account
 
 The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::DECISION_GROUNDS as $key => $value) {
+    foreach (\App\Models\Statement::DECISIONS_MONETARY as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -170,6 +182,43 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+### Decision about the provisioning of the service (decision_provision)
+
+This is an attribute that tells us about the suspension or termination of the provision of the service.
+
+This attribute is mandatory only if the following fields are empty: decision_visibility, decision_monetary and decision_account
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::DECISIONS_PROVISION as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
+### Decision about the account's status (decision_account)
+
+This is an attribute that tells us about the account's status.
+
+This attribute is mandatory only if the following fields are empty: decision_visibility, decision_monetary and decision_provision
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::DECISIONS_ACCOUNT as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
 
 ### Illegal Content Legal Ground (illegal_content_legal_ground)
 
@@ -181,12 +230,12 @@ This is a small optional text that explains why the content was illegal.
 
 ### Incompatible Content Ground (incompatible_content_ground)
 
-This is required if INCOMPATIBLE_CONTENT was the decision_ground. 
+This is required if INCOMPATIBLE_CONTENT was the decision_ground.
 It is the reference to contractual ground.
 
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
-This is a small optional text that explains why the content is 
+This is a small optional text that explains why the content is
 considered as incompatible on that ground.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
@@ -231,7 +280,7 @@ The value provided must be one of the following:
 
 ### Countries List (countries_list)
 
-This is a required array of countries involved. Each value must be the 2 letter iso code 
+This is a required array of countries involved. Each value must be the 2 letter iso code
 for the country and the countries must be EU countries.
 
 Allowed values are:
@@ -248,7 +297,7 @@ The ```HH:MM:SS``` is optional and may be omitted.
 
 ### End Date (end_date)
 
-This is the date and time that this decision ends. Leave blank for indefinite. 
+This is the date and time that this decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
@@ -260,10 +309,9 @@ The ```HH:MM:SS``` is optional and may be omitted.
 
 This is a required textual field to describe the facts and circumstances relied on in taking the decision.
 
-
 ### Notification source (source)
 
-This is a required field and tells us the facts and circumstances 
+This is a required field and tells us the facts and circumstances
 relied upon in taking the decision.
 
 The value provided must be one of the following:
@@ -278,7 +326,6 @@ The value provided must be one of the following:
     }
 @endphp
 </ul>
-
 
 ### Automated Detection (automated_detection)
 
@@ -296,6 +343,7 @@ This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that take-down was performed using automated means.
 
 ### URL (url)
+
 This is an required attribute.
 This contains the URL to the data that has been moderated.
 
@@ -314,7 +362,10 @@ $headers = [
   'Content-Type' => 'application/json'
 ];
 $body = '{
-  "decision_taken": "DECISION_TERMINATION",
+  "decision_visibility": "CONTENT_DISABLED",
+  "decision_monetary": "MONETARY_TERMINATION",
+  "decision_provision": "PARTIAL_TERMINATION",
+  "decision_account": "ACCOUNT_TERMINATED",
   "decision_ground": "INCOMPATIBLE_CONTENT",
   "content_type": "VIDEO",
   "category": "FRAUD",
@@ -349,7 +400,10 @@ curl --location '{{$baseurl}}/api/statement/create' \
 --header 'Authorization: Bearer <YOUR_TOKEN_HERE>' \
 --header 'Content-Type: application/json' \
 --data '{
-    "decision_taken": "DECISION_TERMINATION",
+    "decision_visibility": "CONTENT_DISABLED",
+    "decision_monetary": "MONETARY_TERMINATION",
+    "decision_provision": "PARTIAL_TERMINATION",
+    "decision_account": "ACCOUNT_TERMINATED",
     "decision_ground": "INCOMPATIBLE_CONTENT",
     "content_type": "VIDEO",
     "category": "FRAUD",
@@ -372,7 +426,6 @@ curl --location '{{$baseurl}}/api/statement/create' \
 }'
 ```
 
-
 ### Python
 
 ```php
@@ -381,7 +434,10 @@ import json
 
 conn = http.client.HTTPSConnection("{{str_replace("https://", "", $baseurl)}}")
 payload = json.dumps({
-  "decision_taken": "DECISION_TERMINATION",
+  "decision_visibility": "CONTENT_DISABLED",
+  "decision_monetary": "MONETARY_TERMINATION",
+  "decision_provision": "PARTIAL_TERMINATION",
+  "decision_account": "ACCOUNT_TERMINATED",
   "decision_ground": "INCOMPATIBLE_CONTENT",
   "content_type": "VIDEO",
   "category": "FRAUD",

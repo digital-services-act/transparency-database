@@ -18,12 +18,13 @@ class Statement extends Model
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
-    public const METHOD_EDELIVERY = 'EDELIVERY';
+
     public const METHODS = [
         'METHOD_FORM' => Statement::METHOD_FORM,
-        'METHOD_API' => Statement::METHOD_API,
-        'METHOD_EDELIVERY' => Statement::METHOD_EDELIVERY
+        'METHOD_API' => Statement::METHOD_API
     ];
+
+
 
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
@@ -103,6 +104,47 @@ class Statement extends Model
         'DECISION_TERMINATION' => Statement::DECISION_TERMINATION
     ];
 
+    public const DECISION_VISIBILITY_CONTENT_REMOVED = 'Removal of content';
+    public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
+    public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
+    public const DECISION_VISIBILITY_CONTENT_OTHER = 'Other restriction (please specify)';
+    public const DECISIONS_VISIBILITY = [
+        'CONTENT_REMOVAL' => Statement::DECISION_VISIBILITY_CONTENT_REMOVED,
+        'CONTENT_DISABLED' => Statement::DECISION_VISIBILITY_CONTENT_DISABLED,
+        'CONTENT_DEMOTED' => Statement::DECISION_VISIBILITY_CONTENT_DEMOTED,
+        'CONTENT_OTHER' => Statement::DECISION_VISIBILITY_CONTENT_OTHER
+    ];
+
+    public const DECISION_MONETARY_SUSPENSION = 'Suspension of monetary payments';
+    public const DECISION_MONETARY_TERMINATION = 'Termination of monetary payments';
+    public const DECISION_MONETARY_OTHER = 'Other restriction (please specify)';
+
+    public const DECISIONS_MONETARY = [
+        'MONETARY_SUSPENSION' => Statement::DECISION_MONETARY_SUSPENSION,
+        'MONETARY_TERMINATION' => Statement::DECISION_MONETARY_TERMINATION,
+        'MONETARY_OTHER' => Statement::DECISION_MONETARY_OTHER
+    ];
+
+    public const DECISION_PROVISION_PARTIAL_SUSPENSION = 'Partial suspension of the provision of the service';
+    public const DECISION_PROVISION_TOTAL_SUSPENSION = 'Total suspension of the provision of the service';
+    public const DECISION_PROVISION_PARTIAL_TERMINATION = 'Partial termination of the provision of the service';
+    public const DECISION_PROVISION_TOTAL_TERMINATION = 'Total termination of the provision of the service';
+
+
+    public const DECISIONS_PROVISION = [
+        'PARTIAL_SUSPENSION' => Statement::DECISION_PROVISION_PARTIAL_SUSPENSION,
+        'TOTAL_SUSPENSION' => Statement::DECISION_PROVISION_TOTAL_SUSPENSION,
+        'PARTIAL_TERMINATION' => Statement::DECISION_PROVISION_PARTIAL_TERMINATION,
+        'TOTAL_TERMINATION' => Statement::DECISION_PROVISION_TOTAL_TERMINATION,
+    ];
+
+    public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
+    public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
+
+    public const DECISIONS_ACCOUNT = [
+        'ACCOUNT_SUSPENDED' => Statement::DECISION_ACCOUNT_SUSPENDED,
+        'ACCOUNT_TERMINATED' => Statement::DECISION_ACCOUNT_TERMINATED
+    ];
 
     public const EUROPEAN_COUNTRY_CODES = [
         'AT',
@@ -154,7 +196,7 @@ class Statement extends Model
         'NON_CONSENT' => Statement::SOR_CATEGORY_NON_CONSENT,
         'MISINFORMATION' => Statement::SOR_CATEGORY_MISINFORMATION,
         'VIOLATION_TOS' => Statement::SOR_CATEGORY_VIOLATION_TOS,
-        'UNCATEGORISED' =>Statement::SOR_UNCATEGORISED
+        'UNCATEGORISED' => Statement::SOR_UNCATEGORISED
     ];
 
 

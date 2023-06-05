@@ -22,7 +22,18 @@
 
     <x-info-line title="Received" :content="$statement->created_at->format('d-m-Y g:i A')"></x-info-line>
 
-    <x-info-line title="Decision Taken" :content="\App\Models\Statement::DECISIONS[$statement->decision_taken]"></x-info-line>
+    @if($statement->decision_visibility)
+    <x-info-line title="Decision Taken (content visibility)" :content="\App\Models\Statement::DECISIONS_VISIBILITY[$statement->decision_visibility]"></x-info-line>
+    @endif
+    @if($statement->decision_monetary)
+    <x-info-line title="Decision Taken (monetary)" :content="\App\Models\Statement::DECISIONS_MONETARY[$statement->decision_monetary]"></x-info-line>
+    @endif
+    @if($statement->decision_provision)
+    <x-info-line title="Decision Taken (provision of service)" :content="\App\Models\Statement::DECISIONS_PROVISION[$statement->decision_provision]"></x-info-line>
+    @endif
+    @if($statement->decision_account)
+    <x-info-line title="Decision Taken (account status)" :content="\App\Models\Statement::DECISIONS_ACCOUNT[$statement->decision_account]"></x-info-line>
+    @endif
 
     <x-info-line title="Ground for Decision" :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
 

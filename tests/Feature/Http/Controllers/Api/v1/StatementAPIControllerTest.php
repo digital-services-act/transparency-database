@@ -25,7 +25,7 @@ class StatementAPIControllerTest extends TestCase
         parent::setUp();
 
         $this->required_fields = [
-            'decision_taken' => 'DECISION_ALL',
+            'decision_visibility' => 'CONTENT_DISABLED',
             'decision_ground' => 'ILLEGAL_CONTENT',
             'category' => 'FRAUD',
             'platform_type' => 'SOCIAL_MEDIA',
