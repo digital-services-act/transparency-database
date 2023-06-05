@@ -33,6 +33,15 @@
                                                                   aria-label="Link to Information about the DG">Digital Services Act Regulation</a></li>
                     </ul>
                 </div>
+                <div class="ecl-site-footer__section">
+                    <h2 class="ecl-site-footer__title ecl-site-footer__title--separator">
+                        Policies </h2>
+                    <ul class="ecl-site-footer__list">
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'cookie-policy']) }}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Cookie Policy">Cookie Policy</a></li>
+                    </ul>
+                </div>
 
             </div>
         </div>

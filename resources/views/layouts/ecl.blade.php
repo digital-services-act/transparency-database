@@ -33,6 +33,12 @@
             media="print"
         />
 
+        <script defer src="https://europa.eu/webtools/load.js" type="text/javascript"></script>
+        <script type="application/json">{
+            "utility": "cck"
+            "url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"
+        }</script>
+
         @section('extra-head')
         @show
     </head>
@@ -79,8 +85,11 @@
 ></script>
 <script>
     svg4everybody({polyfill: true});
+    @if(!$no_ecl_init??false)
     ECL.autoInit();
+    @endif
 </script>
+
 </body>
 </html>
 

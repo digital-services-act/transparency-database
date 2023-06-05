@@ -31,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
             $view->with('profiles', User::all());
         });
+
+        view()->share('no_ecl_init', false);
     }
 }
