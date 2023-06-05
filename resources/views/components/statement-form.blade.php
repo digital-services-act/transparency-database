@@ -120,7 +120,7 @@
 <hr>
 
 
-<x-ecl.textfield label="Infringing URL/Hyperlink" name="url" id="url" required="true"/>
+<x-ecl.textfield label="URL/Hyperlink" name="url" id="url" required="true"/>
 
 <hr>
 

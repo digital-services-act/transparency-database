@@ -54,7 +54,7 @@
 
     <x-info-line title="Category" :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
 
-    <x-info-line title="Infringing URL" :content="$statement->url"></x-info-line>
+    <x-info-line title="URL" :content="$statement->url"></x-info-line>
 
     <x-info-line title="Facts and circumstances relied on in taking the decision" :content="$statement->decision_facts"></x-info-line>
 
