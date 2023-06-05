@@ -83,7 +83,7 @@
 
 
 
-<x-ecl.select label="Notification source" name="source" id="source" :options="$options['sources']" required="true" />
+<x-ecl.select label="Information source" name="source" id="source" :options="$options['sources']" required="true" />
 
 {{--<x-ecl.textarea label="Explanation of the notice (only if strictly necessary, identity of the notifier)." name="notice_explanation" id="notice_explanation" required="true" />--}}
 
