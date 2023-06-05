@@ -32,7 +32,7 @@
                                justlabel="true"
                                :options="$options['platforms']" :default="request()->get('platform_id', [])"
                                select_all="All platforms" select_item="Select one or more platforms"
-                               enter_keyword="Enter a platform name"/>
+                               enter_keyword="Enter a platform name" />
 
         <x-ecl.checkboxes
                 label="Ground for Decision"

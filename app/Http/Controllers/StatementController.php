@@ -173,7 +173,7 @@ class StatementController extends Controller
                 'label' => $platform->name
             ];
         })->toArray();
-        array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+        //array_unshift($platforms, ['value' => ' ', 'label' => 'Choose a platform']);
 
 
         array_map(function ($automated_detection) {
