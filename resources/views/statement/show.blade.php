@@ -35,6 +35,8 @@
     <x-info-line title="Decision Taken (account status)" :content="\App\Models\Statement::DECISIONS_ACCOUNT[$statement->decision_account]"></x-info-line>
     @endif
 
+    <x-info-line title="Facts and circumstances relied on in taking the decision" :content="$statement->decision_facts"></x-info-line>
+
     <x-info-line title="Ground for Decision" :content="\App\Models\Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-info-line>
 
     @if($statement->decision_ground == 'ILLEGAL_CONTENT')
@@ -55,8 +57,6 @@
     <x-info-line title="Category" :content="\App\Models\Statement::SOR_CATEGORIES[$statement->category]"></x-info-line>
 
     <x-info-line title="URL" :content="$statement->url"></x-info-line>
-
-    <x-info-line title="Facts and circumstances relied on in taking the decision" :content="$statement->decision_facts"></x-info-line>
 
     <x-info-line title="Decision source" :content="\App\Models\Statement::SOURCES[$statement->source]"></x-info-line>
 

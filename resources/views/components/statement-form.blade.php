@@ -31,7 +31,8 @@
 
 
 <hr>
-
+<x-ecl.textarea label="Facts and circumstances relied on in taking the decision" name="decision_facts" id="decision_facts" required="true" />
+<hr>
 <x-ecl.select label="Ground for Decision"
               name="decision_ground"
               id="decision_ground" default="{{ $statement->decision_ground }}"
@@ -80,7 +81,7 @@
                   name="end_date" value="{{ $statement->end_date }}" />
 <hr>
 
-<x-ecl.textarea label="Facts and circumstances relied on in taking the decision" name="decision_facts" id="decision_facts" required="true" />
+
 
 <x-ecl.select label="Notification source" name="source" id="source" :options="$options['sources']" required="true" />
 
