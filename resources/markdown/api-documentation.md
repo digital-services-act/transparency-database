@@ -80,7 +80,6 @@ Example JSON payload body:
     "source": "SOURCE_VOLUNTARY",
     "automated_detection": "No",
     "automated_decision": "No",
-    "automated_takedown": "Yes",
     "url": "https://theurl.com"
 }
 ```
@@ -113,7 +112,6 @@ You will also receive a payload with the statement as created in the database:
     "decision_facts": "facts about the decision",
     "automated_detection": "No",
     "automated_decision": "No",
-    "automated_takedown": "Yes",
     "url": "https://theurl.com",
     "uuid": "28cc4759-614d-496f-90d6-a2645af37ff3",
     "permalink": "{{$baseurl}}/statement/28cc4759-614d-496f-90d6-a2645af37ff3",
@@ -339,10 +337,6 @@ This indicates to us that decision taken in respect of automatically detected me
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision carried out automatically.
 
-### Automated Take-Down (automated_takedown)
-
-This is a required attribute and it must be in the form "Yes" or "No".
-This indicates to us that take-down was performed using automated means.
 
 ### URL (url)
 
@@ -385,7 +379,6 @@ $body = '{
   "decision_facts": "facts about the decision",
   "automated_detection": "No",
   "automated_decision": "No",
-  "automated_takedown": "Yes",
   "url": "https://theurl.com"
 
 }';
@@ -423,7 +416,6 @@ curl --location '{{$baseurl}}/api/statement/create' \
     "decision_facts": "facts about the decision",
     "automated_detection": "No",
     "automated_decision": "No",
-    "automated_takedown": "Yes",
     "url": "https://theurl.com"
 }'
 ```
@@ -457,7 +449,6 @@ payload = json.dumps({
   "decision_facts": "facts about the decision",
   "automated_detection": "No",
   "automated_decision": "No",
-  "automated_takedown": "Yes",
   "url": "https://theurl.com"
 })
 headers = {

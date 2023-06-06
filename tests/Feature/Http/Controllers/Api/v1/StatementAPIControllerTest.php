@@ -38,7 +38,6 @@ class StatementAPIControllerTest extends TestCase
             'content_type' => 'VIDEO',
             'automated_detection' => 'No',
             'automated_decision' => 'No',
-            'automated_takedown' => 'Yes',
             'user_id' => 1,
             'start_date' => '03-01-2023'
         ];

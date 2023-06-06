@@ -63,12 +63,12 @@ class Statement extends Model
         Statement::AUTOMATED_DECISIONS_NO,
     ];
 
-    public const AUTOMATED_TAKEDOWN_YES = 'Yes';
-    public const AUTOMATED_TAKEDOWN_NO = 'No';
-    public const AUTOMATED_TAKEDOWNS = [
-        Statement::AUTOMATED_TAKEDOWN_YES,
-        Statement::AUTOMATED_TAKEDOWN_NO,
-    ];
+//    public const AUTOMATED_TAKEDOWN_YES = 'Yes';
+//    public const AUTOMATED_TAKEDOWN_NO = 'No';
+//    public const AUTOMATED_TAKEDOWNS = [
+//        Statement::AUTOMATED_TAKEDOWN_YES,
+//        Statement::AUTOMATED_TAKEDOWN_NO,
+//    ];
 
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';

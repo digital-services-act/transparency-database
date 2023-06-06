@@ -163,7 +163,7 @@ class StatementController extends Controller
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
-        $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
+//        $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
         $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
 
@@ -198,7 +198,7 @@ class StatementController extends Controller
             'countries',
             'automated_detections',
             'automated_decisions',
-            'automated_takedowns',
+//            'automated_takedowns',
             'decisions_visibility',
             'decisions_monetary',
             'decisions_provision',

@@ -98,7 +98,7 @@
 
 <hr>
 
-<x-ecl.radio label="Was the content detected using automated means?"
+<x-ecl.radio label="Was the content detected/identified using automated means?"
              name="automated_detection"
              id="automated_detection"
              :options="$options['automated_detections']"
@@ -114,13 +114,13 @@
              required="true"
 />
 
-<x-ecl.radio label="Was the content taken down using automated means?"
-             name="automated_takedown"
-             id="automated_takedown"
-             :options="$options['automated_takedowns']"
-             default="{{ $statement->automated_takedown }}"
-             required="true"
-/>
+{{--<x-ecl.radio label="Was the content taken down using automated means?"--}}
+{{--             name="automated_takedown"--}}
+{{--             id="automated_takedown"--}}
+{{--             :options="$options['automated_takedowns']"--}}
+{{--             default="{{ $statement->automated_takedown }}"--}}
+{{--             required="true"--}}
+{{--/>--}}
 
 <hr>
 

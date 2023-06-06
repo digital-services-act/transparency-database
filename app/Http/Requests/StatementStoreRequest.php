@@ -46,7 +46,7 @@ class StatementStoreRequest extends FormRequest
             'source' => ['required', $this->in(array_keys(Statement::SOURCES))],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(Statement::AUTOMATED_DECISIONS)],
-            'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
+//            'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
             'url' => ['url','required'],
         ];
     }

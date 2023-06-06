@@ -46,7 +46,7 @@ class CreateStatementsTable extends Migration
 
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
             $table->enum('automated_decision', \App\Models\Statement::AUTOMATED_DECISIONS);
-            $table->enum('automated_takedown', \App\Models\Statement::AUTOMATED_TAKEDOWNS);
+//            $table->enum('automated_takedown', \App\Models\Statement::AUTOMATED_TAKEDOWNS);
 
             $table->integer('user_id');
             $table->string('method')->default('API');

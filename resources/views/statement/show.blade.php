@@ -70,7 +70,7 @@
 
     <x-info-line title="Automated Detection" :content="$statement->automated_detection"></x-info-line>
     <x-info-line title="Automated Decision" :content="$statement->automated_decision"></x-info-line>
-    <x-info-line title="Automated Take-down" :content="$statement->automated_takedown"></x-info-line>
+{{--    <x-info-line title="Automated Take-down" :content="$statement->automated_takedown"></x-info-line>--}}
 
     @if($statement->start_date)
         <x-info-line title="Abolished since" :content="$statement->start_date->format('d-m-Y')"></x-info-line>
