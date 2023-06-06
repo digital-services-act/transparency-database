@@ -55,7 +55,7 @@ class StatementQueryService
 
     /**
      * @param Builder $query
-     * @param int $filter_value
+     * @param string $filter_value
      *
      * @return void
      */
