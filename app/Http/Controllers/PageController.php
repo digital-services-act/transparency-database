@@ -29,7 +29,7 @@ class PageController extends Controller
         $view_data = [
             'page_title' => $page_title,
             'baseurl' => route('home'),
-            'no_ecl_init' => true,
+            'ecl_init' => false,
         ];
 
         if (file_exists($page)) {

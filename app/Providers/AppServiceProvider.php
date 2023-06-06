@@ -32,6 +32,6 @@ class AppServiceProvider extends ServiceProvider
             $view->with('profiles', User::all());
         });
 
-        view()->share('no_ecl_init', false);
+        view()->share('ecl_init', true);
     }
 }
