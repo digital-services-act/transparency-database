@@ -1,11 +1,12 @@
 @props(['statement' => null, 'options' => null])
 
-<h4>Decision Taken</h4>
+<h4>Decision Taken (Please select at least one item from the available options)</h4>
 <x-ecl.select label="Visibility restriction of specific items of information provided by the recipient of the service"
               name="decision_visibility"
               id="decision_visibility"
               :options="$options['decisions_visibility']"
               default="{{ $statement->decision_visibility }}"
+              justlabel="true"
                />
 
 <x-ecl.select label="Monetary payments suspension, termination or other restriction"
@@ -13,6 +14,7 @@
               id="decision_monetary"
               :options="$options['decisions_monetary']"
               default="{{ $statement->decision_monetary }}"
+              justlabel="true"
                />
 
 <x-ecl.select label="Suspension or termination of the provision of the service"
@@ -20,6 +22,7 @@
               id="decision_provision"
               :options="$options['decisions_provision']"
               default="{{ $statement->decision_provision }}"
+              justlabel="true"
                />
 
 <x-ecl.select label="Suspension or termination of the recipient of the service's account."
@@ -27,6 +30,7 @@
               id="decision_account"
               :options="$options['decisions_account']"
               default="{{ $statement->decision_account }}"
+              justlabel="true"
                />
 
 
