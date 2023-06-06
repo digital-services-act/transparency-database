@@ -61,7 +61,7 @@ class StatementFactory extends Factory
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),
-            'automated_takedown' => $this->faker->randomElement(Statement::AUTOMATED_TAKEDOWNS),
+//            'automated_takedown' => $this->faker->randomElement(Statement::AUTOMATED_TAKEDOWNS),
 
 
             'user_id' => $user_id,

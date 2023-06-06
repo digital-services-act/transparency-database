@@ -19,7 +19,7 @@ class StatementQueryService
         's',
         'platform_id',
         'automated_detection',
-        'automated_takedown',
+//        'automated_takedown',
         'automated_decision',
         'created_at_start',
         'created_at_end',
@@ -122,19 +122,19 @@ class StatementQueryService
         }
     }
 
-    /**
-     * @param Builder $query
-     * @param array $filter_value
-     *
-     * @return void
-     */
-    private function applyAutomatedTakedownFilter(Builder $query, array $filter_value): void
-    {
-        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_TAKEDOWNS);
-        if ($filter_values_validated) {
-            $query->whereIn('automated_takedown', $filter_values_validated);
-        }
-    }
+//    /**
+//     * @param Builder $query
+//     * @param array $filter_value
+//     *
+//     * @return void
+//     */
+//    private function applyAutomatedTakedownFilter(Builder $query, array $filter_value): void
+//    {
+//        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_TAKEDOWNS);
+//        if ($filter_values_validated) {
+//            $query->whereIn('automated_takedown', $filter_values_validated);
+//        }
+//    }
 
     /**
      * @param Builder $query

@@ -48,19 +48,19 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(200, $total);
     }
 
-    /**
-     * @test
-     */
-    public function it_filters_on_automated_takedown()
-    {
-        $this->seed(); // 200 statements
-        $automated_count = $this->statement_query_service->query(['automated_takedown' => ['Yes']])->count();
-        $manual_count = $this->statement_query_service->query(['automated_takedown' => ['No']])->count();
-
-        $total = $automated_count + $manual_count;
-
-        $this->assertEquals(200, $total);
-    }
+//    /**
+//     * @test
+//     */
+//    public function it_filters_on_automated_takedown()
+//    {
+//        $this->seed(); // 200 statements
+//        $automated_count = $this->statement_query_service->query(['automated_takedown' => ['Yes']])->count();
+//        $manual_count = $this->statement_query_service->query(['automated_takedown' => ['No']])->count();
+//
+//        $total = $automated_count + $manual_count;
+//
+//        $this->assertEquals(200, $total);
+//    }
 
     /**
      * @test

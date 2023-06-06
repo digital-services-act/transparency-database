@@ -85,14 +85,14 @@
                 :default="request()->get('automated_decision', [])"
         />
 
-        <x-ecl.checkboxes
-                label="Automated Take-down"
-                justlabel="true"
-                name="automated_takedown"
-                id="automated_takedown"
-                :options="$options['automated_takedowns']"
-                :default="request()->get('automated_takedown', [])"
-        />
+{{--        <x-ecl.checkboxes--}}
+{{--                label="Automated Take-down"--}}
+{{--                justlabel="true"--}}
+{{--                name="automated_takedown"--}}
+{{--                id="automated_takedown"--}}
+{{--                :options="$options['automated_takedowns']"--}}
+{{--                :default="request()->get('automated_takedown', [])"--}}
+{{--        />--}}
 
         <x-ecl.checkboxes
                 label="Source"
