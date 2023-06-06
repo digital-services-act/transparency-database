@@ -31,7 +31,8 @@
 
 
 <hr>
-
+<x-ecl.textarea label="Facts and circumstances relied on in taking the decision" name="decision_facts" id="decision_facts" required="true" />
+<hr>
 <x-ecl.select label="Ground for Decision"
               name="decision_ground"
               id="decision_ground" default="{{ $statement->decision_ground }}"
@@ -80,9 +81,9 @@
                   name="end_date" value="{{ $statement->end_date }}" />
 <hr>
 
-<x-ecl.textarea label="Facts and circumstances relied on in taking the decision" name="decision_facts" id="decision_facts" required="true" />
 
-<x-ecl.select label="Notification source" name="source" id="source" :options="$options['sources']" required="true" />
+
+<x-ecl.select label="Information source" name="source" id="source" :options="$options['sources']" required="true" />
 
 {{--<x-ecl.textarea label="Explanation of the notice (only if strictly necessary, identity of the notifier)." name="notice_explanation" id="notice_explanation" required="true" />--}}
 
@@ -120,7 +121,7 @@
 <hr>
 
 
-<x-ecl.textfield label="Infringing URL/Hyperlink" name="url" id="url" required="true"/>
+<x-ecl.textfield label="URL/Hyperlink" name="url" id="url" required="true"/>
 
 <hr>
 

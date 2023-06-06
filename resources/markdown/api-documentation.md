@@ -220,6 +220,10 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+### Facts and circumstances relied on in taking the decision (decision_facts)
+
+This is a required textual field to describe the facts and circumstances relied on in taking the decision.
+
 ### Illegal Content Legal Ground (illegal_content_legal_ground)
 
 This is required if the ILLEGAL_CONTENT was the decision_ground. It is the legal ground relied on.
@@ -305,11 +309,9 @@ The date needs to take the form of:
 
 The ```HH:MM:SS``` is optional and may be omitted.
 
-### Facts and circumstances relied on in taking the decision (decision_facts)
 
-This is a required textual field to describe the facts and circumstances relied on in taking the decision.
 
-### Notification source (source)
+### Information source (source)
 
 This is a required field and tells us the facts and circumstances
 relied upon in taking the decision.
