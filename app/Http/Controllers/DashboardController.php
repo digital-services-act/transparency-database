@@ -20,7 +20,9 @@ class DashboardController extends Controller
      */
     public function dashboard(Request $request): Factory|View|Application
     {
-        return view('dashboard');
+        return view('dashboard',[
+            'platform_name' => $request->user()->platform->name ?? ''
+        ]);
     }
 
     /**

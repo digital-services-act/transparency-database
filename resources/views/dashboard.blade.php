@@ -20,7 +20,7 @@
         <p>
     </div>
 
-    <h1>Dashboard</h1>
+    <h1>{{ $platform_name }} Dashboard</h1>
 
     <div class="ecl-row">
         @can('view logs')
