@@ -26,7 +26,11 @@ Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])-
 
 Route::middleware(['cas.auth'])->group(function() {
 
-
+    Route::get('/cache', function(){
+        Cache::add('key', Carbon::now(), $seconds = 5);
+        $value = Cache::get('key');
+        return $value;
+    });
 
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
@@ -94,11 +98,7 @@ Route::get('/testteamslogging', function(){
 });
 //
 //
-Route::get('/cache', function(){
-    Cache::add('key', Carbon::now(), $seconds = 5);
-    $value = Cache::get('key');
-    return $value;
-});
+
 
 Route::get('/env', function(){
     $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
