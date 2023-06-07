@@ -5,6 +5,7 @@ use App\Models\User;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
@@ -92,6 +93,12 @@ Route::get('/testteamslogging', function(){
 });
 //
 //
+Route::get('/cache', function(){
+    Cache::add('key', Carbon::now(), $seconds = 5);
+    $value = Cache::get('key');
+    return $value;
+});
+
 Route::get('/env', function(){
     $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
     Log::error($message);
