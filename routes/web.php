@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
-Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+//Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
+//Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
 
 
 Route::middleware(['cas.auth'])->group(function() {
@@ -30,7 +30,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Cache::add('key', Carbon::now(), $seconds = 5);
         $value = Cache::get('key');
         return $value;
-    });
+    })->name('cache');
 
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
