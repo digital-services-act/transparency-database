@@ -5,6 +5,7 @@ use App\Models\User;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +20,17 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
+//Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
 
 
 Route::middleware(['cas.auth'])->group(function() {
 
-    Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+    Route::get('/cache', function(){
+        Cache::add('key', Carbon::now(), $seconds = 5);
+        $value = Cache::get('key');
+        return $value;
+    })->name('cache');
 
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
@@ -92,6 +98,8 @@ Route::get('/testteamslogging', function(){
 });
 //
 //
+
+
 Route::get('/env', function(){
     $message = 'env("'.\request()->get('key', 'APP_ENV').'") -> ' . env(\request()->get('key', 'APP_ENV'));
     Log::error($message);
