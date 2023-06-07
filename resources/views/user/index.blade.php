@@ -23,9 +23,9 @@
         Manage the users of the application below.
     </p>
 
-    <p class="ecl-u-type-paragraph">
-        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>
-    </p>
+{{--    <p class="ecl-u-type-paragraph">--}}
+{{--        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>--}}
+{{--    </p>--}}
 
     <table class="ecl-table ecl-table--zebra">
         <thead class="ecl-table__head">
@@ -42,7 +42,7 @@
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell">{{ $user->name }}</td>
                 <td class="ecl-table__cell">{{ $user->email }}</td>
-                <td class="ecl-table__cell">{{ $user->platform?->name }}</td>
+                <td class="ecl-table__cell">{{ $user->platform->name ?? '' }}</td>
                 <td class="ecl-table__cell"></td>
                 <td class="ecl-table__cell">
                     <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('user.edit', [$user]) }}'">edit</button>

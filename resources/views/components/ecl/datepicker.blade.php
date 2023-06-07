@@ -2,6 +2,7 @@
 <div class="ecl-form-group ecl-u-mb-l">
     <x-ecl.label :label=$label :required=$required :name=$name :for=$id :justlabel="$justlabel" />
     <x-ecl.help :help=$help />
+    <x-ecl.error-feedback :name="$name" />
     <div class="ecl-datepicker">
         <input type="text"
                autoComplete="off"

@@ -47,11 +47,10 @@ class UserController extends Controller
     {
         $user = new User();
         $options = $this->prepareOptions();
-        $roles = Role::all();
+
         return view('user.create', [
             'user' => $user,
             'options' => $options,
-            'roles' => $roles
         ]);
     }
 
@@ -71,7 +70,9 @@ class UserController extends Controller
         /** @var User $user */
         $user = User::create([
             'name' => $validated['name'],
-            'platform_id' => $validated['platform_id']
+            'email' => $validated['email'],
+            'platform_id' => $validated['platform_id'],
+            'eu_login_username' => $validated['email']
         ]);
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
@@ -101,11 +102,9 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $options = $this->prepareOptions();
-        $roles = Role::orderBy('name')->get();
         return view('user.edit', [
             'user' => $user,
             'options' => $options,
-            'roles' => $roles
         ]);
 
     }
@@ -124,6 +123,8 @@ class UserController extends Controller
 
         ])->toArray();
         $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->eu_login_username = $validated['name'];
         $user->platform_id = $validated['platform_id'];
         $user->save();
         $user->roles()->detach();
@@ -157,7 +158,8 @@ class UserController extends Controller
             ];
         })->toArray();
         array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
+        $roles = Role::orderBy('name')->get();
 
-        return compact('platforms');
+        return compact('platforms', 'roles');
     }
 }

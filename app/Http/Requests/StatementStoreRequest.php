@@ -39,7 +39,7 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_illegal' => ['boolean','nullable','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'content_type' => ['required', $this->in(array_keys(Statement::CONTENT_TYPES))],
             'category' => ['required', $this->in(array_keys(Statement::SOR_CATEGORIES))],
-            'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
+            'countries_list' => ['array', 'required', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'start_date' => ['required', 'date'],
             'end_date' => ['date', 'nullable','after_or_equal:start_date'],
             'decision_facts' => ['required'],
