@@ -46,18 +46,45 @@
         <x-ecl.checkboxes
                 label="Decision Visibility"
                 justlabel="true"
-                name="decision_ground"
-                id="decision_ground"
-                :default="request()->get('decision_ground', [])"
-                :options="$options['decision_grounds']"
+                name="decision_visibility"
+                id="decision_visibility"
+                :default="request()->get('decision_visibility', [])"
+                :options="$options['decision_visibilities']"
         />
 
         <x-ecl.checkboxes
-                label="Categories"
+                label="Decision Monetary"
                 justlabel="true"
-                name="categories"
-                id="categories"
-                :default="request()->get('categories', [])"
+                name="decision_monetary"
+                id="decision_monetary"
+                :default="request()->get('decision_monetary', [])"
+                :options="$options['decision_monetaries']"
+        />
+
+        <x-ecl.checkboxes
+                label="Decision Provision"
+                justlabel="true"
+                name="decision_provision"
+                id="decision_provision"
+                :default="request()->get('decision_provision', [])"
+                :options="$options['decision_provisions']"
+        />
+
+        <x-ecl.checkboxes
+                label="Decision Account"
+                justlabel="true"
+                name="decision_account"
+                id="decision_account"
+                :default="request()->get('decision_account', [])"
+                :options="$options['decision_accounts']"
+        />
+
+        <x-ecl.checkboxes
+                label="Category"
+                justlabel="true"
+                name="category"
+                id="category"
+                :default="request()->get('category', [])"
                 :options="$options['categories']"
         />
 
@@ -103,17 +130,8 @@
                 :default="request()->get('automated_decision', [])"
         />
 
-{{--        <x-ecl.checkboxes--}}
-{{--                label="Automated Take-down"--}}
-{{--                justlabel="true"--}}
-{{--                name="automated_takedown"--}}
-{{--                id="automated_takedown"--}}
-{{--                :options="$options['automated_takedowns']"--}}
-{{--                :default="request()->get('automated_takedown', [])"--}}
-{{--        />--}}
-
         <x-ecl.checkboxes
-                label="Source"
+                label="Source Type"
                 justlabel="true"
                 name="source_type"
                 id="source_type"
