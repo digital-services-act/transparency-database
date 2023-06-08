@@ -91,25 +91,17 @@
                             <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
                         </li>
 
-                        {{--                                <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-                        {{--                                    <a href="{{route('page.show', ['documentation'])}}" class="ecl-menu__link"--}}
-                        {{--                                       data-ecl-menu-link="">Documentation</a>--}}
-                        {{--                                </li>--}}
-
                         @can('view dashboard')
                             <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
                                     href="{{route('dashboard')}}" class="ecl-menu__link"
                                     data-ecl-menu-link="">Dashboard</a>
                             </li>
+                            <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                                <a
+                                        href="{{ route('dashboard.page.show', ['api-documentation']) }}"
+                                        class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
+                            </li>
                         @endcan
-
-                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                            <a
-                               href="{{ route('dashboard.page.show', ['api-documentation']) }}"
-                               class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
-                        </li>
-
-
 
                     </ul>
             </section>

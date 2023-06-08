@@ -8,18 +8,18 @@
               id="decision_visibility"
               :options="$options['decisions_visibility']"
               default="{{ $statement->decision_visibility }}"
-              justlabel="true"
+              required="true"
 />
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decisions_visibility_other"
-                 id="decisions_visibility_other" required="true"/>
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
+                 id="decision_visibility_other" required="true"/>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
               name="decision_monetary"
               id="decision_monetary"
               :options="$options['decisions_monetary']"
               default="{{ $statement->decision_monetary }}"
-              justlabel="true"
+              required="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_monetary_other"
@@ -30,7 +30,7 @@
               id="decision_provision"
               :options="$options['decisions_provision']"
               default="{{ $statement->decision_provision }}"
-              justlabel="true"
+              required="true"
 />
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
@@ -38,7 +38,7 @@
               id="decision_account"
               :options="$options['decisions_account']"
               default="{{ $statement->decision_account }}"
-              justlabel="true"
+              required="true"
 />
 
 <hr>
@@ -75,7 +75,12 @@
               id="content_type"
               :options="$options['content_types']"
               required="true"/>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="content_type_other"
+                 id="content_type_other" required="true"/>
+
 <hr>
+
 <x-ecl.select :label="Statement::LABEL_STATEMENT_CATEGORY"
               name="category"
               id="category" default="{{ $statement->category }}"
@@ -126,7 +131,7 @@
 
 <script type="text/javascript">
 
-  let form = document.getElementById("create-statement-form");
+  let form = ge("create-statement-form");
 
   form.addEventListener('submit', function (event) {
 
@@ -142,17 +147,14 @@
 
     hide('div_illegal_content_legal_ground');
     hide('div_illegal_content_explanation');
-
-    hide('div_incompatible_content_ground');
-    hide('div_incompatible_content_explanation');
-    hide('div_incompatible_content_illegal');
-
-
     if (ge('decision_ground').value === 'DECISION_GROUND_ILLEGAL_CONTENT') {
       show('div_illegal_content_legal_ground');
       show('div_illegal_content_explanation');
     }
 
+    hide('div_incompatible_content_ground');
+    hide('div_incompatible_content_explanation');
+    hide('div_incompatible_content_illegal');
     if (ge('decision_ground').value === 'DECISION_GROUND_INCOMPATIBLE_CONTENT') {
       show('div_incompatible_content_ground');
       show('div_incompatible_content_explanation');
@@ -170,27 +172,29 @@
     }
 
     hide('div_content_type_other');
-    if (ge('decision_monetary').value === 'CONTENT_TYPE_OTHER') {
+    if (ge('content_type').value === 'CONTENT_TYPE_OTHER') {
       show('div_content_type_other');
     }
-    
+
   }
 
-  function ge (id) {
+  function ge(id) {
     return document.getElementById(id);
   }
 
-  function hide (id) {
+  function hide(id) {
     ge(id).classList.add('ecl-u-d-none');
   }
 
-  function show (id) {
+  function show(id) {
     ge(id).classList.remove('ecl-u-d-none');
   }
 
   initFields();
 
-  document.getElementById('decision_ground').addEventListener('change', initFields);
-  document.getElementById('source').addEventListener('change', initFields);
+  ge('decision_ground').addEventListener('change', initFields);
+  ge('decision_visibility').addEventListener('change', initFields);
+  ge('decision_monetary').addEventListener('change', initFields);
+  ge('content_type').addEventListener('change', initFields);
 
 </script>
