@@ -61,7 +61,7 @@
                 name="illegal_content_explanation" id="illegal_content_explanation" required="true"/>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND"
-                 id="incompatible_content_ground" required="true"/>
+                 id="incompatible_content_ground" name="incompatible_content_ground" required="true"/>
 
 <x-ecl.textarea :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION"
                 name="incompatible_content_explanation" id="incompatible_content_explanation" required="true"/>
@@ -185,6 +185,11 @@
       show('div_content_type_other');
     }
 
+    hide('div_source');
+    if (ge('source_type').value && ge('source_type').value != 'SOURCE_VOLUNTARY') {
+      show('div_source');
+    }
+
   }
 
   function ge(id) {
@@ -205,5 +210,6 @@
   ge('decision_visibility').addEventListener('change', initFields);
   ge('decision_monetary').addEventListener('change', initFields);
   ge('content_type').addEventListener('change', initFields);
+  ge('source_type').addEventListener('change', initFields);
 
 </script>

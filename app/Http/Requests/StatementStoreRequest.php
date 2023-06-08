@@ -78,7 +78,7 @@ class StatementStoreRequest extends FormRequest
             'illegal_content_legal_ground.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
             'illegal_content_explanation.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
-            'incompatible_content_explanation.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
+            'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'incompatible_content_illegal.required_if' => 'The incompatible content illegal field is required when decision ground is incompatible content.',
             'source.required_unless' => 'The source field is required when source type is a notice submission.',
         ];
