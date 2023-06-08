@@ -23,7 +23,7 @@ class UserControllerTest extends TestCase
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
 
-        $this->assertCount(200, Statement::all());
+        $this->assertCount(10, Statement::all());
         $this->assertCount(22, User::all());
 
         $statement = Statement::all()->random();
@@ -37,7 +37,7 @@ class UserControllerTest extends TestCase
         // delete the platform and assert we deleted
         $this->delete(route('user.destroy', [$user]))->assertRedirect(route('user.index'));
 
-        $this->assertCount(200 - $statement_count, Statement::all());
+        $this->assertCount(10 - $statement_count, Statement::all());
         $this->assertCount(21, User::all());
 
     }

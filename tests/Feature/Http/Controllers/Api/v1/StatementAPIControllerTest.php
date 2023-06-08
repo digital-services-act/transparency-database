@@ -79,7 +79,7 @@ class StatementAPIControllerTest extends TestCase
         $this->seed();
 
         // Not signing in.
-        $this->assertCount(200, Statement::all());
+        $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
@@ -93,7 +93,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->seed();
         $user = $this->signInAsAdmin();
-        $this->assertCount(200, Statement::all());
+        $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
             'end_date' => '2023-01-13 00:00:00',
@@ -102,7 +102,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(201, Statement::all());
+        $this->assertCount(11, Statement::all());
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
@@ -120,7 +120,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->seed();
         $user = $this->signInAsAdmin();
-        $this->assertCount(200, Statement::all());
+        $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
             'end_date' => '2023-01-13 00:00:00',
@@ -145,7 +145,7 @@ class StatementAPIControllerTest extends TestCase
         );
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(201, Statement::all());
+        $this->assertCount(11, Statement::all());
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
