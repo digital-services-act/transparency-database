@@ -24,7 +24,7 @@ class PlatformControllerTest extends TestCase
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
 
-        $this->assertCount(200, Statement::all());
+        $this->assertCount(10, Statement::all());
         $this->assertCount(22, User::all());
 
         $statement = Statement::all()->random();
@@ -38,7 +38,7 @@ class PlatformControllerTest extends TestCase
         // delete the platform and assert we deleted
         $this->delete(route('platform.destroy', [$platform]))->assertRedirect(route('platform.index'));
 
-        $this->assertCount(200 - $statement_count, Statement::all());
+        $this->assertCount(10 - $statement_count, Statement::all());
         $this->assertCount(22 - $user_count, User::all());
         $this->assertCount($platform_count - 1, Platform::all());
     }

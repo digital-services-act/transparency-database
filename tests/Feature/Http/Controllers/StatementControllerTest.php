@@ -146,14 +146,14 @@ class StatementControllerTest extends TestCase
         $user = $this->signIn();
         $user->assignRole('Admin');
 
-        // 200 from seeding.
-        $this->assertCount(200, Statement::all());
+        // 10 from seeding.
+        $this->assertCount(10, Statement::all());
 
         // When making statements via the FORM
         // The dates come in as d-m-Y from the ECL datepicker.
         $response = $this->post(route('statement.store'), $this->dummy_attributes);
 
-        $this->assertCount(201, Statement::all());
+        $this->assertCount(11, Statement::all());
         $statement = Statement::latest()->first();
         $this->assertNotNull($statement);
         $this->assertEquals('FORM', $statement->method);

@@ -36,6 +36,6 @@ class StatementSeeder extends Seeder
     public function run()
     {
         Statement::query()->delete();
-        Statement::factory()->count(200)->create();
+        Statement::factory()->count(10)->create();
     }
 }
