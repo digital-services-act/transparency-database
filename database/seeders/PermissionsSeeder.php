@@ -7,12 +7,10 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
-use App\Http\Traits\PlatformsTrait;
 
 class PermissionsSeeder extends Seeder
 {
 
-use PlatformsTrait;
     /**
      * Run the database seeds.
      *
