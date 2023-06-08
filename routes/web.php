@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
-//Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
+Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
+Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
 
 
 Route::middleware(['cas.auth'])->group(function() {
