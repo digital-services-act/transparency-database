@@ -17,7 +17,7 @@
         @method('PUT')
         @csrf
         <x-user-form :user=$user :options=$options />
-        <x-ecl.button label="Save user" />
+        <x-ecl.button label="Save User" />
     </form>
 
 
