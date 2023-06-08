@@ -175,10 +175,10 @@ class StatementController extends Controller
             return ['value' => $automated_detection, 'label' => $automated_detection];
         }, Statement::AUTOMATED_DETECTIONS);
 
-        $decisions_visibility = $this->mapForSelectWithKeys(Statement::DECISIONS_VISIBILITY);
-        $decisions_monetary = $this->mapForSelectWithKeys(Statement::DECISIONS_MONETARY);
-        $decisions_provision = $this->mapForSelectWithKeys(Statement::DECISIONS_PROVISION);
-        $decisions_account = $this->mapForSelectWithKeys(Statement::DECISIONS_ACCOUNT);
+        $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES);
+        $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES);
+        $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
+        $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
@@ -186,21 +186,21 @@ class StatementController extends Controller
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
 
-        $sources = $this->mapForSelectWithKeys(Statement::SOURCES);
+        $source_types = $this->mapForSelectWithKeys(Statement::SOURCE_TYPES);
 
         return compact(
             'countries',
             'automated_detections',
             'automated_decisions',
-            'decisions_visibility',
-            'decisions_monetary',
-            'decisions_provision',
-            'decisions_account',
+            'decision_visibilities',
+            'decision_monetaries',
+            'decision_provisions',
+            'decision_accounts',
             'decision_grounds',
             'categories',
             'illegal_content_fields',
             'incompatible_content_fields',
-            'sources',
+            'source_types',
             'content_types',
             'platforms',
             'platform_types',

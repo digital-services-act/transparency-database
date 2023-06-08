@@ -46,16 +46,16 @@ class ReportsController extends Controller
 
         if ($request->get('chart') == 'statements-by-source') {
             $title = "Statements by Source";
-            $sources = Statement::SOURCES;
+            $source_types = Statement::SOURCE_TYPES;
             $chart_options = [];
             $colors = ['SOURCE_ARTICLE_16' => 'black', 'SOURCE_VOLUNTARY' => 'blue'];
-            foreach ($sources as $key => $source) {
+            foreach ($source_types as $key => $source_type) {
                 $chart_options[] = [
-                    'chart_title' => $source,
+                    'chart_title' => $source_type,
                     'chart_type' => 'line',
                     'where_raw'  => $own,
                     'conditions'            => [
-                        ['name' => $source, 'condition' => 'source = \''.$key.'\'', 'color' => $colors[$key], 'fill' => true]
+                        ['name' => $source_type, 'condition' => 'source = \''.$key.'\'', 'color' => $colors[$key], 'fill' => true]
                     ],
                     'report_type' => 'group_by_date',
                     'model' => 'App\Models\Statement',

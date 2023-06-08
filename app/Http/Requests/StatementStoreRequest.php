@@ -25,14 +25,14 @@ class StatementStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'decision_visibility' => [ $this->in(array_keys(Statement::DECISIONS_VISIBILITY)),'required_without_all:decision_monetary,decision_provision,decision_account'],
+            'decision_visibility' => [ $this->in(array_keys(Statement::DECISION_VISIBILITIES)),'required_without_all:decision_monetary,decision_provision,decision_account'],
             'decision_visibility_other' => ['required_if:decision_visibility,DECISION_VISIBILITY_OTHER','exclude_unless:decision_visibility,DECISION_VISIBILITY_OTHER'],
 
-            'decision_monetary' => [ $this->in(array_keys(Statement::DECISIONS_MONETARY)),'required_without_all:decision_visibility,decision_provision,decision_account'],
+            'decision_monetary' => [ $this->in(array_keys(Statement::DECISION_MONETARIES)),'required_without_all:decision_visibility,decision_provision,decision_account'],
             'decision_monetary_other' => ['required_if:decision_monetary,DECISION_MONETARY_OTHER','exclude_unless:decision_monetary,DECISION_MONETARY_OTHER'],
 
-            'decision_provision' => [ $this->in(array_keys(Statement::DECISIONS_PROVISION)),'required_without_all:decision_visibility,decision_monetary,decision_account'],
-            'decision_account' => [ $this->in(array_keys(Statement::DECISIONS_ACCOUNT)),'required_without_all:decision_visibility,decision_monetary,decision_provision'],
+            'decision_provision' => [ $this->in(array_keys(Statement::DECISION_PROVISIONS)),'required_without_all:decision_visibility,decision_monetary,decision_account'],
+            'decision_account' => [ $this->in(array_keys(Statement::DECISION_ACCOUNTS)),'required_without_all:decision_visibility,decision_monetary,decision_provision'],
 
 
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
@@ -50,7 +50,8 @@ class StatementStoreRequest extends FormRequest
             'start_date' => ['required', 'date'],
             'end_date' => ['date', 'nullable','after_or_equal:start_date'],
             'decision_facts' => ['required'],
-            'source' => ['required', $this->in(array_keys(Statement::SOURCES))],
+            'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
+            'source' => ['required_unless:source_type,SOURCE_VOLUNTARY','exclude_if:source_type,SOURCE_VOLUNTARY'],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(Statement::AUTOMATED_DECISIONS)],
 //            'automated_takedown' => ['required', $this->in(Statement::AUTOMATED_TAKEDOWNS)],
@@ -78,6 +79,7 @@ class StatementStoreRequest extends FormRequest
             'illegal_content_explanation.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
+            'source.required_unless' => 'The source field is required when source type is a notice submission.',
         ];
     }
 }

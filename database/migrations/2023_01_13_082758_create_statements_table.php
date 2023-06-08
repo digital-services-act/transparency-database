@@ -18,14 +18,14 @@ class CreateStatementsTable extends Migration
 
             $table->string('uuid', 36)->index('uuidindex');
 
-            $table->enum('decision_visibility', array_keys(\App\Models\Statement::DECISIONS_VISIBILITY))->nullable();
+            $table->enum('decision_visibility', array_keys(\App\Models\Statement::DECISION_VISIBILITIES))->nullable();
             $table->string('decision_visibility_other', 255)->nullable();
 
-            $table->enum('decision_monetary', array_keys(\App\Models\Statement::DECISIONS_MONETARY))->nullable();
+            $table->enum('decision_monetary', array_keys(\App\Models\Statement::DECISION_MONETARIES))->nullable();
             $table->string('decision_monetary_other', 255)->nullable();
 
-            $table->enum('decision_provision', array_keys(\App\Models\Statement::DECISIONS_PROVISION))->nullable();
-            $table->enum('decision_account', array_keys(\App\Models\Statement::DECISIONS_ACCOUNT))->nullable();
+            $table->enum('decision_provision', array_keys(\App\Models\Statement::DECISION_PROVISIONS))->nullable();
+            $table->enum('decision_account', array_keys(\App\Models\Statement::DECISION_ACCOUNTS))->nullable();
 
             $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
 
@@ -48,7 +48,8 @@ class CreateStatementsTable extends Migration
 
             $table->string('decision_facts', 500);
 
-            $table->enum('source', array_keys(\App\Models\Statement::SOURCES));
+            $table->enum('source_type', array_keys(\App\Models\Statement::SOURCE_TYPES));
+            $table->string('source', 255)->nullable();
 
             $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
             $table->enum('automated_decision', \App\Models\Statement::AUTOMATED_DECISIONS);

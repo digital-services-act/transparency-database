@@ -6,9 +6,9 @@
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
               name="decision_visibility"
               id="decision_visibility"
-              :options="$options['decisions_visibility']"
+              :options="$options['decision_visibilities']"
               default="{{ $statement->decision_visibility }}"
-              required="true"
+              justlabel="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
@@ -17,9 +17,9 @@
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
               name="decision_monetary"
               id="decision_monetary"
-              :options="$options['decisions_monetary']"
+              :options="$options['decision_monetaries']"
               default="{{ $statement->decision_monetary }}"
-              required="true"
+              justlabel="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_monetary_other"
@@ -28,17 +28,17 @@
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_PROVISION"
               name="decision_provision"
               id="decision_provision"
-              :options="$options['decisions_provision']"
+              :options="$options['decision_provisions']"
               default="{{ $statement->decision_provision }}"
-              required="true"
+              justlabel="true"
 />
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
               name="decision_account"
               id="decision_account"
-              :options="$options['decisions_account']"
+              :options="$options['decision_accounts']"
               default="{{ $statement->decision_account }}"
-              required="true"
+              justlabel="true"
 />
 
 <hr>
@@ -102,8 +102,11 @@
                   name="end_date" value="{{ $statement->end_date }}"/>
 <hr>
 
-<x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE" name="source" id="source" :options="$options['sources']"
+<x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE_TYPE" name="source_type" id="source_type" :options="$options['source_types']"
               required="true"/>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_SOURCE" name="source"
+                 id="source" required="true"/>
 
 <hr>
 

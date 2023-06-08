@@ -23,21 +23,21 @@
 
 
     <x-info-line :title="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
-                 :content="Statement::DECISIONS_VISIBILITY[$statement->decision_visibility]"></x-info-line>
+                 :content="Statement::DECISION_VISIBILITIES[$statement->decision_visibility]"></x-info-line>
     @if($statement->decision_visibility == 'DECISION_VISIBILITY_OTHER')
         <x-info-line title="" :content="$statement->decision_visibility_other"></x-info-line>
     @endif
 
     <x-info-line :title="Statement::LABEL_STATEMENT_DECISION_MONETARY"
-                 :content="Statement::DECISIONS_MONETARY[$statement->decision_monetary]"></x-info-line>
+                 :content="Statement::DECISION_MONETARIES[$statement->decision_monetary]"></x-info-line>
     @if($statement->decision_monetary == 'DECISION_MONETARY_OTHER')
         <x-info-line title="" :content="$statement->decision_monetary_other"></x-info-line>
     @endif
 
     <x-info-line :title="Statement::LABEL_STATEMENT_DECISION_PROVISION"
-                 :content="Statement::DECISIONS_PROVISION[$statement->decision_provision]"></x-info-line>
+                 :content="Statement::DECISION_PROVISIONS[$statement->decision_provision]"></x-info-line>
     <x-info-line :title="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
-                 :content="Statement::DECISIONS_ACCOUNT[$statement->decision_account]"></x-info-line>
+                 :content="Statement::DECISION_ACCOUNTS[$statement->decision_account]"></x-info-line>
 
 
     <x-info-line :title="Statement::LABEL_STATEMENT_DECISION_FACTS" :content="$statement->decision_facts"></x-info-line>
@@ -65,7 +65,7 @@
 
     <x-info-line :title="Statement::LABEL_STATEMENT_CONTENT_TYPE" :content="Statement::CONTENT_TYPES[$statement->content_type]"></x-info-line>
     @if($statement->content_type == 'CONTENT_TYPE_OTHER')
-        <x-info-line title="Content Type Other" :content="$statement->content_type_other"></x-info-line>
+        <x-info-line title="" :content="$statement->content_type_other"></x-info-line>
     @endif
 
 
@@ -73,7 +73,10 @@
 
     <x-info-line :title="Statement::LABEL_STATEMENT_URL" :content="$statement->url"></x-info-line>
 
-    <x-info-line :title="Statement::LABEL_STATEMENT_SOURCE" :content="Statement::SOURCES[$statement->source]"></x-info-line>
+    <x-info-line :title="Statement::LABEL_STATEMENT_SOURCE_TYPE" :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-info-line>
+    @if($statement->source_type != 'SOURCE_VOLUNTARY')
+        <x-info-line :title="Statement::LABEL_STATEMENT_SOURCE" :content="$statement->source"></x-info-line>
+    @endif
 
     <x-info-line :title="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION" :content="$statement->automated_detection"></x-info-line>
     <x-info-line :title="Statement::LABEL_STATEMENT_AUTOMATED_DECISION" :content="$statement->automated_decision"></x-info-line>

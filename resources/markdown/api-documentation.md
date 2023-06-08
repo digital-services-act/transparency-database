@@ -155,7 +155,7 @@ The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::DECISIONS_VISIBILITY as $key => $value) {
+    foreach (\App\Models\Statement::DECISION_VISIBILITIES as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -174,7 +174,7 @@ The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::DECISIONS_MONETARY as $key => $value) {
+    foreach (\App\Models\Statement::DECISION_MONETARIES as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -197,7 +197,7 @@ The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::DECISIONS_PROVISION as $key => $value) {
+    foreach (\App\Models\Statement::DECISION_PROVISIONS as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -216,7 +216,7 @@ The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::DECISIONS_ACCOUNT as $key => $value) {
+    foreach (\App\Models\Statement::DECISION_ACCOUNTS as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -330,7 +330,7 @@ The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::SOURCES as $key => $value) {
+    foreach (\App\Models\Statement::SOURCE_TYPES as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";

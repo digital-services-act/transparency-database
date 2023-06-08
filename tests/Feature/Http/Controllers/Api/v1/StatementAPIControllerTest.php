@@ -25,17 +25,18 @@ class StatementAPIControllerTest extends TestCase
         parent::setUp();
 
         $this->required_fields = [
-            'decision_visibility' => 'CONTENT_DISABLED',
-            'decision_ground' => 'ILLEGAL_CONTENT',
-            'category' => 'FRAUD',
+            'decision_visibility' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
+            'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
+            'category' => 'STATEMENT_CATEGORY_FRAUD',
             'platform_type' => 'SOCIAL_MEDIA',
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',
             'countries_list' => ['BE', 'DE', 'FR'],
-            'source' => 'SOURCE_ARTICLE_16',
+            'source_type' => 'SOURCE_ARTICLE_16',
+            'source' => 'foo',
             'decision_facts' => 'decision and facts',
-            'content_type' => 'VIDEO',
+            'content_type' => 'CONTENT_TYPE_VIDEO',
             'automated_detection' => 'No',
             'automated_decision' => 'No',
             'user_id' => 1,
@@ -199,7 +200,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->signInAsAdmin();
         $extra_fields = [
-            'decision_ground' => 'INCOMPATIBLE_CONTENT',
+            'decision_ground' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT',
             'incompatible_content_ground' => 'foobar',
             'incompatible_content_explanation' => 'foobar2',
         ];

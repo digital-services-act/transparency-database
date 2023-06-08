@@ -16,11 +16,11 @@ class LoginController extends Controller
 
     public function submit(Request $request)
     {
-        $validated_data_that_was_sent_in_via_the_form = $request->validate([
+        $validated = $request->validate([
             'username' => 'required',
         ]);
 
-        $the_desired_user_to_impersonate = User::firstWhere('name', 'LIKE', '%'.$validated_data_that_was_sent_in_via_the_form['username'].'%');
+        $the_desired_user_to_impersonate = User::firstWhere('name', 'LIKE', '%'.$validated['username'].'%');
 
         if (!$the_desired_user_to_impersonate) return back()->withErrors('Wrong Credentials');
         if ($the_desired_user_to_impersonate) {

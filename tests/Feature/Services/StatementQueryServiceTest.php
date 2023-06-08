@@ -140,13 +140,13 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_source()
+    public function it_filters_on_source_type()
     {
         $filters = [
-            'source' => array_keys(Statement::SOURCES)
+            'source_type' => array_keys(Statement::SOURCE_TYPES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" where "source" in (?', $sql);
+        $this->assertStringContainsString('select * from "statements" where "source_type" in (?', $sql);
     }
 
     /**
@@ -155,7 +155,7 @@ class StatementQueryServiceTest extends TestCase
     public function it_filters_on_category()
     {
         $filters = [
-            'categories' => array_keys(Statement::SOR_CATEGORIES)
+            'category' => array_keys(Statement::STATEMENT_CATEGORIES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
         $this->assertStringContainsString('select * from "statements" where "category" in (?', $sql);

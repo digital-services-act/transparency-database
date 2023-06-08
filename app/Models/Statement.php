@@ -25,11 +25,12 @@ class Statement extends Model
     ];
 
 
-    public const LABEL_STATEMENT_SOURCE = 'Information source';
+    public const LABEL_STATEMENT_SOURCE_TYPE = 'Information source';
+    public const LABEL_STATEMENT_SOURCE = 'Notifier';
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
-    public const SOURCES = [
+    public const SOURCE_TYPES = [
         'SOURCE_ARTICLE_16' => Statement::SOURCE_ARTICLE_16,
         'SOURCE_TRUSTED_FLAGGER' => Statement::SOURCE_TRUSTED_FLAGGER,
         'SOURCE_VOLUNTARY' => Statement::SOURCE_VOLUNTARY,
@@ -96,7 +97,7 @@ class Statement extends Model
     public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
-    public const DECISIONS_VISIBILITY = [
+    public const DECISION_VISIBILITIES = [
         'DECISION_VISIBILITY_CONTENT_REMOVED' => Statement::DECISION_VISIBILITY_CONTENT_REMOVED,
         'DECISION_VISIBILITY_CONTENT_DISABLED' => Statement::DECISION_VISIBILITY_CONTENT_DISABLED,
         'DECISION_VISIBILITY_CONTENT_DEMOTED' => Statement::DECISION_VISIBILITY_CONTENT_DEMOTED,
@@ -108,7 +109,7 @@ class Statement extends Model
     public const DECISION_MONETARY_TERMINATION = 'Termination of monetary payments';
     public const DECISION_MONETARY_OTHER = 'Other restriction (please specify)';
 
-    public const DECISIONS_MONETARY = [
+    public const DECISION_MONETARIES = [
         'DECISION_MONETARY_SUSPENSION' => Statement::DECISION_MONETARY_SUSPENSION,
         'DECISION_MONETARY_TERMINATION' => Statement::DECISION_MONETARY_TERMINATION,
         'DECISION_MONETARY_OTHER' => Statement::DECISION_MONETARY_OTHER
@@ -119,7 +120,7 @@ class Statement extends Model
     public const DECISION_PROVISION_TOTAL_SUSPENSION = 'Total suspension of the provision of the service';
     public const DECISION_PROVISION_PARTIAL_TERMINATION = 'Partial termination of the provision of the service';
     public const DECISION_PROVISION_TOTAL_TERMINATION = 'Total termination of the provision of the service';
-    public const DECISIONS_PROVISION = [
+    public const DECISION_PROVISIONS = [
         'DECISION_PROVISION_PARTIAL_SUSPENSION' => Statement::DECISION_PROVISION_PARTIAL_SUSPENSION,
         'DECISION_PROVISION_TOTAL_SUSPENSION' => Statement::DECISION_PROVISION_TOTAL_SUSPENSION,
         'DECISION_PROVISION_PARTIAL_TERMINATION' => Statement::DECISION_PROVISION_PARTIAL_TERMINATION,
@@ -130,7 +131,7 @@ class Statement extends Model
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
-    public const DECISIONS_ACCOUNT = [
+    public const DECISION_ACCOUNTS = [
         'DECISION_ACCOUNT_SUSPENDED' => Statement::DECISION_ACCOUNT_SUSPENDED,
         'DECISION_ACCOUNT_TERMINATED' => Statement::DECISION_ACCOUNT_TERMINATED
     ];

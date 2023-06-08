@@ -25,22 +25,28 @@ class StatementFactory extends Factory
     public function definition()
     {
 
-        $base_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
+        $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
+        $start_date = $create_date;
+        $end_date = $start_date->addDays(90);
 
-        $start_date = $end_date = $base_date->format('Y-m-d G:i:s');
+        $create_date = $create_date->format('Y-n-j G:i:s');
+        $start_date = $start_date->format('Y-n-j G:i:s');
+        $end_date = $end_date->format('Y-n-j G:i:s');
+
+
 
         $user_id = User::all()->random()->id;
 
         return [
 
-            'decision_visibility' => $this->faker->randomElement(array_keys(Statement::DECISIONS_VISIBILITY)),
+            'decision_visibility' => $this->faker->randomElement(array_keys(Statement::DECISION_VISIBILITIES)),
             'decision_visibility_other' => $this->faker->text(100),
 
-            'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISIONS_MONETARY)),
+            'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),
             'decision_monetary_other' => $this->faker->text(100),
 
-            'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISIONS_PROVISION)),
-            'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISIONS_ACCOUNT)),
+            'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISION_PROVISIONS)),
+            'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISION_ACCOUNTS)),
 
 
             'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
@@ -65,7 +71,8 @@ class StatementFactory extends Factory
             'start_date' => $start_date,
             'end_date' => $end_date,
 
-            'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
+            'source_type' => $this->faker->randomElement(array_keys(Statement::SOURCE_TYPES)),
+            'source' => $this->faker->text(100),
 
             'decision_facts' => $this->faker->realText(500),
 
@@ -74,7 +81,7 @@ class StatementFactory extends Factory
 
             'user_id' => $user_id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
-            'created_at' => $base_date
+            'created_at' => $create_date
 
         ];
     }

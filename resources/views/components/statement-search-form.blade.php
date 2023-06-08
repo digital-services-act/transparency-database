@@ -115,10 +115,10 @@
         <x-ecl.checkboxes
                 label="Source"
                 justlabel="true"
-                name="source"
-                id="source"
-                :options="$options['sources']"
-                :default="request()->get('source', [])"
+                name="source_type"
+                id="source_type"
+                :options="$options['source_types']"
+                :default="request()->get('source_type', [])"
         />
 
         <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"

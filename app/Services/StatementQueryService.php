@@ -18,17 +18,20 @@ class StatementQueryService
     private array $allowed_filters = [
         's',
         'platform_id',
+        'platform_type',
         'automated_detection',
-//        'automated_takedown',
         'automated_decision',
         'created_at_start',
         'created_at_end',
         'decision_ground',
-        'categories',
-        'platform_type',
+        'decision_visibility',
+        'decision_monetary',
+        'decision_provision',
+        'decision_account',
+        'category',
         'content_type',
         'countries_list',
-        'source'
+        'source_type'
     ];
 
     /**
@@ -87,11 +90,11 @@ class StatementQueryService
      *
      * @return void
      */
-    private function applySourceFilter(Builder $query, array $filter_value): void
+    private function applySourceTypeFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOURCES));
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOURCE_TYPES));
         if ($filter_values_validated) {
-            $query->whereIn('source', $filter_values_validated);
+            $query->whereIn('source_type', $filter_values_validated);
         }
     }
 
@@ -123,20 +126,6 @@ class StatementQueryService
         }
     }
 
-//    /**
-//     * @param Builder $query
-//     * @param array $filter_value
-//     *
-//     * @return void
-//     */
-//    private function applyAutomatedTakedownFilter(Builder $query, array $filter_value): void
-//    {
-//        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_TAKEDOWNS);
-//        if ($filter_values_validated) {
-//            $query->whereIn('automated_takedown', $filter_values_validated);
-//        }
-//    }
-
     /**
      * @param Builder $query
      * @param array $filter_value
@@ -148,6 +137,62 @@ class StatementQueryService
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_GROUNDS));
         if ($filter_values_validated) {
             $query->whereIn('decision_ground', $filter_value);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyDecisionVisibilityFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
+        if ($filter_values_validated) {
+            $query->whereIn('decision_visibility', $filter_value);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyDecisionMonetaryFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_MONETARIES));
+        if ($filter_values_validated) {
+            $query->whereIn('decision_monetary', $filter_value);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyDecisionProvisionFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_PROVISIONS));
+        if ($filter_values_validated) {
+            $query->whereIn('decision_provision', $filter_value);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyDecisionAccountFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_ACCOUNTS));
+        if ($filter_values_validated) {
+            $query->whereIn('decision_account', $filter_value);
         }
     }
 
@@ -171,9 +216,9 @@ class StatementQueryService
      *
      * @return void
      */
-    private function applyCategoriesFilter(Builder $query, array $filter_value): void
+    private function applyCategoryFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOR_CATEGORIES));
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::STATEMENT_CATEGORIES));
         if ($filter_values_validated) {
             $query->whereIn('category', $filter_value);
         }
