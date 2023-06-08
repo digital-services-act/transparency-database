@@ -155,7 +155,7 @@ class StatementControllerTest extends TestCase
         $response = $this->post(route('statement.store'), $this->dummy_attributes);
 
         $this->assertCount(11, Statement::all());
-        $statement = Statement::latest()->first();
+        $statement = Statement::orderBy('id', 'DESC')->first();
         $this->assertNotNull($statement);
         $this->assertEquals(Statement::METHOD_FORM, $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
