@@ -164,7 +164,7 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Monetary payments suspension, termination or other restriction (decision_monetary)
+### Decision about the content visibility (decision_monetary)
 
 This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
 
@@ -182,10 +182,6 @@ The value provided must be one of the following:
     }
 @endphp
 </ul>
-
-###  Monetary payments suspension, termination or other restriction other (decision_monetary_other)
-
-This is required if MONETARY_OTHER was the decision_monetary. 
 
 ### Decision about the provisioning of the service (decision_provision)
 
@@ -270,11 +266,6 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Content Type Other (content_type_other)
-
-This is required if CONTENT_TYPE_OTHER was the content_type. 
-It is the other type of content.
-
 ### Category (category)
 
 This is a required attribute, and it tells us which category the statement belongs to.
@@ -354,3 +345,244 @@ This indicates to us that decision carried out automatically.
 
 This is an required attribute.
 This contains the URL to the data that has been moderated.
+
+## Code Examples
+
+Below are various examples how to make this API call in different programming languages.
+
+### PHP (guzzle)
+
+```php
+<?php
+$client = new Client();
+$headers = [
+  'Accept' => 'application/json',
+  'Authorization' => 'Bearer <YOUR_TOKEN_HERE>',
+  'Content-Type' => 'application/json'
+];
+$body = '{
+  "decision_visibility": "CONTENT_DISABLED",
+  "decision_monetary": "MONETARY_TERMINATION",
+  "decision_provision": "PARTIAL_TERMINATION",
+  "decision_account": "ACCOUNT_TERMINATED",
+  "decision_ground": "INCOMPATIBLE_CONTENT",
+  "content_type": "VIDEO",
+  "category": "FRAUD",
+  "illegal_content_legal_ground": "illegal content legal ground",
+  "illegal_content_explanation": "illegal content explanation",
+  "incompatible_content_ground": "incompatible content ground",
+  "incompatible_content_explanation": "incompatible content explanation",
+  "countries_list": [
+    "PT",
+    "ES",
+    "DE"
+  ],
+  "start_date": "2022-12-01 17:52:24",
+  "source": "SOURCE_VOLUNTARY",
+  "decision_facts": "facts about the decision",
+  "automated_detection": "No",
+  "automated_decision": "No",
+  "url": "https://theurl.com"
+
+}';
+$request = new Request('POST', '{{$baseurl}}/api/statement/create', $headers, $body);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+### Curl
+
+```shell
+curl --location '{{$baseurl}}/api/statement/create' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer <YOUR_TOKEN_HERE>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "decision_visibility": "CONTENT_DISABLED",
+    "decision_monetary": "MONETARY_TERMINATION",
+    "decision_provision": "PARTIAL_TERMINATION",
+    "decision_account": "ACCOUNT_TERMINATED",
+    "decision_ground": "INCOMPATIBLE_CONTENT",
+    "content_type": "VIDEO",
+    "category": "FRAUD",
+    "illegal_content_legal_ground": "illegal content legal ground",
+    "illegal_content_explanation": "illegal content explanation",
+    "incompatible_content_ground": "incompatible content ground",
+    "incompatible_content_explanation": "incompatible content explanation",
+    "countries_list": [
+    "PT",
+    "ES",
+    "DE"
+    ],
+    "start_date": "2022-12-01 17:52:24",
+    "source": "SOURCE_VOLUNTARY",
+    "decision_facts": "facts about the decision",
+    "automated_detection": "No",
+    "automated_decision": "No",
+    "url": "https://theurl.com"
+}'
+```
+
+### Python
+
+```php
+import http.client
+import json
+
+conn = http.client.HTTPSConnection("{{str_replace("https://", "", $baseurl)}}")
+payload = json.dumps({
+  "decision_visibility": "CONTENT_DISABLED",
+  "decision_monetary": "MONETARY_TERMINATION",
+  "decision_provision": "PARTIAL_TERMINATION",
+  "decision_account": "ACCOUNT_TERMINATED",
+  "decision_ground": "INCOMPATIBLE_CONTENT",
+  "content_type": "VIDEO",
+  "category": "FRAUD",
+  "illegal_content_legal_ground": "illegal content legal ground",
+  "illegal_content_explanation": "illegal content explanation",
+  "incompatible_content_ground": "incompatible content ground",
+  "incompatible_content_explanation": "incompatible content explanation",
+  "countries_list": [
+    "PT",
+    "ES",
+    "DE"
+  ],
+  "start_date": "2022-12-01 17:52:24",
+  "source": "SOURCE_VOLUNTARY",
+  "decision_facts": "facts about the decision",
+  "automated_detection": "No",
+  "automated_decision": "No",
+  "url": "https://theurl.com"
+})
+headers = {
+  'Accept': 'application/json',
+  'Authorization': 'Bearer <YOUR_TOKEN_HERE>',
+  'Content-Type': 'application/json'
+}
+conn.request("POST", "/api/statement/create", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+
+
+## Searching Statements
+
+Users with a valid API token can also make search requests. The data returned in these 
+search requests can be used for statistical purposes or for finding specific statements.
+
+### Basic Query
+
+Make a simple get ```GET``` request to this endpoint: 
+
+```
+{{ route('api.v1.statement.search') }}
+```
+
+This will return a set of paginated statements (50) starting with the most recent created first.
+
+```javascript
+{
+    "current_page": 1,
+    "data": [
+        {
+            "uuid": "bb5f698f-5b91-43b4-9750-e0017d0dc1a4",
+            "decision_taken": "DECISION_PROVISION",
+            "decision_ground": "ILLEGAL_CONTENT",
+            "category": "CHILD_SAFETY",
+            "content_type": "IMAGE",
+            "illegal_content_legal_ground": "Culpa sed ea autem perferendis autem. Sed omnis non odio. Ut sit voluptatem et aut vel est.",
+            "illegal_content_explanation": "White Rabbit blew three blasts on the Duchess's cook. She carried the pepper-box in her pocket, and was going to say,' said the Mock Turtle went on. 'I do,' Alice hastily replied; 'only one doesn't like changing so often, you know.' Alice had not attended to this last remark, 'it's a vegetable. It doesn't look like it?' he said, 'on and off, for days and days.' 'But what happens when one eats cake, but Alice had been anxiously looking across the field after it, 'Mouse dear! Do come back with.",
+            "incompatible_content_ground": "Architecto ut aut quia id iure. Neque ab maxime labore placeat. Dignissimos rem sint ea non.",
+            "incompatible_content_explanation": "Nobody moved. 'Who cares for you?' said the King hastily said, and went by without noticing her. Then followed the Knave of Hearts, she made some tarts, All on a three-legged stool in the middle, nursing a baby; the cook had disappeared. 'Never mind!' said the Duchess, digging her sharp little chin. 'I've a right to grow up again! Let me think: was I the same thing as \"I eat what I get\" is the capital of Paris, and Paris is the capital of Rome, and Rome--no, THAT'S all wrong, I'm certain! I.",
+            "incompatible_content_illegal": 0,
+            "countries_list": [
+                "FR",
+                "NL",
+                "HR",
+                "CZ",
+                "BG",
+                "FI",
+                "RO"
+            ],
+            "start_date": "2023-06-05 01:25:44",
+            "end_date": "2023-06-05 01:25:44",
+            "decision_facts": "Queen, who was a most extraordinary noise going on shrinking rapidly: she soon made out the verses on his flappers, '--Mystery, ancient and modern, with Seaography: then Drawling--the Drawling-master was an immense length of neck, which seemed to be no doubt that it was YOUR table,' said Alice; 'that's not at all anxious to have changed since her swim in the pictures of him), while the rest were quite dry again, the cook and the executioner myself,' said the Mock Turtle. 'And how do you want.",
+            "source": "SOURCE_VOLUNTARY",
+            "automated_detection": "Yes",
+            "automated_decision": "No",
+            "automated_takedown": "No",
+            "url": "http://muller.com/velit-quis-sint-voluptates-amet-quos.html",
+            "created_at": "2023-06-05T01:25:44.000000Z",
+            "permalink": "{{ route('home') }}/statement/bb5f698f-5b91-43b4-9750-e0017d0dc1a4",
+            "self": "{{ route('home') }}/api/v1/statement/bb5f698f-5b91-43b4-9750-e0017d0dc1a4"
+        },
+        ...
+        ...
+        ...
+        ...
+    },
+    "first_page_url": "{{ route('api.v1.statement.search') }}?page=1",
+    "from": 1,
+    "last_page": 20,
+    "last_page_url": "{{ route('api.v1.statement.search') }}?page=20",
+    "links": [ ... ],
+    "next_page_url": "{{ route('api.v1.statement.search') }}?page=2",
+    "path": "{{ route('api.v1.statement.search') }}",
+    "per_page": 50,
+    "prev_page_url": null,
+    "to": 50,
+    "total": 1000
+    }
+```
+
+The interesting information here is the ```total``` attribute that is return with this call. 
+This tells us how many statements were found with this search query. In this example case
+it tells us how many total statements there are in the entire database. Our sample sandbox 
+environment we create 1000 randomly generated statements.
+
+From here we can then start to make more interesting searches using filters and parameters.
+
+### Filters and Parameters
+
+To begin filtering the results we make the same ```GET``` request to the same endpoint:
+
+```
+{{ route('api.v1.statement.search') }}
+```
+
+However, this time we are going to add a filter. We are going to ask for the statements
+that were detected automatically. To do this we add to the request url an query parameter
+array with the option values we want to filter on. 
+
+ex,
+
+```
+{{ route('api.v1.statement.search') }}?automated_detection[]=Yes
+```
+
+In our example of 1000 statements of reason this would return a total of around +/- 500.
+
+```javascript
+{
+    ...
+    "total": 491
+}
+```
+
+As a matter of exercise, if we were to add the filter values "Yes" and "No" to the array 
+we would get 1000 again, 491 Yes, 509 No.
+
+```
+{{ route('api.v1.statement.search') }}?automated_detection[]=Yes&automated_detection[]=No
+```
+
+```javascript
+{
+    ...
+    "total": 1000
+}
+```
+
+### Available Filters
+

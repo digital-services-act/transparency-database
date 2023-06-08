@@ -1,104 +1,108 @@
+@php use App\Models\Statement; @endphp
 @props(['statement' => null, 'options' => null])
 
 <h4>Decision Taken (Please select at least one item from the available options)</h4>
-<x-ecl.select label="Visibility restriction of specific items of information provided by the recipient of the service"
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
               name="decision_visibility"
               id="decision_visibility"
               :options="$options['decisions_visibility']"
               default="{{ $statement->decision_visibility }}"
               justlabel="true"
-               />
+/>
 
-<x-ecl.select label="Monetary payments suspension, termination or other restriction"
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decisions_visibility_other"
+                 id="decisions_visibility_other" required="true"/>
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
               name="decision_monetary"
               id="decision_monetary"
               :options="$options['decisions_monetary']"
               default="{{ $statement->decision_monetary }}"
               justlabel="true"
-               />
+/>
 
-<x-ecl.select label="Suspension or termination of the provision of the service"
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_monetary_other"
+                 id="decision_monetary_other" required="true"/>
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_PROVISION"
               name="decision_provision"
               id="decision_provision"
               :options="$options['decisions_provision']"
               default="{{ $statement->decision_provision }}"
               justlabel="true"
-               />
+/>
 
-<x-ecl.select label="Suspension or termination of the recipient of the service's account."
+<x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
               name="decision_account"
               id="decision_account"
               :options="$options['decisions_account']"
               default="{{ $statement->decision_account }}"
               justlabel="true"
-               />
-
+/>
 
 <hr>
-<x-ecl.textarea label="Facts and circumstances relied on in taking the decision" name="decision_facts" id="decision_facts" required="true" />
+
+<x-ecl.textarea :label="Statement::LABEL_STATEMENT_DECISION_FACTS" name="decision_facts" id="decision_facts"
+                required="true"/>
+
 <hr>
-<x-ecl.select label="Ground for Decision"
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_GROUND"
               name="decision_ground"
               id="decision_ground" default="{{ $statement->decision_ground }}"
               :options="$options['decision_grounds']"
-              required="true" />
+              required="true"/>
 
-<x-ecl.textfield label="Legal ground relied on" name="illegal_content_legal_ground" id="illegal_content_legal_ground" required="true"/>
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND" name="illegal_content_legal_ground"
+                 id="illegal_content_legal_ground" required="true"/>
 
-<x-ecl.textarea label="Explanation of why the content is considered to be illegal on that ground"
-                name="illegal_content_explanation" id="illegal_content_explanation" required="true" />
+<x-ecl.textarea :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION"
+                name="illegal_content_explanation" id="illegal_content_explanation" required="true"/>
 
-<x-ecl.textfield label="Reference to contractual ground" name="incompatible_content_ground"
-                 id="incompatible_content_ground" required="true" />
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND"
+                 id="incompatible_content_ground" required="true"/>
 
-<x-ecl.textarea label="Explanation of why the content is considered as incompatible on that ground"
-                name="incompatible_content_explanation" id="incompatible_content_explanation" required="true" />
+<x-ecl.textarea :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION"
+                name="incompatible_content_explanation" id="incompatible_content_explanation" required="true"/>
 
-<x-ecl.checkbox label="Is the content considered as illegal ?"
-                name="incompatible_content_illegal" id="incompatible_content_illegal" required="false" />
+<x-ecl.checkbox :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL"
+                name="incompatible_content_illegal" id="incompatible_content_illegal" required="false"/>
 <hr>
 
-<x-ecl.select label="Content Type"
+<x-ecl.select :label="Statement::LABEL_STATEMENT_CONTENT_TYPE"
               name="content_type"
               id="content_type"
               :options="$options['content_types']"
-              required="true" />
+              required="true"/>
 <hr>
-<x-ecl.select label="Category"
+<x-ecl.select :label="Statement::LABEL_STATEMENT_CATEGORY"
               name="category"
               id="category" default="{{ $statement->category }}"
               :options="$options['categories']"
-              required="true" />
+              required="true"/>
 
 <hr>
 
-<x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
+<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_COUNTRY_LIST" name="countries_list" id="countries_list"
                        :options="$options['countries']" :default="$statement->countries_list"
                        select_all="European Union" select_item="Select a member state"
-                       enter_keyword="Enter a country name" required="false" />
+                       enter_keyword="Enter a country name" required="false"/>
 <hr>
 
-<x-ecl.datepicker label="Start date of the decision" id="start_date"
+<x-ecl.datepicker :label="Statement::LABEL_STATEMENT_START_DATE"
                   name="start_date" value="{{ $statement->start_date }}" required="true"/>
 
-<x-ecl.datepicker label="End date of the decision - leave blank for indefinite" id="end_date"
-                  name="end_date" value="{{ $statement->end_date }}" />
+<x-ecl.datepicker :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'" id="end_date"
+                  name="end_date" value="{{ $statement->end_date }}"/>
 <hr>
 
-
-
-<x-ecl.select label="Information source" name="source" id="source" :options="$options['sources']" required="true" />
-
-{{--<x-ecl.textarea label="Explanation of the notice (only if strictly necessary, identity of the notifier)." name="notice_explanation" id="notice_explanation" required="true" />--}}
-
-
-
-
-{{--<x-ecl.textarea label="Please give an explanation of own voluntary initiative:" name="source_explanation" id="source_explanation_own" required="true" />--}}
+<x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE" name="source" id="source" :options="$options['sources']"
+              required="true"/>
 
 <hr>
 
-<x-ecl.radio label="Was the content detected/identified using automated means?"
+<x-ecl.radio :label="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"
              name="automated_detection"
              id="automated_detection"
              :options="$options['automated_detections']"
@@ -106,7 +110,7 @@
              required="true"
 />
 
-<x-ecl.radio label="Was the decision taken using automated means?"
+<x-ecl.radio :label="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"
              name="automated_decision"
              id="automated_decision"
              :options="$options['automated_decisions']"
@@ -114,86 +118,79 @@
              required="true"
 />
 
-{{--<x-ecl.radio label="Was the content taken down using automated means?"--}}
-{{--             name="automated_takedown"--}}
-{{--             id="automated_takedown"--}}
-{{--             :options="$options['automated_takedowns']"--}}
-{{--             default="{{ $statement->automated_takedown }}"--}}
-{{--             required="true"--}}
-{{--/>--}}
+<hr>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_URL" name="url" id="url" required="true"/>
 
 <hr>
 
+<script type="text/javascript">
 
-<x-ecl.textfield label="URL/Hyperlink" name="url" id="url" required="true"/>
+  let form = document.getElementById("create-statement-form");
 
-<hr>
+  form.addEventListener('submit', function (event) {
 
-    <script type="text/javascript">
+    //   //Do not submit the form if we click on the Close button from the multiple selects in ECL
+    // console.log(event);
+    //   if (event.submitter.innerText === 'Close') {
+    //       //event.preventDefault();
+    //   }
 
-      let form = document.getElementById("create-statement-form");
+  });
 
-      form.addEventListener('submit', function (event) {
+  function initFields () {
 
-        //   //Do not submit the form if we click on the Close button from the multiple selects in ECL
-        // console.log(event);
-        //   if (event.submitter.innerText === 'Close') {
-        //       //event.preventDefault();
-        //   }
+    hide('div_illegal_content_legal_ground');
+    hide('div_illegal_content_explanation');
 
-      });
+    hide('div_incompatible_content_ground');
+    hide('div_incompatible_content_explanation');
+    hide('div_incompatible_content_illegal');
 
-      function initFields() {
 
-          hide('div_illegal_content_legal_ground');
-          hide('div_illegal_content_explanation');
+    if (ge('decision_ground').value === 'DECISION_GROUND_ILLEGAL_CONTENT') {
+      show('div_illegal_content_legal_ground');
+      show('div_illegal_content_explanation');
+    }
 
-          hide('div_incompatible_content_ground');
-          hide('div_incompatible_content_explanation');
-          hide('div_incompatible_content_illegal');
-          // hide('div_source_explanation_article_16');
-          // hide('div_source_explanation_own');
-          // hide('div_redress_more');
+    if (ge('decision_ground').value === 'DECISION_GROUND_INCOMPATIBLE_CONTENT') {
+      show('div_incompatible_content_ground');
+      show('div_incompatible_content_explanation');
+      show('div_incompatible_content_illegal');
+    }
 
-          if (ge('decision_ground').value === 'ILLEGAL_CONTENT') {
-              show('div_illegal_content_legal_ground');
-              show('div_illegal_content_explanation');
-          }
+    hide('div_decision_visibility_other');
+    if (ge('decision_visibility').value === 'DECISION_VISIBILITY_OTHER') {
+      show('div_decision_visibility_other');
+    }
 
-          if (ge('decision_ground').value === 'INCOMPATIBLE_CONTENT') {
-              show('div_incompatible_content_ground');
-              show('div_incompatible_content_explanation');
-              show('div_incompatible_content_illegal');
-          }
+    hide('div_decision_monetary_other');
+    if (ge('decision_monetary').value === 'DECISION_MONETARY_OTHER') {
+      show('div_decision_monetary_other');
+    }
 
-          // if (ge('source').value === 'SOURCE_ARTICLE_16') {
-          //     show('div_source_explanation_article_16');
-          // }
-          //
-          // if (ge('source').value === 'SOURCE_VOLUNTARY') {
-          //     show('div_source_explanation_own');
-          // }
+    hide('div_content_type_other');
+    if (ge('decision_monetary').value === 'CONTENT_TYPE_OTHER') {
+      show('div_content_type_other');
+    }
+    
+  }
 
-      }
+  function ge (id) {
+    return document.getElementById(id);
+  }
 
-      function ge(id)
-      {
-        return document.getElementById(id);
-      }
+  function hide (id) {
+    ge(id).classList.add('ecl-u-d-none');
+  }
 
-      function hide(id)
-      {
-        ge(id).classList.add('ecl-u-d-none');
-      }
+  function show (id) {
+    ge(id).classList.remove('ecl-u-d-none');
+  }
 
-      function show(id)
-      {
-        ge(id).classList.remove('ecl-u-d-none');
-      }
+  initFields();
 
-      initFields();
+  document.getElementById('decision_ground').addEventListener('change', initFields);
+  document.getElementById('source').addEventListener('change', initFields);
 
-      document.getElementById('decision_ground').addEventListener('change', initFields);
-      document.getElementById('source').addEventListener('change', initFields);
-
-    </script>
+</script>

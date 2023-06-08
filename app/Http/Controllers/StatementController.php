@@ -163,31 +163,25 @@ class StatementController extends Controller
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
-//        $automated_takedowns = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_TAKEDOWNS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
         $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
-
         $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
             return [
                 'value' => $platform->id,
                 'label' => $platform->name
             ];
         })->toArray();
-        //array_unshift($platforms, ['value' => ' ', 'label' => 'Choose a platform']);
-
-
         array_map(function ($automated_detection) {
             return ['value' => $automated_detection, 'label' => $automated_detection];
         }, Statement::AUTOMATED_DETECTIONS);
 
-//        $decisions = $this->mapForSelectWithKeys(Statement::DECISIONS);
         $decisions_visibility = $this->mapForSelectWithKeys(Statement::DECISIONS_VISIBILITY);
         $decisions_monetary = $this->mapForSelectWithKeys(Statement::DECISIONS_MONETARY);
         $decisions_provision = $this->mapForSelectWithKeys(Statement::DECISIONS_PROVISION);
         $decisions_account = $this->mapForSelectWithKeys(Statement::DECISIONS_ACCOUNT);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
-        $categories = $this->mapForSelectWithKeys(Statement::SOR_CATEGORIES);
+        $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
@@ -198,7 +192,6 @@ class StatementController extends Controller
             'countries',
             'automated_detections',
             'automated_decisions',
-//            'automated_takedowns',
             'decisions_visibility',
             'decisions_monetary',
             'decisions_provision',

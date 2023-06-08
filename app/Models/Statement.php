@@ -16,136 +16,126 @@ class Statement extends Model
 {
     use HasFactory, Searchable, LogsActivity, SoftDeletes;
 
+
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
-
     public const METHODS = [
         'METHOD_FORM' => Statement::METHOD_FORM,
         'METHOD_API' => Statement::METHOD_API
     ];
 
 
-
+    public const LABEL_STATEMENT_SOURCE = 'Information source';
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
-
     public const SOURCES = [
         'SOURCE_ARTICLE_16' => Statement::SOURCE_ARTICLE_16,
         'SOURCE_TRUSTED_FLAGGER' => Statement::SOURCE_TRUSTED_FLAGGER,
         'SOURCE_VOLUNTARY' => Statement::SOURCE_VOLUNTARY,
     ];
 
+
+    public const LABEL_STATEMENT_CONTENT_TYPE = 'Content Type';
     public const CONTENT_TYPE_TEXT = 'Text';
     public const CONTENT_TYPE_VIDEO = 'Video';
     public const CONTENT_TYPE_IMAGE = 'Image';
     public const CONTENT_TYPE_OTHER = 'Other';
-
     public const CONTENT_TYPES = [
-        'TEXT' => Statement::CONTENT_TYPE_TEXT,
-        'VIDEO' => Statement::CONTENT_TYPE_VIDEO,
-        'IMAGE' => Statement::CONTENT_TYPE_IMAGE,
-        'OTHER' => Statement::CONTENT_TYPE_OTHER,
+        'CONTENT_TYPE_TEXT' => Statement::CONTENT_TYPE_TEXT,
+        'CONTENT_TYPE_VIDEO' => Statement::CONTENT_TYPE_VIDEO,
+        'CONTENT_TYPE_IMAGE' => Statement::CONTENT_TYPE_IMAGE,
+        'CONTENT_TYPE_OTHER' => Statement::CONTENT_TYPE_OTHER,
     ];
 
-    public const AUTOMATED_DETECTIONS_YES = 'Yes';
-    public const AUTOMATED_DETECTIONS_NO = 'No';
+    public const LABEL_STATEMENT_AUTOMATED_DETECTION = 'Was the content detected/identified using automated means?';
+    public const AUTOMATED_DETECTION_YES = 'Yes';
+    public const AUTOMATED_DETECTION_NO = 'No';
     public const AUTOMATED_DETECTIONS = [
-        Statement::AUTOMATED_DETECTIONS_YES,
-        Statement::AUTOMATED_DETECTIONS_NO,
+        Statement::AUTOMATED_DETECTION_YES,
+        Statement::AUTOMATED_DETECTION_NO,
     ];
 
 
-    public const AUTOMATED_DECISIONS_YES = 'Yes';
-    public const AUTOMATED_DECISIONS_NO = 'No';
+    public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using automated means?';
+    public const AUTOMATED_DECISION_YES = 'Yes';
+    public const AUTOMATED_DECISION_NO = 'No';
     public const AUTOMATED_DECISIONS = [
-        Statement::AUTOMATED_DECISIONS_YES,
-        Statement::AUTOMATED_DECISIONS_NO,
+        Statement::AUTOMATED_DECISION_YES,
+        Statement::AUTOMATED_DECISION_NO,
     ];
 
-//    public const AUTOMATED_TAKEDOWN_YES = 'Yes';
-//    public const AUTOMATED_TAKEDOWN_NO = 'No';
-//    public const AUTOMATED_TAKEDOWNS = [
-//        Statement::AUTOMATED_TAKEDOWN_YES,
-//        Statement::AUTOMATED_TAKEDOWN_NO,
-//    ];
 
+
+    public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [
-        'ILLEGAL_CONTENT' => Statement::DECISION_GROUND_ILLEGAL_CONTENT,
-        'INCOMPATIBLE_CONTENT' => Statement::DECISION_GROUND_INCOMPATIBLE_CONTENT
+        'DECISION_GROUND_ILLEGAL_CONTENT' => Statement::DECISION_GROUND_ILLEGAL_CONTENT,
+        'DECISION_GROUND_INCOMPATIBLE_CONTENT' => Statement::DECISION_GROUND_INCOMPATIBLE_CONTENT
     ];
 
 
-    public const ILLEGAL_CONTENT_GROUND = 'Legal ground relied on';
-    public const ILLEGAL_CONTENT_EXPLANATION = 'Explanation of why the content is considered to be illegal on that ground';
-    public const INCOMPATIBLE_CONTENT_GROUND = 'Reference to contractual ground';
-    public const INCOMPATIBLE_CONTENT_EXPLANATION = 'Explanation of why the content is considered as incompatible on that ground';
+    public const LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND = 'Legal ground relied on';
+    public const LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION = 'Explanation of why the content is considered to be illegal on that ground';
+    public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND = 'Reference to contractual ground';
+    public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION = 'Explanation of why the content is considered as incompatible on that ground';
 
     public const ILLEGAL_CONTENT_FIELDS = [
-        Statement::ILLEGAL_CONTENT_GROUND,
-        Statement::ILLEGAL_CONTENT_EXPLANATION,
+        Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND,
+        Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION,
     ];
 
     public const INCOMPATIBLE_CONTENT_FIELDS = [
-        Statement::INCOMPATIBLE_CONTENT_GROUND,
-        Statement::INCOMPATIBLE_CONTENT_EXPLANATION,
+        Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND,
+        Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION,
     ];
 
-    public const DECISION_ALL = 'Any restrictions on visibility, such as removing, disabling, or demoting content provided by the service recipient.';
-    public const DECISION_MONETARY = 'suspension, termination or other restriction of monetary payments';
-    public const DECISION_PROVISION = 'suspension or termination of the provision of the service in whole or in part';
-    public const DECISION_TERMINATION = 'suspension or termination of the recipient of the service\'s account';
-    public const DECISIONS = [
-        'DECISION_ALL' => Statement::DECISION_ALL,
-        'DECISION_MONETARY' => Statement::DECISION_MONETARY,
-        'DECISION_PROVISION' => Statement::DECISION_PROVISION,
-        'DECISION_TERMINATION' => Statement::DECISION_TERMINATION
-    ];
-
+    public const LABEL_STATEMENT_DECISION_VISIBILITY = 'Visibility restriction of specific items of information provided by the recipient of the service';
     public const DECISION_VISIBILITY_CONTENT_REMOVED = 'Removal of content';
     public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
-    public const DECISION_VISIBILITY_CONTENT_OTHER = 'Other restriction (please specify)';
+    public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
     public const DECISIONS_VISIBILITY = [
-        'CONTENT_REMOVAL' => Statement::DECISION_VISIBILITY_CONTENT_REMOVED,
-        'CONTENT_DISABLED' => Statement::DECISION_VISIBILITY_CONTENT_DISABLED,
-        'CONTENT_DEMOTED' => Statement::DECISION_VISIBILITY_CONTENT_DEMOTED,
-        'CONTENT_OTHER' => Statement::DECISION_VISIBILITY_CONTENT_OTHER
+        'DECISION_VISIBILITY_CONTENT_REMOVED' => Statement::DECISION_VISIBILITY_CONTENT_REMOVED,
+        'DECISION_VISIBILITY_CONTENT_DISABLED' => Statement::DECISION_VISIBILITY_CONTENT_DISABLED,
+        'DECISION_VISIBILITY_CONTENT_DEMOTED' => Statement::DECISION_VISIBILITY_CONTENT_DEMOTED,
+        'DECISION_VISIBILITY_OTHER' => Statement::DECISION_VISIBILITY_OTHER
     ];
 
+    public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary payments suspension, termination or other restriction';
     public const DECISION_MONETARY_SUSPENSION = 'Suspension of monetary payments';
     public const DECISION_MONETARY_TERMINATION = 'Termination of monetary payments';
     public const DECISION_MONETARY_OTHER = 'Other restriction (please specify)';
 
     public const DECISIONS_MONETARY = [
-        'MONETARY_SUSPENSION' => Statement::DECISION_MONETARY_SUSPENSION,
-        'MONETARY_TERMINATION' => Statement::DECISION_MONETARY_TERMINATION,
-        'MONETARY_OTHER' => Statement::DECISION_MONETARY_OTHER
+        'DECISION_MONETARY_SUSPENSION' => Statement::DECISION_MONETARY_SUSPENSION,
+        'DECISION_MONETARY_TERMINATION' => Statement::DECISION_MONETARY_TERMINATION,
+        'DECISION_MONETARY_OTHER' => Statement::DECISION_MONETARY_OTHER
     ];
 
+    public const LABEL_STATEMENT_DECISION_PROVISION = 'Suspension or termination of the provision of the service';
     public const DECISION_PROVISION_PARTIAL_SUSPENSION = 'Partial suspension of the provision of the service';
     public const DECISION_PROVISION_TOTAL_SUSPENSION = 'Total suspension of the provision of the service';
     public const DECISION_PROVISION_PARTIAL_TERMINATION = 'Partial termination of the provision of the service';
     public const DECISION_PROVISION_TOTAL_TERMINATION = 'Total termination of the provision of the service';
-
-
     public const DECISIONS_PROVISION = [
-        'PARTIAL_SUSPENSION' => Statement::DECISION_PROVISION_PARTIAL_SUSPENSION,
-        'TOTAL_SUSPENSION' => Statement::DECISION_PROVISION_TOTAL_SUSPENSION,
-        'PARTIAL_TERMINATION' => Statement::DECISION_PROVISION_PARTIAL_TERMINATION,
-        'TOTAL_TERMINATION' => Statement::DECISION_PROVISION_TOTAL_TERMINATION,
+        'DECISION_PROVISION_PARTIAL_SUSPENSION' => Statement::DECISION_PROVISION_PARTIAL_SUSPENSION,
+        'DECISION_PROVISION_TOTAL_SUSPENSION' => Statement::DECISION_PROVISION_TOTAL_SUSPENSION,
+        'DECISION_PROVISION_PARTIAL_TERMINATION' => Statement::DECISION_PROVISION_PARTIAL_TERMINATION,
+        'DECISION_PROVISION_TOTAL_TERMINATION' => Statement::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account.';
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
     public const DECISIONS_ACCOUNT = [
-        'ACCOUNT_SUSPENDED' => Statement::DECISION_ACCOUNT_SUSPENDED,
-        'ACCOUNT_TERMINATED' => Statement::DECISION_ACCOUNT_TERMINATED
+        'DECISION_ACCOUNT_SUSPENDED' => Statement::DECISION_ACCOUNT_SUSPENDED,
+        'DECISION_ACCOUNT_TERMINATED' => Statement::DECISION_ACCOUNT_TERMINATED
     ];
 
+    public const LABEL_STATEMENT_COUNTRY_LIST = 'Territorial scope of the decision';
     public const EUROPEAN_COUNTRY_CODES = [
         'AT',
         'BE',
@@ -176,31 +166,37 @@ class Statement extends Model
         'SK'
     ];
 
-    public const SOR_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
-    public const SOR_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (race, gender identity, sexual orientation, religion, disability)';
-    public const SOR_CATEGORY_COUNTERFEIT = 'Counterfeit goods (e.g. fake perfume, fake designer brands)';
-    public const SOR_CATEGORY_FRAUD = 'Scams, frauds, subscription traps or other illegal commercial practices';
-    public const SOR_CATEGORY_TERRORISM = 'Terrorist content (extremists, hate groups)';
-    public const SOR_CATEGORY_CHILD_SAFETY = 'Child safety (child nudity, sexual abuse, unsolicited contact with minors)';
-    public const SOR_CATEGORY_NON_CONSENT = 'Non-consensual nudity (hidden camera, deepfake, revenge porn, upskirts)';
-    public const SOR_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (denying tragic events, synthetic media, false context)';
-    public const SOR_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (spam, platform manipulation)';
-    public const SOR_UNCATEGORISED = 'Uncategorised';
-    public const SOR_CATEGORIES = [
-        'PIRACY' => Statement::SOR_CATEGORY_PIRACY,
-        'DISCRIMINATION' => Statement::SOR_CATEGORY_DISCRIMINATION,
-        'COUNTERFEIT' => Statement::SOR_CATEGORY_COUNTERFEIT,
-        'FRAUD' => Statement::SOR_CATEGORY_FRAUD,
-        'TERRORISM' => Statement::SOR_CATEGORY_TERRORISM,
-        'CHILD_SAFETY' => Statement::SOR_CATEGORY_CHILD_SAFETY,
-        'NON_CONSENT' => Statement::SOR_CATEGORY_NON_CONSENT,
-        'MISINFORMATION' => Statement::SOR_CATEGORY_MISINFORMATION,
-        'VIOLATION_TOS' => Statement::SOR_CATEGORY_VIOLATION_TOS,
-        'UNCATEGORISED' => Statement::SOR_UNCATEGORISED
+    public const LABEL_STATEMENT_CATEGORY = 'Category';
+    public const STATEMENT_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
+    public const STATEMENT_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (race, gender identity, sexual orientation, religion, disability)';
+    public const STATEMENT_CATEGORY_COUNTERFEIT = 'Counterfeit goods (e.g. fake perfume, fake designer brands)';
+    public const STATEMENT_CATEGORY_FRAUD = 'Scams, frauds, subscription traps or other illegal commercial practices';
+    public const STATEMENT_CATEGORY_TERRORISM = 'Terrorist content (extremists, hate groups)';
+    public const STATEMENT_CATEGORY_CHILD_SAFETY = 'Child safety (child nudity, sexual abuse, unsolicited contact with minors)';
+    public const STATEMENT_CATEGORY_NON_CONSENT = 'Non-consensual nudity (hidden camera, deepfake, revenge porn, upskirts)';
+    public const STATEMENT_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (denying tragic events, synthetic media, false context)';
+    public const STATEMENT_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (spam, platform manipulation)';
+    public const STATEMENT_CATEGORY_UNCATEGORISED = 'Uncategorised';
+    public const STATEMENT_CATEGORIES = [
+        'STATEMENT_CATEGORY_PIRACY' => Statement::STATEMENT_CATEGORY_PIRACY,
+        'STATEMENT_CATEGORY_DISCRIMINATION' => Statement::STATEMENT_CATEGORY_DISCRIMINATION,
+        'STATEMENT_CATEGORY_COUNTERFEIT' => Statement::STATEMENT_CATEGORY_COUNTERFEIT,
+        'STATEMENT_CATEGORY_FRAUD' => Statement::STATEMENT_CATEGORY_FRAUD,
+        'STATEMENT_CATEGORY_TERRORISM' => Statement::STATEMENT_CATEGORY_TERRORISM,
+        'STATEMENT_CATEGORY_CHILD_SAFETY' => Statement::STATEMENT_CATEGORY_CHILD_SAFETY,
+        'STATEMENT_CATEGORY_NON_CONSENT' => Statement::STATEMENT_CATEGORY_NON_CONSENT,
+        'STATEMENT_CATEGORY_MISINFORMATION' => Statement::STATEMENT_CATEGORY_MISINFORMATION,
+        'STATEMENT_CATEGORY_VIOLATION_TOS' => Statement::STATEMENT_CATEGORY_VIOLATION_TOS,
+        'STATEMENT_CATEGORY_UNCATEGORISED' => Statement::STATEMENT_CATEGORY_UNCATEGORISED
     ];
 
 
-
+    public const LABEL_STATEMENT_URL = 'URL/Hyperlink';
+    public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL = 'Is the content considered as illegal?';
+    public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
+    public const LABEL_STATEMENT_START_DATE = 'Start date of the decision';
+    public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
+    public const LABEL_STATEMENT_FORM_OTHER = 'Other';
 
 
     /**

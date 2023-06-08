@@ -44,6 +44,15 @@
         />
 
         <x-ecl.checkboxes
+                label="Decision Visibility"
+                justlabel="true"
+                name="decision_ground"
+                id="decision_ground"
+                :default="request()->get('decision_ground', [])"
+                :options="$options['decision_grounds']"
+        />
+
+        <x-ecl.checkboxes
                 label="Categories"
                 justlabel="true"
                 name="categories"
@@ -66,6 +75,15 @@
                                :options="$options['countries']" :default="request()->get('countries_list', [])"
                                select_all="European Union" select_item="Select a member state"
                                enter_keyword="Enter a country name"/>
+
+        <x-ecl.checkboxes
+                label="Content Type"
+                justlabel="true"
+                name="content_type"
+                id="content_type"
+                :default="request()->get('content_type', [])"
+                :options="$options['content_types']"
+        />
 
         <x-ecl.checkboxes
                 label="Automated Detection"

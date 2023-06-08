@@ -26,7 +26,11 @@ class StatementStoreRequest extends FormRequest
     {
         return [
             'decision_visibility' => [ $this->in(array_keys(Statement::DECISIONS_VISIBILITY)),'required_without_all:decision_monetary,decision_provision,decision_account'],
+            'decision_visibility_other' => ['required_if:decision_visibility,CONTENT_OTHER','exclude_unless:decision_visibility,CONTENT_OTHER'],
+
             'decision_monetary' => [ $this->in(array_keys(Statement::DECISIONS_MONETARY)),'required_without_all:decision_visibility,decision_provision,decision_account'],
+            'decision_monetary_other' => ['required_if:decision_monetary,MONETARY_OTHER','exclude_unless:decision_monetary,MONETARY_OTHER'],
+
             'decision_provision' => [ $this->in(array_keys(Statement::DECISIONS_PROVISION)),'required_without_all:decision_visibility,decision_monetary,decision_account'],
             'decision_account' => [ $this->in(array_keys(Statement::DECISIONS_ACCOUNT)),'required_without_all:decision_visibility,decision_monetary,decision_provision'],
 
@@ -37,7 +41,10 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_ground' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'incompatible_content_explanation' => ['required_if:decision_ground,INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
             'incompatible_content_illegal' => ['boolean','nullable','exclude_unless:decision_ground,INCOMPATIBLE_CONTENT'],
+
             'content_type' => ['required', $this->in(array_keys(Statement::CONTENT_TYPES))],
+            'content_type_other' => ['required_if:content_type,CONTENT_TYPE_OTHER','exclude_unless:content_type,CONTENT_TYPE_OTHER'],
+
             'category' => ['required', $this->in(array_keys(Statement::SOR_CATEGORIES))],
             'countries_list' => ['array', 'required', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'start_date' => ['required', 'date'],

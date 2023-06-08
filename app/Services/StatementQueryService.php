@@ -26,6 +26,7 @@ class StatementQueryService
         'decision_ground',
         'categories',
         'platform_type',
+        'content_type',
         'countries_list',
         'source'
     ];
@@ -147,6 +148,20 @@ class StatementQueryService
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_GROUNDS));
         if ($filter_values_validated) {
             $query->whereIn('decision_ground', $filter_value);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyContentTypeFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
+        if ($filter_values_validated) {
+            $query->whereIn('content_type', $filter_value);
         }
     }
 

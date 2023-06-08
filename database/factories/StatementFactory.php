@@ -34,19 +34,28 @@ class StatementFactory extends Factory
         return [
 
             'decision_visibility' => $this->faker->randomElement(array_keys(Statement::DECISIONS_VISIBILITY)),
+            'decision_visibility_other' => $this->faker->text(100),
+
             'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISIONS_MONETARY)),
+            'decision_monetary_other' => $this->faker->text(100),
+
             'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISIONS_PROVISION)),
             'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISIONS_ACCOUNT)),
 
 
             'decision_ground' => $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS)),
+
             'content_type' => $this->faker->randomElement(array_keys(Statement::CONTENT_TYPES)),
-            'category' => $this->faker->randomElement(array_keys(Statement::SOR_CATEGORIES)),
+            'content_type_other' => $this->faker->text(100),
+
+            'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
 
             'illegal_content_legal_ground' => $this->faker->text(100),
             'illegal_content_explanation' => $this->faker->realText(500),
+
             'incompatible_content_ground' => $this->faker->text(100),
             'incompatible_content_explanation' => $this->faker->realText(500),
+
             'incompatible_content_illegal' => $this->faker->boolean,
 
             'url' => $this->faker->url,
@@ -57,16 +66,16 @@ class StatementFactory extends Factory
             'end_date' => $end_date,
 
             'source' => $this->faker->randomElement(array_keys(Statement::SOURCES)),
+
             'decision_facts' => $this->faker->realText(500),
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),
-//            'automated_takedown' => $this->faker->randomElement(Statement::AUTOMATED_TAKEDOWNS),
-
 
             'user_id' => $user_id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
             'created_at' => $base_date
+
         ];
     }
 }
