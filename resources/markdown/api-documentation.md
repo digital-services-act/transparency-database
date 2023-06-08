@@ -61,10 +61,10 @@ Example JSON payload body:
 
 ```json
 {
-    "decision_visibility": "CONTENT_DISABLED",
-    "decision_monetary": "MONETARY_TERMINATION",
-    "decision_provision": "PARTIAL_TERMINATION",
-    "decision_account": "ACCOUNT_TERMINATED",
+    "decision_visibility": "DECISION_VISIBILITY_CONTENT_DISABLED",
+    "decision_monetary": "DECISION_MONETARY_TERMINATION",
+    "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
+    "decision_account": "DECISION_ACCOUNT_SUSPENDED",
     "decision_ground": "INCOMPATIBLE_CONTENT",
     "content_type": "VIDEO",
     "category": "FRAUD",
@@ -96,12 +96,12 @@ You will also receive a payload with the statement as created in the database:
 
 ```json
 {
-    "decision_visibility": "CONTENT_DISABLED",
-    "decision_monetary": "MONETARY_TERMINATION",
+    "decision_visibility": "DEVISION_VISIBILITY_CONTENT_DISABLED",
+    "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "PARTIAL_TERMINATION",
     "decision_account": "ACCOUNT_TERMINATED",
     "decision_ground": "INCOMPATIBLE_CONTENT",
-    "category": "FRAUD",
+    "category": "CONTENT_TYPE_FRAUD",
     "incompatible_content_ground": "incompatible content ground",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": false,
@@ -229,29 +229,46 @@ The value provided must be one of the following:
 
 This is a required textual field to describe the facts and circumstances relied on in taking the decision.
 
+### Decision Ground (decision_ground)
+
+This is a required field and tells us the basis on which the decision was taken.
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::DECISION_GROUNDS as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 ### Illegal Content Legal Ground (illegal_content_legal_ground)
 
-This is required if the ILLEGAL_CONTENT was the decision_ground. It is the legal ground relied on.
+This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
+It is the legal ground relied on.
 
 ### Illegal Content Explanation (illegal_content_explanation)
 
-This is a small optional text that explains why the content was illegal.
+This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
+This is a small text that explains why the content was illegal.
 
 ### Incompatible Content Ground (incompatible_content_ground)
 
-This is required if INCOMPATIBLE_CONTENT was the decision_ground.
+This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 It is the reference to contractual ground.
 
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
-This is a small optional text that explains why the content is
+This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
+This is a small text that explains why the content is
 considered as incompatible on that ground.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
 
-This is boolean that states if the incompatible content is also illegal.
-
-Allowed values are: true, false
+This is a required attribute and it must be in the form "Yes" or "No".
+This indicates to us that not only was the content incompatible but also illegal.
 
 ### Content Type (content_type)
 
@@ -283,7 +300,7 @@ The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
-    foreach (\App\Models\Statement::SOR_CATEGORIES as $key => $value) {
+    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
         echo "<li class='ecl-unordered-list__item'>";
         echo $key;
         echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
@@ -321,7 +338,7 @@ The ```HH:MM:SS``` is optional and may be omitted.
 
 
 
-### Information source (source)
+### Information source (source_type)
 
 This is a required field and tells us the facts and circumstances
 relied upon in taking the decision.
@@ -338,6 +355,11 @@ The value provided must be one of the following:
     }
 @endphp
 </ul>
+
+### Source/Notifier (source)
+
+This is a required field if the source type field was a notice.
+
 
 ### Automated Detection (automated_detection)
 

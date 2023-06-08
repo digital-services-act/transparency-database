@@ -66,8 +66,14 @@
 <x-ecl.textarea :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION"
                 name="incompatible_content_explanation" id="incompatible_content_explanation" required="true"/>
 
-<x-ecl.checkbox :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL"
-                name="incompatible_content_illegal" id="incompatible_content_illegal" required="false"/>
+<x-ecl.radio :label="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL"
+             name="incompatible_content_illegal"
+             id="incompatible_content_illegal"
+             :options="$options['incompatible_content_illegals']"
+             default="{{ $statement->incompatible_content_illegal }}"
+             required="true"
+/>
+
 <hr>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_CONTENT_TYPE"

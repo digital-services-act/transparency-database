@@ -81,6 +81,13 @@ class Statement extends Model
     public const LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION = 'Explanation of why the content is considered to be illegal on that ground';
     public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND = 'Reference to contractual ground';
     public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION = 'Explanation of why the content is considered as incompatible on that ground';
+    public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL = 'Is the content considered as illegal?';
+    public const INCOMPATIBLE_CONTENT_ILLEGAL_YES = 'Yes';
+    public const INCOMPATIBLE_CONTENT_ILLEGAL_NO = 'No';
+    public const INCOMPATIBLE_CONTENT_ILLEGALS = [
+        Statement::INCOMPATIBLE_CONTENT_ILLEGAL_YES,
+        Statement::INCOMPATIBLE_CONTENT_ILLEGAL_NO,
+    ];
 
     public const ILLEGAL_CONTENT_FIELDS = [
         Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND,
@@ -90,6 +97,7 @@ class Statement extends Model
     public const INCOMPATIBLE_CONTENT_FIELDS = [
         Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND,
         Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION,
+        Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL,
     ];
 
     public const LABEL_STATEMENT_DECISION_VISIBILITY = 'Visibility restriction of specific items of information provided by the recipient of the service';
@@ -193,7 +201,6 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_URL = 'URL/Hyperlink';
-    public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL = 'Is the content considered as illegal?';
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
     public const LABEL_STATEMENT_START_DATE = 'Start date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';

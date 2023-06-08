@@ -163,6 +163,7 @@ class StatementController extends Controller
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
+        $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
         $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
         $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
@@ -192,6 +193,7 @@ class StatementController extends Controller
             'countries',
             'automated_detections',
             'automated_decisions',
+            'incompatible_content_illegals',
             'decision_visibilities',
             'decision_monetaries',
             'decision_provisions',

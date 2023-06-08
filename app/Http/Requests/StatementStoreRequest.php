@@ -40,7 +40,7 @@ class StatementStoreRequest extends FormRequest
             'illegal_content_explanation' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT','exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT'],
             'incompatible_content_ground' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
             'incompatible_content_explanation' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT','exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
-            'incompatible_content_illegal' => ['boolean','nullable','exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
+            'incompatible_content_illegal' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', $this->in(Statement::INCOMPATIBLE_CONTENT_ILLEGALS),'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
 
             'content_type' => ['required', $this->in(array_keys(Statement::CONTENT_TYPES))],
             'content_type_other' => ['required_if:content_type,CONTENT_TYPE_OTHER','exclude_unless:content_type,CONTENT_TYPE_OTHER'],
@@ -79,6 +79,7 @@ class StatementStoreRequest extends FormRequest
             'illegal_content_explanation.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
+            'incompatible_content_illegal.required_if' => 'The incompatible content illegal field is required when decision ground is incompatible content.',
             'source.required_unless' => 'The source field is required when source type is a notice submission.',
         ];
     }
