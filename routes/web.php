@@ -25,8 +25,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['cas.auth'])->group(function() {
 
-    Route::get('/login', [\App\Http\Controllers\LoginController::class, 'index'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\LoginController::class, 'submit'])->name('login.submit');
 
     Route::get('/cache', function(){
         Cache::add('key', Carbon::now(), $seconds = 5);
@@ -54,17 +52,17 @@ Route::middleware(['cas.auth'])->group(function() {
     });
 
 
-    Route::group(['middleware' => ['can:view dashboard']], function(){
+//    Route::group(['middleware' => ['can:view dashboard']], function(){
         Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
         Route::get('/dashboard/api', [\App\Http\Controllers\DashboardController::class, 'apiIndex'])->name('api-index');
         Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports')->can('view reports');
         Route::post('/new-token', [\App\Http\Controllers\DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
-    });
+//    });
 
 });
 
-Route::any('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
+
 
 Route::get('/', function () {
     return view('home');

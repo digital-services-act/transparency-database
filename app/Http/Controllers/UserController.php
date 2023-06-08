@@ -124,7 +124,7 @@ class UserController extends Controller
         ])->toArray();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        $user->eu_login_username = $validated['name'];
+//        $user->eu_login_username = $user->eu_login_username;
         $user->platform_id = $validated['platform_id'];
         $user->save();
         $user->roles()->detach();
