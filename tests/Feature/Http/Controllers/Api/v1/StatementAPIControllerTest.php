@@ -203,6 +203,7 @@ class StatementAPIControllerTest extends TestCase
             'decision_ground' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT',
             'incompatible_content_ground' => 'foobar',
             'incompatible_content_explanation' => 'foobar2',
+            'incompatible_content_illegal' => 'No',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
