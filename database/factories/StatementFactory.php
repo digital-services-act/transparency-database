@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Platform;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,13 +30,14 @@ class StatementFactory extends Factory
         $start_date = $create_date;
         $end_date = $start_date->addDays(90);
 
-        $create_date = $create_date->format('Y-n-j G:i:s');
-        $start_date = $start_date->format('Y-n-j G:i:s');
-        $end_date = $end_date->format('Y-n-j G:i:s');
+        $create_date = $create_date->format('Y-n-j') . ' 00:00:00';
+        $start_date = $start_date->format('Y-n-j') . ' 00:00:00';
+        $end_date = $end_date->format('Y-n-j') . ' 00:00:00';
 
 
+        $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
 
-        $user_id = User::all()->random()->id;
+        $user_id = User::whereNot('platform_id', $dsa_platform->id)->get()->random()->id;
 
         return [
 

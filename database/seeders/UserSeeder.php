@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Platform;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -26,11 +27,22 @@ class UserSeeder extends Seeder
 
         User::factory()->count(20)->create();
 
-        //Create fake admin for masquerade purposes
-        User::factory()->create([
-            'eu_login_username'=>'dsa-poc-user',
-            'email'=>'dsa-poc-user@dsa.eu',
-            'name'=>'DSA Administrator'
-        ]);
+        $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
+
+        // Create an admin user for each email in the .env ADMIN_EMAILS
+        $admin_emails = env('ADMIN_EMAILS');
+        $admin_emails = explode(",", $admin_emails);
+        foreach ($admin_emails as $admin_email)
+        {
+            if (filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
+                $parts = explode("@", $admin_email);
+                User::factory()->create([
+                    'eu_login_username'=> $parts[0],
+                    'email' => $admin_email,
+                    'name' => $parts[0],
+                    'platform_id' => $dsa_platform->id
+                ]);
+            }
+        }
     }
 }

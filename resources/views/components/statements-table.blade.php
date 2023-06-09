@@ -6,7 +6,9 @@
         <th class="ecl-table__header">UUID</th>
         <th class="ecl-table__header">Platform Type</th>
         <th class="ecl-table__header">Creation date</th>
-        <th class="ecl-table__header"></th>
+        @can('administrate')
+            <th class="ecl-table__header"></th>
+        @endcan
     </tr>
     </thead>
     <tbody class="ecl-table__body">
@@ -16,11 +18,11 @@
             <td class="ecl-table__cell"><a class="ecl-link" href="{{ route('statement.show', [$statement]) }}">{{ $statement->uuid }}</a></td>
             <td class="ecl-table__cell">{{ \App\Models\Platform::PLATFORM_TYPES[$statement->user->platform?->type] ?? '' }}</td>
             <td class="ecl-table__cell">{{ $statement->created_at }}</td>
-            <td class="ecl-table__cell">
-                @can('administrate')
+            @can('administrate')
+                <td class="ecl-table__cell">
                     edit / delete
-                @endcan
-            </td>
+                </td>
+            @endcan
         </tr>
     @endforeach
     </tbody>

@@ -41,10 +41,13 @@ class PlatformFactory extends Factory
      */
     public function definition()
     {
+        $platform_types = Platform::PLATFORM_TYPES;
+        unset($platform_types['PLATFORM_TYPE_OTHER']);
+
         return [
             'name' => $this->faker->unique()->randomElement($this->platform_names),
             'url' => $this->faker->url(),
-            'type' => $this->faker->randomElement(array_keys(Platform::PLATFORM_TYPES)),
+            'type' => $this->faker->randomElement(array_keys($platform_types)),
         ];
     }
 }

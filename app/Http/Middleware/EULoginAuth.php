@@ -46,6 +46,8 @@ class EULoginAuth
                     ]);
                 }
 
+                $user->assignRole('User');
+
                 cas()->setAttributes(
                     $user->toArray()
                 );

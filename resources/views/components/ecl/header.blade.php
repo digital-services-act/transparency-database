@@ -97,7 +97,7 @@
                                     data-ecl-menu-link="">Dashboard</a>
                             </li>
                         @endcan
-                        
+
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a
                                     href="{{ route('page.show', ['api-documentation']) }}"

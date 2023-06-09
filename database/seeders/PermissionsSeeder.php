@@ -71,12 +71,16 @@ class PermissionsSeeder extends Seeder
         $contributor->givePermissionTo('view reports');
         $contributor->givePermissionTo('create statements');
 
-        $users = User::all();
-        /** @var User $user */
-        foreach ($users as $user)
+        $admin_emails = env('ADMIN_EMAILS');
+        $admin_emails = explode(",", $admin_emails);
+        foreach ($admin_emails as $admin_email)
         {
-            if ($user->email == 'dsa-poc-user@dsa.eu') $user->assignRole('Admin');
-            $user->assignRole('Contributor');
+            if (filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
+                $admin = User::where('email', $admin_email)->first();
+                if ($admin) {
+                    $admin->assignRole('Admin');
+                }
+            }
         }
     }
 }

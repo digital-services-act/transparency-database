@@ -18,7 +18,8 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $platform_id = Platform::all()->random()->id;
+        $platform_id = Platform::whereNot('name', Platform::LABEL_DSA_TEAM)->get()->random()->id;
+
         return [
             'name' => $this->faker->userName(),
             'email' => $this->faker->unique()->safeEmail(),
