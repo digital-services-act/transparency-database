@@ -58,7 +58,7 @@ class Statement extends Model
     ];
 
 
-    public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using automated means?';
+    public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using other automated means?';
     public const AUTOMATED_DECISION_YES = 'Yes';
     public const AUTOMATED_DECISION_NO = 'No';
     public const AUTOMATED_DECISIONS = [

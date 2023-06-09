@@ -25,13 +25,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['cas.auth'])->group(function() {
 
-
-    Route::get('/cache', function(){
-        Cache::add('key', Carbon::now(), $seconds = 5);
-        $value = Cache::get('key');
-        return $value;
-    })->name('cache');
-
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [\App\Http\Controllers\StatementController::class, 'store'])->name('statement.store');

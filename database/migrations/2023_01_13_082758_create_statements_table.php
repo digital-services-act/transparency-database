@@ -39,7 +39,7 @@ class CreateStatementsTable extends Migration
 
             $table->string('incompatible_content_ground', 255)->nullable();
             $table->string('incompatible_content_explanation',500)->nullable();
-            $table->enum('incompatible_content_illegal', \App\Models\Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
+            $table->enum('incompatible_content_illegal', \App\Models\Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
 
             $table->string('countries_list', 255)->nullable();
 
