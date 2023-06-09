@@ -24,7 +24,8 @@ class UserControllerTest extends TestCase
         $user->assignRole('Admin');
 
         $this->assertCount(10, Statement::all());
-        $this->assertCount(22, User::all());
+        $total_users_start = User::count();
+
 
         $statement = Statement::all()->random();
         $user = $statement->user;
@@ -38,7 +39,7 @@ class UserControllerTest extends TestCase
         $this->delete(route('user.destroy', [$user]))->assertRedirect(route('user.index'));
 
         $this->assertCount(10 - $statement_count, Statement::all());
-        $this->assertCount(21, User::all());
+        $this->assertCount($total_users_start - 1, User::all());
 
     }
 }

@@ -25,7 +25,9 @@ class PlatformControllerTest extends TestCase
         $user->assignRole('Admin');
 
         $this->assertCount(10, Statement::all());
-        $this->assertCount(22, User::all());
+        $total_users_start = User::count();
+
+
 
         $statement = Statement::all()->random();
         $user = $statement->user;
@@ -39,7 +41,7 @@ class PlatformControllerTest extends TestCase
         $this->delete(route('platform.destroy', [$platform]))->assertRedirect(route('platform.index'));
 
         $this->assertCount(10 - $statement_count, Statement::all());
-        $this->assertCount(22 - $user_count, User::all());
+        $this->assertCount($total_users_start - $user_count, User::all());
         $this->assertCount($platform_count - 1, Platform::all());
     }
 }
