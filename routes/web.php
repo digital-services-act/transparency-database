@@ -57,7 +57,7 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
+//Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
 Route::get('/statement-search', [\App\Http\Controllers\StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
