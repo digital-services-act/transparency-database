@@ -98,7 +98,7 @@
 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_COUNTRY_LIST" name="countries_list" id="countries_list"
                        :options="$options['countries']" :default="$statement->countries_list"
                        select_all="European Union" select_item="Select a member state"
-                       enter_keyword="Enter a country name" required="false"/>
+                       enter_keyword="Enter a country name" />
 <hr>
 
 <x-ecl.datepicker :label="Statement::LABEL_STATEMENT_START_DATE"
