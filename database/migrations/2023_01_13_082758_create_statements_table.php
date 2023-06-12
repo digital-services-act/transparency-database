@@ -59,6 +59,22 @@ class CreateStatementsTable extends Migration
 
             $table->string('url')->nullable();
 
+            $table->index('created_at');
+            $table->index('deleted_at');
+            $table->index('decision_visibility');
+            $table->index('decision_monetary');
+            $table->index('decision_provision');
+            $table->index('decision_account');
+            $table->index('decision_ground');
+            $table->index('category');
+            $table->index('content_type');
+            $table->index('incompatible_content_illegal');
+            $table->index('source_type');
+            $table->index('automated_detection');
+            $table->index('automated_decision');
+            $table->index('user_id');
+            $table->index('method');
+
             $table->timestamps();
             $table->softDeletes();
 

@@ -24,36 +24,36 @@
                         <span class="ecl-link__label">Previous</span></a></li>
             @endif
 
-            @foreach ($elements as $element)
+{{--            @foreach ($elements as $element)--}}
 
-                @if (is_string($element))
-                    <li class="ecl-pagination__item" aria-disabled="true">{{ $element }}</li>
+{{--                @if (is_string($element))--}}
+{{--                    <li class="ecl-pagination__item" aria-disabled="true">{{ $element }}</li>--}}
 
-                @endif
+{{--                @endif--}}
 
-                @if (is_array($element))
-                    @foreach ($element as $page => $url)
-                        @if ($page == $paginator->currentPage())
-                            {{--                        <span aria-current="page">--}}
-                            {{--                                        <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5">{{ $page }}</span>--}}
-                            {{--                                    </span>--}}
-                            <li class="ecl-pagination__item ecl-pagination__item--current"><span
-                                    class="ecl-pagination__text ecl-pagination__text--summary"
-                                    aria-current="true">{{ $page }}</span><span
-                                    class="ecl-pagination__text ecl-pagination__text--full"
-                                    aria-current="true">Page {{ $page }}</span></li>
-                        @else
-                            {{--                        <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">--}}
-                            {{--                            {{ $page }}--}}
-                            {{--                        </a>--}}
-                            <li class="ecl-pagination__item"><a href="{{ $url }}"
-                                                                class="ecl-link ecl-link--standalone ecl-pagination__link"
-                                                                aria-label="{{ __('Go to page :page', ['page' => $page]) }}"">{{ $page }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                @endif
-            @endforeach
+{{--                @if (is_array($element))--}}
+{{--                    @foreach ($element as $page => $url)--}}
+{{--                        @if ($page == $paginator->currentPage())--}}
+{{--                            --}}{{--                        <span aria-current="page">--}}
+{{--                            --}}{{--                                        <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5">{{ $page }}</span>--}}
+{{--                            --}}{{--                                    </span>--}}
+{{--                            <li class="ecl-pagination__item ecl-pagination__item--current"><span--}}
+{{--                                    class="ecl-pagination__text ecl-pagination__text--summary"--}}
+{{--                                    aria-current="true">{{ $page }}</span><span--}}
+{{--                                    class="ecl-pagination__text ecl-pagination__text--full"--}}
+{{--                                    aria-current="true">Page {{ $page }}</span></li>--}}
+{{--                        @else--}}
+{{--                            --}}{{--                        <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">--}}
+{{--                            --}}{{--                            {{ $page }}--}}
+{{--                            --}}{{--                        </a>--}}
+{{--                            <li class="ecl-pagination__item"><a href="{{ $url }}"--}}
+{{--                                                                class="ecl-link ecl-link--standalone ecl-pagination__link"--}}
+{{--                                                                aria-label="{{ __('Go to page :page', ['page' => $page]) }}"">{{ $page }}</a>--}}
+{{--                            </li>--}}
+{{--                        @endif--}}
+{{--                    @endforeach--}}
+{{--                @endif--}}
+{{--            @endforeach--}}
 
             @if ($paginator->hasMorePages())
                 <li class="ecl-pagination__item ecl-pagination__item--next"><a href="{{ $paginator->nextPageUrl() }}"

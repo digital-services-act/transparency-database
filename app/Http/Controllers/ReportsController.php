@@ -28,7 +28,8 @@ class ReportsController extends Controller
 
         $your_count = Statement::where('user_id', $user_id)->count();
 
-        $total = Statement::all()->count();
+        $total = Statement::count();
+
         $total_twentyfour = Statement::where('created_at', '>=', Carbon::now()->subDays(1))->count();
 
         $title         = "Statements Created";
