@@ -62,7 +62,44 @@
     </ol>
 
 
+    <h3>Statements Created Last {{ $days_ago_max }} Days</h3>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <div class="ct-chart ct-perfect-fourth"></div>
+    <script>
+      var data = {
+        // A labels array that can contain any sort of values
+        labels: [{!! $date_labels !!}],
+        // Our series array that contains series objects or in this case series data arrays
+        series: [
+          [{!! $date_counts !!}]
+        ]
+      };
 
+      var options = {
+        seriesBarDistance: 5,
+        axisY: {
+          onlyInteger: true,
+        }
+      };
+
+      var responsiveOptions = [
+        ['screen and (max-width: 640px)', {
+          seriesBarDistance: 5,
+          axisX: {
+            labelInterpolationFnc: function (value) {
+              return value[0];
+            }
+          }
+        }]
+      ];
+
+
+      // Create a new line chart object where as first parameter we pass in a selector
+      // that is resolving to our chart container element. The Second parameter
+      // is the actual data object.
+      new Chartist.Bar('.ct-chart', data, options, responsiveOptions);
+    </script>
 
 
 

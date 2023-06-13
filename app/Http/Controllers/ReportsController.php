@@ -43,13 +43,42 @@ class ReportsController extends Controller
 
         //dd($days_count);
 
+
+        $date_labels = [];
+        $date_counts = [];
+
+        $days_ago_max = 14;
+        $i = 0;
+        while($i < $days_ago_max)
+        {
+            $date_counts[] = Statement::whereHas( 'platform',
+                function(Builder $subquery) use($platform_id) {
+                    $subquery->where('platforms.id', $platform_id);
+                }
+            )->where('created_at', '>=', Carbon::now()->subDays($i))
+                              ->where('created_at', '<', Carbon::now()->subDays($i-1))
+                              ->count();
+
+
+            $date_labels[] = $i % 2 == 0 ? Carbon::now()->subDays($i)->format('d-m-Y') : '';
+            $i++;
+        }
+
+
+        $date_labels = "'" . implode("','", $date_labels) . "'";
+        $date_counts = implode(',', $date_counts);
+
+
         $your_platform_total = Statement::whereHas('platform', function(Builder $subquery) use($platform_id) { $subquery->where('platforms.id', $platform_id); })->count();
         $total = Statement::all()->count();
 
         return view('reports.index', [
             'days_count' => $days_count,
             'total' => $total,
-            'your_platform_total' => $your_platform_total
+            'your_platform_total' => $your_platform_total,
+            'date_labels' => $date_labels,
+            'date_counts' => $date_counts,
+            'days_ago_max' => $days_ago_max
         ]);
     }
 }
