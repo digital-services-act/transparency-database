@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\StatementCreation;
 use App\Models\Statement;
 use Illuminate\Console\Command;
 
@@ -26,6 +27,10 @@ class GenerateStatements extends Command
      */
     public function handle(): void
     {
-        Statement::factory()->count($this->argument('amount'))->create();
+        for($cpt=0; $cpt < $this->argument('amount'); $cpt++){
+            StatementCreation::dispatch();
+        }
+
+
     }
 }
