@@ -43,7 +43,7 @@ class ReportsController extends Controller
                 ->join('platforms', 'platforms.id', '=', 'users.platform_id')
                 ->selectRaw('count(statements.id) as statements_count')
                 ->where('platforms.id', $platform_id)
-                ->where('statements.created_at', '>=', Carbon::now()->subDays($days_ago))
+                ->where('statements.created_at', '>=', Carbon::now()->subDays($days_ago)->format('Y-m-d 00:00:00'))
                 ->get()->first()->statements_count;
         }
 
@@ -61,8 +61,8 @@ class ReportsController extends Controller
                                ->join('platforms', 'platforms.id', '=', 'users.platform_id')
                                ->selectRaw('count(statements.id) as statements_count')
                                ->where('platforms.id', $platform_id)
-                               ->where('statements.created_at', '>=', Carbon::now()->subDays($i))
-                               ->where('statements.created_at', '<', Carbon::now()->subDays($i-1))
+                               ->where('statements.created_at', '>=', Carbon::now()->subDays($i)->format('Y-m-d 00:00:00'))
+                               ->where('statements.created_at', '<', Carbon::now()->subDays($i-1)->format('Y-m-d 00:00:00'))
                                ->get()->first()->statements_count;
 
 
