@@ -13,11 +13,6 @@
     <h1>{{ $platform_name }} Dashboard</h1>
 
     <div class="ecl-row">
-        @can('view logs')
-            <div class="ecl-col-4">
-                <a class="ecl-button ecl-button--primary" href="{{ route('logs') }}">Logs</a>
-            </div>
-        @endcan
         @can('view reports')
             <div class="ecl-col-4">
                 <a class="ecl-button ecl-button--primary" href="{{ route('reports') }}">Reports</a>
