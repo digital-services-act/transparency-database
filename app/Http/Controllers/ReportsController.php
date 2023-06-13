@@ -42,10 +42,11 @@ class ReportsController extends Controller
                 ->join('users', 'users.id', '=', 'statements.user_id')
                 ->join('platforms', 'platforms.id', '=', 'users.platform_id')
                 ->selectRaw('count(statements.id) as statements_count')
-                ->groupBy('users.platform_id')
+                ->where('platforms.id', $platform_id)
                 ->where('statements.created_at', '>=', Carbon::now()->subDays($days_ago))
-                ->get();
+                ->get()->first()->statements_count;
         }
+
 
 
         $date_labels = [];
@@ -55,25 +56,35 @@ class ReportsController extends Controller
         $i = 0;
         while($i < $days_ago_max)
         {
-            $date_counts[] = Statement::whereHas( 'platform',
-                function(Builder $subquery) use($platform_id) {
-                    $subquery->where('platforms.id', $platform_id);
-                }
-            )->where('created_at', '>=', Carbon::now()->subDays($i))
-                              ->where('created_at', '<', Carbon::now()->subDays($i-1))
-                              ->count();
+            $date_count = DB::table('statements')
+                               ->join('users', 'users.id', '=', 'statements.user_id')
+                               ->join('platforms', 'platforms.id', '=', 'users.platform_id')
+                               ->selectRaw('count(statements.id) as statements_count')
+                               ->where('platforms.id', $platform_id)
+                               ->where('statements.created_at', '>=', Carbon::now()->subDays($i))
+                               ->where('statements.created_at', '<', Carbon::now()->subDays($i-1))
+                               ->get()->first()->statements_count;
 
 
+            $date_counts[] = $date_count;
             $date_labels[] = $i % 2 == 0 ? Carbon::now()->subDays($i)->format('d-m-Y') : '';
             $i++;
         }
+
 
 
         $date_labels = "'" . implode("','", $date_labels) . "'";
         $date_counts = implode(',', $date_counts);
 
 
-        $your_platform_total = Statement::whereHas('platform', function(Builder $subquery) use($platform_id) { $subquery->where('platforms.id', $platform_id); })->count();
+        $your_platform_total = DB::table('statements')
+                                 ->join('users', 'users.id', '=', 'statements.user_id')
+                                 ->join('platforms', 'platforms.id', '=', 'users.platform_id')
+                                 ->selectRaw('count(statements.id) as statements_count')
+                                 ->where('platforms.id', $platform_id)
+                                 ->get()->first()->statements_count;
+
+
         $total = Statement::count();
 
         return view('reports.index', [
