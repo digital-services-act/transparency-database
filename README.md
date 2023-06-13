@@ -5,7 +5,7 @@ The DSA Transparency database collects and analyzes statements of reasons, helpi
 
 Automated Submissions and Search Using the API
 ==============================================
-The main [Transparency Database](https://digital.service-act.eu/) has an API that allows individuals and organizations that receive large numbers of notices to submit them without using the web interface. The API also provides an easy way for researchers to search the database. Members of the public can test the database, but will likely need to request an API key from the DSA team to receive a token that provides full access. To learn about the capabilities of the API, you can consult the [API documentation](https://wandering-mountain-xa4vca0rl0ff.vapor-farm-g1.com/dashboard/page/api-documentation).
+The main [Transparency Database](https://transparency.dsa.ec.europa.eu/) has an API that allows individuals and organizations that receive large numbers of notices to submit them without using the web interface. The API also provides an easy way for researchers to search the database. Members of the public can test the database, but will likely need to request an API key from the DSA team to receive a token that provides full access. To learn about the capabilities of the API, you can consult the [API documentation](https://transparency.dsa.ec.europa.eu/page/api-documentation).
 
 Development
 ===========
@@ -26,7 +26,7 @@ Development
 Begin by cloning this repository to your machine, and installing Composer dependencies.
 
 ```bash
-git clone https://github.com/DG-CNECT/dsa-module2
+git clone https://github.com/digital-services-act/transparency-database
 cd dsa-module2 && composer install 
 ```
 
@@ -75,7 +75,7 @@ DSA Transparency API
 ====================
 You can search the database and, if you have a contributor token, add to the database using our API.
 
-The DSA Transparency API is documented here: https://wandering-mountain-xa4vca0rl0ff.vapor-farm-g1.com/dashboard/page/api-documentation
+The DSA Transparency API is documented here: https://transparency.dsa.ec.europa.eu/page/api-documentation
 
 License
 =======
