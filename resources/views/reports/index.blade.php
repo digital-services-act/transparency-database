@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <h2 id="graphs">Your Platform Statements over the Last Year</h2>
+    <h2 id="graphs">Your Platform Statements Over Time</h2>
 
     <ol class="ecl-timeline" data-ecl-auto-init="Timeline" data-ecl-timeline="">
         @foreach($days_count as $days_ago => $count)
@@ -51,8 +51,8 @@
         <li class="ecl-timeline__item" id="{{ $days_ago }}">
             <div class="ecl-timeline__tooltip">
                 <div class="ecl-timeline__tooltip-arrow"></div>
-                @if($loop->first)<div class="ecl-timeline__title">Statements Created</div>@endif
-                <div class="ecl-timeline__label">{{ $days_ago }} @if(!$loop->first)days @else day @endif</div>
+{{--                @if($loop->first)<div class="ecl-timeline__title">Statements Created</div>@endif--}}
+                <div class="ecl-timeline__label">last @if(!$loop->first){{ $days_ago }} days @else day @endif</div>
                 <div class="ecl-timeline__content">{{ $count }}</div>
             </div>
         </li>
