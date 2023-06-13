@@ -162,4 +162,17 @@ class UserController extends Controller
 
         return compact('platforms', 'roles');
     }
+
+    public function requestPlatformForm()
+    {
+        $options = $this->prepareOptions();
+        return view('user.request-platform', compact(
+            'options'
+        ));
+    }
+
+    public function requestPlatform()
+    {
+
+    }
 }

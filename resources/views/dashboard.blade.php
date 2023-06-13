@@ -12,6 +12,13 @@
 
     <h1>{{ $platform_name }} Dashboard</h1>
 
+    @if(!$platform_name)
+        <p class="ecl-u-type-paragraph">
+            Your account does not appear to be long to a platform
+            <a class="ecl-button ecl-button--primary" href="{{ route('user.request.platform.form') }}">Request to be in a Platform</a>
+        </p>
+    @endif
+
     <div class="ecl-row">
         @can('view logs')
             <div class="ecl-col-4">
