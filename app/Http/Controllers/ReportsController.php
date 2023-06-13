@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class ReportsController extends Controller
@@ -36,12 +37,15 @@ class ReportsController extends Controller
             1080
         ];
         $days_count = [];
-        foreach ($days as $days_ago)
-        {
-            $days_count[$days_ago] = Statement::whereHas('platform', function(Builder $subquery) use($platform_id) { $subquery->where('platforms.id', $platform_id); })->where('created_at', '>=', Carbon::now()->subDays($days_ago))->count();
+        foreach ($days as $days_ago) {
+            $days_count[$days_ago] = DB::table('statements')
+                ->join('users', 'users.id', '=', 'statements.user_id')
+                ->join('platforms', 'platforms.id', '=', 'users.platform_id')
+                ->selectRaw('count(statements.id) as statements_count')
+                ->groupBy('users.platform_id')
+                ->where('statements.created_at', '>=', Carbon::now()->subDays($days_ago))
+                ->get();
         }
-
-        //dd($days_count);
 
 
         $date_labels = [];
@@ -70,7 +74,7 @@ class ReportsController extends Controller
 
 
         $your_platform_total = Statement::whereHas('platform', function(Builder $subquery) use($platform_id) { $subquery->where('platforms.id', $platform_id); })->count();
-        $total = Statement::all()->count();
+        $total = Statement::count();
 
         return view('reports.index', [
             'days_count' => $days_count,
