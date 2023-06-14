@@ -177,14 +177,14 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
     public const STATEMENT_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
-    public const STATEMENT_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (race, gender identity, sexual orientation, religion, disability)';
+    public const STATEMENT_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (e.g. race, gender identity, sexual orientation, religion, disability)';
     public const STATEMENT_CATEGORY_COUNTERFEIT = 'Counterfeit goods (e.g. fake perfume, fake designer brands)';
     public const STATEMENT_CATEGORY_FRAUD = 'Scams, frauds, subscription traps or other illegal commercial practices';
-    public const STATEMENT_CATEGORY_TERRORISM = 'Terrorist content (extremists, hate groups)';
-    public const STATEMENT_CATEGORY_CHILD_SAFETY = 'Child safety (child nudity, sexual abuse, unsolicited contact with minors)';
-    public const STATEMENT_CATEGORY_NON_CONSENT = 'Non-consensual nudity (hidden camera, deepfake, revenge porn, upskirts)';
-    public const STATEMENT_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (denying tragic events, synthetic media, false context)';
-    public const STATEMENT_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (spam, platform manipulation)';
+    public const STATEMENT_CATEGORY_TERRORISM = 'Terrorist content (e.g. extremists, hate groups)';
+    public const STATEMENT_CATEGORY_CHILD_SAFETY = 'Child safety (e.g. child nudity, sexual abuse, unsolicited contact with minors)';
+    public const STATEMENT_CATEGORY_NON_CONSENT = 'Non-consensual nudity (e.g. hidden camera, deepfake, revenge porn, upskirts)';
+    public const STATEMENT_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (e.g. denying tragic events, synthetic media, false context)';
+    public const STATEMENT_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (e.g. spam, platform manipulation)';
     public const STATEMENT_CATEGORY_UNCATEGORISED = 'Uncategorised';
     public const STATEMENT_CATEGORIES = [
         'STATEMENT_CATEGORY_PIRACY' => Statement::STATEMENT_CATEGORY_PIRACY,
