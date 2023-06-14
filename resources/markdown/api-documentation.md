@@ -28,15 +28,6 @@ __Each time you generate a new token the old token becomes invalid!__
 <x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies calls to the API as
 you! Do not share this token with other entities. They will be able to impersonate and act as you!" close="" />
 
-## Sandbox
-
-We highly encourage all users of the API to first test and try out their API code using the sandbox version of
-the application. This is a copy of the application and it is reset and blanked out each week. If your code if
-is working there, then the only difference to the production version will be the URL endpoint and
-the token used.
-
-<a href="{{ env('SANDBOX_URL') }}" target="_blank">SANDBOX VERSION</a>
-
 ## Creating a Statement
 
 To create a statement of reason using the API you will need to make a
@@ -68,9 +59,9 @@ Example JSON payload body:
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
     "content_type": "CONTENT_TYPE_VIDEO",
     "category": "STATEMENT_CATEGORY_FRAUD",
-    "illegal_content_legal_ground": "illegal content legal ground",
+    "illegal_content_legal_ground": "illegal content legal grounds",
     "illegal_content_explanation": "illegal content explanation",
-    "incompatible_content_ground": "incompatible content ground",
+    "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
     "countries_list": [
@@ -102,7 +93,7 @@ You will also receive a payload with the statement as created in the database:
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-    "incompatible_content_ground": "incompatible content ground",
+    "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
     "content_type": "CONTENT_TYPE_VIDEO",
@@ -233,7 +224,7 @@ The value provided must be one of the following:
 
 This is a required textual field to describe the facts and circumstances relied on in taking the decision.
 
-### Decision Ground (decision_ground)
+### Decision Grounds (decision_ground)
 
 This is a required field and tells us the basis on which the decision was taken.
 
@@ -248,7 +239,7 @@ This is a required field and tells us the basis on which the decision was taken.
 @endphp
 </ul>
 
-### Illegal Content Legal Ground (illegal_content_legal_ground)
+### Illegal Content Legal Grounds (illegal_content_legal_ground)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 It is the legal ground relied on.
@@ -267,7 +258,7 @@ It is the reference to contractual ground.
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 This is a small text that explains why the content is
-considered as incompatible on that ground.
+considered as incompatible on that grounds.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
 
@@ -293,8 +284,8 @@ The value provided must be one of the following:
 
 ### Content Type Other (content_type_other)
 
-This is required if CONTENT_TYPE_OTHER was the content_type. 
-It is the other type of content.
+This is required if CONTENT_TYPE_OTHER was the content_type.
+It is a content type that is not text, video or an image.
 
 ### Category (category)
 
@@ -315,7 +306,7 @@ The value provided must be one of the following:
 
 ### Countries List (countries_list)
 
-This is a required array of countries involved. Each value must be the 2 letter iso code
+This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
 for the country and the countries must be EU countries.
 
 Allowed values are:
@@ -376,5 +367,5 @@ This indicates to us that decision carried out automatically.
 
 ### URL (url)
 
-This is an required attribute.
+This is a required attribute.
 This contains the URL to the data that has been moderated.
