@@ -242,17 +242,17 @@ This is a required field and tells us the basis on which the decision was taken.
 ### Illegal Content Legal Grounds (illegal_content_legal_ground)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
-It is the legal ground relied on.
+It is the legal grounds relied on.
 
 ### Illegal Content Explanation (illegal_content_explanation)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 This is a small text that explains why the content was illegal.
 
-### Incompatible Content Ground (incompatible_content_ground)
+### Incompatible Content Grounds (incompatible_content_ground)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
-It is the reference to contractual ground.
+It is the reference to contractual grounds.
 
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
