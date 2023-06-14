@@ -35,7 +35,7 @@ class StatementController extends Controller
         $statements = $this->statement_query_service->query($request->query());
 
         $options = $this->prepareOptions();
-        
+
         $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
         $total = $statements->total();
 
