@@ -65,7 +65,7 @@ class StatementQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        $ids = Statement::search($filter_value)->take(200)->get()->pluck('id')->toArray();
+        $ids = Statement::search($filter_value)->take(200)->raw()['results']->pluck('id')->toArray();
         $query->whereIn('id', $ids);
     }
 

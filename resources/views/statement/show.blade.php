@@ -6,7 +6,7 @@
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Statements" url="{{ route('statement.index') }}"/>
-    <x-ecl.breadcrumb label="Statement details: {{$statement->title}}"/>
+    <x-ecl.breadcrumb label="Statement details: {{$statement->uuid}}"/>
 @endsection
 
 @section('content')

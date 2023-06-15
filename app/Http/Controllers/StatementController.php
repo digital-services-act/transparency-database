@@ -36,7 +36,7 @@ class StatementController extends Controller
 
         $options = $this->prepareOptions();
 
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
+        $statements = $statements->orderBy('id', 'DESC')->paginate(50)->withQueryString();
         $total = $statements->total();
 
         $similarity_results = null;
