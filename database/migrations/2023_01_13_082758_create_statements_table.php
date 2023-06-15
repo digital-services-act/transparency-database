@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Statement;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,20 +19,20 @@ class CreateStatementsTable extends Migration
 
             $table->string('uuid', 36)->index('uuidindex');
 
-            $table->enum('decision_visibility', array_keys(\App\Models\Statement::DECISION_VISIBILITIES))->nullable();
+            $table->enum('decision_visibility', array_keys(Statement::DECISION_VISIBILITIES))->nullable();
             $table->string('decision_visibility_other', 255)->nullable();
 
-            $table->enum('decision_monetary', array_keys(\App\Models\Statement::DECISION_MONETARIES))->nullable();
+            $table->enum('decision_monetary', array_keys(Statement::DECISION_MONETARIES))->nullable();
             $table->string('decision_monetary_other', 255)->nullable();
 
-            $table->enum('decision_provision', array_keys(\App\Models\Statement::DECISION_PROVISIONS))->nullable();
-            $table->enum('decision_account', array_keys(\App\Models\Statement::DECISION_ACCOUNTS))->nullable();
+            $table->enum('decision_provision', array_keys(Statement::DECISION_PROVISIONS))->nullable();
+            $table->enum('decision_account', array_keys(Statement::DECISION_ACCOUNTS))->nullable();
 
-            $table->enum('decision_ground', array_keys(\App\Models\Statement::DECISION_GROUNDS));
+            $table->enum('decision_ground', array_keys(Statement::DECISION_GROUNDS));
 
-            $table->enum('category', array_keys(\App\Models\Statement::STATEMENT_CATEGORIES));
+            $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
 
-            $table->enum('content_type', array_keys(\App\Models\Statement::CONTENT_TYPES));
+            $table->enum('content_type', array_keys(Statement::CONTENT_TYPES));
             $table->string('content_type_other', 255)->nullable();
 
             $table->string('illegal_content_legal_ground', 255)->nullable();
@@ -39,7 +40,7 @@ class CreateStatementsTable extends Migration
 
             $table->string('incompatible_content_ground', 255)->nullable();
             $table->string('incompatible_content_explanation',500)->nullable();
-            $table->enum('incompatible_content_illegal', \App\Models\Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
+            $table->enum('incompatible_content_illegal', Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
 
             $table->string('countries_list', 255)->nullable();
 
@@ -48,11 +49,11 @@ class CreateStatementsTable extends Migration
 
             $table->string('decision_facts', 500);
 
-            $table->enum('source_type', array_keys(\App\Models\Statement::SOURCE_TYPES));
+            $table->enum('source_type', array_keys(Statement::SOURCE_TYPES));
             $table->string('source', 255)->nullable();
 
-            $table->enum('automated_detection', \App\Models\Statement::AUTOMATED_DETECTIONS);
-            $table->enum('automated_decision', \App\Models\Statement::AUTOMATED_DECISIONS);
+            $table->enum('automated_detection', Statement::AUTOMATED_DETECTIONS);
+            $table->enum('automated_decision', Statement::AUTOMATED_DECISIONS);
 
             $table->integer('user_id');
             $table->string('method')->default('API');

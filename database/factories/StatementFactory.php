@@ -26,8 +26,8 @@ class StatementFactory extends Factory
     public function definition()
     {
 
-        $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
-        $start_date = $create_date;
+        $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
+        $start_date = $create_date->clone();
         $end_date = $start_date->addDays(90);
 
         $create_date = $create_date->format('Y-n-j') . ' 00:00:00';
