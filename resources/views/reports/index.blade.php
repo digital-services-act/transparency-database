@@ -43,65 +43,36 @@
         </div>
     </div>
 
-    <h2 id="graphs">Your Platform Statements Over Time</h2>
+
+    <h2 class="ecl-u-type-heading-2">Your Platform Statements Created for the Last {{ $start_days_ago }} Days</h2>
+    <ul class="ecl-unordered-list" style="list-style-type: none;">
+        @foreach($date_counts as $date_count)
+            <li class="ecl-unordered-list__item">
+                <span style="width: 100px; display: inline-block;">{{ $date_count['date']->format('Y-m-d') }}</span>
+                <span style="width: 500px; display: inline-block;">
+                    <span style="background-color: #004494; color: white; text-align: center; width: {{ $date_count['percentage'] }}%; display: inline-block;">{{ $date_count['count'] }}</span>
+                </span>
+            </li>
+        @endforeach
+    </ul>
+
+
+    <h2 class="ecl-u-type-heading-2" id="graphs">Your Platform Statements Created in the ...</h2>
 
     <ol class="ecl-timeline" data-ecl-auto-init="Timeline" data-ecl-timeline="">
         @foreach($days_count as $days_ago => $count)
 
-        <li class="ecl-timeline__item" id="{{ $days_ago }}">
-            <div class="ecl-timeline__tooltip">
-                <div class="ecl-timeline__tooltip-arrow"></div>
-{{--                @if($loop->first)<div class="ecl-timeline__title">Statements Created</div>@endif--}}
-                <div class="ecl-timeline__label">last @if(!$loop->first){{ $days_ago }} days @else day @endif</div>
-                <div class="ecl-timeline__content">{{ $count }}</div>
-            </div>
-        </li>
+            <li class="ecl-timeline__item" id="{{ $days_ago }}">
+                <div class="ecl-timeline__tooltip">
+                    <div class="ecl-timeline__tooltip-arrow"></div>
+                    <div class="ecl-timeline__label">last @if(!$loop->first){{ $days_ago }} days @else day @endif</div>
+                    <div class="ecl-timeline__content">{{ $count }}</div>
+                </div>
+            </li>
 
         @endforeach
 
     </ol>
-
-
-    <h3>Statements Created Last {{ $days_ago_max }} Days</h3>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
-    <div class="ct-chart ct-perfect-fourth"></div>
-    <script>
-      var data = {
-        // A labels array that can contain any sort of values
-        labels: [{!! $date_labels !!}],
-        // Our series array that contains series objects or in this case series data arrays
-        series: [
-          [{!! $date_counts !!}]
-        ]
-      };
-
-      var options = {
-        seriesBarDistance: 5,
-        axisY: {
-          onlyInteger: true,
-        }
-      };
-
-      var responsiveOptions = [
-        ['screen and (max-width: 640px)', {
-          seriesBarDistance: 5,
-          axisX: {
-            labelInterpolationFnc: function (value) {
-              return value[0];
-            }
-          }
-        }]
-      ];
-
-
-      // Create a new line chart object where as first parameter we pass in a selector
-      // that is resolving to our chart container element. The Second parameter
-      // is the actual data object.
-      new Chartist.Bar('.ct-chart', data, options, responsiveOptions);
-    </script>
-
-
 
 
 @endsection

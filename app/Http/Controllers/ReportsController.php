@@ -4,26 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Models\Statement;
 
+use App\Services\StatementStatsService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 
 class ReportsController extends Controller
 {
+    protected StatementStatsService $statement_stats_service;
+
+    public function __construct(StatementStatsService $statement_stats_service)
+    {
+        $this->statement_stats_service = $statement_stats_service;
+    }
+
     /**
      * @throws Exception
      */
     public function index(Request $request): Factory|View|Application
     {
-        $platform_id = $request->user()->platform->id;
+        $platform = $request->user()->platform;
 
         $days = [
             1,
@@ -39,66 +44,25 @@ class ReportsController extends Controller
         ];
         $days_count = [];
         foreach ($days as $days_ago) {
-            $days_count[$days_ago] = DB::table('statements')
-                ->join('users', 'users.id', '=', 'statements.user_id')
-                ->join('platforms', 'platforms.id', '=', 'users.platform_id')
-                ->selectRaw('count(statements.id) as statements_count')
-                ->where('platforms.id', $platform_id)
-                ->where('statements.created_at', '>=', Carbon::now()->subDays($days_ago)->format('Y-m-d 00:00:00'))
-                ->get()->first()->statements_count;
+            $days_count[$days_ago] = $this->statement_stats_service->countForPlatformSince($platform, Carbon::now()->subDays($days_ago));
         }
 
 
+        $start_days_ago = 14;
+        $start = Carbon::now()->subDays($start_days_ago);
+        $end = Carbon::now();
+        $date_counts = $this->statement_stats_service->dayCountsForPlatformAndRange($platform, $start, $end);
 
+        $your_platform_total = $this->statement_stats_service->countForPlatform($platform);
 
-        $date_counts = [];
-
-        $days_ago_max = 14;
-        $i = 0;
-
-        /** @var Collection $days_result */
-        $days_result = DB::table('statements')
-          ->join('users', 'users.id', '=', 'statements.user_id')
-          ->join('platforms', 'platforms.id', '=', 'users.platform_id')
-          ->selectRaw('count(statements.id) as statements_count, DATE(statements.created_at) as created_at_date')
-          ->groupByRaw('DATE(statements.created_at)')
-          ->where('platforms.id', $platform_id)
-          ->where('statements.created_at', '>=', Carbon::now()->subDays($days_ago_max)->format('Y-m-d 00:00:00'))
-          ->get();
-
-
-
-        while($i < $days_ago_max)
-        {
-            $d = Carbon::now()->subDays($i)->format('Y-m-d');
-            $c = $days_result->firstWhere('created_at_date', $d)->statements_count ?? 0;
-            $date_counts[$d] = $c;
-            $i++;
-        }
-
-
-
-        $date_labels = "'" . implode("','", array_keys($date_counts)) . "'";
-        $date_counts = implode(',', array_values($date_counts));
-
-
-        $your_platform_total = DB::table('statements')
-                                 ->join('users', 'users.id', '=', 'statements.user_id')
-                                 ->join('platforms', 'platforms.id', '=', 'users.platform_id')
-                                 ->selectRaw('count(statements.id) as statements_count')
-                                 ->where('platforms.id', $platform_id)
-                                 ->get()->first()->statements_count;
-
-
-        $total = Statement::count();
+        $total = $this->statement_stats_service->totalStatements();
 
         return view('reports.index', [
             'days_count' => $days_count,
             'total' => $total,
             'your_platform_total' => $your_platform_total,
-            'date_labels' => $date_labels,
             'date_counts' => $date_counts,
-            'days_ago_max' => $days_ago_max
+            'start_days_ago' => $start_days_ago,
         ]);
     }
 }
