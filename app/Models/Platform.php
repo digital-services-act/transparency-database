@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Czim\Paperclip\Contracts\AttachableInterface;
-use Czim\Paperclip\Model\PaperclipTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Platform extends Model implements AttachableInterface
+class Platform extends Model
 {
-    use HasFactory, PaperclipTrait, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     public const LABEL_DSA_TEAM = 'DSA Team';
 
@@ -37,12 +35,9 @@ class Platform extends Model implements AttachableInterface
         'id'
     ];
 
-
-
-
+    
     public function __construct(array $attributes = [])
     {
-        $this->hasAttachedFile('icon');
         parent::__construct($attributes);
     }
 

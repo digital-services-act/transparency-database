@@ -214,8 +214,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\VaporUiServiceProvider::class,
 
-
-        Czim\Paperclip\Providers\PaperclipServiceProvider::class,
         MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class
 
     ],
