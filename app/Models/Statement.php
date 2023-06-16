@@ -8,13 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+
 use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable, LogsActivity, SoftDeletes;
+    use HasFactory, Searchable, SoftDeletes;
 
 
     public const METHOD_FORM = 'FORM';
@@ -244,11 +243,6 @@ class Statement extends Model
         'permalink',
         'self'
     ];
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults();
-    }
 
     protected static function boot()
     {
