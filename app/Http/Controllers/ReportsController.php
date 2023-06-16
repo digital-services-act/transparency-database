@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Statement;
-
 use App\Services\StatementStatsService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -11,8 +9,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-
 
 class ReportsController extends Controller
 {
@@ -38,9 +34,7 @@ class ReportsController extends Controller
             60,
             90,
             180,
-            360,
-            720,
-            1080
+            365
         ];
         $days_count = [];
         foreach ($days as $days_ago) {

@@ -37,6 +37,10 @@ class StatementStatsService
             }
             $start->addDay();
         }
+        if ($highest < 1)
+        {
+            $highest = 1;
+        }
         foreach ($date_counts as $index => $date_count)
         {
             $date_counts[$index]['percentage'] = (int) ceil( ($date_count['count'] / $highest) * 100 );

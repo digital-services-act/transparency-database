@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use stdClass;
@@ -95,10 +96,18 @@ class StatementController extends Controller
     }
 
     /**
-     * @return Factory|View|Application
+     * @param Request $request
+     *
+     * @return Factory|View|Application|RedirectResponse
      */
-    public function create(): Factory|View|Application
+    public function create(Request $request): Factory|View|Application|RedirectResponse
     {
+        // If you don't have a platform, we don't want you here.
+        if(!$request->user()->platform)
+        {
+            return back()->withErrors('Your account is not associated with a platform.');
+        }
+
         $statement = new Statement();
         $statement->countries_list = [];
 
