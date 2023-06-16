@@ -14,7 +14,7 @@ use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable, LogsActivity, SoftDeletes;
+    use HasFactory, Searchable, SoftDeletes;
 
 
     public const METHOD_FORM = 'FORM';
@@ -268,12 +268,28 @@ class Statement extends Model
         return 'statements_index';
     }
 
+//    /**
+//     * Get the indexable data array for the model.
+//     *
+//     * @return array<string, mixed>
+//     */
+//    public function toSearchableArray(): array
+//    {
+//        $array = $this->toArray();
+//
+//        // Customize the data array...
+//
+//        return $array;
+//    }
+
     public function toSearchableArray()
     {
         return [
-            'illegal_content_explanation' => $this->illegal_content_explanation,
-            'incompatible_content_explanation' => $this->incompatible_content_explanation,
-            'decision_facts' => $this->decision_facts
+//            'illegal_content_explanation' => $this->illegal_content_explanation,
+//            'incompatible_content_explanation' => $this->incompatible_content_explanation,
+            'decision_facts' => $this->decision_facts,
+//            'created_at' => $this->created_at,
+//            'decision_visibility' => $this->decision_visibility,
         ];
     }
 

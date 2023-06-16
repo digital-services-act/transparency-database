@@ -35,10 +35,10 @@ class CreateStatementsTable extends Migration
             $table->string('content_type_other', 255)->nullable();
 
             $table->string('illegal_content_legal_ground', 255)->nullable();
-            $table->string('illegal_content_explanation',500)->nullable();
+            $table->string('illegal_content_explanation',500)->fulltext()->nullable();
 
             $table->string('incompatible_content_ground', 255)->nullable();
-            $table->string('incompatible_content_explanation',500)->nullable();
+            $table->string('incompatible_content_explanation',500)->fulltext()->nullable();
             $table->enum('incompatible_content_illegal', \App\Models\Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
 
             $table->string('countries_list', 255)->nullable();
@@ -46,7 +46,7 @@ class CreateStatementsTable extends Migration
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
 
-            $table->string('decision_facts', 500);
+            $table->string('decision_facts', 500)->fulltext();
 
             $table->enum('source_type', array_keys(\App\Models\Statement::SOURCE_TYPES));
             $table->string('source', 255)->nullable();

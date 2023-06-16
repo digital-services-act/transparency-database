@@ -133,9 +133,10 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY', null),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes'=> ['id', 'name', 'email'],
-            // ],
+             \App\Models\Statement::class => [
+                 'filterableAttributes'=> ['illegal_content_explanation','incompatible_content_explanation','decision_facts' ],
+                 'sortableAttributes'=> ['created_at'],
+             ],
         ],
     ],
 

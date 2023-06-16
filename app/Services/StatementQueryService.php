@@ -34,24 +34,55 @@ class StatementQueryService
         'source_type'
     ];
 
+
+//    /**
+//     * @param array $filters
+//     *
+//     * @return Builder
+//     */
+//    public function query(array $filters): Builder
+//    {
+//        $statements = Statement::query();
+//        foreach ($this->allowed_filters as $filter_key) {
+//            if (isset($filters[$filter_key]) && $filters[$filter_key]) {
+//                $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
+//                try {
+//                    $this->$method($statements, $filters[$filter_key]);
+//                } catch (\TypeError|\Exception $e) {
+//                    Log::error("Statement Query Service Error: " . $e->getMessage());
+//                }
+//            }
+//        }
+//
+//        return $statements;
+//    }
+
     /**
      * @param array $filters
      *
-     * @return Builder
+     * @return \Laravel\Scout\Builder
      */
-    public function query(array $filters): Builder
+    public function query(array $filters): \Laravel\Scout\Builder
     {
-        $statements = Statement::query();
-        foreach ($this->allowed_filters as $filter_key) {
-            if (isset($filters[$filter_key]) && $filters[$filter_key]) {
-                $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                try {
-                    $this->$method($statements, $filters[$filter_key]);
-                } catch (\TypeError|\Exception $e) {
-                    Log::error("Statement Query Service Error: " . $e->getMessage());
-                }
-            }
-        }
+
+
+        $statements = Statement::search($filters['s'] ?? '');
+
+//            dd($statements);
+//            ->query(function ($builder) use ($filters) {
+//                foreach ($this->allowed_filters as $filter_key) {
+//                    if (isset($filters[$filter_key]) && $filters[$filter_key]) {
+//                        $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
+//                        try {
+//                            $this->$method($builder, $filters[$filter_key]);
+//                        } catch (\TypeError|\Exception $e) {
+//                            Log::error("Statement Query Service Error: " . $e->getMessage());
+//                        }
+//                    }
+//                }
+//            })
+            ;
+
 
         return $statements;
     }
@@ -66,9 +97,18 @@ class StatementQueryService
     private function applySFilter(Builder $query, string $filter_value): void
     {
         // Turn this on when you want to search the SOR field.
-        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();
-        $query->whereIn('id', $ids);
+//        $ids = Statement::search($filter_value)->get();
+//        $query->whereFullText(['illegal_content_explanation','incompatible_content_explanation','decision_facts'], $filter_value,[],'or')->get();
+
+//        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();
+//        $query->whereIn('id', $ids);
+
+//        $ids = Statement::search($filter_value)->take(200)->get()->pluck('id')->toArray();
+//        $query->whereIn('id', $ids);
+
     }
+
+
 
     /**
      * @param Builder $query
