@@ -85,6 +85,9 @@
         ECL.autoInit();
     @endif
 </script>
+@if(env('SITEID', false) && env('SITEPATH', false))
+<script type="application/json">{"utility":"analytics","siteID":"{{ env('SITEID') }}","sitePath":["{{ env('SITEPATH') }}"],"instance":"ec"}</script>
+@endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
 </body>
 </html>
