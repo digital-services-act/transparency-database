@@ -42,7 +42,7 @@ class ReportsController extends Controller
         }
 
 
-        $start_days_ago = 14;
+        $start_days_ago = 20;
         $start = Carbon::now()->subDays($start_days_ago);
         $end = Carbon::now();
         $date_counts = $this->statement_stats_service->dayCountsForPlatformAndRange($platform, $start, $end);

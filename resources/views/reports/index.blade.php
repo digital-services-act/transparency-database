@@ -44,6 +44,73 @@
     </div>
 
 
+    <div id="apechart"></div>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+      var options = {
+        chart: {
+          type: "line"
+        },
+        colors:['#004494', '#FFD617', '#404040', '#BFD0E4', '#FFF4BB', '#D9D9D9'],
+        series: [
+          {
+            name: 'statements',
+            data: [
+              {{ implode(',', array_column($date_counts, 'count')) }}
+            ]
+          },
+          {{--{--}}
+          {{--  name: 'statementsii',--}}
+          {{--  data: [--}}
+          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
+          {{--  ]--}}
+          {{--},--}}
+          {{--{--}}
+          {{--  name: 'statementsiii',--}}
+          {{--  data: [--}}
+          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
+          {{--  ]--}}
+          {{--},--}}
+          {{--{--}}
+          {{--  name: 'statementsiv',--}}
+          {{--  data: [--}}
+          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
+          {{--  ]--}}
+          {{--},--}}
+          {{--{--}}
+          {{--  name: 'statementsv',--}}
+          {{--  data: [--}}
+          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
+          {{--  ]--}}
+          {{--},--}}
+          {{--{--}}
+          {{--  name: 'statementsvi',--}}
+          {{--  data: [--}}
+          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
+          {{--  ]--}}
+          {{--},--}}
+
+        ],
+        xaxis: {
+          labels: {
+            rotate: -45
+          },
+          categories: [
+            {!! implode(',', array_map(function($d, $i){return "'" . $d['date']->format('m-d') . "'";}, $date_counts, array_keys($date_counts))) !!}
+          ]
+        },
+        yaxis: {
+          title: {
+            text: "Statements"
+          }
+        },
+      }
+
+      var chart = new ApexCharts(document.querySelector("#apechart"), options);
+
+      chart.render();
+    </script>
+
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
@@ -179,6 +246,9 @@
         @endforeach
 
     </ol>
+
+
+
 
 
 @endsection
