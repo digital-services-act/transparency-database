@@ -44,17 +44,123 @@
     </div>
 
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Date', 'Statements'],
+          @foreach($date_counts as $date_count)
+          ['{{ $date_count['date']->format('Y-m-d') }}',  {{ $date_count['count'] }}],
+          @endforeach
+        ]);
+
+        var options = {
+          title: 'Your Platform Statements Created for the Last {{ $start_days_ago }} Days',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <div id="chart" style="width: 900px; height: 500px"></div>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawCChart);
+
+      function drawCChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Date', 'Statements'],
+            @foreach($date_counts as $date_count)
+              ['{{ $date_count['date']->format('Y-m-d') }}',  {{ $date_count['count'] }}],
+            @endforeach
+        ]);
+
+        var options = {
+          title: 'Your Platform Statements Created for the Last {{ $start_days_ago }} Days',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('cchart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <div id="cchart" style="width: 900px; height: 500px"></div>
+
+    <script>
+
+
+      google.charts.load('current', {packages: ['corechart', 'bar']});
+      google.charts.setOnLoadCallback(drawBasic);
+
+      function drawBasic() {
+        var data = google.visualization.arrayToDataTable([
+          ['Date', 'Statements'],
+            @foreach($date_counts as $date_count)
+              ['{{ $date_count['date']->format('Y-m-d') }}',  {{ $date_count['count'] }}],
+            @endforeach
+
+        ]);
+
+        var options = {
+          title: 'Your Platform Statements Created for the Last {{ $start_days_ago }} Days',
+          chartArea: {width: '50%'},
+          hAxis: {
+            title: 'Date',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Statements'
+          },
+          orientation: 'vertical'
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('bchart'));
+        chart.draw(data, options);
+      }
+    </script>
+    <div id="bchart" style="width: 900px; height: 500px"></div>
+
+
+
     <h2 class="ecl-u-type-heading-2">Your Platform Statements Created for the Last {{ $start_days_ago }} Days</h2>
+
+    <ul class="ecl-unordered-list" style="list-style-type: none; rotate: -90deg; position: relative; top: -250px; left: -220px; padding-bottom: 200px;">
+        @foreach($date_counts as $date_count)
+            <li class="ecl-unordered-list__item">
+                <span style="width: 100px; display: inline-block;">{{ $date_count['date']->format('Y-m-d') }}</span>
+                <span style="width: 500px; display: inline-block;">
+                    <span style="background-color: #004494; color: white; text-align: center; width: {{ $date_count['percentage'] }}%; display: inline-block;">
+                        <span style="rotate: 90deg; display: block;">{{ $date_count['count'] }}</span>
+                    </span>
+                </span>
+            </li>
+        @endforeach
+    </ul>
+
+    <h2 class="ecl-u-type-heading-2">Your Platform Statements Created for the Last {{ $start_days_ago }} Days</h2>
+
     <ul class="ecl-unordered-list" style="list-style-type: none;">
         @foreach($date_counts as $date_count)
             <li class="ecl-unordered-list__item">
                 <span style="width: 100px; display: inline-block;">{{ $date_count['date']->format('Y-m-d') }}</span>
                 <span style="width: 500px; display: inline-block;">
-                    <span style="background-color: #004494; color: white; text-align: center; width: {{ $date_count['percentage'] }}%; display: inline-block;">{{ $date_count['count'] }}</span>
+                    <span style="background-color: #004494; color: white; text-align: center; width: {{ $date_count['percentage'] }}%; display: inline-block;">
+                        <span>{{ $date_count['count'] }}</span>
+                    </span>
                 </span>
             </li>
         @endforeach
     </ul>
+
+
 
 
     <h2 class="ecl-u-type-heading-2" id="graphs">Your Platform Statements Created in the ...</h2>
