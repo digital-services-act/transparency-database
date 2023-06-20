@@ -9,7 +9,7 @@ class TestSearchController extends Controller
 {
     public function index()
     {
-         $text_to_search = "dreams";
+         $text_to_search = "so much frightened that she wanted to send the";
 
          $result = Statement::search($text_to_search)->orderBy('created_at');
 
