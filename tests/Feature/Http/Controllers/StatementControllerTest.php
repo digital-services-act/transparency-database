@@ -75,7 +75,8 @@ class StatementControllerTest extends TestCase
     {
         $this->seed();
         /** @var User $user */
-        $user = $this->signIn();
+        $user = $this->signInAsAdmin();
+        $this->assignPlatform($user);
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
 
@@ -146,6 +147,7 @@ class StatementControllerTest extends TestCase
         /** @var User $user */
         $user = $this->signIn();
         $user->assignRole('Admin');
+        $this->assignPlatform($user);
 
         // 10 from seeding.
         $this->assertCount(10, Statement::all());

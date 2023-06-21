@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -40,6 +41,7 @@ class StatementAPIControllerTest extends TestCase
             'automated_detection' => 'No',
             'automated_decision' => 'No',
             'user_id' => 1,
+            'platform_id' => 1,
             'start_date' => '03-01-2023'
         ];
     }
@@ -93,6 +95,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->seed();
         $user = $this->signInAsAdmin();
+        $this->assignPlatform($user);
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
@@ -120,6 +123,7 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->seed();
         $user = $this->signInAsAdmin();
+        $this->assignPlatform($user);
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
@@ -161,7 +165,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function request_rejects_bad_countries()
     {
-        $this->signInAsAdmin();
+        $this->seed();
+        $user = $this->signInAsAdmin();
+        $this->assignPlatform($user);
         $fields = array_merge($this->required_fields, [
             'countries_list' => ['XY', 'ZZ'],
         ]);
@@ -177,7 +183,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_illegal_content()
     {
-        $this->signInAsAdmin();
+        $this->seed();
+        $user = $this->signInAsAdmin();
+        $this->assignPlatform($user);
         $extra_fields = [
             'incompatible_content_ground' => 'foobar',
             'incompatible_content_explanation' => 'foobar2',
@@ -198,7 +206,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_incompatible_content()
     {
-        $this->signInAsAdmin();
+        $this->seed();
+        $user = $this->signInAsAdmin();
+        $this->assignPlatform($user);
         $extra_fields = [
             'decision_ground' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT',
             'incompatible_content_ground' => 'foobar',

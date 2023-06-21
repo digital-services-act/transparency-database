@@ -8,13 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+
 use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable, LogsActivity, SoftDeletes;
+    use HasFactory, Searchable, SoftDeletes;
 
 
     public const METHOD_FORM = 'FORM';
@@ -245,11 +244,6 @@ class Statement extends Model
         'self'
     ];
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults();
-    }
-
     protected static function boot()
     {
         parent::boot();
@@ -311,14 +305,19 @@ class Statement extends Model
         return $this->belongsToMany(Entity::class)->withPivot('role');
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function platform()
+//    public function platform()
+//    {
+//        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
+//    }
+
+    public function platform(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
+        return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Platform;
 use App\Models\User;
 use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -15,6 +16,12 @@ abstract class TestCase extends BaseTestCase
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
         return $user;
+    }
+
+    protected function assignPlatform($user, $platform = null)
+    {
+        $user->platform_id = $platform->id ?? Platform::all()->random()->first()->id;
+        $user->save();
     }
 
     protected function signIn($user = null)

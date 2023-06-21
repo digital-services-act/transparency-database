@@ -26,8 +26,8 @@ class StatementFactory extends Factory
     public function definition()
     {
 
-        $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-1 years'));
-        $start_date = $create_date;
+        $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
+        $start_date = $create_date->clone();
         $end_date = $start_date->addDays(90);
 
         $create_date = $create_date->format('Y-n-j') . ' 00:00:00';
@@ -37,7 +37,7 @@ class StatementFactory extends Factory
 
         $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
 
-        $user_id = User::whereNot('platform_id', $dsa_platform->id)->get()->random()->id;
+        $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
 
         return [
 
@@ -81,7 +81,8 @@ class StatementFactory extends Factory
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),
 
-            'user_id' => $user_id,
+            'platform_id' => $user->platform_id,
+            'user_id' => $user->id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
             'created_at' => $create_date
 
