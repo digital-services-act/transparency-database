@@ -14,8 +14,7 @@ class StatementStatsService
     {
         $date_counts = [];
         $days_result = DB::table('statements')
-                         ->join('users', 'users.id', '=', 'statements.user_id')
-                         ->join('platforms', 'platforms.id', '=', 'users.platform_id')
+                         ->join('platforms', 'platforms.id', '=', 'statements.platform_id')
                          ->selectRaw('count(statements.id) as statements_count, DATE(statements.created_at) as created_at_date')
                          ->groupByRaw('DATE(statements.created_at)')
                          ->where('platforms.id', $platform->id)
@@ -55,8 +54,7 @@ class StatementStatsService
     public function countForPlatform(Platform $platform): int
     {
         return DB::table('statements')
-             ->join('users', 'users.id', '=', 'statements.user_id')
-             ->join('platforms', 'platforms.id', '=', 'users.platform_id')
+             ->join('platforms', 'platforms.id', '=', 'statements.platform_id')
              ->selectRaw('count(statements.id) as statements_count')
              ->where('platforms.id', $platform->id)
              ->get()->first()->statements_count;
@@ -65,8 +63,7 @@ class StatementStatsService
     public function countForPlatformSince(Platform $platform, Carbon $since): int
     {
         return DB::table('statements')
-             ->join('users', 'users.id', '=', 'statements.user_id')
-             ->join('platforms', 'platforms.id', '=', 'users.platform_id')
+             ->join('platforms', 'platforms.id', '=', 'statements.platform_id')
              ->selectRaw('count(statements.id) as statements_count')
              ->where('platforms.id', $platform->id)
              ->where('statements.created_at', '>=', $since->format('Y-m-d 00:00:00'))

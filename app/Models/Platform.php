@@ -48,6 +48,6 @@ class Platform extends Model
 
     public function statements()
     {
-        return $this->hasManyThrough(Statement::class, User::class, 'platform_id', 'user_id', 'id', 'id');
+        return $this->hasMany(Statement::class, 'platform_id', 'id');
     }
 }

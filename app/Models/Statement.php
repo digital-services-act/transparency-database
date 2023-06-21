@@ -305,14 +305,19 @@ class Statement extends Model
         return $this->belongsToMany(Entity::class)->withPivot('role');
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function platform()
+//    public function platform()
+//    {
+//        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
+//    }
+
+    public function platform(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
+        return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
 
     /**

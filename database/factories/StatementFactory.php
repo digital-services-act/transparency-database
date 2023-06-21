@@ -37,7 +37,7 @@ class StatementFactory extends Factory
 
         $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
 
-        $user_id = User::whereNot('platform_id', $dsa_platform->id)->get()->random()->id;
+        $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
 
         return [
 
@@ -81,7 +81,8 @@ class StatementFactory extends Factory
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),
 
-            'user_id' => $user_id,
+            'platform_id' => $user->platform_id,
+            'user_id' => $user->id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
             'created_at' => $create_date
 
