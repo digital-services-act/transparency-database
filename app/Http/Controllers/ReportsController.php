@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Statement;
 use App\Services\StatementStatsService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -49,6 +50,9 @@ class ReportsController extends Controller
 
         $your_platform_total = $this->statement_stats_service->countForPlatform($platform);
 
+        $automated_detection_yes = $this->statement_stats_service->attributeCountForPlatform($platform, 'automated_detection', Statement::AUTOMATED_DETECTION_YES);
+        $automated_detection_no = $this->statement_stats_service->attributeCountForPlatform($platform, 'automated_detection', Statement::AUTOMATED_DETECTION_NO);
+
         $total = $this->statement_stats_service->totalStatements();
 
         return view('reports.index', [
@@ -57,6 +61,8 @@ class ReportsController extends Controller
             'your_platform_total' => $your_platform_total,
             'date_counts' => $date_counts,
             'start_days_ago' => $start_days_ago,
+            'automated_detection_yes' => $automated_detection_yes,
+            'automated_detection_no' => $automated_detection_no,
         ]);
     }
 }

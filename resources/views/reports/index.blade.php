@@ -43,7 +43,7 @@
         </div>
     </div>
 
-
+    <h2 class="ecl-u-type-heading-2">Your Platform Statements Created for the Last {{ $start_days_ago }} Days</h2>
     <div id="apechart"></div>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
@@ -59,37 +59,6 @@
               {{ implode(',', array_column($date_counts, 'count')) }}
             ]
           },
-          {{--{--}}
-          {{--  name: 'statementsii',--}}
-          {{--  data: [--}}
-          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
-          {{--  ]--}}
-          {{--},--}}
-          {{--{--}}
-          {{--  name: 'statementsiii',--}}
-          {{--  data: [--}}
-          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
-          {{--  ]--}}
-          {{--},--}}
-          {{--{--}}
-          {{--  name: 'statementsiv',--}}
-          {{--  data: [--}}
-          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
-          {{--  ]--}}
-          {{--},--}}
-          {{--{--}}
-          {{--  name: 'statementsv',--}}
-          {{--  data: [--}}
-          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
-          {{--  ]--}}
-          {{--},--}}
-          {{--{--}}
-          {{--  name: 'statementsvi',--}}
-          {{--  data: [--}}
-          {{--      {!! implode(',', array_map(function($d){return rand(0,8) + $d['count'];}, $date_counts)) !!}--}}
-          {{--  ]--}}
-          {{--},--}}
-
         ],
         xaxis: {
           labels: {
@@ -110,6 +79,26 @@
 
       chart.render();
     </script>
+
+
+    <h2 class="ecl-u-type-heading-2">Your Platform Statements Created with Automated Detection</h2>
+    <div id="apechartii" style="width: 640px; height 480px;"></div>
+    <script>
+      var options = {
+        chart: {
+          type: "pie"
+        },
+        colors:['#004494', '#FFD617', '#404040', '#BFD0E4', '#FFF4BB', '#D9D9D9'],
+        series: [{{ $automated_detection_yes }}, {{ $automated_detection_no }}],
+        labels: ['Yes', 'No'],
+      }
+
+      var chart = new ApexCharts(document.querySelector("#apechartii"), options);
+
+      chart.render();
+    </script>
+
+
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">

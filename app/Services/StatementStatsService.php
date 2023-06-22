@@ -74,4 +74,14 @@ class StatementStatsService
     {
         return Statement::count();
     }
+
+    public function attributeCountForPlatform(Platform $platform, string $attribute, $value): int
+    {
+        return DB::table('statements')
+                 ->join('platforms', 'platforms.id', '=', 'statements.platform_id')
+                 ->selectRaw('count(statements.id) as statements_count')
+                 ->where('platforms.id', $platform->id)
+                 ->where($attribute, $value)
+                 ->get()->first()->statements_count;
+    }
 }
