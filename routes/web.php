@@ -55,4 +55,4 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
-
+Route::get('/playground', [\App\Http\Controllers\PlaygroundController::class, 'index'])->name('playground.index');
