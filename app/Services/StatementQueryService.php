@@ -65,8 +65,7 @@ class StatementQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        // Turn this on when you want to search the SOR field.
-        $ids = Statement::search($filter_value)->get()->pluck('id')->toArray();
+        $ids = Statement::search($filter_value)->take(200)->raw()['results']->pluck('id')->toArray();
         $query->whereIn('id', $ids);
     }
 

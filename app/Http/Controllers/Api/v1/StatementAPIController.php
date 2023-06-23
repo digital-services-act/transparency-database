@@ -28,7 +28,8 @@ class StatementAPIController extends Controller
     {
         $validated = $request->safe()->merge(
             [
-                'user_id' => auth()->user()->id,
+                'platform_id' => $request->user()->platform_id,
+                'user_id' => $request->user()->id,
                 'method' => Statement::METHOD_API,
             ]
         )->toArray();

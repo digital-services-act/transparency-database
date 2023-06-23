@@ -14,7 +14,7 @@ class StatementStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;//$this->user()->can('create statements');
+        return $this->user()->can('create statements') && $this->user()->platform;
     }
 
     /**
@@ -46,7 +46,7 @@ class StatementStoreRequest extends FormRequest
             'content_type_other' => ['required_if:content_type,CONTENT_TYPE_OTHER','exclude_unless:content_type,CONTENT_TYPE_OTHER'],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
-            'countries_list' => ['array', 'required', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
+            'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
             'start_date' => ['required', 'date'],
             'end_date' => ['date', 'nullable','after_or_equal:start_date'],
             'decision_facts' => ['required'],
