@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SpamStatementCreation;
 use App\Jobs\StatementCreation;
 use App\Models\Statement;
 use Illuminate\Console\Command;
@@ -13,7 +14,7 @@ class GenerateStatements extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:statements {amount=1000}';
+    protected $signature = 'generate:statements {--nospam} {amount=1000} ';
 
     /**
      * The console command description.
@@ -27,8 +28,15 @@ class GenerateStatements extends Command
      */
     public function handle(): void
     {
-        for($cpt=0; $cpt < $this->argument('amount'); $cpt++){
-            StatementCreation::dispatch();
+        for ($cpt = 0; $cpt < $this->argument('amount'); $cpt++) {
+            $is_spam = random_int(1, 100) < 95;
+            if (!$this->option('nospam') && $is_spam) {
+                SpamStatementCreation::dispatch();
+            } else {
+                StatementCreation::dispatch();
+            }
+
+
         }
 
 
