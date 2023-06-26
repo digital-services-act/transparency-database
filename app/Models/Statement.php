@@ -292,6 +292,7 @@ class Statement extends Model
      */
     public function getCountriesListNames(): array
     {
+        if(count($this->countries_list) == 27) return ['European Union'];
         if ($this->countries_list) {
             return array_map(function ($iso) {
                 return Countries::getName($iso);
