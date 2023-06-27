@@ -57,3 +57,4 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
 
+WebSocketsRouter::webSocket('/swss', \App\Servers\StatementWebSocketServer::class);
