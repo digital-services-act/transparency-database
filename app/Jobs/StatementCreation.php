@@ -16,6 +16,7 @@ class StatementCreation implements ShouldQueue
 
 
     public $type;
+
     /**
      * Create a new job instance.
      */
@@ -29,15 +30,10 @@ class StatementCreation implements ShouldQueue
      */
     public function handle(): void
     {
-        $is_spam = random_int(1, 100) < 95;
 
-        switch ($this->type) {
-            case 'spam':
-                Statement::factory()->spam()->create();
-                break;
-            default:
-                Statement::factory()->create();
-        }
+
+        Statement::factory()->create();
+
 
     }
 }
