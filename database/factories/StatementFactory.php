@@ -96,44 +96,7 @@ class StatementFactory extends Factory
         ];
     }
 
-    public function spam()
-    {
-        return $this->state(function (array $attributes) {
-            return [
 
-                'decision_visibility' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
-                'decision_monetary' => null,
-                'decision_ground' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT',
-                'content_type' => 'CONTENT_TYPE_TEXT',
-                'category' => 'STATEMENT_CATEGORY_VIOLATION_TOS',
-
-                'incompatible_content_ground' => 'spam',
-                'incompatible_content_explanation' => 'spam',
-
-                'incompatible_content_illegal' => $this->faker->randomElement(Statement::INCOMPATIBLE_CONTENT_ILLEGALS),
-
-                'url' =>  'https//spam.com',
-
-                'countries_list' => ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"],
-
-                'start_date' => Carbon::now()->format('Y-n-j') . ' 00:00:00',
-
-
-                'source_type' => 'SOURCE_VOLUNTARY',
-
-                'decision_facts' => 'spam',
-
-                'automated_detection' => 'Yes',
-                'automated_decision' => 'Yes',
-
-                'platform_id' => 1,
-                'user_id' => 1,
-                'method' => 'API',
-
-
-            ];
-        });
-    }
 
 
 }
