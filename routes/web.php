@@ -55,4 +55,5 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
+Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
 
