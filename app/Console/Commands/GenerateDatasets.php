@@ -28,7 +28,16 @@ class GenerateDatasets extends Command
     public function handle()
     {
         $statementsExport = new StatementsExport();
-        Excel::store($statementsExport, 'statements.xlsx','public');
-        Excel::store($statementsExport, 'statements.csv','public', \Maatwebsite\Excel\Excel::CSV);
+//        $statementsExport->store('statements.xlsx','public');
+
+        $statementsExport->queue('statements.xlsx', 's3', \Maatwebsite\Excel\Excel::XLSX, [
+            'visibility' => 'public',
+        ]);
+
+        $statementsExport->queue('statements.csv', 's3', \Maatwebsite\Excel\Excel::CSV, [
+            'visibility' => 'public',
+        ]);
+//        Excel::queue($statementsExport, 'statements.xlsx','public');
+//        Excel::store($statementsExport, 'statements.csv','public', \Maatwebsite\Excel\Excel::CSV);
     }
 }

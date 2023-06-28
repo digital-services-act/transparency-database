@@ -3,12 +3,17 @@
 namespace App\Exports;
 
 use App\Models\Statement;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 class StatementsExport implements FromCollection, WithHeadings, WithMapping
 {
+
+    use Exportable;
+
     /**
     * @return \Illuminate\Support\Collection
     */
