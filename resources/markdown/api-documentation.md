@@ -4,9 +4,6 @@ Specific users of this database are given the ability to create
 statements of reasons using an API endpoint. This greatly increases
 efficiency and allows for automation.
 
-This also API allows for searching and statistics gathering. By making requests with 
-search parameters and filters data can be gathered for reporting purposes.
-
 ## Your API Token
 
 When your account is given the ability to use the API then you are able to
