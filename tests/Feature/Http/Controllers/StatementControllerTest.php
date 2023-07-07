@@ -141,6 +141,7 @@ class StatementControllerTest extends TestCase
     public function store_saves_and_redirects()
     {
         $this->seed();
+        Statement::factory()->count(10)->create();
         // This is a basic test that the normal controller is working.
         // For more advanced testing on the request and such, see the API testing.
         PermissionsSeeder::resetRolesAndPermissions();

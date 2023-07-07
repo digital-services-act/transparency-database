@@ -79,7 +79,7 @@ class StatementAPIControllerTest extends TestCase
     public function api_statement_store_requires_auth()
     {
         $this->seed();
-
+        Statement::factory()->count(10)->create();
         // Not signing in.
         $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
@@ -94,6 +94,7 @@ class StatementAPIControllerTest extends TestCase
     public function api_statement_store_works()
     {
         $this->seed();
+        Statement::factory()->count(10)->create();
         $user = $this->signInAsAdmin();
         $this->assignPlatform($user);
         $this->assertCount(10, Statement::all());
@@ -122,6 +123,7 @@ class StatementAPIControllerTest extends TestCase
     public function api_statement_json_store_works()
     {
         $this->seed();
+        Statement::factory()->count(10)->create();
         $user = $this->signInAsAdmin();
         $this->assignPlatform($user);
         $this->assertCount(10, Statement::all());
