@@ -24,6 +24,7 @@ class PlatformControllerTest extends TestCase
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
 
+        Statement::factory()->count(10)->create();
         $this->assertCount(10, Statement::all());
         $total_users_start = User::count();
 

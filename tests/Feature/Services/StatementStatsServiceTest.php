@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Services;
 
+use App\Models\Statement;
 use App\Services\StatementStatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,6 +27,7 @@ class StatementStatsServiceTest extends TestCase
     public function it_can_do_the_total()
     {
         $this->seed(); // 10 statements
+        Statement::factory()->count(10)->create();
         $total = $this->statement_stats_service->totalStatements();
         $this->assertEquals(10, $total);
     }

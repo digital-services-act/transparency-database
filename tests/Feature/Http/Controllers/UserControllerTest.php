@@ -18,6 +18,7 @@ class UserControllerTest extends TestCase
     public function deleting_user_deletes_the_rest()
     {
         $this->seed();
+        Statement::factory()->count(10)->create();
         /** @var User $user */
         $user = $this->signIn();
         PermissionsSeeder::resetRolesAndPermissions();
