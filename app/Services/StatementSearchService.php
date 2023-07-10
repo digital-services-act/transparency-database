@@ -58,7 +58,7 @@ class StatementSearchService
     private function buildQuery(array $filters): string
     {
         $queryAndParts = [];
-        $query = '';
+        $query = '*';
 
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
@@ -81,9 +81,11 @@ class StatementSearchService
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
-        if (env('SCOUT_DRIVER') === 'database') {
+        if (env('SCOUT_DRIVER', '') === 'database') {
             $query = $filters['s'] ?? '';
         }
+
+        //dd($query);
 
         return $query;
     }
@@ -133,7 +135,7 @@ class StatementSearchService
         $ors = [];
         foreach ($textfields as $textfield)
         {
-            $ors[] = $textfield . ':' . $filter_value;
+            $ors[] = $textfield . ':"' . $filter_value . '"';
         }
 
         if (env('SCOUT_DRIVER', '') === 'database' )
