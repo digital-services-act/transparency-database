@@ -35,9 +35,10 @@ class UserControllerTest extends TestCase
         $statement_count = $user->statements()->get()->count(); // at least 1
 
 
-        // delete the platform and assert we deleted
+        // delete the user and assert we deleted
         $this->delete(route('user.destroy', [$user]))->assertRedirect(route('user.index'));
 
+        // the statements stay the platform id is in the statements.
         $this->assertCount(10, Statement::all());
         $this->assertCount($total_users_start - 1, User::all());
 
