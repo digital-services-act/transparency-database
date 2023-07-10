@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             PlatformSeeder::class,
             UserSeeder::class,
             PermissionsSeeder::class,
-//            StatementSeeder::class
+            StatementSeeder::class
         ]);
     }
 }

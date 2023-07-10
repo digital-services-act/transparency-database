@@ -18,11 +18,10 @@ class UserControllerTest extends TestCase
     public function deleting_user_deletes_the_rest()
     {
         $this->seed();
-        Statement::factory()->count(10)->create();
-        /** @var User $user */
-        $user = $this->signIn();
         PermissionsSeeder::resetRolesAndPermissions();
-        $user->assignRole('Admin');
+        /** @var User $user */
+        $user = $this->signInAsAdmin();
+
 
         $this->assertCount(10, Statement::all());
         $total_users_start = User::count();

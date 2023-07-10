@@ -15,8 +15,6 @@
 
     @if($statement->user && $statement->user->platform)
         <x-infoline title="Sent by" :content="$statement->user->platform->name"></x-infoline>
-        <x-infoline title="Platform Type"
-                    :content="\App\Models\Platform::PLATFORM_TYPES[$statement->user->platform->type]"></x-infoline>
     @endif
 
     <x-infoline title="Received" :content="$statement->created_at->format('d-m-Y g:i A')"></x-infoline>

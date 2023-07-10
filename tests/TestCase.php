@@ -11,10 +11,11 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected function signInAsAdmin($user = null){
+    protected function signInAsAdmin($user = null) {
         $user = $this->signIn($user);
         PermissionsSeeder::resetRolesAndPermissions();
         $user->assignRole('Admin');
+        $this->assignPlatform($user);
         return $user;
     }
 

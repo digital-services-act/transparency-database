@@ -3,11 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Platform;
+use App\Models\Statement;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\Statement;
 
 class StatementFactory extends Factory
 {
@@ -39,7 +38,7 @@ class StatementFactory extends Factory
 
         $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
 
-        $full_statement = random_int(1, 10) > 9;
+        $full_statement = true;//random_int(1, 10) > 9;
 
         $decision_ground = $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS));
 

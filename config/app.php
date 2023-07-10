@@ -206,6 +206,7 @@ return [
          * Application Service Providers...
          */
         App\Providers\StatementQueryServiceProvider::class,
+        App\Providers\StatementSearchServiceProvider::class,
         App\Providers\StatementStatsServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -214,7 +215,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\VaporUiServiceProvider::class,
 
-        MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class
+        MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class,
+        Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
 
     ],
 
