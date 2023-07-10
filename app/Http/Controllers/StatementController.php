@@ -37,38 +37,17 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = $this->statement_query_service->query($request->query());
-
-        $options = $this->prepareOptions();
-
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
-        $total = $statements->total();
-
-        $similarity_results = null;
-        if ($request->get('s')) {
-            $similarity_results = $this->getSimilarityWords($request->get('s'));
+        if ($request->get('search', '') === 'os') {
+            $statements = $this->statement_search_service->query($request->query());
+        } else {
+            $statements = $this->statement_query_service->query($request->query());
         }
 
-        return view('statement.index', compact(
-            'statements',
-            'options',
-            'total',
-            'similarity_results'
-        ));
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return View|Factory|Application
-     */
-    public function openSearchIndex(Request $request): View|Factory|Application
-    {
-        $statements = $this->statement_search_service->query($request->query());
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
-        $total      = $statements->total();
 
         $options = $this->prepareOptions();
+        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
+        $total = $statements->total();
+
         $similarity_results = null;
         if ($request->get('s')) {
             $similarity_results = $this->getSimilarityWords($request->get('s'));

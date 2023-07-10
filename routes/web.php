@@ -50,9 +50,7 @@ Route::get('/', function () {
 
 
 Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
-Route::get('/os/statement', [\App\Http\Controllers\StatementController::class, 'openSearchIndex'])->name('statement.opensearch.index');
 Route::get('/statement-search', [\App\Http\Controllers\StatementController::class, 'search'])->name('statement.search');
-Route::get('/os/statement-search', [\App\Http\Controllers\StatementController::class, 'search'])->name('statement.opensearch.search');
 Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
 
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');

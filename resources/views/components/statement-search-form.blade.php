@@ -1,6 +1,6 @@
 @props(['options' => null, 'similarity_results' => null])
 
-<form method="get" action="{{ route('statement.opensearch.index') }}">
+<form method="get" action="{{ route('statement.index') }}">
 
 
 
@@ -135,6 +135,10 @@
 
         <x-ecl.datepicker label="Created End" id="created_at_end" justlabel="true"
                           name="created_at_end" :value="request()->get('created_at_end', '')"/>
+
+        @if(request()->get('search'))
+            <input type="hidden" name="search" value="{{ request()->get('search') }}" />
+        @endif
 
         <x-ecl.button label="search"/>
 

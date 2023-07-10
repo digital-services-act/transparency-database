@@ -4,6 +4,10 @@
 
     <x-ecl.textfield name="s" id="s" label="Search and Filtering" justlabel="true" placeholder="enter your text search here" :value="request()->get('s', '')" />
 
+    @if(request()->get('search'))
+        <input type="hidden" name="search" value="{{ request()->get('search') }}" />
+    @endif
+
     @if($similarity_results)
         <div class="ecl-u-mb-l" style="width: 400px;">
             <span class="ecl-u-type-paragraph">
@@ -24,7 +28,7 @@
     </div>
 
     <div>
-        <a href="{{ route('statement.opensearch.search', request()->query()) }}" class="ecl-button ecl-button--secondary">Advanced Search</a>
+        <a href="{{ route('statement.search', request()->query()) }}" class="ecl-button ecl-button--secondary">Advanced Search</a>
     </div>
 
 </form>

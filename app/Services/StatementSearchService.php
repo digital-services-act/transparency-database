@@ -82,7 +82,8 @@ class StatementSearchService
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
-       return $query;
+        //return '';
+        return $query;
     }
 
     private function applyCreatedAtFilter(array $filters): string
