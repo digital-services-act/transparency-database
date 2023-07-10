@@ -81,7 +81,7 @@ class StatementSearchService
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
-        if (env('SCOUT_DRIVER', '') === 'database') {
+        if (env('SCOUT_DRIVER', '') === 'database' && env('APP_ENV') !== 'testing') {
             $query = $filters['s'] ?? '';
         }
 
@@ -138,8 +138,7 @@ class StatementSearchService
             $ors[] = $textfield . ':"' . $filter_value . '"';
         }
 
-        if (env('SCOUT_DRIVER', '') === 'database' )
-        {
+        if (env('SCOUT_DRIVER', '') === 'database' && env('APP_ENV', '') !== 'testing') {
             return $filter_value;
         }
 

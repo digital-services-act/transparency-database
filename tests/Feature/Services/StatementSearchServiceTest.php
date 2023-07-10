@@ -92,7 +92,7 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(illegal_content_legal_ground:example OR illegal_content_explanation:example OR incompatible_content_ground:example OR incompatible_content_explanation:example OR decision_facts:example OR content_type_other:example OR url:example)', $query);
+        $this->assertEquals('(illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR url:"example")', $query);
     }
 
     /**
