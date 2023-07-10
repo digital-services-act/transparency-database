@@ -1,0 +1,2 @@
+@props(['url' => null, 'label' => 'label', 'priority' => 'secondary'])
+<button type="button" onClick="document.location.href = '{{ $url }}'" class="ecl-button ecl-button--{{ $priority }}">{{ $label }}</button>
