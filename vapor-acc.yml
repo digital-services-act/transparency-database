@@ -1,7 +1,7 @@
 id: 49448
 name: dsa-acc
 environments:
-  production:
+  acc:
     database: acc-serverless-db-eu
     domain: acc.sor.dsa.ec.europa.eu
     network: vapor-network-1686047238
