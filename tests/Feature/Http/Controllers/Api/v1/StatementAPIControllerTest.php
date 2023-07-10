@@ -30,7 +30,6 @@ class StatementAPIControllerTest extends TestCase
             'decision_visibility' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
             'category' => 'STATEMENT_CATEGORY_FRAUD',
-            'platform_type' => 'SOCIAL_MEDIA',
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',

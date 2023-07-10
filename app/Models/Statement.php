@@ -283,7 +283,6 @@ class Statement extends Model
             'automated_decision' => $this->automated_decision === self::AUTOMATED_DECISION_YES,
             'category' => $this->category,
             'platform_id' => $this->platform_id,
-            'platform_type' => $this->platform->type,
             'url' => $this->url,
             'created_at' => $this->created_at
         ];

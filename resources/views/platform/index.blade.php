@@ -31,7 +31,7 @@
         <thead class="ecl-table__head">
         <tr class="ecl-table__row">
             <th class="ecl-table__header">Name</th>
-            <th class="ecl-table__header">Type</th>
+
             <th class="ecl-table__header" width="25%">Actions</th>
         </tr>
         </thead>
@@ -44,7 +44,7 @@
 
                 </td>
 
-                <td class="ecl-table__cell">{{ \App\Models\Platform::PLATFORM_TYPES[$platform->type] }}</td>
+
 
                 <td class="ecl-table__cell">
                     <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('platform.edit', [$platform]) }}'">edit</button>

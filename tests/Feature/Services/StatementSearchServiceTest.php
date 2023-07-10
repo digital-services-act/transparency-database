@@ -98,28 +98,6 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_platform_type()
-    {
-        $filters = [
-            'platform_type' => ['PLATFORM_TYPE_MUSIC']
-        ];
-        $search = $this->statement_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search->query;
-        $this->assertEquals('(platform_type:PLATFORM_TYPE_MUSIC)', $query);
-
-        $filters = [
-            'platform_type' => ['PLATFORM_TYPE_MUSIC', 'PLATFORM_TYPE_VIDEO']
-        ];
-        $search = $this->statement_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search->query;
-        $this->assertEquals('(platform_type:PLATFORM_TYPE_MUSIC OR platform_type:PLATFORM_TYPE_VIDEO)', $query);
-    }
-
-    /**
-     * @test
-     */
     public function it_filters_on_decision_visibility()
     {
         $filters = [

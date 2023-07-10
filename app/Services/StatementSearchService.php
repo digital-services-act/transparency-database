@@ -24,7 +24,6 @@ class StatementSearchService
 
     private array $allowed_filters = [
         's',
-        'platform_type',
         'decision_visibility',
         'decision_monetary',
         'decision_provision',
@@ -134,17 +133,6 @@ class StatementSearchService
             $ors[] = $textfield . ':' . $filter_value;
         }
 
-        return implode(' OR ', $ors);
-    }
-
-    private function applyPlatformTypeFilter(array $filter_values)
-    {
-        $filter_values = array_intersect($filter_values, array_keys(Platform::PLATFORM_TYPES));
-        $ors = [];
-        foreach ($filter_values as $filter_value)
-        {
-            $ors[] = 'platform_type:'.$filter_value;
-        }
         return implode(' OR ', $ors);
     }
 

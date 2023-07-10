@@ -27,7 +27,6 @@ class PlatformStoreRequest extends FormRequest
         return [
             'name' => ['string', 'required', 'max:255'],
             'url' => ['url', 'required', 'max:255'],
-            'type' => ['required', $this->in(array_keys(Platform::PLATFORM_TYPES))],
         ];
     }
 

@@ -160,17 +160,4 @@ class StatementQueryServiceTest extends TestCase
         $sql = $this->statement_query_service->query($filters)->toSql();
         $this->assertStringContainsString('select * from "statements" where "category" in (?', $sql);
     }
-
-    /**
-     * @test
-     */
-    public function it_filters_on_platform_type()
-    {
-        $filters = [
-            'platform_type' => array_keys(Platform::PLATFORM_TYPES)
-        ];
-        $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" ', $sql);
-        $this->assertStringContainsString('"type" in (?', $sql);
-    }
 }

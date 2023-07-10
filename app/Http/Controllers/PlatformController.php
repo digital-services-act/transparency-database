@@ -68,7 +68,6 @@ class PlatformController extends Controller
         $platform = Platform::create([
             'name' => $validated['name'],
             'url' => $validated['url'],
-            'type' => $validated['type'],
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
@@ -117,7 +116,6 @@ class PlatformController extends Controller
         ])->toArray();
         $platform->name = $validated['name'];
         $platform->url = $validated['url'];
-        $platform->type = $validated['type'];
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');
     }
@@ -141,8 +139,8 @@ class PlatformController extends Controller
 
     private function prepareOptions(): array
     {
-        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
 
-        return compact('platform_types');
+
+        return [];
     }
 }

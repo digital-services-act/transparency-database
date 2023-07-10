@@ -203,7 +203,6 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
-        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
         $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
             return [
                 'value' => $platform->id,
@@ -243,7 +242,6 @@ class StatementController extends Controller
             'source_types',
             'content_types',
             'platforms',
-            'platform_types',
         );
     }
 }

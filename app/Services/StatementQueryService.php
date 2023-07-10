@@ -21,7 +21,6 @@ class StatementQueryService
     private array $allowed_filters = [
         's',
         'platform_id',
-        'platform_type',
         'automated_detection',
         'automated_decision',
         'created_at_start',
@@ -225,24 +224,6 @@ class StatementQueryService
         if ($filter_values_validated) {
             $query->whereIn('category', $filter_value);
         }
-    }
-
-    /**
-     * @param Builder $query
-     * @param array $filter_value
-     *
-     * @return void
-     */
-    private function applyPlatformTypeFilter(Builder $query, array $filter_value): void
-    {
-        $filter_values_validated = array_intersect($filter_value, array_keys(Platform::PLATFORM_TYPES));
-        if ($filter_values_validated) {
-            $query->whereHas('platform', function($inner_query) use($filter_values_validated) {
-                $inner_query->whereIn('platforms.type', $filter_values_validated);
-            });
-        }
-
-
     }
 
     /**

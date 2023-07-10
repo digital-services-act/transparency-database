@@ -25,7 +25,6 @@ class StatementControllerTest extends TestCase
         'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
         'content_type' => 'CONTENT_TYPE_VIDEO',
         'category' => 'STATEMENT_CATEGORY_FRAUD',
-        'platform_type' => 'SOCIAL_MEDIA',
         'illegal_content_legal_ground' => 'foo',
         'illegal_content_explanation' => 'bar',
         'countries_list' => ['BE','FR'],

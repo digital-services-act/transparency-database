@@ -23,13 +23,18 @@ class OptimizeStatementIndex extends Command
      *
      * @var string
      */
-    protected $description = 'Optimize the Opensearch Statment Index';
+    protected $description = 'Optimize the Opensearch Statement Index';
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
+        if (env('SCOUT_DRIVER', '') !== 'opensearch')
+        {
+            return;
+        }
+
         /** @var Client $client */
         $client  = app(Client::class);
 
@@ -217,18 +222,6 @@ class OptimizeStatementIndex extends Command
                     'platform_id'                      =>
                         [
                             'type' => 'long',
-                        ],
-                    'platform_type'                    =>
-                        [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
                         ],
                     'source'                           =>
                         [
