@@ -58,7 +58,7 @@ class StatementSearchService
     private function buildQuery(array $filters): string
     {
         $queryAndParts = [];
-        $query = '*';
+        $query = '';
 
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
@@ -72,8 +72,7 @@ class StatementSearchService
 
         // handle the date filters as needed.
         $created_at_filter = $this->applyCreatedAtFilter($filters);
-        if ($created_at_filter)
-        {
+        if ($created_at_filter) {
             $queryAndParts[] = $created_at_filter;
         }
 
@@ -82,7 +81,10 @@ class StatementSearchService
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
-        //return '';
+        if (env('SCOUT_DRIVER') === 'database') {
+            $query = $filters['s'] ?? '';
+        }
+
         return $query;
     }
 
@@ -132,6 +134,11 @@ class StatementSearchService
         foreach ($textfields as $textfield)
         {
             $ors[] = $textfield . ':' . $filter_value;
+        }
+
+        if (env('SCOUT_DRIVER', '') === 'database' )
+        {
+            return $filter_value;
         }
 
         return implode(' OR ', $ors);
