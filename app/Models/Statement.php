@@ -328,11 +328,6 @@ class Statement extends Model
         return $this->belongsTo(User::class);
     }
 
-//    public function platform()
-//    {
-//        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
-//    }
-
     public function platform(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
