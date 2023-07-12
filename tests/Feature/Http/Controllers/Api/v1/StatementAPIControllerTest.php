@@ -50,7 +50,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_show_works()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
         $attributes = $this->required_fields;
         $attributes['user_id'] = $admin->id;
@@ -70,7 +70,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_show_requires_auth()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $attributes = $this->required_fields;
         $attributes['user_id'] = User::all()->random()->first()->id;
         $attributes['platform_id'] = Platform::all()->random()->first()->id;
@@ -86,8 +86,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_store_requires_auth()
     {
-        $this->seed();
-
+        $this->setUpFullySeededDatabase();
         // Not signing in.
         $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
@@ -101,9 +100,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_store_works()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
-        $this->assignPlatform($user);
+
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
@@ -129,9 +128,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_json_store_works()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
-        $this->assignPlatform($user);
+
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
@@ -173,9 +172,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function request_rejects_bad_countries()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
-        $this->assignPlatform($user);
+
         $fields = array_merge($this->required_fields, [
             'countries_list' => ['XY', 'ZZ'],
         ]);
@@ -191,9 +190,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_illegal_content()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
-        $this->assignPlatform($user);
+
         $extra_fields = [
             'incompatible_content_ground' => 'foobar',
             'incompatible_content_explanation' => 'foobar2',
@@ -214,9 +213,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_incompatible_content()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
-        $this->assignPlatform($user);
+
         $extra_fields = [
             'decision_ground' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT',
             'incompatible_content_ground' => 'foobar',

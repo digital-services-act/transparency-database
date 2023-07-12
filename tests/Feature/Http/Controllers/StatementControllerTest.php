@@ -43,8 +43,7 @@ class StatementControllerTest extends TestCase
      */
     public function index_displays_view()
     {
-        $this->seed();
-        $statements = Statement::factory()->count(3)->create();
+        $this->setUpFullySeededDatabase();
         $response = $this->get(route('statement.index'));
         $response->assertOk();
         $response->assertViewIs('statement.index');
@@ -72,12 +71,8 @@ class StatementControllerTest extends TestCase
      */
     public function create_displays_view()
     {
-        $this->seed();
-        /** @var User $user */
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
-        $this->assignPlatform($user);
-        PermissionsSeeder::resetRolesAndPermissions();
-        $user->assignRole('Admin');
 
         $response = $this->get(route('statement.create'));
         $response->assertOk();
@@ -89,7 +84,7 @@ class StatementControllerTest extends TestCase
      */
     public function create_must_be_authenticated()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         // The cas is set to masquerade in testing mode.
         // So when we make a call to a cas middleware route we get logged in.
         // Thus before we make this call we are nobody
@@ -110,9 +105,9 @@ class StatementControllerTest extends TestCase
      */
     public function show_displays_view()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $statement = Statement::factory()->create();
-        $user = $this->signIn();
+        $this->signIn();
         $response = $this->get(route('statement.show', $statement));
 
         $response->assertOk();
@@ -139,14 +134,10 @@ class StatementControllerTest extends TestCase
      */
     public function store_saves_and_redirects()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         // This is a basic test that the normal controller is working.
         // For more advanced testing on the request and such, see the API testing.
-        PermissionsSeeder::resetRolesAndPermissions();
-        /** @var User $user */
-        $user = $this->signIn();
-        $user->assignRole('Admin');
-        $this->assignPlatform($user);
+        $user = $this->signInAsAdmin();
 
         // 10 from seeding.
         $this->assertCount(10, Statement::all());

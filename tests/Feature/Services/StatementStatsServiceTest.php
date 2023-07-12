@@ -26,7 +26,7 @@ class StatementStatsServiceTest extends TestCase
      */
     public function it_can_do_the_total()
     {
-        $this->seed(); // 10 statements
+        $this->setUpFullySeededDatabase(); // 10 statements
         $total = $this->statement_stats_service->totalStatements();
         $this->assertEquals(10, $total);
     }
