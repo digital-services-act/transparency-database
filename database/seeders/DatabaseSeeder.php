@@ -13,12 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-//        \App\Models\User::factory(10)->create();
+        // The database seeder at this point in development should not be run anymore
+        // and potentially affect data already in the DB.
+        // Inside the Parent TestCase there is not functionality wrap up and
+        // create a test bed scenario.
         $this->call([
-            PlatformSeeder::class,
-            UserSeeder::class,
-            PermissionsSeeder::class,
-            StatementSeeder::class
+
         ]);
     }
 }

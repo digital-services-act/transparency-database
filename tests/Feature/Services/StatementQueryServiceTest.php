@@ -29,7 +29,7 @@ class StatementQueryServiceTest extends TestCase
      */
     public function it_can_do_a_basic_query()
     {
-        $this->seed(); // 10 statements
+        $this->setUpFullySeededDatabase(); // 10 statements
         $total = $this->statement_query_service->query([])->count();
         $this->assertEquals(10, $total);
     }
@@ -39,7 +39,7 @@ class StatementQueryServiceTest extends TestCase
      */
     public function it_filters_on_automated_detection()
     {
-        $this->seed(); // 10 statements
+        $this->setUpFullySeededDatabase(); // 10 statements
         $automated_count = $this->statement_query_service->query(['automated_detection' => ['Yes']])->count();
         $manual_count = $this->statement_query_service->query(['automated_detection' => ['No']])->count();
 
@@ -48,26 +48,12 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-//    /**
-//     * @test
-//     */
-//    public function it_filters_on_automated_takedown()
-//    {
-//        $this->seed(); // 10 statements
-//        $automated_count = $this->statement_query_service->query(['automated_takedown' => ['Yes']])->count();
-//        $manual_count = $this->statement_query_service->query(['automated_takedown' => ['No']])->count();
-//
-//        $total = $automated_count + $manual_count;
-//
-//        $this->assertEquals(10, $total);
-//    }
-
     /**
      * @test
      */
     public function it_filters_on_automated_decision()
     {
-        $this->seed(); // 10 statements
+        $this->setUpFullySeededDatabase(); // 10 statements
         $automated_count = $this->statement_query_service->query(['automated_decision' => ['Yes']])->count();
         $manual_count = $this->statement_query_service->query(['automated_decision' => ['No']])->count();
 
