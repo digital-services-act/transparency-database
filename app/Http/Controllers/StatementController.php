@@ -192,10 +192,10 @@ class StatementController extends Controller
             return ['value' => $automated_detection, 'label' => $automated_detection];
         }, Statement::AUTOMATED_DETECTIONS);
 
-        $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES);
-        $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES);
-        $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
-        $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS);
+        $decision_visibilities = [['value' => '', 'label' => '-- Select an option --']] + $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES);
+        $decision_monetaries = [['value' => '', 'label' => '-- Select an option --']] + $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES);
+        $decision_provisions = [['value' => '', 'label' => '-- Select an option --']] + $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
+        $decision_accounts = [['value' => '', 'label' => '-- Select an option --']] + $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
