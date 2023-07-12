@@ -4,9 +4,6 @@ Specific users of this database are given the ability to create
 statements of reasons using an API endpoint. This greatly increases
 efficiency and allows for automation.
 
-The also API allows for searching and statistics gathering. By making requests with 
-search parameters and filters data can be gathered for reporting purposes.
-
 ## Your API Token
 
 When your account is given the ability to use the API then you are able to
@@ -159,6 +156,10 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+###  Decision Visibility Other (decision_visibility_other)
+
+This is required if DECISION_VISIBILITY_OTHER was the decision_visibility.
+
 ### Monetary payments suspension, termination or other restriction (decision_monetary)
 
 This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
@@ -178,9 +179,9 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-###  Monetary payments suspension, termination or other restriction other (decision_monetary_other)
+###  Decision Monetary Other (decision_monetary_other)
 
-This is required if MONETARY_OTHER was the decision_monetary. 
+This is required if DECISION_MONETARY_OTHER was the decision_monetary. 
 
 ### Decision about the provisioning of the service (decision_provision)
 

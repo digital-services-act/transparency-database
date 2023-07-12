@@ -55,6 +55,9 @@
                     @if(session('success'))
                         <x-ecl.message type="success" icon="success" title="Success" :message="session('success')"/>
                     @endif
+                    @if(session('error'))
+                        <x-ecl.message type="error" icon="error" title="Error" :message="session('error')"/>
+                    @endif
 
                     @if ($errors->any())
                         <x-ecl.message type="error" icon="error" title="Errors" :message="$errors->all()"/>

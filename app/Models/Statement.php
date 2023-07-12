@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-
 use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
@@ -19,8 +18,8 @@ class Statement extends Model
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
     public const METHODS = [
-        'METHOD_FORM' => Statement::METHOD_FORM,
-        'METHOD_API' => Statement::METHOD_API
+        'METHOD_FORM' => self::METHOD_FORM,
+        'METHOD_API' => self::METHOD_API
     ];
 
 
@@ -30,9 +29,9 @@ class Statement extends Model
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
     public const SOURCE_TYPES = [
-        'SOURCE_ARTICLE_16' => Statement::SOURCE_ARTICLE_16,
-        'SOURCE_TRUSTED_FLAGGER' => Statement::SOURCE_TRUSTED_FLAGGER,
-        'SOURCE_VOLUNTARY' => Statement::SOURCE_VOLUNTARY,
+        'SOURCE_ARTICLE_16' => self::SOURCE_ARTICLE_16,
+        'SOURCE_TRUSTED_FLAGGER' => self::SOURCE_TRUSTED_FLAGGER,
+        'SOURCE_VOLUNTARY' => self::SOURCE_VOLUNTARY,
     ];
 
 
@@ -42,18 +41,18 @@ class Statement extends Model
     public const CONTENT_TYPE_IMAGE = 'Image';
     public const CONTENT_TYPE_OTHER = 'Other';
     public const CONTENT_TYPES = [
-        'CONTENT_TYPE_TEXT' => Statement::CONTENT_TYPE_TEXT,
-        'CONTENT_TYPE_VIDEO' => Statement::CONTENT_TYPE_VIDEO,
-        'CONTENT_TYPE_IMAGE' => Statement::CONTENT_TYPE_IMAGE,
-        'CONTENT_TYPE_OTHER' => Statement::CONTENT_TYPE_OTHER,
+        'CONTENT_TYPE_TEXT' => self::CONTENT_TYPE_TEXT,
+        'CONTENT_TYPE_VIDEO' => self::CONTENT_TYPE_VIDEO,
+        'CONTENT_TYPE_IMAGE' => self::CONTENT_TYPE_IMAGE,
+        'CONTENT_TYPE_OTHER' => self::CONTENT_TYPE_OTHER,
     ];
 
     public const LABEL_STATEMENT_AUTOMATED_DETECTION = 'Was the content detected/identified using automated means?';
     public const AUTOMATED_DETECTION_YES = 'Yes';
     public const AUTOMATED_DETECTION_NO = 'No';
     public const AUTOMATED_DETECTIONS = [
-        Statement::AUTOMATED_DETECTION_YES,
-        Statement::AUTOMATED_DETECTION_NO,
+        self::AUTOMATED_DETECTION_YES,
+        self::AUTOMATED_DETECTION_NO,
     ];
 
 
@@ -61,8 +60,8 @@ class Statement extends Model
     public const AUTOMATED_DECISION_YES = 'Yes';
     public const AUTOMATED_DECISION_NO = 'No';
     public const AUTOMATED_DECISIONS = [
-        Statement::AUTOMATED_DECISION_YES,
-        Statement::AUTOMATED_DECISION_NO,
+        self::AUTOMATED_DECISION_YES,
+        self::AUTOMATED_DECISION_NO,
     ];
 
 
@@ -71,8 +70,8 @@ class Statement extends Model
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [
-        'DECISION_GROUND_ILLEGAL_CONTENT' => Statement::DECISION_GROUND_ILLEGAL_CONTENT,
-        'DECISION_GROUND_INCOMPATIBLE_CONTENT' => Statement::DECISION_GROUND_INCOMPATIBLE_CONTENT
+        'DECISION_GROUND_ILLEGAL_CONTENT' => self::DECISION_GROUND_ILLEGAL_CONTENT,
+        'DECISION_GROUND_INCOMPATIBLE_CONTENT' => self::DECISION_GROUND_INCOMPATIBLE_CONTENT
     ];
 
 
@@ -84,19 +83,19 @@ class Statement extends Model
     public const INCOMPATIBLE_CONTENT_ILLEGAL_YES = 'Yes';
     public const INCOMPATIBLE_CONTENT_ILLEGAL_NO = 'No';
     public const INCOMPATIBLE_CONTENT_ILLEGALS = [
-        Statement::INCOMPATIBLE_CONTENT_ILLEGAL_YES,
-        Statement::INCOMPATIBLE_CONTENT_ILLEGAL_NO,
+        self::INCOMPATIBLE_CONTENT_ILLEGAL_YES,
+        self::INCOMPATIBLE_CONTENT_ILLEGAL_NO,
     ];
 
     public const ILLEGAL_CONTENT_FIELDS = [
-        Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND,
-        Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION,
+        self::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND,
+        self::LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION,
     ];
 
     public const INCOMPATIBLE_CONTENT_FIELDS = [
-        Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND,
-        Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION,
-        Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL,
+        self::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND,
+        self::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION,
+        self::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL,
     ];
 
     public const LABEL_STATEMENT_DECISION_VISIBILITY = 'Visibility restriction of specific items of information provided by the recipient of the service';
@@ -105,10 +104,10 @@ class Statement extends Model
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
     public const DECISION_VISIBILITIES = [
-        'DECISION_VISIBILITY_CONTENT_REMOVED' => Statement::DECISION_VISIBILITY_CONTENT_REMOVED,
-        'DECISION_VISIBILITY_CONTENT_DISABLED' => Statement::DECISION_VISIBILITY_CONTENT_DISABLED,
-        'DECISION_VISIBILITY_CONTENT_DEMOTED' => Statement::DECISION_VISIBILITY_CONTENT_DEMOTED,
-        'DECISION_VISIBILITY_OTHER' => Statement::DECISION_VISIBILITY_OTHER
+        'DECISION_VISIBILITY_CONTENT_REMOVED' => self::DECISION_VISIBILITY_CONTENT_REMOVED,
+        'DECISION_VISIBILITY_CONTENT_DISABLED' => self::DECISION_VISIBILITY_CONTENT_DISABLED,
+        'DECISION_VISIBILITY_CONTENT_DEMOTED' => self::DECISION_VISIBILITY_CONTENT_DEMOTED,
+        'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER
     ];
 
     public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary payments suspension, termination or other restriction';
@@ -117,9 +116,9 @@ class Statement extends Model
     public const DECISION_MONETARY_OTHER = 'Other restriction (please specify)';
 
     public const DECISION_MONETARIES = [
-        'DECISION_MONETARY_SUSPENSION' => Statement::DECISION_MONETARY_SUSPENSION,
-        'DECISION_MONETARY_TERMINATION' => Statement::DECISION_MONETARY_TERMINATION,
-        'DECISION_MONETARY_OTHER' => Statement::DECISION_MONETARY_OTHER
+        'DECISION_MONETARY_SUSPENSION' => self::DECISION_MONETARY_SUSPENSION,
+        'DECISION_MONETARY_TERMINATION' => self::DECISION_MONETARY_TERMINATION,
+        'DECISION_MONETARY_OTHER' => self::DECISION_MONETARY_OTHER
     ];
 
     public const LABEL_STATEMENT_DECISION_PROVISION = 'Suspension or termination of the provision of the service';
@@ -128,10 +127,10 @@ class Statement extends Model
     public const DECISION_PROVISION_PARTIAL_TERMINATION = 'Partial termination of the provision of the service';
     public const DECISION_PROVISION_TOTAL_TERMINATION = 'Total termination of the provision of the service';
     public const DECISION_PROVISIONS = [
-        'DECISION_PROVISION_PARTIAL_SUSPENSION' => Statement::DECISION_PROVISION_PARTIAL_SUSPENSION,
-        'DECISION_PROVISION_TOTAL_SUSPENSION' => Statement::DECISION_PROVISION_TOTAL_SUSPENSION,
-        'DECISION_PROVISION_PARTIAL_TERMINATION' => Statement::DECISION_PROVISION_PARTIAL_TERMINATION,
-        'DECISION_PROVISION_TOTAL_TERMINATION' => Statement::DECISION_PROVISION_TOTAL_TERMINATION,
+        'DECISION_PROVISION_PARTIAL_SUSPENSION' => self::DECISION_PROVISION_PARTIAL_SUSPENSION,
+        'DECISION_PROVISION_TOTAL_SUSPENSION' => self::DECISION_PROVISION_TOTAL_SUSPENSION,
+        'DECISION_PROVISION_PARTIAL_TERMINATION' => self::DECISION_PROVISION_PARTIAL_TERMINATION,
+        'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
     public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account.';
@@ -139,8 +138,8 @@ class Statement extends Model
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
     public const DECISION_ACCOUNTS = [
-        'DECISION_ACCOUNT_SUSPENDED' => Statement::DECISION_ACCOUNT_SUSPENDED,
-        'DECISION_ACCOUNT_TERMINATED' => Statement::DECISION_ACCOUNT_TERMINATED
+        'DECISION_ACCOUNT_SUSPENDED' => self::DECISION_ACCOUNT_SUSPENDED,
+        'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED
     ];
 
     public const LABEL_STATEMENT_COUNTRY_LIST = 'Territorial scope of the decision';
@@ -186,16 +185,16 @@ class Statement extends Model
     public const STATEMENT_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (e.g. spam, platform manipulation)';
     public const STATEMENT_CATEGORY_UNCATEGORISED = 'Uncategorised';
     public const STATEMENT_CATEGORIES = [
-        'STATEMENT_CATEGORY_PIRACY' => Statement::STATEMENT_CATEGORY_PIRACY,
-        'STATEMENT_CATEGORY_DISCRIMINATION' => Statement::STATEMENT_CATEGORY_DISCRIMINATION,
-        'STATEMENT_CATEGORY_COUNTERFEIT' => Statement::STATEMENT_CATEGORY_COUNTERFEIT,
-        'STATEMENT_CATEGORY_FRAUD' => Statement::STATEMENT_CATEGORY_FRAUD,
-        'STATEMENT_CATEGORY_TERRORISM' => Statement::STATEMENT_CATEGORY_TERRORISM,
-        'STATEMENT_CATEGORY_CHILD_SAFETY' => Statement::STATEMENT_CATEGORY_CHILD_SAFETY,
-        'STATEMENT_CATEGORY_NON_CONSENT' => Statement::STATEMENT_CATEGORY_NON_CONSENT,
-        'STATEMENT_CATEGORY_MISINFORMATION' => Statement::STATEMENT_CATEGORY_MISINFORMATION,
-        'STATEMENT_CATEGORY_VIOLATION_TOS' => Statement::STATEMENT_CATEGORY_VIOLATION_TOS,
-        'STATEMENT_CATEGORY_UNCATEGORISED' => Statement::STATEMENT_CATEGORY_UNCATEGORISED
+        'STATEMENT_CATEGORY_PIRACY' => self::STATEMENT_CATEGORY_PIRACY,
+        'STATEMENT_CATEGORY_DISCRIMINATION' => self::STATEMENT_CATEGORY_DISCRIMINATION,
+        'STATEMENT_CATEGORY_COUNTERFEIT' => self::STATEMENT_CATEGORY_COUNTERFEIT,
+        'STATEMENT_CATEGORY_FRAUD' => self::STATEMENT_CATEGORY_FRAUD,
+        'STATEMENT_CATEGORY_TERRORISM' => self::STATEMENT_CATEGORY_TERRORISM,
+        'STATEMENT_CATEGORY_CHILD_SAFETY' => self::STATEMENT_CATEGORY_CHILD_SAFETY,
+        'STATEMENT_CATEGORY_NON_CONSENT' => self::STATEMENT_CATEGORY_NON_CONSENT,
+        'STATEMENT_CATEGORY_MISINFORMATION' => self::STATEMENT_CATEGORY_MISINFORMATION,
+        'STATEMENT_CATEGORY_VIOLATION_TOS' => self::STATEMENT_CATEGORY_VIOLATION_TOS,
+        'STATEMENT_CATEGORY_UNCATEGORISED' => self::STATEMENT_CATEGORY_UNCATEGORISED
     ];
 
 
@@ -223,6 +222,7 @@ class Statement extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'uuid' => 'string',
         'start_date' => 'datetime:Y-m-d H:i:s',
         'end_date' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -259,15 +259,32 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statements_index';
+        return 'statement_' . env('APP_ENV');
     }
 
     public function toSearchableArray()
     {
         return [
+            'decision_visibility' => $this->decision_visibility,
+            'decision_monetary' => $this->decision_monetary,
+            'decision_provision' => $this->decision_provision,
+            'decision_account' => $this->decision_account,
+            'decision_ground' => $this->decision_ground,
+            'content_type' => $this->content_type,
+            'content_type_other' => $this->content_type_other,
+            'illegal_content_legal_ground' => $this->illegal_content_legal_ground,
             'illegal_content_explanation' => $this->illegal_content_explanation,
+            'incompatible_content_ground' => $this->incompatible_content_ground,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
-            'decision_facts' => $this->decision_facts
+            'source_type' => $this->source_type,
+            'source' => $this->source,
+            'decision_facts' => $this->decision_facts,
+            'automated_detection' => $this->automated_detection === self::AUTOMATED_DECISION_YES,
+            'automated_decision' => $this->automated_decision === self::AUTOMATED_DECISION_YES,
+            'category' => $this->category,
+            'platform_id' => $this->platform_id,
+            'url' => $this->url,
+            'created_at' => $this->created_at
         ];
     }
 
@@ -276,7 +293,7 @@ class Statement extends Model
      */
     public function getScoutKey(): mixed
     {
-        return $this->uuid;
+        return $this->id;
     }
 
     /**
@@ -284,7 +301,7 @@ class Statement extends Model
      */
     public function getScoutKeyName(): mixed
     {
-        return 'uuid';
+        return 'id';
     }
 
     /**
@@ -310,11 +327,6 @@ class Statement extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-//    public function platform()
-//    {
-//        return $this->hasOneThrough(Platform::class, User::class, 'id', 'id', 'user_id', 'platform_id');
-//    }
 
     public function platform(): \Illuminate\Database\Eloquent\Relations\HasOne
     {

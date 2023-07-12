@@ -139,4 +139,11 @@ return [
         ],
     ],
 
+
+    'opensearch' => [
+        'hosts' => [env('OPENSEARCH_HOST', 'localhost:9200')],
+        'basicAuthentication' => [env('OPENSEARCH_USERNAME', 'admin'), env('OPENSEARCH_PASSWORD', 'admin')],
+        'retries' => env('OPENSEARCH_RETRYS', 2),
+    ],
+
 ];

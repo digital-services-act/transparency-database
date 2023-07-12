@@ -22,7 +22,8 @@
         "spatie/laravel-permission": "^5.9",
         "subfission/cas": "^4.3",
         "symfony/intl": "^6.0",
-        "timwassenburg/laravel-pivot-table-generator": "^1.0"
+        "timwassenburg/laravel-pivot-table-generator": "^1.0",
+        "zing/laravel-scout-opensearch": "^3.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

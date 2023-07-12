@@ -18,11 +18,10 @@ class UserControllerTest extends TestCase
     public function deleting_user_deletes_the_rest()
     {
         $this->seed();
-        Statement::factory()->count(10)->create();
-        /** @var User $user */
-        $user = $this->signIn();
         PermissionsSeeder::resetRolesAndPermissions();
-        $user->assignRole('Admin');
+        /** @var User $user */
+        $user = $this->signInAsAdmin();
+
 
         $this->assertCount(10, Statement::all());
         $total_users_start = User::count();
@@ -36,10 +35,11 @@ class UserControllerTest extends TestCase
         $statement_count = $user->statements()->get()->count(); // at least 1
 
 
-        // delete the platform and assert we deleted
+        // delete the user and assert we deleted
         $this->delete(route('user.destroy', [$user]))->assertRedirect(route('user.index'));
 
-        $this->assertCount(10 - $statement_count, Statement::all());
+        // the statements stay the platform id is in the statements.
+        $this->assertCount(10, Statement::all());
         $this->assertCount($total_users_start - 1, User::all());
 
     }
