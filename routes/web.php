@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 
 /*
@@ -56,4 +57,9 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
 Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
-
+Route::get('/icons.svg', function () {
+    $filePath = asset('/static/media/icons.2d66392b.svg');
+    $mimeType = Storage::mimeType($filePath);
+    $headers = [['Content-Type' => $mimeType]];
+    return response()->file($filePath, $headers);
+});
