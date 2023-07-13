@@ -25,14 +25,14 @@ class StatementStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'decision_visibility' => [ $this->in(array_keys(Statement::DECISION_VISIBILITIES)),'required_without_all:decision_monetary,decision_provision,decision_account'],
+            'decision_visibility' => [$this->in(array_keys(Statement::DECISION_VISIBILITIES), true),'required_without_all:decision_monetary,decision_provision,decision_account','nullable'],
             'decision_visibility_other' => ['required_if:decision_visibility,DECISION_VISIBILITY_OTHER','exclude_unless:decision_visibility,DECISION_VISIBILITY_OTHER'],
 
-            'decision_monetary' => [ $this->in(array_keys(Statement::DECISION_MONETARIES)),'required_without_all:decision_visibility,decision_provision,decision_account'],
+            'decision_monetary' => [$this->in(array_keys(Statement::DECISION_MONETARIES), true),'required_without_all:decision_visibility,decision_provision,decision_account','nullable'],
             'decision_monetary_other' => ['required_if:decision_monetary,DECISION_MONETARY_OTHER','exclude_unless:decision_monetary,DECISION_MONETARY_OTHER'],
 
-            'decision_provision' => [ $this->in(array_keys(Statement::DECISION_PROVISIONS)),'required_without_all:decision_visibility,decision_monetary,decision_account'],
-            'decision_account' => [ $this->in(array_keys(Statement::DECISION_ACCOUNTS)),'required_without_all:decision_visibility,decision_monetary,decision_provision'],
+            'decision_provision' => [$this->in(array_keys(Statement::DECISION_PROVISIONS), true),'required_without_all:decision_visibility,decision_monetary,decision_account','nullable'],
+            'decision_account' => [$this->in(array_keys(Statement::DECISION_ACCOUNTS), true),'required_without_all:decision_visibility,decision_monetary,decision_provision','nullable'],
 
 
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
@@ -59,8 +59,11 @@ class StatementStoreRequest extends FormRequest
         ];
     }
 
-    private function in($array): string
+    private function in($array, $nullable = false): string
     {
+        if ($nullable) {
+            return 'in:null,' . implode(',', $array);
+        }
         return 'in:' . implode(',', $array);
     }
 
