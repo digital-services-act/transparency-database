@@ -61,10 +61,7 @@ class StatementStoreRequest extends FormRequest
 
     private function in($array, $nullable = false): string
     {
-        if ($nullable) {
-            return 'in:null,' . implode(',', $array);
-        }
-        return 'in:' . implode(',', $array);
+        return ($nullable ? 'in:null,' : 'in:') . implode(',', $array);
     }
 
     /**
