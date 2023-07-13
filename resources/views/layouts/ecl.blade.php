@@ -74,7 +74,7 @@
     </div>
 
 
-
+<script src="https://unpkg.com/svg4everybody@2.1.9/dist/svg4everybody.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
@@ -83,6 +83,7 @@
     crossorigin="anonymous"
 ></script>
 <script>
+    svg4everybody({polyfill: true});
     @if($ecl_init)
         ECL.autoInit();
     @endif
