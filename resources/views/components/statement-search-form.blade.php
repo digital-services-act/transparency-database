@@ -88,15 +88,6 @@
                 :options="$options['categories']"
         />
 
-        <x-ecl.checkboxes
-                label="Platform Type"
-                justlabel="true"
-                name="platform_type"
-                id="platform_type"
-                :default="request()->get('platform_type', [])"
-                :options="$options['platform_types']"
-        />
-
         <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
                                justlabel="true"
                                :options="$options['countries']" :default="request()->get('countries_list', [])"
@@ -144,6 +135,10 @@
 
         <x-ecl.datepicker label="Created End" id="created_at_end" justlabel="true"
                           name="created_at_end" :value="request()->get('created_at_end', '')"/>
+
+        @if(request()->get('search'))
+            <input type="hidden" name="search" value="{{ request()->get('search') }}" />
+        @endif
 
         <x-ecl.button label="search"/>
 

@@ -1,0 +1,17 @@
+id: 40918
+name: DSA-POC
+default-environment: dev
+environments:
+  dev:
+    database: dsa-dev-serverless
+    domain: dev.sor.dsa.ec.europa.eu
+    load-balancer: dsa-dev-lb
+    network: vapor-network-1673505770
+    memory: 1024
+    cli-memory: 512
+    runtime: 'php-8.2:al2-arm'
+    storage: sor-dsa-m2-dev
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'php artisan event:cache'
+

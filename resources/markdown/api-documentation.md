@@ -156,6 +156,10 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+###  Decision Visibility Other (decision_visibility_other)
+
+This is required if DECISION_VISIBILITY_OTHER was the decision_visibility.
+
 ### Monetary payments suspension, termination or other restriction (decision_monetary)
 
 This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
@@ -175,9 +179,9 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-###  Monetary payments suspension, termination or other restriction other (decision_monetary_other)
+###  Decision Monetary Other (decision_monetary_other)
 
-This is required if MONETARY_OTHER was the decision_monetary. 
+This is required if DECISION_MONETARY_OTHER was the decision_monetary. 
 
 ### Decision about the provisioning of the service (decision_provision)
 
@@ -366,3 +370,109 @@ This indicates to us that decision carried out automatically.
 
 This is a required attribute.
 This contains the URL to the data that has been moderated.
+
+
+## Errors
+
+When a call to the API has been made AND there was an error in the call you may 
+expect the following to occur:
+
+- You will NOT receive a HTTP Status Code ```201 Created```.
+- The statement of reason has NOT been created.
+- You receive back a payload that has more information in it.
+
+For Ex,
+
+You made an API with a blank JSON payload
+
+```javascript
+{}
+```
+
+The HTTP Status code coming back will be ```422 Unproccessable Content```
+
+The payload body will be a JSON object containing more information and the errors in the API call.
+
+```javascript
+{
+    "message": "The decision visibility field is required when none of decision monetary / decision provision / decision account are present. (and 13 more errors)",
+    "errors": {
+        "decision_visibility": [
+            "The decision visibility field is required when none of decision monetary / decision provision / decision account are present."
+        ],
+        "decision_monetary": [
+            "The decision monetary field is required when none of decision visibility / decision provision / decision account are present."
+        ],
+        "decision_provision": [
+            "The decision provision field is required when none of decision visibility / decision monetary / decision account are present."
+        ],
+        "decision_account": [
+            "The decision account field is required when none of decision visibility / decision monetary / decision provision are present."
+        ],
+        "decision_ground": [
+            "The decision ground field is required."
+        ],
+        "content_type": [
+            "The content type field is required."
+        ],
+        "category": [
+            "The category field is required."
+        ],
+        "start_date": [
+            "The start date field is required."
+        ],
+        "decision_facts": [
+            "The decision facts field is required."
+        ],
+        "source_type": [
+            "The source type field is required."
+        ],
+        "source": [
+            "The source field is required when source type is a notice submission."
+        ],
+        "automated_detection": [
+            "The automated detection field is required."
+        ],
+        "automated_decision": [
+            "The automated decision field is required."
+        ],
+        "url": [
+            "The url field is required."
+        ]
+    }
+}
+```
+
+The error messages for the individual fields will vary depending on what was attempted.
+
+Such as the following:
+
+If you sent 
+```
+{
+    ...
+    "automated_decision":"maybe"
+    ...
+}
+```
+
+"Maybe" is not a valid value for automated_decision. (only "Yes" or "No")
+
+```javascript
+{
+    "message": "The selected automated decision is invalid.",
+    "errors": {
+        "automated_decision": [
+            "The selected automated decision is invalid."
+        ]
+    }
+}
+```
+
+Another common error that may occur when calling the API is the authorization token is not valid.
+
+This will result in a HTTP status code of ```401 Unauthorized```
+
+The API authorization token needs to be double checked or a new API authorization token needs to be
+generated. See again the section above: [Your API Token](#your-api-token)
+

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Models\Platform;
 use App\Models\Statement;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -28,7 +30,6 @@ class StatementAPIControllerTest extends TestCase
             'decision_visibility' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
             'category' => 'STATEMENT_CATEGORY_FRAUD',
-            'platform_type' => 'SOCIAL_MEDIA',
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',
@@ -39,7 +40,6 @@ class StatementAPIControllerTest extends TestCase
             'content_type' => 'CONTENT_TYPE_VIDEO',
             'automated_detection' => 'No',
             'automated_decision' => 'No',
-            'user_id' => 1,
             'start_date' => '03-01-2023'
         ];
     }
@@ -50,13 +50,19 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_show_works()
     {
-        $this->signInAsAdmin();
-        $this->statement = Statement::create($this->required_fields);
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
         $response = $this->get(route('api.v1.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_OK);
         $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
+        $this->assertEquals($this->statement->uuid, $response->json('uuid'));
     }
 
     /**
@@ -64,7 +70,11 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_show_requires_auth()
     {
-        $this->statement = Statement::create($this->required_fields);
+        $this->setUpFullySeededDatabase();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = User::all()->random()->first()->id;
+        $attributes['platform_id'] = Platform::all()->random()->first()->id;
+        $this->statement = Statement::create($attributes);
         $response = $this->get(route('api.v1.statement.show', [$this->statement]), [
             'Accept' => 'application/json'
         ]);
@@ -76,8 +86,7 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_store_requires_auth()
     {
-        $this->seed();
-
+        $this->setUpFullySeededDatabase();
         // Not signing in.
         $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
@@ -91,8 +100,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_store_works()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
+
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
@@ -118,8 +128,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function api_statement_json_store_works()
     {
-        $this->seed();
+        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
+
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'start_date' => '2023-01-03 00:00:00',
@@ -161,7 +172,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function request_rejects_bad_countries()
     {
-        $this->signInAsAdmin();
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
         $fields = array_merge($this->required_fields, [
             'countries_list' => ['XY', 'ZZ'],
         ]);
@@ -177,7 +190,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_illegal_content()
     {
-        $this->signInAsAdmin();
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
         $extra_fields = [
             'incompatible_content_ground' => 'foobar',
             'incompatible_content_explanation' => 'foobar2',
@@ -198,7 +213,9 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_does_not_save_optional_fields_non_related_to_incompatible_content()
     {
-        $this->signInAsAdmin();
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
         $extra_fields = [
             'decision_ground' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT',
             'incompatible_content_ground' => 'foobar',

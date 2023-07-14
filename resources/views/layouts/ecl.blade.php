@@ -55,6 +55,9 @@
                     @if(session('success'))
                         <x-ecl.message type="success" icon="success" title="Success" :message="session('success')"/>
                     @endif
+                    @if(session('error'))
+                        <x-ecl.message type="error" icon="error" title="Error" :message="session('error')"/>
+                    @endif
 
                     @if ($errors->any())
                         <x-ecl.message type="error" icon="error" title="Errors" :message="$errors->all()"/>
@@ -71,7 +74,7 @@
     </div>
 
 
-<script src="https://unpkg.com/svg4everybody@2.1.9/dist/svg4everybody.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
@@ -80,11 +83,13 @@
     crossorigin="anonymous"
 ></script>
 <script>
-    svg4everybody({polyfill: true});
     @if($ecl_init)
         ECL.autoInit();
     @endif
 </script>
+@if(env('SITEID', false) && env('SITEPATH', false))
+<script type="application/json">{"utility":"analytics","siteID":"{{ env('SITEID') }}","sitePath":["{{ env('SITEPATH') }}"],"instance":"ec"}</script>
+@endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
 </body>
 </html>

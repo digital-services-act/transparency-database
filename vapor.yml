@@ -1,41 +1,13 @@
-id: 40918
-name: DSA-POC
-default-environment: dev
+id: 49448
+name: dsa-acc
 environments:
-    acc:
-        database: dsa-acc
-        memory: 1024
-        cli-memory: 512
-        runtime: 'php-8.2:al2-arm'
-        storage: sor-dsa-m2-acc
-        build:
-            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
-            - 'php artisan event:cache'
-    dev:
-        database: dsa-dev
-        memory: 1024
-        cli-memory: 512
-        runtime: 'php-8.2:al2-arm'
-        storage: sor-dsa-m2-dev
-        build:
-            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
-            - 'php artisan event:cache'
     production:
-        balancer: dsa-prod-load-balancer
-        database: dsa-serverless
-        domain: digital.services-act.eu
-        memory: 1024
+        database: acc-serverless-db-eu
+        domain: acc.sor.dsa.ec.europa.eu
+        network: vapor-network-1686047238
+        memory: 2048
         cli-memory: 512
-        runtime: 'php-8.1:al2'
-        storage: sor-dsa-m2-production
-        build:
-            - 'composer install'
-    staging:
-        database: staging-serverless
-        memory: 1024
-        cli-memory: 512
-        runtime: 'php-8.1:al2'
-        storage: sor-dsa-m2-staging
+        runtime: 'php-8.2:al2-arm'
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'

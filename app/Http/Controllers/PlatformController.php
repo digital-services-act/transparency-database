@@ -64,11 +64,15 @@ class PlatformController extends Controller
 
         ])->toArray();
 
+        if ($validated['name'] == Platform::LABEL_DSA_TEAM)
+        {
+            return redirect()->route('platform.index')->with('error', 'You can not create a platform with the name "'.Platform::LABEL_DSA_TEAM.'"');
+        }
+
         /** @var Platform $platform */
         $platform = Platform::create([
             'name' => $validated['name'],
             'url' => $validated['url'],
-            'type' => $validated['type'],
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
@@ -112,12 +116,17 @@ class PlatformController extends Controller
      */
     public function update(PlatformUpdateRequest $request, Platform $platform): RedirectResponse
     {
+        $dsaPlatform = Platform::getDsaPlatform();
+
+        if ($platform->id == $dsaPlatform->id) {
+            return redirect()->route('platform.index')->with('error', 'You may never delete/change the DSA Platform');
+        }
+
         $validated = $request->safe()->merge([
 
         ])->toArray();
         $platform->name = $validated['name'];
         $platform->url = $validated['url'];
-        $platform->type = $validated['type'];
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');
     }
@@ -131,18 +140,28 @@ class PlatformController extends Controller
      */
     public function destroy(Platform $platform): RedirectResponse
     {
-        $platform->statements()->delete();
+        $dsaPlatform = Platform::getDsaPlatform();
+
+        if ($platform->id == $dsaPlatform->id) {
+            return redirect()->route('platform.index')->with('error', 'You may never delete/change the DSA Platform');
+        }
+        // Change all statements to DSA
+        $platform->statements()->update(['platform_id' => $dsaPlatform->id]);
+
+        // Delete all the users
         $platform->users()->delete();
+
         // delete the platform.
         $platform->delete();
+
         // Carry on
         return redirect()->route('platform.index')->with('success', 'The platform has been deleted');
     }
 
     private function prepareOptions(): array
     {
-        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
 
-        return compact('platform_types');
+
+        return [];
     }
 }
