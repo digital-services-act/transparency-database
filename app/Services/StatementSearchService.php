@@ -123,13 +123,18 @@ class StatementSearchService
     private function applySFilter(string $filter_value): string
     {
         $textfields = [
+            'decision_visibility_other',
+            'decision_monetary_other',
             'illegal_content_legal_ground',
             'illegal_content_explanation',
             'incompatible_content_ground',
             'incompatible_content_explanation',
             'decision_facts',
             'content_type_other',
-            'url'
+            'source',
+            'url',
+            'uuid',
+            'puid',
         ];
 
         $ors = [];

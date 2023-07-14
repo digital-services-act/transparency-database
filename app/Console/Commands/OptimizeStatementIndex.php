@@ -259,6 +259,54 @@ class OptimizeStatementIndex extends Command
                                         ]
                                 ]
                         ],
+                    'uuid'                           =>
+                        [
+                            'type'   => 'text',
+                            'fields' =>
+                                [
+                                    'keyword' =>
+                                        [
+                                            'type'         => 'keyword',
+                                            'ignore_above' => 256,
+                                        ]
+                                ]
+                        ],
+                    'puid'                           =>
+                        [
+                            'type'   => 'text',
+                            'fields' =>
+                                [
+                                    'keyword' =>
+                                        [
+                                            'type'         => 'keyword',
+                                            'ignore_above' => 256,
+                                        ]
+                                ]
+                        ],
+                    'decision_visibility_other'                           =>
+                        [
+                            'type'   => 'text',
+                            'fields' =>
+                                [
+                                    'keyword' =>
+                                        [
+                                            'type'         => 'keyword',
+                                            'ignore_above' => 256,
+                                        ]
+                                ]
+                        ],
+                    'decision_monetary_other'                           =>
+                        [
+                            'type'   => 'text',
+                            'fields' =>
+                                [
+                                    'keyword' =>
+                                        [
+                                            'type'         => 'keyword',
+                                            'ignore_above' => 256,
+                                        ]
+                                ]
+                        ],
                 ]
         ];
 

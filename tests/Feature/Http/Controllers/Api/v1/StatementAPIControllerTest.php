@@ -33,6 +33,7 @@ class StatementAPIControllerTest extends TestCase
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',
+            'puid' => 'TK421',
             'countries_list' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
             'source' => 'foo',
