@@ -316,7 +316,7 @@ Allowed values are:
 
 ### Start Date (start_date)
 
-This is the date and time that this decision took place. The date needs to take the form of:
+This is the date and time that this decision starts from. The date needs to take the form of:
 
 ```YYYY-MM-DD HH:MM:SS```
 
@@ -368,8 +368,9 @@ This indicates to us that decision carried out automatically.
 
 ### URL (url)
 
-This is a required attribute.
-This contains the URL to the data that has been moderated.
+This is a required attribute. This contains the URL/URI to the data that has been moderated.
+In cases where there is no URL or it is non applicable please supply "N/A". Additionally take
+care to redact any personal identifying information.
 
 
 ## Errors
@@ -469,10 +470,17 @@ If you sent
 }
 ```
 
-Another common error that may occur when calling the API is the authorization token is not valid.
+Another common error that may occur when calling the API is that the authorization token is not valid.
 
 This will result in a HTTP status code of ```401 Unauthorized```
 
 The API authorization token needs to be double checked or a new API authorization token needs to be
 generated. See again the section above: [Your API Token](#your-api-token)
 
+In addition to the common ```422``` and ```401``` errors, Any of the standard 4XX HTTP can be
+encountered. 4XX statuses generally indicate that there is an issue with your request. Please try to 
+troubleshoot and resolve the problem.
+
+When there is an error of 5XX we are immediately notified and there no need 
+to report the issue.
+ 
