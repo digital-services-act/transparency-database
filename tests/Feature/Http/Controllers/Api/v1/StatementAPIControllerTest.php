@@ -231,4 +231,29 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->illegal_content_legal_ground);
         $this->assertNull($statement->illegal_content_explanation);
     }
+
+    /**
+     * @test
+     */
+    public function store_requires_url_but_does_not_force_url()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $response = $this->post(route('api.v1.statement.store'), ['url' => ''], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $json = $response->json();
+        $this->assertNotNull($json['errors']);
+        $this->assertNotNull($json['errors']['url']);
+
+        $response = $this->post(route('api.v1.statement.store'), ['url' => 'not empty'], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $json = $response->json();
+        $this->assertNotNull($json['errors']);
+        $this->assertArrayNotHasKey('url', $json['errors']);
+    }
 }
