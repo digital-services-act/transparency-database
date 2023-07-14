@@ -292,6 +292,8 @@ class StatementAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $count_before = Statement::all()->count();
+
         Log::shouldReceive('error')
            ->once()
            ->withArgs(function ($message) {
@@ -302,5 +304,9 @@ class StatementAPIControllerTest extends TestCase
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
+
+        $count_after = Statement::all()->count();
+
+        $this->assertEquals($count_after, $count_before);
     }
 }
