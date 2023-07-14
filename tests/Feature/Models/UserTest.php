@@ -24,11 +24,11 @@ class UserTest extends TestCase
             'email' => "invited@testing.org",
         ]);
 
-        $this->assertNull($user->getInvitation());
+        $this->assertNull($user->invitation);
 
         Invitation::factory()->create(['email' => $user->email]);
 
-        $this->assertNotNull($user->getInvitation());
+        $this->assertNotNull($user->fresh()->invitation);
 
     }
 }

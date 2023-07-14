@@ -56,5 +56,29 @@ class InvitationTest extends TestCase
 
     }
 
+    /**
+     * @return void
+     * @test
+     */
+    public function non_invited_user_should_not_have_contributor_rights_after_login(): void
+    {
+        $this->setUpFullySeededDatabase();
+
+        $user = User::factory()->create([
+            'email' => "not_invited@testing.org",
+        ]);
+
+        Invitation::factory()->create(['email' => 'invited@testing.org']);
+
+        $this->signIn($user);
+        $user->acceptInvitation();
+
+        $response = $this->get(route('dashboard'));
+        $response->assertForbidden();
+
+
+
+    }
+
 
 }

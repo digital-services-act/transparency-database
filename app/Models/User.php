@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Services\InvitationService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -76,18 +78,11 @@ class User extends Authenticatable
         return $user;
     }
 
-    public function getInvitation() : ?Invitation{
-        return  Invitation::firstWhere([
-            'email' => $this->email
-        ]);
-    }
 
     public function acceptInvitation(): bool
     {
-
-        $invitation = $this->getInvitation();
-
-        if(is_null($invitation)) return false;
+        $invitation = $this->invitation;
+        if (is_null($invitation)) return false;
 
         if ($this->email !== $invitation->email) return false;
 
@@ -116,13 +111,18 @@ class User extends Authenticatable
         session()->forget('impersonate');
     }
 
-    public function platform()
+    public function platform(): HasOne
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
 
-    public function statements()
+    public function statements() : HasMany
     {
         return $this->hasMany(Statement::class, 'user_id', 'id');
+    }
+
+    public function invitation() : HasOne
+    {
+        return $this->hasOne(Invitation::class, 'email', 'email');
     }
 }

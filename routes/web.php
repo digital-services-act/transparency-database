@@ -28,6 +28,7 @@ Route::middleware(['cas.auth'])->group(function() {
     Route::group(['middleware' => ['can:administrate']], function(){
         Route::resource('role', \App\Http\Controllers\RoleController::class);
         Route::resource('permission', \App\Http\Controllers\PermissionController::class);
+        Route::resource('invitation', App\Http\Controllers\InvitationController::class);
         Route::resource('user', \App\Http\Controllers\UserController::class);
         Route::resource('platform', \App\Http\Controllers\PlatformController::class);
     });
@@ -57,4 +58,7 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
 Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
+
+
+
 
