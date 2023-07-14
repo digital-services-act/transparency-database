@@ -129,7 +129,7 @@ These urls are present in the response after creating as the "uuid", "permalink"
 
 The attributes of the statement take on two main forms.
 
-* free textual, limited to 500 characters.
+* free textual
 * limited, the value provided needs to be one of the allowed options
 
 When submitting statements please take care to not submit ANY personal data. On a
@@ -160,6 +160,8 @@ The value provided must be one of the following:
 
 This is required if DECISION_VISIBILITY_OTHER was the decision_visibility.
 
+Limited to 500 characters.
+
 ### Monetary payments suspension, termination or other restriction (decision_monetary)
 
 This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
@@ -182,6 +184,8 @@ The value provided must be one of the following:
 ###  Decision Monetary Other (decision_monetary_other)
 
 This is required if DECISION_MONETARY_OTHER was the decision_monetary. 
+
+Limited to 500 characters.
 
 ### Decision about the provisioning of the service (decision_provision)
 
@@ -223,7 +227,10 @@ The value provided must be one of the following:
 
 ### Facts and circumstances relied on in taking the decision (decision_facts)
 
-This is a required textual field to describe the facts and circumstances relied on in taking the decision.
+This is a required textual field to describe the facts and circumstances relied on in 
+taking the decision.
+
+Limited to 5000 characters.
 
 ### Decision Grounds (decision_ground)
 
@@ -245,21 +252,29 @@ This is a required field and tells us the basis on which the decision was taken.
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 It is the legal grounds relied on.
 
+Limited to 500 characters.
+
 ### Illegal Content Explanation (illegal_content_explanation)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 This is a small text that explains why the content was illegal.
+
+Limited to 2000 characters.
 
 ### Incompatible Content Grounds (incompatible_content_ground)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 It is the reference to contractual grounds.
 
+Limited to 500 characters.
+
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 This is a small text that explains why the content is
 considered as incompatible on that grounds.
+
+Limited to 2000 characters.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
 
@@ -287,6 +302,8 @@ The value provided must be one of the following:
 
 This is required if CONTENT_TYPE_OTHER was the content_type.
 It is a content type that is not text, video or an image.
+
+Limited to 500 characters.
 
 ### Category (category)
 
@@ -354,6 +371,7 @@ The value provided must be one of the following:
 
 This is a required field if the source type field was a notice.
 
+Limited to 500 characters.
 
 ### Automated Detection (automated_detection)
 
@@ -372,6 +390,7 @@ This is a required attribute. This contains the URL/URI to the data that has bee
 In cases where there is no URL or it is non applicable please supply "N/A". Additionally take
 care to redact any personal identifying information.
 
+Limited to 500 characters.
 
 ## Errors
 
