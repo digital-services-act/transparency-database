@@ -392,6 +392,11 @@ care to redact any personal identifying information.
 
 Limited to 500 characters.
 
+### Platform Unique Identifier (puid)
+
+This is a string that uniquely identifies this statement within the platform.
+This attribute is required and it must be unique within your platform.
+
 ## Errors
 
 When a call to the API has been made AND there was an error in the call you may 

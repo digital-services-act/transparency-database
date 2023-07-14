@@ -199,6 +199,7 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_URL = 'URL/Hyperlink';
+    public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
     public const LABEL_STATEMENT_START_DATE = 'Start date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';

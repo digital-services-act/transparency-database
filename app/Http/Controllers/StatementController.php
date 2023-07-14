@@ -10,12 +10,14 @@ use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use stdClass;
 
 
@@ -150,16 +152,28 @@ class StatementController extends Controller
             'method' => Statement::METHOD_FORM
         ])->toArray();
 
-
-//        $validated['date_sent'] = $this->sanitizeDate($validated['date_sent'] ?? null);
-//        $validated['date_enacted'] = $this->sanitizeDate($validated['date_enacted'] ?? null);
         $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
 
-        $statement = Statement::create($validated);
+        try {
+            Statement::create($validated);
+        } catch (QueryException $e) {
+            if (
+                str_contains($e->getMessage(), 'Integrity constraint violation: 1062 Duplicate entry') &&
+                str_contains($e->getMessage(), "for key 'statements_platform_id_puid_unique'")
+            ) {
+                return back()->withInput()->withErrors([
+                    'puid' => [
+                        'The identifier given is not unique within this platform.'
+                    ]
+                ]);
+            } else {
+                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+                back()->withInput()->withErrors(['exception' => 'An uncaught exception was thrown, support has been notified.']);
+            }
+        }
 
-        $url = route('statement.show', [$statement]);
-        return redirect()->route('statement.index')->with('success', 'The statement has been created: <a href="' . $url . '">' . $statement->title . '</a>');
+        return redirect()->route('statement.index')->with('success', 'The statement has been created.');
     }
 
     private function sanitizeDate($date): ?string
