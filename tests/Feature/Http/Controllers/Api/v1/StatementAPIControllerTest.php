@@ -294,6 +294,7 @@ class StatementAPIControllerTest extends TestCase
 
         $count_before = Statement::all()->count();
 
+        // Check that a SQLITE error was caught and thrown...
         Log::shouldReceive('error')
            ->once()
            ->withArgs(function ($message) {
