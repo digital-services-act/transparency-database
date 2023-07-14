@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\InvitationService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,6 +74,36 @@ class User extends Authenticatable
             $attributes
         );
         return $user;
+    }
+
+    public function getInvitation() : ?Invitation{
+        return  Invitation::firstWhere([
+            'email' => $this->email
+        ]);
+    }
+
+    public function acceptInvitation(): bool
+    {
+
+        $invitation = $this->getInvitation();
+
+        if(is_null($invitation)) return false;
+
+        if ($this->email !== $invitation->email) return false;
+
+        // Link user to the platform
+        $this->platform_id = $invitation->platform_id;
+
+        // Give Contributor rights to the user
+        $this->assignRole('Contributor');
+
+        $this->save();
+
+        // Delete the invitation
+        $invitation->delete();
+
+        return true;
+
     }
 
     public function setImpersonating($id)
