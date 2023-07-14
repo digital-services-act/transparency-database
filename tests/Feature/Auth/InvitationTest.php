@@ -52,7 +52,27 @@ class InvitationTest extends TestCase
         $response = $this->get(route('dashboard'));
         $response->assertOk();
 
+    }
 
+    /**
+     * @return void
+     * @test
+     */
+    public function invited_user_with_mixedcase_email_should_have_contributor_rights_after_login(): void
+    {
+        $this->setUpFullySeededDatabase();
+
+        $user = User::factory()->create([
+            'email' => "invited@TESTING.org",
+        ]);
+
+        Invitation::factory()->create(['email' => 'invited@testing.org']);
+
+        $this->signIn($user);
+        $user->acceptInvitation();
+
+        $response = $this->get(route('dashboard'));
+        $response->assertOk();
 
     }
 

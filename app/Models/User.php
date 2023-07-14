@@ -78,13 +78,23 @@ class User extends Authenticatable
         return $user;
     }
 
+    //We do not use the laravel eloquent relationship as EU Login emails are mix of uppercase and lowercase
+    //Mysql is case-insensitive but not sqlite.
+
+    public function getInvitation() : ?Invitation{
+        return  Invitation::firstWhere([
+            'email' => strtolower($this->email)
+        ]);
+    }
 
     public function acceptInvitation(): bool
     {
-        $invitation = $this->invitation;
+        $invitation = $this->getInvitation();
+
         if (is_null($invitation)) return false;
 
-        if ($this->email !== $invitation->email) return false;
+        if (strtolower($this->email) !== strtolower($invitation->email)) return false;
+
 
         // Link user to the platform
         $this->platform_id = $invitation->platform_id;
