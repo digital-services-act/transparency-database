@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 
 /*
@@ -44,8 +43,6 @@ Route::middleware(['cas.auth'])->group(function() {
 
 });
 
-
-
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -58,7 +55,5 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
 Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
-
-
 
 
