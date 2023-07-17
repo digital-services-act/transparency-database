@@ -72,7 +72,8 @@ Example JSON payload body:
     "source": "foomen",
     "automated_detection": "No",
     "automated_decision": "No",
-    "url": "https://theurl.com"
+    "url": "https://theurl.com",
+    "puid": "TK421"
 }
 ```
 
@@ -107,6 +108,7 @@ You will also receive a payload with the statement as created in the database:
     "automated_detection": "No",
     "automated_decision": "No",
     "url": "https://theurl.com",
+    "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "created_at": "2023-06-08T20:02:50.000000Z",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
@@ -463,6 +465,9 @@ The payload body will be a JSON object containing more information and the error
         ],
         "url": [
             "The url field is required."
+        ],
+        "puid": [
+            "The puid field is required."
         ]
     }
 }
