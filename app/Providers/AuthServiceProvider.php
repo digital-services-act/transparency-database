@@ -30,7 +30,10 @@ class AuthServiceProvider extends ServiceProvider
         Auth::viaRequest('eu-login', function ($request) {
             if (session()->get('cas_user')) {
                 if (cas()->isAuthenticated()) {
-                    return User::firstOrCreateByAttributes(cas()->getAttributes());
+                    $user =  User::firstOrCreateByAttributes(cas()->getAttributes());
+
+                    $user->acceptInvitation();
+                    return $user;
                 } else return null;
             } else return null;
         });
