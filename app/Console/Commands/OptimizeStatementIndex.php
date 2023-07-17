@@ -32,6 +32,7 @@ class OptimizeStatementIndex extends Command
     {
         if (env('SCOUT_DRIVER', '') !== 'opensearch')
         {
+            $this->error('opensearch is not the SCOUT_DRIVER');
             return;
         }
 
