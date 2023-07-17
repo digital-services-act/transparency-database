@@ -35,34 +35,27 @@ class StatementFactory extends Factory
         $end_date = $end_date->format('Y-n-j') . ' 00:00:00';
 
         $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
-
         $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
 
-        $full_statement = true;//random_int(1, 10) > 9;
-
         $decision_ground = $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS));
-
-
 
         return [
 
             'decision_visibility' => $this->faker->randomElement(array_keys(Statement::DECISION_VISIBILITIES)),
-            'decision_visibility_other' => $full_statement ? $this->faker->text(100): null,
+            'decision_visibility_other' => $this->faker->text(100),
 
             'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),
-            'decision_monetary_other' => $full_statement ? $this->faker->text(100): null,
+            'decision_monetary_other' => $this->faker->text(100),
 
             'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISION_PROVISIONS)),
             'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISION_ACCOUNTS)),
 
-
             'decision_ground' => $decision_ground,
 
             'content_type' => $this->faker->randomElement(array_keys(Statement::CONTENT_TYPES)),
-            'content_type_other' => $full_statement ? $this->faker->text(100): null,
+            'content_type_other' => $this->faker->text(100),
 
             'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
-
 
             'illegal_content_legal_ground' => $decision_ground === 'DECISION_GROUND_ILLEGAL_CONTENT' ? $this->faker->realText(100) : null,
             'illegal_content_explanation' => $decision_ground === 'DECISION_GROUND_ILLEGAL_CONTENT' ? $this->faker->realText(500) : null,
@@ -72,7 +65,8 @@ class StatementFactory extends Factory
 
             'incompatible_content_illegal' => $this->faker->randomElement(Statement::INCOMPATIBLE_CONTENT_ILLEGALS),
 
-            'url' => $full_statement ? $this->faker->url : 'n/a',
+            'url' => $this->faker->url,
+            'puid' => $this->faker->uuid,
 
             'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
 
@@ -80,9 +74,9 @@ class StatementFactory extends Factory
             'end_date' => $end_date,
 
             'source_type' => $this->faker->randomElement(array_keys(Statement::SOURCE_TYPES)),
-            'source' => $full_statement ? $this->faker->text(100) : null,
+            'source' => $this->faker->text(100),
 
-            'decision_facts' => $full_statement ? $this->faker->realText(500) : 'n/a',
+            'decision_facts' => $this->faker->realText(1000),
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
             'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),

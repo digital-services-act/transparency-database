@@ -142,6 +142,10 @@
 
 <hr>
 
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_PUID" name="puid" id="puid" required="true"/>
+
+<hr>
+
 <script type="text/javascript">
 
   let form = ge("create-statement-form");

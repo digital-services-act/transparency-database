@@ -29,6 +29,7 @@ class StatementControllerTest extends TestCase
         'illegal_content_explanation' => 'bar',
         'countries_list' => ['BE','FR'],
         'url' => 'https://www.test.com',
+        'puid' => 'THX1138',
         'start_date' => '03-01-2023',
         'end_date' => '13-01-2023',
         'source_type' => 'SOURCE_ARTICLE_16',

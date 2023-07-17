@@ -199,6 +199,7 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_URL = 'URL/Hyperlink';
+    public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
     public const LABEL_STATEMENT_START_DATE = 'Start date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
@@ -266,7 +267,9 @@ class Statement extends Model
     {
         return [
             'decision_visibility' => $this->decision_visibility,
+            'decision_visibility_other' => $this->decision_visibilit_othery,
             'decision_monetary' => $this->decision_monetary,
+            'decision_monetary_other' => $this->decision_monetary_other,
             'decision_provision' => $this->decision_provision,
             'decision_account' => $this->decision_account,
             'decision_ground' => $this->decision_ground,
@@ -284,7 +287,9 @@ class Statement extends Model
             'category' => $this->category,
             'platform_id' => $this->platform_id,
             'url' => $this->url,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'uuid' => $this->uuid,
+            'puid' => $this->puid
         ];
     }
 

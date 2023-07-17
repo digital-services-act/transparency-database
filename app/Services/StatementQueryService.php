@@ -67,9 +67,18 @@ class StatementQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
+        $query->orWhere('incompatible_content_ground', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('incompatible_content_explanation', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('illegal_content_legal_ground', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('illegal_content_explanation', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('decision_facts', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('uuid', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('puid', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('source', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('url', 'LIKE', '%' . $filter_value . '%');
     }
 
     /**

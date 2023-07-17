@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\StatementQueryService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class StatementAPIController extends Controller
 {
@@ -34,7 +36,32 @@ class StatementAPIController extends Controller
             ]
         )->toArray();
 
-        $statement = Statement::create($validated);
+        try {
+            $statement = Statement::create($validated);
+        } catch (QueryException $e) {
+            if (
+                str_contains($e->getMessage(), 'Integrity constraint violation: 1062 Duplicate entry') &&
+                str_contains($e->getMessage(), "for key 'statements_platform_id_puid_unique'")
+            ) {
+                $errors = [
+                    'puid' => [
+                        'The identifier given is not unique within this platform.'
+                    ]
+                ];
+                $message = 'The identifier given is not unique within this platform.';
+
+                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {
+                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+                $errors = [
+                    'uncaught_exception' => [
+                        'Statement Creation Query Exception Thrown: ' . $e->getMessage()
+                    ]
+                ];
+                $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
+                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
 
         return response()->json($statement, Response::HTTP_CREATED);
     }

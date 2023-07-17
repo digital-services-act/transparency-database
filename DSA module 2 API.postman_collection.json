@@ -50,7 +50,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"category\": \"PIRACY\",\n    \"url\": \"https://theurl.com\"\n}",
+					"raw": "{\n    \"decision_visibility\": \"DECISION_VISIBILITY_CONTENT_DISABLED\",\n    \"decision_monetary\": \"DECISION_MONETARY_TERMINATION\",\n    \"decision_provision\": \"DECISION_PROVISION_TOTAL_SUSPENSION\",\n    \"decision_account\": \"DECISION_ACCOUNT_SUSPENDED\",\n    \"decision_ground\": \"DECISION_GROUND_INCOMPATIBLE_CONTENT\",\n    \"content_type\": \"CONTENT_TYPE_VIDEO\",\n    \"category\": \"STATEMENT_CATEGORY_FRAUD\",\n    \"illegal_content_legal_ground\": \"illegal content legal grounds\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content grounds\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"incompatible_content_illegal\": \"Yes\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"start_date\": \"2022-12-01 17:52:24\",\n    \"decision_facts\": \"facts about the decision\",\n    \"source_type\": \"SOURCE_TRUSTED_FLAGGER\",\n    \"source\": \"foomen\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"Yes\",\n    \"url\": \"https://theurl.com\",\n    \"puid\": \"{{$randomUUID}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -181,14 +181,7 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", () => {",
 							"  pm.response.to.have.status(200);",
-							"});",
-							"",
-							"",
-							"pm.test('The response statement was the correct id', ()=>{",
-							"  const responseJson = pm.response.json();",
-							"  pm.expect(responseJson.statement.id).to.eql(pm.environment.get('statement_id'));",
-							"});",
-							""
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -223,8 +216,7 @@
 					"variable": [
 						{
 							"key": "statement_uuid",
-							"value": "{{statement_uuid}}",
-							"description": "The uuid that identifies each statement"
+							"value": "{{statement_uuid}}"
 						}
 					]
 				},

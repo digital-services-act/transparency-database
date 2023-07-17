@@ -55,6 +55,7 @@ class StatementStoreRequest extends FormRequest
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(Statement::AUTOMATED_DECISIONS)],
             'url' => ['required','max:500'],
+            'puid' => ['required','max:500'],
         ];
     }
 

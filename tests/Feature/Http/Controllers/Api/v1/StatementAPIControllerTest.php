@@ -5,10 +5,12 @@ namespace Tests\Feature\Http\Controllers\Api\v1;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
@@ -33,6 +35,7 @@ class StatementAPIControllerTest extends TestCase
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',
+            'puid' => 'TK421',
             'countries_list' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
             'source' => 'foo',
@@ -255,5 +258,56 @@ class StatementAPIControllerTest extends TestCase
         $json = $response->json();
         $this->assertNotNull($json['errors']);
         $this->assertArrayNotHasKey('url', $json['errors']);
+    }
+
+    /**
+     * @test
+     */
+    public function store_enforces_puid_uniqueness()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $response = $this->post(route('api.v1.statement.store'), ['puid' => ''], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $json = $response->json();
+        $this->assertNotNull($json['errors']);
+        $this->assertNotNull($json['errors']['puid']);
+        $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
+
+
+        $response = $this->post(route('api.v1.statement.store'), ['puid' => 'THX1138'], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $json = $response->json();
+        $this->assertNotNull($json['errors']);
+        $this->assertArrayNotHasKey('puid', $json['errors']);
+
+        // Now let's create one
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $count_before = Statement::all()->count();
+
+        // Check that a SQLITE error was caught and thrown...
+        Log::shouldReceive('error')
+           ->once()
+           ->withArgs(function ($message) {
+               return str_contains($message, 'Statement Creation Query Exception Thrown: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: statements.platform_id, statements.puid');
+           });
+
+        // Let's do it again
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json'
+        ]);
+
+        $count_after = Statement::all()->count();
+
+        $this->assertEquals($count_after, $count_before);
     }
 }
