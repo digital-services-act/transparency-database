@@ -27,6 +27,7 @@ class User extends Authenticatable
         'eu_login_username',
         'email',
         'password',
+        'platform_id'
     ];
 
     /**
