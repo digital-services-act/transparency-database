@@ -9,6 +9,7 @@
               :options="$options['decision_visibilities']"
               default="{{ $statement->decision_visibility }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
@@ -20,6 +21,7 @@
               :options="$options['decision_monetaries']"
               default="{{ $statement->decision_monetary }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_monetary_other"
@@ -31,6 +33,7 @@
               :options="$options['decision_provisions']"
               default="{{ $statement->decision_provision }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
@@ -39,6 +42,7 @@
               :options="$options['decision_accounts']"
               default="{{ $statement->decision_account }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <hr>
@@ -98,7 +102,7 @@
 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_COUNTRY_LIST" name="countries_list" id="countries_list"
                        :options="$options['countries']" :default="$statement->countries_list"
                        select_all="European Union" select_item="Select a member state"
-                       enter_keyword="Enter a country name" required="false"/>
+                       enter_keyword="Enter a country name" />
 <hr>
 
 <x-ecl.datepicker :label="Statement::LABEL_STATEMENT_START_DATE"
@@ -135,6 +139,10 @@
 <hr>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_URL" name="url" id="url" required="true"/>
+
+<hr>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_PUID" name="puid" id="puid" required="true"/>
 
 <hr>
 

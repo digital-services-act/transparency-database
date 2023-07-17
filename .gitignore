@@ -19,3 +19,6 @@ yarn-error.log
 /draft.yaml
 /.blueprint
 test-results
+/vapor.bck
+/vapor.yml
+/switch-*.sh
