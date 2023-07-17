@@ -54,7 +54,7 @@ class OpenSearchIndexInfo extends Command
         $index_stats = $client->indices()->stats()['indices'][$index];
         $this->info('UUID: ' . $index_stats['uuid']);
         $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
-        $this->info('Size: ' . $index_stats['primaries']['store']['size_in_bytes'] . ' bytes');
+        $this->info('Size: ' . $this->humanFileSize($index_stats['primaries']['store']['size_in_bytes']));
 
         $mapping = $client->indices()->getMapping(['index' => $index]);
 
@@ -66,5 +66,15 @@ class OpenSearchIndexInfo extends Command
         {
             $this->info($field . ' :: ' . $field_info['type']);
         }
+    }
+
+    private function humanFileSize($size,$unit="") {
+        if( (!$unit && $size >= 1<<30) || $unit == "GB")
+            return number_format($size/(1<<30),2)."GB";
+        if( (!$unit && $size >= 1<<20) || $unit == "MB")
+            return number_format($size/(1<<20),2)."MB";
+        if( (!$unit && $size >= 1<<10) || $unit == "KB")
+            return number_format($size/(1<<10),2)."KB";
+        return number_format($size)." bytes";
     }
 }
