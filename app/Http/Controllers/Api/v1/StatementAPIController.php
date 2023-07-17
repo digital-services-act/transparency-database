@@ -40,8 +40,7 @@ class StatementAPIController extends Controller
             $statement = Statement::create($validated);
         } catch (QueryException $e) {
             if (
-                str_contains($e->getMessage(), 'Integrity constraint violation: 1062 Duplicate entry') &&
-                str_contains($e->getMessage(), "for key 'statements_platform_id_puid_unique'")
+                str_contains($e->getMessage(), "statements_platform_id_puid_unique")
             ) {
                 $errors = [
                     'puid' => [
