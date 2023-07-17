@@ -5,24 +5,31 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\StatementSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use stdClass;
 
 
 class StatementController extends Controller
 {
     protected StatementQueryService $statement_query_service;
+    protected StatementSearchService $statement_search_service;
 
-    public function __construct(StatementQueryService $statement_query_service)
+    public function __construct(StatementQueryService $statement_query_service, StatementSearchService $statement_search_service)
     {
         $this->statement_query_service = $statement_query_service;
+        $this->statement_search_service = $statement_search_service;
     }
 
     /**
@@ -32,11 +39,15 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = $this->statement_query_service->query($request->query());
+        if ($request->get('search', '') === 'os') {
+            $statements = $this->statement_search_service->query($request->query());
+        } else {
+            $statements = $this->statement_query_service->query($request->query());
+        }
+
 
         $options = $this->prepareOptions();
-
-        $statements = $statements->orderBy('id', 'DESC')->paginate(50)->withQueryString();
+        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
         $total = $statements->total();
 
         $similarity_results = null;
@@ -95,10 +106,18 @@ class StatementController extends Controller
     }
 
     /**
-     * @return Factory|View|Application
+     * @param Request $request
+     *
+     * @return Factory|View|Application|RedirectResponse
      */
-    public function create(): Factory|View|Application
+    public function create(Request $request): Factory|View|Application|RedirectResponse
     {
+        // If you don't have a platform, we don't want you here.
+        if(!$request->user()->platform)
+        {
+            return back()->withErrors('Your account is not associated with a platform.');
+        }
+
         $statement = new Statement();
         $statement->countries_list = [];
 
@@ -128,20 +147,32 @@ class StatementController extends Controller
     {
 
         $validated = $request->safe()->merge([
-            'user_id' => auth()->user()->id,
+            'platform_id' => $request->user()->platform_id,
+            'user_id' => $request->user()->id,
             'method' => Statement::METHOD_FORM
         ])->toArray();
 
-
-//        $validated['date_sent'] = $this->sanitizeDate($validated['date_sent'] ?? null);
-//        $validated['date_enacted'] = $this->sanitizeDate($validated['date_enacted'] ?? null);
         $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
 
-        $statement = Statement::create($validated);
+        try {
+            Statement::create($validated);
+        } catch (QueryException $e) {
+            if (
+                str_contains($e->getMessage(), "statements_platform_id_puid_unique")
+            ) {
+                return back()->withInput()->withErrors([
+                    'puid' => [
+                        'The identifier given is not unique within this platform.'
+                    ]
+                ]);
+            } else {
+                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+                back()->withInput()->withErrors(['exception' => 'An uncaught exception was thrown, support has been notified.']);
+            }
+        }
 
-        $url = route('statement.show', [$statement]);
-        return redirect()->route('statement.index')->with('success', 'The statement has been created: <a href="' . $url . '">' . $statement->title . '</a>');
+        return redirect()->route('statement.index')->with('success', 'The statement has been created.');
     }
 
     private function sanitizeDate($date): ?string
@@ -164,7 +195,6 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
-        $platform_types = $this->mapForSelectWithKeys(Platform::PLATFORM_TYPES);
         $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
             return [
                 'value' => $platform->id,
@@ -204,7 +234,6 @@ class StatementController extends Controller
             'source_types',
             'content_types',
             'platforms',
-            'platform_types',
         );
     }
 }

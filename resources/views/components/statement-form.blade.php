@@ -9,6 +9,7 @@
               :options="$options['decision_visibilities']"
               default="{{ $statement->decision_visibility }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
@@ -20,6 +21,7 @@
               :options="$options['decision_monetaries']"
               default="{{ $statement->decision_monetary }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_monetary_other"
@@ -31,6 +33,7 @@
               :options="$options['decision_provisions']"
               default="{{ $statement->decision_provision }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
@@ -39,6 +42,7 @@
               :options="$options['decision_accounts']"
               default="{{ $statement->decision_account }}"
               justlabel="true"
+              :allow_null="true"
 />
 
 <hr>
@@ -135,6 +139,10 @@
 <hr>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_URL" name="url" id="url" required="true"/>
+
+<hr>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_PUID" name="puid" id="puid" required="true"/>
 
 <hr>
 

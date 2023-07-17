@@ -35,6 +35,9 @@
         <div class="ecl-col-4">
             <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Platforms</a>
         </div>
+        <div class="ecl-col-4">
+            <a class="ecl-button ecl-button--primary" href="{{ route('invitation.index') }}">Invitations</a>
+        </div>
     </div>
     @endcan
 

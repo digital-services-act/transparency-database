@@ -56,6 +56,8 @@ class CreateStatementsTable extends Migration
             $table->enum('automated_decision', Statement::AUTOMATED_DECISIONS);
 
             $table->integer('user_id');
+            $table->integer('platform_id');
+
             $table->string('method')->default('API');
 
             $table->string('url')->nullable();

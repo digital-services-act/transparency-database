@@ -26,7 +26,6 @@ class PlatformSeeder extends Seeder
         Platform::create([
             'name' => Platform::LABEL_DSA_TEAM,
             'url' => 'https://transparency.dsa.ec.europa.eu',
-            'type' => 'PLATFORM_TYPE_OTHER'
         ]);
     }
 

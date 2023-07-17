@@ -9,16 +9,18 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+
 class StatementQueryService
 {
     // These are the filters that we are allowed to filter on.
     // If there is to be a new filter, then add it here first and then make
     // a function. new_attribute -> applyNewAttributeFilter()
 
+    // This service builds and does queries with the database.
+
     private array $allowed_filters = [
         's',
         'platform_id',
-        'platform_type',
         'automated_detection',
         'automated_decision',
         'created_at_start',
@@ -65,8 +67,18 @@ class StatementQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        $ids = Statement::search($filter_value)->take(200)->raw()['results']->pluck('id')->toArray();
-        $query->whereIn('id', $ids);
+        $query->orWhere('incompatible_content_ground', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('incompatible_content_explanation', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('illegal_content_legal_ground', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('illegal_content_explanation', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('decision_facts', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('uuid', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('puid', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('source', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('url', 'LIKE', '%' . $filter_value . '%');
     }
 
     /**
@@ -221,24 +233,6 @@ class StatementQueryService
         if ($filter_values_validated) {
             $query->whereIn('category', $filter_value);
         }
-    }
-
-    /**
-     * @param Builder $query
-     * @param array $filter_value
-     *
-     * @return void
-     */
-    private function applyPlatformTypeFilter(Builder $query, array $filter_value): void
-    {
-        $filter_values_validated = array_intersect($filter_value, array_keys(Platform::PLATFORM_TYPES));
-        if ($filter_values_validated) {
-            $query->whereHas('platform', function($inner_query) use($filter_values_validated) {
-                $inner_query->whereIn('platforms.type', $filter_values_validated);
-            });
-        }
-
-
     }
 
     /**
