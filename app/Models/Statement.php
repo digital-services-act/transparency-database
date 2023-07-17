@@ -267,7 +267,7 @@ class Statement extends Model
     {
         return [
             'decision_visibility' => $this->decision_visibility,
-            'decision_visibility_other' => $this->decision_visibilit_othery,
+            'decision_visibility_other' => $this->decision_visibilit_other,
             'decision_monetary' => $this->decision_monetary,
             'decision_monetary_other' => $this->decision_monetary_other,
             'decision_provision' => $this->decision_provision,
