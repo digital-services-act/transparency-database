@@ -62,10 +62,13 @@ class OpenSearchIndexInfo extends Command
 
         $this->info('Field Information:');
 
+
+        $fields = [];
         foreach ($mapping[$index]['mappings']['properties'] as $field => $field_info)
         {
-            $this->info($field . ' :: ' . $field_info['type']);
+            $fields[] = [$field,$field_info['type']];
         }
+        $this->table(['Field', 'Type'], $fields);
     }
 
     private function humanFileSize($size,$unit="") {
