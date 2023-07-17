@@ -4,6 +4,24 @@ Specific users of this database are given the ability to create
 statements of reasons using an API endpoint. This greatly increases
 efficiency and allows for automation.
 
+## Requesting API access
+
+If you would like to have API access to create statements of reason, then please
+send an email request with your platform information to the following:
+
+<pre>
+    CNECT-DIGITAL-SERVICES-TECH@ec.europa.eu
+</pre>
+
+Once verified your account will then be link to your platform and you will have the 
+ability to generate an API token.
+
+If you have other inquiries and/or matters to discuss then please email the following:
+
+<pre>
+    CNECT-DIGITAL-SERVICES@ec.europa.eu
+</pre>
+
 ## Your API Token
 
 When your account is given the ability to use the API then you are able to
@@ -22,8 +40,10 @@ This token will be shown one time, so it will need to be copied and stored safel
 
 __Each time you generate a new token the old token becomes invalid!__
 
-<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies calls to the API as
-you! Do not share this token with other entities. They will be able to impersonate and act as you!" close="" />
+<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies 
+calls to the API as you! Do not share this token with other entities. 
+They will be able to impersonate and act as you! If you believe that someone is using your token
+please generate a new token immediately to invalidate the old one." close="" />
 
 ## Creating a Statement
 
@@ -116,8 +136,10 @@ You will also receive a payload with the statement as created in the database:
 }
 ```
 
-<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call to an API you should
-always validate that you did receive the proper status, '201 Created'." close="" />
+<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call 
+to an API you should always validate that you did receive the proper status, '201 Created'. 
+If you did not receive a 201 Created, then the statement was not made, it is not in the database 
+and you will need to retry at a later time." close="" />
 
 ## UUID
 
@@ -131,7 +153,7 @@ These urls are present in the response after creating as the "uuid", "permalink"
 
 The attributes of the statement take on two main forms.
 
-* free textual
+* free textual (max character limits apply, see below)
 * limited, the value provided needs to be one of the allowed options
 
 When submitting statements please take care to not submit ANY personal data. On a
