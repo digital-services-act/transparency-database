@@ -24,12 +24,12 @@ class PermissionsSeeder extends Seeder
 
     public static function resetRolesAndPermissions()
     {
-        $users = User::all();
-        /** @var User $user */
-        foreach ($users as $user)
-        {
-            $user->roles()->detach();
-        }
+//        $users = User::all();
+//        /** @var User $user */
+//        foreach ($users as $user)
+//        {
+//            $user->roles()->detach();
+//        }
 
         Role::query()->delete();
         Permission::query()->delete();
@@ -71,7 +71,7 @@ class PermissionsSeeder extends Seeder
         $contributor->givePermissionTo('view reports');
         $contributor->givePermissionTo('create statements');
 
-        $admin_emails = env('ADMIN_EMAILS');
+        $admin_emails = config('dsa.ADMIN_EMAILS');
         $admin_emails = explode(",", $admin_emails);
         foreach ($admin_emails as $admin_email)
         {
