@@ -1,0 +1,12 @@
+id: 49452
+name: dsa-prod
+environments:
+  production:
+    database: prod-serverless-db
+    domain: transparency.dsa.ec.europa.eu
+    memory: 2048
+    cli-memory: 512
+    runtime: 'php-8.2:al2-arm'
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'php artisan event:cache'

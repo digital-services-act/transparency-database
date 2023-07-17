@@ -35,7 +35,12 @@ class StatementSeeder extends Seeder
      */
     public function run()
     {
+        self::resetStatements();
+    }
+
+    public static function resetStatements($statement_count = 0)
+    {
         Statement::query()->delete();
-        Statement::factory()->count(10)->create();
+        Statement::factory()->count($statement_count)->create();
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\InvitationService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -27,6 +30,7 @@ class User extends Authenticatable
         'eu_login_username',
         'email',
         'password',
+        'platform_id'
     ];
 
     /**
@@ -75,6 +79,39 @@ class User extends Authenticatable
         return $user;
     }
 
+    //We do not use the laravel eloquent relationship as EU Login emails are mix of uppercase and lowercase
+    //Mysql is case-insensitive but not sqlite.
+
+    public function getInvitation() : ?Invitation{
+        return  Invitation::firstWhere([
+            'email' => strtolower($this->email)
+        ]);
+    }
+
+    public function acceptInvitation(): bool
+    {
+        $invitation = $this->getInvitation();
+
+        if (is_null($invitation)) return false;
+
+        if (strtolower($this->email) !== strtolower($invitation->email)) return false;
+
+
+        // Link user to the platform
+        $this->platform_id = $invitation->platform_id;
+
+        // Give Contributor rights to the user
+        $this->assignRole('Contributor');
+
+        $this->save();
+
+        // Delete the invitation
+        $invitation->delete();
+
+        return true;
+
+    }
+
     public function setImpersonating($id)
     {
         session()->put('impersonate', $id);
@@ -85,13 +122,18 @@ class User extends Authenticatable
         session()->forget('impersonate');
     }
 
-    public function platform()
+    public function platform(): HasOne
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
 
-    public function statements()
+    public function statements() : HasMany
     {
         return $this->hasMany(Statement::class, 'user_id', 'id');
+    }
+
+    public function invitation() : HasOne
+    {
+        return $this->hasOne(Invitation::class, 'email', 'email');
     }
 }

@@ -27,12 +27,12 @@ class UserSeeder extends Seeder
 
         User::factory()->count(20)->create();
 
-        $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
+        $dsa_platform = Platform::getDsaPlatform();
 
         // Create an admin user for each email in the .env ADMIN_EMAILS
-        $admin_emails = env('ADMIN_EMAILS');
+        $admin_emails = config('dsa.ADMIN_EMAILS');
         $admin_emails = explode(",", $admin_emails);
-        $admin_usernames = env('ADMIN_USERNAMES');
+        $admin_usernames = config('dsa.ADMIN_USERNAMES');
         $admin_usernames = explode(",", $admin_usernames);
         foreach ($admin_emails as $index => $admin_email)
         {

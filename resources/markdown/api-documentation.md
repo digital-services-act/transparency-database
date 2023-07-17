@@ -4,6 +4,24 @@ Specific users of this database are given the ability to create
 statements of reasons using an API endpoint. This greatly increases
 efficiency and allows for automation.
 
+## Requesting API access
+
+If you would like to have API access to create statements of reason, then please
+send an email request with your platform information to the following:
+
+<pre>
+    CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
+</pre>
+
+Once verified your account will then be link to your platform and you will have the 
+ability to generate an API token.
+
+If you have other inquiries and/or matters to discuss then please email the following:
+
+<pre>
+    CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
+</pre>
+
 ## Your API Token
 
 When your account is given the ability to use the API then you are able to
@@ -22,8 +40,10 @@ This token will be shown one time, so it will need to be copied and stored safel
 
 __Each time you generate a new token the old token becomes invalid!__
 
-<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies calls to the API as
-you! Do not share this token with other entities. They will be able to impersonate and act as you!" close="" />
+<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies 
+calls to the API as you! Do not share this token with other entities. 
+They will be able to impersonate and act as you! If you believe that someone is using your token
+please generate a new token immediately to invalidate the old one." close="" />
 
 ## Creating a Statement
 
@@ -72,7 +92,8 @@ Example JSON payload body:
     "source": "foomen",
     "automated_detection": "No",
     "automated_decision": "No",
-    "url": "https://theurl.com"
+    "url": "https://theurl.com",
+    "puid": "TK421"
 }
 ```
 
@@ -107,6 +128,7 @@ You will also receive a payload with the statement as created in the database:
     "automated_detection": "No",
     "automated_decision": "No",
     "url": "https://theurl.com",
+    "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "created_at": "2023-06-08T20:02:50.000000Z",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
@@ -114,8 +136,10 @@ You will also receive a payload with the statement as created in the database:
 }
 ```
 
-<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call to an API you should
-always validate that you did receive the proper status, '201 Created'." close="" />
+<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call 
+to an API you should always validate that you did receive the proper status, '201 Created'. 
+If you did not receive a 201 Created, then the statement was not made, it is not in the database 
+and you will need to retry at a later time." close="" />
 
 ## UUID
 
@@ -129,7 +153,7 @@ These urls are present in the response after creating as the "uuid", "permalink"
 
 The attributes of the statement take on two main forms.
 
-* free textual, limited to 500 characters.
+* free textual (max character limits apply, see below)
 * limited, the value provided needs to be one of the allowed options
 
 When submitting statements please take care to not submit ANY personal data. On a
@@ -156,6 +180,12 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+###  Decision Visibility Other (decision_visibility_other)
+
+This is required if DECISION_VISIBILITY_OTHER was the decision_visibility.
+
+Limited to 500 characters.
+
 ### Monetary payments suspension, termination or other restriction (decision_monetary)
 
 This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
@@ -175,9 +205,11 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-###  Monetary payments suspension, termination or other restriction other (decision_monetary_other)
+###  Decision Monetary Other (decision_monetary_other)
 
-This is required if MONETARY_OTHER was the decision_monetary. 
+This is required if DECISION_MONETARY_OTHER was the decision_monetary. 
+
+Limited to 500 characters.
 
 ### Decision about the provisioning of the service (decision_provision)
 
@@ -219,7 +251,10 @@ The value provided must be one of the following:
 
 ### Facts and circumstances relied on in taking the decision (decision_facts)
 
-This is a required textual field to describe the facts and circumstances relied on in taking the decision.
+This is a required textual field to describe the facts and circumstances relied on in 
+taking the decision.
+
+Limited to 5000 characters.
 
 ### Decision Grounds (decision_ground)
 
@@ -241,21 +276,29 @@ This is a required field and tells us the basis on which the decision was taken.
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 It is the legal grounds relied on.
 
+Limited to 500 characters.
+
 ### Illegal Content Explanation (illegal_content_explanation)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 This is a small text that explains why the content was illegal.
+
+Limited to 2000 characters.
 
 ### Incompatible Content Grounds (incompatible_content_ground)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 It is the reference to contractual grounds.
 
+Limited to 500 characters.
+
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 This is a small text that explains why the content is
 considered as incompatible on that grounds.
+
+Limited to 2000 characters.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
 
@@ -283,6 +326,8 @@ The value provided must be one of the following:
 
 This is required if CONTENT_TYPE_OTHER was the content_type.
 It is a content type that is not text, video or an image.
+
+Limited to 500 characters.
 
 ### Category (category)
 
@@ -312,7 +357,7 @@ Allowed values are:
 
 ### Start Date (start_date)
 
-This is the date and time that this decision took place. The date needs to take the form of:
+This is the date and time that this decision starts from. The date needs to take the form of:
 
 ```YYYY-MM-DD HH:MM:SS```
 
@@ -350,6 +395,7 @@ The value provided must be one of the following:
 
 This is a required field if the source type field was a notice.
 
+Limited to 500 characters.
 
 ### Automated Detection (automated_detection)
 
@@ -361,8 +407,132 @@ This indicates to us that decision taken in respect of automatically detected me
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision carried out automatically.
 
-
 ### URL (url)
 
-This is a required attribute.
-This contains the URL to the data that has been moderated.
+This is a required attribute. This contains the URL/URI to the data that has been moderated.
+In cases where there is no URL or it is non applicable please supply "N/A". Additionally take
+care to redact any personal identifying information.
+
+Limited to 500 characters.
+
+### Platform Unique Identifier (puid)
+
+This is a string that uniquely identifies this statement within the platform.
+This attribute is required and it must be unique within your platform.
+
+Limited to 500 characters.
+
+## Errors
+
+When a call to the API has been made AND there was an error in the call you may 
+expect the following to occur:
+
+- You will NOT receive a HTTP Status Code ```201 Created```.
+- The statement of reason has NOT been created.
+- You receive back a payload that has more information in it.
+
+For Ex,
+
+You made an API with a blank JSON payload
+
+```javascript
+{}
+```
+
+The HTTP Status code coming back will be ```422 Unproccessable Content```
+
+The payload body will be a JSON object containing more information and the errors in the API call.
+
+```javascript
+{
+    "message": "The decision visibility field is required when none of decision monetary / decision provision / decision account are present. (and 13 more errors)",
+    "errors": {
+        "decision_visibility": [
+            "The decision visibility field is required when none of decision monetary / decision provision / decision account are present."
+        ],
+        "decision_monetary": [
+            "The decision monetary field is required when none of decision visibility / decision provision / decision account are present."
+        ],
+        "decision_provision": [
+            "The decision provision field is required when none of decision visibility / decision monetary / decision account are present."
+        ],
+        "decision_account": [
+            "The decision account field is required when none of decision visibility / decision monetary / decision provision are present."
+        ],
+        "decision_ground": [
+            "The decision ground field is required."
+        ],
+        "content_type": [
+            "The content type field is required."
+        ],
+        "category": [
+            "The category field is required."
+        ],
+        "start_date": [
+            "The start date field is required."
+        ],
+        "decision_facts": [
+            "The decision facts field is required."
+        ],
+        "source_type": [
+            "The source type field is required."
+        ],
+        "source": [
+            "The source field is required when source type is a notice submission."
+        ],
+        "automated_detection": [
+            "The automated detection field is required."
+        ],
+        "automated_decision": [
+            "The automated decision field is required."
+        ],
+        "url": [
+            "The url field is required."
+        ],
+        "puid": [
+            "The puid field is required."
+        ]
+    }
+}
+```
+
+The error messages for the individual fields will vary depending on what was attempted.
+
+Such as the following:
+
+If you sent 
+```
+{
+    ...
+    "automated_decision":"maybe"
+    ...
+}
+```
+
+"Maybe" is not a valid value for automated_decision. (only "Yes" or "No")
+
+```javascript
+{
+    "message": "The selected automated decision is invalid.",
+    "errors": {
+        "automated_decision": [
+            "The selected automated decision is invalid."
+        ]
+    }
+}
+```
+
+Another common error that may occur when calling the API is that the authorization token is not valid.
+
+This will result in a HTTP status code of ```401 Unauthorized```
+
+The API authorization token needs to be double checked or a new API authorization token needs to be
+generated. See again the section above: [Your API Token](#your-api-token)
+
+In addition to the common ```422``` and ```401``` errors, Any of the standard 4XX HTTP can be
+encountered. 4XX statuses generally indicate that there is an issue with your request. Please try to 
+troubleshoot and resolve the problem.
+
+When there is an error of 5XX we are immediately notified and there is no need 
+to report the issue.
+ 
