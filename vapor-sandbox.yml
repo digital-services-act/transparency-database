@@ -1,0 +1,13 @@
+id: 49369
+name: dsa-sandbox
+environments:
+  production:
+    database: sandbox-serverless-db-us
+    network: vapor-network-1688550103
+    domain: sandbox.sor.dsa.ec.europa.eu
+    memory: 2048
+    cli-memory: 512
+    runtime: 'php-8.2:al2-arm'
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'php artisan event:cache'

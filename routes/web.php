@@ -1,13 +1,7 @@
 <?php
 
-use App\Models\Statement;
-use App\Models\User;
-use Database\Seeders\PermissionsSeeder;
-use Database\Seeders\UserSeeder;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 
 /*
@@ -34,9 +28,9 @@ Route::middleware(['cas.auth'])->group(function() {
     Route::group(['middleware' => ['can:administrate']], function(){
         Route::resource('role', \App\Http\Controllers\RoleController::class);
         Route::resource('permission', \App\Http\Controllers\PermissionController::class);
+        Route::resource('invitation', App\Http\Controllers\InvitationController::class);
         Route::resource('user', \App\Http\Controllers\UserController::class);
         Route::resource('platform', \App\Http\Controllers\PlatformController::class);
-        Route::get('logs', [\App\Http\Controllers\LogsController::class, 'index'])->name('logs')->can('view logs');
     });
 
 
@@ -57,12 +51,14 @@ Route::get('/', function () {
 })->name('home');
 
 
-//Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
 Route::get('/statement-search', [\App\Http\Controllers\StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
-//Route::get('/statement/{statement:uuid}/details', [\App\Http\Controllers\StatementController::class, 'show_details'])->name('statement.show-details');
 
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+
+Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
+
+
 
 
