@@ -30,8 +30,10 @@ class Admins extends Command
     {
         self::generatePrivilegedUsers();
         Artisan::call('db:seed', [
-            'class' => 'PermissionsSeeder'
+            'class' => 'PermissionsSeeder',
+            '--force' => true,
         ]);
+
         $this->info('The command was successful!');
     }
 
