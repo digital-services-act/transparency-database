@@ -10,7 +10,7 @@ If you would like to have API access to create statements of reason, then please
 send an email request with your platform information to the following:
 
 <pre>
-    CNECT-DIGITAL-SERVICES-TECH@ec.europa.eu
+    CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
 </pre>
 
 Once verified your account will then be link to your platform and you will have the 
@@ -19,7 +19,7 @@ ability to generate an API token.
 If you have other inquiries and/or matters to discuss then please email the following:
 
 <pre>
-    CNECT-DIGITAL-SERVICES@ec.europa.eu
+    CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
 </pre>
 
 ## Your API Token
@@ -407,7 +407,6 @@ This indicates to us that decision taken in respect of automatically detected me
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision carried out automatically.
 
-
 ### URL (url)
 
 This is a required attribute. This contains the URL/URI to the data that has been moderated.
@@ -420,6 +419,8 @@ Limited to 500 characters.
 
 This is a string that uniquely identifies this statement within the platform.
 This attribute is required and it must be unique within your platform.
+
+Limited to 500 characters.
 
 ## Errors
 
@@ -532,6 +533,6 @@ In addition to the common ```422``` and ```401``` errors, Any of the standard 4X
 encountered. 4XX statuses generally indicate that there is an issue with your request. Please try to 
 troubleshoot and resolve the problem.
 
-When there is an error of 5XX we are immediately notified and there no need 
+When there is an error of 5XX we are immediately notified and there is no need 
 to report the issue.
  
