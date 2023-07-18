@@ -23,7 +23,7 @@
     @endif
 
     <div class="ecl-u-f-r">
-        @if(app('request')->input())<a class='ecl-u-type-paragraph ecl-link' href='{{ route(Route::current()->getName()) }}'>reset</a>@endif
+        @if(app('request')->input())<a class='ecl-u-type-paragraph ecl-link' href='{{ route(Route::current()->getName()) }}@if(request()->get('search'))?search={{ request()->get('search') }}@endif'>reset</a>@endif
         <x-ecl.button label="search" />
     </div>
 
