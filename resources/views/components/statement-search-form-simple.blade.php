@@ -16,7 +16,7 @@
             <br />
             @foreach($similarity_results as $result)
                 <span class="ecl-u-type-paragraph-xs">
-                    <a href="?s={{ $result }}" class="ecl-link">{{ $result }}</a>
+                    <a href="?s={{ $result }}@if(request()->get('search'))&search={{ request()->get('search') }}@endif" class="ecl-link">{{ $result }}</a>
                 </span>
             @endforeach
         </div>
