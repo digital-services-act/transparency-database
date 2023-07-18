@@ -16,7 +16,7 @@ send an email request with your platform information to the following:
 Once verified your account will then be link to your platform and you will have the 
 ability to generate an API token.
 
-If you have other inquiries and/or matters to discuss then please email the following:
+If you have other inquiries to discuss then please email the following:
 
 <pre>
     CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
