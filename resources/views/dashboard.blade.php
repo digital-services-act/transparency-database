@@ -41,6 +41,7 @@
     </div>
     @endcan
 
+
     <h2 class="ecl-u-type-heading-2">Assistance</h2>
 
     <p class="ecl-u-type-paragraph">
