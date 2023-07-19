@@ -64,11 +64,4 @@ class StatementAPIController extends Controller
 
         return response()->json($statement, Response::HTTP_CREATED);
     }
-
-    public function search(Request $request): JsonResponse
-    {
-        $statements = $this->statement_query_service->query($request->query());
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
-        return response()->json($statements);
-    }
 }

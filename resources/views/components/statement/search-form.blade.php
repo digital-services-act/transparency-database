@@ -136,10 +136,6 @@
         <x-ecl.datepicker label="Created End" id="created_at_end" justlabel="true"
                           name="created_at_end" :value="request()->get('created_at_end', '')"/>
 
-        @if(request()->get('search') == 'os')
-            <input type="hidden" name="search" value="os" />
-        @endif
-
         <x-ecl.button label="search"/>
 
     </div>

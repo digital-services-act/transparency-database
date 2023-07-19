@@ -39,12 +39,11 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        if ($request->get('search', '') === 'os') {
+        if (config('scout.driver') == 'opensearch') {
             $statements = $this->statement_search_service->query($request->query());
         } else {
             $statements = $this->statement_query_service->query($request->query());
         }
-
 
         $options = $this->prepareOptions();
         $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
