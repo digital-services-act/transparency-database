@@ -130,6 +130,12 @@
                 :default="request()->get('source_type', [])"
         />
 
+        <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
+                               justlabel="true"
+                               :options="$options['countries']" :default="request()->get('countries_list', [])"
+                               select_all="European Union" select_item="Select a member state"
+                               enter_keyword="Enter a country name"/>
+
         <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"
                           name="created_at_start" :value="request()->get('created_at_start', '')"/>
 

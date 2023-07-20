@@ -35,6 +35,7 @@ class StatementSearchService
         'automated_detection',
         'automated_decision',
         'platform_id',
+        'countries_list'
     ];
 
     /**
@@ -184,6 +185,17 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    private function applyCountriesListFilter(array $filter_values)
+    {
+        $filter_values = array_intersect($filter_values, Statement::EUROPEAN_COUNTRY_CODES);
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'countries_list:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
     private function applyDecisionAccountFilter(array $filter_values)
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
@@ -316,7 +328,7 @@ class StatementSearchService
         if ($reverse) {
             $date_counts = array_reverse($date_counts);
         }
-        
+
         return $date_counts;
     }
 

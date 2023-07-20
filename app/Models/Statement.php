@@ -289,7 +289,8 @@ class Statement extends Model
             'url' => $this->url,
             'created_at' => $this->created_at,
             'uuid' => $this->uuid,
-            'puid' => $this->puid
+            'puid' => $this->puid,
+            'countries_list' => $this->countries_list
         ];
     }
 
@@ -321,11 +322,6 @@ class Statement extends Model
             }, $this->countries_list);
         }
         return [];
-    }
-
-    public function entities()
-    {
-        return $this->belongsToMany(Entity::class)->withPivot('role');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
