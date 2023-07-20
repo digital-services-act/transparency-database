@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Statement;
+use App\Services\StatementSearchService;
 use App\Services\StatementStatsService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -14,10 +15,12 @@ use Illuminate\Support\Carbon;
 class ReportsController extends Controller
 {
     protected StatementStatsService $statement_stats_service;
+    protected StatementSearchService $statement_search_service;
 
-    public function __construct(StatementStatsService $statement_stats_service)
+    public function __construct(StatementStatsService $statement_stats_service, StatementSearchService $statement_search_service)
     {
         $this->statement_stats_service = $statement_stats_service;
+        $this->statement_search_service = $statement_search_service;
     }
 
     /**
@@ -27,42 +30,32 @@ class ReportsController extends Controller
     {
         $platform = $request->user()->platform;
 
-        $days = [
-            1,
-            7,
-            14,
-            30,
-            60,
-            90,
-            180,
-            365
-        ];
-        $days_count = [];
-        foreach ($days as $days_ago) {
-            $days_count[$days_ago] = $this->statement_stats_service->countForPlatformSince($platform, Carbon::now()->subDays($days_ago));
-        }
-
-
         $start_days_ago = 20;
         $start = Carbon::now()->subDays($start_days_ago);
         $end = Carbon::now();
-        $date_counts = $this->statement_stats_service->dayCountsForPlatformAndRange($platform, $start, $end);
 
-        $your_platform_total = $this->statement_stats_service->countForPlatform($platform);
+        $date_counts = [];
+        $your_platform_total = 0;
+        $total = 0;
 
-        $automated_detection_yes = $this->statement_stats_service->attributeCountForPlatform($platform, 'automated_detection', Statement::AUTOMATED_DETECTION_YES);
-        $automated_detection_no = $this->statement_stats_service->attributeCountForPlatform($platform, 'automated_detection', Statement::AUTOMATED_DETECTION_NO);
+        if (config('scout.driver') == 'opensearch') {
+            $date_counts = $this->statement_search_service->dayCountsForPlatformAndRange($platform, $start, $end);
+            $your_platform_total = $this->statement_search_service->countForPlatform($platform);
+            $total = $this->statement_search_service->totalStatements();
+        } else {
+            $date_counts = $this->statement_stats_service->dayCountsForPlatformAndRange($platform, $start, $end);
+            $your_platform_total = $this->statement_stats_service->countForPlatform($platform);
+            $total = $this->statement_stats_service->totalStatements();
+        }
 
-        $total = $this->statement_stats_service->totalStatements();
 
         return view('reports.index', [
-            'days_count' => $days_count,
+
             'total' => $total,
             'your_platform_total' => $your_platform_total,
             'date_counts' => $date_counts,
-            'start_days_ago' => $start_days_ago,
-            'automated_detection_yes' => $automated_detection_yes,
-            'automated_detection_no' => $automated_detection_no,
+            'start_days_ago' => $start_days_ago
+
         ]);
     }
 }

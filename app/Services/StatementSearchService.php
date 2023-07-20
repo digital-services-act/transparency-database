@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
@@ -258,4 +259,65 @@ class StatementSearchService
         }
         return implode(' OR ', $ors);
     }
+
+    public function countForPlatform(Platform $platform): int
+    {
+        $filters = [
+            'platform_id' => $platform->id,
+        ];
+
+        $statements = $this->query($filters);
+        return $statements->total();
+    }
+
+    public function totalStatements()
+    {
+        $statements = $this->query([]);
+        return $statements->total();
+    }
+
+    public function dayCountsForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end, bool $reverse = true): array
+    {
+        $date_counts = [];
+
+        while($start < $end) {
+
+            $filters = [
+                'platform_id' => $platform->id,
+                'created_at_start' => $start->format('Y-m-d 00:00:00'),
+                'created_at_end' => $start->format('Y-m-d 00:00:00'),
+            ];
+
+            $statements = $this->query($filters);
+
+            $date_counts[] = [
+                'date' => $start->clone(),
+                'count' => $statements->total(),
+            ];
+
+            $start->addDay();
+
+        }
+
+        $highest = -1;
+        foreach($date_counts as $date_count)
+        {
+            if ($date_count['count'] > $highest)
+            {
+                $highest = $date_count['count'];
+            }
+        }
+
+        foreach ($date_counts as $index => $date_count)
+        {
+            $date_counts[$index]['percentage'] = (int) ceil( ($date_count['count'] / $highest) * 100 );
+        }
+
+        if ($reverse) {
+            $date_counts = array_reverse($date_counts);
+        }
+        
+        return $date_counts;
+    }
+
 }
