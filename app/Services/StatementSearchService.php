@@ -278,13 +278,13 @@ class StatementSearchService
             'platform_id' => [$platform->id],
         ];
 
-        $statements = $this->query($filters);
+        $statements = $this->query($filters)->paginate(50);
         return $statements->total();
     }
 
     public function totalStatements()
     {
-        $statements = $this->query([]);
+        $statements = $this->query([])->paginate(50);
         return $statements->total();
     }
 
@@ -296,11 +296,11 @@ class StatementSearchService
 
             $filters = [
                 'platform_id' => [$platform->id],
-                'created_at_start' => $start->format('d-m-Y 00:00:00'),
-                'created_at_end' => $end->format('d-m-Y 23:59:59'),
+                'created_at_start' => $start->format('d-m-Y'),
+                'created_at_end' => $start->format('d-m-Y'),
             ];
 
-            $statements = $this->query($filters);
+            $statements = $this->query($filters)->paginate(50);
 
             $date_counts[] = [
                 'date' => $start->clone(),
