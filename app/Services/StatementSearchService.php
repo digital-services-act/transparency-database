@@ -297,7 +297,7 @@ class StatementSearchService
             $filters = [
                 'platform_id' => [$platform->id],
                 'created_at_start' => $start->format('Y-m-d 00:00:00'),
-                'created_at_end' => $start->format('Y-m-d 00:00:00'),
+                'created_at_end' => $end->format('Y-m-d 23:59:59'),
             ];
 
             $statements = $this->query($filters);
