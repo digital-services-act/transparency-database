@@ -28,10 +28,6 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::withoutDoubleEncoding();
 
-        view()->composer('*', function ($view) {
-            $view->with('profiles', User::all());
-        });
-
         view()->share('ecl_init', true);
     }
 }
