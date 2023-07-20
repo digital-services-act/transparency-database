@@ -275,7 +275,7 @@ class StatementSearchService
     public function countForPlatform(Platform $platform): int
     {
         $filters = [
-            'platform_id' => $platform->id,
+            'platform_id' => [$platform->id],
         ];
 
         $statements = $this->query($filters);
@@ -295,7 +295,7 @@ class StatementSearchService
         while($start < $end) {
 
             $filters = [
-                'platform_id' => $platform->id,
+                'platform_id' => [$platform->id],
                 'created_at_start' => $start->format('Y-m-d 00:00:00'),
                 'created_at_end' => $start->format('Y-m-d 00:00:00'),
             ];
