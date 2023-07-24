@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;

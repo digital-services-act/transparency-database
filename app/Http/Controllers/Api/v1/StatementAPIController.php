@@ -5,22 +5,13 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
-use App\Services\StatementQueryService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class StatementAPIController extends Controller
 {
-    protected StatementQueryService $statement_query_service;
-
-    public function __construct(StatementQueryService $statement_query_service)
-    {
-        $this->statement_query_service = $statement_query_service;
-    }
-
     public function show(Statement $statement): Statement
     {
         return $statement;
