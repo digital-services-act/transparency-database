@@ -101,7 +101,7 @@
 
 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_COUNTRY_LIST" name="countries_list" id="countries_list"
                        :options="$options['countries']" :default="$statement->countries_list"
-                       select_all="European Union" select_item="Select a member state"
+                       select_all="All" select_item="Select a member state"
                        enter_keyword="Enter a country name" />
 <hr>
 

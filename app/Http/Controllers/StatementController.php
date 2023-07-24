@@ -187,7 +187,7 @@ class StatementController extends Controller
     {
         // Prepare Options
 
-        $european_countries_list = $this->getEuropean_countries_list();
+        $european_countries_list = $this->getEuropeanCountriesList();
 
         $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);

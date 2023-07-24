@@ -57,5 +57,19 @@ class StatementTest extends TestCase
         $this->assertCount(1, $country_names_list);
         $this->assertEquals(["European Union"], $country_names_list);
 
+        // Now test with EU
+        $statement->countries_list = ['EU'];
+        $statement->save();
+        $country_names_list = $statement->getCountriesListNames();
+        $this->assertCount(1, $country_names_list);
+        $this->assertEquals(["European Union"], $country_names_list);
+
+        // Now test with EU
+        $statement->countries_list = ['EEA'];
+        $statement->save();
+        $country_names_list = $statement->getCountriesListNames();
+        $this->assertCount(1, $country_names_list);
+        $this->assertEquals(["European Economic Area"], $country_names_list);
+
     }
 }

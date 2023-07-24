@@ -40,13 +40,14 @@ class Controller extends BaseController
     /**
      * @return string[]
      */
-    protected function getEuropean_countries_list(): array
+    protected function getEuropeanCountriesList(): array
     {
         $european_country_codes = Statement::EUROPEAN_COUNTRY_CODES;
+        $european_countries_list = [];
+        foreach ($european_country_codes as $iso) {
+            $european_countries_list[$iso] = $iso === 'EEA' ? 'European Economic Area' : ($iso === 'EU' ? 'European Union' : Countries::getName($iso));
+        }
 
-        $european_countries_list = array_filter(Countries::getNames(), function ($country_code) use ($european_country_codes) {
-            return in_array($country_code, $european_country_codes);
-        }, ARRAY_FILTER_USE_KEY);
         return $european_countries_list;
     }
 }

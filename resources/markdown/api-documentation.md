@@ -349,7 +349,8 @@ The value provided must be one of the following:
 ### Countries List (countries_list)
 
 This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
-for the country and the countries must be EU countries.
+for the country and the countries must be EU countries. EU (European Union) and 
+EEA (European Economic Area) maybe used as well.
 
 Allowed values are:
 

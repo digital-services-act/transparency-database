@@ -144,6 +144,8 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_COUNTRY_LIST = 'Territorial scope of the decision';
     public const EUROPEAN_COUNTRY_CODES = [
+        'EU',
+        'EEA',
         'AT',
         'BE',
         'BG',
@@ -315,11 +317,11 @@ class Statement extends Model
      */
     public function getCountriesListNames(): array
     {
-        if($this->countries_list && is_array($this->countries_list) && count($this->countries_list) == 27) return ['European Union'];
+        if($this->countries_list && is_array($this->countries_list) && count($this->countries_list) == count(self::EUROPEAN_COUNTRY_CODES)) return ['European Union'];
         if ($this->countries_list && is_array($this->countries_list)) {
             return array_map(function ($iso) {
                 try {
-                    return Countries::getName($iso);
+                    return $iso === 'EEA' ? 'European Economic Area' : ($iso === 'EU' ? 'European Union' : Countries::getName($iso));
                 } catch (\Exception $e) {
                     return "Unknown";
                 }
