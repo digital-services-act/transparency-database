@@ -47,7 +47,7 @@ class StatementStoreRequest extends FormRequest
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
             'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
-            'start_date' => ['required', 'date'],
+            'start_date' => ['required', 'date', 'after:2020-01-01'],
             'end_date' => ['date', 'nullable','after_or_equal:start_date'],
             'decision_facts' => ['required','max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],

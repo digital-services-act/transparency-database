@@ -361,7 +361,7 @@ This is the date and time that this decision starts from. The date needs to take
 
 ```YYYY-MM-DD HH:MM:SS```
 
-The ```HH:MM:SS``` is optional and may be omitted.
+The ```HH:MM:SS``` is optional and may be omitted. The date must be after 2020-01-01.
 
 ### End Date (end_date)
 

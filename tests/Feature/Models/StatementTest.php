@@ -47,7 +47,7 @@ class StatementTest extends TestCase
         $statement->save();
         $country_names_list = $statement->getCountriesListNames();
         $this->assertCount(3, $country_names_list);
-        $this->assertEquals($country_names_list, ["Unknown", "Unknown", "Unknown"]);
+        $this->assertEquals(["Unknown", "Unknown", "Unknown"], $country_names_list);
 
 
         // Now test with all countries
@@ -55,7 +55,7 @@ class StatementTest extends TestCase
         $statement->save();
         $country_names_list = $statement->getCountriesListNames();
         $this->assertCount(1, $country_names_list);
-        $this->assertEquals($country_names_list, ["European Union"]);
+        $this->assertEquals(["European Union"], $country_names_list);
 
     }
 }
