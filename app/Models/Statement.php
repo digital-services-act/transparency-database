@@ -321,7 +321,7 @@ class Statement extends Model
                 try {
                     return Countries::getName($iso);
                 } catch (\Exception $e) {
-                    return "Uknown";
+                    return "Unknown";
                 }
             }, $this->countries_list);
         }
