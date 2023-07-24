@@ -318,7 +318,11 @@ class Statement extends Model
         if($this->countries_list && is_array($this->countries_list) && count($this->countries_list) == 27) return ['European Union'];
         if ($this->countries_list && is_array($this->countries_list)) {
             return array_map(function ($iso) {
-                return Countries::getName($iso);
+                try {
+                    return Countries::getName($iso);
+                } catch (\Exception $e) {
+                    return "Uknown";
+                }
             }, $this->countries_list);
         }
         return [];
