@@ -121,7 +121,7 @@ return [
             'via'       => \MargaTampu\LaravelTeamsLogging\LoggerChannel::class,
             'level'     => 'debug',
             'url'       => env('MICROSOFT_TEAMS_WEBHOOK'),
-            'style'     => 'card',    // Available style is 'simple' and 'card', default is 'simple'
+            'style'     => 'simple',    // Available style is 'simple' and 'card', default is 'simple'
             'name'      => 'DSA M2 ('.env('APP_URL').')'
         ],
     ],
