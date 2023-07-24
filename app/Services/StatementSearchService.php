@@ -65,7 +65,10 @@ class StatementSearchService
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                $part = $this->$method($filters[$filter_key]);
+                $part = false;
+                if( method_exists($this,$method)) {
+                    $part = $this->$method($filters[$filter_key]);
+                }
                 if ($part) {
                     $queryAndParts[] = $part;
                 }
