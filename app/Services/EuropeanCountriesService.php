@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Platform;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Intl\Countries;
 
@@ -109,13 +109,23 @@ class EuropeanCountriesService
         if (in_array($iso, self::EUROPEAN_COUNTRY_CODES)) {
             try {
                 return Countries::getName($iso);
-            } catch (\Exception $e) {
-                Log::error('European country code problem, could not convert "' . $iso .'"');
+            } catch (Exception $e) {
+                Log::error('European country code problem, could not convert "' . $iso .'", ' . $e->getMessage());
                 return false; // should never happen but ...
             }
         }
 
         return false;
+    }
+
+    public function isEU(array $countries): bool
+    {
+        return $countries === self::EUROPEAN_UNION_COUNTRY_CODES;
+    }
+
+    public function isEEA(array $countries): bool
+    {
+        return $countries === self::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
     }
 
     public function getCountryNames(array $countries, bool $condense = true): array
@@ -126,11 +136,11 @@ class EuropeanCountriesService
 
         sort($countries);
 
-        if ($countries === self::EUROPEAN_UNION_COUNTRY_CODES && $condense) {
+        if ($this->isEU($countries) && $condense) {
             return ['European Union'];
         }
 
-        if ($countries === self::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES && $condense) {
+        if ($this->isEEA($countries) && $condense) {
             return ['European Economic Area'];
         }
 
