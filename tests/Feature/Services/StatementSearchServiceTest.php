@@ -210,15 +210,15 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_countries_list()
+    public function it_filters_on_territorial_scope()
     {
         $filters = [
-            'countries_list' => ['BG','NL'],
+            'territorial_scope' => ['BG','NL'],
         ];
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(countries_list:BG OR countries_list:NL)', $query);
+        $this->assertEquals('(territorial_scope:BG OR territorial_scope:NL)', $query);
     }
 
     /**

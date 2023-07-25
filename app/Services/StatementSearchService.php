@@ -35,7 +35,7 @@ class StatementSearchService
         'automated_detection',
         'automated_decision',
         'platform_id',
-        'countries_list'
+        'territorial_scope'
     ];
 
     /**
@@ -188,13 +188,13 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyCountriesListFilter(array $filter_values)
+    private function applyTerritorialScopeFilter(array $filter_values)
     {
-        $filter_values = array_intersect($filter_values, Statement::EUROPEAN_COUNTRY_CODES);
+        $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         $ors = [];
         foreach ($filter_values as $filter_value)
         {
-            $ors[] = 'countries_list:'.$filter_value;
+            $ors[] = 'territorial_scope:'.$filter_value;
         }
         return implode(' OR ', $ors);
     }

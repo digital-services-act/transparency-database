@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-
-use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -65,14 +63,14 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_countries_list()
+    public function it_filters_on_territorial_scope()
     {
         $filters = [
-            'countries_list' => ["FR", "DE", "NL", "XX"]
+            'territorial_scope' => ["FR", "DE", "NL", "XX"]
         ];
         // The XX should be filtered out... ;)
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "countries_list" LIKE ? and "countries_list" LIKE ? and "countries_list" LIKE ? and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements" where "territorial_scope" LIKE ? and "territorial_scope" LIKE ? and "territorial_scope" LIKE ? and "statements"."deleted_at" is null', $sql);
     }
 
     /**

@@ -27,6 +27,9 @@ class StatementAPIController extends Controller
             ]
         )->toArray();
 
+        $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
+        $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
+
         try {
             $statement = Statement::create($validated);
         } catch (QueryException $e) {

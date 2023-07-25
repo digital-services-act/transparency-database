@@ -142,38 +142,8 @@ class Statement extends Model
         'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED
     ];
 
-    public const LABEL_STATEMENT_COUNTRY_LIST = 'Territorial scope of the decision';
-    public const EUROPEAN_COUNTRY_CODES = [
-        'EU',
-        'EEA',
-        'AT',
-        'BE',
-        'BG',
-        'CY',
-        'CZ',
-        'DE',
-        'DK',
-        'EE',
-        'ES',
-        'FI',
-        'FR',
-        'GR',
-        'HR',
-        'HU',
-        'IE',
-        'IT',
-        'LT',
-        'LU',
-        'LV',
-        'MT',
-        'NL',
-        'PL',
-        'PT',
-        'RO',
-        'SE',
-        'SI',
-        'SK'
-    ];
+    public const LABEL_STATEMENT_TERRITORIAL_SCOPE = 'Territorial scope of the decision';
+
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
     public const STATEMENT_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
@@ -226,12 +196,10 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
-        'start_date' => 'datetime:Y-m-d H:i:s',
-        'end_date' => 'datetime:Y-m-d H:i:s',
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'deleted_at' => 'datetime:Y-m-d H:i:s',
-        'update_at' => 'datetime:Y-m-d H:i:s',
-        'countries_list' => 'array'
+        'start_date' => 'datetime:d-m-Y',
+        'end_date' => 'datetime:d-m-Y',
+        'created_at' => 'datetime:d-m-Y',
+        'territorial_scope' => 'array'
     ];
 
     protected $hidden = [
@@ -243,6 +211,7 @@ class Statement extends Model
     ];
 
     protected $appends = [
+        'territorial_scope',
         'permalink',
         'self'
     ];
@@ -292,7 +261,7 @@ class Statement extends Model
             'created_at' => $this->created_at,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
-            'countries_list' => $this->countries_list
+            'territorial_scope' => $this->territorial_scope
         ];
     }
 
@@ -310,24 +279,6 @@ class Statement extends Model
     public function getScoutKeyName(): mixed
     {
         return 'id';
-    }
-
-    /**
-     * @return array
-     */
-    public function getCountriesListNames(): array
-    {
-        if($this->countries_list && is_array($this->countries_list) && count($this->countries_list) == count(self::EUROPEAN_COUNTRY_CODES)) return ['European Union'];
-        if ($this->countries_list && is_array($this->countries_list)) {
-            return array_map(function ($iso) {
-                try {
-                    return $iso === 'EEA' ? 'European Economic Area' : ($iso === 'EU' ? 'European Union' : Countries::getName($iso));
-                } catch (\Exception $e) {
-                    return "Unknown";
-                }
-            }, $this->countries_list);
-        }
-        return [];
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -356,8 +307,10 @@ class Statement extends Model
         return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
     }
 
-    public function getCreatedAtAttribute($date)
+    public function getTerritorialScopeAttribute(): array
     {
-        return Carbon::parse($date)->setTimezone('Europe/Brussels');
+        $out = json_decode($this->getRawOriginal('territorial_scope'));
+        return $out ? $out : [];
     }
+
 }

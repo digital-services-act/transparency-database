@@ -99,9 +99,9 @@
 
 <hr>
 
-<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_COUNTRY_LIST" name="countries_list" id="countries_list"
-                       :options="$options['countries']" :default="$statement->countries_list"
-                       select_all="All" select_item="Select a member state"
+<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE" name="territorial_scope" id="territorial_scope"
+                       :options="$options['countries']" :default="$statement->territorial_scope"
+                       select_all="All" select_item="Select member state(s)"
                        enter_keyword="Enter a country name" />
 <hr>
 

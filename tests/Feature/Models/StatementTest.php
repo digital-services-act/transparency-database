@@ -15,61 +15,27 @@ class StatementTest extends TestCase
      * @return void
      * @test
      */
-    public function countries_list_does_not_break()
+    public function territorial_scope_is_always_an_array()
     {
         $this->setUpFullySeededDatabase();
-        /** @var Statement $statement */
         $statement = Statement::all()->random()->first();
-        $this->assertNotNull($statement);
+        $a = $statement->territorial_scope;
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertNotCount(0, $statement->territorial_scope);
 
-        // The factory is always putting some countries here.
-        $countries_list = $statement->countries_list;
-        $this->assertIsArray($countries_list);
-
-        $count = count($countries_list);
-
-        $this->assertNotCount(0, $countries_list);
-
-        $country_names_list = $statement->getCountriesListNames();
-
-        $this->assertIsArray($country_names_list);
-        $this->assertCount($count, $country_names_list);
-
-        // Now null this out and make sure that we don't blow up.
-        $statement->countries_list = null;
+        $statement->territorial_scope = null;
         $statement->save();
-        $country_names_list = $statement->getCountriesListNames();
-        $this->assertCount(0, $country_names_list);
+        $statement->refresh();
 
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertCount(0, $statement->territorial_scope);
 
-        // Now try with bad iso codes
-        $statement->countries_list = ["XX", "ZZ", "II"];
+        // empty array
+        $statement->territorial_scope = [];
         $statement->save();
-        $country_names_list = $statement->getCountriesListNames();
-        $this->assertCount(3, $country_names_list);
-        $this->assertEquals(["Unknown", "Unknown", "Unknown"], $country_names_list);
+        $statement->refresh();
 
-
-        // Now test with all countries
-        $statement->countries_list = Statement::EUROPEAN_COUNTRY_CODES;
-        $statement->save();
-        $country_names_list = $statement->getCountriesListNames();
-        $this->assertCount(1, $country_names_list);
-        $this->assertEquals(["European Union"], $country_names_list);
-
-        // Now test with EU
-        $statement->countries_list = ['EU'];
-        $statement->save();
-        $country_names_list = $statement->getCountriesListNames();
-        $this->assertCount(1, $country_names_list);
-        $this->assertEquals(["European Union"], $country_names_list);
-
-        // Now test with EU
-        $statement->countries_list = ['EEA'];
-        $statement->save();
-        $country_names_list = $statement->getCountriesListNames();
-        $this->assertCount(1, $country_names_list);
-        $this->assertEquals(["European Economic Area"], $country_names_list);
-
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertCount(0, $statement->territorial_scope);
     }
 }

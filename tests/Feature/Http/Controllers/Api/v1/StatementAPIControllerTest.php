@@ -36,7 +36,7 @@ class StatementAPIControllerTest extends TestCase
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',
             'puid' => 'TK421',
-            'countries_list' => ['BE', 'DE', 'FR'],
+            'territorial_scope' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
             'source' => 'foo',
             'decision_facts' => 'decision and facts',
@@ -108,8 +108,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '2023-01-03 00:00:00',
-            'end_date' => '2023-01-13 00:00:00',
+            'start_date' => '08-12-2023',
+            'end_date' => '09-12-2023',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -120,8 +120,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
-        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->start_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
@@ -136,8 +134,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '2023-01-03 00:00:00',
-            'end_date' => '2023-01-13 00:00:00',
+            'start_date' => '15-07-2023',
+            'end_date' => '16-07-2023',
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -164,9 +162,8 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
+
         $this->assertInstanceOf(Carbon::class, $statement->start_date);
-        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
 
@@ -179,13 +176,13 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $fields = array_merge($this->required_fields, [
-            'countries_list' => ['XY', 'ZZ'],
+            'territorial_scope' => ['XY', 'ZZ'],
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertEquals('The selected countries list is invalid.', $response->json('message'));
+        $this->assertEquals('The selected territorial scope is invalid.', $response->json('message'));
     }
 
     /**

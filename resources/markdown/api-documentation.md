@@ -81,7 +81,7 @@ Example JSON payload body:
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
-    "countries_list": [
+    "territorial_scope": [
         "PT",
         "ES",
         "DE"
@@ -116,7 +116,7 @@ You will also receive a payload with the statement as created in the database:
     "incompatible_content_illegal": "Yes",
     "content_type": "CONTENT_TYPE_VIDEO",
     "category": "STATEMENT_CATEGORY_FRAUD",
-    "countries_list": [
+    "territorial_scope": [
         "PT",
         "ES",
         "DE"
@@ -346,23 +346,30 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Countries List (countries_list)
+### Territorial Scope (territorial_scope)
 
 This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
-for the country and the countries must be EU countries. EU (European Union) and 
-EEA (European Economic Area) maybe used as well.
+for the country and the countries must be (EU/EEA) countries. 
 
 Allowed values are:
 
-@php echo implode(', ', \App\Models\Statement::EUROPEAN_COUNTRY_CODES); @endphp
+@php echo implode(', ', \App\Services\EuropeanCountriesService::EUROPEAN_COUNTRY_CODES); @endphp
+
+For European Union (EU) use:
+
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES) . '"]'; @endphp
+
+For European Economic Area (EEA) use:
+
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
 
 ### Start Date (start_date)
 
 This is the date and time that this decision starts from. The date needs to take the form of:
 
-```YYYY-MM-DD HH:MM:SS```
+```DD-MM-YYYY```
 
-The ```HH:MM:SS``` is optional and may be omitted. The date must be after 2020-01-01.
+The date must be after 2020-01-01.
 
 ### End Date (end_date)
 
@@ -370,9 +377,9 @@ This is the date and time that this decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
-```YYYY-MM-DD HH:MM:SS```
+```DD-MM-YYYY```
 
-The ```HH:MM:SS``` is optional and may be omitted.
+The date must be after or equal to the start date.
 
 ### Information source (source_type)
 
