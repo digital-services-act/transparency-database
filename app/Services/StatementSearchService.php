@@ -106,7 +106,7 @@ class StatementSearchService
 
         // End but no start.
         if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false)) {
-            $beginning = date('Y-m-d\TH:i:s',0);
+            $beginning = date('Y-m-d\TH:i:s',strtotime('2020-01-01'));
             $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
             return 'created_at:['.$beginning.' TO '.$end->format('Y-m-d\TH:i:s').']';
         }

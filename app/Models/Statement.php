@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
@@ -198,7 +197,7 @@ class Statement extends Model
         'uuid' => 'string',
         'start_date' => 'datetime:d-m-Y',
         'end_date' => 'datetime:d-m-Y',
-        'created_at' => 'datetime:d-m-Y',
+        'created_at' => 'datetime:Y-m-d H:i:s',
         'territorial_scope' => 'array'
     ];
 
@@ -207,11 +206,13 @@ class Statement extends Model
         'updated_at',
         'method',
         'user_id',
-        'id'
+        'id',
+        'platform_id',
     ];
 
     protected $appends = [
         'territorial_scope',
+        'platform',
         'permalink',
         'self'
     ];
@@ -307,6 +308,14 @@ class Statement extends Model
         return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
     }
 
+    /**
+     * @return string
+     */
+    public function getPlatformAttribute(): string
+    {
+        return $this->platform()->first()->name;
+    }
+
     public function getTerritorialScopeAttribute(): array
     {
         $out = null;
@@ -314,7 +323,7 @@ class Statement extends Model
         // Catch potential bad json here.
         try {
             $out = json_decode($this->getRawOriginal('territorial_scope'));
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             $out = [];
         }
 
