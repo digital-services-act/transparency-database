@@ -163,8 +163,11 @@ class StatementController extends Controller
     private function prepareOptions(): array
     {
         // Prepare options for forms and selects and such.
-        $european_countries_list = $this->european_countries_service->getOptionsArray();
-        $countries = $this->mapForSelectWithKeys($european_countries_list);
+        $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
+
+        $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
+        $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
+
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
@@ -190,6 +193,8 @@ class StatementController extends Controller
 
         return compact(
             'countries',
+            'eea_countries',
+            'eu_countries',
             'automated_detections',
             'automated_decisions',
             'incompatible_content_illegals',
