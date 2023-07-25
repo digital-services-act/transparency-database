@@ -208,11 +208,12 @@ class Statement extends Model
         'user_id',
         'id',
         'platform_id',
+        'platform'
     ];
 
     protected $appends = [
         'territorial_scope',
-        'platform',
+        'platform_name',
         'permalink',
         'self'
     ];
@@ -311,9 +312,9 @@ class Statement extends Model
     /**
      * @return string
      */
-    public function getPlatformAttribute(): string
+    public function getPlatformNameAttribute(): string
     {
-        return $this->platform()->first()->name;
+        return $this->platform->name;
     }
 
     public function getTerritorialScopeAttribute(): array
