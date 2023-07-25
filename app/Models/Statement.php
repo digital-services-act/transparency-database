@@ -309,8 +309,22 @@ class Statement extends Model
 
     public function getTerritorialScopeAttribute(): array
     {
-        $out = json_decode($this->getRawOriginal('territorial_scope'));
-        return $out ? $out : [];
+        $out = null;
+
+        // Catch potential bad json here.
+        try {
+            $out = json_decode($this->getRawOriginal('territorial_scope'));
+        } catch(\Exception $e) {
+            $out = [];
+        }
+
+        if (is_array($out)) {
+            sort($out);
+        } else {
+            $out = [];
+        }
+
+        return $out;
     }
 
 }

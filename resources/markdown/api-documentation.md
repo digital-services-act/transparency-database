@@ -86,7 +86,7 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
-    "start_date": "2022-12-01 17:52:24",
+    "start_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "source": "foomen",
@@ -121,7 +121,7 @@ You will also receive a payload with the statement as created in the database:
         "ES",
         "DE"
     ],
-    "start_date": "2022-12-01 17:52:24",
+    "start_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "source": "foomen",
@@ -130,7 +130,7 @@ You will also receive a payload with the statement as created in the database:
     "url": "https://theurl.com",
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
-    "created_at": "2023-06-08T20:02:50.000000Z",
+    "created_at": "08-06-2023",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "self": ".... api/v1/statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225"
 }
@@ -369,6 +369,8 @@ This is the date and time that this decision starts from. The date needs to take
 
 ```DD-MM-YYYY```
 
+The day and month may have leading zeroes or not.
+
 The date must be after 2020-01-01.
 
 ### End Date (end_date)
@@ -378,6 +380,8 @@ This is the date and time that this decision ends. Leave blank for indefinite.
 The date needs to take the form of:
 
 ```DD-MM-YYYY```
+
+The day and month may have leading zeroes or not.
 
 The date must be after or equal to the start date.
 

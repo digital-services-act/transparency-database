@@ -167,6 +167,122 @@ class StatementAPIControllerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
 
+
+    /**
+     * @test
+     */
+    public function start_date_can_be_with_and_without_leading_zeroes()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $date = Carbon::createFromDate(2023, 2, 5);
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'start_date' => $date->format('d-m-Y'),
+            'end_date' => $date->format('j-n-Y'),
+        ]);
+        $object = new \stdClass();
+        foreach ($fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+
+        /** @var Carbon $start_date */
+        $start_date = $statement->start_date;
+        $this->assertEquals(2023, $start_date->year);
+        $this->assertEquals(2, $start_date->month);
+        $this->assertEquals(5, $start_date->day);
+
+        /** @var Carbon $end_date */
+        $end_date = $statement->end_date;
+        $this->assertEquals(2023, $end_date->year);
+        $this->assertEquals(2, $end_date->month);
+        $this->assertEquals(5, $end_date->day);
+    }
+
+    /**
+     * @test
+     */
+    public function start_date_can_be_a_mix_with_and_without_leading_zeroes()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $date = Carbon::createFromDate(2023, 2, 5);
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'start_date' => $date->format('d-n-Y'),
+            'end_date' => $date->format('j-m-Y'),
+        ]);
+        $object = new \stdClass();
+        foreach ($fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+
+
+        /** @var Carbon $start_date */
+        $start_date = $statement->start_date;
+        $this->assertEquals(2023, $start_date->year);
+        $this->assertEquals(2, $start_date->month);
+        $this->assertEquals(5, $start_date->day);
+
+        /** @var Carbon $end_date */
+        $end_date = $statement->end_date;
+        $this->assertEquals(2023, $end_date->year);
+        $this->assertEquals(2, $end_date->month);
+        $this->assertEquals(5, $end_date->day);
+    }
+
     /**
      * @test
      */
