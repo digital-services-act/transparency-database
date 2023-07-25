@@ -88,14 +88,12 @@
                 :options="$options['categories']"
         />
 
-        <x-ecl.checkboxes-flex label="Territorial scope of the decision"
-                               help="Select member state(s)"
+        <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
                                name="territorial_scope"
                                id="territorial_scope"
                                justlabel="true"
                                :options="$options['countries']" :default="request()->get('territorial_scope', [])"
-                               select_all="All" select_item="Select member state(s)"
-                               enter_keyword="Enter a country name"/>
+        />
 
         <p class="ecl-u-type-paragraph">
             Select:

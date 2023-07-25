@@ -99,10 +99,74 @@
 
 <hr>
 
-<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE" name="territorial_scope" id="territorial_scope"
-                       :options="$options['countries']" :default="$statement->territorial_scope"
-                       select_all="All" select_item="Select member state(s)"
-                       enter_keyword="Enter a country name" />
+<x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
+                       name="territorial_scope"
+                       id="territorial_scope"
+                       justlabel="true"
+                       :options="$options['countries']" :default="request()->get('territorial_scope', [])"
+/>
+
+<p class="ecl-u-type-paragraph">
+  Select:
+  <a href="" class="ecl-link" id="select-eea-link">EEA</a> |
+  <a href="" class="ecl-link" id="select-eu-link">EU</a> |
+  <a href="" class="ecl-link" id="select-none-link">none</a>
+</p>
+
+<script>
+
+  const eu_countries = {!! json_encode($options['eu_countries']) !!};
+  const eea_countries = {!! json_encode($options['eea_countries']) !!};
+
+  function clearCountries()
+  {
+    let input = document.getElementsByName("territorial_scope[]");
+    for (let i = 0; i < input.length; i++) {
+      input[i].checked = false;
+    }
+  }
+
+  function checkCountries(countries)
+  {
+    let input = document.getElementsByName("territorial_scope[]");
+    for (var i = 0; i < input.length; i++) {
+      if (countries.indexOf(input[i].value) > -1 )
+      {
+        input[i].checked = true;
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+
+    ge('select-none-link').addEventListener('click', function(e){
+      clearCountries();
+      e.preventDefault();
+      return false;
+    });
+
+    ge('select-eu-link').addEventListener('click', function(e){
+      clearCountries();
+      checkCountries(eu_countries);
+      e.preventDefault();
+      return false;
+    });
+
+    ge('select-eea-link').addEventListener('click', function(e){
+      clearCountries();
+      checkCountries(eea_countries);
+      e.preventDefault();
+      return false;
+    });
+
+  });
+
+  function ge(id) {
+    return document.getElementById(id);
+  }
+
+</script>
+
 <hr>
 
 <x-ecl.datepicker :label="Statement::LABEL_STATEMENT_START_DATE"

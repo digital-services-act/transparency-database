@@ -155,7 +155,9 @@ class EuropeanCountriesService
 
     public function getOptionsArray(): array
     {
-        return array_combine(self::EUROPEAN_COUNTRY_CODES, $this->getCountryNames(self::EUROPEAN_COUNTRY_CODES, false));
+        $options = array_combine(self::EUROPEAN_COUNTRY_CODES, $this->getCountryNames(self::EUROPEAN_COUNTRY_CODES, false));
+        asort($options);
+        return $options;
     }
 
     public function filterEuropeanCountries(array $countries): array
