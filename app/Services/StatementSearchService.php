@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
@@ -34,6 +35,7 @@ class StatementSearchService
         'automated_detection',
         'automated_decision',
         'platform_id',
+        'countries_list'
     ];
 
     /**
@@ -63,7 +65,10 @@ class StatementSearchService
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                $part = $this->$method($filters[$filter_key]);
+                $part = false;
+                if( method_exists($this,$method)) {
+                    $part = $this->$method($filters[$filter_key]);
+                }
                 if ($part) {
                     $queryAndParts[] = $part;
                 }
@@ -183,6 +188,17 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    private function applyCountriesListFilter(array $filter_values)
+    {
+        $filter_values = array_intersect($filter_values, Statement::EUROPEAN_COUNTRY_CODES);
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'countries_list:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
     private function applyDecisionAccountFilter(array $filter_values)
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
@@ -258,4 +274,65 @@ class StatementSearchService
         }
         return implode(' OR ', $ors);
     }
+
+    public function countForPlatform(Platform $platform): int
+    {
+        $filters = [
+            'platform_id' => [$platform->id],
+        ];
+
+        $statements = $this->query($filters)->paginate(50);
+        return $statements->total();
+    }
+
+    public function totalStatements()
+    {
+        $statements = $this->query([])->paginate(50);
+        return $statements->total();
+    }
+
+    public function dayCountsForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end, bool $reverse = true): array
+    {
+        $date_counts = [];
+
+        while($start < $end) {
+
+            $filters = [
+                'platform_id' => [$platform->id],
+                'created_at_start' => $start->format('d-m-Y'),
+                'created_at_end' => $start->format('d-m-Y'),
+            ];
+
+            $statements = $this->query($filters)->paginate(50);
+
+            $date_counts[] = [
+                'date' => $start->clone(),
+                'count' => $statements->total(),
+            ];
+
+            $start->addDay();
+
+        }
+
+        $highest = -1;
+        foreach($date_counts as $date_count)
+        {
+            if ($date_count['count'] > $highest)
+            {
+                $highest = $date_count['count'];
+            }
+        }
+
+        foreach ($date_counts as $index => $date_count)
+        {
+            $date_counts[$index]['percentage'] = (int) ceil( ($date_count['count'] / $highest) * 100 );
+        }
+
+        if ($reverse) {
+            $date_counts = array_reverse($date_counts);
+        }
+
+        return $date_counts;
+    }
+
 }

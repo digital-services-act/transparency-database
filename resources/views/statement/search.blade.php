@@ -19,7 +19,7 @@
         With the form below you can now specify many more filters on the statements
     </p>
 
-    <x-statement-search-form :options="$options" />
+    <x-statement.search-form :options="$options" />
 
 
 @endsection

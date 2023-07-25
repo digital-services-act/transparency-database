@@ -10,7 +10,7 @@
 
 @section('content')
 
-    <h1>{{ $platform_name }} Dashboard</h1>
+    <h1 class="ecl-u-type-heading-1">{{ $platform_name }} Dashboard</h1>
 
     <div class="ecl-row">
         @can('view reports')
@@ -40,5 +40,24 @@
         </div>
     </div>
     @endcan
+
+
+    <h2 class="ecl-u-type-heading-2">Assistance</h2>
+
+    <p class="ecl-u-type-paragraph">
+        For technical issues or access rights requests:
+        <pre>
+            CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
+        </pre>
+    </p>
+
+    <p class="ecl-u-type-paragraph">
+        Other inquiries email:
+
+        <pre>
+            CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
+        </pre>
+    </p>
+
 
 @endsection

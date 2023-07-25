@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -48,7 +47,9 @@ class StatementQueryService
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
-                    $this->$method($statements, $filters[$filter_key]);
+                    if( method_exists($this,$method)) {
+                        $this->$method($statements, $filters[$filter_key]);
+                    }
                 } catch (\TypeError|\Exception $e) {
                     Log::error("Statement Query Service Error: " . $e->getMessage());
                 }

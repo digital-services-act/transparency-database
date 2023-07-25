@@ -16,7 +16,7 @@ send an email request with your platform information to the following:
 Once verified your account will then be link to your platform and you will have the 
 ability to generate an API token.
 
-If you have other inquiries and/or matters to discuss then please email the following:
+If you have other inquiries to discuss then please email the following:
 
 <pre>
     CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
@@ -361,7 +361,7 @@ This is the date and time that this decision starts from. The date needs to take
 
 ```YYYY-MM-DD HH:MM:SS```
 
-The ```HH:MM:SS``` is optional and may be omitted.
+The ```HH:MM:SS``` is optional and may be omitted. The date must be after 2020-01-01.
 
 ### End Date (end_date)
 

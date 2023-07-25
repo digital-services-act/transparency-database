@@ -289,7 +289,8 @@ class Statement extends Model
             'url' => $this->url,
             'created_at' => $this->created_at,
             'uuid' => $this->uuid,
-            'puid' => $this->puid
+            'puid' => $this->puid,
+            'countries_list' => $this->countries_list
         ];
     }
 
@@ -314,18 +315,17 @@ class Statement extends Model
      */
     public function getCountriesListNames(): array
     {
-        if(count($this->countries_list) == 27) return ['European Union'];
-        if ($this->countries_list) {
+        if($this->countries_list && is_array($this->countries_list) && count($this->countries_list) == 27) return ['European Union'];
+        if ($this->countries_list && is_array($this->countries_list)) {
             return array_map(function ($iso) {
-                return Countries::getName($iso);
+                try {
+                    return Countries::getName($iso);
+                } catch (\Exception $e) {
+                    return "Unknown";
+                }
             }, $this->countries_list);
         }
         return [];
-    }
-
-    public function entities()
-    {
-        return $this->belongsToMany(Entity::class)->withPivot('role');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
