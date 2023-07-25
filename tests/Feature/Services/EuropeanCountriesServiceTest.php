@@ -78,7 +78,7 @@ class EuropeanCountriesServiceTest extends TestCase
         $country_codes[] = 'XX';
         $country_codes[] = 'NOT EVEN CLOSE TO AN ISO';
 
-        $result = $this->european_countries_service->filterEuropeanCountries($country_codes);
+        $result = $this->european_countries_service->filterSortEuropeanCountries($country_codes);
         $this->assertCount(27, $result);
 
         $this->assertNotContains('US', $result);
@@ -86,5 +86,28 @@ class EuropeanCountriesServiceTest extends TestCase
         $this->assertNotContains('XX', $result);
         $this->assertNotContains('NOT EVEN CLOSE TO AN ISO', $result);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function ensure_that_country_codes_arrays_are_in_alphabetical_order()
+    {
+        $codes = EuropeanCountriesService::EUROPEAN_COUNTRY_CODES;
+        $result = $codes;
+        sort($result);
+        $this->assertEquals($result, $codes);
+
+        $codes = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
+        $result = $codes;
+        sort($result);
+        $this->assertEquals($result, $codes);
+
+        $codes = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
+        $result = $codes;
+        sort($result);
+        $this->assertEquals($result, $codes);
+    }
+
 
 }

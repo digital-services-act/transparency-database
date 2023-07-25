@@ -160,8 +160,10 @@ class EuropeanCountriesService
         return $options;
     }
 
-    public function filterEuropeanCountries(array $countries): array
+    public function filterSortEuropeanCountries(array $countries): array
     {
-        return array_intersect($countries, self::EUROPEAN_COUNTRY_CODES);
+        $filtered = array_intersect($countries, self::EUROPEAN_COUNTRY_CODES);
+        sort($filtered);
+        return $filtered;
     }
 }

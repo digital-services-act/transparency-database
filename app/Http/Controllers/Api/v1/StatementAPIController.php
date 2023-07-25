@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
+use App\Services\EuropeanCountriesService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -12,6 +13,14 @@ use Illuminate\Support\Facades\Log;
 
 class StatementAPIController extends Controller
 {
+    protected EuropeanCountriesService $european_countries_service;
+    public function __construct(
+        EuropeanCountriesService $european_countries_service,
+    )
+    {
+        $this->european_countries_service = $european_countries_service;
+    }
+
     public function show(Statement $statement): Statement
     {
         return $statement;
@@ -29,6 +38,7 @@ class StatementAPIController extends Controller
 
         $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
+        $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope']);
 
         try {
             $statement = Statement::create($validated);
