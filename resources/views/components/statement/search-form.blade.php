@@ -88,11 +88,73 @@
                 :options="$options['categories']"
         />
 
-        <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
+        <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
+                               name="territorial_scope"
+                               id="territorial_scope"
                                justlabel="true"
-                               :options="$options['countries']" :default="request()->get('countries_list', [])"
-                               select_all="European Union" select_item="Select a member state"
-                               enter_keyword="Enter a country name"/>
+                               :options="$options['countries']" :default="request()->get('territorial_scope', [])"
+        />
+
+        <p class="ecl-u-type-paragraph">
+            Select:
+            <a href="" class="ecl-link" id="select-eea-link">EEA</a> |
+            <a href="" class="ecl-link" id="select-eu-link">EU</a> |
+            <a href="" class="ecl-link" id="select-none-link">none</a>
+        </p>
+
+        <script>
+
+            const eu_countries = {!! json_encode($options['eu_countries']) !!};
+            const eea_countries = {!! json_encode($options['eea_countries']) !!};
+
+            function clearCountries()
+            {
+              let input = document.getElementsByName("territorial_scope[]");
+              for (let i = 0; i < input.length; i++) {
+                input[i].checked = false;
+              }
+            }
+
+            function checkCountries(countries)
+            {
+              let input = document.getElementsByName("territorial_scope[]");
+              for (var i = 0; i < input.length; i++) {
+                if (countries.indexOf(input[i].value) > -1 )
+                {
+                  input[i].checked = true;
+                }
+              }
+            }
+
+            document.addEventListener('DOMContentLoaded', (event) => {
+
+              ge('select-none-link').addEventListener('click', function(e){
+                clearCountries();
+                e.preventDefault();
+                return false;
+              });
+
+              ge('select-eu-link').addEventListener('click', function(e){
+                clearCountries();
+                checkCountries(eu_countries);
+                e.preventDefault();
+                return false;
+              });
+
+              ge('select-eea-link').addEventListener('click', function(e){
+                clearCountries();
+                checkCountries(eea_countries);
+                e.preventDefault();
+                return false;
+              });
+
+            });
+
+            function ge(id) {
+              return document.getElementById(id);
+            }
+
+        </script>
 
         <x-ecl.checkboxes
                 label="Content Type"
@@ -102,6 +164,7 @@
                 :default="request()->get('content_type', [])"
                 :options="$options['content_types']"
         />
+
 
         <x-ecl.checkboxes
                 label="Automated Detection"
@@ -129,12 +192,6 @@
                 :options="$options['source_types']"
                 :default="request()->get('source_type', [])"
         />
-
-        <x-ecl.select-multiple label="Territorial scope of the decision " name="countries_list" id="countries_list"
-                               justlabel="true"
-                               :options="$options['countries']" :default="request()->get('countries_list', [])"
-                               select_all="European Union" select_item="Select a member state"
-                               enter_keyword="Enter a country name"/>
 
         <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"
                           name="created_at_start" :value="request()->get('created_at_start', '')"/>

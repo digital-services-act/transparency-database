@@ -66,8 +66,8 @@
                     :content="$statement->incompatible_content_illegal?'Yes':'No'"></x-infoline>
     @endif
 
-    <x-infoline :title="Statement::LABEL_STATEMENT_COUNTRY_LIST"
-                content="{{ implode(', ', $statement->getCountriesListNames()) }}"></x-infoline>
+    <x-infoline :title="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
+                content="{{ implode(', ', $statement_territorial_scope_country_names) }}"></x-infoline>
 
     <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_TYPE"
                 :content="Statement::CONTENT_TYPES[$statement->content_type]"></x-infoline>

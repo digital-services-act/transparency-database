@@ -35,7 +35,7 @@ class StatementSearchService
         'automated_detection',
         'automated_decision',
         'platform_id',
-        'countries_list'
+        'territorial_scope'
     ];
 
     /**
@@ -106,7 +106,7 @@ class StatementSearchService
 
         // End but no start.
         if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false)) {
-            $beginning = date('Y-m-d\TH:i:s',0);
+            $beginning = date('Y-m-d\TH:i:s',strtotime('2020-01-01'));
             $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
             return 'created_at:['.$beginning.' TO '.$end->format('Y-m-d\TH:i:s').']';
         }
@@ -188,13 +188,13 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyCountriesListFilter(array $filter_values)
+    private function applyTerritorialScopeFilter(array $filter_values)
     {
-        $filter_values = array_intersect($filter_values, Statement::EUROPEAN_COUNTRY_CODES);
+        $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         $ors = [];
         foreach ($filter_values as $filter_value)
         {
-            $ors[] = 'countries_list:'.$filter_value;
+            $ors[] = 'territorial_scope:'.$filter_value;
         }
         return implode(' OR ', $ors);
     }

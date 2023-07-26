@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\DriveInService;
+use App\Services\EuropeanCountriesService;
 use App\Services\StatementSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -13,8 +15,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -25,11 +25,20 @@ class StatementController extends Controller
 {
     protected StatementQueryService $statement_query_service;
     protected StatementSearchService $statement_search_service;
+    protected EuropeanCountriesService $european_countries_service;
+    protected DriveInService $drive_in_service;
 
-    public function __construct(StatementQueryService $statement_query_service, StatementSearchService $statement_search_service)
+    public function __construct(
+        StatementQueryService $statement_query_service,
+        StatementSearchService $statement_search_service,
+        EuropeanCountriesService $european_countries_service,
+        DriveInService $drive_in_service
+    )
     {
         $this->statement_query_service = $statement_query_service;
         $this->statement_search_service = $statement_search_service;
+        $this->european_countries_service = $european_countries_service;
+        $this->drive_in_service = $drive_in_service;
     }
 
     /**
@@ -51,7 +60,7 @@ class StatementController extends Controller
 
         $similarity_results = null;
         if ($request->get('s')) {
-            $similarity_results = $this->getSimilarityWords($request->get('s'));
+            $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
         }
 
         return view('statement.index', compact(
@@ -74,37 +83,6 @@ class StatementController extends Controller
     }
 
     /**
-     * @param $word
-     *
-     * @return array
-     */
-    private function getSimilarityWords($word): array
-    {
-        // Actual Request
-        $payload = new stdClass();
-        $payload->service = 'similarity';
-        $payload->text = $word;
-        $payload->parameters = new stdClass();
-        $payload->parameters->lang = 'en';
-
-        $payload = json_encode($payload);
-
-        $headers = [];
-        $headers['x-api-key'] = config('services.drivein.key');
-        $headers['Accept'] = 'application/json';
-
-        $response = Http::withHeaders($headers)
-                        ->withBody($payload, 'application/json')
-                        ->post(config('services.drivein.base'));
-
-        $similarity_results = $response->json('result');
-
-        return array_map(function($item){
-            return str_replace("_", " ", $item);
-        }, $similarity_results);
-    }
-
-    /**
      * @param Request $request
      *
      * @return Factory|View|Application|RedirectResponse
@@ -112,13 +90,17 @@ class StatementController extends Controller
     public function create(Request $request): Factory|View|Application|RedirectResponse
     {
         // If you don't have a platform, we don't want you here.
-        if(!$request->user()->platform)
-        {
+        if(!$request->user()->platform) {
             return back()->withErrors('Your account is not associated with a platform.');
         }
 
+        // If you are not allowed to create statements we also don't want you here.
+        if(!$request->user()->can('create statements')) {
+            return back()->withErrors('Your account is not able to create statements.');
+        }
+
         $statement = new Statement();
-        $statement->countries_list = [];
+        $statement->territorial_scope = [];
 
         $options = $this->prepareOptions();
         return view('statement.create', [
@@ -134,7 +116,8 @@ class StatementController extends Controller
      */
     public function show(Statement $statement): Factory|View|Application
     {
-        return view('statement.show', compact(['statement']));
+        $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
+        return view('statement.show', compact(['statement','statement_territorial_scope_country_names']));
     }
 
     /**
@@ -153,6 +136,7 @@ class StatementController extends Controller
 
         $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
+        $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
 
         try {
             Statement::create($validated);
@@ -174,22 +158,17 @@ class StatementController extends Controller
         return redirect()->route('statement.index')->with('success', 'The statement has been created.');
     }
 
-    private function sanitizeDate($date): ?string
-    {
-        return $date ? Carbon::createFromFormat('d-m-Y', $date)->format('Y-m-d 00:00:00') : null;
-    }
-
-
     /**
      * @return array
      */
     private function prepareOptions(): array
     {
-        // Prepare Options
+        // Prepare options for forms and selects and such.
+        $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
 
-        $european_countries_list = $this->getEuropean_countries_list();
+        $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
+        $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
 
-        $countries = $this->mapForSelectWithKeys($european_countries_list);
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
         $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
@@ -200,10 +179,6 @@ class StatementController extends Controller
                 'label' => $platform->name
             ];
         })->toArray();
-        array_map(function ($automated_detection) {
-            return ['value' => $automated_detection, 'label' => $automated_detection];
-        }, Statement::AUTOMATED_DETECTIONS);
-
         $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES);
         $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES);
         $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
@@ -219,6 +194,8 @@ class StatementController extends Controller
 
         return compact(
             'countries',
+            'eea_countries',
+            'eu_countries',
             'automated_detections',
             'automated_decisions',
             'incompatible_content_illegals',

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Statement;
+use App\Services\EuropeanCountriesService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StatementStoreRequest extends FormRequest
@@ -46,9 +47,9 @@ class StatementStoreRequest extends FormRequest
             'content_type_other' => ['required_if:content_type,CONTENT_TYPE_OTHER','exclude_unless:content_type,CONTENT_TYPE_OTHER','max:500'],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
-            'countries_list' => ['array', 'nullable', $this->in(Statement::EUROPEAN_COUNTRY_CODES)],
-            'start_date' => ['required', 'date', 'after:2020-01-01'],
-            'end_date' => ['date', 'nullable','after_or_equal:start_date'],
+            'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
+            'start_date' => ['required', 'date_format:j-n-Y,d-m-Y,j-m-Y,d-n-Y', 'after:2020-01-01'],
+            'end_date' => ['date_format:j-n-Y,d-m-Y,j-m-Y,d-n-Y', 'nullable','after_or_equal:start_date'],
             'decision_facts' => ['required','max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
             'source' => ['required_unless:source_type,SOURCE_VOLUNTARY','exclude_if:source_type,SOURCE_VOLUNTARY','max:500'],

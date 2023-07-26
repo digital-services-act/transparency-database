@@ -31,7 +31,7 @@ class StatementQueryService
         'decision_account',
         'category',
         'content_type',
-        'countries_list',
+        'territorial_scope',
         'source_type'
     ];
 
@@ -266,12 +266,12 @@ class StatementQueryService
      *
      * @return void
      */
-    private function applyCountriesListFilter(Builder $query, array $filter_value): void
+    private function applyTerritorialScopeFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, Statement::EUROPEAN_COUNTRY_CODES);
+        $filter_values_validated = array_intersect($filter_value, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         if ($filter_values_validated) {
             foreach ($filter_values_validated as $country) {
-                $query->where('countries_list', 'LIKE', '%"' . $country . '"%');
+                $query->where('territorial_scope', 'LIKE', '%"' . $country . '"%');
             }
         }
     }

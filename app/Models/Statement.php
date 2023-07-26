@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
@@ -142,36 +141,8 @@ class Statement extends Model
         'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED
     ];
 
-    public const LABEL_STATEMENT_COUNTRY_LIST = 'Territorial scope of the decision';
-    public const EUROPEAN_COUNTRY_CODES = [
-        'AT',
-        'BE',
-        'BG',
-        'CY',
-        'CZ',
-        'DE',
-        'DK',
-        'EE',
-        'ES',
-        'FI',
-        'FR',
-        'GR',
-        'HR',
-        'HU',
-        'IE',
-        'IT',
-        'LT',
-        'LU',
-        'LV',
-        'MT',
-        'NL',
-        'PL',
-        'PT',
-        'RO',
-        'SE',
-        'SI',
-        'SK'
-    ];
+    public const LABEL_STATEMENT_TERRITORIAL_SCOPE = 'Territorial scope of the decision';
+
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
     public const STATEMENT_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
@@ -224,12 +195,10 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
-        'start_date' => 'datetime:Y-m-d H:i:s',
-        'end_date' => 'datetime:Y-m-d H:i:s',
+        'start_date' => 'datetime:d-m-Y',
+        'end_date' => 'datetime:d-m-Y',
         'created_at' => 'datetime:Y-m-d H:i:s',
-        'deleted_at' => 'datetime:Y-m-d H:i:s',
-        'update_at' => 'datetime:Y-m-d H:i:s',
-        'countries_list' => 'array'
+        'territorial_scope' => 'array'
     ];
 
     protected $hidden = [
@@ -237,10 +206,14 @@ class Statement extends Model
         'updated_at',
         'method',
         'user_id',
-        'id'
+        'id',
+        'platform_id',
+        'platform'
     ];
 
     protected $appends = [
+        'territorial_scope',
+        'platform_name',
         'permalink',
         'self'
     ];
@@ -290,7 +263,7 @@ class Statement extends Model
             'created_at' => $this->created_at,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
-            'countries_list' => $this->countries_list
+            'territorial_scope' => $this->territorial_scope
         ];
     }
 
@@ -308,24 +281,6 @@ class Statement extends Model
     public function getScoutKeyName(): mixed
     {
         return 'id';
-    }
-
-    /**
-     * @return array
-     */
-    public function getCountriesListNames(): array
-    {
-        if($this->countries_list && is_array($this->countries_list) && count($this->countries_list) == 27) return ['European Union'];
-        if ($this->countries_list && is_array($this->countries_list)) {
-            return array_map(function ($iso) {
-                try {
-                    return Countries::getName($iso);
-                } catch (\Exception $e) {
-                    return "Unknown";
-                }
-            }, $this->countries_list);
-        }
-        return [];
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -354,8 +309,32 @@ class Statement extends Model
         return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
     }
 
-    public function getCreatedAtAttribute($date)
+    /**
+     * @return string
+     */
+    public function getPlatformNameAttribute(): string
     {
-        return Carbon::parse($date)->setTimezone('Europe/Brussels');
+        return $this->platform->name;
     }
+
+    public function getTerritorialScopeAttribute(): array
+    {
+        $out = null;
+
+        // Catch potential bad json here.
+        try {
+            $out = json_decode($this->getRawOriginal('territorial_scope'));
+        } catch(Exception $e) {
+            $out = [];
+        }
+
+        if (is_array($out)) {
+            sort($out);
+        } else {
+            $out = [];
+        }
+
+        return $out;
+    }
+
 }

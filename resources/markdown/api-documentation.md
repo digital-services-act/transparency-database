@@ -81,12 +81,12 @@ Example JSON payload body:
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
-    "countries_list": [
+    "territorial_scope": [
         "PT",
         "ES",
         "DE"
     ],
-    "start_date": "2022-12-01 17:52:24",
+    "start_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "source": "foomen",
@@ -116,12 +116,12 @@ You will also receive a payload with the statement as created in the database:
     "incompatible_content_illegal": "Yes",
     "content_type": "CONTENT_TYPE_VIDEO",
     "category": "STATEMENT_CATEGORY_FRAUD",
-    "countries_list": [
+    "territorial_scope": [
         "PT",
         "ES",
         "DE"
     ],
-    "start_date": "2022-12-01 17:52:24",
+    "start_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "source": "foomen",
@@ -130,7 +130,7 @@ You will also receive a payload with the statement as created in the database:
     "url": "https://theurl.com",
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
-    "created_at": "2023-06-08T20:02:50.000000Z",
+    "created_at": "08-06-2023",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "self": ".... api/v1/statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225"
 }
@@ -346,22 +346,32 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Countries List (countries_list)
+### Territorial Scope (territorial_scope)
 
 This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
-for the country and the countries must be EU countries.
+for the country and the countries must be (EU/EEA) countries. 
 
 Allowed values are:
 
-@php echo implode(', ', \App\Models\Statement::EUROPEAN_COUNTRY_CODES); @endphp
+@php echo implode(', ', \App\Services\EuropeanCountriesService::EUROPEAN_COUNTRY_CODES); @endphp
+
+For European Union (EU) use:
+
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES) . '"]'; @endphp
+
+For European Economic Area (EEA) use:
+
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
 
 ### Start Date (start_date)
 
 This is the date and time that this decision starts from. The date needs to take the form of:
 
-```YYYY-MM-DD HH:MM:SS```
+```DD-MM-YYYY```
 
-The ```HH:MM:SS``` is optional and may be omitted. The date must be after 2020-01-01.
+The day and month may have leading zeroes or not.
+
+The date must be after 2020-01-01.
 
 ### End Date (end_date)
 
@@ -369,9 +379,11 @@ This is the date and time that this decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
-```YYYY-MM-DD HH:MM:SS```
+```DD-MM-YYYY```
 
-The ```HH:MM:SS``` is optional and may be omitted.
+The day and month may have leading zeroes or not.
+
+The date must be after or equal to the start date.
 
 ### Information source (source_type)
 

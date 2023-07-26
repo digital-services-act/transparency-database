@@ -148,7 +148,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
-                    'countries_list'                   =>
+                    'territorial_scope'                   =>
                         [
                             'type' => 'text'
                         ],

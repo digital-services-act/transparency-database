@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
+use App\Services\EuropeanCountriesService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -68,7 +69,7 @@ class StatementFactory extends Factory
             'url' => $this->faker->url,
             'puid' => $this->faker->uuid,
 
-            'countries_list' => $this->faker->randomElements(Statement::EUROPEAN_COUNTRY_CODES, rand(1, 8)),
+            'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, 30)),
 
             'start_date' => $start_date,
             'end_date' => $end_date,
