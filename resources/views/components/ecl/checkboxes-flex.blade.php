@@ -8,7 +8,7 @@
     <x-ecl.help :help="$help" />
     <x-ecl.error-feedback :name="$name" />
 
-    <div class="demo-container ecl-u-d-flex ecl-u-flex-wrap">
+    <div class="demo-container ecl-u-d-flex ecl-u-flex-wrap ecl-u-mt-m">
         @if(is_array($options) && is_array($default))
             @foreach($options as $option)
                 <div class="ecl-u-mr-m">
