@@ -453,7 +453,7 @@ class StatementAPIControllerTest extends TestCase
         );
 
         $response->assertStatus(Response::HTTP_CREATED);
-        // It show on the store response
+        // It shows on the store response
         $this->assertNotNull($response->json('puid'));
         $content = $response->content();
         $this->assertStringContainsString('"puid":', $content);
