@@ -132,7 +132,7 @@ class Statement extends Model
         'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
-    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account.';
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account';
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
