@@ -5,7 +5,7 @@
         <th class="ecl-table__header">Creator</th>
         <th class="ecl-table__header">UUID</th>
         <th class="ecl-table__header">Content Type</th>
-        <th class="ecl-table__header">Creation date</th>
+        <th class="ecl-table__header">Creation Date</th>
 
     </tr>
     </thead>

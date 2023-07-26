@@ -208,7 +208,8 @@ class Statement extends Model
         'user_id',
         'id',
         'platform_id',
-        'platform'
+        'platform',
+        'puid'
     ];
 
     protected $appends = [

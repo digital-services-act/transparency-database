@@ -423,4 +423,48 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertEquals($count_after, $count_before);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function on_store_puid_is_shown_but_not_on_show()
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
+        $object = new \stdClass();
+        foreach ($this->required_fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        // It shows on the store response
+        $this->assertNotNull($response->json('puid'));
+        $content = $response->content();
+        $this->assertStringContainsString('"puid":', $content);
+
+
+        // In the show call it should be not there or null
+        $response = $this->call('GET', route('api.v1.statement.show', ['statement' => $response->json('uuid')]));
+        $this->assertNull($response->json('puid'));
+        $content = $response->content();
+        $this->assertStringNotContainsString('"puid":', $content);
+
+    }
 }
+
