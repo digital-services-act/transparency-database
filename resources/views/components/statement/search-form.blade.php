@@ -1,8 +1,7 @@
+@php use App\Models\Statement; @endphp
 @props(['options' => null, 'similarity_results' => null])
 
 <form method="get" action="{{ route('statement.index') }}">
-
-
 
     <x-ecl.textfield name="s" id="s" label="Search and Filtering" justlabel="true"
                      placeholder="enter your text search here" :value="request()->get('s', '')"/>
@@ -21,10 +20,6 @@
         </div>
     @endif
 
-
-
-
-
     <div id="search-content">
 
 
@@ -35,7 +30,7 @@
                                enter_keyword="Enter a platform name" />
 
         <x-ecl.checkboxes
-                label="Ground for Decision"
+                :label="Statement::LABEL_STATEMENT_DECISION_GROUND"
                 justlabel="true"
                 name="decision_ground"
                 id="decision_ground"
@@ -44,7 +39,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Decision Visibility"
+                :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
                 justlabel="true"
                 name="decision_visibility"
                 id="decision_visibility"
@@ -53,7 +48,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Decision Monetary"
+                :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
                 justlabel="true"
                 name="decision_monetary"
                 id="decision_monetary"
@@ -62,7 +57,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Decision Provision"
+                :label="Statement::LABEL_STATEMENT_DECISION_PROVISION"
                 justlabel="true"
                 name="decision_provision"
                 id="decision_provision"
@@ -71,7 +66,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Decision Account"
+                :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
                 justlabel="true"
                 name="decision_account"
                 id="decision_account"
@@ -80,7 +75,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Category"
+                :label="Statement::LABEL_STATEMENT_CATEGORY"
                 justlabel="true"
                 name="category"
                 id="category"
@@ -157,7 +152,7 @@
         </script>
 
         <x-ecl.checkboxes
-                label="Content Type"
+                :label="Statement::LABEL_STATEMENT_CONTENT_TYPE"
                 justlabel="true"
                 name="content_type"
                 id="content_type"
@@ -167,7 +162,7 @@
 
 
         <x-ecl.checkboxes
-                label="Automated Detection"
+                :label="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"
                 justlabel="true"
                 name="automated_detection"
                 id="automated_detection"
@@ -176,7 +171,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Automated Decision"
+                :label="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"
                 justlabel="true"
                 name="automated_decision"
                 id="automated_decision"
@@ -185,7 +180,7 @@
         />
 
         <x-ecl.checkboxes
-                label="Source Type"
+                :label="Statement::LABEL_STATEMENT_SOURCE_TYPE"
                 justlabel="true"
                 name="source_type"
                 id="source_type"
@@ -193,10 +188,10 @@
                 :default="request()->get('source_type', [])"
         />
 
-        <x-ecl.datepicker label="Created Start" id="created_at_start" justlabel="true"
+        <x-ecl.datepicker label="Created Starting" id="created_at_start" justlabel="true"
                           name="created_at_start" :value="request()->get('created_at_start', '')"/>
 
-        <x-ecl.datepicker label="Created End" id="created_at_end" justlabel="true"
+        <x-ecl.datepicker label="Created Ending" id="created_at_end" justlabel="true"
                           name="created_at_end" :value="request()->get('created_at_end', '')"/>
 
         <x-ecl.button label="search"/>
