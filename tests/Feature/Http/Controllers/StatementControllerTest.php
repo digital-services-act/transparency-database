@@ -27,7 +27,7 @@ class StatementControllerTest extends TestCase
         'category' => 'STATEMENT_CATEGORY_FRAUD',
         'illegal_content_legal_ground' => 'foo',
         'illegal_content_explanation' => 'bar',
-        'countries_list' => ['BE','FR'],
+        'territorial_scope' => ['BE','FR'],
         'url' => 'https://www.test.com',
         'puid' => 'THX1138',
         'start_date' => '03-01-2023',

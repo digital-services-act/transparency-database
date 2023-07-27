@@ -122,7 +122,7 @@ return [
             'level'     => 'debug',
             'url'       => env('MICROSOFT_TEAMS_WEBHOOK'),
             'style'     => 'simple',    // Available style is 'simple' and 'card', default is 'simple'
-            'name'      => 'DSA M2 ('.env('APP_ENV').')'
+            'name'      => 'DSA M2 ('.env('APP_URL').')'
         ],
     ],
 

@@ -9,14 +9,14 @@ use Illuminate\Console\Command;
 use Illuminate\Console\View\Components\Info;
 use OpenSearch\Client;
 
-class OpenSearchIndexes extends Command
+class OpenSearchIndexList extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'opensearch:indexes';
+    protected $signature = 'opensearch:index_list';
 
     /**
      * The console command description.
@@ -40,9 +40,11 @@ class OpenSearchIndexes extends Command
         $client  = app(Client::class);
 
         $indexes = array_keys($client->indices()->stats()['indices']);
-        foreach($indexes as $index)
+        $rows = [];
+        foreach ($indexes as $index)
         {
-            $this->info($index);
+            $rows[] = [$index];
         }
+        $this->table(['Indexes'], $rows);
     }
 }

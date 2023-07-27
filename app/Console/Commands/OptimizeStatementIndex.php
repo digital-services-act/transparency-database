@@ -50,175 +50,71 @@ class OptimizeStatementIndex extends Command
                 [
                     'automated_decision'               =>
                         [
-                            'type' => 'boolean',
+                            'type' => 'boolean'
                         ],
                     'automated_detection'              =>
                         [
-                            'type' => 'boolean',
+                            'type' => 'boolean'
                         ],
                     'category'                         =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'content_type'                     =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'content_type_other'               =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'created_at'                       =>
                         [
-                            'type' => 'date',
+                            'type' => 'date'
                         ],
                     'decision_account'                 =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'decision_facts'                   =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'decision_ground'                  =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'decision_monetary'                =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'decision_provision'               =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'decision_visibility'              =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
                     'id'                               =>
                         [
-                            'type' => 'long',
+                            'type' => 'long'
                         ],
                     'illegal_content_explanation'      =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'illegal_content_legal_ground'     =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'incompatible_content_explanation' =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'incompatible_content_ground'      =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'platform_id'                      =>
                         [
@@ -226,87 +122,35 @@ class OptimizeStatementIndex extends Command
                         ],
                     'source'                           =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
                     'source_type'                      =>
                         [
-                            'type'   => 'keyword',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'keyword'
                         ],
-                    'url'                           =>
+                    'url'                              =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
-                    'uuid'                           =>
+                    'uuid'                             =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
-                    'puid'                           =>
+                    'puid'                             =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
-                    'decision_visibility_other'                           =>
+                    'decision_visibility_other'        =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
                         ],
-                    'decision_monetary_other'                           =>
+                    'decision_monetary_other'          =>
                         [
-                            'type'   => 'text',
-                            'fields' =>
-                                [
-                                    'keyword' =>
-                                        [
-                                            'type'         => 'keyword',
-                                            'ignore_above' => 256,
-                                        ]
-                                ]
+                            'type' => 'text'
+                        ],
+                    'territorial_scope'                   =>
+                        [
+                            'type' => 'text'
                         ],
                 ]
         ];
@@ -316,7 +160,7 @@ class OptimizeStatementIndex extends Command
         ];
 
         $client->indices()->create(['index' => $index_name, 'body' => $body]);
-        Statement::makeAllSearchable();
+        Statement::where('id', '>', 0)->searchable();
     }
 
 }

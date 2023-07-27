@@ -36,7 +36,7 @@ class StatementAPIControllerTest extends TestCase
             'illegal_content_explanation' => 'bar',
             'url' => 'https://www.test.com',
             'puid' => 'TK421',
-            'countries_list' => ['BE', 'DE', 'FR'],
+            'territorial_scope' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
             'source' => 'foo',
             'decision_facts' => 'decision and facts',
@@ -108,8 +108,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '2023-01-03 00:00:00',
-            'end_date' => '2023-01-13 00:00:00',
+            'start_date' => '08-12-2023',
+            'end_date' => '09-12-2023',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -120,8 +120,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
-        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->start_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
@@ -136,8 +134,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '2023-01-03 00:00:00',
-            'end_date' => '2023-01-13 00:00:00',
+            'start_date' => '15-07-2023',
+            'end_date' => '16-07-2023',
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -164,10 +162,125 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
+
         $this->assertInstanceOf(Carbon::class, $statement->start_date);
-        $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
+    }
+
+
+    /**
+     * @test
+     */
+    public function start_date_can_be_with_and_without_leading_zeroes()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $date = Carbon::createFromDate(2023, 2, 5);
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'start_date' => $date->format('d-m-Y'),
+            'end_date' => $date->format('j-n-Y'),
+        ]);
+        $object = new \stdClass();
+        foreach ($fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+
+        /** @var Carbon $start_date */
+        $start_date = $statement->start_date;
+        $this->assertEquals(2023, $start_date->year);
+        $this->assertEquals(2, $start_date->month);
+        $this->assertEquals(5, $start_date->day);
+
+        /** @var Carbon $end_date */
+        $end_date = $statement->end_date;
+        $this->assertEquals(2023, $end_date->year);
+        $this->assertEquals(2, $end_date->month);
+        $this->assertEquals(5, $end_date->day);
+    }
+
+    /**
+     * @test
+     */
+    public function start_date_can_be_a_mix_with_and_without_leading_zeroes()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $date = Carbon::createFromDate(2023, 2, 5);
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'start_date' => $date->format('d-n-Y'),
+            'end_date' => $date->format('j-m-Y'),
+        ]);
+        $object = new \stdClass();
+        foreach ($fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+
+        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+
+
+        /** @var Carbon $start_date */
+        $start_date = $statement->start_date;
+        $this->assertEquals(2023, $start_date->year);
+        $this->assertEquals(2, $start_date->month);
+        $this->assertEquals(5, $start_date->day);
+
+        /** @var Carbon $end_date */
+        $end_date = $statement->end_date;
+        $this->assertEquals(2023, $end_date->year);
+        $this->assertEquals(2, $end_date->month);
+        $this->assertEquals(5, $end_date->day);
     }
 
     /**
@@ -179,13 +292,13 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $fields = array_merge($this->required_fields, [
-            'countries_list' => ['XY', 'ZZ'],
+            'territorial_scope' => ['XY', 'ZZ'],
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertEquals('The selected countries list is invalid.', $response->json('message'));
+        $this->assertEquals('The selected territorial scope is invalid.', $response->json('message'));
     }
 
     /**
@@ -310,4 +423,48 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertEquals($count_after, $count_before);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function on_store_puid_is_shown_but_not_on_show()
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
+        $object = new \stdClass();
+        foreach ($this->required_fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        // It shows on the store response
+        $this->assertNotNull($response->json('puid'));
+        $content = $response->content();
+        $this->assertStringContainsString('"puid":', $content);
+
+
+        // In the show call it should be not there or null
+        $response = $this->call('GET', route('api.v1.statement.show', ['statement' => $response->json('uuid')]));
+        $this->assertNull($response->json('puid'));
+        $content = $response->content();
+        $this->assertStringNotContainsString('"puid":', $content);
+
+    }
 }
+
