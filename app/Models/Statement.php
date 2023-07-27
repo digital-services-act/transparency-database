@@ -65,7 +65,6 @@ class Statement extends Model
     ];
 
 
-
     public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
@@ -248,7 +247,7 @@ class Statement extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function($statement){
+        static::creating(function ($statement) {
             $statement->uuid = Str::uuid();
         });
     }
@@ -314,8 +313,8 @@ class Statement extends Model
      */
     public function getCountriesListNames(): array
     {
-        if(count($this->countries_list) == 27) return ['European Union'];
         if ($this->countries_list) {
+            if (count($this->countries_list) == 27) return ['European Union'];
             return array_map(function ($iso) {
                 return Countries::getName($iso);
             }, $this->countries_list);
@@ -351,7 +350,7 @@ class Statement extends Model
      */
     public function getSelfAttribute(): string
     {
-        return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
+        return route('api.v' . config('app.api_latest') . '.statement.show', [$this]);
     }
 
     public function getCreatedAtAttribute($date)
