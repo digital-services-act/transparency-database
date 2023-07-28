@@ -14,13 +14,21 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const body = pm.response.json();",
+							"",
 							"pm.test(\"Status code is 201\", () => {",
 							"  pm.response.to.have.status(201);",
 							"});",
 							"",
-							"const responseJson = pm.response.json();",
-							"pm.environment.set(\"statement_uuid\", responseJson.uuid);",
+							"pm.test(\"Body does contain PUID\", () => {",
+							"  pm.expect(body).to.have.property('puid');",
+							"});",
 							"",
+							"pm.test(\"Body does contain UUID\", () => {",
+							"  pm.expect(body).to.have.property('uuid');",
+							"});",
+							"",
+							"pm.environment.set(\"statement_uuid\", body.uuid);",
 							""
 						],
 						"type": "text/javascript"
@@ -336,8 +344,15 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const body = pm.response.json();",
+							"",
 							"pm.test(\"Status code is 200\", () => {",
 							"  pm.response.to.have.status(200);",
+							"  pm.response.to.have.jsonBody;",
+							"});",
+							"",
+							"pm.test(\"Body does not contain PUID\", () => {",
+							"  pm.expect(body.puid).to.be.an('undefined')",
 							"});"
 						],
 						"type": "text/javascript"
@@ -476,6 +491,26 @@
 		},
 		{
 			"name": "Ping",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"There was a pong\", () => {",
+							"  pm.response.to.have.status(200);",
+							"  pm.expect(body).to.have.property('i_say');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true
