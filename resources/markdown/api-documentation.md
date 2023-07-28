@@ -445,7 +445,7 @@ expect the following to occur:
 
 For Ex,
 
-You made an API with a blank JSON payload
+You made an API with a blank JSON payload or an invalid JSON payload.
 
 ```javascript
 {}
@@ -548,3 +548,26 @@ troubleshoot and resolve the problem.
 When there is an error of 5XX we are immediately notified and there is no need 
 to report the issue.
  
+## Source Code
+
+The source code for this application can be viewed here:
+
+[DSA Transparency Database Source - GitHub](https://github.com/digital-services-act/transparency-database)
+
+Using the repository code you can even setup and run a local replica development testing area.
+
+Within the github environment you are also more than welcome to give feedback, pull requests and 
+reviews concerning the source code. 
+
+## Postman & Code Examples
+
+In the source repository for this application you will find 2 files to help you setup a 
+postman playground that will allow you to make random statements of reason using the API.
+
+Postman will then allow you to generate code samples in many software coding languages
+such as Java, PHP, CURL, Python and many many more.
+
+- [Postman Requests Collection](https://github.com/digital-services-act/transparency-database/blob/main/DSA%20module%202%20API.postman_collection.json)
+- [Sample Postman Local Environment](https://github.com/digital-services-act/transparency-database/blob/main/Local%20DSA%20M2.postman_environment.json) *
+
+_* - The token in the local environment is not valid_
