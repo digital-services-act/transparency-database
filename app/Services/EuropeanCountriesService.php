@@ -162,7 +162,7 @@ class EuropeanCountriesService
 
     public function filterSortEuropeanCountries(array $countries): array
     {
-        $filtered = array_intersect($countries, self::EUROPEAN_COUNTRY_CODES);
+        $filtered = array_unique(array_intersect($countries, self::EUROPEAN_COUNTRY_CODES));
         sort($filtered);
         return $filtered;
     }
