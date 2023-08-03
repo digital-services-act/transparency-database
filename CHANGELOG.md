@@ -4,9 +4,10 @@
 ### Added
 
 ### Changed
-- Source field is now optional
-- start_date field has been renamed to application_date
-
+- Renamed the API field: start_date to application_date
+- Renamed the API field: countries_list to territorial_scope
+- Modified the API field: 'source' is now optional
+- Modified the API field: 'incompatible_content_illegal' is now optional
 
 ### Fixed
 

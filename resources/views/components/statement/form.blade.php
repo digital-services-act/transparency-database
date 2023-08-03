@@ -75,7 +75,6 @@
              id="incompatible_content_illegal"
              :options="$options['incompatible_content_illegals']"
              default="{{ $statement->incompatible_content_illegal }}"
-             required="true"
 />
 
 <hr>
