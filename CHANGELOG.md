@@ -1,5 +1,15 @@
 # Changelog
 
+##  [v1.0] - 2023-08-16
+### Added
+
+### Changed
+- Source field is now optional
+
+
+### Fixed
+
+
 ##  [v0.1] - 2023-07-17
 ### Added
 - Added a new mandatory field to the API: PUID (Platform Unique Identifier).
