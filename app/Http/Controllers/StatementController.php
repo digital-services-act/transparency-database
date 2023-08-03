@@ -134,7 +134,7 @@ class StatementController extends Controller
             'method' => Statement::METHOD_FORM
         ])->toArray();
 
-        $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
+        $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
 

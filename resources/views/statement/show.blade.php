@@ -92,9 +92,9 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"
                 :content="$statement->automated_decision"></x-infoline>
 
-    @if($statement->start_date)
-        <x-infoline :title="Statement::LABEL_STATEMENT_START_DATE"
-                    :content="$statement->start_date->format('d-m-Y')"></x-infoline>
+    @if($statement->application_date)
+        <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
+                    :content="$statement->application_date->format('d-m-Y')"></x-infoline>
     @endif
 
     @if($statement->end_date)

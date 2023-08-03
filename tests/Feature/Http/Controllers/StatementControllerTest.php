@@ -30,7 +30,7 @@ class StatementControllerTest extends TestCase
         'territorial_scope' => ['BE','FR'],
         'url' => 'https://www.test.com',
         'puid' => 'THX1138',
-        'start_date' => '03-01-2023',
+        'application_date' => '03-01-2023',
         'end_date' => '13-01-2023',
         'source_type' => 'SOURCE_ARTICLE_16',
         'decision_facts' => 'Facts and circumstances',
@@ -151,8 +151,8 @@ class StatementControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals(Statement::METHOD_FORM, $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-01-03 00:00:00', $statement->start_date);
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertEquals('2023-01-03 00:00:00', $statement->application_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertEquals('2023-01-13 00:00:00', $statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
 

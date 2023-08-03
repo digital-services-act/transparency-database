@@ -86,7 +86,7 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
-    "start_date": "08-06-2023",
+    "application_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
@@ -120,7 +120,7 @@ You will also receive a payload with the statement as created in the database:
         "ES",
         "DE"
     ],
-    "start_date": "08-06-2023",
+    "application_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
@@ -361,7 +361,7 @@ For European Economic Area (EEA) use:
 
 @php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
 
-### Start Date (start_date)
+### Application Date (application_date)
 
 This is the date and time that this decision starts from. The date needs to take the form of:
 
@@ -381,7 +381,7 @@ The date needs to take the form of:
 
 The day and month may have leading zeroes or not.
 
-The date must be after or equal to the start date.
+The date must be after or equal to the application date.
 
 ### Information source (source_type)
 
@@ -478,8 +478,8 @@ The payload body will be a JSON object containing more information and the error
         "category": [
             "The category field is required."
         ],
-        "start_date": [
-            "The start date field is required."
+        "application_date": [
+            "The application date field is required."
         ],
         "decision_facts": [
             "The decision facts field is required."

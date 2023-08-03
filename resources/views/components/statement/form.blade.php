@@ -169,8 +169,8 @@
 
 <hr>
 
-<x-ecl.datepicker :label="Statement::LABEL_STATEMENT_START_DATE"
-                  name="start_date" value="{{ $statement->start_date }}" required="true"/>
+<x-ecl.datepicker :label="Statement::LABEL_STATEMENT_APPLICATION_DATE"
+                  name="application_date" value="{{ $statement->application_date }}" required="true"/>
 
 <x-ecl.datepicker :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'" id="end_date"
                   name="end_date" value="{{ $statement->end_date }}"/>
