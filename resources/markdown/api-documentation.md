@@ -89,7 +89,6 @@ Example JSON payload body:
     "start_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
-    "source": "foomen",
     "automated_detection": "No",
     "automated_decision": "No",
     "url": "https://theurl.com",
@@ -124,7 +123,6 @@ You will also receive a payload with the statement as created in the database:
     "start_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
-    "source": "foomen",
     "automated_detection": "No",
     "automated_decision": "No",
     "url": "https://theurl.com",
@@ -405,7 +403,7 @@ The value provided must be one of the following:
 
 ### Source/Notifier (source)
 
-This is a required field if the source type field was a notice.
+This is an optional field if the source type field was a notice.
 
 Limited to 500 characters.
 
@@ -488,9 +486,6 @@ The payload body will be a JSON object containing more information and the error
         ],
         "source_type": [
             "The source type field is required."
-        ],
-        "source": [
-            "The source field is required when source type is a notice submission."
         ],
         "automated_detection": [
             "The automated detection field is required."

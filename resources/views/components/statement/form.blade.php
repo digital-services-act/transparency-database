@@ -180,7 +180,7 @@
               required="true"/>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_SOURCE" name="source"
-                 id="source" required="true"/>
+                 id="source"/>
 
 <hr>
 
@@ -258,7 +258,7 @@
     }
 
     hide('div_source');
-    if (ge('source_type').value && ge('source_type').value != 'SOURCE_VOLUNTARY') {
+    if (ge('source_type').value && ge('source_type').value !== 'SOURCE_VOLUNTARY') {
       show('div_source');
     }
 
