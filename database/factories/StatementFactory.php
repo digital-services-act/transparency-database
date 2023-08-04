@@ -53,7 +53,7 @@ class StatementFactory extends Factory
 
             'decision_ground' => $decision_ground,
 
-            'content_type' => $this->faker->randomElement(array_keys(Statement::CONTENT_TYPES)),
+            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES)),
             'content_type_other' => $this->faker->text(100),
 
             'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),

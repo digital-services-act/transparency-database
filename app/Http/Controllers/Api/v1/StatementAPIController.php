@@ -28,6 +28,8 @@ class StatementAPIController extends Controller
 
     public function store(StatementStoreRequest $request): JsonResponse
     {
+
+
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $request->user()->platform_id,
@@ -65,6 +67,7 @@ class StatementAPIController extends Controller
                 return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
+
 
         $out = $statement->toArray();
         $out['puid'] = $statement->puid; // Show the puid on a store.
