@@ -60,8 +60,6 @@ class CreateStatementsTable extends Migration
 
             $table->string('method')->default('API');
 
-            $table->string('url', 500)->nullable();
-
             $table->string('puid', 500);
 
 

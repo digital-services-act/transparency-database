@@ -66,7 +66,7 @@ class StatementFactory extends Factory
 
             'incompatible_content_illegal' => $this->faker->randomElement(Statement::INCOMPATIBLE_CONTENT_ILLEGALS),
 
-            'url' => $this->faker->url,
+
             'puid' => $this->faker->uuid,
 
             'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, 30)),

@@ -30,6 +30,9 @@
   - STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS
   - STATEMENT_CATEGORY_VIOLENCE
 
+### Deleted
+- Removed the API field: url
+
 ### Fixed
 
 

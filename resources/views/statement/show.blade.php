@@ -80,8 +80,6 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY"
                 :content="Statement::STATEMENT_CATEGORIES[$statement->category]"></x-infoline>
 
-    <x-infoline :title="Statement::LABEL_STATEMENT_URL" :content="$statement->url"></x-infoline>
-
     <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_TYPE"
                 :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-infoline>
     @if($statement->source_type != 'SOURCE_VOLUNTARY')

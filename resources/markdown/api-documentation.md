@@ -91,7 +91,6 @@ Example JSON payload body:
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
     "automated_decision": "No",
-    "url": "https://theurl.com",
     "puid": "TK421"
 }
 ```
@@ -125,7 +124,6 @@ You will also receive a payload with the statement as created in the database:
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
     "automated_decision": "No",
-    "url": "https://theurl.com",
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "created_at": "08-06-2023",
@@ -417,14 +415,6 @@ This indicates to us that decision taken in respect of automatically detected me
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision carried out automatically.
 
-### URL (url)
-
-This is a required attribute. This contains the URL/URI to the data that has been moderated.
-In cases where there is no URL or it is non applicable please supply "N/A". Additionally take
-care to redact any personal identifying information.
-
-Limited to 500 characters.
-
 ### Platform Unique Identifier (puid)
 
 This is a string that uniquely identifies this statement within the platform.
@@ -492,9 +482,6 @@ The payload body will be a JSON object containing more information and the error
         ],
         "automated_decision": [
             "The automated decision field is required."
-        ],
-        "url": [
-            "The url field is required."
         ],
         "puid": [
             "The puid field is required."

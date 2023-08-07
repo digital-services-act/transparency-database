@@ -34,7 +34,6 @@ class StatementAPIControllerTest extends TestCase
             'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
-            'url' => 'https://www.test.com',
             'puid' => 'TK421',
             'territorial_scope' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
@@ -346,38 +345,6 @@ class StatementAPIControllerTest extends TestCase
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNull($statement->illegal_content_legal_ground);
         $this->assertNull($statement->illegal_content_explanation);
-    }
-
-    /**
-     * @test
-     */
-    public function store_requires_url_but_does_not_force_url()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $fields = array_merge($this->required_fields, [
-            'url' => ''
-        ]);
-
-        $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $json = $response->json();
-        $this->assertNotNull($json['errors']);
-        $this->assertNotNull($json['errors']['url']);
-
-        $fields = array_merge($this->required_fields, [
-            'url' => 'not empty'
-        ]);
-
-        $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_CREATED);
-
-
     }
 
     /**
