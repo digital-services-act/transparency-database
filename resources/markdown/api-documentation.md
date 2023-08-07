@@ -73,7 +73,9 @@ Example JSON payload body:
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+    "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+    "decision_ground_reference_url": "https://www.anurl.com",
     "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
     "category": "STATEMENT_CATEGORY_FRAUD",
     "illegal_content_legal_ground": "illegal content legal grounds",
@@ -86,7 +88,7 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
-    "application_date": "08-06-2023",
+    "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
@@ -108,7 +110,9 @@ You will also receive a payload with the statement as created in the database:
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+    "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+    "decision_ground_reference_url": "https://www.anurl.com",
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
@@ -119,14 +123,14 @@ You will also receive a payload with the statement as created in the database:
         "ES",
         "DE"
     ],
-    "application_date": "08-06-2023",
+    "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
     "automated_decision": "No",
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
-    "created_at": "08-06-2023",
+    "created_at": "2023-08-08 08:08:08",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "self": ".... api/v1/statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225"
 }
@@ -330,7 +334,8 @@ This indicates to us that not only was the content incompatible but also illegal
 
 ### Content Type (content_type)
 
-This is a required attribute, and it tells us what type of content is targeted by the statement of reason.
+This is a required attribute, and it tells us what type of content is targeted by the statement 
+of reason.
 
 The value provided must be an array with at least one of the following:
 
@@ -373,6 +378,8 @@ The value provided must be one of the following:
 
 This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
 for the country and the countries must be (EU/EEA) countries. 
+
+The value provided must be an array.
 
 Allowed values are:
 
