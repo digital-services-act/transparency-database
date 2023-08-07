@@ -27,8 +27,10 @@ class CreateStatementsTable extends Migration
 
             $table->enum('decision_provision', array_keys(Statement::DECISION_PROVISIONS))->nullable();
             $table->enum('decision_account', array_keys(Statement::DECISION_ACCOUNTS))->nullable();
+            $table->enum('account_type', array_keys(Statement::ACCOUNT_TYPES))->nullable();
 
             $table->enum('decision_ground', array_keys(Statement::DECISION_GROUNDS));
+            $table->string('decision_ground_reference_url', 500)->nullable();
 
             $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
 
