@@ -73,7 +73,6 @@ class Statement extends Model
     ];
 
 
-
     public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
@@ -154,27 +153,39 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
-    public const STATEMENT_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
-    public const STATEMENT_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (e.g. race, gender identity, sexual orientation, religion, disability)';
-    public const STATEMENT_CATEGORY_COUNTERFEIT = 'Counterfeit goods (e.g. fake perfume, fake designer brands)';
-    public const STATEMENT_CATEGORY_FRAUD = 'Scams, frauds, subscription traps or other illegal commercial practices';
-    public const STATEMENT_CATEGORY_TERRORISM = 'Terrorist content (e.g. extremists, hate groups)';
-    public const STATEMENT_CATEGORY_CHILD_SAFETY = 'Child safety (e.g. child nudity, sexual abuse, unsolicited contact with minors)';
-    public const STATEMENT_CATEGORY_NON_CONSENT = 'Non-consensual nudity (e.g. hidden camera, deepfake, revenge porn, upskirts)';
-    public const STATEMENT_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (e.g. denying tragic events, synthetic media, false context)';
-    public const STATEMENT_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (e.g. spam, platform manipulation)';
+
+    public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
+    public const STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS = 'Data protection and privacy violations';
+    public const STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH = 'Illegal or harmful speech';
+    public const STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS = 'Intellectual property infringements';
+    public const STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS = 'Negative effects on civic discourse or elections';
+    public const STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR = 'Non-consensual behaviour';
+    public const STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT = 'Pornography or sexualized content';
+    public const STATEMENT_CATEGORY_PROTECTION_OF_MINORS = 'Protection of minors';
+    public const STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY = 'Risk for public security';
+    public const STATEMENT_CATEGORY_SCAMS_AND_FRAUD = 'Scams and/or fraud';
+    public const STATEMENT_CATEGORY_SELF_HARM = 'Self-harm';
+    public const STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE = 'Scope of platform service';
+    public const STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS_OR_SERVICES = 'Unsafe and/or illegal products or services';
+    public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
+
     public const STATEMENT_CATEGORY_UNCATEGORISED = 'Uncategorised';
+
     public const STATEMENT_CATEGORIES = [
-        'STATEMENT_CATEGORY_PIRACY' => self::STATEMENT_CATEGORY_PIRACY,
-        'STATEMENT_CATEGORY_DISCRIMINATION' => self::STATEMENT_CATEGORY_DISCRIMINATION,
-        'STATEMENT_CATEGORY_COUNTERFEIT' => self::STATEMENT_CATEGORY_COUNTERFEIT,
-        'STATEMENT_CATEGORY_FRAUD' => self::STATEMENT_CATEGORY_FRAUD,
-        'STATEMENT_CATEGORY_TERRORISM' => self::STATEMENT_CATEGORY_TERRORISM,
-        'STATEMENT_CATEGORY_CHILD_SAFETY' => self::STATEMENT_CATEGORY_CHILD_SAFETY,
-        'STATEMENT_CATEGORY_NON_CONSENT' => self::STATEMENT_CATEGORY_NON_CONSENT,
-        'STATEMENT_CATEGORY_MISINFORMATION' => self::STATEMENT_CATEGORY_MISINFORMATION,
-        'STATEMENT_CATEGORY_VIOLATION_TOS' => self::STATEMENT_CATEGORY_VIOLATION_TOS,
-        'STATEMENT_CATEGORY_UNCATEGORISED' => self::STATEMENT_CATEGORY_UNCATEGORISED
+        'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
+        'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS' => self::STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS,
+        'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH' => self::STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH,
+        'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS' => self::STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS,
+        'STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS' => self::STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS,
+        'STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR' => self::STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR,
+        'STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT' => self::STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT,
+        'STATEMENT_CATEGORY_PROTECTION_OF_MINORS' => self::STATEMENT_CATEGORY_PROTECTION_OF_MINORS,
+        'STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY' => self::STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY,
+        'STATEMENT_CATEGORY_SCAMS_AND_FRAUD' => self::STATEMENT_CATEGORY_SCAMS_AND_FRAUD,
+        'STATEMENT_CATEGORY_SELF_HARM' => self::STATEMENT_CATEGORY_SELF_HARM,
+        'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE' => self::STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE,
+        'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS_OR_SERVICES' => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS_OR_SERVICES,
+        'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
     ];
 
 
@@ -233,7 +244,7 @@ class Statement extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function($statement){
+        static::creating(function ($statement) {
             $statement->uuid = Str::uuid();
         });
     }
@@ -318,7 +329,7 @@ class Statement extends Model
      */
     public function getSelfAttribute(): string
     {
-        return route('api.v'.config('app.api_latest').'.statement.show', [$this]);
+        return route('api.v' . config('app.api_latest') . '.statement.show', [$this]);
     }
 
     /**
@@ -334,10 +345,10 @@ class Statement extends Model
         return $this->getRawKeys('territorial_scope');
     }
 
-    public function getContentTypeAttribute($value){
+    public function getContentTypeAttribute($value)
+    {
         return $this->getRawKeys('content_type');
     }
-
 
 
     // Function to convert enum keys to their corresponding values
@@ -372,7 +383,6 @@ class Statement extends Model
         } catch (Exception $e) {
             $out = [];
         }
-
 
 
         if (is_array($out)) {
