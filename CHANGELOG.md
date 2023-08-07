@@ -2,12 +2,18 @@
 
 ##  [v1.0] - 2023-08-16
 ### Added
-
+- Added values to the API field: 'content_type'
+  - content_type_app
+  - content_type_product
+  - content_type_audio
+  - content_type_synthetic_media
+- 
 ### Changed
 - Renamed the API field: start_date to application_date
 - Renamed the API field: countries_list to territorial_scope
 - Modified the API field: 'source' is now optional
 - Modified the API field: 'incompatible_content_illegal' is now optional
+- Modified the API field: 'content_type' is now an array
 
 ### Fixed
 
