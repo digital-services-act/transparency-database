@@ -24,6 +24,7 @@ class ResetStatementsTable extends Command
         $this->info('Running CreateStatementsTable migration...');
         Artisan::call('migrate:refresh', [
             '--path' => 'database/migrations/2023_01_13_082758_create_statements_table.php',
+            '--force' => true
         ]);
         $this->info('Statements table created.');
     }
