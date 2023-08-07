@@ -49,16 +49,15 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_illegal' => [$this->in(Statement::INCOMPATIBLE_CONTENT_ILLEGALS), 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
 
             'content_type' => ['array', 'required', $this->in(array_keys(Statement::CONTENT_TYPES))],
-            'content_type_other' => [
-                'max:500',
+            'content_type_other' => ['max:500',
                 Rule::requiredIf($this->checkForContentTypeOther()),
                 Rule::excludeIf(!$this->checkForContentTypeOther()),
-            ] ,
+            ],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
             'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
-            'application_date' => ['required', 'date_format:j-n-Y,d-m-Y,j-m-Y,d-n-Y', 'after:2020-01-01'],
-            'end_date' => ['date_format:j-n-Y,d-m-Y,j-m-Y,d-n-Y', 'nullable', 'after_or_equal:application_date'],
+            'application_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
+            'end_date' => ['date_format:Y-m-d-H', 'nullable', 'after_or_equal:application_date'],
             'decision_facts' => ['required', 'max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
             'source' => ['max:500'],
@@ -96,6 +95,7 @@ class StatementStoreRequest extends FormRequest
 
     private function checkForContentTypeOther(): bool
     {
-        return in_array('CONTENT_TYPE_OTHER', $this->get('content_type', []));
+        $check = (array)$this->get('content_type', []);
+        return in_array('CONTENT_TYPE_OTHER', $check);
     }
 }

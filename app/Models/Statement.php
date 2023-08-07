@@ -204,8 +204,8 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
-        'application_date' => 'datetime:d-m-Y',
-        'end_date' => 'datetime:d-m-Y',
+        'application_date' => 'datetime:Y-m-d-H',
+        'end_date' => 'datetime:Y-m-d-H',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'territorial_scope' => 'array',
         'content_type' => 'array',
