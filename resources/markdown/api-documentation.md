@@ -319,7 +319,7 @@ Limited to 500 characters.
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 This is a small text that explains why the content is
-considered as incompatible on that grounds.
+considered as incompatible on that ground.
 
 Limited to 2000 characters.
 
