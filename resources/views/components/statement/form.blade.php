@@ -103,7 +103,7 @@
                        name="territorial_scope"
                        id="territorial_scope"
                        justlabel="true"
-                       :options="$options['countries']" :default="request()->get('territorial_scope', [])"
+                       :options="$options['countries']" :default="old('territorial_scope', [])"
 />
 
 <p class="ecl-u-type-paragraph">
