@@ -28,11 +28,11 @@ class StatementFactory extends Factory
     {
 
         $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
-        $start_date = $create_date->clone();
-        $end_date = $start_date->addDays(90);
+        $application_date = $create_date->clone();
+        $end_date = $application_date->addDays(90);
 
         $create_date = $create_date->format('Y-n-j') . ' 00:00:00';
-        $start_date = $start_date->format('Y-n-j') . ' 00:00:00';
+        $application_date = $application_date->format('Y-n-j') . ' 00:00:00';
         $end_date = $end_date->format('Y-n-j') . ' 00:00:00';
 
         $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
@@ -53,7 +53,7 @@ class StatementFactory extends Factory
 
             'decision_ground' => $decision_ground,
 
-            'content_type' => $this->faker->randomElement(array_keys(Statement::CONTENT_TYPES)),
+            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES)),
             'content_type_other' => $this->faker->text(100),
 
             'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
@@ -71,7 +71,7 @@ class StatementFactory extends Factory
 
             'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, 30)),
 
-            'start_date' => $start_date,
+            'application_date' => $application_date,
             'end_date' => $end_date,
 
             'source_type' => $this->faker->randomElement(array_keys(Statement::SOURCE_TYPES)),

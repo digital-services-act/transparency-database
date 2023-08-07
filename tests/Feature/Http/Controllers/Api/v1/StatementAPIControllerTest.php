@@ -40,10 +40,10 @@ class StatementAPIControllerTest extends TestCase
             'source_type' => 'SOURCE_ARTICLE_16',
             'source' => 'foo',
             'decision_facts' => 'decision and facts',
-            'content_type' => 'CONTENT_TYPE_VIDEO',
+            'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'No',
-            'start_date' => '03-01-2023'
+            'application_date' => '03-01-2023'
         ];
     }
 
@@ -108,7 +108,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '08-12-2023',
+            'application_date' => '08-12-2023',
             'end_date' => '09-12-2023',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
@@ -120,7 +120,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
 
@@ -134,7 +134,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '15-07-2023',
+            'application_date' => '15-07-2023',
             'end_date' => '16-07-2023',
         ]);
         $object = new \stdClass();
@@ -163,7 +163,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
 
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
     }
 
@@ -171,7 +171,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function start_date_can_be_with_and_without_leading_zeroes()
+    public function application_date_can_be_with_and_without_leading_zeroes()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -180,7 +180,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => $date->format('d-m-Y'),
+            'application_date' => $date->format('d-m-Y'),
             'end_date' => $date->format('j-n-Y'),
         ]);
         $object = new \stdClass();
@@ -209,14 +209,14 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
 
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
 
-        /** @var Carbon $start_date */
-        $start_date = $statement->start_date;
-        $this->assertEquals(2023, $start_date->year);
-        $this->assertEquals(2, $start_date->month);
-        $this->assertEquals(5, $start_date->day);
+        /** @var Carbon $application_date */
+        $application_date = $statement->application_date;
+        $this->assertEquals(2023, $application_date->year);
+        $this->assertEquals(2, $application_date->month);
+        $this->assertEquals(5, $application_date->day);
 
         /** @var Carbon $end_date */
         $end_date = $statement->end_date;
@@ -228,7 +228,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function start_date_can_be_a_mix_with_and_without_leading_zeroes()
+    public function application_date_can_be_a_mix_with_and_without_leading_zeroes()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -237,7 +237,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => $date->format('d-n-Y'),
+            'application_date' => $date->format('d-n-Y'),
             'end_date' => $date->format('j-m-Y'),
         ]);
         $object = new \stdClass();
@@ -266,15 +266,15 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
 
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
 
 
-        /** @var Carbon $start_date */
-        $start_date = $statement->start_date;
-        $this->assertEquals(2023, $start_date->year);
-        $this->assertEquals(2, $start_date->month);
-        $this->assertEquals(5, $start_date->day);
+        /** @var Carbon $application_date */
+        $application_date = $statement->application_date;
+        $this->assertEquals(2023, $application_date->year);
+        $this->assertEquals(2, $application_date->month);
+        $this->assertEquals(5, $application_date->day);
 
         /** @var Carbon $end_date */
         $end_date = $statement->end_date;
@@ -356,7 +356,11 @@ class StatementAPIControllerTest extends TestCase
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $response = $this->post(route('api.v1.statement.store'), ['url' => ''], [
+        $fields = array_merge($this->required_fields, [
+            'url' => ''
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -364,13 +368,16 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($json['errors']);
         $this->assertNotNull($json['errors']['url']);
 
-        $response = $this->post(route('api.v1.statement.store'), ['url' => 'not empty'], [
+        $fields = array_merge($this->required_fields, [
+            'url' => 'not empty'
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $json = $response->json();
-        $this->assertNotNull($json['errors']);
-        $this->assertArrayNotHasKey('url', $json['errors']);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+
     }
 
     /**
@@ -381,7 +388,11 @@ class StatementAPIControllerTest extends TestCase
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $response = $this->post(route('api.v1.statement.store'), ['puid' => ''], [
+        $fields = array_merge($this->required_fields, [
+            'puid' => ''
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -390,14 +401,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($json['errors']['puid']);
         $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
 
-
-        $response = $this->post(route('api.v1.statement.store'), ['puid' => 'THX1138'], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $json = $response->json();
-        $this->assertNotNull($json['errors']);
-        $this->assertArrayNotHasKey('puid', $json['errors']);
 
         // Now let's create one
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
@@ -465,6 +468,52 @@ class StatementAPIControllerTest extends TestCase
         $content = $response->content();
         $this->assertStringNotContainsString('"puid":', $content);
 
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_save_content_type_other()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'content_type' => ['CONTENT_TYPE_APP','CONTENT_TYPE_OTHER'],
+            'content_type_other' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->content_type);
+        $this->assertNotNull($statement->content_type_other);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_not_save_content_type_other()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'content_type' => ['CONTENT_TYPE_AUDIO','CONTENT_TYPE_APP','CONTENT_TYPE_VIDEO'],
+            'content_type_other' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->content_type);
+        $this->assertNull($statement->content_type_other);
     }
 }
 

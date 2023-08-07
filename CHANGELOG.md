@@ -1,5 +1,17 @@
 # Changelog
 
+##  [v1.0] - 2023-08-16
+### Added
+
+### Changed
+- Renamed the API field: start_date to application_date
+- Renamed the API field: countries_list to territorial_scope
+- Modified the API field: 'source' is now optional
+- Modified the API field: 'incompatible_content_illegal' is now optional
+
+### Fixed
+
+
 ##  [v0.1] - 2023-07-17
 ### Added
 - Added a new mandatory field to the API: PUID (Platform Unique Identifier).

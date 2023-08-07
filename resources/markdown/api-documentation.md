@@ -74,7 +74,7 @@ Example JSON payload body:
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-    "content_type": "CONTENT_TYPE_VIDEO",
+    "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
     "category": "STATEMENT_CATEGORY_FRAUD",
     "illegal_content_legal_ground": "illegal content legal grounds",
     "illegal_content_explanation": "illegal content explanation",
@@ -86,10 +86,9 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
-    "start_date": "08-06-2023",
+    "application_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
-    "source": "foomen",
     "automated_detection": "No",
     "automated_decision": "No",
     "url": "https://theurl.com",
@@ -114,17 +113,16 @@ You will also receive a payload with the statement as created in the database:
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
-    "content_type": "CONTENT_TYPE_VIDEO",
+    "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
     "category": "STATEMENT_CATEGORY_FRAUD",
     "territorial_scope": [
         "PT",
         "ES",
         "DE"
     ],
-    "start_date": "08-06-2023",
+    "application_date": "08-06-2023",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
-    "source": "foomen",
     "automated_detection": "No",
     "automated_decision": "No",
     "url": "https://theurl.com",
@@ -309,7 +307,7 @@ This indicates to us that not only was the content incompatible but also illegal
 
 This is a required attribute, and it tells us what type of content is targeted by the statement of reason.
 
-The value provided must be one of the following:
+The value provided must be an array with at least one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
@@ -363,7 +361,7 @@ For European Economic Area (EEA) use:
 
 @php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
 
-### Start Date (start_date)
+### Application Date (application_date)
 
 This is the date and time that this decision starts from. The date needs to take the form of:
 
@@ -383,7 +381,7 @@ The date needs to take the form of:
 
 The day and month may have leading zeroes or not.
 
-The date must be after or equal to the start date.
+The date must be after or equal to the application date.
 
 ### Information source (source_type)
 
@@ -405,7 +403,7 @@ The value provided must be one of the following:
 
 ### Source/Notifier (source)
 
-This is a required field if the source type field was a notice.
+This is an optional field if the source type field was a notice.
 
 Limited to 500 characters.
 
@@ -480,17 +478,14 @@ The payload body will be a JSON object containing more information and the error
         "category": [
             "The category field is required."
         ],
-        "start_date": [
-            "The start date field is required."
+        "application_date": [
+            "The application date field is required."
         ],
         "decision_facts": [
             "The decision facts field is required."
         ],
         "source_type": [
             "The source type field is required."
-        ],
-        "source": [
-            "The source field is required when source type is a notice submission."
         ],
         "automated_detection": [
             "The automated detection field is required."
