@@ -74,6 +74,7 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
+    public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [

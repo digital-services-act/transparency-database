@@ -164,6 +164,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertNull($statement->decision_ground_reference_url);
     }
 
 
@@ -239,6 +240,44 @@ class StatementAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The application date does not match the format Y-m-d-H.', $response->json('message'));
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_store_rejects_bad_decision_ground_urls()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'decision_ground_reference_url' => 'notvalidurl',
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_store_accepts_google_decision_ground_urls()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'decision_ground_reference_url' => 'https://www.goodurl.com',
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
     }
 
     /**

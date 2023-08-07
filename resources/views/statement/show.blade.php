@@ -50,6 +50,11 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_GROUND"
                 :content="Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-infoline>
 
+    @if(!is_null($statement->decision_account))
+    <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL"
+                :content="$statement->decision_ground_reference_url"></x-infoline>
+    @endif
+
     @if($statement->decision_ground == 'DECISION_GROUND_ILLEGAL_CONTENT')
         <x-infoline :title="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND"
                     :content="$statement->illegal_content_legal_ground"></x-infoline>
