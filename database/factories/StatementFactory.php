@@ -53,6 +53,7 @@ class StatementFactory extends Factory
             'account_type' => $this->faker->randomElement(array_keys(Statement::ACCOUNT_TYPES)),
 
             'decision_ground' => $decision_ground,
+            'decision_ground_reference_url' => $this->faker->url(),
 
             'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES)),
             'content_type_other' => $this->faker->text(100),
