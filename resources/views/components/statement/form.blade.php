@@ -106,7 +106,7 @@
                        name="territorial_scope"
                        id="territorial_scope"
                        justlabel="true"
-                       :options="$options['countries']" :default="request()->get('territorial_scope', [])"
+                       :options="$options['countries']" :default="old('territorial_scope', [])"
 />
 
 <p class="ecl-u-type-paragraph">
@@ -169,11 +169,11 @@
 
 <hr>
 
-<x-ecl.datepicker :label="Statement::LABEL_STATEMENT_APPLICATION_DATE"
-                  name="application_date" value="{{ $statement->application_date }}" required="true"/>
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_APPLICATION_DATE"
+                  name="application_date" value="{{ $statement->application_date }}" required="true" placeholder="YYYY-MM-DD-HH"/>
 
-<x-ecl.datepicker :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'" id="end_date"
-                  name="end_date" value="{{ $statement->end_date }}"/>
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'" id="end_date"
+                  name="end_date" value="{{ $statement->end_date }}" placeholder="YYYY-MM-DD-HH" />
 <hr>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE_TYPE" name="source_type" id="source_type"

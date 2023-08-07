@@ -361,11 +361,11 @@ For European Economic Area (EEA) use:
 
 ### Application Date (application_date)
 
-This is the date and time that this decision starts from. The date needs to take the form of:
+This is the date and hour that this decision starts from. The date needs to take the form of:
 
-```DD-MM-YYYY```
+```YYYY-MM-DD-HH```
 
-The day and month may have leading zeroes or not.
+The day, month, and hour have leading zeroes.
 
 The date must be after 2020-01-01.
 
@@ -375,9 +375,9 @@ This is the date and time that this decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
-```DD-MM-YYYY```
+```YYYY-MM-DD-HH```
 
-The day and month may have leading zeroes or not.
+The day, month, and hour have leading zeroes.
 
 The date must be after or equal to the application date.
 
