@@ -29,6 +29,7 @@ class StatementQueryService
         'decision_monetary',
         'decision_provision',
         'decision_account',
+        'account_type',
         'category',
         'content_type',
         'territorial_scope',
@@ -205,6 +206,14 @@ class StatementQueryService
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_ACCOUNTS));
         if ($filter_values_validated) {
             $query->whereIn('decision_account', $filter_value);
+        }
+    }
+
+    private function applyAccountTypeFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::ACCOUNT_TYPES));
+        if ($filter_values_validated) {
+            $query->whereIn('account_type', $filter_value);
         }
     }
 
