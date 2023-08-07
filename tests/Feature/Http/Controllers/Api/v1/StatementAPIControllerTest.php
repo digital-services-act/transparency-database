@@ -43,7 +43,7 @@ class StatementAPIControllerTest extends TestCase
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'No',
-            'application_date' => '03-01-2023'
+            'application_date' => '2023-05-18-07'
         ];
     }
 
@@ -108,8 +108,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '08-12-2023',
-            'end_date' => '09-12-2023',
+            'application_date' => '2023-12-20-05',
+            'end_date' => '2023-12-25-00',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -134,8 +134,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '15-07-2023',
-            'end_date' => '16-07-2023',
+            'application_date' => '2023-07-15-06',
+            'end_date' => '2023-07-21-23',
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -168,20 +168,25 @@ class StatementAPIControllerTest extends TestCase
     }
 
 
+
     /**
      * @test
      */
-    public function application_date_can_be_with_and_without_leading_zeroes()
+    public function application_date_must_be_correct_format()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $date = Carbon::createFromDate(2023, 2, 5);
+        $date = Carbon::createFromDate(2023, 2, 5,);
 
         $this->assertCount(10, Statement::all());
+
+        $application_date_in = date('Y-m-d-H');
+        $end_date_in = date('Y-m-d-H', time() + (7 * 24 * 60 * 60));
+
         $fields = array_merge($this->required_fields, [
-            'application_date' => $date->format('d-m-Y'),
-            'end_date' => $date->format('j-n-Y'),
+            'application_date' => $application_date_in,
+            'end_date' => $end_date_in
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -212,75 +217,29 @@ class StatementAPIControllerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
 
-        /** @var Carbon $application_date */
-        $application_date = $statement->application_date;
-        $this->assertEquals(2023, $application_date->year);
-        $this->assertEquals(2, $application_date->month);
-        $this->assertEquals(5, $application_date->day);
-
-        /** @var Carbon $end_date */
-        $end_date = $statement->end_date;
-        $this->assertEquals(2023, $end_date->year);
-        $this->assertEquals(2, $end_date->month);
-        $this->assertEquals(5, $end_date->day);
+        $resource = $statement->toArray();
+        $this->assertEquals($application_date_in, $resource['application_date']);
     }
 
     /**
      * @test
      */
-    public function application_date_can_be_a_mix_with_and_without_leading_zeroes()
+    public function request_rejects_bad_dates()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $date = Carbon::createFromDate(2023, 2, 5);
+        $application_date_in = '2023-4-4-4';
 
-        $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => $date->format('d-n-Y'),
-            'end_date' => $date->format('j-m-Y'),
+            'application_date' => $application_date_in,
         ]);
-        $object = new \stdClass();
-        foreach ($fields as $key => $value) {
-            $object->$key = $value;
-        }
-        $json = json_encode($object);
-        $response = $this->call(
-            'POST',
-            route('api.v1.statement.store'),
-            [],
-            [],
-            [],
-            $headers = [
-                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json'
-            ],
-            $json
-        );
 
-        $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(11, Statement::all());
-        $statement = Statement::where('uuid', $response->json('uuid'))->first();
-        $this->assertNotNull($statement);
-        $this->assertEquals('API', $statement->method);
-        $this->assertEquals($user->id, $statement->user->id);
-
-        $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
-
-
-        /** @var Carbon $application_date */
-        $application_date = $statement->application_date;
-        $this->assertEquals(2023, $application_date->year);
-        $this->assertEquals(2, $application_date->month);
-        $this->assertEquals(5, $application_date->day);
-
-        /** @var Carbon $end_date */
-        $end_date = $statement->end_date;
-        $this->assertEquals(2023, $end_date->year);
-        $this->assertEquals(2, $end_date->month);
-        $this->assertEquals(5, $end_date->day);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The application date does not match the format Y-m-d-H.', $response->json('message'));
     }
 
     /**
