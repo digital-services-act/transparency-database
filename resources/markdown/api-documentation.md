@@ -269,6 +269,13 @@ This is a required field and tells us the basis on which the decision was taken.
 @endphp
 </ul>
 
+
+### Decision Ground Reference Url (decision_ground_reference_url)
+
+This is an url to the TOS or Law relied upon in taking the decision.
+
+This is an optional attribute.
+
 ### Illegal Content Legal Grounds (illegal_content_legal_ground)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.

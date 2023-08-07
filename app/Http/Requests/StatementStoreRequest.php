@@ -42,6 +42,7 @@ class StatementStoreRequest extends FormRequest
 
 
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
+            'decision_ground_reference_url' => ['url'],
             'illegal_content_legal_ground' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:500'],
             'illegal_content_explanation' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:2000'],
             'incompatible_content_ground' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'max:500'],
