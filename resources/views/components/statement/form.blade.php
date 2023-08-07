@@ -37,10 +37,21 @@
 />
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
-              name="decision_account"
-              id="decision_account"
-              :options="$options['decision_accounts']"
-              default="{{ $statement->decision_account }}"
+                  name="decision_account"
+                  id="decision_account"
+                  :options="$options['decision_accounts']"
+                  default="{{ $statement->decision_account }}"
+                  justlabel="true"
+                  :allow_null="true"
+/>
+
+<hr>
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
+              name="account_type"
+              id="account_type"
+              :options="$options['account_types']"
+              default="{{ $statement->account_type }}"
               justlabel="true"
               :allow_null="true"
 />

@@ -121,6 +121,59 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($user->id, $statement->user->id);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertNull($statement->account_type);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_account_type_is_stored()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20-05',
+            'end_date' => '2023-12-25-00',
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertNotNull($statement->account_type);
+        $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_account_type_is_validated()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20-05',
+            'end_date' => '2023-12-25-00',
+            'account_type' => 'ACCOUNT_TYPE_NOT_VALID'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
     }
 
     /**

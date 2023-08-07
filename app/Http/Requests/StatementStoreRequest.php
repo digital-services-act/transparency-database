@@ -39,6 +39,7 @@ class StatementStoreRequest extends FormRequest
 
             'decision_provision' => [$this->in(array_keys(Statement::DECISION_PROVISIONS), true), 'required_without_all:decision_visibility,decision_monetary,decision_account', 'nullable'],
             'decision_account' => [$this->in(array_keys(Statement::DECISION_ACCOUNTS), true), 'required_without_all:decision_visibility,decision_monetary,decision_provision', 'nullable'],
+            'account_type' => [$this->in(array_keys(Statement::ACCOUNT_TYPES), true), 'nullable'],
 
 
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],

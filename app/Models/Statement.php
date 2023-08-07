@@ -22,6 +22,14 @@ class Statement extends Model
         'METHOD_API' => self::METHOD_API
     ];
 
+    public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
+    public const ACCOUNT_TYPE_BUSINESS = "Business";
+    public const ACCOUNT_TYPE_PRIVATE = "Private";
+    public const ACCOUNT_TYPES = [
+        'ACCOUNT_TYPE_BUSINESS' => self::ACCOUNT_TYPE_BUSINESS,
+        'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE
+    ];
+
 
     public const LABEL_STATEMENT_SOURCE_TYPE = 'Information source';
     public const LABEL_STATEMENT_SOURCE = 'Notifier';
@@ -229,7 +237,6 @@ class Statement extends Model
         'user_id',
         'id',
         'platform_id',
-        'platform',
         'puid'
     ];
 
@@ -268,6 +275,7 @@ class Statement extends Model
             'decision_monetary_other' => $this->decision_monetary_other,
             'decision_provision' => $this->decision_provision,
             'decision_account' => $this->decision_account,
+            'account_type' => $this->account_type,
             'decision_ground' => $this->decision_ground,
             'content_type' => $this->content_type,
             'content_type_other' => $this->content_type_other,

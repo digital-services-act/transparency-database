@@ -189,6 +189,7 @@ class StatementController extends Controller
         $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES);
         $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
         $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS);
+        $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
@@ -209,6 +210,7 @@ class StatementController extends Controller
             'decision_monetaries',
             'decision_provisions',
             'decision_accounts',
+            'account_types',
             'decision_grounds',
             'categories',
             'illegal_content_fields',

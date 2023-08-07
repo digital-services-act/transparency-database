@@ -50,6 +50,7 @@ class StatementFactory extends Factory
 
             'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISION_PROVISIONS)),
             'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISION_ACCOUNTS)),
+            'account_type' => $this->faker->randomElement(array_keys(Statement::ACCOUNT_TYPES)),
 
             'decision_ground' => $decision_ground,
 
