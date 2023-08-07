@@ -156,6 +156,28 @@ class StatementAPIControllerTest extends TestCase
     }
 
     /**
+     * @return void
+     * @test
+     */
+    public function api_statement_account_type_is_validated()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20-05',
+            'end_date' => '2023-12-25-00',
+            'account_type' => 'ACCOUNT_TYPE_NOT_VALID'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
      * @test
      */
     public function api_statement_json_store_works()
