@@ -113,6 +113,18 @@
               :options="$options['categories']"
               required="true"/>
 
+
+<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_CATEGORY_ADDITION"
+                       name="category_addition"
+                       id="category_addition"
+                       :options="$options['categories_addition']"
+                       select_all="All"
+                       select_item="Select category/categories"
+                       enter_keyword="Enter a category"/>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_CATEGORY_OTHER" name="category_addition_other"
+                 id="category_addition_other" required="true"/>
+
 <hr>
 
 <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
@@ -268,6 +280,12 @@
             show('div_content_type_other');
         }
 
+         hide('div_category_addition_other');
+         var selected_values = getSelectValues(ge('category_addition'));
+        if (selected_values.includes('STATEMENT_CATEGORY_OTHER')) {
+            show('div_category_addition_other');
+        }
+
         hide('div_source');
         if (ge('source_type').value && ge('source_type').value !== 'SOURCE_VOLUNTARY') {
             show('div_source');
@@ -293,6 +311,7 @@
     ge('decision_visibility').addEventListener('change', initFields);
     ge('decision_monetary').addEventListener('change', initFields);
     ge('content_type').addEventListener('change', initFields);
+    ge('category_addition').addEventListener('change', initFields);
     ge('source_type').addEventListener('change', initFields);
 
     // Return an array of the selected opion values

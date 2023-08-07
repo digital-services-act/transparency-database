@@ -51,12 +51,19 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_illegal' => [$this->in(Statement::INCOMPATIBLE_CONTENT_ILLEGALS), 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
 
             'content_type' => ['array', 'required', $this->in(array_keys(Statement::CONTENT_TYPES))],
+
             'content_type_other' => ['max:500',
                 Rule::requiredIf($this->checkForContentTypeOther()),
                 Rule::excludeIf(!$this->checkForContentTypeOther()),
             ],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
+            'category_addition' => ['array', $this->in(array_keys(array_merge(Statement::STATEMENT_CATEGORIES, Statement::STATEMENT_CATEGORIES_OTHER)))],
+            'category_addition_other' => ['max:2000',
+                Rule::requiredIf($this->checkForCategoryOther()),
+                Rule::excludeIf(!$this->checkForCategoryOther()),
+            ],
+
             'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
             'application_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
             'end_date' => ['date_format:Y-m-d-H', 'nullable', 'after_or_equal:application_date'],
@@ -98,5 +105,11 @@ class StatementStoreRequest extends FormRequest
     {
         $check = (array)$this->get('content_type', []);
         return in_array('CONTENT_TYPE_OTHER', $check);
+    }
+
+    private function checkForCategoryOther(): bool
+    {
+        $check = (array)$this->get('category_addition', []);
+        return in_array('STATEMENT_CATEGORY_OTHER', $check);
     }
 }

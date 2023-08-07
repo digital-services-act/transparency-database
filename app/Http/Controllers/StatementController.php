@@ -132,11 +132,14 @@ class StatementController extends Controller
     public function store(StatementStoreRequest $request): RedirectResponse
     {
 
+
         $validated = $request->safe()->merge([
             'platform_id' => $request->user()->platform_id,
             'user_id' => $request->user()->id,
             'method' => Statement::METHOD_FORM
         ])->toArray();
+
+        dd($validated);
 
         $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
@@ -193,6 +196,7 @@ class StatementController extends Controller
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
+        $categories_addition = $this->mapForSelectWithKeys(array_merge(Statement::STATEMENT_CATEGORIES, Statement::STATEMENT_CATEGORIES_OTHER));
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
@@ -213,6 +217,7 @@ class StatementController extends Controller
             'account_types',
             'decision_grounds',
             'categories',
+            'categories_addition',
             'illegal_content_fields',
             'incompatible_content_fields',
             'source_types',

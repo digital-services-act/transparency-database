@@ -33,6 +33,8 @@ class CreateStatementsTable extends Migration
             $table->string('decision_ground_reference_url', 500)->nullable();
 
             $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
+            $table->string('category_addition', 2000)->nullable();
+            $table->string('category_addition_other', 500)->nullable();
 
             $table->string('content_type', 1000);
             $table->string('content_type_other', 500)->nullable();
