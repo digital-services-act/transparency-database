@@ -218,7 +218,9 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
         if ($filter_values_validated) {
-            $query->whereIn('content_type', $filter_value);
+            foreach ($filter_values_validated as $content_type) {
+                $query->where('content_type', 'LIKE', '%"' . $content_type . '"%');
+            }
         }
     }
 
@@ -275,4 +277,6 @@ class StatementQueryService
             }
         }
     }
+
+
 }

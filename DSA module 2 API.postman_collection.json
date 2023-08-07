@@ -58,8 +58,8 @@
 							"pm.variables.set('incompatible_content_illegal', incompatible_content_illegal);",
 							"",
 							"let today = new Date();",
-							"let start_date = today.getDate() + \"-\" + (today.getMonth() + 1) + \"-\" + today.getFullYear();",
-							"pm.variables.set('start_date', start_date);",
+							"let application_date = today.getDate() + \"-\" + (today.getMonth() + 1) + \"-\" + today.getFullYear();",
+							"pm.variables.set('application_date', application_date);",
 							"",
 							"let end_date = '';",
 							"if (Math.random() < 0.5) {",
@@ -215,7 +215,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"decision_visibility\": \"{{decision_visibility}}\",\n    \"decision_visibility_other\": \"{{$randomWords}}\",\n    \"decision_monetary\": \"{{decision_monetary}}\",\n    \"decision_monetary_other\": \"{{$randomWords}}\",\n    \"decision_provision\": \"{{decision_provision}}\",\n    \"decision_account\": \"{{decision_account}}\",\n    \"decision_ground\": \"{{decision_ground}}\",\n    \"content_type\": \"{{content_type}}\",\n    \"content_type_other\": \"{{$randomWords}}\",\n    \"category\": \"{{category}}\",\n    \"illegal_content_legal_ground\": \"{{$randomWords}}\",\n    \"illegal_content_explanation\": \"{{$randomPhrase}}\",\n    \"incompatible_content_ground\": \"{{$randomWords}}\",\n    \"incompatible_content_explanation\": \"{{$randomPhrase}}\",\n    \"incompatible_content_illegal\": \"{{incompatible_content_illegal}}\",\n    \"territorial_scope\": {{territorial_scope}},\n    \"start_date\": \"{{start_date}}\",\n    \"end_date\": \"{{end_date}}\",\n    \"decision_facts\": \"{{$randomPhrase}}\",\n    \"source_type\": \"{{source_type}}\",\n    \"source\": \"{{$randomNoun}}\",\n    \"automated_detection\": \"{{automated_detection}}\",\n    \"automated_decision\": \"{{automated_decision}}\",\n    \"url\": \"{{$randomUrl}}\",\n    \"puid\": \"{{$randomUUID}}\"\n}",
+					"raw": "{\n    \"decision_visibility\": \"{{decision_visibility}}\",\n    \"decision_visibility_other\": \"{{$randomWords}}\",\n    \"decision_monetary\": \"{{decision_monetary}}\",\n    \"decision_monetary_other\": \"{{$randomWords}}\",\n    \"decision_provision\": \"{{decision_provision}}\",\n    \"decision_account\": \"{{decision_account}}\",\n    \"decision_ground\": \"{{decision_ground}}\",\n    \"content_type\": \"{{content_type}}\",\n    \"content_type_other\": \"{{$randomWords}}\",\n    \"category\": \"{{category}}\",\n    \"illegal_content_legal_ground\": \"{{$randomWords}}\",\n    \"illegal_content_explanation\": \"{{$randomPhrase}}\",\n    \"incompatible_content_ground\": \"{{$randomWords}}\",\n    \"incompatible_content_explanation\": \"{{$randomPhrase}}\",\n    \"incompatible_content_illegal\": \"{{incompatible_content_illegal}}\",\n    \"territorial_scope\": {{territorial_scope}},\n    \"application_date\": \"{{application_date}}\",\n    \"end_date\": \"{{end_date}}\",\n    \"decision_facts\": \"{{$randomPhrase}}\",\n    \"source_type\": \"{{source_type}}\",\n    \"source\": \"{{$randomNoun}}\",\n    \"automated_detection\": \"{{automated_detection}}\",\n    \"automated_decision\": \"{{automated_decision}}\",\n    \"url\": \"{{$randomUrl}}\",\n    \"puid\": \"{{$randomUUID}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

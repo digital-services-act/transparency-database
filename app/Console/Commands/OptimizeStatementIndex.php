@@ -62,7 +62,7 @@ class OptimizeStatementIndex extends Command
                         ],
                     'content_type'                     =>
                         [
-                            'type' => 'keyword'
+                            'type' => 'text'
                         ],
                     'content_type_other'               =>
                         [

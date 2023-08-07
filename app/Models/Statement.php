@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,14 +36,22 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_CONTENT_TYPE = 'Content Type';
+    public const CONTENT_TYPE_APP = 'App';
+    public const CONTENT_TYPE_AUDIO = 'Audio';
+    public const CONTENT_TYPE_PRODUCT = 'Product';
+    public const CONTENT_TYPE_SYNTHETIC_MEDIA = 'Synthetic Media';
     public const CONTENT_TYPE_TEXT = 'Text';
     public const CONTENT_TYPE_VIDEO = 'Video';
     public const CONTENT_TYPE_IMAGE = 'Image';
     public const CONTENT_TYPE_OTHER = 'Other';
     public const CONTENT_TYPES = [
+        'CONTENT_TYPE_APP' => self::CONTENT_TYPE_APP,
+        'CONTENT_TYPE_AUDIO' => self::CONTENT_TYPE_AUDIO,
+        'CONTENT_TYPE_IMAGE' => self::CONTENT_TYPE_IMAGE,
+        'CONTENT_TYPE_PRODUCT' => self::CONTENT_TYPE_PRODUCT,
+        'CONTENT_TYPE_SYNTHETIC_MEDIA' => self::CONTENT_TYPE_SYNTHETIC_MEDIA,
         'CONTENT_TYPE_TEXT' => self::CONTENT_TYPE_TEXT,
         'CONTENT_TYPE_VIDEO' => self::CONTENT_TYPE_VIDEO,
-        'CONTENT_TYPE_IMAGE' => self::CONTENT_TYPE_IMAGE,
         'CONTENT_TYPE_OTHER' => self::CONTENT_TYPE_OTHER,
     ];
 
@@ -172,7 +181,7 @@ class Statement extends Model
     public const LABEL_STATEMENT_URL = 'URL/Hyperlink';
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
-    public const LABEL_STATEMENT_START_DATE = 'Start date of the decision';
+    public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
 
@@ -195,10 +204,11 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
-        'start_date' => 'datetime:d-m-Y',
+        'application_date' => 'datetime:d-m-Y',
         'end_date' => 'datetime:d-m-Y',
         'created_at' => 'datetime:Y-m-d H:i:s',
-        'territorial_scope' => 'array'
+        'territorial_scope' => 'array',
+        'content_type' => 'array',
     ];
 
     protected $hidden = [
@@ -214,6 +224,7 @@ class Statement extends Model
 
     protected $appends = [
         'territorial_scope',
+        'content_type',
         'platform_name',
         'permalink',
         'self'
@@ -320,14 +331,49 @@ class Statement extends Model
 
     public function getTerritorialScopeAttribute(): array
     {
+        return $this->getRawKeys('territorial_scope');
+    }
+
+    public function getContentTypeAttribute($value){
+        return $this->getRawKeys('content_type');
+    }
+
+
+
+    // Function to convert enum keys to their corresponding values
+    public static function getEnumValues(array $keys): array
+    {
+        $enumValues = [];
+
+        foreach ($keys as $key) {
+            // Use constant() to get the value of the constant by its name
+            $value = constant('App\Models\Statement::' . $key);
+
+            if ($value !== null) {
+                $enumValues[] = $value;
+            }
+        }
+
+        sort($enumValues);
+
+        return $enumValues;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getRawKeys($key): mixed
+    {
         $out = null;
 
         // Catch potential bad json here.
         try {
-            $out = json_decode($this->getRawOriginal('territorial_scope'));
-        } catch(Exception $e) {
+            $out = json_decode($this->getRawOriginal($key));
+        } catch (Exception $e) {
             $out = [];
         }
+
+
 
         if (is_array($out)) {
             sort($out);

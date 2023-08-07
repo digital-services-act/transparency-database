@@ -41,8 +41,8 @@
     @endif
 
     @if(!is_null($statement->decision_account))
-    <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
-                :content="Statement::DECISION_ACCOUNTS[$statement->decision_account]"></x-infoline>
+        <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
+                    :content="Statement::DECISION_ACCOUNTS[$statement->decision_account]"></x-infoline>
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_FACTS" :content="$statement->decision_facts"></x-infoline>
@@ -70,9 +70,10 @@
                 content="{{ implode(', ', $statement_territorial_scope_country_names) }}"></x-infoline>
 
     <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_TYPE"
-                :content="Statement::CONTENT_TYPES[$statement->content_type]"></x-infoline>
-    @if($statement->content_type == 'CONTENT_TYPE_OTHER')
-        <x-infoline title="" :content="$statement->content_type_other"></x-infoline>
+                content="{{ implode(', ',$statement_content_types) }}"></x-infoline>
+
+    @if(in_array('CONTENT_TYPE_OTHER',$statement->content_type))
+        <x-infoline title="Content Type Other" :content="$statement->content_type_other"></x-infoline>
     @endif
 
 
@@ -92,9 +93,9 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"
                 :content="$statement->automated_decision"></x-infoline>
 
-    @if($statement->start_date)
-        <x-infoline :title="Statement::LABEL_STATEMENT_START_DATE"
-                    :content="$statement->start_date->format('d-m-Y')"></x-infoline>
+    @if($statement->application_date)
+        <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
+                    :content="$statement->application_date->format('d-m-Y')"></x-infoline>
     @endif
 
     @if($statement->end_date)

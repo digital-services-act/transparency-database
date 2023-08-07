@@ -117,8 +117,12 @@ class StatementController extends Controller
     public function show(Statement $statement): Factory|View|Application
     {
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
-        return view('statement.show', compact(['statement','statement_territorial_scope_country_names']));
+        $statement_content_types = Statement::getEnumValues($statement->content_type);
+        sort($statement_territorial_scope_country_names);
+
+        return view('statement.show', compact(['statement','statement_territorial_scope_country_names','statement_content_types']));
     }
+
 
     /**
      * @param StatementStoreRequest $request
@@ -134,7 +138,7 @@ class StatementController extends Controller
             'method' => Statement::METHOD_FORM
         ])->toArray();
 
-        $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
+        $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
 
