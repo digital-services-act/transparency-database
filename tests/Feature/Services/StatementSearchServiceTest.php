@@ -154,6 +154,20 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
+    public function it_filters_on_account_type()
+    {
+        $filters = [
+            'account_type' => array_keys(Statement::ACCOUNT_TYPES),
+        ];
+        $search = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertEquals('(account_type:ACCOUNT_TYPE_BUSINESS OR account_type:ACCOUNT_TYPE_PRIVATE)', $query);
+    }
+
+    /**
+     * @test
+     */
     public function it_filters_on_decision_grounds()
     {
         $filters = [

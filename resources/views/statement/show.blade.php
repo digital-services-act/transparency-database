@@ -45,6 +45,11 @@
                     :content="Statement::DECISION_ACCOUNTS[$statement->decision_account]"></x-infoline>
     @endif
 
+    @if(!is_null($statement->account_type))
+        <x-infoline :title="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
+                    :content="Statement::ACCOUNT_TYPES[$statement->account_type]"></x-infoline>
+    @endif
+
     <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_FACTS" :content="$statement->decision_facts"></x-infoline>
 
     <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_GROUND"

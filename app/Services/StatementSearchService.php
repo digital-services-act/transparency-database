@@ -29,6 +29,7 @@ class StatementSearchService
         'decision_monetary',
         'decision_provision',
         'decision_account',
+        'account_type',
         'decision_ground',
         'category',
         'content_type',
@@ -199,6 +200,8 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+
+
     private function applyDecisionAccountFilter(array $filter_values)
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
@@ -206,6 +209,17 @@ class StatementSearchService
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_account:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
+    private function applyAccountTypeFilter(array $filter_values)
+    {
+        $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'account_type:'.$filter_value;
         }
         return implode(' OR ', $ors);
     }
