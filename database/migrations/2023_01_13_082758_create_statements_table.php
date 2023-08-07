@@ -20,10 +20,10 @@ class CreateStatementsTable extends Migration
             $table->string('uuid', 36)->index('uuidindex');
 
             $table->enum('decision_visibility', array_keys(Statement::DECISION_VISIBILITIES))->nullable();
-            $table->string('decision_visibility_other', 255)->nullable();
+            $table->string('decision_visibility_other', 500)->nullable();
 
             $table->enum('decision_monetary', array_keys(Statement::DECISION_MONETARIES))->nullable();
-            $table->string('decision_monetary_other', 255)->nullable();
+            $table->string('decision_monetary_other', 500)->nullable();
 
             $table->enum('decision_provision', array_keys(Statement::DECISION_PROVISIONS))->nullable();
             $table->enum('decision_account', array_keys(Statement::DECISION_ACCOUNTS))->nullable();
@@ -32,25 +32,25 @@ class CreateStatementsTable extends Migration
 
             $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
 
-            $table->enum('content_type', array_keys(Statement::CONTENT_TYPES));
-            $table->string('content_type_other', 255)->nullable();
+            $table->string('content_type', 1000);
+            $table->string('content_type_other', 500)->nullable();
 
-            $table->string('illegal_content_legal_ground', 255)->nullable();
-            $table->string('illegal_content_explanation',500)->nullable();
+            $table->string('illegal_content_legal_ground', 500)->nullable();
+            $table->string('illegal_content_explanation',2000)->nullable();
 
-            $table->string('incompatible_content_ground', 255)->nullable();
-            $table->string('incompatible_content_explanation',500)->nullable();
+            $table->string('incompatible_content_ground', 500)->nullable();
+            $table->string('incompatible_content_explanation',2000)->nullable();
             $table->enum('incompatible_content_illegal', Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
 
-            $table->string('countries_list', 255)->nullable();
+            $table->string('territorial_scope', 255)->nullable();
 
-            $table->timestamp('start_date')->nullable();
+            $table->timestamp('application_date')->nullable();
             $table->timestamp('end_date')->nullable();
 
-            $table->string('decision_facts', 500);
+            $table->string('decision_facts', 5000);
 
             $table->enum('source_type', array_keys(Statement::SOURCE_TYPES));
-            $table->string('source', 255)->nullable();
+            $table->string('source', 500)->nullable();
 
             $table->enum('automated_detection', Statement::AUTOMATED_DETECTIONS);
             $table->enum('automated_decision', Statement::AUTOMATED_DECISIONS);
@@ -60,10 +60,14 @@ class CreateStatementsTable extends Migration
 
             $table->string('method')->default('API');
 
-            $table->string('url')->nullable();
+            $table->string('puid', 500);
+
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['platform_id', 'puid']);
+            $table->index('created_at');
 
         });
     }

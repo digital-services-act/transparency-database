@@ -203,10 +203,6 @@
 
 <hr>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_URL" name="url" id="url" required="true"/>
-
-<hr>
-
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_PUID" name="puid" id="puid" required="true"/>
 
 <hr>
