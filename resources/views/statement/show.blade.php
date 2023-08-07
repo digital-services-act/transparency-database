@@ -17,7 +17,7 @@
         <x-infoline title="Sent by" :content="$statement->user->platform->name"></x-infoline>
     @endif
 
-    <x-infoline title="Received" :content="$statement->created_at->format('d-m-Y g:i A')"></x-infoline>
+    <x-infoline title="Received" :content="$statement->created_at->format('Y-m-d H:i:s')"></x-infoline>
 
     @if(!is_null($statement->decision_visibility))
         <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
