@@ -176,7 +176,7 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertStringContainsString('category:STATEMENT_CATEGORY_PIRACY OR', $query);
+        $this->assertStringContainsString('category:STATEMENT_CATEGORY_ANIMAL_WELFARE OR', $query);
     }
 
     /**

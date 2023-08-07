@@ -32,7 +32,7 @@ class CreateStatementsTable extends Migration
 
             $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
 
-            $table->string('content_type', 1000)->change();
+            $table->string('content_type', 1000);
             $table->string('content_type_other', 500)->nullable();
 
             $table->string('illegal_content_legal_ground', 500)->nullable();
