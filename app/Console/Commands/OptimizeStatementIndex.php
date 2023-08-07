@@ -30,14 +30,14 @@ class OptimizeStatementIndex extends Command
      */
     public function handle(): void
     {
-        if (env('SCOUT_DRIVER', '') !== 'opensearch')
-        {
+        if (env('SCOUT_DRIVER', '') !== 'opensearch') {
             $this->error('opensearch is not the SCOUT_DRIVER');
+
             return;
         }
 
         /** @var Client $client */
-        $client  = app(Client::class);
+        $client = app(Client::class);
 
         $index_name = 'statement_' . env('APP_ENV');
 
@@ -73,6 +73,10 @@ class OptimizeStatementIndex extends Command
                             'type' => 'date'
                         ],
                     'decision_account'                 =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'account_type'                     =>
                         [
                             'type' => 'keyword'
                         ],
@@ -148,7 +152,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
-                    'territorial_scope'                   =>
+                    'territorial_scope'                =>
                         [
                             'type' => 'text'
                         ],

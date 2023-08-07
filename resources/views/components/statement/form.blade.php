@@ -37,10 +37,21 @@
 />
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
-              name="decision_account"
-              id="decision_account"
-              :options="$options['decision_accounts']"
-              default="{{ $statement->decision_account }}"
+                  name="decision_account"
+                  id="decision_account"
+                  :options="$options['decision_accounts']"
+                  default="{{ $statement->decision_account }}"
+                  justlabel="true"
+                  :allow_null="true"
+/>
+
+<hr>
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
+              name="account_type"
+              id="account_type"
+              :options="$options['account_types']"
+              default="{{ $statement->account_type }}"
               justlabel="true"
               :allow_null="true"
 />
@@ -57,6 +68,8 @@
               id="decision_ground" default="{{ $statement->decision_ground }}"
               :options="$options['decision_grounds']"
               required="true"/>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" name="decision_ground_reference_url" id="decision_ground_reference_url" />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND" name="illegal_content_legal_ground"
                  id="illegal_content_legal_ground" required="true"/>

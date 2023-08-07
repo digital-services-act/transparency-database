@@ -245,6 +245,26 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+
+### Account Type (account_type)
+
+This is an attribute that tells us about the account's type.
+
+This attribute is optional.
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::ACCOUNT_TYPES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 ### Facts and circumstances relied on in taking the decision (decision_facts)
 
 This is a required textual field to describe the facts and circumstances relied on in 
@@ -266,6 +286,13 @@ This is a required field and tells us the basis on which the decision was taken.
     }
 @endphp
 </ul>
+
+
+### Decision Ground Reference Url (decision_ground_reference_url)
+
+This is an url to the TOS or Law relied upon in taking the decision.
+
+This is an optional attribute.
 
 ### Illegal Content Legal Grounds (illegal_content_legal_ground)
 

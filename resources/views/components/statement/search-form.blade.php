@@ -75,6 +75,15 @@
         />
 
         <x-ecl.checkboxes
+                :label="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
+                justlabel="true"
+                name="account_type"
+                id="account_type"
+                :default="request()->get('account_type', [])"
+                :options="$options['account_types']"
+        />
+
+        <x-ecl.checkboxes
                 :label="Statement::LABEL_STATEMENT_CATEGORY"
                 justlabel="true"
                 name="category"
