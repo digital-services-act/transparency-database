@@ -96,6 +96,6 @@ class StatementStoreRequest extends FormRequest
 
     private function checkForContentTypeOther(): bool
     {
-        return in_array('CONTENT_TYPE_OTHER', $this->get('content_type'));
+        return in_array('CONTENT_TYPE_OTHER', $this->post('content_type', []));
     }
 }
