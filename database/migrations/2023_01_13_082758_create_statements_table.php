@@ -44,7 +44,7 @@ class CreateStatementsTable extends Migration
             $table->string('incompatible_content_explanation', 2000)->nullable();
             $table->enum('incompatible_content_illegal', Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
 
-            $table->string('territorial_scope', 255);
+            $table->string('territorial_scope', 255)->nullable();
 
             $table->string('content_language', 2)->nullable();
             $table->timestamp('content_time');
