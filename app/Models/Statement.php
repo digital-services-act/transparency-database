@@ -163,7 +163,6 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
     public const LABEL_STATEMENT_CATEGORY_ADDITION = 'Additional Categories';
-    public const LABEL_STATEMENT_CATEGORY_OTHER = 'Other Category';
 
     public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
     public const STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS = 'Data protection and privacy violations';
@@ -179,7 +178,7 @@ class Statement extends Model
     public const STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE = 'Scope of platform service';
     public const STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS = 'Unsafe and/or illegal products';
     public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
-    public const STATEMENT_CATEGORY_OTHER = 'Other';
+
 
     public const STATEMENT_CATEGORIES = [
         'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
@@ -198,9 +197,7 @@ class Statement extends Model
         'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
     ];
 
-    public const STATEMENT_CATEGORIES_OTHER = [
-        'STATEMENT_CATEGORY_OTHER' => self::STATEMENT_CATEGORY_OTHER
-    ];
+
 
 
 

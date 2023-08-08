@@ -389,14 +389,6 @@ The value provided must be an array with one of the following:
         echo "</li>\n";
     }
 @endphp
-@php
-    foreach (\App\Models\Statement::STATEMENT_CATEGORIES_OTHER as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
 </ul>
 
 ### Territorial Scope (territorial_scope)
