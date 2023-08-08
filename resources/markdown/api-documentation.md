@@ -378,6 +378,23 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+### Additional Categories (category_addition)
+
+This is an optional attribute, and it tells us which additional categories the statement belongs to.
+
+The value provided must be an array with one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 ### Territorial Scope (territorial_scope)
 
 This is the required territorial scope of the restriction. Each value must be the 2 letter iso code

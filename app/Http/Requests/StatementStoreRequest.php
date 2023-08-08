@@ -52,12 +52,15 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_illegal' => [$this->in(Statement::INCOMPATIBLE_CONTENT_ILLEGALS), 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
 
             'content_type' => ['array', 'required', $this->in(array_keys(Statement::CONTENT_TYPES))],
+
             'content_type_other' => ['max:500',
                 Rule::requiredIf($this->checkForContentTypeOther()),
                 Rule::excludeIf(!$this->checkForContentTypeOther()),
             ],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
+            'category_addition' => ['array', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
+
             'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
 
             'content_language' => [$this->in(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES), 'nullable'],
@@ -105,4 +108,5 @@ class StatementStoreRequest extends FormRequest
         $check = (array)$this->get('content_type', []);
         return in_array('CONTENT_TYPE_OTHER', $check);
     }
+
 }

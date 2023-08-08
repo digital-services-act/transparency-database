@@ -123,14 +123,17 @@ class StatementController extends Controller
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         $statement_content_types = Statement::getEnumValues($statement->content_type);
         $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
+        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
         sort($statement_territorial_scope_country_names);
 
         return view('statement.show', compact([
             'statement',
             'statement_territorial_scope_country_names',
             'statement_content_types',
-            'statement_content_language'
+            'statement_content_language'.
+            'statement_additional_categories'
         ]));
+
     }
 
 
@@ -141,6 +144,7 @@ class StatementController extends Controller
      */
     public function store(StatementStoreRequest $request): RedirectResponse
     {
+
 
         $validated = $request->safe()->merge([
             'platform_id' => $request->user()->platform_id,
@@ -208,6 +212,7 @@ class StatementController extends Controller
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
+        $categories_addition = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
@@ -230,6 +235,7 @@ class StatementController extends Controller
             'account_types',
             'decision_grounds',
             'categories',
+            'categories_addition',
             'illegal_content_fields',
             'incompatible_content_fields',
             'source_types',

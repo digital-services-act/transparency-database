@@ -162,6 +162,7 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
+    public const LABEL_STATEMENT_CATEGORY_ADDITION = 'Additional Categories';
 
     public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
     public const STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS = 'Data protection and privacy violations';
@@ -178,7 +179,6 @@ class Statement extends Model
     public const STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS = 'Unsafe and/or illegal products';
     public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
 
-    public const STATEMENT_CATEGORY_UNCATEGORISED = 'Uncategorised';
 
     public const STATEMENT_CATEGORIES = [
         'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
@@ -196,6 +196,10 @@ class Statement extends Model
         'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS' => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS,
         'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
     ];
+
+
+
+
 
 
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
@@ -230,7 +234,8 @@ class Statement extends Model
         'end_date' => 'datetime:Y-m-d-H',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'territorial_scope' => 'array',
-        'content_type' => 'array'
+        'content_type' => 'array',
+        'category_addition' => 'array'
     ];
 
     protected $hidden = [
@@ -294,6 +299,7 @@ class Statement extends Model
             'automated_detection' => $this->automated_detection === self::AUTOMATED_DECISION_YES,
             'automated_decision' => $this->automated_decision === self::AUTOMATED_DECISION_YES,
             'category' => $this->category,
+            'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
             'url' => $this->url,
             'created_at' => $this->created_at,
@@ -361,6 +367,11 @@ class Statement extends Model
     public function getContentTypeAttribute($value)
     {
         return $this->getRawKeys('content_type');
+    }
+
+    public function getCategoryAdditionAttribute($value)
+    {
+        return $this->getRawKeys('category_addition');
     }
 
 

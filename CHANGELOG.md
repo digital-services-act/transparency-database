@@ -7,7 +7,8 @@
   - content_type_product
   - content_type_audio
   - content_type_synthetic_media
-- 
+- Added a new API field: 'category_addition'
+ 
 ### Changed
 - Renamed the API field: start_date to application_date
 - Renamed the API field: countries_list to territorial_scope
@@ -30,8 +31,9 @@
   - STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS
   - STATEMENT_CATEGORY_VIOLENCE
 
+
 ### Deleted
-- Removed the API field: url
+- Removed the API field: 'url'
 
 ### Fixed
 
