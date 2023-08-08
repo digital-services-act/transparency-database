@@ -46,7 +46,9 @@ class CreateStatementsTable extends Migration
 
             $table->string('territorial_scope', 255)->nullable();
 
-            $table->timestamp('application_date')->nullable();
+            $table->timestamp('content_time');
+
+            $table->timestamp('application_date');
             $table->timestamp('end_date')->nullable();
 
             $table->string('decision_facts', 5000);
