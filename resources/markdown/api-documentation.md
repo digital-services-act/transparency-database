@@ -397,7 +397,7 @@ For European Economic Area (EEA) use:
 
 ### Content Time (content_time)
 
-This is the date and hour that this content was upload or posted. The date needs to take the form of:
+This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
 
 ```YYYY-MM-DD-HH```
 
