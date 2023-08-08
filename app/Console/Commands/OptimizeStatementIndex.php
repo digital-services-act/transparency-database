@@ -16,14 +16,14 @@ class OptimizeStatementIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'optimize-statement-index';
+    protected $signature = 'statements:optimize-index';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Optimize the Opensearch Statement Index';
+    protected $description = 'Optimize the Opensearch Statements Index';
 
     /**
      * Execute the console command.
