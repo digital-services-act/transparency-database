@@ -113,6 +113,15 @@
               :options="$options['categories']"
               required="true"/>
 
+
+<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_CATEGORY_ADDITION"
+                       name="category_addition"
+                       id="category_addition"
+                       :options="$options['categories_addition']"
+                       select_all="All"
+                       select_item="Select category/categories"
+                       enter_keyword="Enter a category"/>
+
 <hr>
 
 <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"

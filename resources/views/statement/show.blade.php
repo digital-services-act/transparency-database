@@ -14,7 +14,7 @@
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statement Details: {{$statement->uuid}}</h1>
 
     @if($statement->user && $statement->user->platform)
-        <x-infoline title="Sent by" :content="$statement->user->platform->name"></x-infoline>
+        <x-infoline title="Platform name" :content="$statement->user->platform->name"></x-infoline>
     @endif
 
     <x-infoline title="Received" :content="$statement->created_at->format('Y-m-d H:i:s')"></x-infoline>
@@ -89,6 +89,9 @@
 
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY"
                 :content="Statement::STATEMENT_CATEGORIES[$statement->category]"></x-infoline>
+
+    <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY_ADDITION"
+                content="{{ implode(', ',$statement_additional_categories) }}"></x-infoline>
 
     <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_TYPE"
                 :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-infoline>

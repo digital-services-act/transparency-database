@@ -534,5 +534,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->content_type);
         $this->assertNull($statement->content_type_other);
     }
+
 }
 
