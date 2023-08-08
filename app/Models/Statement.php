@@ -238,6 +238,7 @@ class Statement extends Model
         'method',
         'user_id',
         'id',
+        'platform',
         'platform_id',
         'puid'
     ];
