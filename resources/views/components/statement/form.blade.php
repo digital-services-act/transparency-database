@@ -283,7 +283,7 @@
         }
 
         hide('div_source');
-        if (ge('source_type').value && ge('source_type').value !== 'SOURCE_VOLUNTARY') {
+        if (ge('source_type').value && ge('source_type').value === 'SOURCE_ARTICLE_16') {
             show('div_source');
         }
 

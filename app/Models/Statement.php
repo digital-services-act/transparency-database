@@ -36,10 +36,12 @@ class Statement extends Model
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
+    public const SOURCE_OTHER = 'Other type of notification by recipients of the service';
     public const SOURCE_TYPES = [
         'SOURCE_ARTICLE_16' => self::SOURCE_ARTICLE_16,
         'SOURCE_TRUSTED_FLAGGER' => self::SOURCE_TRUSTED_FLAGGER,
         'SOURCE_VOLUNTARY' => self::SOURCE_VOLUNTARY,
+        'SOURCE_OTHER' => self::SOURCE_OTHER,
     ];
 
 

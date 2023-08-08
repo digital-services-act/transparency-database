@@ -464,7 +464,7 @@ The value provided must be one of the following:
 
 ### Source/Notifier (source)
 
-This is an optional field if the source type field was a notice.
+This is an optional field to describe the source/notifier if needed.
 
 Limited to 500 characters.
 
