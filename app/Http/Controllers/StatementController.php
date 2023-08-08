@@ -130,7 +130,7 @@ class StatementController extends Controller
             'statement',
             'statement_territorial_scope_country_names',
             'statement_content_types',
-            'statement_content_language'.
+            'statement_content_language',
             'statement_additional_categories'
         ]));
 
