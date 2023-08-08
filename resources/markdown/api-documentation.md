@@ -395,7 +395,7 @@ The value provided must be an array with one of the following:
 
 ### Territorial Scope (territorial_scope)
 
-This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
+This is the optional territorial scope of the restriction. Each value must be the 2 letter iso code
 for the country and the countries must be (EU/EEA) countries. 
 
 The value provided must be an array.
