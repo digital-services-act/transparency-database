@@ -534,50 +534,5 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_type_other);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_category_addition_other()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $extra_fields = [
-            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_OTHER'],
-            'category_addition_other' => 'foobar other category',
-        ];
-        $fields = array_merge($this->required_fields, $extra_fields);
-
-        $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_CREATED);
-        $statement = Statement::where('uuid', $response->json('uuid'))->first();
-        $this->assertNotNull($statement->category_addition);
-        $this->assertNotNull($statement->category_addition_other);
-    }
-
-    /**
-     * @test
-     */
-    public function store_should_not_save_category_addition_other()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $extra_fields = [
-            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH'],
-            'category_addition_other' => 'foobar other category',
-        ];
-        $fields = array_merge($this->required_fields, $extra_fields);
-
-        $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_CREATED);
-        $statement = Statement::where('uuid', $response->json('uuid'))->first();
-        $this->assertNotNull($statement->category_addition);
-        $this->assertNull($statement->category_addition_other);
-    }
 }
 

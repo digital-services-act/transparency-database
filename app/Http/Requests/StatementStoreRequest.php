@@ -58,11 +58,7 @@ class StatementStoreRequest extends FormRequest
             ],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
-            'category_addition' => ['array', $this->in(array_keys(array_merge(Statement::STATEMENT_CATEGORIES, Statement::STATEMENT_CATEGORIES_OTHER)))],
-            'category_addition_other' => ['max:2000',
-                Rule::requiredIf($this->checkForCategoryOther()),
-                Rule::excludeIf(!$this->checkForCategoryOther()),
-            ],
+            'category_addition' => ['array', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
 
             'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
             'application_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
@@ -107,9 +103,4 @@ class StatementStoreRequest extends FormRequest
         return in_array('CONTENT_TYPE_OTHER', $check);
     }
 
-    private function checkForCategoryOther(): bool
-    {
-        $check = (array)$this->get('category_addition', []);
-        return in_array('STATEMENT_CATEGORY_OTHER', $check);
-    }
 }

@@ -93,10 +93,6 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY_ADDITION"
                 content="{{ implode(', ',$statement_additional_categories) }}"></x-infoline>
 
-    @if(in_array('STATEMENT_CATEGORY_OTHER',$statement->category_addition))
-        <x-infoline title="Other Category" :content="$statement->category_addition_other"></x-infoline>
-    @endif
-
     <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_TYPE"
                 :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-infoline>
     @if($statement->source_type != 'SOURCE_VOLUNTARY')

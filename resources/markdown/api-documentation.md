@@ -399,13 +399,6 @@ The value provided must be an array with one of the following:
 @endphp
 </ul>
 
-### Other Category (category_addition_other)
-
-This is required if STATEMENT_CATEGORY_OTHER was part of the category_addition array.
-It represents a Category that is not part of the provided category list.
-
-Limited to 500 characters.
-
 ### Territorial Scope (territorial_scope)
 
 This is the required territorial scope of the restriction. Each value must be the 2 letter iso code

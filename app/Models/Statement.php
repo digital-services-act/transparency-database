@@ -298,7 +298,6 @@ class Statement extends Model
             'automated_decision' => $this->automated_decision === self::AUTOMATED_DECISION_YES,
             'category' => $this->category,
             'category_addition' => $this->category_addition,
-            'category_addition_other' => $this->category_addition_other,
             'platform_id' => $this->platform_id,
             'url' => $this->url,
             'created_at' => $this->created_at,

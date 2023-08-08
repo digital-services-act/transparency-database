@@ -195,7 +195,7 @@ class StatementController extends Controller
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
-        $categories_addition = $this->mapForSelectWithKeys(array_merge(Statement::STATEMENT_CATEGORIES, Statement::STATEMENT_CATEGORIES_OTHER));
+        $categories_addition = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;

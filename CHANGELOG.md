@@ -8,7 +8,6 @@
   - content_type_audio
   - content_type_synthetic_media
 - Added a new API field: 'category_addition'
-- Added a new API field: 'category_addition_other'
  
 ### Changed
 - Renamed the API field: start_date to application_date
