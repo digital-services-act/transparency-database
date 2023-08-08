@@ -117,7 +117,7 @@
 <x-ecl.select :label="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
               name="content_language"
               id="content_language" default="{{ $statement->content_language }}"
-              :options="$options['languages']"
+              :options="$options['languages_grouped']"
 />
 
 <hr>

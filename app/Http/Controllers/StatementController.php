@@ -185,6 +185,7 @@ class StatementController extends Controller
         $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
 
         $languages = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true));
+        $languages_grouped = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true, true));
 
         $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
@@ -216,6 +217,7 @@ class StatementController extends Controller
         return compact(
             'countries',
             'languages',
+            'languages_grouped',
             'eea_countries',
             'eu_countries',
             'automated_detections',
