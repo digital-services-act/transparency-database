@@ -118,9 +118,10 @@ class StatementController extends Controller
     {
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         $statement_content_types = Statement::getEnumValues($statement->content_type);
+        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
         sort($statement_territorial_scope_country_names);
 
-        return view('statement.show', compact(['statement','statement_territorial_scope_country_names','statement_content_types']));
+        return view('statement.show', compact(['statement','statement_territorial_scope_country_names','statement_content_types','statement_additional_categories']));
     }
 
 
@@ -138,8 +139,6 @@ class StatementController extends Controller
             'user_id' => $request->user()->id,
             'method' => Statement::METHOD_FORM
         ])->toArray();
-
-        dd($validated);
 
         $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);

@@ -33,17 +33,17 @@ class CreateStatementsTable extends Migration
             $table->string('decision_ground_reference_url', 500)->nullable();
 
             $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
-            $table->string('category_addition', 2000)->nullable();
-            $table->string('category_addition_other', 500)->nullable();
+            $table->text('category_addition')->nullable();
+            $table->text('category_addition_other')->nullable();
 
-            $table->string('content_type', 1000);
+            $table->text('content_type');
             $table->string('content_type_other', 500)->nullable();
 
             $table->string('illegal_content_legal_ground', 500)->nullable();
-            $table->string('illegal_content_explanation',2000)->nullable();
+            $table->text('illegal_content_explanation')->nullable();
 
             $table->string('incompatible_content_ground', 500)->nullable();
-            $table->string('incompatible_content_explanation',2000)->nullable();
+            $table->text('incompatible_content_explanation')->nullable();
             $table->enum('incompatible_content_illegal', Statement::INCOMPATIBLE_CONTENT_ILLEGALS)->nullable();
 
             $table->string('territorial_scope', 255)->nullable();

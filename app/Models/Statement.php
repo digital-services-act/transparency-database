@@ -368,6 +368,11 @@ class Statement extends Model
         return $this->getRawKeys('content_type');
     }
 
+    public function getCategoryAdditionAttribute($value)
+    {
+        return $this->getRawKeys('category_addition');
+    }
+
 
     // Function to convert enum keys to their corresponding values
     public static function getEnumValues(array $keys): array
