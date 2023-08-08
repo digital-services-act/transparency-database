@@ -88,6 +88,7 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
+    "content_language": "EN",
     "content_time": "2023-08-08-05",
     "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
@@ -124,6 +125,7 @@ You will also receive a payload with the statement as created in the database:
         "ES",
         "DE"
     ],
+    "content_language": "EN",
     "content_time": "2023-08-08-05",
     "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
@@ -411,6 +413,18 @@ For European Union (EU) use:
 For European Economic Area (EEA) use:
 
 @php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
+
+### Content Language (content_language)
+
+This is the language that the content was in.
+
+This attribute is optional.
+
+The value though must be one of the uppercase two letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) codes.
+
+Ex, 
+
+@php echo '"' . implode('", "', \App\Services\EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES) . '"'; @endphp
 
 ### Content Time (content_time)
 

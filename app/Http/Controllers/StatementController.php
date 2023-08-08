@@ -7,6 +7,7 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
+use App\Services\EuropeanLanguagesService;
 use App\Services\StatementSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -26,18 +27,21 @@ class StatementController extends Controller
     protected StatementQueryService $statement_query_service;
     protected StatementSearchService $statement_search_service;
     protected EuropeanCountriesService $european_countries_service;
+    protected EuropeanLanguagesService $european_languages_service;
     protected DriveInService $drive_in_service;
 
     public function __construct(
         StatementQueryService $statement_query_service,
         StatementSearchService $statement_search_service,
         EuropeanCountriesService $european_countries_service,
+        EuropeanLanguagesService $european_languages_service,
         DriveInService $drive_in_service
     )
     {
         $this->statement_query_service = $statement_query_service;
         $this->statement_search_service = $statement_search_service;
         $this->european_countries_service = $european_countries_service;
+        $this->european_languages_service = $european_languages_service;
         $this->drive_in_service = $drive_in_service;
     }
 
@@ -118,10 +122,18 @@ class StatementController extends Controller
     {
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         $statement_content_types = Statement::getEnumValues($statement->content_type);
+        $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
         $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
         sort($statement_territorial_scope_country_names);
 
-        return view('statement.show', compact(['statement','statement_territorial_scope_country_names','statement_content_types','statement_additional_categories']));
+        return view('statement.show', compact([
+            'statement',
+            'statement_territorial_scope_country_names',
+            'statement_content_types',
+            'statement_content_language',
+            'statement_additional_categories'
+        ]));
+
     }
 
 
@@ -176,6 +188,9 @@ class StatementController extends Controller
         // Prepare options for forms and selects and such.
         $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
 
+        $languages = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true));
+        $languages_grouped = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true, true));
+
         $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
 
@@ -206,6 +221,8 @@ class StatementController extends Controller
 
         return compact(
             'countries',
+            'languages',
+            'languages_grouped',
             'eea_countries',
             'eu_countries',
             'automated_detections',

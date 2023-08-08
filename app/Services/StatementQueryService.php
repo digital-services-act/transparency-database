@@ -32,6 +32,7 @@ class StatementQueryService
         'account_type',
         'category',
         'content_type',
+        'content_language',
         'territorial_scope',
         'source_type'
     ];
@@ -239,11 +240,22 @@ class StatementQueryService
      *
      * @return void
      */
+    private function applyContentLanguageFilter(Builder $query, array $filter_value): void
+    {
+        $query->whereIn('content_type', $filter_value);
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
     private function applyCategoryFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::STATEMENT_CATEGORIES));
         if ($filter_values_validated) {
-            $query->whereIn('category', $filter_value);
+            $query->whereIn('category', $filter_values_validated);
         }
     }
 

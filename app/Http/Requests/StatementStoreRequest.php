@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
+use App\Services\EuropeanLanguagesService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -61,6 +62,8 @@ class StatementStoreRequest extends FormRequest
             'category_addition' => ['array', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
 
             'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
+
+            'content_language' => [$this->in(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES), 'nullable'],
 
             'content_time' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
             'application_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],

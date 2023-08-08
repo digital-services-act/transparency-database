@@ -210,6 +210,7 @@ class Statement extends Model
     public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
+    public const LABEL_STATEMENT_CONTENT_LANGUAGE = "The language of the content";
 
 
     /**
@@ -236,7 +237,7 @@ class Statement extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'territorial_scope' => 'array',
         'content_type' => 'array',
-        'category_addition' => 'array',
+        'category_addition' => 'array'
     ];
 
     protected $hidden = [
@@ -289,6 +290,7 @@ class Statement extends Model
             'decision_ground' => $this->decision_ground,
             'content_type' => $this->content_type,
             'content_type_other' => $this->content_type_other,
+            'content_language' => $this->content_language,
             'illegal_content_legal_ground' => $this->illegal_content_legal_ground,
             'illegal_content_explanation' => $this->illegal_content_explanation,
             'incompatible_content_ground' => $this->incompatible_content_ground,

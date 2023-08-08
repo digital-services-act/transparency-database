@@ -33,6 +33,7 @@ class StatementSearchService
         'decision_ground',
         'category',
         'content_type',
+        'content_language',
         'automated_detection',
         'automated_decision',
         'platform_id',
@@ -253,6 +254,16 @@ class StatementSearchService
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'content_type:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
+    private function applyContentLanguageFilter(array $filter_values)
+    {
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'content_language:"'.$filter_value.'"';
         }
         return implode(' OR ', $ors);
     }

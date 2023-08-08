@@ -105,6 +105,21 @@
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="content_type_other"
                  id="content_type_other" required="true"/>
 
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_CONTENT_TIME"
+                 name="content_time"
+                 id="content_time"
+                 value="{{ $statement->content_time }}"
+                 required="true"
+                 placeholder="YYYY-MM-DD-HH"
+                 help="leading zeroes are required"
+/>
+
+<x-ecl.select :label="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
+              name="content_language"
+              id="content_language" default="{{ $statement->content_language }}"
+              :options="$options['languages_grouped']"
+/>
+
 <hr>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_CATEGORY"
@@ -189,18 +204,28 @@
 
 </script>
 
-<hr>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_CONTENT_TIME"
-                 name="content_time" value="{{ $statement->content_time }}" required="true" placeholder="YYYY-MM-DD-HH"/>
+
+
 
 <hr>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_APPLICATION_DATE"
-                  name="application_date" value="{{ $statement->application_date }}" required="true" placeholder="YYYY-MM-DD-HH"/>
+                 name="application_date"
+                 id="application_date"
+                 value="{{ $statement->application_date }}"
+                 required="true"
+                 placeholder="YYYY-MM-DD-HH"
+                 help="leading zeroes are required"
+/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'" id="end_date"
-                  name="end_date" value="{{ $statement->end_date }}" placeholder="YYYY-MM-DD-HH" />
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'"
+                 id="end_date"
+                 name="end_date"
+                 value="{{ $statement->end_date }}"
+                 placeholder="YYYY-MM-DD-HH"
+                 help="leading zeroes are required"
+/>
 <hr>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE_TYPE" name="source_type" id="source_type"

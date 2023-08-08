@@ -39,6 +39,7 @@ class CreateStatementsTable extends Migration
             $table->string('content_type_other', 500)->nullable();
 
             $table->string('illegal_content_legal_ground', 500)->nullable();
+
             $table->text('illegal_content_explanation')->nullable();
 
             $table->string('incompatible_content_ground', 500)->nullable();
@@ -47,6 +48,7 @@ class CreateStatementsTable extends Migration
 
             $table->string('territorial_scope', 255)->nullable();
 
+            $table->string('content_language', 2)->nullable();
             $table->timestamp('content_time');
 
             $table->timestamp('application_date');

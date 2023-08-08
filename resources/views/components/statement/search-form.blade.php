@@ -169,6 +169,16 @@
                 :options="$options['content_types']"
         />
 
+        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
+                      name="content_language"
+                      justlabel="true"
+                      id="content_language"
+                      :default="request()->get('content_language', [])"
+                      :options="$options['languages']"
+                      select_all="All languages" select_item="Select one or more languages"
+                      enter_keyword="Enter a language name"
+        />
+
 
         <x-ecl.checkboxes
                 :label="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"
