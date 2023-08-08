@@ -182,6 +182,11 @@
 
 <hr>
 
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_CONTENT_TIME"
+                 name="content_time" value="{{ $statement->content_time }}" required="true" placeholder="YYYY-MM-DD-HH"/>
+
+<hr>
+
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_APPLICATION_DATE"
                   name="application_date" value="{{ $statement->application_date }}" required="true" placeholder="YYYY-MM-DD-HH"/>
 

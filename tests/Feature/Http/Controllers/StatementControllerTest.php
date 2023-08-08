@@ -30,6 +30,7 @@ class StatementControllerTest extends TestCase
         'territorial_scope' => ['BE','FR'],
         'url' => 'https://www.test.com',
         'puid' => 'THX1138',
+        'content_time' => '2023-05-12-02',
         'application_date' => '2023-05-12-04',
         'end_date' => '2023-11-02-04',
         'source_type' => 'SOURCE_ARTICLE_16',
@@ -155,6 +156,8 @@ class StatementControllerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertEquals('2023-11-02 04:00:00', (string)$statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertEquals('2023-05-12 02:00:00', (string)$statement->content_time);
+        $this->assertInstanceOf(Carbon::class, $statement->content_time);
 
         $response->assertRedirect(route('statement.index'));
     }

@@ -29,7 +29,6 @@ class StatementAPIController extends Controller
     public function store(StatementStoreRequest $request): JsonResponse
     {
 
-
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $request->user()->platform_id,
@@ -39,7 +38,9 @@ class StatementAPIController extends Controller
         )->toArray();
 
         $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
+        $validated['content_time'] = $this->sanitizeDate($validated['content_time'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
+
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
