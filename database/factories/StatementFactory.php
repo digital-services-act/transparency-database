@@ -6,6 +6,7 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\EuropeanCountriesService;
+use App\Services\EuropeanLanguagesService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -78,6 +79,8 @@ class StatementFactory extends Factory
             'puid' => $this->faker->uuid,
 
             'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, 30)),
+
+            'content_language' => $this->faker->randomElement(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES),
 
             'content_time' => $content_time,
             'application_date' => $application_date,

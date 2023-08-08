@@ -86,6 +86,13 @@
         <x-infoline title="Content Type Other" :content="$statement->content_type_other"></x-infoline>
     @endif
 
+    <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_TIME"
+                :content="$statement->content_time->format('Y-m-d-H')"></x-infoline>
+
+    @if($statement_content_language)
+    <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
+                :content="$statement_content_language"></x-infoline>
+    @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY"
                 :content="Statement::STATEMENT_CATEGORIES[$statement->category]"></x-infoline>
@@ -100,9 +107,6 @@
                 :content="$statement->automated_detection"></x-infoline>
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"
                 :content="$statement->automated_decision"></x-infoline>
-
-    <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_TIME"
-                :content="$statement->content_time->format('Y-m-d-H')"></x-infoline>
 
     <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
                 :content="$statement->application_date->format('Y-m-d-H')"></x-infoline>

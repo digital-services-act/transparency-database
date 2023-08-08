@@ -68,6 +68,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
+                    'content_language'                 =>
+                        [
+                            'type' => 'keyword'
+                        ],
                     'created_at'                       =>
                         [
                             'type' => 'date'
