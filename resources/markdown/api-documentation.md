@@ -88,6 +88,7 @@ Example JSON payload body:
         "ES",
         "DE"
     ],
+    "content_time": "2023-08-08-05",
     "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
@@ -123,6 +124,7 @@ You will also receive a payload with the statement as created in the database:
         "ES",
         "DE"
     ],
+    "content_time": "2023-08-08-05",
     "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
@@ -392,6 +394,16 @@ For European Union (EU) use:
 For European Economic Area (EEA) use:
 
 @php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
+
+### Content Time (content_time)
+
+This is the date and hour that this content was upload or posted. The date needs to take the form of:
+
+```YYYY-MM-DD-HH```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after 2020-01-01.
 
 ### Application Date (application_date)
 
