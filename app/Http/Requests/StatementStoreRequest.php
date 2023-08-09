@@ -63,7 +63,7 @@ class StatementStoreRequest extends FormRequest
 
             'territorial_scope' => ['array', 'nullable', $this->in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
 
-            'content_language' => [$this->in(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES), 'nullable'],
+            'content_language' => [$this->in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
             'content_time' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
             'application_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
