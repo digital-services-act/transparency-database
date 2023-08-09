@@ -99,6 +99,9 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'source.required_unless' => 'The source field is required when source type is a notice submission.',
+            'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD-HH.',
+            'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD-HH.',
+            'end_date.date_format' => 'The end date does not match the format YYYY-MM-DD-HH.',
         ];
     }
 
