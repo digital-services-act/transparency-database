@@ -110,7 +110,7 @@
                  id="content_date"
                  value="{{ $statement->content_date }}"
                  required="true"
-                 placeholder="YYYY-MM-DD-HH"
+                 placeholder="YYYY-MM-DD"
                  help="leading zeroes are required"
 />
 
@@ -212,14 +212,14 @@
                  id="application_date"
                  value="{{ $statement->application_date }}"
                  required="true"
-                 placeholder="YYYY-MM-DD-HH"
+                 placeholder="YYYY-MM-DD"
                  help="leading zeroes are required"
 />
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'"
                  id="end_date"
                  name="end_date"
                  value="{{ $statement->end_date }}"
-                 placeholder="YYYY-MM-DD-HH"
+                 placeholder="YYYY-MM-DD"
                  help="leading zeroes are required"
 />
 <hr>

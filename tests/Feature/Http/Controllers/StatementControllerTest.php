@@ -30,9 +30,9 @@ class StatementControllerTest extends TestCase
         'territorial_scope' => ['BE','FR'],
         'url' => 'https://www.test.com',
         'puid' => 'THX1138',
-        'content_date' => '2023-05-12-02',
-        'application_date' => '2023-05-12-04',
-        'end_date' => '2023-11-02-04',
+        'content_date' => '2023-05-12',
+        'application_date' => '2023-05-12',
+        'end_date' => '2023-11-02',
         'source_type' => 'SOURCE_ARTICLE_16',
         'decision_facts' => 'Facts and circumstances',
         'automated_detection' => 'Yes',
@@ -152,11 +152,11 @@ class StatementControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals(Statement::METHOD_FORM, $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-05-12 04:00:00', (string)$statement->application_date);
+        $this->assertEquals('2023-05-12 00:00:00', (string)$statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertEquals('2023-11-02 04:00:00', (string)$statement->end_date);
+        $this->assertEquals('2023-11-02 00:00:00', (string)$statement->end_date);
         $this->assertInstanceOf(Carbon::class, $statement->end_date);
-        $this->assertEquals('2023-05-12 02:00:00', (string)$statement->content_date);
+        $this->assertEquals('2023-05-12 00:00:00', (string)$statement->content_date);
         $this->assertInstanceOf(Carbon::class, $statement->content_date);
 
         $response->assertRedirect(route('statement.index'));

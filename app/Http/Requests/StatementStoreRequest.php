@@ -65,9 +65,9 @@ class StatementStoreRequest extends FormRequest
 
             'content_language' => [$this->in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
-            'content_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
-            'application_date' => ['required', 'date_format:Y-m-d-H', 'after:2020-01-01'],
-            'end_date' => ['date_format:Y-m-d-H', 'nullable', 'after_or_equal:application_date'],
+            'content_date' => ['required', 'date_format:Y-m-d', 'after:2020-01-01'],
+            'application_date' => ['required', 'date_format:Y-m-d', 'after:2020-01-01'],
+            'end_date' => ['date_format:Y-m-d', 'nullable', 'after_or_equal:application_date'],
 
             'decision_facts' => ['required', 'max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
@@ -98,9 +98,9 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'source.required_unless' => 'The source field is required when source type is a notice submission.',
-            'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD-HH.',
-            'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD-HH.',
-            'end_date.date_format' => 'The end date does not match the format YYYY-MM-DD-HH.',
+            'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',
+            'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD.',
+            'end_date.date_format' => 'The end date does not match the format YYYY-MM-DD.',
         ];
     }
 
