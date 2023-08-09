@@ -414,6 +414,7 @@ class Statement extends Model
      */
     public function getRawKeys($key): mixed
     {
+        if(is_null($this->getRawOriginal($key))) return [];
         $out = null;
 
         // Catch potential bad json here.
