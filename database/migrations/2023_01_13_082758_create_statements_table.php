@@ -57,7 +57,7 @@ class CreateStatementsTable extends Migration
             $table->string('decision_facts', 5000);
 
             $table->enum('source_type', array_keys(Statement::SOURCE_TYPES));
-            $table->string('source', 500)->nullable();
+            $table->string('source_identity', 500)->nullable();
 
             $table->enum('automated_detection', Statement::AUTOMATED_DETECTIONS);
             $table->enum('automated_decision', array_keys(Statement::AUTOMATED_DECISIONS));

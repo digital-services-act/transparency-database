@@ -32,7 +32,7 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_SOURCE_TYPE = 'Information source';
-    public const LABEL_STATEMENT_SOURCE = 'Notifier';
+    public const LABEL_STATEMENT_SOURCE_IDENTITY = 'Source identity';
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
@@ -305,7 +305,7 @@ class Statement extends Model
             'incompatible_content_ground' => $this->incompatible_content_ground,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
             'source_type' => $this->source_type,
-            'source' => $this->source,
+            'source_identity' => $this->source_identity,
             'decision_facts' => $this->decision_facts,
             'automated_detection' => $this->automated_detection === self::AUTOMATED_DETECTION_YES,
             'automated_decision' => $this->automated_decision,

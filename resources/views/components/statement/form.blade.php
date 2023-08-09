@@ -228,8 +228,8 @@
               :options="$options['source_types']"
               required="true"/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_SOURCE" name="source"
-                 id="source"/>
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_SOURCE_IDENTITY" name="source_identity"
+                 id="source_identity"/>
 
 <hr>
 
@@ -305,9 +305,9 @@
             show('div_content_type_other');
         }
 
-        hide('div_source');
+        hide('div_source_identity');
         if (ge('source_type').value && ge('source_type').value !== 'SOURCE_VOLUNTARY') {
-            show('div_source');
+            show('div_source_identity');
         }
 
     }

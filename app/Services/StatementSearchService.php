@@ -138,7 +138,7 @@ class StatementSearchService
             'incompatible_content_explanation',
             'decision_facts',
             'content_type_other',
-            'source',
+            'source_identity',
             'url',
             'uuid',
             'puid',

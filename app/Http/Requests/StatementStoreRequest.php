@@ -32,7 +32,7 @@ class StatementStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'decision_visibility' => ['array',$this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
+            'decision_visibility' => ['array', $this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
 
             'decision_visibility_other' => ['max:500',
                 Rule::requiredIf($this->checkForDecisionVisibilityOther()),
@@ -48,7 +48,7 @@ class StatementStoreRequest extends FormRequest
 
 
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
-            'decision_ground_reference_url' => ['url','nullable','max:500'],
+            'decision_ground_reference_url' => ['url', 'nullable', 'max:500'],
             'illegal_content_legal_ground' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:500'],
             'illegal_content_explanation' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:2000'],
             'incompatible_content_ground' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'max:500'],
@@ -75,6 +75,9 @@ class StatementStoreRequest extends FormRequest
 
             'decision_facts' => ['required', 'max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
+            'source_identity' => ['max:500',
+                Rule::excludeIf($this->checkForSourceVoluntary())
+            ],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(array_keys(Statement::AUTOMATED_DECISIONS))],
             'puid' => ['required', 'max:500'],
@@ -101,7 +104,6 @@ class StatementStoreRequest extends FormRequest
             'illegal_content_explanation.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
-            'source.required_unless' => 'The source field is required when source type is a notice submission.',
             'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',
             'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD.',
             'end_date.date_format' => 'The end date does not match the format YYYY-MM-DD.',
@@ -119,6 +121,12 @@ class StatementStoreRequest extends FormRequest
     {
         $check = (array)$this->get('decision_visibility', []);
         return in_array('DECISION_VISIBILITY_OTHER', $check);
+    }
+
+    private function checkForSourceVoluntary(): bool
+    {
+        $check = (array)$this->get('source_type', []);
+        return in_array('SOURCE_VOLUNTARY', $check);
     }
 
 }

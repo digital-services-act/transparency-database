@@ -106,7 +106,7 @@
                 :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-infoline>
 
     @if($statement->source_type !== 'SOURCE_VOLUNTARY')
-        <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE" :content="$statement->source"></x-infoline>
+        <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_IDENTITY" :content="$statement->source_identity"></x-infoline>
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"
