@@ -426,7 +426,7 @@ Ex,
 
 @php echo '"' . implode('", "', \App\Services\EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES) . '"'; @endphp
 
-### Content Time (content_date)
+### Content Date (content_date)
 
 This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
 
