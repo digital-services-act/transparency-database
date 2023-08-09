@@ -69,7 +69,7 @@ Example JSON payload body:
 
 ```json
 {
-    "decision_visibility": "DECISION_VISIBILITY_CONTENT_DISABLED",
+    "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
@@ -108,7 +108,7 @@ You will also receive a payload with the statement as created in the database:
 
 ```json
 {
-    "decision_visibility": "DECISION_VISIBILITY_CONTENT_DISABLED",
+    "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
@@ -132,8 +132,10 @@ You will also receive a payload with the statement as created in the database:
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
     "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
+    "end_date": null,
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
+    "platform_name": "...",
     "created_at": "2023-08-08 08:08:08",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "self": ".... api/v1/statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225"
@@ -171,7 +173,7 @@ recipient of the service.
 
 This attribute is mandatory only if the following fields are empty: decision_monetary, decision_provision and decision_account
 
-The value provided must be one of the following:
+The value provided must be an array with at least one of the following:
 
 <ul class='ecl-unordered-list'>
 @php

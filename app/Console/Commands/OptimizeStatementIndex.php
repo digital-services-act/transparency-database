@@ -102,7 +102,7 @@ class OptimizeStatementIndex extends Command
                         ],
                     'decision_visibility'              =>
                         [
-                            'type' => 'keyword'
+                            'type' => 'text'
                         ],
                     'id'                               =>
                         [

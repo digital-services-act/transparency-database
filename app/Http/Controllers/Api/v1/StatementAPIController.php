@@ -44,6 +44,11 @@ class StatementAPIController extends Controller
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
+        if(array_key_exists('decision_visibility',$validated)){
+            $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
+            sort($validated['decision_visibility']);
+        }
+
 
 
         try {

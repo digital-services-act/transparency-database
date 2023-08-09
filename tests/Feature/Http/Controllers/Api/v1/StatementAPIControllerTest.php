@@ -29,7 +29,7 @@ class StatementAPIControllerTest extends TestCase
         parent::setUp();
 
         $this->required_fields = [
-            'decision_visibility' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
             'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
             'illegal_content_legal_ground' => 'foo',

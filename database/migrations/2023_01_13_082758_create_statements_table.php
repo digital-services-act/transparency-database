@@ -19,7 +19,7 @@ class CreateStatementsTable extends Migration
 
             $table->string('uuid', 36)->index('uuidindex');
 
-            $table->enum('decision_visibility', array_keys(Statement::DECISION_VISIBILITIES))->nullable();
+            $table->text('decision_visibility')->nullable();
             $table->string('decision_visibility_other', 500)->nullable();
 
             $table->enum('decision_monetary', array_keys(Statement::DECISION_MONETARIES))->nullable();

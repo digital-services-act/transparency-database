@@ -122,8 +122,11 @@ class StatementController extends Controller
     {
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         $statement_content_types = Statement::getEnumValues($statement->content_type);
+
         $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
         $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
+
+        $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
 
         sort($statement_territorial_scope_country_names);
 
@@ -132,7 +135,8 @@ class StatementController extends Controller
             'statement_territorial_scope_country_names',
             'statement_content_types',
             'statement_content_language',
-            'statement_additional_categories'
+            'statement_additional_categories',
+            'statement_visibility_decisions'
         ]));
 
     }
@@ -160,6 +164,10 @@ class StatementController extends Controller
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
+        if(array_key_exists('decision_visibility',$validated)){
+            $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
+            sort($validated['decision_visibility']);
+        }
 
         try {
             Statement::create($validated);
