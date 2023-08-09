@@ -406,7 +406,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertEquals('The application date does not match the format Y-m-d-H.', $response->json('message'));
+        $this->assertEquals('The application date does not match the format YYYY-MM-DD-HH.', $response->json('message'));
     }
 
     /**
