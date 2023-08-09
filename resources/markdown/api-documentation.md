@@ -89,8 +89,8 @@ Example JSON payload body:
         "DE"
     ],
     "content_language": "EN",
-    "content_date": "2023-08-08-05",
-    "application_date": "2023-08-08-08",
+    "content_date": "2023-08-08",
+    "application_date": "2023-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
@@ -126,8 +126,8 @@ You will also receive a payload with the statement as created in the database:
         "DE"
     ],
     "content_language": "EN",
-    "content_date": "2023-08-08-05",
-    "application_date": "2023-08-08-08",
+    "content_date": "2023-08-08",
+    "application_date": "2023-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
@@ -430,7 +430,7 @@ Ex,
 
 This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
 
-```YYYY-MM-DD-HH```
+```YYYY-MM-DD```
 
 The day, month, and hour have leading zeroes.
 
@@ -440,7 +440,7 @@ The date must be after 2020-01-01.
 
 This is the date and hour that this decision starts from. The date needs to take the form of:
 
-```YYYY-MM-DD-HH```
+```YYYY-MM-DD```
 
 The day, month, and hour have leading zeroes.
 
@@ -452,7 +452,7 @@ This is the date and time that this decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
-```YYYY-MM-DD-HH```
+```YYYY-MM-DD```
 
 The day, month, and hour have leading zeroes.
 

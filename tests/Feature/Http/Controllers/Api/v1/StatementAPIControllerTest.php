@@ -42,8 +42,8 @@ class StatementAPIControllerTest extends TestCase
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
-            'application_date' => '2023-05-18-07',
-            'content_date' => '2023-05-18-05'
+            'application_date' => '2023-05-18',
+            'content_date' => '2023-05-18'
         ];
     }
 
@@ -108,8 +108,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+            'application_date' => '2023-12-20',
+            'end_date' => '2023-12-25',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -137,8 +137,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+            'application_date' => '2023-12-20',
+            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'EN'
         ]);
@@ -170,8 +170,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+            'application_date' => '2023-12-20',
+            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'VI'
         ]);
@@ -203,8 +203,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+            'application_date' => '2023-12-20',
+            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'XX'
         ]);
@@ -226,8 +226,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+            'application_date' => '2023-12-20',
+            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'en'
         ]);
@@ -249,8 +249,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+            'application_date' => '2023-12-20',
+            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS'
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
@@ -300,8 +300,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-07-15-06',
-            'end_date' => '2023-07-21-23',
+            'application_date' => '2023-07-15',
+            'end_date' => '2023-07-21',
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -348,8 +348,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
 
-        $application_date_in = date('Y-m-d-H');
-        $end_date_in = date('Y-m-d-H', time() + (7 * 24 * 60 * 60));
+        $application_date_in = date('Y-m-d');
+        $end_date_in = date('Y-m-d', time() + (7 * 24 * 60 * 60));
 
         $fields = array_merge($this->required_fields, [
             'application_date' => $application_date_in,
@@ -406,7 +406,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertEquals('The application date does not match the format YYYY-MM-DD-HH.', $response->json('message'));
+        $this->assertEquals('The application date does not match the format YYYY-MM-DD.', $response->json('message'));
     }
 
     /**
