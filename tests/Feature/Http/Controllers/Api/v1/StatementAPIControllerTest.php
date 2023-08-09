@@ -43,7 +43,7 @@ class StatementAPIControllerTest extends TestCase
             'automated_detection' => 'No',
             'automated_decision' => 'No',
             'application_date' => '2023-05-18-07',
-            'content_time' => '2023-05-18-05'
+            'content_date' => '2023-05-18-05'
         ];
     }
 

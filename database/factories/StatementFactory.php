@@ -29,16 +29,16 @@ class StatementFactory extends Factory
     {
 
         $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
-        $content_time = $create_date->clone();
+        $content_date = $create_date->clone();
         $application_date = $create_date->clone();
         $end_date = $create_date->clone();
 
-        $content_time->subDays(5);
+        $content_date->subDays(5);
         $application_date->subDays(4);
         $end_date->addDays(86);
 
         $create_date = $create_date->format('Y-n-j') . ' 00:00:00';
-        $content_time = $content_time->format('Y-n-j') . ' 00:00:00';
+        $content_date = $content_date->format('Y-n-j') . ' 00:00:00';
         $application_date = $application_date->format('Y-n-j') . ' 00:00:00';
         $end_date = $end_date->format('Y-n-j') . ' 00:00:00';
 
@@ -82,7 +82,7 @@ class StatementFactory extends Factory
 
             'content_language' => $this->faker->randomElement(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES),
 
-            'content_time' => $content_time,
+            'content_date' => $content_date,
             'application_date' => $application_date,
             'end_date' => $end_date,
 

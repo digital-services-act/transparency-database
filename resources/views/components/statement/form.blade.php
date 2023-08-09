@@ -105,10 +105,10 @@
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="content_type_other"
                  id="content_type_other" required="true"/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_CONTENT_TIME"
-                 name="content_time"
-                 id="content_time"
-                 value="{{ $statement->content_time }}"
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_CONTENT_DATE"
+                 name="content_date"
+                 id="content_date"
+                 value="{{ $statement->content_date }}"
                  required="true"
                  placeholder="YYYY-MM-DD-HH"
                  help="leading zeroes are required"

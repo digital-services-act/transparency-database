@@ -89,7 +89,7 @@ Example JSON payload body:
         "DE"
     ],
     "content_language": "EN",
-    "content_time": "2023-08-08-05",
+    "content_date": "2023-08-08-05",
     "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
@@ -126,7 +126,7 @@ You will also receive a payload with the statement as created in the database:
         "DE"
     ],
     "content_language": "EN",
-    "content_time": "2023-08-08-05",
+    "content_date": "2023-08-08-05",
     "application_date": "2023-08-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
@@ -426,7 +426,7 @@ Ex,
 
 @php echo '"' . implode('", "', \App\Services\EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES) . '"'; @endphp
 
-### Content Time (content_time)
+### Content Date (content_date)
 
 This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
 
