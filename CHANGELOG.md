@@ -2,12 +2,15 @@
 
 ##  [v1.0] - 2023-08-16
 ### Added
-- Added values to the API field: 'content_type'
-  - content_type_app
-  - content_type_product
-  - content_type_audio
-  - content_type_synthetic_media
-- Added a new API field: 'category_addition'
+- New API field: 'category_addition'
+- New values to the API field: 'content_type'
+  - CONTENT_TYPE_APP
+  - CONTENT_TYPE_PRODUCT
+  - CONTENT_TYPE_AUDIO
+  - CONTENT_TYPE_SYNTHETIC_MEDIA
+- New value to the API field: 'source_type'
+  - SOURCE_OTHER
+
  
 ### Changed
 - Renamed the API field: start_date to application_date
