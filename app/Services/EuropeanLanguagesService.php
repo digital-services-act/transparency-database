@@ -31,7 +31,7 @@ class EuropeanLanguagesService
         'SV',
     ];
 
-    private array $all_language_codes = [
+    public const ALL_LANGUAGES = [
         'AB' => 'Abkhazian',
         'AA' => 'Afar',
         'AF' => 'Afrikaans',
@@ -206,7 +206,7 @@ class EuropeanLanguagesService
         'UZ' => 'Uzbek',
         'VE' => 'Venda',
         'VI' => 'Vietnamese',
-        'VO' => 'Volap_k',
+        'VO' => 'Volapük',
         'WA' => 'Walloon',
         'CY' => 'Welsh',
         'FY' => 'Western Frisian',
@@ -221,7 +221,7 @@ class EuropeanLanguagesService
     public function getName(string $iso) : string|bool
     {
         $iso = strtoupper($iso);
-        return $this->all_language_codes[$iso] ?? false;
+        return self::ALL_LANGUAGES[$iso] ?? false;
     }
 
     public function getEuropeanLanguages()
@@ -236,7 +236,7 @@ class EuropeanLanguagesService
     public function getNonEuropeanLanguages() : array
     {
         $out = [];
-        foreach ($this->all_language_codes as $iso => $name)
+        foreach (self::ALL_LANGUAGES as $iso => $name)
         {
             if (!in_array($iso, self::EUROPEAN_LANGUAGE_CODES)) {
                 $out[$iso] = $name;
@@ -262,6 +262,6 @@ class EuropeanLanguagesService
         {
             return $this->getEuropeanLanguages() + $this->getNonEuropeanLanguages();
         }
-        return $this->all_language_codes;
+        return self::ALL_LANGUAGES;
     }
 }

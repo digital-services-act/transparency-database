@@ -163,6 +163,39 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
+    public function api_statement_content_language_can_be_non_european()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20-05',
+            'end_date' => '2023-12-25-00',
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
+            'content_language' => 'VI'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertNotNull($statement->account_type);
+        $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
+        $this->assertNotNull($statement->content_type);
+        $this->assertEquals('VI', $statement->content_language);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
     public function api_statement_content_language_must_be_valid()
     {
         $this->setUpFullySeededDatabase();
@@ -174,6 +207,29 @@ class StatementAPIControllerTest extends TestCase
             'end_date' => '2023-12-25-00',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'XX'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_content_language_must_be_uppercase()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20-05',
+            'end_date' => '2023-12-25-00',
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
+            'content_language' => 'en'
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
