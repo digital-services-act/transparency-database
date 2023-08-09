@@ -102,14 +102,15 @@
 
     <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_TYPE"
                 :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-infoline>
-    @if($statement->source_type != 'SOURCE_VOLUNTARY')
+
+    @if($statement->source_type !== 'SOURCE_VOLUNTARY')
         <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE" :content="$statement->source"></x-infoline>
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"
                 :content="$statement->automated_detection"></x-infoline>
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"
-                :content="$statement->automated_decision"></x-infoline>
+                :content="Statement::AUTOMATED_DECISIONS[$statement->automated_decision]"></x-infoline>
 
     <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
                 :content="$statement->application_date->format('Y-m-d-H')"></x-infoline>

@@ -36,7 +36,7 @@ class StatementControllerTest extends TestCase
         'source_type' => 'SOURCE_ARTICLE_16',
         'decision_facts' => 'Facts and circumstances',
         'automated_detection' => 'Yes',
-        'automated_decision' => 'Yes'
+        'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY'
     ];
 
     /**

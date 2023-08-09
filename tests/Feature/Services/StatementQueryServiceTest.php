@@ -52,10 +52,11 @@ class StatementQueryServiceTest extends TestCase
     public function it_filters_on_automated_decision()
     {
         $this->setUpFullySeededDatabase(); // 10 statements
-        $automated_count = $this->statement_query_service->query(['automated_decision' => ['Yes']])->count();
-        $manual_count = $this->statement_query_service->query(['automated_decision' => ['No']])->count();
+        $fully_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_FULLY']])->count();
+        $partially_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_PARTIALLY']])->count();
+        $not_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_NOT_AUTOMATED']])->count();
 
-        $total = $automated_count + $manual_count;
+        $total = $fully_count + $partially_count + $not_count;
 
         $this->assertEquals(10, $total);
     }

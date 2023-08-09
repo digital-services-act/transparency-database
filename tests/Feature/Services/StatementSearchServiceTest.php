@@ -65,20 +65,13 @@ class StatementSearchServiceTest extends TestCase
     public function it_filters_on_automatic_decision()
     {
         $filters = [
-            'automated_decision' => [Statement::AUTOMATED_DECISION_YES]
+            'automated_decision' => array_keys(Statement::AUTOMATED_DECISIONS),
         ];
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(automated_decision:true)', $query);
+        $this->assertEquals('(automated_decision:AUTOMATED_DECISION_FULLY OR automated_decision:AUTOMATED_DECISION_PARTIALLY OR automated_decision:AUTOMATED_DECISION_NOT_AUTOMATED)', $query);
 
-        $filters = [
-            'automated_decision' => [Statement::AUTOMATED_DECISION_YES, Statement::AUTOMATED_DECISION_NO]
-        ];
-        $search = $this->statement_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search->query;
-        $this->assertEquals('(automated_decision:true OR automated_decision:false)', $query);
     }
 
     /**

@@ -75,11 +75,13 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using other automated means?';
-    public const AUTOMATED_DECISION_YES = 'Yes';
-    public const AUTOMATED_DECISION_NO = 'No';
+    public const AUTOMATED_DECISION_FULLY = 'Fully automated';
+    public const AUTOMATED_DECISION_PARTIALLY = 'Partially automated';
+    public const AUTOMATED_DECISION_NOT_AUTOMATED = 'Not Automated';
     public const AUTOMATED_DECISIONS = [
-        self::AUTOMATED_DECISION_YES,
-        self::AUTOMATED_DECISION_NO,
+        'AUTOMATED_DECISION_FULLY' => self::AUTOMATED_DECISION_FULLY,
+        'AUTOMATED_DECISION_PARTIALLY' => self::AUTOMATED_DECISION_PARTIALLY,
+        'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED
     ];
 
 
@@ -298,8 +300,8 @@ class Statement extends Model
             'source_type' => $this->source_type,
             'source' => $this->source,
             'decision_facts' => $this->decision_facts,
-            'automated_detection' => $this->automated_detection === self::AUTOMATED_DECISION_YES,
-            'automated_decision' => $this->automated_decision === self::AUTOMATED_DECISION_YES,
+            'automated_detection' => $this->automated_detection === self::AUTOMATED_DETECTION_YES,
+            'automated_decision' => $this->automated_decision,
             'category' => $this->category,
             'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
@@ -375,7 +377,6 @@ class Statement extends Model
     {
         return $this->getRawKeys('category_addition');
     }
-
 
     // Function to convert enum keys to their corresponding values
     public static function getEnumValues(array $keys): array

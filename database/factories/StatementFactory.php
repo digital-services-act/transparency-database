@@ -92,7 +92,7 @@ class StatementFactory extends Factory
             'decision_facts' => $this->faker->realText(1000),
 
             'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
-            'automated_decision' => $this->faker->randomElement(Statement::AUTOMATED_DECISIONS),
+            'automated_decision' => $this->faker->randomElement(array_keys(Statement::AUTOMATED_DECISIONS)),
 
             'platform_id' => $user->platform_id,
             'user_id' => $user->id,

@@ -71,9 +71,8 @@ class StatementStoreRequest extends FormRequest
 
             'decision_facts' => ['required', 'max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
-            'source' => ['max:500'],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
-            'automated_decision' => ['required', $this->in(Statement::AUTOMATED_DECISIONS)],
+            'automated_decision' => ['required', $this->in(array_keys(Statement::AUTOMATED_DECISIONS))],
             'puid' => ['required', 'max:500'],
         ];
     }

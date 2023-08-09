@@ -41,7 +41,7 @@ class StatementAPIControllerTest extends TestCase
             'decision_facts' => 'decision and facts',
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
-            'automated_decision' => 'No',
+            'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
             'application_date' => '2023-05-18-07',
             'content_date' => '2023-05-18-05'
         ];
