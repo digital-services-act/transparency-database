@@ -45,6 +45,7 @@ class StatementAPIController extends Controller
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
 
+
         try {
             $statement = Statement::create($validated);
         } catch (QueryException $e) {

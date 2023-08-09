@@ -124,6 +124,7 @@ class StatementController extends Controller
         $statement_content_types = Statement::getEnumValues($statement->content_type);
         $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
         $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
+
         sort($statement_territorial_scope_country_names);
 
         return view('statement.show', compact([
@@ -195,7 +196,7 @@ class StatementController extends Controller
         $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
 
         $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
-        $automated_decisions = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DECISIONS);
+        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
         $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){

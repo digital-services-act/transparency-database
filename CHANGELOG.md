@@ -3,12 +3,14 @@
 ##  [v1.0] - 2023-08-16
 ### Added
 - New API field: 'category_addition'
-- New values to the API field: 'content_type'
+- New values for the API field: 'content_type'
   - CONTENT_TYPE_APP
   - CONTENT_TYPE_PRODUCT
   - CONTENT_TYPE_AUDIO
   - CONTENT_TYPE_SYNTHETIC_MEDIA
-- New value to the API field: 'source_type'
+- New value for the API field: 'source_type'
+  - SOURCE_OTHER
+- New values for the API field: 'automated_decision'
   - SOURCE_OTHER
 
  

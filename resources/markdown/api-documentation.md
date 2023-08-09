@@ -77,7 +77,7 @@ Example JSON payload body:
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
     "decision_ground_reference_url": "https://www.anurl.com",
     "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
-    "category": "STATEMENT_CATEGORY_FRAUD",
+    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
     "illegal_content_legal_ground": "illegal content legal grounds",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content grounds",
@@ -94,7 +94,7 @@ Example JSON payload body:
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
-    "automated_decision": "No",
+    "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
     "puid": "TK421"
 }
 ```
@@ -119,7 +119,7 @@ You will also receive a payload with the statement as created in the database:
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
     "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
-    "category": "STATEMENT_CATEGORY_FRAUD",
+    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
     "territorial_scope": [
         "PT",
         "ES",
@@ -131,7 +131,7 @@ You will also receive a payload with the statement as created in the database:
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
-    "automated_decision": "No",
+    "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "created_at": "2023-08-08 08:08:08",

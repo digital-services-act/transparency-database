@@ -134,7 +134,7 @@ class StatementQueryService
      */
     private function applyAutomatedDecisionFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DECISIONS);
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::AUTOMATED_DECISIONS));
         if ($filter_values_validated) {
             $query->whereIn('automated_decision', $filter_values_validated);
         }

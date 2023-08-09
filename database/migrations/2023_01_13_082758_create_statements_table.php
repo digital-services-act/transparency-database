@@ -60,7 +60,7 @@ class CreateStatementsTable extends Migration
             $table->string('source', 500)->nullable();
 
             $table->enum('automated_detection', Statement::AUTOMATED_DETECTIONS);
-            $table->enum('automated_decision', Statement::AUTOMATED_DECISIONS);
+            $table->enum('automated_decision', array_keys(Statement::AUTOMATED_DECISIONS));
 
             $table->integer('user_id');
             $table->integer('platform_id');

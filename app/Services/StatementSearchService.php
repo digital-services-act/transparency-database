@@ -281,13 +281,14 @@ class StatementSearchService
 
     private function applyAutomatedDecisionFilter(array $filter_values)
     {
-        $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DECISIONS);
+        $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         $ors = [];
         foreach ($filter_values as $filter_value)
         {
-            $ors[] = 'automated_decision:' . ( $filter_value === Statement::AUTOMATED_DETECTION_YES ? 'true' : 'false' );
+            $ors[] = 'automated_decision:'.$filter_value;
         }
         return implode(' OR ', $ors);
+
     }
 
     private function applyPlatformIdFilter(array $filter_values)

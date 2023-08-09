@@ -50,7 +50,7 @@ class OptimizeStatementIndex extends Command
                 [
                     'automated_decision'               =>
                         [
-                            'type' => 'boolean'
+                            'type' => 'keyword'
                         ],
                     'automated_detection'              =>
                         [
