@@ -164,7 +164,9 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
         if ($filter_values_validated) {
-            $query->whereIn('decision_visibility', $filter_value);
+            foreach ($filter_values_validated as $decision_visibility) {
+                $query->where('decision_visibility', 'LIKE', '%"' . $decision_visibility . '"%');
+            }
         }
     }
 

@@ -3,13 +3,13 @@
 
 <h4>Decision Taken (Please select at least one item from the available options)</h4>
 
-<x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
+<x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
               name="decision_visibility"
               id="decision_visibility"
               :options="$options['decision_visibilities']"
-              default="{{ $statement->decision_visibility }}"
-              justlabel="true"
-              :allow_null="true"
+              select_all="All"
+              select_item="Select visibility decision(s)"
+              enter_keyword="Enter a visibility decision"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
@@ -288,9 +288,11 @@
         }
 
         hide('div_decision_visibility_other');
-        if (ge('decision_visibility').value === 'DECISION_VISIBILITY_OTHER') {
+        var selected_visibility_decisions = getSelectValues(ge('decision_visibility'));
+        if (selected_visibility_decisions.includes('DECISION_VISIBILITY_OTHER')) {
             show('div_decision_visibility_other');
         }
+
 
         hide('div_decision_monetary_other');
         if (ge('decision_monetary').value === 'DECISION_MONETARY_OTHER') {
@@ -328,6 +330,7 @@
     ge('decision_visibility').addEventListener('change', initFields);
     ge('decision_monetary').addEventListener('change', initFields);
     ge('content_type').addEventListener('change', initFields);
+    ge('decision_visibility').addEventListener('change', initFields);
     ge('source_type').addEventListener('change', initFields);
 
     // Return an array of the selected opion values

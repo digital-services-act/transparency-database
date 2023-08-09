@@ -122,11 +122,17 @@ class Statement extends Model
     public const DECISION_VISIBILITY_CONTENT_REMOVED = 'Removal of content';
     public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
+    public const DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED = 'Age restricted content';
+    public const DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED = 'Restricting interaction to content';
+    public const DECISION_VISIBILITY_CONTENT_LABELLED = 'Labelled content';
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
     public const DECISION_VISIBILITIES = [
         'DECISION_VISIBILITY_CONTENT_REMOVED' => self::DECISION_VISIBILITY_CONTENT_REMOVED,
         'DECISION_VISIBILITY_CONTENT_DISABLED' => self::DECISION_VISIBILITY_CONTENT_DISABLED,
         'DECISION_VISIBILITY_CONTENT_DEMOTED' => self::DECISION_VISIBILITY_CONTENT_DEMOTED,
+        'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED,
+        'DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED,
+        'DECISION_VISIBILITY_CONTENT_LABELLED' => self::DECISION_VISIBILITY_CONTENT_LABELLED,
         'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER
     ];
 
@@ -239,6 +245,7 @@ class Statement extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'territorial_scope' => 'array',
         'content_type' => 'array',
+        'decision_visibility' => 'array',
         'category_addition' => 'array'
     ];
 
@@ -371,6 +378,11 @@ class Statement extends Model
     public function getContentTypeAttribute($value)
     {
         return $this->getRawKeys('content_type');
+    }
+
+    public function getDecisionVisibilityAttribute($value)
+    {
+        return $this->getRawKeys('decision_visibility');
     }
 
     public function getCategoryAdditionAttribute($value)

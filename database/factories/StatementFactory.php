@@ -49,7 +49,7 @@ class StatementFactory extends Factory
 
         return [
 
-            'decision_visibility' => $this->faker->randomElement(array_keys(Statement::DECISION_VISIBILITIES)),
+            'decision_visibility' => $this->faker->randomElements(array_keys(Statement::DECISION_VISIBILITIES)),
             'decision_visibility_other' => $this->faker->text(100),
 
             'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),

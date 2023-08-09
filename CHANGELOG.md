@@ -3,15 +3,22 @@
 ##  [v1.0] - 2023-08-16
 ### Added
 - New API field: 'category_addition'
-- New values for the API field: 'content_type'
+- New extra values for the API field: 'content_type'
   - CONTENT_TYPE_APP
   - CONTENT_TYPE_PRODUCT
   - CONTENT_TYPE_AUDIO
   - CONTENT_TYPE_SYNTHETIC_MEDIA
-- New value for the API field: 'source_type'
+- New extra value for the API field: 'source_type'
   - SOURCE_OTHER
 - New values for the API field: 'automated_decision'
-  - SOURCE_OTHER
+  - AUTOMATED_DECISION_FULLY
+  - AUTOMATED_DECISION_PARTIALLY
+  - AUTOMATED_DECISION_NOT_AUTOMATED
+- New values for the API field: 'decision_visibility'
+  - DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED
+  - DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED
+  - DECISION_VISIBILITY_CONTENT_LABELLED
+
 
  
 ### Changed
@@ -20,6 +27,7 @@
 - Modified the API field: 'source' is now optional
 - Modified the API field: 'incompatible_content_illegal' is now optional
 - Modified the API field: 'content_type' is now an array
+- Modified the API field: 'decision_visibility' is now an array
 - Modified the values for API field 'category'
   - STATEMENT_CATEGORY_ANIMAL_WELFARE
   - STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS

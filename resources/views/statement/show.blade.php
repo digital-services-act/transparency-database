@@ -21,10 +21,12 @@
 
     @if(!is_null($statement->decision_visibility))
         <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
-                    :content="Statement::DECISION_VISIBILITIES[$statement->decision_visibility]"></x-infoline>
-        @if($statement->decision_visibility == 'DECISION_VISIBILITY_OTHER')
+                    content="{{ implode(', ',$statement_visibility_decisions) }}"></x-infoline>
+
+        @if(in_array('DECISION_VISIBILITY_OTHER',$statement->decision_visibility))
             <x-infoline title="" :content="$statement->decision_visibility_other"></x-infoline>
         @endif
+
     @endif
 
     @if(!is_null($statement->decision_monetary))
@@ -56,8 +58,8 @@
                 :content="Statement::DECISION_GROUNDS[$statement->decision_ground]"></x-infoline>
 
     @if(!is_null($statement->decision_account))
-    <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL"
-                :content="$statement->decision_ground_reference_url"></x-infoline>
+        <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL"
+                    :content="$statement->decision_ground_reference_url"></x-infoline>
     @endif
 
     @if($statement->decision_ground == 'DECISION_GROUND_ILLEGAL_CONTENT')
@@ -90,8 +92,8 @@
                 :content="$statement->content_date->format('Y-m-d')"></x-infoline>
 
     @if($statement_content_language)
-    <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
-                :content="$statement_content_language"></x-infoline>
+        <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
+                    :content="$statement_content_language"></x-infoline>
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY"
