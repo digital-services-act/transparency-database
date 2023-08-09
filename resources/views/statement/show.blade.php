@@ -86,8 +86,8 @@
         <x-infoline title="Content Type Other" :content="$statement->content_type_other"></x-infoline>
     @endif
 
-    <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_TIME"
-                :content="$statement->content_time->format('Y-m-d-H')"></x-infoline>
+    <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_DATE"
+                :content="$statement->content_date->format('Y-m-d-H')"></x-infoline>
 
     @if($statement_content_language)
     <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"

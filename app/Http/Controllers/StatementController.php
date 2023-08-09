@@ -153,7 +153,7 @@ class StatementController extends Controller
         ])->toArray();
 
         $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
-        $validated['content_time'] = $this->sanitizeDate($validated['content_time'] ?? null);
+        $validated['content_date'] = $this->sanitizeDate($validated['content_date'] ?? null);
         $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
 
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);

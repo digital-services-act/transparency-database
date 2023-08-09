@@ -49,7 +49,7 @@ class CreateStatementsTable extends Migration
             $table->string('territorial_scope', 255)->nullable();
 
             $table->string('content_language', 2)->nullable();
-            $table->timestamp('content_time');
+            $table->timestamp('content_date');
 
             $table->timestamp('application_date');
             $table->timestamp('end_date')->nullable();

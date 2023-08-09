@@ -206,7 +206,7 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
-    public const LABEL_STATEMENT_CONTENT_TIME = 'When the content was posted or uploaded';
+    public const LABEL_STATEMENT_CONTENT_DATE = 'When the content was posted or uploaded';
     public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
@@ -231,7 +231,7 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
-        'content_time' => 'datetime:Y-m-d-H',
+        'content_date' => 'datetime:Y-m-d-H',
         'application_date' => 'datetime:Y-m-d-H',
         'end_date' => 'datetime:Y-m-d-H',
         'created_at' => 'datetime:Y-m-d H:i:s',
