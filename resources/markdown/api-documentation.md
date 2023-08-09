@@ -489,8 +489,19 @@ This indicates to us that decision taken in respect of automatically detected me
 
 ### Automated Decision (automated_decision)
 
-This is a required attribute and it must be in the form "Yes" or "No".
-This indicates to us that decision carried out automatically.
+This is a required attribute and it must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::AUTOMATED_DECISIONS as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 
 ### Platform Unique Identifier (puid)
 
