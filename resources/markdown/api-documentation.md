@@ -478,9 +478,9 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Source/Notifier (source)
+### Source Identity (source_identity)
 
-This is an optional field to describe the source/notifier if needed.
+This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type' is set to 'SOURCE_VOLUNTARY'  
 
 Limited to 500 characters.
 

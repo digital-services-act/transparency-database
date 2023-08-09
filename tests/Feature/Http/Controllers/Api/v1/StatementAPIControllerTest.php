@@ -37,7 +37,7 @@ class StatementAPIControllerTest extends TestCase
             'puid' => 'TK421',
             'territorial_scope' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
-            'source' => 'foo',
+            'source_identity' => 'foo',
             'decision_facts' => 'decision and facts',
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
@@ -66,6 +66,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
         $this->assertEquals($this->statement->uuid, $response->json('uuid'));
+        $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
     }
 
     /**
@@ -646,6 +647,53 @@ class StatementAPIControllerTest extends TestCase
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->content_type);
         $this->assertNull($statement->content_type_other);
+    }
+
+
+    /**
+     * @test
+     */
+    public function store_should_save_source_identity()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'source_type' => 'SOURCE_OTHER',
+            'source_identity' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->source_type);
+        $this->assertNotNull($statement->source_identity);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_not_save_source_identity()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'source_type' => 'SOURCE_VOLUNTARY',
+            'source_identity' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->source_type);
+        $this->assertNull($statement->source_identity);
     }
 
 }

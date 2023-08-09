@@ -128,7 +128,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'long',
                         ],
-                    'source'                           =>
+                    'source_identity'                           =>
                         [
                             'type' => 'text'
                         ],

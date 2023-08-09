@@ -87,7 +87,7 @@ class StatementFactory extends Factory
             'end_date' => $end_date,
 
             'source_type' => $this->faker->randomElement(array_keys(Statement::SOURCE_TYPES)),
-            'source' => $this->faker->text(100),
+            'source_identity' => $this->faker->text(100),
 
             'decision_facts' => $this->faker->realText(1000),
 

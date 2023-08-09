@@ -24,7 +24,8 @@
 ### Changed
 - Renamed the API field: start_date to application_date
 - Renamed the API field: countries_list to territorial_scope
-- Modified the API field: 'source' is now optional
+- Renamed the API field: 'source' to 'source_identity'
+- Modified the API field: 'source_identity' is now optional
 - Modified the API field: 'incompatible_content_illegal' is now optional
 - Modified the API field: 'content_type' is now an array
 - Modified the API field: 'decision_visibility' is now an array
@@ -43,6 +44,7 @@
   - STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE
   - STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS
   - STATEMENT_CATEGORY_VIOLENCE
+- 
 
 
 ### Deleted
