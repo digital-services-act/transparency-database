@@ -54,6 +54,11 @@ class CreateStatementsTable extends Migration
             $table->timestamp('application_date');
             $table->timestamp('end_date')->nullable();
 
+            $table->timestamp('end_date_visibility_restriction')->nullable();
+            $table->timestamp('end_date_monetary_restriction')->nullable();
+            $table->timestamp('end_date_service_restriction')->nullable();
+            $table->timestamp('end_date_account_restriction')->nullable();
+
             $table->string('decision_facts', 5000);
 
             $table->enum('source_type', array_keys(Statement::SOURCE_TYPES));

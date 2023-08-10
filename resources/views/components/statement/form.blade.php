@@ -12,8 +12,20 @@
               enter_keyword="Enter a visibility decision"
 />
 
+
+
+
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
                  id="decision_visibility_other" required="true"/>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION"
+                 name="end_date_visibility_restriction"
+                 id="end_date_visibility_restriction"
+                 value="{{ $statement->end_date_visibility_restriction }}"
+                 placeholder="YYYY-MM-DD"
+                 help="leading zeroes are required"
+/>
+
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
               name="decision_monetary"
@@ -24,8 +36,20 @@
               :allow_null="true"
 />
 
+
+
+
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_monetary_other"
                  id="decision_monetary_other" required="true"/>
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE_MONETARY_RESTRICTION"
+                 name="end_date_monetary_restriction"
+                 id="end_date_monetary_restriction"
+                 value="{{ $statement->end_date_monetary_restriction }}"
+                 placeholder="YYYY-MM-DD"
+                 help="leading zeroes are required"
+/>
+
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_PROVISION"
               name="decision_provision"
@@ -36,6 +60,17 @@
               :allow_null="true"
 />
 
+
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE_SERVICE_RESTRICTION"
+                 name="end_date_service_restriction"
+                 id="end_date_service_restriction"
+                 value="{{ $statement->end_date_service_restriction }}"
+                 placeholder="YYYY-MM-DD"
+                 help="leading zeroes are required"
+/>
+
+
 <x-ecl.select :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
                   name="decision_account"
                   id="decision_account"
@@ -44,6 +79,16 @@
                   justlabel="true"
                   :allow_null="true"
 />
+
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE_ACCOUNT_RESTRICTION"
+                 name="end_date_account_restriction"
+                 id="end_date_account_restriction"
+                 value="{{ $statement->end_date_account_restriction }}"
+                 placeholder="YYYY-MM-DD"
+                 help="leading zeroes are required"
+/>
+
+
 
 <hr>
 

@@ -18,6 +18,10 @@
   - DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED
   - DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED
   - DECISION_VISIBILITY_CONTENT_LABELLED
+- New API field: 'end_date_account_restriction'
+- New API field: 'end_date_monetary_restriction'
+- New API field: 'end_date_service_restriction'
+- New API field: 'end_date_visibility_restriction'
 
 
  

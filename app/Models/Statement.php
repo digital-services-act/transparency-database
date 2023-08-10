@@ -217,9 +217,14 @@ class Statement extends Model
     public const LABEL_STATEMENT_CONTENT_DATE = 'When the content was posted or uploaded';
     public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
+
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
     public const LABEL_STATEMENT_CONTENT_LANGUAGE = "The language of the content";
 
+    public const LABEL_STATEMENT_END_DATE_ACCOUNT_RESTRICTION = 'End date of the account restriction';
+    public const LABEL_STATEMENT_END_DATE_MONETARY_RESTRICTION = 'End date of the monetary restriction';
+    public const LABEL_STATEMENT_END_DATE_SERVICE_RESTRICTION = 'End date of the service restriction decision';
+    public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
     /**
      * The attributes that are mass assignable.
@@ -242,6 +247,10 @@ class Statement extends Model
         'content_date' => 'datetime:Y-m-d',
         'application_date' => 'datetime:Y-m-d',
         'end_date' => 'datetime:Y-m-d',
+        'end_date_account_restriction' => 'datetime:Y-m-d',
+        'end_date_monetary_restriction' => 'datetime:Y-m-d',
+        'end_date_service_restriction' => 'datetime:Y-m-d',
+        'end_date_visibility_restriction' => 'datetime:Y-m-d',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'territorial_scope' => 'array',
         'content_type' => 'array',
@@ -389,6 +398,8 @@ class Statement extends Model
     {
         return $this->getRawKeys('category_addition');
     }
+
+
 
     // Function to convert enum keys to their corresponding values
     public static function getEnumValues(array $keys): array
