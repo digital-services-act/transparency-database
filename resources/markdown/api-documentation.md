@@ -460,6 +460,54 @@ The day, month, and hour have leading zeroes.
 
 The date must be after or equal to the application date.
 
+### End Date of account restriction (end_date_account_restriction)
+
+This is the date and time that the decision on the account ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of monetary restriction (end_date_monetary_restriction)
+
+This is the date and time that the monetary decision ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of service restriction (end_date_service_restriction)
+
+This is the date and time that the provision decision ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of visibility restriction (end_date_visibility_restriction)
+
+This is the date and time that the visibility decision ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
 ### Information source (source_type)
 
 This is a required field and tells us the facts and circumstances

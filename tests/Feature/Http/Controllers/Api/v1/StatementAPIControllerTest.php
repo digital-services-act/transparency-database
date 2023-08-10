@@ -696,5 +696,36 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->source_identity);
     }
 
+    /**
+     * @test
+     */
+    public function store_should_end_dates()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'end_date_visibility_restriction' => '2023-08-10',
+            'end_date_monetary_restriction' => '2023-08-11',
+            'end_date_service_restriction' => '2023-08-12',
+            'end_date_account_restriction' => '2023-08-13',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_visibility_restriction);
+        $this->assertEquals('2023-08-10 00:00:00', (string)$statement->end_date_visibility_restriction);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_monetary_restriction);
+        $this->assertEquals('2023-08-11 00:00:00', (string)$statement->end_date_monetary_restriction);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_service_restriction);
+        $this->assertEquals('2023-08-12 00:00:00', (string)$statement->end_date_service_restriction);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_account_restriction);
+        $this->assertEquals('2023-08-13 00:00:00', (string)$statement->end_date_account_restriction);
+    }
+
 }
 

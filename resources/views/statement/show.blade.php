@@ -27,6 +27,11 @@
             <x-infoline title="" :content="$statement->decision_visibility_other"></x-infoline>
         @endif
 
+        @if($statement->end_date_visibility_restriction)
+            <x-infoline :title="Statement::LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION"
+                        :content="$statement->end_date_visibility_restriction->format('Y-m-d')"></x-infoline>
+        @endif
+
     @endif
 
     @if(!is_null($statement->decision_monetary))
@@ -35,16 +40,32 @@
         @if($statement->decision_monetary === 'DECISION_MONETARY_OTHER')
             <x-infoline title="" :content="$statement->decision_monetary_other"></x-infoline>
         @endif
+
+        @if($statement->end_date_monetary_restriction)
+            <x-infoline :title="Statement::LABEL_STATEMENT_END_DATE_MONETARY_RESTRICTION"
+                        :content="$statement->end_date_monetary_restriction->format('Y-m-d')"></x-infoline>
+        @endif
     @endif
 
     @if(!is_null($statement->decision_provision))
         <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_PROVISION"
                     :content="Statement::DECISION_PROVISIONS[$statement->decision_provision]"></x-infoline>
+
+        @if($statement->end_date_service_restriction)
+            <x-infoline :title="Statement::LABEL_STATEMENT_END_DATE_SERVICE_RESTRICTION"
+                        :content="$statement->end_date_service_restriction->format('Y-m-d')"></x-infoline>
+        @endif
+
     @endif
 
     @if(!is_null($statement->decision_account))
         <x-infoline :title="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
                     :content="Statement::DECISION_ACCOUNTS[$statement->decision_account]"></x-infoline>
+
+        @if($statement->end_date_account_restriction)
+            <x-infoline :title="Statement::LABEL_STATEMENT_END_DATE_ACCOUNT_RESTRICTION"
+                        :content="$statement->end_date_account_restriction->format('Y-m-d')"></x-infoline>
+        @endif
     @endif
 
     @if(!is_null($statement->account_type))
