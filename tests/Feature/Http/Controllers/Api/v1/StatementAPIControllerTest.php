@@ -659,7 +659,7 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $extra_fields = [
-            'source_type' => 'SOURCE_OTHER',
+            'source_type' => 'SOURCE_TYPE_OTHER_NOTIFICATION',
             'source_identity' => 'foobar other',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
