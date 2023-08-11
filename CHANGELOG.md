@@ -9,7 +9,7 @@
   - CONTENT_TYPE_AUDIO
   - CONTENT_TYPE_SYNTHETIC_MEDIA
 - New extra value for the API field: 'source_type'
-  - SOURCE_OTHER
+  - SOURCE_TYPE_OTHER_NOTIFICATION
 - New values for the API field: 'automated_decision'
   - AUTOMATED_DECISION_FULLY
   - AUTOMATED_DECISION_PARTIALLY
@@ -22,6 +22,8 @@
 - New API field: 'end_date_monetary_restriction'
 - New API field: 'end_date_service_restriction'
 - New API field: 'end_date_visibility_restriction'
+- New API field: 'category_specification'
+- New API field: 'category_specification_other'
 
 
  
