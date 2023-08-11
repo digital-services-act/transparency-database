@@ -397,6 +397,29 @@ The value provided must be an array with one of the following:
 @endphp
 </ul>
 
+### Category Specification (category_specification)
+
+This is an optional attribute, and it tells us which additional keywords the statement belongs to.
+
+The value provided must be an array with one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::KEYWORDS as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
+###  Other Keyword (category_specification_other)
+
+This is required if KEYWORD_OTHER is part of the category_specification.
+
+Limited to 500 characters.
+
 ### Territorial Scope (territorial_scope)
 
 This is the optional territorial scope of the restriction. Each value must be the 2 letter iso code

@@ -35,6 +35,9 @@ class CreateStatementsTable extends Migration
             $table->enum('category', array_keys(Statement::STATEMENT_CATEGORIES));
             $table->text('category_addition')->nullable();
 
+            $table->text('category_specification')->nullable();
+            $table->string('category_specification_other', 500)->nullable();
+
             $table->text('content_type');
             $table->string('content_type_other', 500)->nullable();
 

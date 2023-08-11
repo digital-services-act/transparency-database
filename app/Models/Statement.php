@@ -207,6 +207,123 @@ class Statement extends Model
         'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
     ];
 
+    public const KEYWORD_ANIMAL_HARM = 'Animal Harm';
+    public const KEYWORD_ADULT_SEXUAL_MATERIAL = 'Adult Sexual Material';
+    public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-Specific Restrictions Concerning Minors';
+    public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-Specific Restrictions';
+    public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric Data Breach';
+    public const KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL = 'Child Sexual Abuse Material';
+    public const KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS = 'Content Promoting Eating Disorders';
+    public const KEYWORD_COORDINATED_HARM = 'Coordinated Harm';
+    public const KEYWORD_COPYRIGHT_INFRINGEMENT = 'Copyright Infringement';
+    public const KEYWORD_DANGEROUS_TOYS = 'Dangerous Toys';
+    public const KEYWORD_DATA_FALSIFICATION = 'Data Falsification';
+    public const KEYWORD_DEFAMATION = 'Defamation';
+    public const KEYWORD_DESIGN_INFRINGEMENT = 'Design Infringement';
+    public const KEYWORD_DISCRIMINATION = 'Discrimination';
+    public const KEYWORD_DISINFORMATION = 'Disinformation';
+    public const KEYWORD_FOREIGN_INFORMATION_MANIPULATION = 'Foreign Information Manipulation and Interference';
+    public const KEYWORD_GENDER_BASED_VIOLENCE = 'Gender-Based Violence';
+    public const KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT = 'Geographic Indications Infringements';
+    public const KEYWORD_GEOGRAPHICAL_REQUIREMENTS = 'Geographical Requirements';
+    public const KEYWORD_GOODS_SERVICES_NOT_PERMITTED = 'Goods/Services Not Permitted to Be Offered on the Platform';
+    public const KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS = 'Grooming/Sexual Enticement of Minors';
+    public const KEYWORD_HATE_SPEECH = 'Hate Speech';
+    public const KEYWORD_HUMAN_EXPLOITATION = 'Human Exploitation';
+    public const KEYWORD_HUMAN_TRAFFICKING = 'Human Trafficking';
+    public const KEYWORD_ILLEGAL_ORGANIZATIONS = 'Illegal Organizations';
+    public const KEYWORD_IMAGE_BASED_SEXUAL_ABUSE = 'Image-Based Sexual Abuse (excluding content depicting minors)';
+    public const KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING = 'Impersonation or Account Hijacking';
+    public const KEYWORD_INAUTHENTIC_ACCOUNTS = 'Inauthentic Accounts';
+    public const KEYWORD_INAUTHENTIC_LISTINGS = 'Inauthentic Listings';
+    public const KEYWORD_INAUTHENTIC_USER_REVIEWS = 'Inauthentic User Reviews';
+    public const KEYWORD_INCITEMENT_VIOLENCE_HATRED = 'Incitement to Violence and/or Hatred';
+    public const KEYWORD_INSUFFICIENT_INFORMATION_TRADERS = 'Insufficient Information on Traders';
+    public const KEYWORD_LANGUAGE_REQUIREMENTS = 'Language Requirements';
+    public const KEYWORD_MISINFORMATION = 'Misinformation';
+    public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing Processing Ground for Data';
+    public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-Consensual Image Sharing';
+    public const KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE = 'Non-Consensual Items Containing Deepfake or Similar Technology Using a Third Party’s Features';
+    public const KEYWORD_NUDITY = 'Nudity';
+    public const KEYWORD_ONLINE_BULLYING_INTIMIDATION = 'Online Bullying/Intimidation';
+    public const KEYWORD_PATENT_INFRINGEMENT = 'Patent Infringement';
+    public const KEYWORD_PHISHING = 'Phishing';
+    public const KEYWORD_PYRAMID_SCHEMES = 'Pyramid Schemes';
+    public const KEYWORD_REGULATED_GOODS_SERVICES = 'Regulated Goods and Services';
+    public const KEYWORD_RIGHT_TO_BE_FORGOTTEN = 'Right to Be Forgotten';
+    public const KEYWORD_RISK_ENVIRONMENTAL_DAMAGE = 'Risk for Environmental Damage';
+    public const KEYWORD_RISK_PUBLIC_HEALTH = 'Risk for Public Health';
+    public const KEYWORD_SELF_MUTILATION = 'Self-Mutilation';
+    public const KEYWORD_STALKING = 'Stalking';
+    public const KEYWORD_SUICIDE = 'Suicide';
+    public const KEYWORD_TERRORIST_CONTENT = 'Terrorist Content';
+    public const KEYWORD_TRADE_SECRET_INFRINGEMENT = 'Trade Secret Infringement';
+    public const KEYWORD_TRADEMARK_INFRINGEMENT = 'Trademark Infringement';
+    public const KEYWORD_UNLAWFUL_SALE_ANIMALS = 'Unlawful Sale of Animals';
+    public const KEYWORD_UNSAFE_CHALLENGES = 'Unsafe Challenges';
+    public const KEYWORD_OTHER = 'Other';
+
+    public const LABEL_KEYWORDS = 'Keywords';
+    public const LABEL_KEYWORDS_OTHER = 'Other Keyword';
+
+    public const KEYWORDS = [
+        'KEYWORD_ANIMAL_HARM' => self::KEYWORD_ANIMAL_HARM,
+        'KEYWORD_ADULT_SEXUAL_MATERIAL' => self::KEYWORD_ADULT_SEXUAL_MATERIAL,
+        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS,
+        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS,
+        'KEYWORD_BIOMETRIC_DATA_BREACH' => self::KEYWORD_BIOMETRIC_DATA_BREACH,
+        'KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL' => self::KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL,
+        'KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS' => self::KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS,
+        'KEYWORD_COORDINATED_HARM' => self::KEYWORD_COORDINATED_HARM,
+        'KEYWORD_COPYRIGHT_INFRINGEMENT' => self::KEYWORD_COPYRIGHT_INFRINGEMENT,
+        'KEYWORD_DANGEROUS_TOYS' => self::KEYWORD_DANGEROUS_TOYS,
+        'KEYWORD_DATA_FALSIFICATION' => self::KEYWORD_DATA_FALSIFICATION,
+        'KEYWORD_DEFAMATION' => self::KEYWORD_DEFAMATION,
+        'KEYWORD_DESIGN_INFRINGEMENT' => self::KEYWORD_DESIGN_INFRINGEMENT,
+        'KEYWORD_DISCRIMINATION' => self::KEYWORD_DISCRIMINATION,
+        'KEYWORD_DISINFORMATION' => self::KEYWORD_DISINFORMATION,
+        'KEYWORD_FOREIGN_INFORMATION_MANIPULATION' => self::KEYWORD_FOREIGN_INFORMATION_MANIPULATION,
+        'KEYWORD_GENDER_BASED_VIOLENCE' => self::KEYWORD_GENDER_BASED_VIOLENCE,
+        'KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT' => self::KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT,
+        'KEYWORD_GEOGRAPHICAL_REQUIREMENTS' => self::KEYWORD_GEOGRAPHICAL_REQUIREMENTS,
+        'KEYWORD_GOODS_SERVICES_NOT_PERMITTED' => self::KEYWORD_GOODS_SERVICES_NOT_PERMITTED,
+        'KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS' => self::KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS,
+        'KEYWORD_HATE_SPEECH' => self::KEYWORD_HATE_SPEECH,
+        'KEYWORD_HUMAN_EXPLOITATION' => self::KEYWORD_HUMAN_EXPLOITATION,
+        'KEYWORD_HUMAN_TRAFFICKING' => self::KEYWORD_HUMAN_TRAFFICKING,
+        'KEYWORD_ILLEGAL_ORGANIZATIONS' => self::KEYWORD_ILLEGAL_ORGANIZATIONS,
+        'KEYWORD_IMAGE_BASED_SEXUAL_ABUSE' => self::KEYWORD_IMAGE_BASED_SEXUAL_ABUSE,
+        'KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING' => self::KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING,
+        'KEYWORD_INAUTHENTIC_ACCOUNTS' => self::KEYWORD_INAUTHENTIC_ACCOUNTS,
+        'KEYWORD_INAUTHENTIC_LISTINGS' => self::KEYWORD_INAUTHENTIC_LISTINGS,
+        'KEYWORD_INAUTHENTIC_USER_REVIEWS' => self::KEYWORD_INAUTHENTIC_USER_REVIEWS,
+        'KEYWORD_INCITEMENT_VIOLENCE_HATRED' => self::KEYWORD_INCITEMENT_VIOLENCE_HATRED,
+        'KEYWORD_INSUFFICIENT_INFORMATION_TRADERS' => self::KEYWORD_INSUFFICIENT_INFORMATION_TRADERS,
+        'KEYWORD_LANGUAGE_REQUIREMENTS' => self::KEYWORD_LANGUAGE_REQUIREMENTS,
+        'KEYWORD_MISINFORMATION' => self::KEYWORD_MISINFORMATION,
+        'KEYWORD_MISSING_PROCESSING_GROUND' => self::KEYWORD_MISSING_PROCESSING_GROUND,
+        'KEYWORD_NON_CONSENSUAL_IMAGE_SHARING' => self::KEYWORD_NON_CONSENSUAL_IMAGE_SHARING,
+        'KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE' => self::KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE,
+        'KEYWORD_NUDITY' => self::KEYWORD_NUDITY,
+        'KEYWORD_ONLINE_BULLYING_INTIMIDATION' => self::KEYWORD_ONLINE_BULLYING_INTIMIDATION,
+        'KEYWORD_PATENT_INFRINGEMENT' => self::KEYWORD_PATENT_INFRINGEMENT,
+        'KEYWORD_PHISHING' => self::KEYWORD_PHISHING,
+        'KEYWORD_PYRAMID_SCHEMES' => self::KEYWORD_PYRAMID_SCHEMES,
+        'KEYWORD_REGULATED_GOODS_SERVICES' => self::KEYWORD_REGULATED_GOODS_SERVICES,
+        'KEYWORD_RIGHT_TO_BE_FORGOTTEN' => self::KEYWORD_RIGHT_TO_BE_FORGOTTEN,
+        'KEYWORD_RISK_ENVIRONMENTAL_DAMAGE' => self::KEYWORD_RISK_ENVIRONMENTAL_DAMAGE,
+        'KEYWORD_RISK_PUBLIC_HEALTH' => self::KEYWORD_RISK_PUBLIC_HEALTH,
+        'KEYWORD_SELF_MUTILATION' => self::KEYWORD_SELF_MUTILATION,
+        'KEYWORD_STALKING' => self::KEYWORD_STALKING,
+        'KEYWORD_SUICIDE' => self::KEYWORD_SUICIDE,
+        'KEYWORD_TERRORIST_CONTENT' => self::KEYWORD_TERRORIST_CONTENT,
+        'KEYWORD_TRADE_SECRET_INFRINGEMENT' => self::KEYWORD_TRADE_SECRET_INFRINGEMENT,
+        'KEYWORD_TRADEMARK_INFRINGEMENT' => self::KEYWORD_TRADEMARK_INFRINGEMENT,
+        'KEYWORD_UNLAWFUL_SALE_ANIMALS' => self::KEYWORD_UNLAWFUL_SALE_ANIMALS,
+        'KEYWORD_UNSAFE_CHALLENGES' => self::KEYWORD_UNSAFE_CHALLENGES,
+        'KEYWORD_OTHER' => self::KEYWORD_OTHER,
+    ];
+
 
 
 
@@ -255,7 +372,8 @@ class Statement extends Model
         'territorial_scope' => 'array',
         'content_type' => 'array',
         'decision_visibility' => 'array',
-        'category_addition' => 'array'
+        'category_addition' => 'array',
+        'category_specification' => 'array'
     ];
 
     protected $hidden = [
@@ -299,6 +417,7 @@ class Statement extends Model
     {
         return [
             'decision_visibility' => $this->decision_visibility,
+            'category_specification' => $this->category_specification,
             'decision_visibility_other' => $this->decision_visibilit_other,
             'decision_monetary' => $this->decision_monetary,
             'decision_monetary_other' => $this->decision_monetary_other,
@@ -397,6 +516,11 @@ class Statement extends Model
     public function getCategoryAdditionAttribute($value)
     {
         return $this->getRawKeys('category_addition');
+    }
+
+    public function getCategorySpecificationAttribute($value)
+    {
+        return $this->getRawKeys('category_specification');
     }
 
 

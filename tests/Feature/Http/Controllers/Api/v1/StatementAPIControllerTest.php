@@ -699,7 +699,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_end_dates()
+    public function store_should_save_end_dates()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -726,6 +726,32 @@ class StatementAPIControllerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $statement->end_date_account_restriction);
         $this->assertEquals('2023-08-13 00:00:00', (string)$statement->end_date_account_restriction);
     }
+
+    /**
+     * @test
+     */
+    public function store_should_save_keywords_with_other()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'category_specification' => ['KEYWORD_ADULT_SEXUAL_MATERIAL','KEYWORD_DESIGN_INFRINGEMENT','KEYWORD_OTHER'],
+            'category_specification_other' => 'foobar keyword',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->category_specification);
+        $this->assertNotNull($statement->category_specification_other);
+
+    }
+
+
 
 }
 
