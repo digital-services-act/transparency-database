@@ -20,6 +20,7 @@ class PageController extends Controller
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
+
         $page = preg_replace("/[^a-z-]/", "", $page);
         $page_title = ucwords(str_replace("-", " ", $page));
 
@@ -46,6 +47,11 @@ class PageController extends Controller
     public function dashboardShow(string $page): Factory|View|Application
     {
         return $this->show($page, 'dashboard-page');
+    }
+
+    public function additionalExplanationShow(): Factory|View|Application
+    {
+        return $this->show('additional-explanation','additional-explanation-page');
     }
 
 
