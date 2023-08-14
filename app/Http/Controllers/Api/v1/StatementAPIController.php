@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
-use App\Services\StatementQueryService;
+use App\Services\EuropeanCountriesService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class StatementAPIController extends Controller
 {
-    protected StatementQueryService $statement_query_service;
-
-    public function __construct(StatementQueryService $statement_query_service)
+    protected EuropeanCountriesService $european_countries_service;
+    public function __construct(
+        EuropeanCountriesService $european_countries_service,
+    )
     {
-        $this->statement_query_service = $statement_query_service;
+        $this->european_countries_service = $european_countries_service;
     }
 
     public function show(Statement $statement): Statement
@@ -28,6 +28,7 @@ class StatementAPIController extends Controller
 
     public function store(StatementStoreRequest $request): JsonResponse
     {
+
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $request->user()->platform_id,
@@ -35,6 +36,24 @@ class StatementAPIController extends Controller
                 'method' => Statement::METHOD_API,
             ]
         )->toArray();
+
+        $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
+        $validated['content_date'] = $this->sanitizeDate($validated['content_date'] ?? null);
+        $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
+        $validated['end_date_monetary_restriction'] = $this->sanitizeDate($validated['end_date_monetary_restriction'] ?? null);
+        $validated['end_date_visibility_restriction'] = $this->sanitizeDate($validated['end_date_visibility_restriction'] ?? null);
+        $validated['end_date_account_restriction'] = $this->sanitizeDate($validated['end_date_account_restriction'] ?? null);
+        $validated['end_date_service_restriction'] = $this->sanitizeDate($validated['end_date_service_restriction'] ?? null);
+
+        $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
+        $validated['content_type'] = array_unique($validated['content_type']);
+        sort($validated['content_type']);
+        if(array_key_exists('decision_visibility',$validated)){
+            $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
+            sort($validated['decision_visibility']);
+        }
+
+
 
         try {
             $statement = Statement::create($validated);
@@ -62,13 +81,10 @@ class StatementAPIController extends Controller
             }
         }
 
-        return response()->json($statement, Response::HTTP_CREATED);
-    }
 
-    public function search(Request $request): JsonResponse
-    {
-        $statements = $this->statement_query_service->query($request->query());
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString();
-        return response()->json($statements);
+        $out = $statement->toArray();
+        $out['puid'] = $statement->puid; // Show the puid on a store.
+
+        return response()->json($out, Response::HTTP_CREATED);
     }
 }

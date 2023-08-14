@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
@@ -28,12 +29,15 @@ class StatementSearchService
         'decision_monetary',
         'decision_provision',
         'decision_account',
+        'account_type',
         'decision_ground',
         'category',
         'content_type',
+        'content_language',
         'automated_detection',
         'automated_decision',
         'platform_id',
+        'territorial_scope'
     ];
 
     /**
@@ -63,7 +67,10 @@ class StatementSearchService
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                $part = $this->$method($filters[$filter_key]);
+                $part = false;
+                if( method_exists($this,$method)) {
+                    $part = $this->$method($filters[$filter_key]);
+                }
                 if ($part) {
                     $queryAndParts[] = $part;
                 }
@@ -101,7 +108,7 @@ class StatementSearchService
 
         // End but no start.
         if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false)) {
-            $beginning = date('Y-m-d\TH:i:s',0);
+            $beginning = date('Y-m-d\TH:i:s',strtotime('2020-01-01'));
             $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
             return 'created_at:['.$beginning.' TO '.$end->format('Y-m-d\TH:i:s').']';
         }
@@ -131,7 +138,7 @@ class StatementSearchService
             'incompatible_content_explanation',
             'decision_facts',
             'content_type_other',
-            'source',
+            'source_identity',
             'url',
             'uuid',
             'puid',
@@ -183,6 +190,19 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    private function applyTerritorialScopeFilter(array $filter_values)
+    {
+        $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'territorial_scope:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
+
+
     private function applyDecisionAccountFilter(array $filter_values)
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
@@ -190,6 +210,17 @@ class StatementSearchService
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_account:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
+    private function applyAccountTypeFilter(array $filter_values)
+    {
+        $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'account_type:'.$filter_value;
         }
         return implode(' OR ', $ors);
     }
@@ -227,6 +258,16 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    private function applyContentLanguageFilter(array $filter_values)
+    {
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'content_language:"'.$filter_value.'"';
+        }
+        return implode(' OR ', $ors);
+    }
+
     private function applyAutomatedDetectionFilter(array $filter_values)
     {
         $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
@@ -240,13 +281,14 @@ class StatementSearchService
 
     private function applyAutomatedDecisionFilter(array $filter_values)
     {
-        $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DECISIONS);
+        $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         $ors = [];
         foreach ($filter_values as $filter_value)
         {
-            $ors[] = 'automated_decision:' . ( $filter_value === Statement::AUTOMATED_DETECTION_YES ? 'true' : 'false' );
+            $ors[] = 'automated_decision:'.$filter_value;
         }
         return implode(' OR ', $ors);
+
     }
 
     private function applyPlatformIdFilter(array $filter_values)
@@ -258,4 +300,65 @@ class StatementSearchService
         }
         return implode(' OR ', $ors);
     }
+
+    public function countForPlatform(Platform $platform): int
+    {
+        $filters = [
+            'platform_id' => [$platform->id],
+        ];
+
+        $statements = $this->query($filters)->paginate(50);
+        return $statements->total();
+    }
+
+    public function totalStatements()
+    {
+        $statements = $this->query([])->paginate(50);
+        return $statements->total();
+    }
+
+    public function dayCountsForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end, bool $reverse = true): array
+    {
+        $date_counts = [];
+
+        while($start < $end) {
+
+            $filters = [
+                'platform_id' => [$platform->id],
+                'created_at_start' => $start->format('d-m-Y'),
+                'created_at_end' => $start->format('d-m-Y'),
+            ];
+
+            $statements = $this->query($filters)->paginate(50);
+
+            $date_counts[] = [
+                'date' => $start->clone(),
+                'count' => $statements->total(),
+            ];
+
+            $start->addDay();
+
+        }
+
+        $highest = -1;
+        foreach($date_counts as $date_count)
+        {
+            if ($date_count['count'] > $highest)
+            {
+                $highest = $date_count['count'];
+            }
+        }
+
+        foreach ($date_counts as $index => $date_count)
+        {
+            $date_counts[$index]['percentage'] = (int) ceil( ($date_count['count'] / $highest) * 100 );
+        }
+
+        if ($reverse) {
+            $date_counts = array_reverse($date_counts);
+        }
+
+        return $date_counts;
+    }
+
 }

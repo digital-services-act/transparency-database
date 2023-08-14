@@ -54,7 +54,7 @@ class OpenSearchIndexInfo extends Command
         $index_stats = $client->indices()->stats()['indices'][$index];
         $this->info('UUID: ' . $index_stats['uuid']);
         $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
-        $this->info('Size: ' . $this->humanFileSize($index_stats['primaries']['store']['size_in_bytes']));
+        $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
 
         $mapping = $client->indices()->getMapping(['index' => $index]);
 
@@ -62,10 +62,13 @@ class OpenSearchIndexInfo extends Command
 
         $this->info('Field Information:');
 
+
+        $fields = [];
         foreach ($mapping[$index]['mappings']['properties'] as $field => $field_info)
         {
-            $this->info($field . ' :: ' . $field_info['type']);
+            $fields[] = [$field,$field_info['type']];
         }
+        $this->table(['Field', 'Type'], $fields);
     }
 
     private function humanFileSize($size,$unit="") {

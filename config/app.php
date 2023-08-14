@@ -207,6 +207,9 @@ return [
          */
         App\Providers\StatementQueryServiceProvider::class,
         App\Providers\StatementSearchServiceProvider::class,
+        App\Providers\EuropeanCountriesServiceProvider::class,
+        App\Providers\EuropeanLanguagesServiceProvider::class,
+        App\Providers\DriveInServiceProvider::class,
         App\Providers\StatementStatsServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,

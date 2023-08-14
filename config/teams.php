@@ -10,7 +10,7 @@ return [
     | not used. Allowed value: true (default) and false
     |
     */
-    'show_avatars' => true,
+    'show_avatars' => false,
 
     /*
     |--------------------------------------------------------------------------

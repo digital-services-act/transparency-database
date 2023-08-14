@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Exception;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Symfony\Component\Intl\Countries;
 
 class Statement extends Model
 {
@@ -22,28 +22,46 @@ class Statement extends Model
         'METHOD_API' => self::METHOD_API
     ];
 
+    public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
+    public const ACCOUNT_TYPE_BUSINESS = "Business";
+    public const ACCOUNT_TYPE_PRIVATE = "Private";
+    public const ACCOUNT_TYPES = [
+        'ACCOUNT_TYPE_BUSINESS' => self::ACCOUNT_TYPE_BUSINESS,
+        'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE
+    ];
+
 
     public const LABEL_STATEMENT_SOURCE_TYPE = 'Information source';
-    public const LABEL_STATEMENT_SOURCE = 'Notifier';
+    public const LABEL_STATEMENT_SOURCE_IDENTITY = 'Source identity';
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
+    public const SOURCE_TYPE_OTHER_NOTIFICATION = 'Other type of notification by recipients of the service';
     public const SOURCE_TYPES = [
         'SOURCE_ARTICLE_16' => self::SOURCE_ARTICLE_16,
         'SOURCE_TRUSTED_FLAGGER' => self::SOURCE_TRUSTED_FLAGGER,
+        'SOURCE_TYPE_OTHER_NOTIFICATION' => self::SOURCE_TYPE_OTHER_NOTIFICATION,
         'SOURCE_VOLUNTARY' => self::SOURCE_VOLUNTARY,
     ];
 
 
     public const LABEL_STATEMENT_CONTENT_TYPE = 'Content Type';
+    public const CONTENT_TYPE_APP = 'App';
+    public const CONTENT_TYPE_AUDIO = 'Audio';
+    public const CONTENT_TYPE_PRODUCT = 'Product';
+    public const CONTENT_TYPE_SYNTHETIC_MEDIA = 'Synthetic Media';
     public const CONTENT_TYPE_TEXT = 'Text';
     public const CONTENT_TYPE_VIDEO = 'Video';
     public const CONTENT_TYPE_IMAGE = 'Image';
     public const CONTENT_TYPE_OTHER = 'Other';
     public const CONTENT_TYPES = [
+        'CONTENT_TYPE_APP' => self::CONTENT_TYPE_APP,
+        'CONTENT_TYPE_AUDIO' => self::CONTENT_TYPE_AUDIO,
+        'CONTENT_TYPE_IMAGE' => self::CONTENT_TYPE_IMAGE,
+        'CONTENT_TYPE_PRODUCT' => self::CONTENT_TYPE_PRODUCT,
+        'CONTENT_TYPE_SYNTHETIC_MEDIA' => self::CONTENT_TYPE_SYNTHETIC_MEDIA,
         'CONTENT_TYPE_TEXT' => self::CONTENT_TYPE_TEXT,
         'CONTENT_TYPE_VIDEO' => self::CONTENT_TYPE_VIDEO,
-        'CONTENT_TYPE_IMAGE' => self::CONTENT_TYPE_IMAGE,
         'CONTENT_TYPE_OTHER' => self::CONTENT_TYPE_OTHER,
     ];
 
@@ -57,15 +75,18 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using other automated means?';
-    public const AUTOMATED_DECISION_YES = 'Yes';
-    public const AUTOMATED_DECISION_NO = 'No';
+    public const AUTOMATED_DECISION_FULLY = 'Fully automated';
+    public const AUTOMATED_DECISION_PARTIALLY = 'Partially automated';
+    public const AUTOMATED_DECISION_NOT_AUTOMATED = 'Not Automated';
     public const AUTOMATED_DECISIONS = [
-        self::AUTOMATED_DECISION_YES,
-        self::AUTOMATED_DECISION_NO,
+        'AUTOMATED_DECISION_FULLY' => self::AUTOMATED_DECISION_FULLY,
+        'AUTOMATED_DECISION_PARTIALLY' => self::AUTOMATED_DECISION_PARTIALLY,
+        'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED
     ];
 
 
     public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
+    public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [
@@ -101,11 +122,17 @@ class Statement extends Model
     public const DECISION_VISIBILITY_CONTENT_REMOVED = 'Removal of content';
     public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
+    public const DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED = 'Age restricted content';
+    public const DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED = 'Restricting interaction to content';
+    public const DECISION_VISIBILITY_CONTENT_LABELLED = 'Labelled content';
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
     public const DECISION_VISIBILITIES = [
         'DECISION_VISIBILITY_CONTENT_REMOVED' => self::DECISION_VISIBILITY_CONTENT_REMOVED,
         'DECISION_VISIBILITY_CONTENT_DISABLED' => self::DECISION_VISIBILITY_CONTENT_DISABLED,
         'DECISION_VISIBILITY_CONTENT_DEMOTED' => self::DECISION_VISIBILITY_CONTENT_DEMOTED,
+        'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED,
+        'DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED,
+        'DECISION_VISIBILITY_CONTENT_LABELLED' => self::DECISION_VISIBILITY_CONTENT_LABELLED,
         'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER
     ];
 
@@ -132,7 +159,7 @@ class Statement extends Model
         'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
-    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account.';
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account';
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
@@ -141,69 +168,63 @@ class Statement extends Model
         'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED
     ];
 
-    public const LABEL_STATEMENT_COUNTRY_LIST = 'Territorial scope of the decision';
-    public const EUROPEAN_COUNTRY_CODES = [
-        'AT',
-        'BE',
-        'BG',
-        'CY',
-        'CZ',
-        'DE',
-        'DK',
-        'EE',
-        'ES',
-        'FI',
-        'FR',
-        'GR',
-        'HR',
-        'HU',
-        'IE',
-        'IT',
-        'LT',
-        'LU',
-        'LV',
-        'MT',
-        'NL',
-        'PL',
-        'PT',
-        'RO',
-        'SE',
-        'SI',
-        'SK'
-    ];
+    public const LABEL_STATEMENT_TERRITORIAL_SCOPE = 'Territorial scope of the decision';
+
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
-    public const STATEMENT_CATEGORY_PIRACY = 'Pirated content (eg. music, films, books)';
-    public const STATEMENT_CATEGORY_DISCRIMINATION = 'Discrimination and hate speech (e.g. race, gender identity, sexual orientation, religion, disability)';
-    public const STATEMENT_CATEGORY_COUNTERFEIT = 'Counterfeit goods (e.g. fake perfume, fake designer brands)';
-    public const STATEMENT_CATEGORY_FRAUD = 'Scams, frauds, subscription traps or other illegal commercial practices';
-    public const STATEMENT_CATEGORY_TERRORISM = 'Terrorist content (e.g. extremists, hate groups)';
-    public const STATEMENT_CATEGORY_CHILD_SAFETY = 'Child safety (e.g. child nudity, sexual abuse, unsolicited contact with minors)';
-    public const STATEMENT_CATEGORY_NON_CONSENT = 'Non-consensual nudity (e.g. hidden camera, deepfake, revenge porn, upskirts)';
-    public const STATEMENT_CATEGORY_MISINFORMATION = 'Harmful False or Deceptive Information (e.g. denying tragic events, synthetic media, false context)';
-    public const STATEMENT_CATEGORY_VIOLATION_TOS = 'Violation of the terms of service of the Internet hosting service (e.g. spam, platform manipulation)';
-    public const STATEMENT_CATEGORY_UNCATEGORISED = 'Uncategorised';
+    public const LABEL_STATEMENT_CATEGORY_ADDITION = 'Additional Categories';
+
+    public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
+    public const STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS = 'Data protection and privacy violations';
+    public const STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH = 'Illegal or harmful speech';
+    public const STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS = 'Intellectual property infringements';
+    public const STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS = 'Negative effects on civic discourse or elections';
+    public const STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR = 'Non-consensual behaviour';
+    public const STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT = 'Pornography or sexualized content';
+    public const STATEMENT_CATEGORY_PROTECTION_OF_MINORS = 'Protection of minors';
+    public const STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY = 'Risk for public security';
+    public const STATEMENT_CATEGORY_SCAMS_AND_FRAUD = 'Scams and/or fraud';
+    public const STATEMENT_CATEGORY_SELF_HARM = 'Self-harm';
+    public const STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE = 'Scope of platform service';
+    public const STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS = 'Unsafe and/or illegal products';
+    public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
+
+
     public const STATEMENT_CATEGORIES = [
-        'STATEMENT_CATEGORY_PIRACY' => self::STATEMENT_CATEGORY_PIRACY,
-        'STATEMENT_CATEGORY_DISCRIMINATION' => self::STATEMENT_CATEGORY_DISCRIMINATION,
-        'STATEMENT_CATEGORY_COUNTERFEIT' => self::STATEMENT_CATEGORY_COUNTERFEIT,
-        'STATEMENT_CATEGORY_FRAUD' => self::STATEMENT_CATEGORY_FRAUD,
-        'STATEMENT_CATEGORY_TERRORISM' => self::STATEMENT_CATEGORY_TERRORISM,
-        'STATEMENT_CATEGORY_CHILD_SAFETY' => self::STATEMENT_CATEGORY_CHILD_SAFETY,
-        'STATEMENT_CATEGORY_NON_CONSENT' => self::STATEMENT_CATEGORY_NON_CONSENT,
-        'STATEMENT_CATEGORY_MISINFORMATION' => self::STATEMENT_CATEGORY_MISINFORMATION,
-        'STATEMENT_CATEGORY_VIOLATION_TOS' => self::STATEMENT_CATEGORY_VIOLATION_TOS,
-        'STATEMENT_CATEGORY_UNCATEGORISED' => self::STATEMENT_CATEGORY_UNCATEGORISED
+        'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
+        'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS' => self::STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS,
+        'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH' => self::STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH,
+        'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS' => self::STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS,
+        'STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS' => self::STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS,
+        'STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR' => self::STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR,
+        'STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT' => self::STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT,
+        'STATEMENT_CATEGORY_PROTECTION_OF_MINORS' => self::STATEMENT_CATEGORY_PROTECTION_OF_MINORS,
+        'STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY' => self::STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY,
+        'STATEMENT_CATEGORY_SCAMS_AND_FRAUD' => self::STATEMENT_CATEGORY_SCAMS_AND_FRAUD,
+        'STATEMENT_CATEGORY_SELF_HARM' => self::STATEMENT_CATEGORY_SELF_HARM,
+        'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE' => self::STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE,
+        'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS' => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS,
+        'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
     ];
 
 
-    public const LABEL_STATEMENT_URL = 'URL/Hyperlink';
+
+
+
+
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
-    public const LABEL_STATEMENT_START_DATE = 'Start date of the decision';
+    public const LABEL_STATEMENT_CONTENT_DATE = 'When the content was posted or uploaded';
+    public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
     public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
-    public const LABEL_STATEMENT_FORM_OTHER = 'Other';
 
+    public const LABEL_STATEMENT_FORM_OTHER = 'Other';
+    public const LABEL_STATEMENT_CONTENT_LANGUAGE = "The language of the content";
+
+    public const LABEL_STATEMENT_END_DATE_ACCOUNT_RESTRICTION = 'End date of the account restriction';
+    public const LABEL_STATEMENT_END_DATE_MONETARY_RESTRICTION = 'End date of the monetary restriction';
+    public const LABEL_STATEMENT_END_DATE_SERVICE_RESTRICTION = 'End date of the service restriction decision';
+    public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
     /**
      * The attributes that are mass assignable.
@@ -223,12 +244,18 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
-        'start_date' => 'datetime:Y-m-d H:i:s',
-        'end_date' => 'datetime:Y-m-d H:i:s',
+        'content_date' => 'datetime:Y-m-d',
+        'application_date' => 'datetime:Y-m-d',
+        'end_date' => 'datetime:Y-m-d',
+        'end_date_account_restriction' => 'datetime:Y-m-d',
+        'end_date_monetary_restriction' => 'datetime:Y-m-d',
+        'end_date_service_restriction' => 'datetime:Y-m-d',
+        'end_date_visibility_restriction' => 'datetime:Y-m-d',
         'created_at' => 'datetime:Y-m-d H:i:s',
-        'deleted_at' => 'datetime:Y-m-d H:i:s',
-        'update_at' => 'datetime:Y-m-d H:i:s',
-        'countries_list' => 'array'
+        'territorial_scope' => 'array',
+        'content_type' => 'array',
+        'decision_visibility' => 'array',
+        'category_addition' => 'array'
     ];
 
     protected $hidden = [
@@ -236,10 +263,16 @@ class Statement extends Model
         'updated_at',
         'method',
         'user_id',
-        'id'
+        'id',
+        'platform',
+        'platform_id',
+        'puid'
     ];
 
     protected $appends = [
+        'territorial_scope',
+        'content_type',
+        'platform_name',
         'permalink',
         'self'
     ];
@@ -271,24 +304,28 @@ class Statement extends Model
             'decision_monetary_other' => $this->decision_monetary_other,
             'decision_provision' => $this->decision_provision,
             'decision_account' => $this->decision_account,
+            'account_type' => $this->account_type,
             'decision_ground' => $this->decision_ground,
             'content_type' => $this->content_type,
             'content_type_other' => $this->content_type_other,
+            'content_language' => $this->content_language,
             'illegal_content_legal_ground' => $this->illegal_content_legal_ground,
             'illegal_content_explanation' => $this->illegal_content_explanation,
             'incompatible_content_ground' => $this->incompatible_content_ground,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
             'source_type' => $this->source_type,
-            'source' => $this->source,
+            'source_identity' => $this->source_identity,
             'decision_facts' => $this->decision_facts,
-            'automated_detection' => $this->automated_detection === self::AUTOMATED_DECISION_YES,
-            'automated_decision' => $this->automated_decision === self::AUTOMATED_DECISION_YES,
+            'automated_detection' => $this->automated_detection === self::AUTOMATED_DETECTION_YES,
+            'automated_decision' => $this->automated_decision,
             'category' => $this->category,
+            'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
             'url' => $this->url,
             'created_at' => $this->created_at,
             'uuid' => $this->uuid,
-            'puid' => $this->puid
+            'puid' => $this->puid,
+            'territorial_scope' => $this->territorial_scope
         ];
     }
 
@@ -306,25 +343,6 @@ class Statement extends Model
     public function getScoutKeyName(): mixed
     {
         return 'id';
-    }
-
-    /**
-     * @return array
-     */
-    public function getCountriesListNames(): array
-    {
-        if ($this->countries_list) {
-            if (count($this->countries_list) == 27) return ['European Union'];
-            return array_map(function ($iso) {
-                return Countries::getName($iso);
-            }, $this->countries_list);
-        }
-        return [];
-    }
-
-    public function entities()
-    {
-        return $this->belongsToMany(Entity::class)->withPivot('role');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -353,8 +371,78 @@ class Statement extends Model
         return route('api.v' . config('app.api_latest') . '.statement.show', [$this]);
     }
 
-    public function getCreatedAtAttribute($date)
+    /**
+     * @return string
+     */
+    public function getPlatformNameAttribute(): string
     {
-        return Carbon::parse($date)->setTimezone('Europe/Brussels');
+        return $this->platform->name;
     }
+
+    public function getTerritorialScopeAttribute(): array
+    {
+        return $this->getRawKeys('territorial_scope');
+    }
+
+    public function getContentTypeAttribute($value)
+    {
+        return $this->getRawKeys('content_type');
+    }
+
+    public function getDecisionVisibilityAttribute($value)
+    {
+        return $this->getRawKeys('decision_visibility');
+    }
+
+    public function getCategoryAdditionAttribute($value)
+    {
+        return $this->getRawKeys('category_addition');
+    }
+
+
+
+    // Function to convert enum keys to their corresponding values
+    public static function getEnumValues(array $keys): array
+    {
+        $enumValues = [];
+
+        foreach ($keys as $key) {
+            // Use constant() to get the value of the constant by its name
+            $value = constant('App\Models\Statement::' . $key);
+
+            if ($value !== null) {
+                $enumValues[] = $value;
+            }
+        }
+
+        sort($enumValues);
+
+        return $enumValues;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getRawKeys($key): mixed
+    {
+        if(is_null($this->getRawOriginal($key))) return [];
+        $out = null;
+
+        // Catch potential bad json here.
+        try {
+            $out = json_decode($this->getRawOriginal($key));
+        } catch (Exception $e) {
+            $out = [];
+        }
+
+
+        if (is_array($out)) {
+            sort($out);
+        } else {
+            $out = [];
+        }
+
+        return $out;
+    }
+
 }

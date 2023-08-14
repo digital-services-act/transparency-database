@@ -16,7 +16,7 @@ send an email request with your platform information to the following:
 Once verified your account will then be link to your platform and you will have the 
 ability to generate an API token.
 
-If you have other inquiries and/or matters to discuss then please email the following:
+If you have other inquiries to discuss then please email the following:
 
 <pre>
     CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
@@ -69,30 +69,32 @@ Example JSON payload body:
 
 ```json
 {
-    "decision_visibility": "DECISION_VISIBILITY_CONTENT_DISABLED",
+    "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+    "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-    "content_type": "CONTENT_TYPE_VIDEO",
-    "category": "STATEMENT_CATEGORY_FRAUD",
+    "decision_ground_reference_url": "https://www.anurl.com",
+    "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
+    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
     "illegal_content_legal_ground": "illegal content legal grounds",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
-    "countries_list": [
+    "territorial_scope": [
         "PT",
         "ES",
         "DE"
     ],
-    "start_date": "2022-12-01 17:52:24",
+    "content_language": "EN",
+    "content_date": "2023-08-08",
+    "application_date": "2023-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
-    "source": "foomen",
     "automated_detection": "No",
-    "automated_decision": "No",
-    "url": "https://theurl.com",
+    "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
     "puid": "TK421"
 }
 ```
@@ -106,31 +108,35 @@ You will also receive a payload with the statement as created in the database:
 
 ```json
 {
-    "decision_visibility": "DECISION_VISIBILITY_CONTENT_DISABLED",
+    "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+    "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+    "decision_ground_reference_url": "https://www.anurl.com",
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
-    "content_type": "CONTENT_TYPE_VIDEO",
-    "category": "STATEMENT_CATEGORY_FRAUD",
-    "countries_list": [
+    "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
+    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
+    "territorial_scope": [
         "PT",
         "ES",
         "DE"
     ],
-    "start_date": "2022-12-01 17:52:24",
+    "content_language": "EN",
+    "content_date": "2023-08-08",
+    "application_date": "2023-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
-    "source": "foomen",
     "automated_detection": "No",
-    "automated_decision": "No",
-    "url": "https://theurl.com",
+    "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
+    "end_date": null,
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
-    "created_at": "2023-06-08T20:02:50.000000Z",
+    "platform_name": "...",
+    "created_at": "2023-08-08 08:08:08",
     "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "self": ".... api/v1/statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225"
 }
@@ -167,7 +173,7 @@ recipient of the service.
 
 This attribute is mandatory only if the following fields are empty: decision_monetary, decision_provision and decision_account
 
-The value provided must be one of the following:
+The value provided must be an array with at least one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
@@ -249,6 +255,26 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
+
+### Account Type (account_type)
+
+This is an attribute that tells us about the account's type.
+
+This attribute is optional.
+
+The value provided must be one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::ACCOUNT_TYPES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
 ### Facts and circumstances relied on in taking the decision (decision_facts)
 
 This is a required textual field to describe the facts and circumstances relied on in 
@@ -270,6 +296,13 @@ This is a required field and tells us the basis on which the decision was taken.
     }
 @endphp
 </ul>
+
+
+### Decision Ground Reference Url (decision_ground_reference_url)
+
+This is an url to the TOS or Law relied upon in taking the decision.
+
+This is an optional attribute.
 
 ### Illegal Content Legal Grounds (illegal_content_legal_ground)
 
@@ -296,7 +329,7 @@ Limited to 500 characters.
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 This is a small text that explains why the content is
-considered as incompatible on that grounds.
+considered as incompatible on that ground.
 
 Limited to 2000 characters.
 
@@ -307,9 +340,10 @@ This indicates to us that not only was the content incompatible but also illegal
 
 ### Content Type (content_type)
 
-This is a required attribute, and it tells us what type of content is targeted by the statement of reason.
+This is a required attribute, and it tells us what type of content is targeted by the statement 
+of reason.
 
-The value provided must be one of the following:
+The value provided must be an array with at least one of the following:
 
 <ul class='ecl-unordered-list'>
 @php
@@ -346,22 +380,73 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Countries List (countries_list)
+### Additional Categories (category_addition)
 
-This is the required territorial scope of the restriction. Each value must be the 2 letter iso code
-for the country and the countries must be EU countries.
+This is an optional attribute, and it tells us which additional categories the statement belongs to.
+
+The value provided must be an array with one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
+### Territorial Scope (territorial_scope)
+
+This is the optional territorial scope of the restriction. Each value must be the 2 letter iso code
+for the country and the countries must be (EU/EEA) countries. 
+
+The value provided must be an array.
 
 Allowed values are:
 
-@php echo implode(', ', \App\Models\Statement::EUROPEAN_COUNTRY_CODES); @endphp
+@php echo implode(', ', \App\Services\EuropeanCountriesService::EUROPEAN_COUNTRY_CODES); @endphp
 
-### Start Date (start_date)
+For European Union (EU) use:
 
-This is the date and time that this decision starts from. The date needs to take the form of:
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES) . '"]'; @endphp
 
-```YYYY-MM-DD HH:MM:SS```
+For European Economic Area (EEA) use:
 
-The ```HH:MM:SS``` is optional and may be omitted.
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
+
+### Content Language (content_language)
+
+This is the language that the content was in.
+
+This attribute is optional.
+
+The value though must be one of the uppercase two letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) codes.
+
+Ex, 
+
+@php echo '"' . implode('", "', \App\Services\EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES) . '"'; @endphp
+
+### Content Date (content_date)
+
+This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after 2020-01-01.
+
+### Application Date (application_date)
+
+This is the date and hour that this decision starts from. The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after 2020-01-01.
 
 ### End Date (end_date)
 
@@ -369,9 +454,59 @@ This is the date and time that this decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
-```YYYY-MM-DD HH:MM:SS```
+```YYYY-MM-DD```
 
-The ```HH:MM:SS``` is optional and may be omitted.
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of account restriction (end_date_account_restriction)
+
+This is the date and time that the decision on the account ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of monetary restriction (end_date_monetary_restriction)
+
+This is the date and time that the monetary decision ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of service restriction (end_date_service_restriction)
+
+This is the date and time that the provision decision ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
+
+### End Date of visibility restriction (end_date_visibility_restriction)
+
+This is the date and time that the visibility decision ends. Leave blank for indefinite.
+
+The date needs to take the form of:
+
+```YYYY-MM-DD```
+
+The day, month, and hour have leading zeroes.
+
+The date must be after or equal to the application date.
 
 ### Information source (source_type)
 
@@ -391,9 +526,9 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Source/Notifier (source)
+### Source Identity (source_identity)
 
-This is a required field if the source type field was a notice.
+This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type' is set to 'SOURCE_VOLUNTARY'  
 
 Limited to 500 characters.
 
@@ -404,16 +539,19 @@ This indicates to us that decision taken in respect of automatically detected me
 
 ### Automated Decision (automated_decision)
 
-This is a required attribute and it must be in the form "Yes" or "No".
-This indicates to us that decision carried out automatically.
+This is a required attribute and it must be one of the following:
 
-### URL (url)
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::AUTOMATED_DECISIONS as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
 
-This is a required attribute. This contains the URL/URI to the data that has been moderated.
-In cases where there is no URL or it is non applicable please supply "N/A". Additionally take
-care to redact any personal identifying information.
-
-Limited to 500 characters.
 
 ### Platform Unique Identifier (puid)
 
@@ -433,7 +571,7 @@ expect the following to occur:
 
 For Ex,
 
-You made an API with a blank JSON payload
+You made an API with a blank JSON payload or an invalid JSON payload.
 
 ```javascript
 {}
@@ -468,8 +606,8 @@ The payload body will be a JSON object containing more information and the error
         "category": [
             "The category field is required."
         ],
-        "start_date": [
-            "The start date field is required."
+        "application_date": [
+            "The application date field is required."
         ],
         "decision_facts": [
             "The decision facts field is required."
@@ -477,17 +615,11 @@ The payload body will be a JSON object containing more information and the error
         "source_type": [
             "The source type field is required."
         ],
-        "source": [
-            "The source field is required when source type is a notice submission."
-        ],
         "automated_detection": [
             "The automated detection field is required."
         ],
         "automated_decision": [
             "The automated decision field is required."
-        ],
-        "url": [
-            "The url field is required."
         ],
         "puid": [
             "The puid field is required."
@@ -536,3 +668,26 @@ troubleshoot and resolve the problem.
 When there is an error of 5XX we are immediately notified and there is no need 
 to report the issue.
  
+## Source Code
+
+The source code for this application can be viewed here:
+
+[DSA Transparency Database Source - GitHub](https://github.com/digital-services-act/transparency-database)
+
+Using the repository code you can even setup and run a local replica development testing area.
+
+Within the github environment you are also more than welcome to give feedback, pull requests and 
+reviews concerning the source code. 
+
+## Postman & Code Examples
+
+In the source repository for this application you will find 2 files to help you setup a 
+postman playground that will allow you to make random statements of reason using the API.
+
+Postman will then allow you to generate code samples in many software coding languages
+such as Java, PHP, CURL, Python and many many more.
+
+- [Postman Requests Collection](https://github.com/digital-services-act/transparency-database/blob/main/DSA%20module%202%20API.postman_collection.json)
+- [Sample Postman Local Environment](https://github.com/digital-services-act/transparency-database/blob/main/Local%20DSA%20M2.postman_environment.json) *
+
+_* - The token in the local environment is not valid_

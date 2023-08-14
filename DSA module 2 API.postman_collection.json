@@ -14,14 +14,231 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const body = pm.response.json();",
+							"",
 							"pm.test(\"Status code is 201\", () => {",
 							"  pm.response.to.have.status(201);",
 							"});",
 							"",
-							"const responseJson = pm.response.json();",
-							"pm.environment.set(\"statement_uuid\", responseJson.uuid);",
+							"pm.test(\"Body does contain PUID\", () => {",
+							"  pm.expect(body).to.have.property('puid');",
+							"});",
 							"",
+							"pm.test(\"Body does contain UUID\", () => {",
+							"  pm.expect(body).to.have.property('uuid');",
+							"});",
+							"",
+							"pm.environment.set(\"statement_uuid\", body.uuid);",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let automated_decision = \"AUTOMATED_DECISION_FULLY\";",
+							"let r = Math.random();",
+							"if (r < 0.666) {",
+							"    automated_decision = \"AUTOMATED_DECISION_PARTIALLY\";",
+							"}",
+							"if (r < 0.333) {",
+							"    automated_decision = \"AUTOMATED_DECISION_NOT_AUTOMATED\";",
+							"}",
+							"",
+							"pm.variables.set('automated_decision', automated_decision);",
+							"",
+							"let automated_detection = \"No\";",
+							"if (Math.random() < 0.5) {",
+							"    automated_detection = \"Yes\";",
+							"}",
+							"pm.variables.set('automated_detection', automated_detection);",
+							"",
+							"",
+							"let incompatible_content_illegal = \"No\";",
+							"if (Math.random() < 0.5) {",
+							"    incompatible_content_illegal = \"Yes\";",
+							"}",
+							"pm.variables.set('incompatible_content_illegal', incompatible_content_illegal);",
+							"",
+							"let today = new Date();",
+							"let application_date = today.getFullYear() + \"-\" + ",
+							"    ('0' + (today.getMonth() + 1)).slice(-2) + \"-\" + ",
+							"    ('0' + today.getDate()).slice(-2);",
+							"pm.variables.set('application_date', application_date);",
+							"pm.variables.set('content_date', application_date);",
+							"",
+							"const languages = [",
+							"        'EN',",
+							"        'BG',",
+							"        'HR',",
+							"        'CS',",
+							"        'DA',",
+							"        'NL',",
+							"        'ET',",
+							"        'FI',",
+							"        'FR',",
+							"        'DE',",
+							"        'EL',",
+							"        'HU',",
+							"        'GA',",
+							"        'IT',",
+							"        'LV',",
+							"        'LT',",
+							"        'MT',",
+							"        'PL',",
+							"        'PT',",
+							"        'RO',",
+							"        'SK',",
+							"        'SL',",
+							"        'ES',",
+							"        'SV',",
+							"    ];",
+							"pm.variables.set('content_language', languages[Math.floor((Math.random() * languages.length))]);",
+							"",
+							"let end_date = '';",
+							"if (Math.random() < 0.5) {",
+							"    var six_months = new Date();",
+							"    six_months.setMonth(six_months.getMonth()+6);",
+							"    end_date = six_months.getFullYear() + \"-\" + ",
+							"    ('0' + (six_months.getMonth() + 1)).slice(-2) + \"-\" + ",
+							"    ('0' + six_months.getDate()).slice(-2);",
+							"    ",
+							"}",
+							"pm.variables.set('end_date', end_date);",
+							"",
+							"const source_types = [",
+							"    \"SOURCE_ARTICLE_16\",",
+							"    \"SOURCE_TRUSTED_FLAGGER\",",
+							"    \"SOURCE_VOLUNTARY\"",
+							"];",
+							"pm.variables.set('source_type', source_types[Math.floor((Math.random() * source_types.length))]);",
+							"",
+							"",
+							"const account_types = [",
+							"    \"ACCOUNT_TYPE_BUSINESS\",",
+							"    \"ACCOUNT_TYPE_PRIVATE\"",
+							"];",
+							"pm.variables.set('account_type', account_types[Math.floor((Math.random() * account_types.length))]);",
+							"",
+							"",
+							"",
+							"const european_country_codes = [",
+							"        'AT',",
+							"        'BE',",
+							"        'BG',",
+							"        'CY',",
+							"        'CZ',",
+							"        'DE',",
+							"        'DK',",
+							"        'EE',",
+							"        'ES',",
+							"        'FI',",
+							"        'FR',",
+							"        'GR',",
+							"        'HR',",
+							"        'HU',",
+							"        'IE',",
+							"        'IS',",
+							"        'IT',",
+							"        'LI',",
+							"        'LT',",
+							"        'LU',",
+							"        'LV',",
+							"        'MT',",
+							"        'NL',",
+							"        'NO',",
+							"        'PL',",
+							"        'PT',",
+							"        'RO',",
+							"        'SE',",
+							"        'SI',",
+							"        'SK'",
+							"    ];",
+							"",
+							"let territorial_scope = european_country_codes;",
+							"if (Math.random() < 0.8)",
+							"{",
+							"    territorial_scope = [",
+							"        european_country_codes[Math.floor(Math.random() * european_country_codes.length)],",
+							"        european_country_codes[Math.floor(Math.random() * european_country_codes.length)],",
+							"        european_country_codes[Math.floor(Math.random() * european_country_codes.length)],",
+							"        european_country_codes[Math.floor(Math.random() * european_country_codes.length)],",
+							"        european_country_codes[Math.floor(Math.random() * european_country_codes.length)],",
+							"        european_country_codes[Math.floor(Math.random() * european_country_codes.length)],",
+							"    ];",
+							"}",
+							"territorial_scope = JSON.stringify(territorial_scope);",
+							"pm.variables.set(\"territorial_scope\", territorial_scope);",
+							"",
+							"",
+							"const decision_visibilities = [",
+							"    'DECISION_VISIBILITY_CONTENT_REMOVED',",
+							"    'DECISION_VISIBILITY_CONTENT_DISABLED',",
+							"    'DECISION_VISIBILITY_CONTENT_DEMOTED',",
+							"    'DECISION_VISIBILITY_OTHER',",
+							"];",
+							"pm.variables.set('decision_visibility', decision_visibilities[Math.floor((Math.random() * decision_visibilities.length))]);",
+							"",
+							"",
+							"const decision_monetaries = [",
+							"    'DECISION_MONETARY_SUSPENSION',",
+							"    'DECISION_MONETARY_TERMINATION',",
+							"    'DECISION_MONETARY_OTHER',",
+							"];",
+							"pm.variables.set('decision_monetary', decision_monetaries[Math.floor((Math.random() * decision_monetaries.length))]);",
+							"",
+							"",
+							"const decision_provisions = [",
+							"    'DECISION_PROVISION_PARTIAL_SUSPENSION',",
+							"    'DECISION_PROVISION_TOTAL_SUSPENSION',",
+							"    'DECISION_PROVISION_PARTIAL_TERMINATION',",
+							"    'DECISION_PROVISION_TOTAL_TERMINATION'",
+							"];",
+							"pm.variables.set('decision_provision', decision_provisions[Math.floor((Math.random() * decision_provisions.length))]);",
+							"",
+							"const decision_accounts = [",
+							"    'DECISION_ACCOUNT_SUSPENDED',",
+							"    'DECISION_ACCOUNT_TERMINATED'",
+							"];",
+							"pm.variables.set('decision_account', decision_accounts[Math.floor((Math.random() * decision_accounts.length))]);",
+							"",
+							"const decision_grounds = [",
+							"    'DECISION_GROUND_ILLEGAL_CONTENT',",
+							"    'DECISION_GROUND_INCOMPATIBLE_CONTENT'",
+							"];",
+							"pm.variables.set('decision_ground', decision_grounds[Math.floor((Math.random() * decision_grounds.length))]);",
+							"",
+							"const content_types = [",
+							"    'CONTENT_TYPE_TEXT',",
+							"    'CONTENT_TYPE_VIDEO',",
+							"    'CONTENT_TYPE_IMAGE',",
+							"    'CONTENT_TYPE_OTHER',",
+							"];",
+							"let content_type_one = content_types[Math.floor((Math.random() * content_types.length))];",
+							"let content_type_two = content_types[Math.floor((Math.random() * content_types.length))];",
+							"",
+							"pm.variables.set('content_type', JSON.stringify([content_type_one, content_type_two]));",
+							"",
+							"",
+							"const categories = [",
+							"    'STATEMENT_CATEGORY_ANIMAL_WELFARE',",
+							"    'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS',",
+							"    'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH',",
+							"    'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS',",
+							"    'STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS',",
+							"    'STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR',",
+							"    'STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT',",
+							"    'STATEMENT_CATEGORY_PROTECTION_OF_MINORS',",
+							"    'STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY',",
+							"    'STATEMENT_CATEGORY_SCAMS_AND_FRAUD',",
+							"    'STATEMENT_CATEGORY_SELF_HARM',",
+							"    'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE',",
+							"    'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS',",
+							"    'STATEMENT_CATEGORY_VIOLENCE',",
+							"];",
+							"pm.variables.set('category', categories[Math.floor((Math.random() * categories.length))]);"
 						],
 						"type": "text/javascript"
 					}
@@ -50,7 +267,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"decision_visibility\": \"DECISION_VISIBILITY_CONTENT_DISABLED\",\n    \"decision_monetary\": \"DECISION_MONETARY_TERMINATION\",\n    \"decision_provision\": \"DECISION_PROVISION_TOTAL_SUSPENSION\",\n    \"decision_account\": \"DECISION_ACCOUNT_SUSPENDED\",\n    \"decision_ground\": \"DECISION_GROUND_INCOMPATIBLE_CONTENT\",\n    \"content_type\": \"CONTENT_TYPE_VIDEO\",\n    \"category\": \"STATEMENT_CATEGORY_FRAUD\",\n    \"illegal_content_legal_ground\": \"illegal content legal grounds\",\n    \"illegal_content_explanation\": \"illegal content explanation\",\n    \"incompatible_content_ground\": \"incompatible content grounds\",\n    \"incompatible_content_explanation\": \"incompatible content explanation\",\n    \"incompatible_content_illegal\": \"Yes\",\n    \"countries_list\": [\n        \"PT\",\n        \"ES\",\n        \"DE\"\n    ],\n    \"start_date\": \"2022-12-01 17:52:24\",\n    \"decision_facts\": \"facts about the decision\",\n    \"source_type\": \"SOURCE_TRUSTED_FLAGGER\",\n    \"source\": \"foomen\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"Yes\",\n    \"url\": \"https://theurl.com\",\n    \"puid\": \"{{$randomUUID}}\"\n}",
+					"raw": "{\n    \"decision_visibility\": \"{{decision_visibility}}\",\n    \"decision_visibility_other\": \"{{$randomWords}}\",\n    \"decision_monetary\": \"{{decision_monetary}}\",\n    \"decision_monetary_other\": \"{{$randomWords}}\",\n    \"decision_provision\": \"{{decision_provision}}\",\n    \"decision_account\": \"{{decision_account}}\",\n    \"account_type\": \"{{account_type}}\",\n    \"decision_ground\": \"{{decision_ground}}\",\n    \"decision_ground_reference_url\": \"{{$randomUrl}}\",\n    \"content_type\": {{content_type}},\n    \"content_type_other\": \"{{$randomWords}}\",\n    \"content_language\": \"{{content_language}}\",\n    \"category\": \"{{category}}\",\n    \"illegal_content_legal_ground\": \"{{$randomWords}}\",\n    \"illegal_content_explanation\": \"{{$randomPhrase}}\",\n    \"incompatible_content_ground\": \"{{$randomWords}}\",\n    \"incompatible_content_explanation\": \"{{$randomPhrase}}\",\n    \"incompatible_content_illegal\": \"{{incompatible_content_illegal}}\",\n    \"territorial_scope\": {{territorial_scope}},\n    \"content_date\": \"{{content_date}}\",\n    \"application_date\": \"{{application_date}}\",\n    \"end_date\": \"{{end_date}}\",\n    \"decision_facts\": \"{{$randomPhrase}}\",\n    \"source_type\": \"{{source_type}}\",\n    \"source\": \"{{$randomNoun}}\",\n    \"automated_detection\": \"{{automated_detection}}\",\n    \"automated_decision\": \"{{automated_decision}}\",\n    \"url\": \"{{$randomUrl}}\",\n    \"puid\": \"{{$randomUUID}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -71,106 +288,7 @@
 				},
 				"description": "Create a statement of reason in the database. A JSON payload body is sent with the attributes defined."
 			},
-			"response": [
-				{
-					"name": "Create Statement",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"illegal_content_legal_ground\": \"Dolore voluptas cupiditate consectetur. Maxime aut enim qui veniam autem.\",\n    \"illegal_content_explanation\": \"Est adipisci id et. Aut qui molestiae distinctio iste unde perferendis.\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"source_other\": \"Reiciendis iste asperiores non quam dolores quo autem consequatur. Eveniet non officiis ut aut.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"category\": \"PIRACY\",\n    \"url\": \"https://theurl.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://{{hostname}}/api/{{api_version}}/statement",
-							"protocol": "https",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"api",
-								"{{api_version}}",
-								"statement"
-							]
-						}
-					},
-					"status": "Created",
-					"code": 201,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Date",
-							"value": "Tue, 23 May 2023 07:30:06 GMT"
-						},
-						{
-							"key": "Server",
-							"value": "Apache/2.4.54 (Unix) OpenSSL/1.0.2u PHP/8.1.13 mod_wsgi/3.5 Python/2.7.18 mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_perl/2.0.11 Perl/v5.30.1"
-						},
-						{
-							"key": "Vary",
-							"value": "Authorization"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "PHP/8.1.13"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, private"
-						},
-						{
-							"key": "X-RateLimit-Limit",
-							"value": "1000"
-						},
-						{
-							"key": "X-RateLimit-Remaining",
-							"value": "998"
-						},
-						{
-							"key": "phpdebugbar-id",
-							"value": "X4ec00793ddbd06dcfad24ea37d1358c5"
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*"
-						},
-						{
-							"key": "Keep-Alive",
-							"value": "timeout=5, max=100"
-						},
-						{
-							"key": "Connection",
-							"value": "Keep-Alive"
-						},
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"category\": \"PIRACY\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"url\": \"https://theurl.com\",\n    \"uuid\": \"418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"created_at\": \"2023-05-23T07:30:07.000000Z\",\n    \"permalink\": \"https://transparency.test/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"self\": \"https://transparency.test/api/v1/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\"\n}"
-				}
-			]
+			"response": []
 		},
 		{
 			"name": "Get Statement",
@@ -179,8 +297,15 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const body = pm.response.json();",
+							"",
 							"pm.test(\"Status code is 200\", () => {",
 							"  pm.response.to.have.status(200);",
+							"  pm.response.to.have.jsonBody;",
+							"});",
+							"",
+							"pm.test(\"Body does not contain PUID\", () => {",
+							"  pm.expect(body.puid).to.be.an('undefined')",
 							"});"
 						],
 						"type": "text/javascript"
@@ -222,103 +347,30 @@
 				},
 				"description": "Retrieve the information of a statement of reason from the database."
 			},
-			"response": [
-				{
-					"name": "Get Statement",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://{{hostname}}/api/{{api_version}}/statement/:statement_uuid",
-							"protocol": "https",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"api",
-								"{{api_version}}",
-								"statement",
-								":statement_uuid"
-							],
-							"variable": [
-								{
-									"key": "statement_uuid",
-									"value": "{{statement_uuid}}",
-									"description": "The uuid that identifies each statement"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Date",
-							"value": "Tue, 23 May 2023 07:30:39 GMT"
-						},
-						{
-							"key": "Server",
-							"value": "Apache/2.4.54 (Unix) OpenSSL/1.0.2u PHP/8.1.13 mod_wsgi/3.5 Python/2.7.18 mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_perl/2.0.11 Perl/v5.30.1"
-						},
-						{
-							"key": "Vary",
-							"value": "Authorization"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "PHP/8.1.13"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, private"
-						},
-						{
-							"key": "X-RateLimit-Limit",
-							"value": "1000"
-						},
-						{
-							"key": "X-RateLimit-Remaining",
-							"value": "999"
-						},
-						{
-							"key": "phpdebugbar-id",
-							"value": "Xcc5beac11491f10ffc59c0388fa1b0d4"
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*"
-						},
-						{
-							"key": "Keep-Alive",
-							"value": "timeout=5, max=100"
-						},
-						{
-							"key": "Connection",
-							"value": "Keep-Alive"
-						},
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"uuid\": \"418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"decision_taken\": \"DECISION_TERMINATION\",\n    \"decision_ground\": \"INCOMPATIBLE_CONTENT\",\n    \"category\": \"PIRACY\",\n    \"illegal_content_legal_ground\": null,\n    \"illegal_content_explanation\": null,\n    \"incompatible_content_ground\": \"Autem maxime quo repellat eius. Velit quos rerum in in ut quas numquam.\",\n    \"incompatible_content_explanation\": \"Voluptas velit earum iste neque vitae dolorem. Quis necessitatibus incidunt id iusto.\",\n    \"countries_list\": [\n        \"SE\",\n        \"NL\",\n        \"SK\",\n        \"SI\",\n        \"GR\",\n        \"DE\"\n    ],\n    \"date_abolished\": \"2022-11-27 15:22:15\",\n    \"source\": \"SOURCE_VOLUNTARY\",\n    \"source_explanation\": \"Facilis corporis dolor dolor cupiditate. Cum est quia officia sint. Distinctio est inventore qui.\",\n    \"automated_detection\": \"No\",\n    \"automated_decision\": \"No\",\n    \"automated_takedown\": \"Yes\",\n    \"url\": \"https://theurl.com\",\n    \"created_at\": \"2023-05-23T07:30:07.000000Z\",\n    \"permalink\": \"https://transparency.test/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\",\n    \"self\": \"https://transparency.test/api/v1/statement/418fe70c-2923-428f-888d-13c7f52c5a6a\"\n}"
-				}
-			]
+			"response": []
 		},
 		{
 			"name": "Ping",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"There was a pong\", () => {",
+							"  pm.response.to.have.status(200);",
+							"  pm.expect(body).to.have.property('i_say');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true
@@ -348,87 +400,7 @@
 					]
 				}
 			},
-			"response": [
-				{
-					"name": "Ping",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://{{hostname}}/api/ping",
-							"protocol": "https",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"api",
-								"ping"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Date",
-							"value": "Mon, 13 Mar 2023 19:29:05 GMT"
-						},
-						{
-							"key": "Server",
-							"value": "Apache/2.4.54 (Unix) OpenSSL/1.0.2u PHP/8.1.13 mod_wsgi/3.5 Python/2.7.18 mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_perl/2.0.11 Perl/v5.30.1"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "PHP/8.1.13"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, private"
-						},
-						{
-							"key": "X-RateLimit-Limit",
-							"value": "1000"
-						},
-						{
-							"key": "X-RateLimit-Remaining",
-							"value": "999"
-						},
-						{
-							"key": "phpdebugbar-id",
-							"value": "X7324373e055389dfdf28078453cd7293"
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*"
-						},
-						{
-							"key": "Keep-Alive",
-							"value": "timeout=5, max=100"
-						},
-						{
-							"key": "Connection",
-							"value": "Keep-Alive"
-						},
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"you_say\": \"ping\",\n    \"i_say\": \"pong\"\n}"
-				}
-			]
+			"response": []
 		}
 	],
 	"auth": {
