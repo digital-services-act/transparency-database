@@ -430,81 +430,69 @@ Ex,
 
 ### Content Date (content_date)
 
-This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
+This is the date that this content was uploaded or posted. The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after 2020-01-01.
 
 ### Application Date (application_date)
 
-This is the date and hour that this decision starts from. The date needs to take the form of:
+This is the date that this decision starts from. The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after 2020-01-01.
 
-### End Date (end_date)
-
-This is the date and time that this decision ends. Leave blank for indefinite.
-
-The date needs to take the form of:
-
-```YYYY-MM-DD```
-
-The day, month, and hour have leading zeroes.
-
-The date must be after or equal to the application date.
-
 ### End Date of account restriction (end_date_account_restriction)
 
-This is the date and time that the decision on the account ends. Leave blank for indefinite.
+This is the date that the decision on the account ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
 ### End Date of monetary restriction (end_date_monetary_restriction)
 
-This is the date and time that the monetary decision ends. Leave blank for indefinite.
+This is the date that the monetary decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
 ### End Date of service restriction (end_date_service_restriction)
 
-This is the date and time that the provision decision ends. Leave blank for indefinite.
+This is the date that the provision decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
 ### End Date of visibility restriction (end_date_visibility_restriction)
 
-This is the date and time that the visibility decision ends. Leave blank for indefinite.
+This is the date that the visibility decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
