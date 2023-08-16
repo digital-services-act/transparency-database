@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use stdClass;
+use App\Http\Controllers\Traits\Sanitizer;
 
 
 class StatementController extends Controller
@@ -29,6 +30,8 @@ class StatementController extends Controller
     protected EuropeanCountriesService $european_countries_service;
     protected EuropeanLanguagesService $european_languages_service;
     protected DriveInService $drive_in_service;
+
+    use Sanitizer;
 
     public function __construct(
         StatementQueryService $statement_query_service,
@@ -159,28 +162,7 @@ class StatementController extends Controller
             'method' => Statement::METHOD_FORM
         ])->toArray();
 
-        $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
-        $validated['content_date'] = $this->sanitizeDate($validated['content_date'] ?? null);
-        $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
-        $validated['end_date_monetary_restriction'] = $this->sanitizeDate($validated['end_date_monetary_restriction'] ?? null);
-        $validated['end_date_visibility_restriction'] = $this->sanitizeDate($validated['end_date_visibility_restriction'] ?? null);
-        $validated['end_date_account_restriction'] = $this->sanitizeDate($validated['end_date_account_restriction'] ?? null);
-        $validated['end_date_service_restriction'] = $this->sanitizeDate($validated['end_date_service_restriction'] ?? null);
-
-
-
-        $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
-        $validated['content_type'] = array_unique($validated['content_type']);
-        sort($validated['content_type']);
-        if(array_key_exists('decision_visibility',$validated)){
-            $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
-            sort($validated['decision_visibility']);
-        }
-
-        if(array_key_exists('category_specification',$validated)){
-            $validated['category_specification'] = array_unique($validated['category_specification']);
-            sort($validated['category_specification']);
-        }
+        $validated = $this->sanitizeData($validated);
 
         try {
             Statement::create($validated);

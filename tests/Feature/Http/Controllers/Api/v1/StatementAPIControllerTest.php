@@ -751,6 +751,56 @@ class StatementAPIControllerTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function store_should_save_not_duplicate_categories()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'category' => 'STATEMENT_CATEGORY_VIOLENCE',
+            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_VIOLENCE'],
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->category);
+        $this->assertNotNull($statement->category_addition);
+        $this->assertCount(1,$statement->category_addition);
+
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_save_not_empty_additional_categories()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'category' => 'STATEMENT_CATEGORY_VIOLENCE',
+            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_VIOLENCE'],
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->category);
+        $this->assertNotNull($statement->category_addition);
+        $this->assertCount(1,$statement->category_addition);
+
+    }
+
 
 
 }
