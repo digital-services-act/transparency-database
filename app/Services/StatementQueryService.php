@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -30,9 +29,11 @@ class StatementQueryService
         'decision_monetary',
         'decision_provision',
         'decision_account',
+        'account_type',
         'category',
         'content_type',
-        'countries_list',
+        'content_language',
+        'territorial_scope',
         'source_type'
     ];
 
@@ -48,7 +49,9 @@ class StatementQueryService
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
-                    $this->$method($statements, $filters[$filter_key]);
+                    if( method_exists($this,$method)) {
+                        $this->$method($statements, $filters[$filter_key]);
+                    }
                 } catch (\TypeError|\Exception $e) {
                     Log::error("Statement Query Service Error: " . $e->getMessage());
                 }
@@ -77,7 +80,7 @@ class StatementQueryService
         $query->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('source', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('url', 'LIKE', '%' . $filter_value . '%');
     }
 
@@ -131,7 +134,7 @@ class StatementQueryService
      */
     private function applyAutomatedDecisionFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DECISIONS);
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::AUTOMATED_DECISIONS));
         if ($filter_values_validated) {
             $query->whereIn('automated_decision', $filter_values_validated);
         }
@@ -161,7 +164,9 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
         if ($filter_values_validated) {
-            $query->whereIn('decision_visibility', $filter_value);
+            foreach ($filter_values_validated as $decision_visibility) {
+                $query->where('decision_visibility', 'LIKE', '%"' . $decision_visibility . '"%');
+            }
         }
     }
 
@@ -207,6 +212,25 @@ class StatementQueryService
         }
     }
 
+    private function applyAccountTypeFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::ACCOUNT_TYPES));
+        if ($filter_values_validated) {
+            $query->whereIn('account_type', $filter_value);
+        }
+    }
+
+    private function applyCategorySpecificationFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::KEYWORDS));
+        if ($filter_values_validated) {
+            foreach ($filter_values_validated as $category_specification) {
+                $query->where('category_specification', 'LIKE', '%"' . $category_specification . '"%');
+            }
+        }
+    }
+
+
     /**
      * @param Builder $query
      * @param array $filter_value
@@ -217,8 +241,21 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
         if ($filter_values_validated) {
-            $query->whereIn('content_type', $filter_value);
+            foreach ($filter_values_validated as $content_type) {
+                $query->where('content_type', 'LIKE', '%"' . $content_type . '"%');
+            }
         }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyContentLanguageFilter(Builder $query, array $filter_value): void
+    {
+        $query->whereIn('content_type', $filter_value);
     }
 
     /**
@@ -231,7 +268,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::STATEMENT_CATEGORIES));
         if ($filter_values_validated) {
-            $query->whereIn('category', $filter_value);
+            $query->whereIn('category', $filter_values_validated);
         }
     }
 
@@ -265,13 +302,15 @@ class StatementQueryService
      *
      * @return void
      */
-    private function applyCountriesListFilter(Builder $query, array $filter_value): void
+    private function applyTerritorialScopeFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, Statement::EUROPEAN_COUNTRY_CODES);
+        $filter_values_validated = array_intersect($filter_value, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         if ($filter_values_validated) {
             foreach ($filter_values_validated as $country) {
-                $query->where('countries_list', 'LIKE', '%"' . $country . '"%');
+                $query->where('territorial_scope', 'LIKE', '%"' . $country . '"%');
             }
         }
     }
+
+
 }

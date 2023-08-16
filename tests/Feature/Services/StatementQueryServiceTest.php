@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-
-use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -54,10 +52,11 @@ class StatementQueryServiceTest extends TestCase
     public function it_filters_on_automated_decision()
     {
         $this->setUpFullySeededDatabase(); // 10 statements
-        $automated_count = $this->statement_query_service->query(['automated_decision' => ['Yes']])->count();
-        $manual_count = $this->statement_query_service->query(['automated_decision' => ['No']])->count();
+        $fully_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_FULLY']])->count();
+        $partially_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_PARTIALLY']])->count();
+        $not_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_NOT_AUTOMATED']])->count();
 
-        $total = $automated_count + $manual_count;
+        $total = $fully_count + $partially_count + $not_count;
 
         $this->assertEquals(10, $total);
     }
@@ -65,14 +64,14 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_countries_list()
+    public function it_filters_on_territorial_scope()
     {
         $filters = [
-            'countries_list' => ["FR", "DE", "NL", "XX"]
+            'territorial_scope' => ["FR", "DE", "NL", "XX"]
         ];
         // The XX should be filtered out... ;)
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "countries_list" LIKE ? and "countries_list" LIKE ? and "countries_list" LIKE ? and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements" where "territorial_scope" LIKE ? and "territorial_scope" LIKE ? and "territorial_scope" LIKE ? and "statements"."deleted_at" is null', $sql);
     }
 
     /**

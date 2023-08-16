@@ -47,6 +47,7 @@ Bootstrap the application
 php artisan key:generate
 chmod -R 777 storage
 php artisan migrate:fresh --seed
+php artisan reset-application
 ```
 
 #### Running the app

@@ -15,7 +15,7 @@
 
     <form method="post" action="{{route('statement.store')}}" id="create-statement-form">
         @csrf
-        <x-statement-form :statement="$statement" :options="$options" />
+        <x-statement.form :statement="$statement" :options="$options" />
 {{--        <x-ecl.button label="Create statement" type="submit" id="submitter"/>--}}
     </form>
 
