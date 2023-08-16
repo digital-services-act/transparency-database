@@ -22,15 +22,18 @@
                                                                   aria-label="Link to Contact information of the DG">Contact information</a></li>
                     </ul>
                 </div>
-{{--                <div class="ecl-site-footer__section">--}}
-{{--                    <h2 class="ecl-site-footer__title ecl-site-footer__title--separator">--}}
-{{--                        Our data </h2>--}}
-{{--                    <ul class="ecl-site-footer__list">--}}
-{{--                        <li class="ecl-site-footer__list-item"><a href="{{route('datasets.index')}}"--}}
-{{--                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"--}}
-{{--                                                                  aria-label="Link to Contact information of the DG">Datasets</a></li>--}}
-{{--                    </ul>--}}
-{{--                </div>--}}
+                <div class="ecl-site-footer__section">
+                    <h2 class="ecl-site-footer__title ecl-site-footer__title--separator">
+                        Documentation </h2>
+                    <ul class="ecl-site-footer__list">
+                        <li class="ecl-site-footer__list-item"><a href="{{route('page.show',['page'=>'api-documentation'])}}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Link to Contact information of the DG">API Documentation</a></li>
+                        <li class="ecl-site-footer__list-item"><a href="{{route('page.additional-explanation')}}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Link to Contact information of the DG">Additional Explanation For Statement Attributes</a></li>
+                    </ul>
+                </div>
             </div>
             <div class="ecl-site-footer__column">
                 <div class="ecl-site-footer__section">

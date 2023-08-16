@@ -81,6 +81,17 @@
           });
         });
 
+        jQuery(document).ready(function($){
+            $('#content-area > h3').each(function(e){
+                var dis = $(this)
+                var t = dis.text();
+                var id = slugify(t);
+                dis.attr('id', id);
+
+                // $('#toc-list').append('<li><a href="#'+id+'">' + t + '</a></li>');
+            });
+        });
+
 
 
         hljs.highlightAll();

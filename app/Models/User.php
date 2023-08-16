@@ -60,7 +60,7 @@ class User extends Authenticatable
 
         }
         $attributes['password'] = Str::random(16);
-        if (isset($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
+        if (isset ($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
             if (isset($attributes['domainUsername'])) $username = $attributes['domainUsername'];
             if (isset($attributes['eu_login_username'])) $username = $attributes['eu_login_username'];
             $attributes['name'] = isset($attributes['firstName']) && isset($attributes['lastName'])

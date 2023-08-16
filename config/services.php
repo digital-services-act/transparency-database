@@ -33,8 +33,8 @@ return [
 
     'drivein' => [
         'key' => env('DRIVEIN_KEY'),
-        'base' => env('DRIVEIN_BASE'),
-        'wss' => env('DRIVEIN_WSS_URL'),
+        'base' => env('DRIVEIN_BASE', 'https://analytics-api.cnect.eu/'),
+        'wss' => env('DRIVEIN_WSS_URL', 'wss://analytics-ws.cnect.eu'),
     ],
 
 ];
