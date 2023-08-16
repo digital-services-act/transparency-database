@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 
 class StatementAPIController extends Controller
 {
+    use Sanitizer;
+
     protected EuropeanCountriesService $european_countries_service;
     public function __construct(
         EuropeanCountriesService $european_countries_service,
@@ -37,26 +40,7 @@ class StatementAPIController extends Controller
             ]
         )->toArray();
 
-        $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
-        $validated['content_date'] = $this->sanitizeDate($validated['content_date'] ?? null);
-        $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
-        $validated['end_date_monetary_restriction'] = $this->sanitizeDate($validated['end_date_monetary_restriction'] ?? null);
-        $validated['end_date_visibility_restriction'] = $this->sanitizeDate($validated['end_date_visibility_restriction'] ?? null);
-        $validated['end_date_account_restriction'] = $this->sanitizeDate($validated['end_date_account_restriction'] ?? null);
-        $validated['end_date_service_restriction'] = $this->sanitizeDate($validated['end_date_service_restriction'] ?? null);
-
-        $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
-        $validated['content_type'] = array_unique($validated['content_type']);
-        sort($validated['content_type']);
-        if(array_key_exists('decision_visibility',$validated)){
-            $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
-            sort($validated['decision_visibility']);
-        }
-        if(array_key_exists('category_specification',$validated)){
-            $validated['category_specification'] = array_unique($validated['category_specification']);
-            sort($validated['category_specification']);
-        }
-
+        $validated = $this->sanitizeData($validated);
 
         try {
             $statement = Statement::create($validated);
@@ -90,4 +74,6 @@ class StatementAPIController extends Controller
 
         return response()->json($out, Response::HTTP_CREATED);
     }
+
+
 }
