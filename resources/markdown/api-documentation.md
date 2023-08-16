@@ -164,7 +164,7 @@ The attributes of the statement take on two main forms.
 
 When submitting statements please take care to not submit ANY personal data. On a
 regular basis we will do checks on the database to ensure that no personal data has been
-submitted. However, we kindly ask that you help us out by not submitting any.
+submitted. However, in accordance with Article 24(5), it is the obligation of providers of online platforms to ensure that the information submitted does not contain personal data.
 
 ### Decision Visibility (decision_visibility)
 
@@ -314,7 +314,7 @@ Limited to 500 characters.
 ### Illegal Content Explanation (illegal_content_explanation)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
-This is a small text that explains why the content was illegal.
+This is a text that explains why the content was illegal.
 
 Limited to 2000 characters.
 
@@ -328,15 +328,14 @@ Limited to 500 characters.
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
-This is a small text that explains why the content is
-considered as incompatible on that ground.
+This is a text that explains why the content is considered as incompatible on that ground.
 
 Limited to 2000 characters.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
 
-This is a required attribute and it must be in the form "Yes" or "No".
-This indicates to us that not only was the content incompatible but also illegal.
+This is an optional attribute and it can be in the form "Yes" or "No".
+This is a possibility to indicate that the content was not only considered incompatible but also illegal.
 
 ### Content Type (content_type)
 
@@ -359,7 +358,7 @@ The value provided must be an array with at least one of the following:
 ### Content Type Other (content_type_other)
 
 This is required if CONTENT_TYPE_OTHER was the content_type.
-It is a content type that is not text, video or an image.
+It is a content type that is not part of provided content type list.
 
 Limited to 500 characters.
 
@@ -422,7 +421,7 @@ Limited to 500 characters.
 
 ### Territorial Scope (territorial_scope)
 
-This is the optional territorial scope of the restriction. Each value must be the 2 letter iso code
+This is a required attribute that defines territorial scope of the restriction. Each value must be the 2-letter iso code
 for the country and the countries must be (EU/EEA) countries. 
 
 The value provided must be an array.
