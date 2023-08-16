@@ -92,6 +92,15 @@
                 :options="$options['categories']"
         />
 
+        <x-ecl.checkboxes
+            :label="Statement::LABEL_KEYWORDS"
+            justlabel="true"
+            name="category_specification"
+            id="category_specification"
+            :default="request()->get('category_specification', [])"
+            :options="$options['category_specifications']"
+        />
+
         <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
                                name="territorial_scope"
                                id="territorial_scope"

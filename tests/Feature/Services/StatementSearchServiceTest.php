@@ -105,6 +105,20 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
+    public function it_filters_on_category_specification()
+    {
+        $filters = [
+            'category_specification' => array_keys(Statement::KEYWORDS),
+        ];
+        $search = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertStringContainsString('category_specification:KEYWORD_ANIMAL_HARM OR category_specification:', $query);
+    }
+
+    /**
+     * @test
+     */
     public function it_filters_on_decision_monetary()
     {
         $filters = [

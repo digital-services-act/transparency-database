@@ -45,7 +45,8 @@ class StatementStoreRequest extends FormRequest
             'decision_provision' => [$this->in(array_keys(Statement::DECISION_PROVISIONS), true), 'required_without_all:decision_visibility,decision_monetary,decision_account', 'nullable'],
             'decision_account' => [$this->in(array_keys(Statement::DECISION_ACCOUNTS), true), 'required_without_all:decision_visibility,decision_monetary,decision_provision', 'nullable'],
             'account_type' => [$this->in(array_keys(Statement::ACCOUNT_TYPES), true), 'nullable'],
-
+            'category_specification' => ['array', $this->in(array_keys(Statement::KEYWORDS), true), 'nullable'],
+            'category_specification_other' => ['max:500'],
 
             'decision_ground' => ['required', $this->in(array_keys(Statement::DECISION_GROUNDS))],
             'decision_ground_reference_url' => ['url', 'nullable', 'max:500'],
@@ -136,5 +137,7 @@ class StatementStoreRequest extends FormRequest
         $check = (array)$this->get('source_type', []);
         return in_array('SOURCE_VOLUNTARY', $check);
     }
+
+
 
 }

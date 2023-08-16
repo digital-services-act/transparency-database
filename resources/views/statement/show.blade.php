@@ -123,11 +123,21 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY_ADDITION"
                 content="{{ implode(', ',$statement_additional_categories) }}"></x-infoline>
 
+    <x-infoline :title="Statement::LABEL_KEYWORDS"
+                content="{{ implode(', ',$category_specifications) }}"></x-infoline>
+
+
+    <x-infoline :title="Statement::LABEL_KEYWORDS_OTHER"
+                :content="$statement->category_specification_other"></x-infoline>
+
+
+
     <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_TYPE"
                 :content="Statement::SOURCE_TYPES[$statement->source_type]"></x-infoline>
 
     @if($statement->source_type !== 'SOURCE_VOLUNTARY')
-        <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_IDENTITY" :content="$statement->source_identity"></x-infoline>
+        <x-infoline :title="Statement::LABEL_STATEMENT_SOURCE_IDENTITY"
+                    :content="$statement->source_identity"></x-infoline>
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"

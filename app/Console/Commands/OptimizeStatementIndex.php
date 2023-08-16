@@ -60,6 +60,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'keyword'
                         ],
+                    'category_specification'                         =>
+                        [
+                            'type' => 'text'
+                        ],
                     'content_type'                     =>
                         [
                             'type' => 'text'

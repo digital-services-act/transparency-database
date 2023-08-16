@@ -37,7 +37,8 @@ class StatementSearchService
         'automated_detection',
         'automated_decision',
         'platform_id',
-        'territorial_scope'
+        'territorial_scope',
+        'category_specification',
     ];
 
     /**
@@ -221,6 +222,18 @@ class StatementSearchService
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'account_type:'.$filter_value;
+        }
+        return implode(' OR ', $ors);
+    }
+
+    private function applyCategorySpecificationFilter(array $filter_values)
+    {
+        $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
+
+        $ors = [];
+        foreach ($filter_values as $filter_value)
+        {
+            $ors[] = 'category_specification:'.$filter_value;
         }
         return implode(' OR ', $ors);
     }

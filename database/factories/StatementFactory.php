@@ -71,6 +71,7 @@ class StatementFactory extends Factory
             'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISION_PROVISIONS)),
             'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISION_ACCOUNTS)),
             'account_type' => $this->faker->randomElement(array_keys(Statement::ACCOUNT_TYPES)),
+            'category_specification' => $this->faker->randomElements(array_keys(Statement::KEYWORDS)),
 
             'decision_ground' => $decision_ground,
             'decision_ground_reference_url' => $this->faker->url(),

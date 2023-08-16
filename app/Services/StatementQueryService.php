@@ -220,6 +220,17 @@ class StatementQueryService
         }
     }
 
+    private function applyCategorySpecificationFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::KEYWORDS));
+        if ($filter_values_validated) {
+            foreach ($filter_values_validated as $category_specification) {
+                $query->where('category_specification', 'LIKE', '%"' . $category_specification . '"%');
+            }
+        }
+    }
+
+
     /**
      * @param Builder $query
      * @param array $filter_value
