@@ -127,6 +127,7 @@ class StatementController extends Controller
         $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
 
         $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
+        $category_specifications = Statement::getEnumValues($statement->category_specification);
 
         sort($statement_territorial_scope_country_names);
 
@@ -136,7 +137,8 @@ class StatementController extends Controller
             'statement_content_types',
             'statement_content_language',
             'statement_additional_categories',
-            'statement_visibility_decisions'
+            'statement_visibility_decisions',
+            'category_specifications'
         ]));
 
     }
@@ -173,6 +175,11 @@ class StatementController extends Controller
         if(array_key_exists('decision_visibility',$validated)){
             $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
             sort($validated['decision_visibility']);
+        }
+
+        if(array_key_exists('category_specification',$validated)){
+            $validated['category_specification'] = array_unique($validated['category_specification']);
+            sort($validated['category_specification']);
         }
 
         try {
@@ -224,6 +231,7 @@ class StatementController extends Controller
         $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
         $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS);
         $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES);
+        $category_specifications = $this->mapForSelectWithKeys(Statement::KEYWORDS);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
@@ -256,6 +264,7 @@ class StatementController extends Controller
             'source_types',
             'content_types',
             'platforms',
+            'category_specifications'
         );
     }
 }

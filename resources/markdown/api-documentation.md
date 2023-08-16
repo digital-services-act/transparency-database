@@ -164,7 +164,11 @@ The attributes of the statement take on two main forms.
 
 When submitting statements please take care to not submit ANY personal data. On a
 regular basis we will do checks on the database to ensure that no personal data has been
-submitted. However, we kindly ask that you help us out by not submitting any.
+submitted. However, in accordance with Article 24(5), it is the obligation of providers of online platforms to ensure that the information submitted does not contain personal data.
+
+## Additional Explanation For Statement Attributes
+
+Please refer to our [Additional Explanation For Statement Attributes](/page/additional-explanation-for-statement-attributes) page for more information about the attributes.
 
 ### Decision Visibility (decision_visibility)
 
@@ -314,7 +318,7 @@ Limited to 500 characters.
 ### Illegal Content Explanation (illegal_content_explanation)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
-This is a small text that explains why the content was illegal.
+This is a text that explains why the content was illegal.
 
 Limited to 2000 characters.
 
@@ -328,15 +332,14 @@ Limited to 500 characters.
 ### Incompatible Content Explanation (incompatible_content_explanation)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
-This is a small text that explains why the content is
-considered as incompatible on that ground.
+This is a text that explains why the content is considered as incompatible on that ground.
 
 Limited to 2000 characters.
 
 ### Incompatible Content Illegal (incompatible_content_illegal)
 
-This is a required attribute and it must be in the form "Yes" or "No".
-This indicates to us that not only was the content incompatible but also illegal.
+This is an optional attribute and it can be in the form "Yes" or "No".
+This is a possibility to indicate that the content was not only considered incompatible but also illegal.
 
 ### Content Type (content_type)
 
@@ -359,7 +362,7 @@ The value provided must be an array with at least one of the following:
 ### Content Type Other (content_type_other)
 
 This is required if CONTENT_TYPE_OTHER was the content_type.
-It is a content type that is not text, video or an image.
+It is a content type that is not part of provided content type list.
 
 Limited to 500 characters.
 
@@ -397,9 +400,32 @@ The value provided must be an array with one of the following:
 @endphp
 </ul>
 
+### Category Specification (category_specification)
+
+This is an optional attribute, and it tells us which additional keywords the statement belongs to.
+
+The value provided must be an array with one of the following:
+
+<ul class='ecl-unordered-list'>
+@php
+    foreach (\App\Models\Statement::KEYWORDS as $key => $value) {
+        echo "<li class='ecl-unordered-list__item'>";
+        echo $key;
+        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
+        echo "</li>\n";
+    }
+@endphp
+</ul>
+
+###  Other Keyword (category_specification_other)
+
+This is required if KEYWORD_OTHER is part of the category_specification.
+
+Limited to 500 characters.
+
 ### Territorial Scope (territorial_scope)
 
-This is the optional territorial scope of the restriction. Each value must be the 2 letter iso code
+This is a required attribute that defines territorial scope of the restriction. Each value must be the 2-letter iso code
 for the country and the countries must be (EU/EEA) countries. 
 
 The value provided must be an array.
@@ -430,81 +456,69 @@ Ex,
 
 ### Content Date (content_date)
 
-This is the date and hour that this content was uploaded or posted. The date needs to take the form of:
+This is the date that this content was uploaded or posted. The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after 2020-01-01.
 
 ### Application Date (application_date)
 
-This is the date and hour that this decision starts from. The date needs to take the form of:
+This is the date that this decision starts from. The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after 2020-01-01.
 
-### End Date (end_date)
-
-This is the date and time that this decision ends. Leave blank for indefinite.
-
-The date needs to take the form of:
-
-```YYYY-MM-DD```
-
-The day, month, and hour have leading zeroes.
-
-The date must be after or equal to the application date.
-
 ### End Date of account restriction (end_date_account_restriction)
 
-This is the date and time that the decision on the account ends. Leave blank for indefinite.
+This is the date that the decision on the account ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
 ### End Date of monetary restriction (end_date_monetary_restriction)
 
-This is the date and time that the monetary decision ends. Leave blank for indefinite.
+This is the date that the monetary decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
 ### End Date of service restriction (end_date_service_restriction)
 
-This is the date and time that the provision decision ends. Leave blank for indefinite.
+This is the date that the provision decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
 ### End Date of visibility restriction (end_date_visibility_restriction)
 
-This is the date and time that the visibility decision ends. Leave blank for indefinite.
+This is the date that the visibility decision ends. Leave blank for indefinite.
 
 The date needs to take the form of:
 
 ```YYYY-MM-DD```
 
-The day, month, and hour have leading zeroes.
+The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
@@ -691,3 +705,5 @@ such as Java, PHP, CURL, Python and many many more.
 - [Sample Postman Local Environment](https://github.com/digital-services-act/transparency-database/blob/main/Local%20DSA%20M2.postman_environment.json) *
 
 _* - The token in the local environment is not valid_
+
+

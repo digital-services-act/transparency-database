@@ -52,7 +52,10 @@ class StatementAPIController extends Controller
             $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
             sort($validated['decision_visibility']);
         }
-
+        if(array_key_exists('category_specification',$validated)){
+            $validated['category_specification'] = array_unique($validated['category_specification']);
+            sort($validated['category_specification']);
+        }
 
 
         try {

@@ -183,6 +183,18 @@
                        select_item="Select category/categories"
                        enter_keyword="Enter a category"/>
 
+<x-ecl.select-multiple :label="Statement::LABEL_KEYWORDS"
+                       name="category_specification"
+                       id="category_specification"
+                       :options="$options['category_specifications']"
+                       select_item="Select keyword(s)"
+                       enter_keyword="Enter a keyword"
+/>
+
+<x-ecl.textfield :label="Statement::LABEL_KEYWORDS_OTHER" name="category_specification_other"
+                 id="category_specification_other"/>
+
+
 <hr>
 
 <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
@@ -260,13 +272,7 @@
                  placeholder="YYYY-MM-DD"
                  help="leading zeroes are required"
 />
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'"
-                 id="end_date"
-                 name="end_date"
-                 value="{{ $statement->end_date }}"
-                 placeholder="YYYY-MM-DD"
-                 help="leading zeroes are required"
-/>
+
 <hr>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE_TYPE" name="source_type" id="source_type"
@@ -338,6 +344,12 @@
             show('div_decision_visibility_other');
         }
 
+        hide('div_category_specification_other');
+        var selected_category_specifications = getSelectValues(ge('category_specification'));
+        if (selected_category_specifications.includes('KEYWORD_OTHER')) {
+            show('div_category_specification_other');
+        }
+
 
         hide('div_decision_monetary_other');
         if (ge('decision_monetary').value === 'DECISION_MONETARY_OTHER') {
@@ -349,6 +361,27 @@
         if (selected_values.includes('CONTENT_TYPE_OTHER')) {
             show('div_content_type_other');
         }
+
+        hide('div_end_date_visibility_restriction');
+        if (getSelectValues(ge('decision_visibility')).length > 0) {
+            show('div_end_date_visibility_restriction')
+        }
+
+        hide('div_end_date_monetary_restriction');
+        if (ge('decision_monetary').value) {
+            show('div_end_date_monetary_restriction')
+        }
+
+        hide('div_end_date_service_restriction');
+        if (ge('decision_provision').value) {
+            show('div_end_date_service_restriction')
+        }
+
+        hide('div_end_date_account_restriction');
+        if (ge('decision_account').value) {
+            show('div_end_date_account_restriction')
+        }
+
 
         hide('div_source_identity');
         if (ge('source_type').value && ge('source_type').value !== 'SOURCE_VOLUNTARY') {
@@ -376,7 +409,12 @@
     ge('decision_monetary').addEventListener('change', initFields);
     ge('content_type').addEventListener('change', initFields);
     ge('decision_visibility').addEventListener('change', initFields);
+    ge('category_specification').addEventListener('change', initFields);
     ge('source_type').addEventListener('change', initFields);
+    ge('decision_visibility').addEventListener('change', initFields);
+    ge('decision_monetary').addEventListener('change', initFields);
+    ge('decision_provision').addEventListener('change', initFields);
+    ge('decision_account').addEventListener('change', initFields);
 
     // Return an array of the selected opion values
     // select is an HTML select element
@@ -394,4 +432,8 @@
         }
         return result;
     }
+
+
+
+
 </script>

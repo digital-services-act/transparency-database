@@ -24,6 +24,7 @@
 - New API field: 'end_date_visibility_restriction'
 - New API field: 'category_specification'
 - New API field: 'category_specification_other'
+- New documentation page with additional explanation for statement attributes
 
 
  
