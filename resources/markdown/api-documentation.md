@@ -166,6 +166,10 @@ When submitting statements please take care to not submit ANY personal data. On 
 regular basis we will do checks on the database to ensure that no personal data has been
 submitted. However, in accordance with Article 24(5), it is the obligation of providers of online platforms to ensure that the information submitted does not contain personal data.
 
+## Additional Explanation For Statement Attributes
+
+Please refer to our [Additional Explanation For Statement Attributes](/page/additional-explanation-for-statement-attributes) page for more information about the attributes.
+
 ### Decision Visibility (decision_visibility)
 
 This attribute tells us the visibility restriction of specific items of information provided by the
@@ -702,6 +706,4 @@ such as Java, PHP, CURL, Python and many many more.
 
 _* - The token in the local environment is not valid_
 
-## Additional Explanation For Database Attributes
 
-Please refer to our [Additional Explanation For Database Attributes](/page/additional-explanation-for-database-attributes) page for more information about the attributes.

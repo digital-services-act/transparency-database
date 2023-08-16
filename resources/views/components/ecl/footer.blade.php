@@ -31,7 +31,7 @@
                                                                   aria-label="Link to Contact information of the DG">API Documentation</a></li>
                         <li class="ecl-site-footer__list-item"><a href="{{route('page.additional-explanation')}}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
-                                                                  aria-label="Link to Contact information of the DG">Additional Explanation For Database Attributes</a></li>
+                                                                  aria-label="Link to Contact information of the DG">Additional Explanation For Statement Attributes</a></li>
                     </ul>
                 </div>
             </div>

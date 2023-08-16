@@ -52,7 +52,7 @@ Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'ind
 Route::get('/statement-search', [\App\Http\Controllers\StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
 
-Route::get('/page/additional-explanation-for-database-attributes', [\App\Http\Controllers\PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
+Route::get('/page/additional-explanation-for-statement-attributes', [\App\Http\Controllers\PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
 Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');

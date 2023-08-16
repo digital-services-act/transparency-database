@@ -51,7 +51,7 @@ class PageController extends Controller
 
     public function additionalExplanationShow(): Factory|View|Application
     {
-        return $this->show('additional-explanation-for-database-attributes','additional-explanation-for-database-attributes');
+        return $this->show('additional-explanation-for-statement-attributes','additional-explanation-for-statement-attributes');
     }
 
 
