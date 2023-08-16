@@ -123,7 +123,7 @@ class Statement extends Model
     public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
     public const DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED = 'Age restricted content';
-    public const DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED = 'Restricting interaction to content';
+    public const DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED = 'Restricting interaction with content';
     public const DECISION_VISIBILITY_CONTENT_LABELLED = 'Labelled content';
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
     public const DECISION_VISIBILITIES = [
