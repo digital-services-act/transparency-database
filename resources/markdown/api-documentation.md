@@ -701,3 +701,7 @@ such as Java, PHP, CURL, Python and many many more.
 - [Sample Postman Local Environment](https://github.com/digital-services-act/transparency-database/blob/main/Local%20DSA%20M2.postman_environment.json) *
 
 _* - The token in the local environment is not valid_
+
+## Additional Explanation For Database Attributes
+
+Please refer to our [Additional Explanation For Database Attributes](/page/additional-explanation-for-database-attributes) page for more information about the attributes.

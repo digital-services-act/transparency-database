@@ -148,12 +148,6 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
                 :content="$statement->application_date->format('Y-m-d')"></x-infoline>
 
-    @if($statement->end_date)
-        <x-infoline :title="Statement::LABEL_STATEMENT_END_DATE"
-                    :content="$statement->end_date->format('Y-m-d')"></x-infoline>
-    @else
-        <x-infoline :title="Statement::LABEL_STATEMENT_END_DATE" content="indefinite"></x-infoline>
-    @endif
 
 @endsection
 

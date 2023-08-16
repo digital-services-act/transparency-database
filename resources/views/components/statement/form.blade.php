@@ -272,13 +272,7 @@
                  placeholder="YYYY-MM-DD"
                  help="leading zeroes are required"
 />
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_END_DATE . ' - leave blank for indefinite'"
-                 id="end_date"
-                 name="end_date"
-                 value="{{ $statement->end_date }}"
-                 placeholder="YYYY-MM-DD"
-                 help="leading zeroes are required"
-/>
+
 <hr>
 
 <x-ecl.select :label="Statement::LABEL_STATEMENT_SOURCE_TYPE" name="source_type" id="source_type"
@@ -368,6 +362,27 @@
             show('div_content_type_other');
         }
 
+        hide('div_end_date_visibility_restriction');
+        if (getSelectValues(ge('decision_visibility')).length > 0) {
+            show('div_end_date_visibility_restriction')
+        }
+
+        hide('div_end_date_monetary_restriction');
+        if (ge('decision_monetary').value) {
+            show('div_end_date_monetary_restriction')
+        }
+
+        hide('div_end_date_service_restriction');
+        if (ge('decision_provision').value) {
+            show('div_end_date_service_restriction')
+        }
+
+        hide('div_end_date_account_restriction');
+        if (ge('decision_account').value) {
+            show('div_end_date_account_restriction')
+        }
+
+
         hide('div_source_identity');
         if (ge('source_type').value && ge('source_type').value !== 'SOURCE_VOLUNTARY') {
             show('div_source_identity');
@@ -396,6 +411,10 @@
     ge('decision_visibility').addEventListener('change', initFields);
     ge('category_specification').addEventListener('change', initFields);
     ge('source_type').addEventListener('change', initFields);
+    ge('decision_visibility').addEventListener('change', initFields);
+    ge('decision_monetary').addEventListener('change', initFields);
+    ge('decision_provision').addEventListener('change', initFields);
+    ge('decision_account').addEventListener('change', initFields);
 
     // Return an array of the selected opion values
     // select is an HTML select element
@@ -413,4 +432,8 @@
         }
         return result;
     }
+
+
+
+
 </script>
