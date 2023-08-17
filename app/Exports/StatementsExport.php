@@ -63,7 +63,6 @@ class StatementsExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $statement->uuid,
-            $statement->url,
             $statement->decision_visibility,
             $statement->decision_visibility_other,
             $statement->decision_monetary,

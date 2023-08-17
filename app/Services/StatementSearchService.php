@@ -140,7 +140,6 @@ class StatementSearchService
             'decision_facts',
             'content_type_other',
             'source_identity',
-            'url',
             'uuid',
             'puid',
         ];
