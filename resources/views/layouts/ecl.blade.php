@@ -7,7 +7,7 @@
         <title>@yield('title', 'Home') - DSA Transparency Database</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <link
             rel="stylesheet"
             href="{{ asset('static/styles/ecl-ec-default.css') }}"
