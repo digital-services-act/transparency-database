@@ -2,8 +2,6 @@ id: 49369
 name: dsa-sandbox
 environments:
   production:
-    warm: 10
-    timeout: 180
     queue-database-session-persist: true
     database: sandbox-serverless-db-us
     network: vapor-network-1688550103

@@ -440,7 +440,6 @@ class Statement extends Model
             'category' => $this->category,
             'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
-            'url' => $this->url,
             'created_at' => $this->created_at,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
