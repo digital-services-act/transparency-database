@@ -72,7 +72,6 @@ class StatementStoreRequest extends FormRequest
 
             'content_date' => ['required', 'date_format:Y-m-d', 'after:2020-01-01'],
             'application_date' => ['required', 'date_format:Y-m-d', 'after:2020-01-01'],
-            'end_date' => ['date_format:Y-m-d', 'nullable', 'after_or_equal:application_date'],
             'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable'],
             'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable'],
             'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable'],
@@ -111,7 +110,6 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',
             'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD.',
-            'end_date.date_format' => 'The end date does not match the format YYYY-MM-DD.',
             'end_date_account_restriction.date_format' => 'The end date of account restriction does not match the format YYYY-MM-DD.',
             'end_date_monetary_restriction.date_format' => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
             'end_date_service_restriction.date_format' => 'The end date of service restriction does not match the format YYYY-MM-DD.',

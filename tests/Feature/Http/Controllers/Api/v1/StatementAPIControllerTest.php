@@ -110,7 +110,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'end_date' => '2023-12-25',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -122,7 +121,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
         $this->assertNull($statement->account_type);
         $this->assertNull($statement->content_language);
     }
@@ -139,7 +137,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'EN'
         ]);
@@ -153,7 +150,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
         $this->assertNotNull($statement->account_type);
         $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
         $this->assertNotNull($statement->content_type);
@@ -172,7 +168,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'end_date' => '2023-12-25',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'VI'
         ]);
@@ -186,7 +181,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
         $this->assertNotNull($statement->account_type);
         $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
         $this->assertNotNull($statement->content_type);
@@ -205,7 +199,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'end_date' => '2023-12-25',
+
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'XX'
         ]);
@@ -228,7 +222,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'end_date' => '2023-12-25',
+
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
             'content_language' => 'en'
         ]);
@@ -251,7 +245,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'end_date' => '2023-12-25',
+
             'account_type' => 'ACCOUNT_TYPE_BUSINESS'
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
@@ -264,7 +258,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+
         $this->assertNotNull($statement->account_type);
         $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
     }
@@ -281,7 +275,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20-05',
-            'end_date' => '2023-12-25-00',
+
             'account_type' => 'ACCOUNT_TYPE_NOT_VALID'
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
@@ -302,7 +296,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-07-15',
-            'end_date' => '2023-07-21',
+
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -331,7 +325,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($user->id, $statement->user->id);
 
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+
         $this->assertNull($statement->decision_ground_reference_url);
     }
 
@@ -354,7 +348,7 @@ class StatementAPIControllerTest extends TestCase
 
         $fields = array_merge($this->required_fields, [
             'application_date' => $application_date_in,
-            'end_date' => $end_date_in
+            'end_date_monetary_restriction' => $end_date_in
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -383,7 +377,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($user->id, $statement->user->id);
 
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_monetary_restriction);
 
         $resource = $statement->toArray();
         $this->assertEquals($application_date_in, $resource['application_date']);

@@ -71,6 +71,7 @@ Example JSON payload body:
 {
     "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
+    "end_date_monetary_restriction": "2023-08-08",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
     "account_type": "ACCOUNT_TYPE_BUSINESS",
@@ -108,31 +109,40 @@ You will also receive a payload with the statement as created in the database:
 
 ```json
 {
-    "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
+    "decision_visibility": [
+        "DECISION_VISIBILITY_CONTENT_DISABLED"
+    ],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
     "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-    "decision_ground_reference_url": "https://www.anurl.com",
+    "decision_ground_reference_url": "https:\/\/www.anurl.com",
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
-    "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
+    "content_type": [
+        "CONTENT_TYPE_AUDIO",
+        "CONTENT_TYPE_SYNTHETIC_MEDIA",
+        "CONTENT_TYPE_VIDEO"
+    ],
     "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
     "territorial_scope": [
-        "PT",
+        "DE",
         "ES",
-        "DE"
+        "PT"
     ],
     "content_language": "EN",
     "content_date": "2023-08-08",
     "application_date": "2023-08-08",
+    "end_date_monetary_restriction": "2023-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
     "automated_detection": "No",
     "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
-    "end_date": null,
+    "end_date_visibility_restriction": null,
+    "end_date_account_restriction": null,
+    "end_date_service_restriction": null,
     "puid": "TK421",
     "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
     "platform_name": "...",
