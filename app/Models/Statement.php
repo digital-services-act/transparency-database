@@ -333,7 +333,6 @@ class Statement extends Model
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
     public const LABEL_STATEMENT_CONTENT_DATE = 'When the content was posted or uploaded';
     public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
-    public const LABEL_STATEMENT_END_DATE = 'End date of the decision';
 
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
     public const LABEL_STATEMENT_CONTENT_LANGUAGE = "The language of the content";
@@ -363,7 +362,6 @@ class Statement extends Model
         'uuid' => 'string',
         'content_date' => 'datetime:Y-m-d',
         'application_date' => 'datetime:Y-m-d',
-        'end_date' => 'datetime:Y-m-d',
         'end_date_account_restriction' => 'datetime:Y-m-d',
         'end_date_monetary_restriction' => 'datetime:Y-m-d',
         'end_date_service_restriction' => 'datetime:Y-m-d',
