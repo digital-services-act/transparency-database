@@ -55,7 +55,6 @@ class CreateStatementsTable extends Migration
             $table->timestamp('content_date');
 
             $table->timestamp('application_date');
-            $table->timestamp('end_date')->nullable();
 
             $table->timestamp('end_date_visibility_restriction')->nullable();
             $table->timestamp('end_date_monetary_restriction')->nullable();
