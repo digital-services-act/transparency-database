@@ -7,11 +7,12 @@ use App\Models\Statement;
 use App\Models\User;
 use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 class PlatformControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use AdditionalAssertions, RefreshDatabase;
     /**
      * @return void
      * @test
@@ -47,4 +48,17 @@ class PlatformControllerTest extends TestCase
         $this->assertCount($total_users_start - $user_count, User::all());
         $this->assertCount($platform_count - 1, Platform::all());
     }
+
+    /**
+     * @test
+     */
+    public function register_store_uses_form_request_validation()
+    {
+        $this->assertActionUsesFormRequest(
+            \App\Http\Controllers\PlatformController::class,
+            'platformRegisterStore',
+            \App\Http\Requests\PlatformRegisterStoreRequest::class
+        );
+    }
+
 }
