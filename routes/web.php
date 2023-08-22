@@ -1,6 +1,16 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PlatformController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StatementController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 /*
@@ -19,26 +29,31 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['cas.auth'])->group(function() {
 
     Route::group(['middleware' => ['can:create statements']], function(){
-        Route::get('/statement/create', [\App\Http\Controllers\StatementController::class, 'create'])->name('statement.create');
-        Route::post('/statement', [\App\Http\Controllers\StatementController::class, 'store'])->name('statement.store');
+        Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
+        Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
 
     Route::group(['middleware' => ['can:administrate']], function(){
-        Route::resource('role', \App\Http\Controllers\RoleController::class);
-        Route::resource('permission', \App\Http\Controllers\PermissionController::class);
+        Route::resource('role', RoleController::class);
+        Route::resource('permission', PermissionController::class);
         Route::resource('invitation', App\Http\Controllers\InvitationController::class);
-        Route::resource('user', \App\Http\Controllers\UserController::class);
-        Route::resource('platform', \App\Http\Controllers\PlatformController::class);
+        Route::resource('user', UserController::class);
+        Route::resource('platform', PlatformController::class);
     });
 
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
-        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
-        Route::get('/dashboard/api', [\App\Http\Controllers\DashboardController::class, 'apiIndex'])->name('api-index');
-        Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports')->can('view reports');
-        Route::post('/new-token', [\App\Http\Controllers\DashboardController::class, 'newToken'])->name('new-token');
-        Route::get('/dashboard/page/{page}', [\App\Http\Controllers\PageController::class, 'dashboardShow'])->name('dashboard.page.show');
+        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+        // Register the Platform
+        Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
+        Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
+
+        Route::get('/dashboard/api', [DashboardController::class, 'apiIndex'])->name('api-index');
+        Route::get('/reports', [ReportsController::class, 'index'])->name('reports')->can('view reports');
+        Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
+        Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
     });
 
 });
@@ -48,13 +63,13 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/statement', [\App\Http\Controllers\StatementController::class, 'index'])->name('statement.index');
-Route::get('/statement-search', [\App\Http\Controllers\StatementController::class, 'search'])->name('statement.search');
-Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementController::class, 'show'])->name('statement.show');
+Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
+Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
+Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
-Route::get('/page/additional-explanation-for-statement-attributes', [\App\Http\Controllers\PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
-Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
+Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
-Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
+Route::get('/datasets', [DatasetsController::class, 'index'])->name('datasets.index');
 
 
