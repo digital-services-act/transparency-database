@@ -55,6 +55,10 @@ Route::get('/statement/{statement:uuid}', [\App\Http\Controllers\StatementContro
 Route::get('/page/additional-explanation-for-statement-attributes', [\App\Http\Controllers\PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
-Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
+//Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
+
+Route::get('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'index'])->name('onboarding.index');
+Route::get('/onboarding/create', [\App\Http\Controllers\OnboardingController::class, 'create'])->name('onboarding.create');
+Route::post('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'join'])->name('onboarding.join');
 
 

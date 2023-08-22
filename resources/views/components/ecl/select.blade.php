@@ -19,5 +19,7 @@
                 <x-ecl.icon icon="corner-arrow" />
             </svg>
         </div>
+
     </div>
+
 </div>
