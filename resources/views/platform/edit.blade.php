@@ -16,7 +16,7 @@
     <form method="post" action="{{ route('platform.update', [$platform]) }}">
         @method('PUT')
         @csrf
-        <x-platform-form :platform=$platform :options=$options />
+        <x-platform.platform-form :platform=$platform :options=$options />
         <x-ecl.button label="Save platform" />
     </form>
 

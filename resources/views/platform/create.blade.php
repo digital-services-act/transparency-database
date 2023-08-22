@@ -15,7 +15,7 @@
 
     <form method="post" action="{{route('platform.store')}}">
         @csrf
-        <x-platform-form :platform=$platform :options=$options />
+        <x-platform.platform-form :platform=$platform :options=$options />
         <x-ecl.button label="Create platform" />
     </form>
 
