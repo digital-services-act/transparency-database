@@ -10,6 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 /*
@@ -47,7 +48,7 @@ Route::middleware(['cas.auth'])->group(function() {
 
         // Register the Platform
         Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
-        Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store');
+        Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
         Route::get('/dashboard/api', [DashboardController::class, 'apiIndex'])->name('api-index');
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports')->can('view reports');
