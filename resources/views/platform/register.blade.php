@@ -21,7 +21,7 @@
     <form method="post" action="{{ route('platform.register.store') }}">
         @honeypot
         @csrf
-        <x-platform.platform-register-form :options="$options" />
+        <x-platform.register-form :options="$options" />
         <x-ecl.button label="Register Your Platform" />
     </form>
 
