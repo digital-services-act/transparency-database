@@ -1,6 +1,15 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PlatformController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StatementController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 /*
@@ -63,7 +72,6 @@ Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 //Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');
 
 Route::get('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'index'])->name('onboarding.index');
-Route::get('/onboarding/create', [\App\Http\Controllers\OnboardingController::class, 'create'])->name('onboarding.create');
 Route::post('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'join'])->name('onboarding.join');
 
 

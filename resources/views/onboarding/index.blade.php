@@ -23,7 +23,7 @@
 
                             <div class="ecl-row">
                                 <div class="ecl-col-10">
-                                    <x-ecl.label label="Choose a platform" justlabel="true"/>
+                                    <x-ecl.label label="Choose an existing platform" justlabel="true"/>
 
                                     <div class="ecl-select__container ecl-select__container--xl">
                                         <select name="platform" id="platform_select" class="ecl-select">
@@ -67,7 +67,7 @@
                 <h1>OR</h1>
             </div>
 
-            <form action="{{ route('onboarding.create') }}" method="GET">
+            <form action="{{ route('platform.register') }}" method="GET">
 
                 @csrf
                 <div class="ecl-row">
@@ -81,7 +81,7 @@
                                 <div class="ecl-u-d-flex ecl-u-justify-content-center">
                                     <input type="submit"
                                            class="ecl-button ecl-button--secondary"
-                                           value="Create a new Platform" style="margin:12px"/>
+                                           value="Register your Platform" style="margin:12px"/>
                                 </div>
 
 
@@ -107,10 +107,8 @@
             console.log(ge('platform_select').value);
             ge('platform_join_btn').disabled = false;
             if (ge('platform_select').value !== "") {
-                console.log('enable button');
                 ge('platform_join_btn').disabled = false;
             } else {
-                console.log('disable button');
                 ge('platform_join_btn').disabled = true;
             }
 

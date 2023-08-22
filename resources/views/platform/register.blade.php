@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Dashboard" url="{{ route('dashboard') }}" />
+    <x-ecl.breadcrumb label="Onboarding" url="{{ route('onboarding.index') }}" />
     <x-ecl.breadcrumb label="Register Your Platform" />
 @endsection
 
