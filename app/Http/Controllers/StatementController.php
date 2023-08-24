@@ -85,7 +85,19 @@ class StatementController extends Controller
 
     public function exportCsv(Request $request)
     {
-        return (new StatementsExport())->download('statements-of-reason.csv', Excel::CSV);
+        if (config('scout.driver') == 'opensearch') {
+            $statements = $this->statement_search_service->query($request->query());
+        } else {
+            $statements = $this->statement_query_service->query($request->query());
+        }
+
+        $statements->limit = 1000;
+
+        $export = new StatementsExport();
+        $export->setCollection($statements->orderBy('created_at', 'DESC')->get());
+
+
+        return $export->download('statements-of-reason.csv', Excel::CSV);
     }
 
     /**

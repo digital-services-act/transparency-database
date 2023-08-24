@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Statement;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,12 +15,19 @@ class StatementsExport implements FromCollection, WithHeadings, WithMapping
 
     use Exportable;
 
+    private Collection $collection;
+
+    public function setCollection(Collection $collection)
+    {
+        $this->collection = $collection;
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return Statement::query()->orderBy('created_at', 'DESC')->limit(2000)->get();
+        return $this->collection;
     }
 
     public function headings(): array
