@@ -60,7 +60,7 @@ class StatementFactory extends Factory
 
         return [
 
-            'decision_visibility' => $this->faker->randomElements(array_keys(Statement::DECISION_VISIBILITIES)),
+            'decision_visibility' => $this->faker->randomElements(array_keys(Statement::DECISION_VISIBILITIES), rand(1, count(array_keys(Statement::DECISION_VISIBILITIES))), false),
             'decision_visibility_other' => $this->faker->text(100),
 
             'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),
@@ -69,15 +69,19 @@ class StatementFactory extends Factory
             'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISION_PROVISIONS)),
             'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISION_ACCOUNTS)),
             'account_type' => $this->faker->randomElement(array_keys(Statement::ACCOUNT_TYPES)),
-            'category_specification' => $this->faker->randomElements(array_keys(Statement::KEYWORDS)),
+
+
 
             'decision_ground' => $decision_ground,
             'decision_ground_reference_url' => $this->faker->url(),
 
-            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES)),
+            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), rand(1, count(array_keys(Statement::CONTENT_TYPES))), false),
             'content_type_other' => $this->faker->text(100),
 
             'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
+            'category_addition' => $this->faker->randomElements(array_keys(Statement::STATEMENT_CATEGORIES), rand(1, count(array_keys(Statement::STATEMENT_CATEGORIES))), false),
+            'category_specification' => $this->faker->randomElements(array_keys(Statement::KEYWORDS), rand(1, count(array_keys(Statement::KEYWORDS))), false),
+            'category_specification_other' => $this->faker->word(),
 
             'illegal_content_legal_ground' => $decision_ground === 'DECISION_GROUND_ILLEGAL_CONTENT' ? $this->faker->realText(100) : null,
             'illegal_content_explanation' => $decision_ground === 'DECISION_GROUND_ILLEGAL_CONTENT' ? $this->faker->realText(500) : null,
@@ -90,7 +94,7 @@ class StatementFactory extends Factory
 
             'puid' => $this->faker->uuid,
 
-            'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, 30)),
+            'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, count(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)), false),
 
             'content_language' => $this->faker->randomElement(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES),
 

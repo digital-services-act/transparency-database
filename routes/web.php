@@ -65,6 +65,8 @@ Route::get('/', function () {
 
 
 Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
+Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
+
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 

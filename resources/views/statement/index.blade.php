@@ -16,15 +16,29 @@
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statements</h1>
 
     @can('create statements')
-        <p class="ecl-u-type-paragraph"></p>
-            <x-ecl.cta-button label="Create a Statement" url="{{ route('statement.create') }}"/>
-        </p>
+        <x-ecl.cta-button label="Create a Statement" url="{{ route('statement.create') }}" />
+        <br />
     @endcan
 
 
-    <p class="ecl-u-type-paragraph ecl-u-mr-l">
-        Statements Found: {{ $total === 10000 ? '10000+' : $total }} out of {{ $global_total }}
-    </p>
+
+
+    <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
+
+        <div class="ecl-u-type-paragraph ecl-u-mr-s">
+            Statements Found: {{ $total === 10000 ? '10000+' : $total }} out of {{ $global_total }}
+        </div>
+
+        <div class="ecl-u-type-paragraph ecl-u-mr-l">
+
+            <a href="{{ route('statement.export', request()->query()) }}" class="ecl-link ecl-link--default ecl-link--icon ecl-link--icon-after">
+                    <span class="ecl-link__label">.csv</span>
+                    <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
+                        <x-ecl.icon icon="download" />
+                    </svg></a>
+        </div>
+    </div>
+
 
     <x-statement.table :statements="$statements" />
 

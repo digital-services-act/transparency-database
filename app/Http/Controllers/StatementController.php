@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StatementsExport;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Platform;
 use App\Models\Statement;
@@ -13,13 +14,12 @@ use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use stdClass;
+use Maatwebsite\Excel\Excel;
 use App\Http\Controllers\Traits\Sanitizer;
 
 
@@ -55,11 +55,7 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        if (config('scout.driver') == 'opensearch') {
-            $statements = $this->statement_search_service->query($request->query());
-        } else {
-            $statements = $this->statement_query_service->query($request->query());
-        }
+        $statements = $this->setupQuery($request);
 
         $options = $this->prepareOptions();
         $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
@@ -79,6 +75,34 @@ class StatementController extends Controller
             'similarity_results',
             'global_total'
         ));
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $statements = $this->setupQuery($request);
+
+        $statements->limit = 1000;
+
+        $export = new StatementsExport();
+        $export->setCollection($statements->orderBy('created_at', 'DESC')->get());
+
+        return $export->download('statements-of-reason.csv', Excel::CSV);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Builder|\Laravel\Scout\Builder
+     */
+    private function setupQuery(Request $request): \Illuminate\Database\Eloquent\Builder|\Laravel\Scout\Builder
+    {
+        if (config('scout.driver') == 'opensearch') {
+            $statements = $this->statement_search_service->query($request->query());
+        } else {
+            $statements = $this->statement_query_service->query($request->query());
+        }
+
+        return $statements;
     }
 
     /**
