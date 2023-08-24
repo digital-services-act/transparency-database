@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StatementsExport;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Platform;
 use App\Models\Statement;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Excel;
 use stdClass;
 use App\Http\Controllers\Traits\Sanitizer;
 
@@ -79,6 +81,11 @@ class StatementController extends Controller
             'similarity_results',
             'global_total'
         ));
+    }
+
+    public function exportCsv(Request $request)
+    {
+        return (new StatementsExport())->download('statements-of-reason.csv', Excel::CSV);
     }
 
     /**
