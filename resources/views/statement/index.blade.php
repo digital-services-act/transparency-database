@@ -23,7 +23,7 @@
 
 
     <p class="ecl-u-type-paragraph ecl-u-mr-l">
-        Statements Found: {{ $total }}
+        Statements Found: {{ $total === 10000 ? '10000 +' : $total }}
     </p>
 
     <x-statement.table :statements="$statements" />

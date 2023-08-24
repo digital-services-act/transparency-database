@@ -55,7 +55,7 @@ class StatementSearchService
     private function basicQuery(string $query): Builder
     {
         return Statement::search($query)->options([
-            'track_total_hits' => true
+            //'track_total_hits' => true
         ]);
     }
 
