@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StatementFactory extends Factory
@@ -23,7 +24,7 @@ class StatementFactory extends Factory
      * Define the model's default state.
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function definition()
     {
