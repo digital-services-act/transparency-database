@@ -65,6 +65,17 @@ class StatementControllerTest extends TestCase
         $this->assertNull($u);
     }
 
+    /**
+     * @test
+     */
+    public function export_downloads_a_file()
+    {
+        $this->setUpFullySeededDatabase();
+        $response = $this->get(route('statement.export'));
+        $response->assertOk();
+        $response->assertDownload();
+    }
+
 
     /**
      * @test
