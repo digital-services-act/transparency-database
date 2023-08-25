@@ -21,6 +21,7 @@ class DashboardController extends Controller
     public function dashboard(Request $request): Factory|View|Application
     {
         return view('dashboard',[
+            'has_platform' => (bool)$request->user()->platform,
             'platform_name' => $request->user()->platform->name ?? ''
         ]);
     }
