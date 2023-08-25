@@ -46,22 +46,26 @@
         <div class="ecl-container ecl-u-mb-xl">
             <div class="ecl-row">
                 <div class="ecl-col-12">
+
                     <nav class="ecl-breadcrumb ecl-page-header__breadcrumb" aria-label="You&#x20;are&#x20;here&#x3A;"
                          data-ecl-breadcrumb="true" data-ecl-auto-init="Breadcrumb">
                         <ol class="ecl-breadcrumb__container">
                             @yield('breadcrumbs')
                         </ol>
                     </nav>
+
                     @if(session('success'))
                         <x-ecl.message type="success" icon="success" title="Success" :message="session('success')"/>
                     @endif
+
                     @if(session('error'))
                         <x-ecl.message type="error" icon="error" title="Error" :message="session('error')"/>
                     @endif
 
                     @if ($errors->any())
-                        <x-ecl.message type="error" icon="error" title="Errors" :message="$errors->all()"/>
+                        <x-ecl.message type="error" icon="error" title="Errors" message="Your request contained multiple errors. Please make sure to fill in all of the mandatory fields."/>
                     @endif
+
                 </div>
             </div>
             <div class="ecl-row">

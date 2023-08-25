@@ -46,17 +46,15 @@ class StatementSearchService
      *
      * @return Builder
      */
-    public function query(array $filters): Builder
+    public function query(array $filters, array $options = []): Builder
     {
         $query = $this->buildQuery($filters);
-        return $this->basicQuery($query);
+        return $this->basicQuery($query, $options);
     }
 
-    private function basicQuery(string $query): Builder
+    private function basicQuery(string $query, array $options = []): Builder
     {
-        return Statement::search($query)->options([
-            'track_total_hits' => true
-        ]);
+        return Statement::search($query)->options($options);
     }
 
 
@@ -319,13 +317,17 @@ class StatementSearchService
             'platform_id' => [$platform->id],
         ];
 
-        $statements = $this->query($filters)->paginate(50);
+        $statements = $this->query($filters,[
+            'track_total_hits' => true
+        ])->paginate(50);
         return $statements->total();
     }
 
     public function totalStatements()
     {
-        $statements = $this->query([])->paginate(50);
+        $statements = $this->query([],[
+            'track_total_hits' => true
+        ])->paginate(50);
         return $statements->total();
     }
 
@@ -341,7 +343,9 @@ class StatementSearchService
                 'created_at_end' => $start->format('d-m-Y'),
             ];
 
-            $statements = $this->query($filters)->paginate(50);
+            $statements = $this->query($filters, [
+                'track_total_hits' => true
+            ])->paginate(50);
 
             $date_counts[] = [
                 'date' => $start->clone(),
@@ -349,7 +353,6 @@ class StatementSearchService
             ];
 
             $start->addDay();
-
         }
 
         $highest = -1;
@@ -363,7 +366,7 @@ class StatementSearchService
 
         foreach ($date_counts as $index => $date_count)
         {
-            $date_counts[$index]['percentage'] = (int) ceil( ($date_count['count'] / $highest) * 100 );
+            $date_counts[$index]['percentage'] = $highest != 0 ? ((int) ceil( ($date_count['count'] / $highest) * 100 )) : 0;
         }
 
         if ($reverse) {
