@@ -702,18 +702,3 @@ Using the repository code you can even setup and run a local replica development
 
 Within the github environment you are also more than welcome to give feedback, pull requests and 
 reviews concerning the source code. 
-
-## Postman & Code Examples
-
-In the source repository for this application you will find 2 files to help you setup a 
-postman playground that will allow you to make random statements of reason using the API.
-
-Postman will then allow you to generate code samples in many software coding languages
-such as Java, PHP, CURL, Python and many many more.
-
-- [Postman Requests Collection](https://github.com/digital-services-act/transparency-database/blob/main/DSA%20module%202%20API.postman_collection.json)
-- [Sample Postman Local Environment](https://github.com/digital-services-act/transparency-database/blob/main/Local%20DSA%20M2.postman_environment.json) *
-
-_* - The token in the local environment is not valid_
-
-
