@@ -70,7 +70,7 @@ Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('st
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
-Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
+//Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
 Route::get('/datasets', [DatasetsController::class, 'index'])->name('datasets.index');
