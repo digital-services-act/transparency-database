@@ -105,6 +105,7 @@
                                name="territorial_scope"
                                id="territorial_scope"
                                justlabel="true"
+                               width="10%"
                                :options="$options['countries']" :default="request()->get('territorial_scope', [])"
         />
 

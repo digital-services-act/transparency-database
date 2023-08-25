@@ -22,3 +22,6 @@ test-results
 vapor.bck
 vapor.yml
 /switch-*.sh
+.env.ddev
+.vapor/
+.env.docker-env
