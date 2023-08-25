@@ -1,4 +1,3 @@
-
 @extends('layouts/ecl')
 
 @section('title', $page_title)
