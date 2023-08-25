@@ -220,6 +220,7 @@ return [
 
         MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class,
         Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 

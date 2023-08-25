@@ -2,7 +2,7 @@
 <table class="ecl-table ecl-table--zebra">
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
-        <th class="ecl-table__header">Creator</th>
+        <th class="ecl-table__header">Platform</th>
         <th class="ecl-table__header">UUID</th>
         <th class="ecl-table__header">Creation Date</th>
 
