@@ -14,7 +14,7 @@ class GenerateStatements extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:statements {amount=1000} ';
+    protected $signature = 'statements:generate {amount=1000} ';
 
     /**
      * The console command description.
@@ -29,13 +29,7 @@ class GenerateStatements extends Command
     public function handle(): void
     {
         for ($cpt = 0; $cpt < $this->argument('amount'); $cpt++) {
-
-
             StatementCreation::dispatch();
-
-
         }
-
-
     }
 }
