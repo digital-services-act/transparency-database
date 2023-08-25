@@ -17,4 +17,7 @@ Route::group([
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
     Route::crud('platform', 'PlatformCrudController');
+    Route::get('charts/top-platforms', 'Charts\TopPlatformsChartController@response')->name('charts.top-platforms.index');
+    Route::get('charts/daily-statements', 'Charts\DailyStatementsChartController@response')->name('charts.daily-statements.index');
+    Route::get('charts/top-categories', 'Charts\TopCategoriesChartController@response')->name('charts.top-categories.index');
 }); // this should be the absolute last line of this file
