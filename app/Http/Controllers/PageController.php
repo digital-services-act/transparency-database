@@ -49,11 +49,6 @@ class PageController extends Controller
         return $this->show($page, 'dashboard-page');
     }
 
-    public function additionalExplanationShow(): Factory|View|Application
-    {
-        return $this->show('additional-explanation-for-statement-attributes','additional-explanation-for-statement-attributes');
-    }
-
 
     private function convertMdFile(string $file): string
     {

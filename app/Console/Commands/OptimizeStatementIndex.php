@@ -60,7 +60,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'keyword'
                         ],
-                    'category_specification'                         =>
+                    'category_specification'           =>
                         [
                             'type' => 'text'
                         ],
@@ -132,7 +132,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'long',
                         ],
-                    'source_identity'                           =>
+                    'source_identity'                  =>
                         [
                             'type' => 'text'
                         ],

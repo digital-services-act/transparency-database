@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlatformController;
@@ -36,7 +38,7 @@ Route::middleware(['cas.auth'])->group(function() {
     Route::group(['middleware' => ['can:administrate']], function(){
         Route::resource('role', RoleController::class);
         Route::resource('permission', PermissionController::class);
-        Route::resource('invitation', App\Http\Controllers\InvitationController::class);
+        Route::resource('invitation', InvitationController::class);
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
     });
@@ -63,10 +65,12 @@ Route::get('/', function () {
 
 
 Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
+Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
+
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
-Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
+//Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
 //Route::get('/datasets', [\App\Http\Controllers\DatasetsController::class, 'index'])->name('datasets.index');

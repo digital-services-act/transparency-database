@@ -1,0 +1,18 @@
+id: 40750
+name: Personal
+default-environment: ddev
+environments:
+  ddev:
+    queue-database-session-persist: true
+    database: dsa-db
+    domain: services-act.eu
+    network: vapor-network-1672752217
+    memory: 2048
+    cli-memory: 1024
+    queue-memory: 1024
+    runtime: 'php-8.2:al2'
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'php artisan event:cache'
+      - 'npm ci && npm run prod && rm -rf node_modules'
+

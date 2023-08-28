@@ -14,8 +14,7 @@ class StatementCreation implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-
-    public $type;
+    public string $type;
 
     /**
      * Create a new job instance.
@@ -30,10 +29,6 @@ class StatementCreation implements ShouldQueue
      */
     public function handle(): void
     {
-
-
         Statement::factory()->create();
-
-
     }
 }

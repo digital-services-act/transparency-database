@@ -1,4 +1,3 @@
-
 @extends('layouts/ecl')
 
 @section('title', $page_title)
@@ -81,6 +80,17 @@
             $('#toc-list').append('<li><a href="#'+id+'">' + t + '</a></li>');
           });
         });
+
+        // Slugify the id so it can be linked but not necessarily in the TOC
+        jQuery(document).ready(function($){
+          $('#content-area > h3').each(function(e){
+            var dis = $(this)
+            var t = dis.text();
+            var id = slugify(t);
+            dis.attr('id', id);
+          });
+        });
+
         hljs.highlightAll();
     </script>
 
