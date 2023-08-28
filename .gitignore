@@ -25,3 +25,4 @@ vapor.yml
 .env.ddev
 .vapor/
 .env.docker-env
+/auth.json
