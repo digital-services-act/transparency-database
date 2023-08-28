@@ -20,4 +20,8 @@ Route::group([
     Route::get('charts/top-platforms', 'Charts\TopPlatformsChartController@response')->name('charts.top-platforms.index');
     Route::get('charts/daily-statements', 'Charts\DailyStatementsChartController@response')->name('charts.daily-statements.index');
     Route::get('charts/top-categories', 'Charts\TopCategoriesChartController@response')->name('charts.top-categories.index');
+    Route::crud('workflow', 'WorkflowCrudController');
+    Route::crud('workflow-instance', 'WorkflowInstanceCrudController');
+    Route::crud('workflow-step', 'WorkflowStepCrudController');
+    Route::crud('workflow-stage', 'WorkflowStageCrudController');
 }); // this should be the absolute last line of this file
