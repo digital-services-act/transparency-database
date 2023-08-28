@@ -9,6 +9,7 @@ environments:
     memory: 2048
     cli-memory: 512
     runtime: 'php-8.2:al2-arm'
+    storage: sor-dsa-m2-acceptance
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
       - 'php artisan event:cache'
