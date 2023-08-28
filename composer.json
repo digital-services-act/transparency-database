@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.1",
         "backpack/crud": "^6.1",
-        "backpack/pro": "^2.0",
         "backpack/theme-tabler": "^1.0",
         "consoletvs/charts": "6.*",
         "cweagans/composer-patches": "^1.7",
