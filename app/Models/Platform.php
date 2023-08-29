@@ -42,4 +42,9 @@ class Platform extends Model
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id');
     }
+
+    public function dayTotals()
+    {
+        return $this->hasMany(PlatformDayTotal::class, 'platform_id', 'id');
+    }
 }

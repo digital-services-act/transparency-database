@@ -319,7 +319,7 @@ class StatementSearchService
 
         $statements = $this->query($filters,[
             'track_total_hits' => true
-        ])->paginate(50);
+        ])->paginate(1);
         return $statements->total();
     }
 
@@ -327,7 +327,30 @@ class StatementSearchService
     {
         $statements = $this->query([],[
             'track_total_hits' => true
-        ])->paginate(50);
+        ])->paginate(1);
+        return $statements->total();
+    }
+
+    private function monthRange(int $month, int $year)
+    {
+        $start_date = Carbon::createFromDate($year, $month, 1);
+        $end_date = $start_date->clone();
+        $end_date->addDays($start_date->daysInMonth);
+        return [$start_date, $end_date];
+    }
+
+    public function totalForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end): int
+    {
+        $filters = [
+            'platform_id' => [$platform->id],
+            'created_at_start' => $start->format('d-m-Y'),
+            'created_at_end' => $end->format('d-m-Y'),
+        ];
+
+        $statements = $this->query($filters, [
+            'track_total_hits' => true
+        ])->paginate(1);
+
         return $statements->total();
     }
 
@@ -335,21 +358,19 @@ class StatementSearchService
     {
         $date_counts = [];
 
+        $start->hour = 0;
+        $start->minute = 0;
+        $start->second = 0;
+
+        $end->hour = 0;
+        $end->minute = 0;
+        $end->second = 0;
+
         while($start < $end) {
-
-            $filters = [
-                'platform_id' => [$platform->id],
-                'created_at_start' => $start->format('d-m-Y'),
-                'created_at_end' => $start->format('d-m-Y'),
-            ];
-
-            $statements = $this->query($filters, [
-                'track_total_hits' => true
-            ])->paginate(50);
 
             $date_counts[] = [
                 'date' => $start->clone(),
-                'count' => $statements->total(),
+                'count' => $this->totalForPlatformAndRange($platform, $start, $start)
             ];
 
             $start->addDay();
@@ -374,6 +395,51 @@ class StatementSearchService
         }
 
         return $date_counts;
+    }
+
+    public function monthCountsForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end, bool $reverse = true): array
+    {
+        $month_counts = [];
+
+        $start->hour = 0;
+        $start->minute = 0;
+        $start->second = 0;
+
+        $end->hour = 0;
+        $end->minute = 0;
+        $end->second = 0;
+
+        while($start < $end) {
+
+            $range = $this->monthRange($start->month, $start->year);
+
+            $month_counts[] = [
+                'month' => $start->clone(),
+                'count' => $this->totalForPlatformAndRange($platform, $range[0], $range[1])
+            ];
+
+            $start->addMonth();
+        }
+
+        $highest = -1;
+        foreach($month_counts as $month_count)
+        {
+            if ($month_count['count'] > $highest)
+            {
+                $highest = $month_count['count'];
+            }
+        }
+
+        foreach ($month_counts as $index => $month_count)
+        {
+            $date_counts[$index]['percentage'] = $highest != 0 ? ((int) ceil( ($month_count['count'] / $highest) * 100 )) : 0;
+        }
+
+        if ($reverse) {
+            $month_counts = array_reverse($month_counts);
+        }
+
+        return $month_counts;
     }
 
 }
