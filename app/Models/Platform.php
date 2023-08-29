@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Platform extends Model
 {
-    use CrudTrait;
     use HasFactory, SoftDeletes;
 
     public const LABEL_DSA_TEAM = 'DSA Team';
