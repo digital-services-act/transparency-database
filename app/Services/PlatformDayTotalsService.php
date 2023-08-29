@@ -85,8 +85,11 @@ class PlatformDayTotalsService
             return false;
         }
 
-        // Delete any existing.
-        $this->deleteDayTotal($platform, $date, $attribute, $value);
+
+        $existing = $this->getDayTotal($platform, $date, $attribute, $value);
+        if ($existing) {
+            return $existing;
+        }
 
         $start = $date->clone();
         $end = $date->clone();

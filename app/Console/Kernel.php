@@ -16,7 +16,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 //        $schedule->command('generate:datasets')->hourly();
+//        $schedule->command('platform:compile-day-totals')->daily();
 //        $schedule->command('reset-application')->environments(['staging'])->weekly();
+        $schedule->command('platform:compile-day-totals')->daily();
     }
 
     /**

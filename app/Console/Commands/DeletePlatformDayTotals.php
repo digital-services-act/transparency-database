@@ -6,21 +6,21 @@ use App\Models\Platform;
 use App\Services\PlatformDayTotalsService;
 use Illuminate\Console\Command;
 
-class CompilePlatformDayTotals extends Command
+class DeletePlatformDayTotals extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'platform:compile-day-totals {platform_id=all} {attribute=all} {value=all} {days=3}';
+    protected $signature = 'platform:delete-day-totals {platform_id=all} {attribute=all} {value=all}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Queue all day totals for a platform.';
+    protected $description = 'delete all day totals for a platform.';
 
     /**
      * Execute the console command.
@@ -30,7 +30,6 @@ class CompilePlatformDayTotals extends Command
         $platform_id = $this->argument('platform_id');
         $attribute = $this->argument('attribute') !== 'all' ?  $this->argument('attribute') : '*';
         $value = $this->argument('value') !== 'all' ? $this->argument('value') : '*';
-        $days = (int)$this->argument('days');
 
         $platforms = [];
         if ($platform_id === 'all') {
@@ -45,7 +44,7 @@ class CompilePlatformDayTotals extends Command
         }
 
         foreach ($platforms as $platform) {
-            $platform_day_totals_service->compileDayTotals($platform, $attribute, $value, $days);
+            $platform_day_totals_service->deleteDayTotals($platform, $attribute, $value);
         }
     }
 }

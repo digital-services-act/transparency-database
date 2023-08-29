@@ -21,7 +21,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('platform_id')->references('id')->on('platforms');
-
         });
     }
 
