@@ -108,7 +108,7 @@ class PlatformDayTotalsService
         $end->minute = 59;
         $end->second = 59;
 
-        $query = Statement::query()->where('platform_id', $platform->id)->whereBetween('created_at', [$start, $end]);
+        $query = Statement::query()->where('platform_id', $platform->id)->where('created_at', '>=', $start)->where('created_at', '<=', $end);
 
         if ($attribute !== '*' && $value !== '*') {
             $query->where($attribute, $value);
