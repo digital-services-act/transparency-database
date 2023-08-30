@@ -13,7 +13,7 @@ class CompilePlatformDayTotals extends Command
      *
      * @var string
      */
-    protected $signature = 'platform:compile-day-totals {platform_id=all} {attribute=all} {value=all} {days=3}';
+    protected $signature = 'platform:compile-day-totals {platform_id=all} {attribute=all} {value=all} {days=20}';
 
     /**
      * The console command description.

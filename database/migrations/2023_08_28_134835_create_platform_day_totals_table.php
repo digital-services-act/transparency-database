@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('total')->default(0);
             $table->timestamps();
 
-            $table->foreign('platform_id')->references('id')->on('platforms');
+            $table->foreign('platform_id')->references('id')->onDelete('cascade')->onUpdate('cascade')->on('platforms');
 
             $table->unique(['platform_id', 'date', 'attribute', 'value'], 'pdav_index');
         });

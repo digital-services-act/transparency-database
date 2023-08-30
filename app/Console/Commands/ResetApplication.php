@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\PlatformDayTotal;
 use App\Models\Statement;
+use App\Services\PlatformDayTotalsService;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\UserSeeder;
@@ -33,8 +35,11 @@ class ResetApplication extends Command
             PlatformSeeder::resetPlatforms();
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();
+            PlatformDayTotal::query()->forceDelete();
             Statement::query()->forceDelete();
             Statement::factory()->count(1000)->create();
+            $this->info('Reset has completed.');
+            $this->info('You should now run: "platform:compile-day-totals all all all 400"');
         } else {
             $this->error('Oh hell no!');
             $this->error('We do not run this in production.');

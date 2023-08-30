@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Platform;
+use App\Models\PlatformDayTotal;
+use App\Services\PlatformDayTotalsService;
 use App\Services\StatementSearchService;
 use App\Services\StatementStatsService;
 use Exception;
@@ -17,11 +19,17 @@ class ReportsController extends Controller
 {
     protected StatementStatsService $statement_stats_service;
     protected StatementSearchService $statement_search_service;
+    protected PlatformDayTotalsService $platform_day_totals_service;
 
-    public function __construct(StatementStatsService $statement_stats_service, StatementSearchService $statement_search_service)
+    public function __construct(
+        StatementStatsService $statement_stats_service,
+        StatementSearchService $statement_search_service,
+        PlatformDayTotalsService $platform_day_totals_service
+    )
     {
         $this->statement_stats_service = $statement_stats_service;
         $this->statement_search_service = $statement_search_service;
+        $this->platform_day_totals_service = $platform_day_totals_service;
     }
 
     /**
@@ -93,15 +101,13 @@ class ReportsController extends Controller
         $start_months = Carbon::now()->subMonths($start_months_ago);
         $end = Carbon::now();
 
-        if (config('scout.driver') == 'opensearch') {
-            $platform_last_days_ago = $this->statement_search_service->totalForPlatformAndRange($platform, $start_days, $end);
-            $platform_last_months_ago = $this->statement_search_service->totalForPlatformAndRange($platform, $start_months, $end);
-            $date_counts         = $this->statement_search_service->dayCountsForPlatformAndRange($platform, $start_days, $end);
-            $month_counts        = $this->statement_search_service->monthCountsForPlatformAndRange($platform, $start_months, $end);
-            $platform_total = $this->statement_search_service->countForPlatform($platform);
-        } else {
-            Log::warning('Doing stats work when the scout driver is not opensearch is no longer supported');
-        }
+        $platform_last_days_ago = $this->platform_day_totals_service->totalForRange($platform, $start_days, $end);
+        $platform_last_months_ago = $this->platform_day_totals_service->totalForRange($platform, $start_months, $end);
+
+        $date_counts         = $this->platform_day_totals_service->dayCountsForRange($platform, $start_days, $end);
+        $month_counts        = $this->platform_day_totals_service->monthCountsForRange($platform, $start_months, $end);
+
+        $platform_total = $platform->statements()->count();
 
         return compact(
             'date_counts',
