@@ -14,7 +14,7 @@ class WorkflowRequest extends FormRequest
     public function authorize()
     {
         // only allow updates if the user is logged in
-        return backpack_auth()->check();
+        return $this->user()->can('administrate');
     }
 
     /**

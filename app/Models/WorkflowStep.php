@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkflowStep extends Model
 {
-    use CrudTrait;
     use HasFactory;
 
     protected $fillable = ['name', 'description', 'workflow_stage_id', 'order', 'type'];
