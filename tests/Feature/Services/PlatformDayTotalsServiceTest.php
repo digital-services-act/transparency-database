@@ -61,15 +61,14 @@ class PlatformDayTotalsServiceTest extends TestCase
         $this->assertFalse($dayTotal);
 
         // Get the total and if it doesn't exist queue compile it.
-        $dayTotal = $this->platform_day_totals_service->getDayTotal($platform, $date, '*', '*', true);
-        $this->assertFalse($dayTotal);
+        $dayTotal = $this->platform_day_totals_service->compileDayTotal($platform, $date, '*', '*');
+        $this->assertEquals(5, $dayTotal);
 
         // Get it again and by now it should have been made.
         $dayTotal = $this->platform_day_totals_service->getDayTotal($platform, $date);
-        $this->assertInstanceOf(PlatformDayTotal::class, $dayTotal);
 
         // 5 statements should have been made yesterday.
-        $this->assertEquals(5, $dayTotal->total);
+        $this->assertEquals(5, $dayTotal);
     }
 
     /**
@@ -87,6 +86,7 @@ class PlatformDayTotalsServiceTest extends TestCase
 
         $date = Carbon::yesterday();
 
+        // It's not compiled or existing thus false... not an int.
         $dayTotal = $this->platform_day_totals_service->getDayTotal($platform, $date);
         $this->assertFalse($dayTotal);
 
@@ -109,15 +109,17 @@ class PlatformDayTotalsServiceTest extends TestCase
         // there should be 13 more than before.
         $this->assertEquals($total_statements + 13, Statement::count());
 
-        $dayTotalYes = $this->platform_day_totals_service->getDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_YES, true);
-        $this->assertInstanceOf(PlatformDayTotal::class, $dayTotalYes);
+        // Compile the day totals.
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_YES);
 
-        $dayTotalNo = $this->platform_day_totals_service->getDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_NO, true);
-        $this->assertInstanceOf(PlatformDayTotal::class, $dayTotalNo);
+        // Compiling twice doesn't break.
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_YES);
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_NO);
 
-        $this->assertEquals(7, $dayTotalYes->total);
-        $this->assertEquals(6, $dayTotalNo->total);
+        $dayTotalYes = $this->platform_day_totals_service->getDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_YES);
+        $dayTotalNo = $this->platform_day_totals_service->getDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_NO);
 
+        $this->assertEquals(7, $dayTotalYes);
+        $this->assertEquals(6, $dayTotalNo);
     }
-
 }

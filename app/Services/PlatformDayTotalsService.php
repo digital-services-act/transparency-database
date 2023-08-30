@@ -7,13 +7,19 @@ use App\Models\Platform;
 use App\Models\PlatformDayTotal;
 use App\Models\Statement;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PlatformDayTotalsService
 {
-    public function getDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): PlatformDayTotal|bool
+    public function getDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): int|bool
     {
-        $dayTotal = $platform->dayTotals()->whereDate('date', $date)->where('attribute', $attribute)->where('value', $value)->first() ?? false;
-        return $dayTotal;
+        return DB::table('platform_day_totals')
+            ->select('total')
+            ->where('platform_id', $platform->id)
+            ->where('date', $date->format('Y-m-d 00:00:00'))
+            ->where('attribute', $attribute)
+            ->where('value', $value)
+            ->first()->total ?? false;
     }
 
     public function deleteDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*')
@@ -68,11 +74,11 @@ class PlatformDayTotalsService
      * @param string $attribute
      * @param string $value
      *
-     * @return PlatformDayTotal|bool
+     * @return int
      *
      * This should only be called by a queued job
      */
-    public function compileDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): PlatformDayTotal|bool
+    public function compileDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): int
     {
         // We never compile day totals for the future or today...
         // and we are not going to go older than 2020-01-01
@@ -87,7 +93,7 @@ class PlatformDayTotalsService
 
 
         $existing = $this->getDayTotal($platform, $date, $attribute, $value);
-        if ($existing) {
+        if ($existing !== false) {
             return $existing;
         }
 
@@ -114,12 +120,14 @@ class PlatformDayTotalsService
 
         $total = $query->count();
 
-        return PlatformDayTotal::create([
+        PlatformDayTotal::create([
             'date' => $date,
             'platform_id' => $platform->id,
             'attribute' => $attribute,
             'value' => $value,
             'total' => $total
         ]);
+
+        return $total;
     }
 }

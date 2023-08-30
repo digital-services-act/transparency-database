@@ -21,6 +21,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('platform_id')->references('id')->on('platforms');
+
+            $table->unique(['platform_id', 'date', 'attribute', 'value'], 'pdav_index');
         });
     }
 
