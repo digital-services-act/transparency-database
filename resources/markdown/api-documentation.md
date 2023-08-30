@@ -466,7 +466,7 @@ Ex,
 
 ### Content Date (content_date)
 
-This is the date that this content was uploaded or posted. The date needs to take the form of:
+This is a required date field that indicates the upload or posting date of the content. The date should follow this format:
 
 ```YYYY-MM-DD```
 
