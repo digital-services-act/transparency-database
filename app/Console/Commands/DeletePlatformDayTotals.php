@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Platform;
+use App\Models\PlatformDayTotal;
 use App\Services\PlatformDayTotalsService;
 use Illuminate\Console\Command;
 
@@ -13,7 +14,7 @@ class DeletePlatformDayTotals extends Command
      *
      * @var string
      */
-    protected $signature = 'platform:delete-day-totals {platform_id=all} {attribute=all} {value=all}';
+    protected $signature = 'platform:delete-day-totals {platform_id=all} {attribute=all} {value=all} {--nuclear}';
 
     /**
      * The console command description.
@@ -27,6 +28,12 @@ class DeletePlatformDayTotals extends Command
      */
     public function handle(PlatformDayTotalsService $platform_day_totals_service)
     {
+        if ($this->option('nuclear'))
+        {
+            PlatformDayTotal::truncate();
+            return;
+        }
+
         $platform_id = $this->argument('platform_id');
         $attribute = $this->argument('attribute') !== 'all' ?  $this->argument('attribute') : '*';
         $value = $this->argument('value') !== 'all' ? $this->argument('value') : '*';

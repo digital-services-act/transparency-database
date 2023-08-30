@@ -40,6 +40,7 @@ class ResetApplication extends Command
             Statement::factory()->count(1000)->create();
             $this->info('Reset has completed.');
             $this->info('You should now run: "platform:compile-day-totals all all all 400"');
+            $this->info('For opensearch run: "statements:optimize-index"');
         } else {
             $this->error('Oh hell no!');
             $this->error('We do not run this in production.');
