@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Platform;
-use App\Models\PlatformDayTotal;
 use App\Services\PlatformDayTotalsService;
 use App\Services\StatementSearchService;
 use App\Services\StatementStatsService;
@@ -13,7 +12,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {

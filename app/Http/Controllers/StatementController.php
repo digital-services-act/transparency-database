@@ -66,7 +66,7 @@ class StatementController extends Controller
             $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
         }
 
-        $global_total = $this->statement_search_service->totalStatements();
+        $global_total = Statement::query()->count();
 
         return view('statement.index', compact(
             'statements',

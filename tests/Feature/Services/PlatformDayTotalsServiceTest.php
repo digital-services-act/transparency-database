@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Services;
 
-use App\Jobs\CompilePlatformDayTotal;
 use App\Models\Platform;
 use App\Models\PlatformDayTotal;
 use App\Models\Statement;
 use App\Services\PlatformDayTotalsService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class PlatformDayTotalsServiceTest extends TestCase
@@ -121,5 +119,58 @@ class PlatformDayTotalsServiceTest extends TestCase
 
         $this->assertEquals(7, $dayTotalYes);
         $this->assertEquals(6, $dayTotalNo);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function cascade_delete_is_doing_what_it_should()
+    {
+        $this->setUpFullySeededDatabase();
+        $platform = Platform::all()->random()->first();
+        $this->assertNotNull($platform);
+
+        // clear all statements for this platform.
+        $platform->statements()->delete();
+
+        $date = Carbon::yesterday();
+
+        // It's not compiled or existing thus false... not an int.
+        $dayTotal = $this->platform_day_totals_service->getDayTotal($platform, $date);
+        $this->assertFalse($dayTotal);
+
+        $total_statements = Statement::count();
+
+        // Make 7 with yes
+        Statement::factory()->count(7)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'automated_detection' => Statement::AUTOMATED_DETECTION_YES
+        ]);
+
+        // 6 with no
+        Statement::factory()->count(6)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'automated_detection' => Statement::AUTOMATED_DETECTION_NO
+        ]);
+
+        // there should be 13 more than before.
+        $this->assertEquals($total_statements + 13, Statement::count());
+
+        // Compile the day totals.
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_YES);
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'automated_detection', Statement::AUTOMATED_DETECTION_NO);
+
+        // 2 day totals
+        $this->assertEquals(2, PlatformDayTotal::count());
+
+        // Delete the platform...
+        $platform->forceDelete();
+
+        // No day totals
+        $this->assertEquals(0, PlatformDayTotal::count());
+
     }
 }
