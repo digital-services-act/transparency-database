@@ -29,7 +29,7 @@ be re-used in the future.
 
 The specifications of the content affected by the decision cover the required fields regarding 
 the type of content affected and the content creation date, as well as optional fields concerning
-the date and language of the affected information.
+the language of the affected information.
 
 #### 2.1. Type of content affected (content_type)
 
