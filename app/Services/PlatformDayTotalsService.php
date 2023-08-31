@@ -143,6 +143,18 @@ class PlatformDayTotalsService
             ->first()->total ?? false;
     }
 
+    public function globalTotalForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): int|bool
+    {
+        return DB::table('platform_day_totals')
+                 ->selectRaw('SUM(total) as total')
+                 ->whereNotNull('platform_id')
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', $attribute)
+                 ->where('value', $value)
+                 ->first()->total ?? false;
+    }
+
     public function dayCountsForRange(Platform $platform, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*', bool $reverse = true): array
     {
         $date_counts = [];

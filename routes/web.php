@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
 use App\Http\Controllers\InvitationController;
@@ -77,6 +78,10 @@ Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('st
 
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
+
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
+
 
 //Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
