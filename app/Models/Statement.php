@@ -500,27 +500,55 @@ class Statement extends Model
         return $this->getRawKeys('territorial_scope');
     }
 
-    public function getContentTypeAttribute($value)
+    public function getContentTypeAttribute()
     {
         return $this->getRawKeys('content_type');
     }
 
-    public function getDecisionVisibilityAttribute($value)
+    public function getDecisionVisibilityAttribute()
     {
         return $this->getRawKeys('decision_visibility');
     }
 
-    public function getCategoryAdditionAttribute($value)
+    public function getCategoryAdditionAttribute()
     {
         return $this->getRawKeys('category_addition');
     }
 
-    public function getCategorySpecificationAttribute($value)
+    public function getCategorySpecificationAttribute()
     {
         return $this->getRawKeys('category_specification');
     }
 
 
+    /**
+     * Return a nice string of the restrictions this statement had.
+     *
+     * (window dressing)
+     *
+     * @return string
+     */
+    public function restrictions(): string
+    {
+        $decisions = [];
+
+//        dd($this->decision_visibility);
+
+        if ($this->decision_visibility) {
+            $decisions[] = 'Visibility';
+        }
+        if ($this->decision_monetary) {
+            $decisions[] = 'Monetary';
+        }
+        if ($this->decision_provision) {
+            $decisions[] = 'Provision';
+        }
+        if ($this->decision_account) {
+            $decisions[] = 'Account';
+        }
+
+        return implode(", ", $decisions);
+    }
 
     // Function to convert enum keys to their corresponding values
     public static function getEnumValues(array $keys): array
