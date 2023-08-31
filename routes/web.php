@@ -55,6 +55,12 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports')->can('view reports');
         Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
+
+        Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
+        Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
+
+        Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
+        Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
     });
 
 });
@@ -64,11 +70,7 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
-Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
 
-Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
-Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
 //Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
