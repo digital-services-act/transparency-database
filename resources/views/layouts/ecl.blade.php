@@ -10,25 +10,25 @@
         <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec-default.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec-default.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-reset.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-reset.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec-print.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec-print.css') }}"
             crossorigin="anonymous"
             media="print"
         />
