@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('platform:compile-day-totals')->daily();
 //        $schedule->command('reset-application')->environments(['staging'])->weekly();
         $schedule->command('platform:compile-day-totals')->daily();
+        $schedule->command('platform:compile-day-totals-categories')->daily();
     }
 
     /**
