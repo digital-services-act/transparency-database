@@ -38,32 +38,46 @@ class StatementControllerTest extends TestCase
         'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY'
     ];
 
+//    /**
+//     * @test
+//     */
+//    public function index_displays_error_if_not_logged()
+//    {
+//        $this->setUpFullySeededDatabase();
+//        $response = $this->get(route('statement.index'));
+//        $response->assertOk();
+//        $response->assertViewIs('statement.index');
+//        $response->assertViewHas('statements');
+//    }
+
     /**
      * @test
      */
-    public function index_displays_view()
+    public function index_displays_view_if_logged_with_rights()
     {
         $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
         $response = $this->get(route('statement.index'));
         $response->assertOk();
         $response->assertViewIs('statement.index');
         $response->assertViewHas('statements');
     }
 
-    /**
-     * @test
-     */
-    public function index_does_not_auth()
-    {
-        // The cas is set to masquerade in testing mode.
-        // So when we make a call to a cas middleware route we get logged in.
-        // If we make a call to a non cas route nothing should happen.
-        $u = auth()->user();
-        $this->assertNull($u);
-        $response = $this->get(route('statement.index'));
-        $u = auth()->user();
-        $this->assertNull($u);
-    }
+    //Removed as index does need auth now
+//    /**
+//     * @test
+//     */
+//    public function index_does_not_auth()
+//    {
+//        // The cas is set to masquerade in testing mode.
+//        // So when we make a call to a cas middleware route we get logged in.
+//        // If we make a call to a non cas route nothing should happen.
+//        $u = auth()->user();
+//        $this->assertNull($u);
+//        $response = $this->get(route('statement.index'));
+//        $u = auth()->user();
+//        $this->assertNotNull($u);
+//    }
 
     /**
      * @test
@@ -71,6 +85,7 @@ class StatementControllerTest extends TestCase
     public function export_downloads_a_file()
     {
         $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
         $response = $this->get(route('statement.export'));
         $response->assertOk();
         $response->assertDownload();
@@ -117,8 +132,9 @@ class StatementControllerTest extends TestCase
     public function show_displays_view()
     {
         $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
         $statement = Statement::factory()->create();
-        $this->signIn();
         $response = $this->get(route('statement.show', $statement));
 
         $response->assertOk();
