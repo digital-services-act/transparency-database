@@ -1,5 +1,9 @@
 # Changelog
 
+##  [v1.0.1] - 2023-09-01
+### Changed
+- 'content_date' minimal value set to 2000-01-01
+
 ##  [v1.0] - 2023-08-16
 ### Added
 - New API field: 'category_addition'

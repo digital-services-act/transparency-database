@@ -472,7 +472,7 @@ This is a required date field that indicates the upload or posting date of the c
 
 The day and the month have leading zeroes.
 
-The date must be after 2020-01-01.
+The date must be after or equal to 2000-01-01.
 
 ### Application Date (application_date)
 
@@ -482,7 +482,7 @@ This is the date that this decision starts from. The date needs to take the form
 
 The day and the month have leading zeroes.
 
-The date must be after 2020-01-01.
+The date must be after or equal to 2020-01-01.
 
 ### End Date of account restriction (end_date_account_restriction)
 
