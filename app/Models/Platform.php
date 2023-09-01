@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,9 +22,19 @@ class Platform extends Model
         'id'
     ];
 
+    public function scopeNonDsa(Builder $query): void
+    {
+        $query->where('name', '!=', self::LABEL_DSA_TEAM);
+    }
+
+    public function isDSA()
+    {
+        return $this->name === self::LABEL_DSA_TEAM;
+    }
+
     public static function getDsaPlatform()
     {
-        return Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
+        return Platform::where('name', self::LABEL_DSA_TEAM)->first();
     }
 
     public function __construct(array $attributes = [])
@@ -39,5 +50,10 @@ class Platform extends Model
     public function statements()
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id');
+    }
+
+    public function dayTotals()
+    {
+        return $this->hasMany(PlatformDayTotal::class, 'platform_id', 'id');
     }
 }

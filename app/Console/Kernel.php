@@ -15,8 +15,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('generate:datasets')->hourly();
-//        $schedule->command('reset-application')->environments(['staging'])->weekly();
+        $schedule->command('platform:compile-day-totals')->daily();
+        $schedule->command('platform:compile-day-totals all decision_visibility all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_monetary all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_provision all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_account all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->daily();
+        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->daily();
+        $schedule->command('platform:compile-day-totals-categories')->daily();
     }
 
     /**

@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\DB;
 
 class StatementStatsService
 {
+    public function totalForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end): int
+    {
+        $days_result = DB::table('statements')
+                         ->join('platforms', 'platforms.id', '=', 'statements.platform_id')
+                         ->selectRaw('count(statements.id) as statements_count')
+                         ->where('platforms.id', $platform->id)
+                         ->where('statements.created_at', '>=', $start->format('Y-m-d 00:00:00'))
+                         ->where('statements.created_at', '<=', $end->format('Y-m-d 23:59:59'))
+                         ->get();
+        return $days_result->first()->statements_count ?? 0;
+    }
+
     public function dayCountsForPlatformAndRange(Platform $platform, Carbon $start, Carbon $end, bool $reverse = true): array
     {
         $date_counts = [];
@@ -19,7 +31,7 @@ class StatementStatsService
                          ->groupByRaw('DATE(statements.created_at)')
                          ->where('platforms.id', $platform->id)
                          ->where('statements.created_at', '>=', $start->format('Y-m-d 00:00:00'))
-                         ->where('statements.created_at', '<', $end->format('Y-m-d 00:00:00'))
+                         ->where('statements.created_at', '<=', $end->format('Y-m-d 23:59:59'))
                          ->get();
 
         $highest = -1;
