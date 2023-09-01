@@ -105,6 +105,28 @@
         })
       })
 
+      // Slugify the id so it can be linked but not necessarily in the TOC
+      jQuery(document).ready(function ($) {
+        $('#content-area > h4').each(function (e) {
+          var dis = $(this)
+          var t = dis.text()
+          var id = slugify(t)
+          dis.attr('id', id)
+          dis.addClass('ecl-u-type-heading-4')
+        })
+      })
+
+      // Slugify the id so it can be linked but not necessarily in the TOC
+      jQuery(document).ready(function ($) {
+        $('#content-area > h5').each(function (e) {
+          var dis = $(this)
+          var t = dis.text()
+          var id = slugify(t)
+          dis.attr('id', id)
+          dis.addClass('ecl-u-type-heading-5')
+        })
+      })
+
       jQuery(document).ready(function ($) {
         $('#content-area > p').each(function (e) {
           var dis = $(this)
