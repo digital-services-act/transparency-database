@@ -9,9 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "backpack/crud": "^6.1",
-        "backpack/pro": "^2.0",
-        "backpack/theme-tabler": "^1.0",
         "consoletvs/charts": "6.*",
         "cweagans/composer-patches": "^1.7",
         "erusev/parsedown": "^1.7",
@@ -20,7 +17,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/scout": "^10.1",
         "laravel/tinker": "^2.8",
-        "laravel/vapor-core": "^2.32",
+        "laravel/vapor-core": "^2.26",
         "laravel/vapor-ui": "^1.7",
         "league/flysystem-aws-s3-v3": "^3.0",
         "maatwebsite/excel": "^3.1",
@@ -34,7 +31,6 @@
         "zing/laravel-scout-opensearch": "^3.2"
     },
     "require-dev": {
-        "backpack/generators": "^4.0",
         "barryvdh/laravel-debugbar": "^3.7",
         "brianium/paratest": "^7.0",
         "fakerphp/faker": "^1.9.1",
@@ -72,9 +68,6 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ],
-        "post-install-cmd": [
-            "php artisan storage:link --quiet"
         ]
     },
     "extra": {

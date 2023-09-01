@@ -86,10 +86,11 @@
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
                         </li>
-
+                        @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
                         </li>
+                        @endcan
 
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>
