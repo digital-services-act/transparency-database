@@ -70,8 +70,8 @@ class StatementStoreRequest extends FormRequest
 
             'content_language' => [$this->in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
-            'content_date' => ['required', 'date_format:Y-m-d', 'after:2020-01-01'],
-            'application_date' => ['required', 'date_format:Y-m-d', 'after:2020-01-01'],
+            'content_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01'],
+            'application_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2020-01-01'],
             'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable'],
             'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable'],
             'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable'],
