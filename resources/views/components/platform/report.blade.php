@@ -1,5 +1,5 @@
 @props(['platform' => null, 'platform_report' => null, 'days_ago' => 0, 'months_ago' => 0 ])
-<h2>Platform: {{ $platform->name }}</h2>
+<h2 class="ecl-u-type-heading-2">Platform: {{ $platform->name }}</h2>
 
 <div class="ecl-fact-figures ecl-fact-figures--col-3">
     <div class="ecl-fact-figures__items">

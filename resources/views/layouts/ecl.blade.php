@@ -83,7 +83,7 @@
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
 <script
-    src="{{ asset('static/scripts/ecl-ec.js') }}"
+    src="{{ asset('static/ecl/scripts/ecl-ec.js') }}"
     crossorigin="anonymous"
 ></script>
 <script>

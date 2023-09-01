@@ -40,7 +40,12 @@ return [
     */
 
     'serve_assets' => [
-        'static/media/icons.2d66392b.svg'
+        'static/ecl/images/icons/sprites/icons.svg',
+        'static/ecl/styles/ecl-ec-default.css',
+        'static/ecl/styles/ecl-reset.css',
+        'static/ecl/styles/ecl-ec.css',
+        'static/ecl/styles/ecl-ec-print.css',
+        'static/ecl/scripts/ecl-ec.js'
     ],
 
 ];
