@@ -20,7 +20,6 @@
                                          aria-hidden="true">
                                         <x-ecl.icon icon="log-in"/>
                                     </svg>
-
                                     @auth
                                         {{ auth()->user()->name }} &nbsp;
                                     @endauth
