@@ -72,4 +72,128 @@ class AnalyticsController extends Controller
             'platform_totals'
         ));
     }
+
+    public function restrictions(Request $request)
+    {
+        $last_days = 90;
+
+        $restriction_totals = [];
+        $restrictions = [
+            'decision_visibility' => 'Visibility',
+            'decision_monetary' => 'Monetary',
+            'decision_provision' => 'Provision',
+            'decision_account' => 'Account'
+        ];
+
+
+
+        foreach ($restrictions as $attribute => $restriction)
+        {
+
+            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), $attribute);
+            if ($request->query('chaos')) {
+                $chaos = abs((int)$request->query('chaos'));
+                $total += random_int(($chaos * -1), $chaos);
+            }
+
+            $restriction_totals[] = [
+                'name'  => $restriction,
+                'total' => $total
+            ];
+
+        }
+
+        if ($request->query('sort')) {
+            uasort($restriction_totals, function ($a, $b) {
+                if ($a['total'] === $b['total']) {
+                    return 0;
+                }
+
+                return $a['total'] < $b['total'] ? 1 : -1;
+            });
+        }
+
+        return view('analytics.restrictions', compact(
+            'last_days',
+            'restriction_totals'
+        ));
+    }
+
+    public function categories(Request $request)
+    {
+        $last_days = 90;
+
+        $category_totals = [];
+        $categories = Statement::STATEMENT_CATEGORIES;
+
+        foreach ($categories as $category_key => $category_label)
+        {
+
+            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), 'category', $category_key);
+            if ($request->query('chaos')) {
+                $chaos = abs((int)$request->query('chaos'));
+                $total += random_int(($chaos * -1), $chaos);
+            }
+
+            $category_totals[] = [
+                'name'  => $category_label,
+                'total' => $total
+            ];
+
+        }
+
+        if ($request->query('sort')) {
+            uasort($category_totals, function ($a, $b) {
+                if ($a['total'] === $b['total']) {
+                    return 0;
+                }
+
+                return $a['total'] < $b['total'] ? 1 : -1;
+            });
+        }
+
+        return view('analytics.categories', compact(
+            'last_days',
+            'category_totals'
+        ));
+    }
+
+    public function grounds(Request $request)
+    {
+        $last_days = 90;
+
+        $ground_totals = [];
+        $grounds = Statement::DECISION_GROUNDS;
+
+        foreach ($grounds as $ground_key => $ground_label)
+        {
+
+            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), 'decision_ground', $ground_key);
+            if ($request->query('chaos')) {
+                $chaos = abs((int)$request->query('chaos'));
+                $total += random_int(($chaos * -1), $chaos);
+            }
+
+            $ground_totals[] = [
+                'name'  => $ground_label,
+                'total' => $total
+            ];
+
+        }
+
+        if ($request->query('sort')) {
+            uasort($ground_totals, function ($a, $b) {
+                if ($a['total'] === $b['total']) {
+                    return 0;
+                }
+
+                return $a['total'] < $b['total'] ? 1 : -1;
+            });
+        }
+
+        return view('analytics.grounds', compact(
+            'last_days',
+            'ground_totals'
+        ));
+    }
 }

@@ -81,6 +81,9 @@ Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])-
 
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
+Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
+Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
+Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
 
 
 //Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');

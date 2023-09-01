@@ -5,7 +5,7 @@
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Analytics" url="{{ route('analytics.index') }}"/>
-    <x-ecl.breadcrumb label="Platforms"/>
+    <x-ecl.breadcrumb label="Restrictions"/>
 @endsection
 
 
@@ -13,8 +13,8 @@
 
     <x-analytics.header />
 
-    <h2 class="ecl-u-type-heading-2">Platform Statements for the Last {{ $last_days }} Days</h2>
+    <h2 class="ecl-u-type-heading-2">Restrictions for the Last {{ $last_days }} Days</h2>
 
-    <x-analytics.bar-chart :data="$platform_totals" height="800"/>
+    <x-analytics.bar-chart :data="$restriction_totals" height="500"/>
 
 @endsection
