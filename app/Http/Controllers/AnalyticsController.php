@@ -26,7 +26,8 @@ class AnalyticsController extends Controller
         $average_per_hour = number_format(($total_last_days / ($last_days + 24)), 2);
         $average_per_hour_per_platform = number_format((($total_last_days / ($last_days + 24)) / $platforms_total), 2);
 
-        $total = Statement::count();
+        $midnight = Carbon::now()->format('Y-m-d 00:00:00');
+        $total = Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
 
 
         return view('analytics.index', compact(
