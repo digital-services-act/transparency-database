@@ -1,3 +1,4 @@
+@php use App\Models\Statement; @endphp
 @extends('layouts/ecl')
 
 @section('title', 'Analytics')
@@ -10,7 +11,7 @@
 
 @section('content')
 
-    <x-analytics.header />
+    <x-analytics.header/>
 
     <h2 class="ecl-u-type-heading-2">Overview</h2>
 
@@ -65,6 +66,30 @@
                 <div class="ecl-fact-figures__title">Statements per hour per platform</div>
             </div>
 
+        </div>
+    </div>
+
+    <div class="ecl-row">
+        <div class="ecl-col-6">
+            <h3 class="ecl-u-type-heading-3">Top Platforms</h3>
+            <ul class="ecl-unordered-list">
+                @foreach($top_platforms as $top_platform)
+                    <li class="ecl-unordered-list__item">
+                        {{ $top_platform->name }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+
+        <div class="ecl-col-6">
+            <h3 class="ecl-u-type-heading-3">Top Categories</h3>
+            <ul class="ecl-unordered-list">
+                @foreach($top_categories as $top_category)
+                    <li class="ecl-unordered-list__item">
+                        {{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}
+                    </li>
+                @endforeach
+            </ul>
         </div>
     </div>
 

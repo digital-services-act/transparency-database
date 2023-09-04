@@ -249,4 +249,33 @@ class PlatformDayTotalsService
 
         return $month_counts;
     }
+
+    public function topXPlatforms(int $limit = 5, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*')
+    {
+        return DB::table('platform_day_totals')
+                 ->selectRaw('platforms.name, SUM(total) as total')
+                 ->whereNotNull('platform_id')
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', $attribute)
+                 ->where('value', $value)
+                 ->groupBy('platform_id')
+                 ->orderBy('total', 'desc')
+                 ->join('platforms', 'platform_id', '=', 'platforms.id')
+                 ->limit($limit)
+                 ->get()->toArray();
+    }
+
+    public function topCategories(Carbon $start, Carbon $end)
+    {
+        return DB::table('platform_day_totals')
+                 ->selectRaw('value, SUM(total) as total')
+                 ->whereNotNull('platform_id')
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', 'category')
+                 ->groupBy('value')
+                 ->orderBy('total', 'desc')
+                 ->get()->toArray();
+    }
 }
