@@ -26,8 +26,13 @@ class AnalyticsController extends Controller
         $average_per_hour = number_format(($total_last_days / ($last_days + 24)), 2);
         $average_per_hour_per_platform = number_format((($total_last_days / ($last_days + 24)) / $platforms_total), 2);
 
-        $total = Statement::count();
+        $midnight = Carbon::now()->format('Y-m-d 00:00:00');
+        $total = Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
 
+        $top_x = 5;
+        $top_platforms = $this->platform_day_totals_service->topXPlatforms($top_x, Carbon::now()->subDays($last_days), Carbon::now());
+        $top_categories = $this->platform_day_totals_service->topCategories(Carbon::now()->subDays($last_days), Carbon::now());
+        $top_categories = array_slice($top_categories, 0, 5);
 
         return view('analytics.index', compact(
             'total',
@@ -37,7 +42,10 @@ class AnalyticsController extends Controller
             'total_last_months',
             'average_per_hour',
             'platforms_total',
-            'average_per_hour_per_platform'
+            'average_per_hour_per_platform',
+            'top_x',
+            'top_platforms',
+            'top_categories'
         ));
     }
 

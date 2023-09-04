@@ -23,6 +23,17 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->daily();
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->daily();
         $schedule->command('platform:compile-day-totals-categories')->daily();
+
+        /*
+        php artisan platform:compile-day-totals
+        php artisan platform:compile-day-totals all decision_visibility all
+        php artisan platform:compile-day-totals all decision_monetary all
+        php artisan platform:compile-day-totals all decision_provision all
+        php artisan platform:compile-day-totals all decision_account all
+        php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT
+        php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT
+        php artisan platform:compile-day-totals-categories
+        */
     }
 
     /**
