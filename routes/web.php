@@ -35,6 +35,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
+    Route::get('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
     Route::group(['middleware' => ['can:administrate']], function(){
 
@@ -74,12 +75,11 @@ Route::middleware(['cas.auth'])->group(function() {
 
 });
 
+
+// Public Open Routes. POR
 Route::get('/', function () {
     return view('home');
 })->name('home');
-
-
-
 
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
@@ -87,10 +87,7 @@ Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions
 Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
 Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
 
-
-//Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
-Route::get('/datasets', [DatasetsController::class, 'index'])->name('datasets.index');
 
 
