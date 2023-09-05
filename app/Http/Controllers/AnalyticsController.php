@@ -103,11 +103,14 @@ class AnalyticsController extends Controller
             return $item['name'];
         }, $platform_totals);
 
+        $options = $this->prepareOptions();
+
         return view('analytics.platforms', compact(
             'last_days',
             'platforms_total',
             'platform_totals_values',
-            'platform_totals_labels'
+            'platform_totals_labels',
+            'options'
         ));
     }
 
