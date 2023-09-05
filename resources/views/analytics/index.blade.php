@@ -20,7 +20,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="infographic"/>
+                    <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total }}</div>
                 <div class="ecl-fact-figures__title">Statements All Time Total</div>
@@ -28,7 +28,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth"/>
+                    <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total_last_days }}</div>
                 <div class="ecl-fact-figures__title">Statements last {{ $last_days }} Days</div>
@@ -36,7 +36,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth"/>
+                    <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total_last_months }}</div>
                 <div class="ecl-fact-figures__title">Statements last {{ $last_months }} months</div>
@@ -52,7 +52,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth"/>
+                    <x-ecl.icon icon="infographic"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $platforms_total }} platforms</div>
                 <div class="ecl-fact-figures__title">Active platforms</div>
@@ -95,6 +95,6 @@
 
     <h2 class="ecl-u-type-heading-2">Statements over {{ $last_history_days }} days</h2>
 
-    <x-analytics.line-chart :values="$day_totals_values" :labels="$day_totals_labels" height="800"/>
+    <x-analytics.line-chart :values="$day_totals_values" :labels="$day_totals_labels" height="400"/>
 
 @endsection

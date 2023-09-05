@@ -23,8 +23,8 @@ class AnalyticsController extends Controller
         $total_last_days = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now());
         $total_last_months = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subMonths($last_months), Carbon::now());
         $platforms_total = Platform::nonDsa()->count();
-        $average_per_hour = number_format(($total_last_days / ($last_days + 24)), 2);
-        $average_per_hour_per_platform = number_format((($total_last_days / ($last_days + 24)) / $platforms_total), 2);
+        $average_per_hour = number_format(($total_last_days / ($last_days * 24)), 2);
+        $average_per_hour_per_platform = number_format((($total_last_days / ($last_days * 24)) / $platforms_total), 2);
 
         $midnight = Carbon::now()->format('Y-m-d 00:00:00');
         $total = Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
