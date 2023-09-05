@@ -15,6 +15,6 @@
 
     <h2 class="ecl-u-type-heading-2">Platform Statements for the Last {{ $last_days }} Days</h2>
 
-    <x-analytics.bar-chart :data="$platform_totals" height="800"/>
+    <x-analytics.bar-chart :values="$platform_totals_values" :labels="$platform_totals_labels" height="800"/>
 
 @endsection

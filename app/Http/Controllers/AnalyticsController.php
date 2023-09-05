@@ -30,9 +30,24 @@ class AnalyticsController extends Controller
         $total = Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
 
         $top_x = 5;
-        $top_platforms = $this->platform_day_totals_service->topXPlatforms($top_x, Carbon::now()->subDays($last_days), Carbon::now());
+        $top_platforms = $this->platform_day_totals_service->topPlatforms(Carbon::now()->subDays($last_days), Carbon::now());
+        $top_platforms = array_slice($top_platforms, 0, 5);
         $top_categories = $this->platform_day_totals_service->topCategories(Carbon::now()->subDays($last_days), Carbon::now());
         $top_categories = array_slice($top_categories, 0, 5);
+
+        $last_history_days = 30;
+        $day_totals = $this->platform_day_totals_service->globalDayCountsForRange(Carbon::now()->subDays($last_history_days), Carbon::now());
+        $day_totals = array_reverse($day_totals);
+
+        $day_totals_values = array_map(function($item){
+            return $item->total;
+        }, $day_totals);
+
+        $day_totals_labels = array_map(function($item){
+            return $item->date;
+        }, $day_totals);
+
+
 
         return view('analytics.index', compact(
             'total',
@@ -45,7 +60,11 @@ class AnalyticsController extends Controller
             'average_per_hour_per_platform',
             'top_x',
             'top_platforms',
-            'top_categories'
+            'top_categories',
+            'day_totals',
+            'day_totals_values',
+            'day_totals_labels',
+            'last_history_days'
         ));
     }
 
@@ -57,12 +76,14 @@ class AnalyticsController extends Controller
         $platform_totals = [];
         $platforms = Platform::nonDsa()->get();
 
+
+
         foreach ($platforms as $platform)
         {
 
             $platform_totals[] = [
                 'name'  => $platform->name,
-                'total' => $this->platform_day_totals_service->totalForRange($platform, Carbon::now()->subDays($last_days), Carbon::now())
+                'total' => (int)$this->platform_day_totals_service->totalForRange($platform, Carbon::now()->subDays($last_days), Carbon::now())
             ];
 
         }
@@ -74,10 +95,19 @@ class AnalyticsController extends Controller
             return $a['total'] < $b['total'] ? 1 : -1;
         });
 
+        $platform_totals_values = array_map(function($item){
+            return $item['total'];
+        }, $platform_totals);
+
+        $platform_totals_labels = array_map(function($item){
+            return $item['name'];
+        }, $platform_totals);
+
         return view('analytics.platforms', compact(
             'last_days',
             'platforms_total',
-            'platform_totals'
+            'platform_totals_values',
+            'platform_totals_labels'
         ));
     }
 
@@ -106,7 +136,7 @@ class AnalyticsController extends Controller
 
             $restriction_totals[] = [
                 'name'  => $restriction,
-                'total' => $total
+                'total' => (int)$total
             ];
 
         }
@@ -121,9 +151,19 @@ class AnalyticsController extends Controller
             });
         }
 
+        $restriction_totals_values = array_map(function($item){
+            return $item['total'];
+        }, $restriction_totals);
+
+        $restriction_totals_labels = array_map(function($item){
+            return $item['name'];
+        }, $restriction_totals);
+
         return view('analytics.restrictions', compact(
             'last_days',
-            'restriction_totals'
+            'restriction_totals',
+            'restriction_totals_labels',
+            'restriction_totals_values'
         ));
     }
 
@@ -145,7 +185,7 @@ class AnalyticsController extends Controller
 
             $category_totals[] = [
                 'name'  => $category_label,
-                'total' => $total
+                'total' => (int)$total
             ];
 
         }
@@ -160,9 +200,19 @@ class AnalyticsController extends Controller
             });
         }
 
+        $category_totals_values = array_map(function($item){
+            return $item['total'];
+        }, $category_totals);
+
+        $category_totals_labels = array_map(function($item){
+            return $item['name'];
+        }, $category_totals);
+
         return view('analytics.categories', compact(
             'last_days',
-            'category_totals'
+            'category_totals',
+            'category_totals_labels',
+            'category_totals_values'
         ));
     }
 
@@ -184,7 +234,7 @@ class AnalyticsController extends Controller
 
             $ground_totals[] = [
                 'name'  => $ground_label,
-                'total' => $total
+                'total' => (int)$total
             ];
 
         }
@@ -198,10 +248,19 @@ class AnalyticsController extends Controller
                 return $a['total'] < $b['total'] ? 1 : -1;
             });
         }
+        $ground_totals_values = array_map(function($item){
+            return $item['total'];
+        }, $ground_totals);
+
+        $ground_totals_labels = array_map(function($item){
+            return $item['name'];
+        }, $ground_totals);
 
         return view('analytics.grounds', compact(
             'last_days',
-            'ground_totals'
+            'ground_totals',
+            'ground_totals_labels',
+            'ground_totals_values'
         ));
     }
 }

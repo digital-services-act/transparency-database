@@ -1,12 +1,12 @@
-@props(['data' => false, 'height' => 400])
+@props(['series' => 'statements', 'values' => [], 'labels' => [], 'height' => 400, 'id' => 'apexchart'])
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<div id="apexchart"></div>
+<div id="{{ $id }}"></div>
 <script>
   var options = {
     colors:['#004494', '#FFD617', '#404040'],
     series: [{
-      name: 'statements',
-      data: [{{ implode(', ', array_map(function($a){return $a['total'];}, $data)) }}]
+      name: '{{ $series }}',
+      data: [{{ implode(', ', $values) }}]
     }],
     chart: {
       type: 'bar',
@@ -14,7 +14,6 @@
     },
     plotOptions: {
       bar: {
-        borderRadius: 4,
         horizontal: true,
       }
     },
@@ -22,11 +21,11 @@
       enabled: false
     },
     xaxis: {
-      categories: [{!! "'" . implode("', '", array_map(function($a){return $a['name'];}, $data)) . "'" !!}],
+      categories: [{!! "'" . implode("', '", $labels) . "'" !!}],
     }
   };
 
-  var chart = new ApexCharts(document.querySelector('#apexchart'), options)
+  var chart = new ApexCharts(document.querySelector('#{{ $id }}'), options)
 
   chart.render()
 </script>

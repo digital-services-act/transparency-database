@@ -15,6 +15,6 @@
 
     <h2 class="ecl-u-type-heading-2">Categories for the Last {{ $last_days }} Days</h2>
 
-    <x-analytics.bar-chart :data="$category_totals" height="800"/>
+    <x-analytics.bar-chart :values="$category_totals_values" :labels="$category_totals_labels" height="800"/>
 
 @endsection

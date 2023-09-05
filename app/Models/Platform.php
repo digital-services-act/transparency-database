@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Platform extends Model
 {
@@ -19,7 +20,8 @@ class Platform extends Model
      * @var array
      */
     protected $guarded = [
-        'id'
+        'id',
+        'uuid'
     ];
 
     public function scopeNonDsa(Builder $query): void
@@ -37,9 +39,12 @@ class Platform extends Model
         return Platform::where('name', self::LABEL_DSA_TEAM)->first();
     }
 
-    public function __construct(array $attributes = [])
+    protected static function boot()
     {
-        parent::__construct($attributes);
+        parent::boot();
+        static::creating(function ($statement) {
+            $statement->uuid = Str::uuid();
+        });
     }
 
     public function users()

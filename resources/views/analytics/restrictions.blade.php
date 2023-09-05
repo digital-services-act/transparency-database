@@ -15,6 +15,6 @@
 
     <h2 class="ecl-u-type-heading-2">Restrictions for the Last {{ $last_days }} Days</h2>
 
-    <x-analytics.bar-chart :data="$restriction_totals" height="500"/>
+    <x-analytics.bar-chart :values="$restriction_totals_values" :labels="$restriction_totals_labels" height="500"/>
 
 @endsection
