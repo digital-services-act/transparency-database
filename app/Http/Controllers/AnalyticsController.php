@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\PlatformDayTotalsService;
@@ -22,7 +23,8 @@ class AnalyticsController extends Controller
         $last_months = 12;
         $total_last_days = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now());
         $total_last_months = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subMonths($last_months), Carbon::now());
-        $platforms_total = Platform::nonDsa()->count();
+        //To avoid division by zero if no non-DSA platforms are defined
+        $platforms_total = max(1, Platform::nonDsa()->count());
         $average_per_hour = number_format(($total_last_days / ($last_days * 24)), 2);
         $average_per_hour_per_platform = number_format((($total_last_days / ($last_days * 24)) / $platforms_total), 2);
 
@@ -39,14 +41,13 @@ class AnalyticsController extends Controller
         $day_totals = $this->platform_day_totals_service->globalDayCountsForRange(Carbon::now()->subDays($last_history_days), Carbon::now());
         $day_totals = array_reverse($day_totals);
 
-        $day_totals_values = array_map(function($item){
+        $day_totals_values = array_map(function ($item) {
             return $item->total;
         }, $day_totals);
 
-        $day_totals_labels = array_map(function($item){
+        $day_totals_labels = array_map(function ($item) {
             return $item->date;
         }, $day_totals);
-
 
 
         return view('analytics.index', compact(
@@ -77,29 +78,27 @@ class AnalyticsController extends Controller
         $platforms = Platform::nonDsa()->get();
 
 
-
-        foreach ($platforms as $platform)
-        {
+        foreach ($platforms as $platform) {
 
             $platform_totals[] = [
-                'name'  => $platform->name,
+                'name' => $platform->name,
                 'total' => (int)$this->platform_day_totals_service->totalForRange($platform, Carbon::now()->subDays($last_days), Carbon::now())
             ];
 
         }
 
-        uasort($platform_totals, function($a, $b){
+        uasort($platform_totals, function ($a, $b) {
             if ($a['total'] === $b['total']) {
                 return 0;
             }
             return $a['total'] < $b['total'] ? 1 : -1;
         });
 
-        $platform_totals_values = array_map(function($item){
+        $platform_totals_values = array_map(function ($item) {
             return $item['total'];
         }, $platform_totals);
 
-        $platform_totals_labels = array_map(function($item){
+        $platform_totals_labels = array_map(function ($item) {
             return $item['name'];
         }, $platform_totals);
 
@@ -155,9 +154,7 @@ class AnalyticsController extends Controller
         ];
 
 
-
-        foreach ($restrictions as $attribute => $restriction)
-        {
+        foreach ($restrictions as $attribute => $restriction) {
 
             $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), $attribute);
             if ($request->query('chaos')) {
@@ -166,7 +163,7 @@ class AnalyticsController extends Controller
             }
 
             $restriction_totals[] = [
-                'name'  => $restriction,
+                'name' => $restriction,
                 'total' => (int)$total
             ];
 
@@ -182,11 +179,11 @@ class AnalyticsController extends Controller
             });
         }
 
-        $restriction_totals_values = array_map(function($item){
+        $restriction_totals_values = array_map(function ($item) {
             return $item['total'];
         }, $restriction_totals);
 
-        $restriction_totals_labels = array_map(function($item){
+        $restriction_totals_labels = array_map(function ($item) {
             return $item['name'];
         }, $restriction_totals);
 
@@ -205,8 +202,7 @@ class AnalyticsController extends Controller
         $category_totals = [];
         $categories = Statement::STATEMENT_CATEGORIES;
 
-        foreach ($categories as $category_key => $category_label)
-        {
+        foreach ($categories as $category_key => $category_label) {
 
             $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), 'category', $category_key);
             if ($request->query('chaos')) {
@@ -215,7 +211,7 @@ class AnalyticsController extends Controller
             }
 
             $category_totals[] = [
-                'name'  => $category_label,
+                'name' => $category_label,
                 'total' => (int)$total
             ];
 
@@ -231,11 +227,11 @@ class AnalyticsController extends Controller
             });
         }
 
-        $category_totals_values = array_map(function($item){
+        $category_totals_values = array_map(function ($item) {
             return $item['total'];
         }, $category_totals);
 
-        $category_totals_labels = array_map(function($item){
+        $category_totals_labels = array_map(function ($item) {
             return $item['name'];
         }, $category_totals);
 
@@ -254,8 +250,7 @@ class AnalyticsController extends Controller
         $ground_totals = [];
         $grounds = Statement::DECISION_GROUNDS;
 
-        foreach ($grounds as $ground_key => $ground_label)
-        {
+        foreach ($grounds as $ground_key => $ground_label) {
 
             $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), 'decision_ground', $ground_key);
             if ($request->query('chaos')) {
@@ -264,7 +259,7 @@ class AnalyticsController extends Controller
             }
 
             $ground_totals[] = [
-                'name'  => $ground_label,
+                'name' => $ground_label,
                 'total' => (int)$total
             ];
 
@@ -279,11 +274,11 @@ class AnalyticsController extends Controller
                 return $a['total'] < $b['total'] ? 1 : -1;
             });
         }
-        $ground_totals_values = array_map(function($item){
+        $ground_totals_values = array_map(function ($item) {
             return $item['total'];
         }, $ground_totals);
 
-        $ground_totals_labels = array_map(function($item){
+        $ground_totals_labels = array_map(function ($item) {
             return $item['name'];
         }, $ground_totals);
 
@@ -297,7 +292,7 @@ class AnalyticsController extends Controller
 
     private function prepareOptions(): array
     {
-        $platforms = Platform::nonDsa()->orderBy('name')->get()->map(function($platform){
+        $platforms = Platform::nonDsa()->orderBy('name')->get()->map(function ($platform) {
             return [
                 'value' => $platform->uuid,
                 'label' => $platform->name
