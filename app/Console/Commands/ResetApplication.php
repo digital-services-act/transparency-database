@@ -39,8 +39,24 @@ class ResetApplication extends Command
             Statement::query()->forceDelete();
             Statement::factory()->count(1000)->create();
             $this->info('Reset has completed.');
-            $this->info('You should now run: "platform:compile-day-totals all all all 400"');
-            $this->info('For opensearch run: "statements:optimize-index"');
+            if ($this->confirm('Optimize the opensearch index?', true)) {
+                $this->call('statements:optimize-index');
+                $this->info('Optimize has completed.');
+            }
+            if ($this->confirm('Compile the day totals?', true)) {
+                $this->call('platform:compile-day-totals');
+
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_visibility', 'value' => 'all']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_monetary', 'value' => 'all']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_provision', 'value' => 'all']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_account', 'value' => 'all']);
+
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_ILLEGAL_CONTENT']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT']);
+
+                $this->call('platform:compile-day-totals-categories');
+                $this->info('Day totals has completed.');
+            }
         } else {
             $this->error('Oh hell no!');
             $this->error('We do not run this in production.');

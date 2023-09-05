@@ -20,7 +20,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="infographic"/>
+                    <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total }}</div>
                 <div class="ecl-fact-figures__title">Statements All Time Total</div>
@@ -28,7 +28,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth"/>
+                    <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total_last_days }}</div>
                 <div class="ecl-fact-figures__title">Statements last {{ $last_days }} Days</div>
@@ -36,7 +36,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth"/>
+                    <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total_last_months }}</div>
                 <div class="ecl-fact-figures__title">Statements last {{ $last_months }} months</div>
@@ -52,7 +52,7 @@
 
             <div class="ecl-fact-figures__item">
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth"/>
+                    <x-ecl.icon icon="infographic"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $platforms_total }} platforms</div>
                 <div class="ecl-fact-figures__title">Active platforms</div>
@@ -71,18 +71,18 @@
 
     <div class="ecl-row">
         <div class="ecl-col-6">
-            <h3 class="ecl-u-type-heading-3">Top Platforms</h3>
+            <h3 class="ecl-u-type-heading-3">Most Active Platforms</h3>
             <ul class="ecl-unordered-list">
                 @foreach($top_platforms as $top_platform)
                     <li class="ecl-unordered-list__item">
-                        {{ $top_platform->name }}
+                        <a href="{{ route('analytics.platform', [$top_platform->uuid]) }}" class="ecl-link--standalone">{{ $top_platform->name }}</a>
                     </li>
                 @endforeach
             </ul>
         </div>
 
         <div class="ecl-col-6">
-            <h3 class="ecl-u-type-heading-3">Top Categories</h3>
+            <h3 class="ecl-u-type-heading-3">Most Used Categories</h3>
             <ul class="ecl-unordered-list">
                 @foreach($top_categories as $top_category)
                     <li class="ecl-unordered-list__item">
@@ -92,5 +92,9 @@
             </ul>
         </div>
     </div>
+
+    <h2 class="ecl-u-type-heading-2">Statements over {{ $last_history_days }} days</h2>
+
+    <x-analytics.line-chart :values="$day_totals_values" :labels="$day_totals_labels" height="400"/>
 
 @endsection

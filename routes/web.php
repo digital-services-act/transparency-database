@@ -45,9 +45,6 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
 
-        // Only admins can see the reports for any platform.
-        Route::get('/reports/for-platform', [ReportsController::class, 'forPlatform'])->name('reports.for.platform');
-
     });
 
 
@@ -59,9 +56,6 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
         Route::get('/dashboard/api', [DashboardController::class, 'apiIndex'])->name('api-index');
-
-        // Only for their own platform.
-        Route::get('/reports', [ReportsController::class, 'index'])->name('reports')->can('view reports');
 
         Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
@@ -83,6 +77,7 @@ Route::get('/', function () {
 
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
+Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
 Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
 Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
 Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
