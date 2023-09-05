@@ -1,4 +1,4 @@
-@props(['platform' => null, 'platform_report' => null, 'days_ago' => 0, 'months_ago' => 0 ])
+@props(['platform_report' => null, 'days_ago' => 0, 'months_ago' => 0 ])
 <div class="ecl-fact-figures ecl-fact-figures--col-3">
     <div class="ecl-fact-figures__items">
 
@@ -29,10 +29,10 @@
     </div>
 </div>
 
-<h2 class="ecl-u-type-heading-2">SORs {{ $platform->name }} created for the Last {{ $days_ago }} Days</h2>
+<h2 class="ecl-u-type-heading-2">Created for the Last {{ $days_ago }} Days</h2>
 
 <x-analytics.line-chart :values="$platform_report['day_totals_values']" :labels="$platform_report['day_totals_labels']" height="400" id="apexplatformdays"/>
 
-<h2 class="ecl-u-type-heading-2">SORs {{ $platform->name }} created for the Last {{ $months_ago }} Months</h2>
+<h2 class="ecl-u-type-heading-2">Created for the Last {{ $months_ago }} Months</h2>
 
 <x-analytics.line-chart :values="$platform_report['month_totals_values']" :labels="$platform_report['month_totals_labels']" height="400" id="apexplatformonths"/>

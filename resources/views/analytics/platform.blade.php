@@ -16,7 +16,7 @@
 
     <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mb-l">
         <div>
-            <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Analytics for @if($platform){{ $platform->name }} @else Platform @endif</h1>
+            <h2 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">@if($platform){{ $platform->name }} @else Platform @endif</h2>
         </div>
         <div>
             <form method="get" id="platform">
@@ -34,8 +34,8 @@
         </div>
     </div>
 
-    @if($platform && $platform_report)
-        <x-platform.report :platform="$platform" :platform_report="$platform_report" :days_ago="$days_ago" :months_ago="$months_ago" />
+    @if($platform_report)
+        <x-platform.report :platform_report="$platform_report" :days_ago="$days_ago" :months_ago="$months_ago" />
     @endif
 
 @endsection
