@@ -91,9 +91,11 @@
                         </li>
                         @endcan
 
+                        @can('administrate')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>
                         </li>
+                        @endcan
 
                         @can('view dashboard')
                             <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
