@@ -75,7 +75,7 @@
             <ul class="ecl-unordered-list">
                 @foreach($top_platforms as $top_platform)
                     <li class="ecl-unordered-list__item">
-                        {{ $top_platform->name }}
+                        <a href="{{ route('analytics.platform', [$top_platform->uuid]) }}" class="ecl-link--standalone">{{ $top_platform->name }}</a>
                     </li>
                 @endforeach
             </ul>

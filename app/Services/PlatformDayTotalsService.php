@@ -155,50 +155,20 @@ class PlatformDayTotalsService
                  ->first()->total ?? false;
     }
 
-    public function dayCountsForRange(Platform $platform, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*', bool $reverse = true): array
+    public function dayCountsForRange(Platform $platform, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): array
     {
-        $date_counts = [];
-
-        $start->hour = 0;
-        $start->minute = 0;
-        $start->second = 0;
-
-        $end->hour = 0;
-        $end->minute = 0;
-        $end->second = 0;
-
-        while($start < $end) {
-
-            $date_counts[] = [
-                'date' => $start->clone(),
-                'count' => (int)$this->getDayTotal($platform, $start, $attribute, $value)
-            ];
-
-            $start->addDay();
-        }
-
-        $highest = -1;
-        foreach($date_counts as $date_count)
-        {
-            if ($date_count['count'] > $highest)
-            {
-                $highest = $date_count['count'];
-            }
-        }
-
-        foreach ($date_counts as $index => $date_count)
-        {
-            $date_counts[$index]['percentage'] = $highest != 0 ? ((int) ceil( ($date_count['count'] / $highest) * 100 )) : 0;
-        }
-
-        if ($reverse) {
-            $date_counts = array_reverse($date_counts);
-        }
-
-        return $date_counts;
+        return DB::table('platform_day_totals')
+                 ->selectRaw('date, SUM(total) as total')
+                 ->where('platform_id', $platform->id)
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', $attribute)
+                 ->where('value', $value)
+                 ->groupBy('date')
+                 ->get()->toArray();
     }
 
-    public function globalDayCountsForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*')
+    public function globalDayCountsForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): array
     {
         return DB::table('platform_day_totals')
                  ->selectRaw('date, SUM(total) as total')
@@ -211,62 +181,23 @@ class PlatformDayTotalsService
                  ->get()->toArray();
     }
 
-    private function monthRange(int $month, int $year)
+    public function monthCountsForRange(Platform $platform, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): array
     {
-        $start_date = Carbon::createFromDate($year, $month, 1);
-        $end_date = $start_date->clone();
-        $end_date->addDays($start_date->daysInMonth);
-        return [$start_date, $end_date];
-    }
-    public function monthCountsForRange(Platform $platform, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*', bool $reverse = true): array
-    {
-        $month_counts = [];
-
-        $start->hour = 0;
-        $start->minute = 0;
-        $start->second = 0;
-
-        $end->hour = 0;
-        $end->minute = 0;
-        $end->second = 0;
-
-        while($start < $end) {
-
-            $range = $this->monthRange($start->month, $start->year);
-
-            $month_counts[] = [
-                'month' => $start->clone(),
-                'count' => (int)$this->totalForRange($platform, $range[0], $range[1], $attribute, $value)
-            ];
-
-            $start->addMonth();
-        }
-
-        $highest = -1;
-        foreach($month_counts as $month_count)
-        {
-            if ($month_count['count'] > $highest)
-            {
-                $highest = $month_count['count'];
-            }
-        }
-
-        foreach ($month_counts as $index => $month_count)
-        {
-            $date_counts[$index]['percentage'] = $highest != 0 ? ((int) ceil( ($month_count['count'] / $highest) * 100 )) : 0;
-        }
-
-        if ($reverse) {
-            $month_counts = array_reverse($month_counts);
-        }
-
-        return $month_counts;
+        return DB::table('platform_day_totals')
+                 ->selectRaw("CONCAT(YEAR(platform_day_totals.date), '-', MONTH(platform_day_totals.date)) as month, SUM(total) as total")
+                 ->where('platform_id', $platform->id)
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', $attribute)
+                 ->where('value', $value)
+                 ->groupByRaw("month")
+                 ->get()->toArray();
     }
 
     public function topPlatforms(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*')
     {
         return DB::table('platform_day_totals')
-                 ->selectRaw('platforms.name, SUM(total) as total')
+                 ->selectRaw('platforms.name, platforms.uuid, SUM(total) as total')
                  ->whereNotNull('platform_id')
                  ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
                  ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
@@ -290,4 +221,54 @@ class PlatformDayTotalsService
                  ->orderBy('total', 'desc')
                  ->get()->toArray();
     }
+
+    public function prepareReportForPlatform(Platform $platform, int $days = 20, int $months = 12): array
+    {
+        $start_days_ago = $days;
+        $start_months_ago = $months;
+
+        $start_days = Carbon::now()->subDays($start_days_ago);
+        $start_months = Carbon::now()->subMonths($start_months_ago);
+        $end = Carbon::now();
+
+        $platform_last_days_ago = $this->totalForRange($platform, $start_days, $end);
+        $platform_last_months_ago = $this->totalForRange($platform, $start_months, $end);
+
+        $date_counts         = $this->dayCountsForRange($platform, $start_days, $end);
+        $month_counts        = $this->monthCountsForRange($platform, $start_months, $end);
+
+        $date_counts = array_reverse($date_counts);
+        $month_counts = array_reverse($month_counts);
+
+        $platform_total = $platform->statements()->count();
+
+        $day_totals_values = array_map(function($item){
+            return $item->total;
+        }, $date_counts);
+
+        $day_totals_labels = array_map(function($item){
+            return $item->date;
+        }, $date_counts);
+
+        $month_totals_values = array_map(function($item){
+            return $item->total;
+        }, $month_counts);
+
+        $month_totals_labels = array_map(function($item){
+            return $item->month;
+        }, $month_counts);
+
+        return compact(
+            'date_counts',
+            'month_counts',
+            'platform_total',
+            'platform_last_months_ago',
+            'platform_last_days_ago',
+            'day_totals_labels',
+            'day_totals_values',
+            'month_totals_labels',
+            'month_totals_values'
+        );
+    }
+
 }

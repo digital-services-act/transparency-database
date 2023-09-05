@@ -111,6 +111,34 @@ class AnalyticsController extends Controller
         ));
     }
 
+    public function forPlatform(Request $request, string $uuid = '')
+    {
+        $days_ago = 20;
+        $months_ago = 12;
+        $platform = false;
+        $platform_report = false;
+        if ($uuid) {
+            /** @var Platform $platform */
+            $platform = Platform::query()->where('uuid', $uuid)->first();
+            if (!$platform) {
+                return redirect(route('analytics.platforms'));
+            }
+            $platform_report = $this->platform_day_totals_service->prepareReportForPlatform($platform, $days_ago, $months_ago);
+        }
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.platform', compact(
+            'platform',
+            'platform_report',
+            'options',
+            'days_ago',
+            'months_ago'
+        ));
+
+
+    }
+
     public function restrictions(Request $request)
     {
         $last_days = 90;
@@ -262,5 +290,19 @@ class AnalyticsController extends Controller
             'ground_totals_labels',
             'ground_totals_values'
         ));
+    }
+
+    private function prepareOptions(): array
+    {
+        $platforms = Platform::nonDsa()->orderBy('name')->get()->map(function($platform){
+            return [
+                'value' => $platform->uuid,
+                'label' => $platform->name
+            ];
+        })->toArray();
+
+        return compact(
+            'platforms',
+        );
     }
 }
