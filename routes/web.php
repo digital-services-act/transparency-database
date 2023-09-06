@@ -50,6 +50,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
         Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
         Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
+        Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
         Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
 
     });

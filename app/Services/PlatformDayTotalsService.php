@@ -194,6 +194,19 @@ class PlatformDayTotalsService
                  ->get()->toArray();
     }
 
+    public function globalMonthCountsForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): array
+    {
+        return DB::table('platform_day_totals')
+                 ->selectRaw("CONCAT(YEAR(platform_day_totals.date), '-', MONTH(platform_day_totals.date)) as month, SUM(total) as total")
+                 ->whereNotNull('platform_id')
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', $attribute)
+                 ->where('value', $value)
+                 ->groupByRaw("month")
+                 ->get()->toArray();
+    }
+
     public function topPlatforms(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*')
     {
         return DB::table('platform_day_totals')
@@ -264,6 +277,55 @@ class PlatformDayTotalsService
             'platform_total',
             'platform_last_months_ago',
             'platform_last_days_ago',
+            'day_totals_labels',
+            'day_totals_values',
+            'month_totals_labels',
+            'month_totals_values'
+        );
+    }
+
+    public function prepareReportForCategory(string $category, int $days = 20, int $months = 12): array
+    {
+        $start_days_ago   = $days;
+        $start_months_ago = $months;
+
+        $start_days   = Carbon::now()->subDays($start_days_ago);
+        $start_months = Carbon::now()->subMonths($start_months_ago);
+        $end          = Carbon::now();
+
+        $category_last_days_ago   = $this->globalTotalForRange($start_days, $end, 'category', $category);
+        $category_last_months_ago = $this->globalTotalForRange($start_months, $end, 'category', $category);
+
+        $date_counts  = $this->globalDayCountsForRange($start_days, $end, 'category', $category);
+        $month_counts = $this->globalMonthCountsForRange($start_months, $end, 'category', $category);
+
+        $date_counts  = array_reverse($date_counts);
+        $month_counts = array_reverse($month_counts);
+
+        $category_total = Statement::query()->where('category', $category)->count();
+
+        $day_totals_values = array_map(function ($item) {
+            return $item->total;
+        }, $date_counts);
+
+        $day_totals_labels = array_map(function ($item) {
+            return $item->date;
+        }, $date_counts);
+
+        $month_totals_values = array_map(function ($item) {
+            return $item->total;
+        }, $month_counts);
+
+        $month_totals_labels = array_map(function ($item) {
+            return $item->month;
+        }, $month_counts);
+
+        return compact(
+            'date_counts',
+            'month_counts',
+            'category_total',
+            'category_last_months_ago',
+            'category_last_days_ago',
             'day_totals_labels',
             'day_totals_values',
             'month_totals_labels',
