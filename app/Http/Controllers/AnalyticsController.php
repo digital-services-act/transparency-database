@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\PlatformDayTotalsService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Carbon;
 
 class AnalyticsController extends Controller
@@ -113,7 +118,7 @@ class AnalyticsController extends Controller
         ));
     }
 
-    public function forPlatform(Request $request, string $uuid = '')
+    public function forPlatform(Request $request, string $uuid = ''): Application|View|Factory|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
     {
         $days_ago = 20;
         $months_ago = 12;
@@ -137,8 +142,28 @@ class AnalyticsController extends Controller
             'days_ago',
             'months_ago'
         ));
+    }
 
+    public function forCategory(Request $request, string $category = ''): Application|View|Factory|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
+    {
+        $days_ago = 20;
+        $months_ago = 12;
 
+        if (!$category || !isset($category, Statement::STATEMENT_CATEGORIES[$category])) {
+            return redirect(route('analytics.categories'));
+        }
+
+        $category_report = $this->platform_day_totals_service->prepareReportForCategory($category);
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.category', compact(
+            'category',
+            'category_report',
+            'options',
+            'days_ago',
+            'months_ago'
+        ));
     }
 
     public function restrictions(Request $request)
@@ -235,11 +260,14 @@ class AnalyticsController extends Controller
             return $item['name'];
         }, $category_totals);
 
+        $options = $this->prepareOptions();
+
         return view('analytics.categories', compact(
             'last_days',
             'category_totals',
             'category_totals_labels',
-            'category_totals_values'
+            'category_totals_values',
+            'options'
         ));
     }
 
@@ -299,8 +327,11 @@ class AnalyticsController extends Controller
             ];
         })->toArray();
 
+        $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
+
         return compact(
             'platforms',
+            'categories'
         );
     }
 }

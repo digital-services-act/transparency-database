@@ -234,7 +234,7 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(function($platform){
             return [
                 'value' => $platform->id,
                 'label' => $platform->name
