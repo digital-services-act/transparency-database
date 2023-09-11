@@ -31,8 +31,8 @@
 
 <h2 class="ecl-u-type-heading-2">Created for the Last {{ $days_ago }} Days</h2>
 
-<x-analytics.line-chart :values="$platform_report['day_totals_values']" :labels="$platform_report['day_totals_labels']" height="400" id="apexplatformdays"/>
+<x-analytics.line-chart :values="array_reverse($platform_report['day_totals_values'])" :labels="array_reverse($platform_report['day_totals_labels'])" height="400" id="apexplatformdays"/>
 
 <h2 class="ecl-u-type-heading-2">Created for the Last {{ $months_ago }} Months</h2>
 
-<x-analytics.line-chart :values="$platform_report['month_totals_values']" :labels="$platform_report['month_totals_labels']" height="400" id="apexplatformonths"/>
+<x-analytics.line-chart :values="array_reverse($platform_report['month_totals_values'])" :labels="array_reverse($platform_report['month_totals_labels'])" height="400" id="apexplatformonths"/>
