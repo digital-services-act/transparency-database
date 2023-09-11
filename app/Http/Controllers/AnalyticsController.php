@@ -54,7 +54,6 @@ class AnalyticsController extends Controller
             return $item->date;
         }, $day_totals);
 
-
         return view('analytics.index', compact(
             'total',
             'last_days',
