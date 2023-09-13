@@ -148,6 +148,7 @@
     <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
                 :content="$statement->application_date->format('Y-m-d')"></x-infoline>
 
+    <x-report :url="url()->current()" title="Report an Issue"></x-report>
 
 @endsection
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Blade;
 use Parsedown;
 
@@ -14,14 +16,25 @@ class PageController extends Controller
      * @param string $page
      * @param string $view
      *
-     * @return Application|Factory|View
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse|Redirector
      */
-    public function show(string $page, string $view = 'page'): View|Factory|Application
+    public function show(string $page, string $view = 'page'): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
 
+        // sanitize
         $page = preg_replace("/[^a-z-]/", "", $page);
+
+        $redirects = [
+            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en'
+        ];
+
+        if (isset($redirects[$page])) {
+            return redirect($redirects[$page]);
+        }
+
+
         $page_title = ucwords(str_replace("-", " ", $page));
 
         $page_content = '';

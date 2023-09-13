@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\PlatformDayTotal;
 use App\Models\Statement;
+use App\Services\PlatformDayTotalsService;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\UserSeeder;
@@ -33,8 +35,28 @@ class ResetApplication extends Command
             PlatformSeeder::resetPlatforms();
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();
+            PlatformDayTotal::query()->forceDelete();
             Statement::query()->forceDelete();
             Statement::factory()->count(1000)->create();
+            $this->info('Reset has completed.');
+            if ($this->confirm('Optimize the opensearch index?', true)) {
+                $this->call('statements:optimize-index');
+                $this->info('Optimize has completed.');
+            }
+            if ($this->confirm('Compile the day totals?', true)) {
+                $this->call('platform:compile-day-totals');
+
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_visibility', 'value' => 'all']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_monetary', 'value' => 'all']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_provision', 'value' => 'all']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_account', 'value' => 'all']);
+
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_ILLEGAL_CONTENT']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT']);
+
+                $this->call('platform:compile-day-totals-categories');
+                $this->info('Day totals has completed.');
+            }
         } else {
             $this->error('Oh hell no!');
             $this->error('We do not run this in production.');

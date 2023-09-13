@@ -26,7 +26,7 @@
     <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
 
         <div class="ecl-u-type-paragraph ecl-u-mr-s">
-            Statements Found: {{ $total === 10000 ? '10000+' : $total }} out of {{ $global_total }}
+            Statements Found: {{ $total }} out of {{ $global_total }}
         </div>
 
         <div class="ecl-u-type-paragraph ecl-u-mr-l">

@@ -15,8 +15,30 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('generate:datasets')->hourly();
-//        $schedule->command('reset-application')->environments(['staging'])->weekly();
+        $schedule->command('platform:compile-day-totals')->daily();
+        $schedule->command('platform:compile-day-totals all decision_visibility all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_monetary all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_provision all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_account all')->daily();
+        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->daily();
+        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->daily();
+        $schedule->command('platform:compile-day-totals-categories')->daily();
+
+        /*
+
+          Put any typical commands that need to be run after dev/local reset-application here so that a dev can have first initial db..
+
+        php artisan statements:optimize-index &&
+        php artisan platform:compile-day-totals &&
+        php artisan platform:compile-day-totals all decision_visibility all &&
+        php artisan platform:compile-day-totals all decision_monetary all &&
+        php artisan platform:compile-day-totals all decision_provision all &&
+        php artisan platform:compile-day-totals all decision_account all &&
+        php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT &&
+        php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT &&
+        php artisan platform:compile-day-totals-categories
+
+        */
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
 use App\Http\Controllers\InvitationController;
@@ -34,13 +35,24 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
+    Route::get('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
     Route::group(['middleware' => ['can:administrate']], function(){
+
         Route::resource('role', RoleController::class);
         Route::resource('permission', PermissionController::class);
         Route::resource('invitation', InvitationController::class);
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
+
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
+        Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
+        Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
+        Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
+        Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
+        Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
+
     });
 
 
@@ -52,7 +64,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
         Route::get('/dashboard/api', [DashboardController::class, 'apiIndex'])->name('api-index');
-        Route::get('/reports', [ReportsController::class, 'index'])->name('reports')->can('view reports');
+
         Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
@@ -65,16 +77,15 @@ Route::middleware(['cas.auth'])->group(function() {
 
 });
 
+
+// Public Open Routes. POR
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
 
 
-
-//Route::get('/page/additional-explanation-for-statement-attributes', [PageController::class, 'additionalExplanationShow',])->name('page.additional-explanation');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
-Route::get('/datasets', [DatasetsController::class, 'index'])->name('datasets.index');
 
 
