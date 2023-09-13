@@ -33,6 +33,14 @@ class LoginController extends Controller
 
     public function logout()
     {
+        session()->invalidate();
+        session()->regenerateToken();
+
+        $service = config('cas.cas_client_service');
+        $url = config('cas.cas_logout_url');
+
+        cas()->logout($url, $service);
+
         Session::flush();
         return redirect(route('home'))->with('success', 'You have been logged out.');
     }
