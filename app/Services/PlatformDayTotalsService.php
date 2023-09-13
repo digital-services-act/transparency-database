@@ -253,7 +253,7 @@ class PlatformDayTotalsService
         $date_counts = array_reverse($date_counts);
         $month_counts = array_reverse($month_counts);
 
-        $platform_total = $platform->statements()->count();
+        $platform_total = DB::table('statements')->where('platform_id',$platform->id)->count();
 
         $day_totals_values = array_map(function($item){
             return $item->total;
