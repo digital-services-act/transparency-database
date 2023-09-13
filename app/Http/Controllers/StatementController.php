@@ -55,18 +55,19 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
-        $statements = $this->setupQuery($request);
+        $setup = $this->setupQuery($request);
 
+        $statements = $setup['statements'];
         $options = $this->prepareOptions();
         $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
-        $total = $statements->total();
+        $total = $setup['total'];
 
         $similarity_results = null;
         if ($request->get('s')) {
             $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
         }
 
-        $global_total = $this->statement_search_service->totalStatements();
+        $global_total = Statement::query()->count();
 
         return view('statement.index', compact(
             'statements',
@@ -79,8 +80,9 @@ class StatementController extends Controller
 
     public function exportCsv(Request $request)
     {
-        $statements = $this->setupQuery($request);
+        $setup = $this->setupQuery($request);
 
+        $statements = $setup['statements'];
         $statements->limit = 1000;
 
         $export = new StatementsExport();
@@ -89,20 +91,23 @@ class StatementController extends Controller
         return $export->download('statements-of-reason.csv', Excel::CSV);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Builder|\Laravel\Scout\Builder
-     */
-    private function setupQuery(Request $request): \Illuminate\Database\Eloquent\Builder|\Laravel\Scout\Builder
+
+    private function setupQuery(Request $request): array
     {
         if (config('scout.driver') == 'opensearch') {
             $statements = $this->statement_search_service->query($request->query());
+            $total = $this->statement_search_service->query($request->query(),[
+                'track_total_hits' => true
+            ])->paginate(1)->total();
         } else {
             $statements = $this->statement_query_service->query($request->query());
+            $total = $this->statement_query_service->query($request->query())->count();
         }
 
-        return $statements;
+        return [
+            'statements' => $statements,
+            'total' => $total
+        ];
     }
 
     /**
@@ -229,7 +234,7 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
+        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(function($platform){
             return [
                 'value' => $platform->id,
                 'label' => $platform->name

@@ -105,7 +105,7 @@ class StatementStoreRequest extends FormRequest
             'decision_monetary_other.required_if' => 'The decision monetary other field is required when decision monetary is other.',
             'content_type_other.required_if' => 'The content type other field is required when content is other.',
             'illegal_content_legal_ground.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
-            'illegal_content_explanation.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
+            'illegal_content_explanation.required_if' => 'The illegal content explanation field is required when decision ground is illegal content.',
             'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',

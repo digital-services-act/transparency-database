@@ -12,17 +12,18 @@
 
     <h1 class="ecl-u-type-heading-1">{{ $platform_name }} Dashboard</h1>
 
-    <div class="ecl-row">
-        @can('view reports')
-            <div class="ecl-col-4">
-                <a class="ecl-button ecl-button--primary" href="{{ route('reports') }}">Reports</a>
-            </div>
-        @endcan
+    <div class="ecl-row ecl-u-mb-l">
         @can('create statements')
             <div class="ecl-col-4">
                 <a class="ecl-button ecl-button--primary" href="{{ route('api-index') }}">API</a>
             </div>
         @endcan
+    </div>
+
+    <div class="ecl-row ">
+        <div class="ecl-col-4">
+            <a class="ecl-button ecl-button--secondary" href="{{ route('logout') }}">Logout</a>
+        </div>
     </div>
 
     @can('administrate')
@@ -58,6 +59,5 @@
             CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
         </pre>
     </p>
-
 
 @endsection

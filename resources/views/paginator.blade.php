@@ -63,7 +63,7 @@
     </nav>
 
 
-    <p class="blocktext">
+    <p class="blocktext ecl-u-type-paragraph">
         {!! __('Showing') !!}
         @if ($paginator->firstItem())
             <span class="font-medium">{{ $paginator->firstItem() }}</span>

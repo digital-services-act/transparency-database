@@ -6,7 +6,7 @@
                     <img alt="European Commission logo"
                          title="European Commission"
                          class="ecl-site-header__logo-image ecl-site-header__logo-image-desktop"
-                         src="{{asset('static/media/logo-ec--en.65cfd447.svg')}}"/>
+                         src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"/>
                 </a>
 
                 <div class="ecl-site-header__action">
@@ -20,7 +20,6 @@
                                          aria-hidden="true">
                                         <x-ecl.icon icon="log-in"/>
                                     </svg>
-
                                     @auth
                                         {{ auth()->user()->name }} &nbsp;
                                     @endauth
@@ -89,6 +88,12 @@
                         @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
+                        </li>
+                        @endcan
+
+                        @can('administrate')
+                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                            <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>
                         </li>
                         @endcan
 

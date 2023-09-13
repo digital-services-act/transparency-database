@@ -23,6 +23,14 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
+    protected function signInAsContributor($user = null) {
+        $user = $this->signIn($user);
+        $user->assignRole('Contributor');
+        $non_dsa_platform = Platform::nonDsa()->first();
+        $this->assignPlatform($user, $non_dsa_platform);
+        return $user;
+    }
+
     protected function assignPlatform($user, $platform = null)
     {
         $user->platform_id = $platform->id ?? Platform::all()->random()->first()->id;
