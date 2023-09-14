@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->daily();
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->daily();
         $schedule->command('platform:compile-day-totals-categories')->daily();
+        $schedule->command('platform:compile-day-totals-keywords')->daily();
 
         /*
 
