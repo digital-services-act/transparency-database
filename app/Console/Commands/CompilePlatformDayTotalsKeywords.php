@@ -3,41 +3,33 @@
 namespace App\Console\Commands;
 
 use App\Models\Platform;
-use App\Models\PlatformDayTotal;
+use App\Models\Statement;
 use App\Services\PlatformDayTotalsService;
 use Illuminate\Console\Command;
 
-class DeletePlatformDayTotals extends Command
+class CompilePlatformDayTotalsKeywords extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'platform:delete-day-totals {platform_id=all} {attribute=all} {value=all} {--nuclear}';
+    protected $signature = 'platform:compile-day-totals-keywords {platform_id=all} {days=20}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'delete all day totals for a platform.';
+    protected $description = 'Queue all day totals for a platform and statement keywords.';
 
     /**
      * Execute the console command.
      */
     public function handle(PlatformDayTotalsService $platform_day_totals_service)
     {
-        if ($this->option('nuclear'))
-        {
-            PlatformDayTotal::truncate();
-            return;
-        }
-
         $platform_id = $this->argument('platform_id');
-        $attribute = $this->argument('attribute') !== 'all' ?  $this->argument('attribute') : '*';
-
-        $value = $this->argument('value') !== 'all' ? $this->argument('value') : '%';
+        $days = (int)$this->argument('days');
 
         $platforms = [];
         if ($platform_id === 'all') {
@@ -52,7 +44,9 @@ class DeletePlatformDayTotals extends Command
         }
 
         foreach ($platforms as $platform) {
-            $platform_day_totals_service->deleteDayTotals($platform, $attribute, $value);
+            foreach (Statement::KEYWORDS as $key => $description) {
+                $platform_day_totals_service->compileDayTotals($platform, 'category_specification', $key, $days);
+            }
         }
     }
 }

@@ -173,4 +173,57 @@ class PlatformDayTotalsServiceTest extends TestCase
         $this->assertEquals(0, PlatformDayTotal::count());
 
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function keywords_count_is_working()
+    {
+        $this->setUpFullySeededDatabase();
+        $platform = Platform::all()->random()->first();
+        $this->assertNotNull($platform);
+
+        // clear all statements for this platform.
+        $platform->statements()->delete();
+
+        $date = Carbon::yesterday();
+
+        // It's not compiled or existing thus false... not an int.
+        $dayTotal = $this->platform_day_totals_service->getDayTotal($platform, $date);
+        $this->assertFalse($dayTotal);
+
+        Statement::truncate();
+
+        // Make 7 with ANIMAL HARM
+        Statement::factory()->count(7)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'category_specification' => ["KEYWORD_ANIMAL_HARM"]
+        ]);
+
+        // 6 with sexual material
+        Statement::factory()->count(6)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'category_specification' => ["KEYWORD_ADULT_SEXUAL_MATERIAL"]
+        ]);
+
+        // there should be 13 more than before.
+        $this->assertEquals(13, Statement::count());
+
+        // Compile the day totals.
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'category_specification', "KEYWORD_ANIMAL_HARM");
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'category_specification', "KEYWORD_ADULT_SEXUAL_MATERIAL");
+
+//        // Compiling twice doesn't break.
+//        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'category_specification', Statement::AUTOMATED_DETECTION_YES);
+//        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'category_specification', Statement::AUTOMATED_DETECTION_NO);
+
+        $dayTotalAnimal = $this->platform_day_totals_service->getDayTotal($platform, $date, 'category_specification', "KEYWORD_ANIMAL_HARM");
+        $dayTotalSexualMaterial = $this->platform_day_totals_service->getDayTotal($platform, $date, 'category_specification', "KEYWORD_ADULT_SEXUAL_MATERIAL");
+
+        $this->assertEquals(7, $dayTotalAnimal);
+        $this->assertEquals(6, $dayTotalSexualMaterial);
+    }
 }

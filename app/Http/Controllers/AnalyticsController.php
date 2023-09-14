@@ -165,6 +165,28 @@ class AnalyticsController extends Controller
         ));
     }
 
+    public function forKeyword(Request $request, string $keyword = ''): Application|View|Factory|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
+    {
+        $days_ago = 20;
+        $months_ago = 12;
+
+        if (!$keyword || !isset($keyword, Statement::KEYWORDS[$keyword])) {
+            return redirect(route('analytics.keywords'));
+        }
+
+        $keyword_report = $this->platform_day_totals_service->prepareReportForKeyword($keyword);
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.keyword', compact(
+            'keyword',
+            'keyword_report',
+            'options',
+            'days_ago',
+            'months_ago'
+        ));
+    }
+
     public function restrictions(Request $request)
     {
         $last_days = 90;
@@ -270,6 +292,54 @@ class AnalyticsController extends Controller
         ));
     }
 
+    public function keywords(Request $request)
+    {
+        $last_days = 90;
+
+        $keyword_totals = [];
+        $keywords = Statement::KEYWORDS;
+
+        foreach ($keywords as $keyword_key => $keyword_label) {
+
+            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), 'category_specification', $keyword_key);
+
+
+            $keyword_totals[] = [
+                'name' => $keyword_label,
+                'total' => (int)$total
+            ];
+
+        }
+
+        if ($request->query('sort')) {
+            uasort($keyword_totals, function ($a, $b) {
+                if ($a['total'] === $b['total']) {
+                    return 0;
+                }
+
+                return $a['total'] < $b['total'] ? 1 : -1;
+            });
+        }
+
+        $keyword_totals_values = array_map(function ($item) {
+            return $item['total'];
+        }, $keyword_totals);
+
+        $keyword_totals_labels = array_map(function ($item) {
+            return $item['name'];
+        }, $keyword_totals);
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.keywords', compact(
+            'last_days',
+            'keyword_totals',
+            'keyword_totals_labels',
+            'keyword_totals_values',
+            'options'
+        ));
+    }
+
     public function grounds(Request $request)
     {
         $last_days = 90;
@@ -327,10 +397,12 @@ class AnalyticsController extends Controller
         })->toArray();
 
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
+        $keywords = $this->mapForSelectWithKeys(Statement::KEYWORDS);
 
         return compact(
             'platforms',
-            'categories'
+            'categories',
+            'keywords'
         );
     }
 }
