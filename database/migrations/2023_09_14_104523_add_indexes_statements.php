@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::table('statements', function(Blueprint $table)
         {
-//            $table->index('category_specification');
+            $table->string('decision_visibility', 300)->change();
+            $table->string('content_type', 255)->change();
+            $table->string('territorial_scope', 255)->change();
             $table->index('decision_visibility');
             $table->index('content_type');
             $table->index('territorial_scope');
@@ -27,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('statements', function(Blueprint $table)
         {
-//            $table->dropIndex('category_specification');
             $table->dropIndex('statements_decision_visibility_index');
             $table->dropIndex('statements_content_type_index');
             $table->dropIndex('statements_territorial_scope_index');

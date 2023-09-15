@@ -8,6 +8,7 @@ use App\Models\PlatformDayTotal;
 use App\Models\Statement;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlatformDayTotalsService
 {
@@ -146,6 +147,7 @@ class PlatformDayTotalsService
 
     public function globalTotalForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): int|bool
     {
+        Log::info($attribute);
         return DB::table('platform_day_totals')
                  ->selectRaw('SUM(total) as total')
                  ->whereNotNull('platform_id')
