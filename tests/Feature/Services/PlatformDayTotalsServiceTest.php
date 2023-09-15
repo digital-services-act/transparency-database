@@ -173,4 +173,110 @@ class PlatformDayTotalsServiceTest extends TestCase
         $this->assertEquals(0, PlatformDayTotal::count());
 
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function keywords_count_is_working()
+    {
+        $this->setUpFullySeededDatabase();
+        $platform = Platform::all()->random()->first();
+        $this->assertNotNull($platform);
+
+        // clear all statements for this platform.
+        $platform->statements()->delete();
+
+        $date = Carbon::yesterday();
+
+        // It's not compiled or existing thus false... not an int.
+        $dayTotal = $this->platform_day_totals_service->getDayTotal($platform, $date);
+        $this->assertFalse($dayTotal);
+
+        Statement::truncate();
+
+        // Make 7 with ANIMAL HARM
+        Statement::factory()->count(7)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'category_specification' => ["KEYWORD_ANIMAL_HARM"]
+        ]);
+
+        // 6 with sexual material
+        Statement::factory()->count(6)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'category_specification' => ["KEYWORD_ADULT_SEXUAL_MATERIAL,KEYWORD_ANIMAL_HARM"]
+        ]);
+
+
+
+        // there should be 13 more than before.
+        $this->assertEquals(13, Statement::count());
+
+        // Compile the day totals.
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'category_specification', "KEYWORD_ANIMAL_HARM");
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'category_specification', "KEYWORD_ADULT_SEXUAL_MATERIAL");
+
+        $dayTotalAnimal = $this->platform_day_totals_service->getDayTotal($platform, $date, 'category_specification', "KEYWORD_ANIMAL_HARM");
+        $dayTotalSexualMaterial = $this->platform_day_totals_service->getDayTotal($platform, $date, 'category_specification', "KEYWORD_ADULT_SEXUAL_MATERIAL");
+
+        $this->assertEquals(13, $dayTotalAnimal);
+        $this->assertEquals(6, $dayTotalSexualMaterial);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function decision_visibility_count_is_working()
+    {
+        $this->setUpFullySeededDatabase();
+        $platform = Platform::all()->random()->first();
+        $this->assertNotNull($platform);
+
+        // clear all statements for this platform.
+        $platform->statements()->delete();
+
+        $date = Carbon::yesterday();
+
+        Statement::truncate();
+
+        // Make 7 with DECISION_VISIBILITY_CONTENT_DISABLED HARM
+        Statement::factory()->count(7)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'decision_visibility' => ["DECISION_VISIBILITY_CONTENT_DISABLED"]
+        ]);
+
+        // 6 with DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED
+        Statement::factory()->count(6)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'decision_visibility' => ["DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED"]
+        ]);
+
+        // 5 with BOTH
+        Statement::factory()->count(5)->create([
+            'created_at' => $date,
+            'platform_id' => $platform->id,
+            'decision_visibility' => ["DECISION_VISIBILITY_CONTENT_DISABLED,DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED"]
+        ]);
+
+
+
+        // there should be 13 more than before.
+        $this->assertEquals(18, Statement::count());
+
+//        // Compile the day totals.
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'decision_visibility', "DECISION_VISIBILITY_CONTENT_DISABLED");
+        $this->platform_day_totals_service->compileDayTotal($platform, $date, 'decision_visibility', "DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED");
+
+//
+        $dayTotalDisabled = $this->platform_day_totals_service->getDayTotal($platform, $date, 'decision_visibility', "DECISION_VISIBILITY_CONTENT_DISABLED");
+        $dayTotalAgeRestricted = $this->platform_day_totals_service->getDayTotal($platform, $date, 'decision_visibility', "DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED");
+//
+        $this->assertEquals(12, $dayTotalDisabled);
+        $this->assertEquals(11, $dayTotalAgeRestricted);
+    }
 }

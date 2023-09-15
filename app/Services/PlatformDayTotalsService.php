@@ -8,6 +8,7 @@ use App\Models\PlatformDayTotal;
 use App\Models\Statement;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlatformDayTotalsService
 {
@@ -17,7 +18,7 @@ class PlatformDayTotalsService
             ->select('total')
             ->where('platform_id', $platform->id)
             ->where('date', $date->format('Y-m-d 00:00:00'))
-            ->where('attribute', $attribute)
+            ->where('attribute', 'LIKE', '%'.$attribute.'%')
             ->where('value', $value)
             ->first()->total ?? false;
     }
@@ -34,7 +35,8 @@ class PlatformDayTotalsService
 
     public function deleteDayTotals(Platform $platform, string $attribute = '*', string $value = '*')
     {
-        $platform->dayTotals()->where('attribute', $attribute)->where('value', $value)->delete();
+        $platform->dayTotals()->where('attribute', $attribute)->where('value', 'LIKE', $value)->delete();
+
     }
 
     /**
@@ -111,7 +113,7 @@ class PlatformDayTotalsService
         $query = Statement::query()->where('platform_id', $platform->id)->where('created_at', '>=', $start)->where('created_at', '<=', $end);
 
         if ($attribute !== '*' && $value !== '*') {
-            $query->where($attribute, $value);
+            $query->where($attribute, 'LIKE', '%'.$value.'%');
         }
 
         if ($attribute !== '*' && $value === '*') {
@@ -145,6 +147,7 @@ class PlatformDayTotalsService
 
     public function globalTotalForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): int|bool
     {
+        Log::info($attribute);
         return DB::table('platform_day_totals')
                  ->selectRaw('SUM(total) as total')
                  ->whereNotNull('platform_id')
@@ -253,7 +256,7 @@ class PlatformDayTotalsService
         $date_counts = array_reverse($date_counts);
         $month_counts = array_reverse($month_counts);
 
-        $platform_total = $platform->statements()->count();
+        $platform_total = DB::table('statements')->where('platform_id',$platform->id)->count();
 
         $day_totals_values = array_map(function($item){
             return $item->total;
@@ -326,6 +329,55 @@ class PlatformDayTotalsService
             'category_total',
             'category_last_months_ago',
             'category_last_days_ago',
+            'day_totals_labels',
+            'day_totals_values',
+            'month_totals_labels',
+            'month_totals_values'
+        );
+    }
+
+    public function prepareReportForKeyword(string $keyword, int $days = 20, int $months = 12): array
+    {
+        $start_days_ago   = $days;
+        $start_months_ago = $months;
+
+        $start_days   = Carbon::now()->subDays($start_days_ago);
+        $start_months = Carbon::now()->subMonths($start_months_ago);
+        $end          = Carbon::now();
+
+        $keyword_last_days_ago   = $this->globalTotalForRange($start_days, $end, 'category_specification', $keyword);
+        $keyword_last_months_ago = $this->globalTotalForRange($start_months, $end, 'category_specification', $keyword);
+
+        $date_counts  = $this->globalDayCountsForRange($start_days, $end, 'category_specification', $keyword);
+        $month_counts = $this->globalMonthCountsForRange($start_months, $end, 'category_specification', $keyword);
+
+        $date_counts  = array_reverse($date_counts);
+        $month_counts = array_reverse($month_counts);
+
+        $keyword_total = Statement::query()->where('category_specification', 'LIKE',  '%'.$keyword.'%')->count();
+
+        $day_totals_values = array_map(function ($item) {
+            return $item->total;
+        }, $date_counts);
+
+        $day_totals_labels = array_map(function ($item) {
+            return $item->date;
+        }, $date_counts);
+
+        $month_totals_values = array_map(function ($item) {
+            return $item->total;
+        }, $month_counts);
+
+        $month_totals_labels = array_map(function ($item) {
+            return $item->month;
+        }, $month_counts);
+
+        return compact(
+            'date_counts',
+            'month_counts',
+            'keyword_total',
+            'keyword_last_months_ago',
+            'keyword_last_days_ago',
             'day_totals_labels',
             'day_totals_values',
             'month_totals_labels',

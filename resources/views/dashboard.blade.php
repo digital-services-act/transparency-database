@@ -14,29 +14,27 @@
 
     <div class="ecl-row ecl-u-mb-l">
         @can('create statements')
-            <div class="ecl-col-4">
-                <a class="ecl-button ecl-button--primary" href="{{ route('api-index') }}">API</a>
+            <div class="ecl-col-3">
+                <a class="ecl-button ecl-button--primary" href="{{ route('api-index') }}">API Token Management</a>
+            </div>
+
+            <div class="ecl-col-3">
+                <a class="ecl-button ecl-button--primary" href="{{ route('analytics.platform',auth()->user()->platform->uuid) }}">Your Platform Analytics</a>
             </div>
         @endcan
-    </div>
-
-    <div class="ecl-row ">
-        <div class="ecl-col-4">
-            <a class="ecl-button ecl-button--secondary" href="{{ route('logout') }}">Logout</a>
-        </div>
     </div>
 
     @can('administrate')
     <h2 class="ecl-u-type-heading-2">Administration</h2>
 
     <div class="ecl-row ecl-u-mb-l">
-        <div class="ecl-col-4">
+        <div class="ecl-col-3">
             <a class="ecl-button ecl-button--primary" href="{{ route('user.index') }}">Users</a>
         </div>
-        <div class="ecl-col-4">
+        <div class="ecl-col-3">
             <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Platforms</a>
         </div>
-        <div class="ecl-col-4">
+        <div class="ecl-col-3">
             <a class="ecl-button ecl-button--primary" href="{{ route('invitation.index') }}">Invitations</a>
         </div>
     </div>

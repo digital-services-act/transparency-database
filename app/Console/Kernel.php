@@ -16,13 +16,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('platform:compile-day-totals')->daily();
-        $schedule->command('platform:compile-day-totals all decision_visibility all')->daily();
-        $schedule->command('platform:compile-day-totals all decision_monetary all')->daily();
-        $schedule->command('platform:compile-day-totals all decision_provision all')->daily();
-        $schedule->command('platform:compile-day-totals all decision_account all')->daily();
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->daily();
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->daily();
         $schedule->command('platform:compile-day-totals-categories')->daily();
+        $schedule->command('platform:compile-day-totals-keywords')->daily();
+        $schedule->command('platform:compile-day-totals-decisions')->daily();
 
         /*
 
@@ -30,13 +28,11 @@ class Kernel extends ConsoleKernel
 
         php artisan statements:optimize-index &&
         php artisan platform:compile-day-totals &&
-        php artisan platform:compile-day-totals all decision_visibility all &&
-        php artisan platform:compile-day-totals all decision_monetary all &&
-        php artisan platform:compile-day-totals all decision_provision all &&
-        php artisan platform:compile-day-totals all decision_account all &&
         php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT &&
         php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT &&
         php artisan platform:compile-day-totals-categories
+        php artisan platform:compile-day-totals-keywords
+        php artisan platform:compile-day-totals-decisions
 
         */
     }
