@@ -15,7 +15,7 @@
 
     <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mb-l">
         <div>
-            <h2 class="ecl-u-type-heading-2">Platform Statements for the Last {{ $last_days }} Days</h2>
+            <h2 class="ecl-u-type-heading-2">Platform Statements of Reasons for the Last {{ $last_days }} Days</h2>
         </div>
         <div>
             <form method="get" id="platform">

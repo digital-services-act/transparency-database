@@ -1,10 +1,10 @@
 @extends('layouts/ecl')
 
-@section('title', 'Statements')
+@section('title', 'Statements of Reasons')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Statements"/>
+    <x-ecl.breadcrumb label="Statements of Reasons"/>
 @endsection
 
 @section('content')
@@ -13,10 +13,10 @@
         <x-statement.search-form-simple :similarity_results="$similarity_results"/>
     </div>
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statements</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statements of Reasons</h1>
 
     @can('create statements')
-        <x-ecl.cta-button label="Create a Statement" url="{{ route('statement.create') }}" />
+        <x-ecl.cta-button label="Create a Statement of Reason" url="{{ route('statement.create') }}" />
         <br />
     @endcan
 
@@ -26,7 +26,7 @@
     <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
 
         <div class="ecl-u-type-paragraph ecl-u-mr-s">
-            Statements Found: {{ $total }} out of {{ $global_total }}
+            Statements of Reasons Found: {{ $total }} out of {{ $global_total }}
         </div>
 
         <div class="ecl-u-type-paragraph ecl-u-mr-l">

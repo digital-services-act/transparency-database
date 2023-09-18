@@ -23,7 +23,7 @@
                     <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total }}</div>
-                <div class="ecl-fact-figures__title">Statements All Time Total</div>
+                <div class="ecl-fact-figures__title">Statements of reasons All Time Total</div>
             </div>
 
             <div class="ecl-fact-figures__item">
@@ -31,7 +31,7 @@
                     <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total_last_days }}</div>
-                <div class="ecl-fact-figures__title">Statements last {{ $last_days }} Days</div>
+                <div class="ecl-fact-figures__title">Statements of reasons last {{ $last_days }} Days</div>
             </div>
 
             <div class="ecl-fact-figures__item">
@@ -39,7 +39,7 @@
                     <x-ecl.icon icon="data"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $total_last_months }}</div>
-                <div class="ecl-fact-figures__title">Statements last {{ $last_months }} months</div>
+                <div class="ecl-fact-figures__title">Statements of reasons last {{ $last_months }} months</div>
             </div>
 
             <div class="ecl-fact-figures__item">
@@ -47,7 +47,7 @@
                     <x-ecl.icon icon="growth"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $average_per_hour }}/sph</div>
-                <div class="ecl-fact-figures__title">Statements per hour</div>
+                <div class="ecl-fact-figures__title">Statements of reasons per hour</div>
             </div>
 
             <div class="ecl-fact-figures__item">
@@ -63,7 +63,7 @@
                     <x-ecl.icon icon="growth"/>
                 </svg>
                 <div class="ecl-fact-figures__value">{{ $average_per_hour_per_platform }}/sphpp</div>
-                <div class="ecl-fact-figures__title">Statements per hour per platform</div>
+                <div class="ecl-fact-figures__title">Statements of reasons per hour per platform</div>
             </div>
 
         </div>
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <h2 class="ecl-u-type-heading-2">Statements over {{ $last_history_days }} days</h2>
+    <h2 class="ecl-u-type-heading-2">Statements of reasons over {{ $last_history_days }} days</h2>
 
     <x-analytics.line-chart :values="array_reverse($day_totals_values)" :labels="array_reverse($day_totals_labels)" height="400"/>
 
