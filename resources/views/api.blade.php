@@ -49,7 +49,7 @@
 
         <h2 class="ecl-u-type-heading-2">How to use the API</h2>
         <p class="ecl-u-type-paragraph">
-            Would you like to create statements using the API?
+            Would you like to create statements of reasons using the API?
         </p>
         <p class="ecl-u-type-paragraph">
             <a href="{{ route('dashboard.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>

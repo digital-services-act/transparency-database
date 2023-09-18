@@ -14,8 +14,8 @@
 
 
     <div>
-        <a href="{{$csv}}" class="ecl-button--primary ecl-button">Statements (.csv)</a>
-        <a href="{{$excel}}" class="ecl-button--primary ecl-button">Statements (.xlsx)</a>
+        <a href="{{$csv}}" class="ecl-button--primary ecl-button">Statements of reasons (.csv)</a>
+        <a href="{{$excel}}" class="ecl-button--primary ecl-button">Statements of reasons (.xlsx)</a>
     </div>
 
 
