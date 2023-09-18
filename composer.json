@@ -25,6 +25,7 @@
         "predis/predis": "^2.1",
         "spatie/laravel-honeypot": "^4.3",
         "spatie/laravel-permission": "^5.9",
+        "stevebauman/purify": "^6.0",
         "subfission/cas": "^4.3",
         "symfony/intl": "^6.0",
         "timwassenburg/laravel-pivot-table-generator": "^1.0",
