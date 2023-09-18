@@ -52,6 +52,8 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
         Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
         Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
+        Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
+        Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
     });
 

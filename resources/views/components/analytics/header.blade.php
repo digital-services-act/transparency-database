@@ -5,5 +5,6 @@
     <a href="{{ route('analytics.platforms') }}" class="ecl-link ecl-link--standalone">Platforms</a> |
     <a href="{{ route('analytics.restrictions') }}" class="ecl-link ecl-link--standalone">Restrictions</a> |
     <a href="{{ route('analytics.categories') }}" class="ecl-link ecl-link--standalone">Categories</a> |
+    <a href="{{ route('analytics.keywords') }}" class="ecl-link ecl-link--standalone">Keywords</a> |
     <a href="{{ route('analytics.grounds') }}" class="ecl-link ecl-link--standalone">Grounds</a>
 </div>
