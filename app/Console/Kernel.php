@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
         php artisan platform:compile-day-totals &&
         php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT &&
         php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT &&
-        php artisan platform:compile-day-totals-categories
-        php artisan platform:compile-day-totals-keywords
+        php artisan platform:compile-day-totals-categories &&
+        php artisan platform:compile-day-totals-keywords &&
         php artisan platform:compile-day-totals-decisions
 
         */
