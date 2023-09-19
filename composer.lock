@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ccfb610254317bd910dd24463a6400c0",
+    "content-hash": "d987ce4f7f2c7614f95c2694107d7d77",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -5127,6 +5127,72 @@
                 }
             ],
             "time": "2023-07-04T13:38:13+00:00"
+        },
+        {
+            "name": "stevebauman/purify",
+            "version": "v6.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stevebauman/purify.git",
+                "reference": "ce8d10c0dfe804d90470ff819b84d891037cd6bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stevebauman/purify/zipball/ce8d10c0dfe804d90470ff819b84d891037cd6bc",
+                "reference": "ce8d10c0dfe804d90470ff819b84d891037cd6bc",
+                "shasum": ""
+            },
+            "require": {
+                "ezyang/htmlpurifier": "^4.9.0",
+                "illuminate/contracts": "~7.0|~8.0|~9.0|~10.0",
+                "illuminate/support": "~7.0|~8.0|~9.0|~10.0",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~5.0|~6.0|~7.0",
+                "phpunit/phpunit": "~8.0|~9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Stevebauman\\Purify\\PurifyServiceProvider"
+                    ],
+                    "aliases": {
+                        "Purify": "Stevebauman\\Purify\\Facades\\Purify"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Stevebauman\\Purify\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Steve Bauman",
+                    "email": "steven_bauman@outlook.com"
+                }
+            ],
+            "description": "An HTML Purifier / Sanitizer for Laravel",
+            "keywords": [
+                "Purifier",
+                "clean",
+                "cleaner",
+                "html",
+                "laravel",
+                "purification",
+                "purify"
+            ],
+            "support": {
+                "issues": "https://github.com/stevebauman/purify/issues",
+                "source": "https://github.com/stevebauman/purify/tree/v6.0.2"
+            },
+            "time": "2023-08-24T18:53:12+00:00"
         },
         {
             "name": "subfission/cas",

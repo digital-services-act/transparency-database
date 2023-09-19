@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PermissionController;
@@ -29,6 +30,10 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 Route::middleware(['cas.auth'])->group(function() {
+
+
+    Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+    Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
 
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
