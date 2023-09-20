@@ -28,6 +28,11 @@ class EULoginAuth
      */
     public function handle($request, Closure $next)
     {
+//          removed as it was causing 403 on lambdas infrastructure
+//        if(session()->has('cas_user')) {
+//            return $next($request);
+//        }
+
         if ($this->cas->checkAuthentication()) {
 
             // Store the user credentials in a Laravel managed session
