@@ -92,6 +92,55 @@ Route::get('/', function () {
 
 
 
+
+
+Route::get('/whoami', function () {
+    $processUser = exec('whoami');
+    dd($processUser);
+});
+
+Route::get('/write', function () {
+    $myfile = fopen("/mnt/local/newfile.txt", "w") or die("Unable to open file!");
+    $txt = "John Doe\n";
+    fwrite($myfile, $txt);
+    $txt = "Jane Doe\n";
+    fwrite($myfile, $txt);
+    fclose($myfile);
+});
+
+
+
+// Public Open Routes. POR
+Route::get('/efs', function () {
+
+//    if (!file_exists('/mnt/local/sessions')) {
+//        mkdir('/mnt/local/sessions', 0644, true);
+//    }
+
+    foreach (glob("/mnt/local/*") as $filename) {
+        echo "$filename size " . filesize($filename). ' - ' .fileperms($filename)." \n";
+    }
+});
+
+// Public Open Routes. POR
+Route::get('/ls', function () {
+
+    $result = exec("ls -la /mnt");
+    print_r($result);
+
+});
+
+Route::get('/lsa', function () {
+
+    $result = exec("ls -la /mnt/local");
+    print_r($result);
+
+});
+
+
+
+
+
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
 
