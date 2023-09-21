@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-//        'guard' => 'web',
-        'guard' => 'laravel-cas',
+        'guard' => 'web',
+//        'guard' => 'laravel-cas',
         'passwords' => 'users',
     ],
 
@@ -38,7 +38,7 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'eu-login',
+            'driver' => 'laravel-cas',
             'provider' => 'users',
         ],
         'api' => [
@@ -46,10 +46,7 @@ return [
             'provider' => 'users',
             'hash' => true,
         ],
-        'laravel-cas' => [
-            'driver' => 'laravel-cas',
-            'provider' => 'users',
-        ],
+
     ],
 
     /*
@@ -73,10 +70,7 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
-        ],
-        'laravel-cas' => [
-            'driver' => 'laravel-cas',
-        ],
+        ]
 
         // 'users' => [
         //     'driver' => 'database',

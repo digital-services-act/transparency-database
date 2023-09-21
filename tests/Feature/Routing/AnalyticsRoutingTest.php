@@ -30,7 +30,8 @@ class AnalyticsRoutingTest extends TestCase
 
         $response = $this->get(route('analytics.index'));
 
-        $response->assertForbidden();
+
+        $response->assertRedirectContains('/login');
 
     }
 

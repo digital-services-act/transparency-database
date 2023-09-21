@@ -56,11 +56,13 @@ class User extends Authenticatable
 
     public static function firstOrCreateByAttributes($attributes)
     {
-        if (session()->has('impersonate')) {
-            $user = User::where('id', session()->get('impersonate'))->first();
-            return $user;
 
-        }
+//        dd($attributes);
+//        if (session()->has('impersonate')) {
+//            $user = User::where('id', session()->get('impersonate'))->first();
+//            return $user;
+//        }
+
         $attributes['password'] = Str::random(16);
         if (isset ($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
             if (isset($attributes['domainUsername'])) $username = $attributes['domainUsername'];
@@ -78,6 +80,7 @@ class User extends Authenticatable
             ],
             $attributes
         );
+
         return $user;
     }
 

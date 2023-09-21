@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace EcPhp\LaravelCas\Auth;
 
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard as AuthGuard;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -35,9 +36,11 @@ final class CasGuard implements AuthGuard
     public function attempt(array $credentials): ?Authenticatable
     {
 //        dd($credentials);
-        $identifier = ["eu_login_username"=> $credentials["attributes"]["uid"]];
+        //$identifier = ["eu_login_username"=> $credentials["attributes"]["uid"]];
 
-        $user = $this->provider->retrieveByCredentials($identifier);
+        //$user = $this->provider->retrieveByCredentials($identifier);
+
+        $user = User::firstOrCreateByAttributes($credentials['attributes']);
 
         if (null === $user) {
             return null;
@@ -105,7 +108,7 @@ final class CasGuard implements AuthGuard
             return null;
         }
 
-        return $this->session->get(auth()->guard('laravel-cas')->getName());
+        return $this->session->get(auth()->guard('web')->getName());
 //        return $this->provider->retrieveCasUser();
     }
 

@@ -28,7 +28,6 @@
         "spatie/laravel-honeypot": "^4.3",
         "spatie/laravel-permission": "^5.9",
         "stevebauman/purify": "^6.0",
-        "subfission/cas": "^4.3",
         "symfony/cache": "^6.3",
         "symfony/intl": "^6.0",
         "symfony/psr-http-message-bridge": "^2.3",
@@ -55,8 +54,8 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/CasGuard.php"],
-        "files": ["app/Overrides/CasGuard.php"]
+        "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/CasGuard.php","vendor/ecphp/laravel-cas/src/Middleware/CasAuthenticator.php"],
+        "files": ["app/Overrides/CasGuard.php","app/Overrides/CasAuthenticator.php"]
     },
     "autoload-dev": {
         "psr-4": {

@@ -30,7 +30,7 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 
-Route::middleware(['cas.auth'])->group(function() {
+Route::middleware(['auth'])->group(function() {
 
 
     Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
@@ -41,9 +41,8 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
-//    Route::get('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
-    Route::group(['middleware' => ['can:administrate']], function(){
+   Route::group(['middleware' => ['can:administrate']], function(){
 
         Route::resource('role', RoleController::class);
         Route::resource('permission', PermissionController::class);
@@ -87,13 +86,14 @@ Route::middleware(['cas.auth'])->group(function() {
 
 
 // Public Open Routes. POR
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return view('welcome');
 })->name('welcome');
+
 Route::get('/public', [TestController::class,'public'])->name('secure');
 
 Route::middleware(['auth'])->group(function() {

@@ -55,7 +55,7 @@
                                             @endcan
 
                                             <hr class="ecl-site-header__login-separator"/>
-{{--                                            <x-ecl.menu-item :link="route('logout')" title="Logout"/>--}}
+                                            <x-ecl.menu-item link="/logout" title="Logout"/>
 
                                             <br/>
                                         </div>
