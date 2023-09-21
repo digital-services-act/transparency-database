@@ -50,9 +50,11 @@
                     <h2 class="ecl-site-footer__title ecl-site-footer__title--separator">
                         Policies </h2>
                     <ul class="ecl-site-footer__list">
-                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'cookie-policy']) }}"
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'privacy-policy']) }}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
-                                                                  aria-label="Cookie Policy">Cookie Policy</a></li>
+                                                                  aria-label="Cookie Policy">Privacy Policy</a></li>
+
+
                     </ul>
                 </div>
 

@@ -91,7 +91,7 @@ Route::get('/', function () {
 })->name('home');
 
 
-
+Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
 
