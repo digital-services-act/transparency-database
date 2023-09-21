@@ -105,7 +105,8 @@
             <ul class="ecl-unordered-list">
                 @foreach($top_categories as $top_category)
                     <li class="ecl-unordered-list__item">
-                        {{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}
+                        <a href="{{ route('analytics.category', [$top_category->value]) }}"
+                           class="ecl-link--standalone">{{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}</a>
                     </li>
                 @endforeach
             </ul>
