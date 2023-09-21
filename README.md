@@ -81,13 +81,7 @@ You can speed up tests by running them in parallel:
 
     $ php artisan test --parallel
 
-DSA Transparency API
-====================
-You can search the database and, if you have a contributor token, add to the database using our API.
-
-The DSA Transparency API is documented here: https://transparency.dsa.ec.europa.eu/page/api-documentation
-
 License
 =======
 
-DSA Database is licensed under GPLv2. See LICENSE.txt for more information.
+DSA Transparency Database is licensed under GPLv2. See LICENSE.txt for more information.
