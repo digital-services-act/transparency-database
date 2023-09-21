@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PermissionController;
@@ -30,6 +31,10 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 
 Route::middleware(['cas.auth'])->group(function() {
 
+
+    Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+    Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
+
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
@@ -52,6 +57,8 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
         Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
         Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
+        Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
+        Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
     });
 
@@ -84,7 +91,7 @@ Route::get('/', function () {
 })->name('home');
 
 
-
+Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
 

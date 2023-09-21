@@ -33,14 +33,18 @@ class AnalyticsController extends Controller
         $average_per_hour = number_format(($total_last_days / ($last_days * 24)), 2);
         $average_per_hour_per_platform = number_format((($total_last_days / ($last_days * 24)) / $platforms_total), 2);
 
-        $midnight = Carbon::now()->format('Y-m-d 00:00:00');
-        $total = Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
+
+        $total = $this->platform_day_totals_service->globalStatementsTotal();
+
+        // Don't do any query count on the statement table
+        // very slow, use the service
+        //Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
 
         $top_x = 5;
         $top_platforms = $this->platform_day_totals_service->topPlatforms(Carbon::now()->subDays($last_days), Carbon::now());
-        $top_platforms = array_slice($top_platforms, 0, 5);
+        $top_platforms = array_slice($top_platforms, 0, $top_x);
         $top_categories = $this->platform_day_totals_service->topCategories(Carbon::now()->subDays($last_days), Carbon::now());
-        $top_categories = array_slice($top_categories, 0, 5);
+        $top_categories = array_slice($top_categories, 0, $top_x);
 
         $last_history_days = 30;
         $day_totals = $this->platform_day_totals_service->globalDayCountsForRange(Carbon::now()->subDays($last_history_days), Carbon::now());
@@ -75,7 +79,7 @@ class AnalyticsController extends Controller
 
     public function platforms(Request $request)
     {
-        $platforms_total = Platform::count();
+        $platforms_total = max(1, Platform::nonDsa()->count());
         $last_days = 90;
 
         $platform_totals = [];
@@ -165,57 +169,40 @@ class AnalyticsController extends Controller
         ));
     }
 
-    public function restrictions(Request $request)
+    public function forKeyword(Request $request, string $keyword = ''): Application|View|Factory|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
+    {
+        $days_ago = 20;
+        $months_ago = 12;
+
+        if (!$keyword || !isset($keyword, Statement::KEYWORDS[$keyword])) {
+            return redirect(route('analytics.keywords'));
+        }
+
+        $keyword_report = $this->platform_day_totals_service->prepareReportForKeyword($keyword);
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.keyword', compact(
+            'keyword',
+            'keyword_report',
+            'options',
+            'days_ago',
+            'months_ago'
+        ));
+    }
+
+    public function restrictions()
     {
         $last_days = 90;
 
-        $restriction_totals = [];
-        $restrictions = [
-            'decision_visibility' => 'Visibility',
-            'decision_monetary' => 'Monetary',
-            'decision_provision' => 'Provision',
-            'decision_account' => 'Account'
-        ];
-
-
-        foreach ($restrictions as $attribute => $restriction) {
-
-            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), $attribute);
-            if ($request->query('chaos')) {
-                $chaos = abs((int)$request->query('chaos'));
-                $total += random_int(($chaos * -1), $chaos);
-            }
-
-            $restriction_totals[] = [
-                'name' => $restriction,
-                'total' => (int)$total
-            ];
-
-        }
-
-        if ($request->query('sort')) {
-            uasort($restriction_totals, function ($a, $b) {
-                if ($a['total'] === $b['total']) {
-                    return 0;
-                }
-
-                return $a['total'] < $b['total'] ? 1 : -1;
-            });
-        }
-
-        $restriction_totals_values = array_map(function ($item) {
-            return $item['total'];
-        }, $restriction_totals);
-
-        $restriction_totals_labels = array_map(function ($item) {
-            return $item['name'];
-        }, $restriction_totals);
+        $restrictions_data['decision_visibility'] = $this->computeTotalsWithKeyLabel(Statement::DECISION_VISIBILITIES, 'decision_visibility', $last_days, true);
+        $restrictions_data['decision_monetary'] = $this->computeTotalsWithKeyLabel(Statement::DECISION_MONETARIES, 'decision_monetary', $last_days, true);
+        $restrictions_data['decision_provision'] = $this->computeTotalsWithKeyLabel(Statement::DECISION_PROVISIONS, 'decision_provision', $last_days, true);
+        $restrictions_data['decision_account'] = $this->computeTotalsWithKeyLabel(Statement::DECISION_ACCOUNTS, 'decision_account', $last_days, true);
 
         return view('analytics.restrictions', compact(
             'last_days',
-            'restriction_totals',
-            'restriction_totals_labels',
-            'restriction_totals_values'
+            'restrictions_data'
         ));
     }
 
@@ -266,6 +253,54 @@ class AnalyticsController extends Controller
             'category_totals',
             'category_totals_labels',
             'category_totals_values',
+            'options'
+        ));
+    }
+
+    public function keywords(Request $request)
+    {
+        $last_days = 90;
+
+        $keyword_totals = [];
+        $keywords = Statement::KEYWORDS;
+
+        foreach ($keywords as $keyword_key => $keyword_label) {
+
+            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), 'category_specification', $keyword_key);
+
+
+            $keyword_totals[] = [
+                'name' => $keyword_label,
+                'total' => (int)$total
+            ];
+
+        }
+
+        if ($request->query('sort')) {
+            uasort($keyword_totals, function ($a, $b) {
+                if ($a['total'] === $b['total']) {
+                    return 0;
+                }
+
+                return $a['total'] < $b['total'] ? 1 : -1;
+            });
+        }
+
+        $keyword_totals_values = array_map(function ($item) {
+            return $item['total'];
+        }, $keyword_totals);
+
+        $keyword_totals_labels = array_map(function ($item) {
+            return $item['name'];
+        }, $keyword_totals);
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.keywords', compact(
+            'last_days',
+            'keyword_totals',
+            'keyword_totals_labels',
+            'keyword_totals_values',
             'options'
         ));
     }
@@ -327,10 +362,57 @@ class AnalyticsController extends Controller
         })->toArray();
 
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
+        $keywords = $this->mapForSelectWithKeys(Statement::KEYWORDS);
 
         return compact(
             'platforms',
-            'categories'
+            'categories',
+            'keywords'
         );
+    }
+
+    /**
+     * @param array $return_data
+     * @param array $keyValueArray
+     * @param int $last_days
+     * @param string $attribute
+     * @param bool $sort
+     * @return array
+     */
+    public function computeTotalsWithKeyLabel(array $keyValueArray, string $attribute, int $last_days, bool $sort = false)
+    {
+        foreach ($keyValueArray as $restriction_key => $restriction_label) {
+
+            $total = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subDays($last_days), Carbon::now(), $attribute, $restriction_key);
+
+            $totals[] = [
+                'name' => $restriction_label,
+                'total' => (int)$total
+            ];
+
+        }
+
+        if ($sort) {
+            uasort($totals, function ($a, $b) {
+                if ($a['total'] === $b['total']) {
+                    return 0;
+                }
+
+                return $a['total'] < $b['total'] ? 1 : -1;
+            });
+        }
+
+        $return_data = [];
+
+        $return_data['values'] = array_map(function ($item) {
+            return $item['total'];
+        }, $totals);
+
+        $return_data['labels'] = array_map(function ($item) {
+            return $item['name'];
+        }, $totals);
+
+        return $return_data;
+
     }
 }

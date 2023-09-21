@@ -19,7 +19,7 @@ class CreateStatementsTable extends Migration
 
             $table->string('uuid', 36)->index('uuidindex');
 
-            $table->text('decision_visibility')->nullable();
+            $table->string('decision_visibility',300)->nullable();
             $table->string('decision_visibility_other', 500)->nullable();
 
             $table->enum('decision_monetary', array_keys(Statement::DECISION_MONETARIES))->nullable();
@@ -38,7 +38,7 @@ class CreateStatementsTable extends Migration
             $table->text('category_specification')->nullable();
             $table->string('category_specification_other', 500)->nullable();
 
-            $table->text('content_type');
+            $table->string('content_type',255);
             $table->string('content_type_other', 500)->nullable();
 
             $table->string('illegal_content_legal_ground', 500)->nullable();
@@ -82,6 +82,7 @@ class CreateStatementsTable extends Migration
 
             $table->unique(['platform_id', 'puid']);
             $table->index('created_at');
+
 
         });
     }

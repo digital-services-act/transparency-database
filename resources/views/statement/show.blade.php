@@ -1,17 +1,17 @@
 @php use App\Models\Statement; @endphp
 @extends('layouts/ecl')
 
-@section('title', 'Statement Details - ' . $statement->title)
+@section('title', 'Statement of Reasons Details - ' . $statement->title)
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Statements" url="{{ route('statement.index') }}"/>
-    <x-ecl.breadcrumb label="Statement details: {{$statement->uuid}}"/>
+    <x-ecl.breadcrumb label="Statements of Reasons" url="{{ route('statement.index') }}"/>
+    <x-ecl.breadcrumb label="Statement of reasons details: {{$statement->uuid}}"/>
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statement Details: {{$statement->uuid}}</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statement of reason details: {{$statement->uuid}}</h1>
 
     @if($statement->user && $statement->user->platform)
         <x-infoline title="Platform name" :content="$statement->user->platform->name"></x-infoline>

@@ -130,7 +130,7 @@
                     </li>
                     @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                            <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Statements</a>
+                            <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Search for statements of reasons</a>
                         </li>
                     @endcan
 
@@ -149,7 +149,7 @@
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a
-                            href="{{ route('page.show', ['api-documentation']) }}"
+                            href="{{ route('page.show', ['documentation']) }}"
                             class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
                     </li>
 

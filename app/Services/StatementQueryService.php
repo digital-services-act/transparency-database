@@ -8,7 +8,16 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-
+/**
+ * This service does raw queries and such on the statements table.
+ * This should only be used for local development purposes.
+ * Even then you should setup a local dev opensearch account and use the searching service with indexing.
+ * Look in the .env.example
+ * #SCOUT_DRIVER=opensearch
+ * #OPENSEARCH_HOST=XXX
+ * #OPENSEARCH_USERNAME=XXXX
+ * #OPENSEARCH_PASSWORD=XXXXS
+ */
 class StatementQueryService
 {
     // These are the filters that we are allowed to filter on.

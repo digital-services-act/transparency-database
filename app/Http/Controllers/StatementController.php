@@ -9,6 +9,7 @@ use App\Models\Statement;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use App\Services\PlatformDayTotalsService;
 use App\Services\StatementSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -25,11 +26,15 @@ use App\Http\Controllers\Traits\Sanitizer;
 
 class StatementController extends Controller
 {
+    // This service should only be as a back up to the search service
+    // in a local development scenario
+    // Even then see .env.example and get a play-around opensearch account to use.
     protected StatementQueryService $statement_query_service;
     protected StatementSearchService $statement_search_service;
     protected EuropeanCountriesService $european_countries_service;
     protected EuropeanLanguagesService $european_languages_service;
     protected DriveInService $drive_in_service;
+    protected PlatformDayTotalsService $platform_day_total_service;
 
     use Sanitizer;
 
@@ -38,7 +43,8 @@ class StatementController extends Controller
         StatementSearchService $statement_search_service,
         EuropeanCountriesService $european_countries_service,
         EuropeanLanguagesService $european_languages_service,
-        DriveInService $drive_in_service
+        DriveInService $drive_in_service,
+        PlatformDayTotalsService $platform_day_totals_service
     )
     {
         $this->statement_query_service = $statement_query_service;
@@ -46,6 +52,7 @@ class StatementController extends Controller
         $this->european_countries_service = $european_countries_service;
         $this->european_languages_service = $european_languages_service;
         $this->drive_in_service = $drive_in_service;
+        $this->platform_day_total_service = $platform_day_totals_service;
     }
 
     /**
@@ -67,7 +74,7 @@ class StatementController extends Controller
             $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
         }
 
-        $global_total = Statement::query()->count();
+        $global_total = $this->platform_day_total_service->globalStatementsTotal();
 
         return view('statement.index', compact(
             'statements',
@@ -100,6 +107,9 @@ class StatementController extends Controller
                 'track_total_hits' => true
             ])->paginate(1)->total();
         } else {
+            // This should never happen,
+            // raw queries on the statement table is very bad
+            // maybe ok for a local dev sure
             $statements = $this->statement_query_service->query($request->query());
             $total = $this->statement_query_service->query($request->query())->count();
         }
