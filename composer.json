@@ -55,8 +55,8 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/User/CasUser.php"],
-        "files": ["app/Overrides/CasUser.php"]
+        "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/CasGuard.php"],
+        "files": ["app/Overrides/CasGuard.php"]
     },
     "autoload-dev": {
         "psr-4": {

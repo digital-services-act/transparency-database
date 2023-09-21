@@ -13,7 +13,7 @@ class TestController extends Controller
 
     public function profile(Request $request)
     {
-        dd(auth()->user());
+//        dd(auth()->user());
 //        dd(auth()->user()->getAttribute('firstName'));
 //        dd(auth()->user()->getAttributes());
 //        $user = auth()->user(); print_r($user);
