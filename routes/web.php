@@ -11,6 +11,7 @@ use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -40,7 +41,7 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
-    Route::get('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
+//    Route::get('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
     Route::group(['middleware' => ['can:administrate']], function(){
 
@@ -86,58 +87,22 @@ Route::middleware(['cas.auth'])->group(function() {
 
 
 // Public Open Routes. POR
-Route::get('/', function () {
+Route::get('/home', function () {
     return view('home');
 })->name('home');
 
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
+Route::get('/public', [TestController::class,'public'])->name('secure');
 
+Route::middleware(['auth'])->group(function() {
 
-
-
-Route::get('/whoami', function () {
-    $processUser = exec('whoami');
-    dd($processUser);
-});
-
-Route::get('/write', function () {
-    $myfile = fopen("/mnt/local/newfile.txt", "w") or die("Unable to open file!");
-    $txt = "John Doe\n";
-    fwrite($myfile, $txt);
-    $txt = "Jane Doe\n";
-    fwrite($myfile, $txt);
-    fclose($myfile);
-});
-
-
-
-// Public Open Routes. POR
-Route::get('/efs', function () {
-
-//    if (!file_exists('/mnt/local/sessions')) {
-//        mkdir('/mnt/local/sessions', 0644, true);
-//    }
-
-    foreach (glob("/mnt/local/*") as $filename) {
-        echo "$filename size " . filesize($filename). ' - ' .fileperms($filename)." \n";
-    }
-});
-
-// Public Open Routes. POR
-Route::get('/ls', function () {
-
-    $result = exec("ls -la /mnt");
-    print_r($result);
+    Route::get('/profile', [TestController::class,'profile'])->middleware('auth')->name('my-profile');
+    Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+    Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
 
 });
-
-Route::get('/lsa', function () {
-
-    $result = exec("ls -la /mnt/local");
-    print_r($result);
-
-});
-
-
 
 
 
