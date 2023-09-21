@@ -6,7 +6,7 @@
             <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="data"/>
             </svg>
-            <div class="ecl-fact-figures__value">{{ $keyword_report['keyword_total'] }} statements</div>
+            <div class="ecl-fact-figures__value">{{ $keyword_report['keyword_total'] }} statements of reasons</div>
             <div class="ecl-fact-figures__title">All Time Total</div>
         </div>
 
@@ -14,7 +14,7 @@
             <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="growth"/>
             </svg>
-            <div class="ecl-fact-figures__value">{{ $keyword_report['keyword_last_days_ago'] }} statements</div>
+            <div class="ecl-fact-figures__value">{{ $keyword_report['keyword_last_days_ago'] }} statements of reasons</div>
             <div class="ecl-fact-figures__title">Last {{ $days_ago }} Days</div>
         </div>
 
@@ -22,7 +22,7 @@
             <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="infographic"/>
             </svg>
-            <div class="ecl-fact-figures__value">{{ $keyword_report['keyword_last_months_ago'] }} statements</div>
+            <div class="ecl-fact-figures__value">{{ $keyword_report['keyword_last_months_ago'] }} statements of reasons</div>
             <div class="ecl-fact-figures__title">Last {{ $months_ago }} months</div>
         </div>
 

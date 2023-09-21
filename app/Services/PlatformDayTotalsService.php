@@ -18,7 +18,7 @@ class PlatformDayTotalsService
             ->select('total')
             ->where('platform_id', $platform->id)
             ->where('date', $date->format('Y-m-d 00:00:00'))
-            ->where('attribute', 'LIKE', '%'.$attribute.'%')
+            ->where('attribute', $attribute)
             ->where('value', $value)
             ->first()->total ?? false;
     }
@@ -147,7 +147,7 @@ class PlatformDayTotalsService
 
     public function globalTotalForRange(Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): int|bool
     {
-        Log::info($attribute);
+
         return DB::table('platform_day_totals')
                  ->selectRaw('SUM(total) as total')
                  ->whereNotNull('platform_id')
