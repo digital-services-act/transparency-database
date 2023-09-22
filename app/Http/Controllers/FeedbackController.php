@@ -20,9 +20,9 @@ class FeedbackController extends Controller
     {
         $purified_feedback = Purify::clean($request->get('feedback'));
 
-        return new FeedbackMail($purified_feedback);
-//        Mail::to(config('dsa.FEEDBACK_MAIL'))
-//            ->send(new FeedbackMail($purified_feedback));
+//        return new FeedbackMail($purified_feedback);
+        Mail::to(config('dsa.FEEDBACK_MAIL'))
+            ->send(new FeedbackMail($purified_feedback));
 
         return redirect()->route('feedback.index')->with('success', 'Your feedback has been successfully sent.');
     }
