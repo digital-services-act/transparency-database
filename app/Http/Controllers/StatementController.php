@@ -74,14 +74,11 @@ class StatementController extends Controller
             $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
         }
 
-        $global_total = $this->platform_day_total_service->globalStatementsTotal();
-
         return view('statement.index', compact(
             'statements',
             'options',
             'total',
-            'similarity_results',
-            'global_total'
+            'similarity_results'
         ));
     }
 
