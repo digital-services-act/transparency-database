@@ -87,11 +87,10 @@ class StatementSearchService
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
-        if (env('SCOUT_DRIVER', '') === 'database' && env('APP_ENV') !== 'testing') {
+
+        if (config('scout.driver', '') === 'database' && config('app.env') !== 'testing') {
             $query = $filters['s'] ?? '';
         }
-
-        //dd($query);
 
         return $query;
     }

@@ -100,34 +100,33 @@ class PlatformDayTotalsService
         if ($existing !== false) {
             return $existing;
         }
+        if (config('scout.driver') != 'opensearch') {
+            PlatformDayTotal::create([
+                'date' => $date,
+                'platform_id' => $platform->id,
+                'attribute' => $attribute,
+                'value' => $value,
+                'total' => rand(0, 1000)
+            ]);
+            Log::warning('Compiling a day total requires opensearch, using a random number.');
+        }
 
-        $start = $date->clone();
-        $end = $date->clone();
-
-        $start->hour = 0;
-        $start->minute = 0;
-        $start->second = 0;
-
-        $end->hour = 23;
-        $end->minute = 59;
-        $end->second = 59;
-
-        // CRITICAL OBSERVATION
-        // This is the whole potato of doing the stats and analytics here.
-        // If this is slow, then we need to drop down to a raw query
-        // If a raw query is slow then it's game over.
-        $query = Statement::query()->where('platform_id', $platform->id)->where('created_at', '>=', $start)->where('created_at', '<=', $end);
+        $s = $date->format('Y-m-d') . 'T00:00:00';
+        $e = $date->format('Y-m-d') . 'T23:59:59';
+        $opensearch_query  = 'platform_id:' . $platform->id;
+        $opensearch_query .= ' AND created_at:['.$s.' TO '.$e.']';
 
         if ($attribute !== '*' && $value !== '*') {
-            $query->where($attribute, 'LIKE', '%'.$value.'%');
+            $opensearch_query .= ' AND ' . $attribute . ':' . $value;
         }
-
         if ($attribute !== '*' && $value === '*') {
-            $query->whereNotNull($attribute);
+            $opensearch_query .= ' AND ' . $attribute . ':*';
         }
 
-        $total = $query->count(); // <- this guy right here is the Achilles' heel
-        // END OBSERVATION
+        //dd($filters);
+        $total = Statement::search($opensearch_query)->options([
+            'track_total_hits' => true
+        ])->paginate(1)->total();
 
         PlatformDayTotal::create([
             'date' => $date,
