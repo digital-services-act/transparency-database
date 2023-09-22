@@ -11,7 +11,25 @@
 
 @section('content')
 
+    <div class="ecl-fact-figures ecl-fact-figures--col-1">
+        <div class="ecl-fact-figures__description">
+            On this page you can find some summary statistics on the statements of
+            reasons submitted by providers of online platforms to the Commission.
+
+            This page is a beta version of an analytics interface that will be revised and updated in future releases of
+            the database. To submit feedback on the content of this page and to propose additional features, please
+            visit the <a href="{{route("feedback.index")}}">feedback page</a>.
+
+            You can also extract information from the database in .csv format, using the search functionalities and
+            download options on the “<a href="{{route('statement.index')}}">Search for statements of reasons</a>” page.
+        </div>
+    </div>
+
+
+
+
     <x-analytics.header/>
+
 
     <h2 class="ecl-u-type-heading-2">Overview</h2>
 
@@ -46,7 +64,7 @@
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="growth"/>
                 </svg>
-                <div class="ecl-fact-figures__value">{{ $average_per_hour }}/sph</div>
+                <div class="ecl-fact-figures__value">{{ $average_per_hour }}</div>
                 <div class="ecl-fact-figures__title">Statements of reasons per hour</div>
             </div>
 
@@ -62,7 +80,7 @@
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="growth"/>
                 </svg>
-                <div class="ecl-fact-figures__value">{{ $average_per_hour_per_platform }}/sphpp</div>
+                <div class="ecl-fact-figures__value">{{ $average_per_hour_per_platform }}</div>
                 <div class="ecl-fact-figures__title">Statements of reasons per hour per platform</div>
             </div>
 
@@ -75,7 +93,8 @@
             <ul class="ecl-unordered-list">
                 @foreach($top_platforms as $top_platform)
                     <li class="ecl-unordered-list__item">
-                        <a href="{{ route('analytics.platform', [$top_platform->uuid]) }}" class="ecl-link--standalone">{{ $top_platform->name }}</a>
+                        <a href="{{ route('analytics.platform', [$top_platform->uuid]) }}"
+                           class="ecl-link--standalone">{{ $top_platform->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -86,7 +105,8 @@
             <ul class="ecl-unordered-list">
                 @foreach($top_categories as $top_category)
                     <li class="ecl-unordered-list__item">
-                        {{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}
+                        <a href="{{ route('analytics.category', [$top_category->value]) }}"
+                           class="ecl-link--standalone">{{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -95,6 +115,7 @@
 
     <h2 class="ecl-u-type-heading-2">Statements of reasons over {{ $last_history_days }} days</h2>
 
-    <x-analytics.line-chart :values="array_reverse($day_totals_values)" :labels="array_reverse($day_totals_labels)" height="400"/>
+    <x-analytics.line-chart :values="array_reverse($day_totals_values)" :labels="array_reverse($day_totals_labels)"
+                            height="400"/>
 
 @endsection
