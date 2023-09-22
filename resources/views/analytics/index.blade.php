@@ -11,19 +11,7 @@
 
 @section('content')
 
-    <div class="ecl-fact-figures ecl-fact-figures--col-1">
-        <div class="ecl-fact-figures__description">
-            On this page you can find some summary statistics on the statements of
-            reasons submitted by providers of online platforms to the Commission.
 
-            This page is a beta version of an analytics interface that will be revised and updated in future releases of
-            the database. To submit feedback on the content of this page and to propose additional features, please
-            visit the <a href="{{route("feedback.index")}}">feedback page</a>.
-
-            You can also extract information from the database in .csv format, using the search functionalities and
-            download options on the “<a href="{{route('statement.index')}}">Search for statements of reasons</a>” page.
-        </div>
-    </div>
 
 
 

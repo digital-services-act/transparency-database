@@ -20,6 +20,9 @@
                         <li class="ecl-site-footer__list-item"><a href="https://commission.europa.eu/about-european-commission/contact_en"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Link to Contact information of the DG">Contact information</a></li>
+                        <li class="ecl-site-footer__list-item"><a href="{{route('feedback.index')}}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Link to Contact information of the DG">Feedback</a></li>
                     </ul>
                 </div>
 {{--                <div class="ecl-site-footer__section">--}}
@@ -53,6 +56,9 @@
                         <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'privacy-policy']) }}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Cookie Policy">Privacy Policy</a></li>
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('legal-information') }}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Cookie Policy">Legal Notice</a></li>
 
 
                     </ul>

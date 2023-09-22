@@ -134,7 +134,7 @@
                         </li>
                     @endcan
 
-                    @can('administrate')
+                    @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>
                         </li>
@@ -151,6 +151,12 @@
                         <a
                             href="{{ route('page.show', ['documentation']) }}"
                             class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
+                    </li>
+
+                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                        <a
+                            href="{{ route('page.show', ['faq']) }}"
+                            class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>
                     </li>
 
                 </ul>

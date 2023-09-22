@@ -118,11 +118,8 @@ class StatementControllerTest extends TestCase
         $this->assertNull($u);
 
         $response = $this->get(route('statement.create'));
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertRedirectContains('/login');
 
-        // After we made this call we are somebody
-        $u = auth()->user();
-        $this->assertNotNull($u);
     }
 
 

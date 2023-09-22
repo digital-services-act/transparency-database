@@ -35,16 +35,14 @@ final class CasGuard implements AuthGuard
 
     public function attempt(array $credentials): ?Authenticatable
     {
-//        dd($credentials);
-        //$identifier = ["eu_login_username"=> $credentials["attributes"]["uid"]];
-
-        //$user = $this->provider->retrieveByCredentials($identifier);
 
         $user = User::firstOrCreateByAttributes($credentials['attributes']);
 
         if (null === $user) {
             return null;
         }
+
+        $user->acceptInvitation();
 
         $this->setUser($user);
 
