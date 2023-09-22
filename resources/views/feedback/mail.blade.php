@@ -1,7 +1,7 @@
 <x-mail::message>
 # Feedback received
 
-We received this feedback from a user on the website:
+We received this feedback from the user {{auth()->user()->getAttribute('name')}} ({{auth()->user()->getAttribute('email')}})
 <pre style="font-style: italic; margin-left: 20px">
 {{$feedback}}
 </pre>

@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
     Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
 
+
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
@@ -87,26 +88,10 @@ Route::middleware(['auth'])->group(function() {
 
 });
 
-
 // Public Open Routes. POR
 Route::get('/', function () {
     return view('home');
 })->name('home');
-
-Route::get('/welcome', function () {
-    return view('welcome');
-})->name('welcome');
-
-Route::get('/public', [TestController::class,'public'])->name('secure');
-
-Route::middleware(['auth'])->group(function() {
-
-    Route::get('/profile', [TestController::class,'profile'])->middleware('auth')->name('my-profile');
-    Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
-    Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
-
-});
-
 
 Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
