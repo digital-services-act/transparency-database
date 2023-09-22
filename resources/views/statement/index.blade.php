@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Statements of Reasons"/>
+    <x-ecl.breadcrumb label="Search for Statements of Reasons"/>
 @endsection
 
 @section('content')
