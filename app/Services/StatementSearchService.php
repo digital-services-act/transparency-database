@@ -128,6 +128,7 @@ class StatementSearchService
      */
     private function applySFilter(string $filter_value): string
     {
+        $filter_value = preg_replace("/[^a-zA-Z0-9\ ]+/", "", $filter_value);
         $textfields = [
             'decision_visibility_other',
             'decision_monetary_other',
