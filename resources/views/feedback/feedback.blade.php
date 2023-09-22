@@ -12,7 +12,7 @@
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Feedback Form</h1>
 
-    <p>In order to provide feedback, please create an EU Login account.</p>
+
     <form method="post" action="{{route('feedback.send')}}" id="send-feedback-form">
         @honeypot
         @csrf
