@@ -5,18 +5,20 @@ namespace App\Models;
 use App\Services\InvitationService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+
 
     public const API_TOKEN_KEY = 'api-token';
 
@@ -54,11 +56,13 @@ class User extends Authenticatable
 
     public static function firstOrCreateByAttributes($attributes)
     {
-        if (session()->has('impersonate')) {
-            $user = User::where('id', session()->get('impersonate'))->first();
-            return $user;
 
-        }
+//        dd($attributes);
+//        if (session()->has('impersonate')) {
+//            $user = User::where('id', session()->get('impersonate'))->first();
+//            return $user;
+//        }
+
         $attributes['password'] = Str::random(16);
         if (isset ($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
             if (isset($attributes['domainUsername'])) $username = $attributes['domainUsername'];
@@ -76,6 +80,7 @@ class User extends Authenticatable
             ],
             $attributes
         );
+
         return $user;
     }
 

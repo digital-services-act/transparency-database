@@ -11,6 +11,7 @@ use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -29,20 +30,20 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 
-Route::middleware(['cas.auth'])->group(function() {
+Route::middleware(['auth'])->group(function() {
 
 
     Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
     Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
+
 
     Route::group(['middleware' => ['can:create statements']], function(){
         Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
-    Route::get('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
-    Route::group(['middleware' => ['can:administrate']], function(){
+   Route::group(['middleware' => ['can:administrate']], function(){
 
         Route::resource('role', RoleController::class);
         Route::resource('permission', PermissionController::class);
@@ -50,21 +51,14 @@ Route::middleware(['cas.auth'])->group(function() {
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
 
-        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
-        Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
-        Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
-        Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
-        Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
-        Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
-        Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
-        Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
-        Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
+
 
     });
 
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
-        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
 
         // Register the Platform
         Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
@@ -80,16 +74,24 @@ Route::middleware(['cas.auth'])->group(function() {
 
         Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
         Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
+
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
+        Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
+        Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
+        Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
+        Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
+        Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
+        Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
+        Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
     });
 
 });
-
 
 // Public Open Routes. POR
 Route::get('/', function () {
     return view('home');
 })->name('home');
-
 
 Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');

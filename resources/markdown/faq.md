@@ -46,5 +46,5 @@ would like to make suggestions, please use the feedback form.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="I would like to give feedback – how can I do that? ">
-Please use the <a href="{{route('feedback.index')}}">feedback form</a>.
+Please use the <a href="{{route('feedback.index')}}">feedback form</a>. To use the feedback form, you need to create an EU Login account.
 </x-ecl.accordion>

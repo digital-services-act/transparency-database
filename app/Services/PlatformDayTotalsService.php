@@ -82,6 +82,9 @@ class PlatformDayTotalsService
      */
     public function compileDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): int
     {
+
+        // This function should only be called in the context of a queued job.
+
         // We never compile day totals for the future or today...
         // and we are not going to go older than 2020-01-01
         $today = Carbon::now();
@@ -93,34 +96,68 @@ class PlatformDayTotalsService
             return false;
         }
 
-
         $existing = $this->getDayTotal($platform, $date, $attribute, $value);
         if ($existing !== false) {
             return $existing;
         }
 
-        $start = $date->clone();
-        $end = $date->clone();
+        if (config('scout.driver') != 'opensearch') {
 
-        $start->hour = 0;
-        $start->minute = 0;
-        $start->second = 0;
+            $start = $date->clone();
+            $end = $date->clone();
 
-        $end->hour = 23;
-        $end->minute = 59;
-        $end->second = 59;
+            $start->hour = 0;
+            $start->minute = 0;
+            $start->second = 0;
 
-        $query = Statement::query()->where('platform_id', $platform->id)->where('created_at', '>=', $start)->where('created_at', '<=', $end);
+            $end->hour = 23;
+            $end->minute = 59;
+            $end->second = 59;
+
+            // CRITICAL OBSERVATION
+            // This is the whole potato of doing the stats and analytics here.
+            // If this is slow, then we need to drop down to a raw query
+            // If a raw query is slow then it's game over.
+            $query = Statement::query()->where('platform_id', $platform->id)->where('created_at', '>=', $start)->where('created_at', '<=', $end);
+
+            if ($attribute !== '*' && $value !== '*') {
+                $query->where($attribute, 'LIKE', '%'.$value.'%');
+            }
+
+            if ($attribute !== '*' && $value === '*') {
+                $query->whereNotNull($attribute);
+            }
+
+            $total = $query->count(); // <- this guy right here is the Achilles' heel
+            // END OBSERVATION
+
+            PlatformDayTotal::create([
+                'date' => $date,
+                'platform_id' => $platform->id,
+                'attribute' => $attribute,
+                'value' => $value,
+                'total' => $total
+            ]);
+
+            return $total;
+        }
+
+        $s = $date->format('Y-m-d') . 'T00:00:00';
+        $e = $date->format('Y-m-d') . 'T23:59:59';
+        $opensearch_query  = 'platform_id:' . $platform->id;
+        $opensearch_query .= ' AND created_at:['.$s.' TO '.$e.']';
 
         if ($attribute !== '*' && $value !== '*') {
-            $query->where($attribute, 'LIKE', '%'.$value.'%');
+            $opensearch_query .= ' AND ' . $attribute . ':' . $value;
         }
-
         if ($attribute !== '*' && $value === '*') {
-            $query->whereNotNull($attribute);
+            $opensearch_query .= ' AND ' . $attribute . ':*';
         }
 
-        $total = $query->count();
+        //dd($filters);
+        $total = Statement::search($opensearch_query)->options([
+            'track_total_hits' => true
+        ])->paginate(1)->total();
 
         PlatformDayTotal::create([
             'date' => $date,
@@ -131,6 +168,19 @@ class PlatformDayTotalsService
         ]);
 
         return $total;
+    }
+
+    public function globalStatementsTotal(): int
+    {
+        $end = Carbon::now();
+        return DB::table('platform_day_totals')
+                 ->selectRaw('SUM(total) as total')
+                 ->where('platform_id', '!=', 0)
+                 ->where('date', '>=', '2020-01-01 00:00:00')
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', '*')
+                 ->where('value', '*')
+                 ->first()->total ?? 0;
     }
 
     public function totalForRange(Platform $platform, Carbon $start, Carbon $end, string $attribute = '*', string $value = '*'): int|bool
@@ -150,7 +200,7 @@ class PlatformDayTotalsService
 
         return DB::table('platform_day_totals')
                  ->selectRaw('SUM(total) as total')
-                 ->whereNotNull('platform_id')
+                 ->where('platform_id', '!=', 0)
                  ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
                  ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
                  ->where('attribute', $attribute)
@@ -175,7 +225,7 @@ class PlatformDayTotalsService
     {
         return DB::table('platform_day_totals')
                  ->selectRaw('date, SUM(total) as total')
-                 ->whereNotNull('platform_id')
+                 ->where('platform_id', '!=', 0)
                  ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
                  ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
                  ->where('attribute', $attribute)
@@ -201,7 +251,7 @@ class PlatformDayTotalsService
     {
         return DB::table('platform_day_totals')
                  ->selectRaw("CONCAT(YEAR(platform_day_totals.date), '-', MONTH(platform_day_totals.date)) as month, SUM(total) as total")
-                 ->whereNotNull('platform_id')
+                 ->where('platform_id', '!=', 0)
                  ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
                  ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
                  ->where('attribute', $attribute)
@@ -214,7 +264,7 @@ class PlatformDayTotalsService
     {
         return DB::table('platform_day_totals')
                  ->selectRaw('platforms.name, platforms.uuid, SUM(total) as total')
-                 ->whereNotNull('platform_id')
+                 ->where('platform_id', '!=', 0)
                  ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
                  ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
                  ->where('attribute', $attribute)
@@ -229,7 +279,7 @@ class PlatformDayTotalsService
     {
         return DB::table('platform_day_totals')
                  ->selectRaw('value, SUM(total) as total')
-                 ->whereNotNull('platform_id')
+                 ->where('platform_id', '!=', 0)
                  ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
                  ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
                  ->where('attribute', 'category')
@@ -246,6 +296,7 @@ class PlatformDayTotalsService
         $start_days = Carbon::now()->subDays($start_days_ago);
         $start_months = Carbon::now()->subMonths($start_months_ago);
         $end = Carbon::now();
+        $beginning = Carbon::createFromDate(2020, 1, 1);
 
         $platform_last_days_ago = $this->totalForRange($platform, $start_days, $end);
         $platform_last_months_ago = $this->totalForRange($platform, $start_months, $end);
@@ -256,7 +307,7 @@ class PlatformDayTotalsService
         $date_counts = array_reverse($date_counts);
         $month_counts = array_reverse($month_counts);
 
-        $platform_total = DB::table('statements')->where('platform_id',$platform->id)->count();
+        $platform_total = $this->totalForRange($platform, $beginning, $end);
 
         $day_totals_values = array_map(function($item){
             return $item->total;
@@ -295,6 +346,7 @@ class PlatformDayTotalsService
         $start_days   = Carbon::now()->subDays($start_days_ago);
         $start_months = Carbon::now()->subMonths($start_months_ago);
         $end          = Carbon::now();
+        $beginning = Carbon::createFromDate(2020, 1, 1);
 
         $category_last_days_ago   = $this->globalTotalForRange($start_days, $end, 'category', $category);
         $category_last_months_ago = $this->globalTotalForRange($start_months, $end, 'category', $category);
@@ -305,7 +357,7 @@ class PlatformDayTotalsService
         $date_counts  = array_reverse($date_counts);
         $month_counts = array_reverse($month_counts);
 
-        $category_total = Statement::query()->where('category', $category)->count();
+        $category_total = $this->globalTotalForRange($beginning, $end, 'category', $category);
 
         $day_totals_values = array_map(function ($item) {
             return $item->total;
@@ -344,6 +396,7 @@ class PlatformDayTotalsService
         $start_days   = Carbon::now()->subDays($start_days_ago);
         $start_months = Carbon::now()->subMonths($start_months_ago);
         $end          = Carbon::now();
+        $beginning = Carbon::createFromDate(2020, 1, 1);
 
         $keyword_last_days_ago   = $this->globalTotalForRange($start_days, $end, 'category_specification', $keyword);
         $keyword_last_months_ago = $this->globalTotalForRange($start_months, $end, 'category_specification', $keyword);
@@ -354,7 +407,7 @@ class PlatformDayTotalsService
         $date_counts  = array_reverse($date_counts);
         $month_counts = array_reverse($month_counts);
 
-        $keyword_total = Statement::query()->where('category_specification', 'LIKE',  '%'.$keyword.'%')->count();
+        $keyword_total = $this->globalTotalForRange($beginning, $end, 'category_specification', $keyword);
 
         $day_totals_values = array_map(function ($item) {
             return $item->total;

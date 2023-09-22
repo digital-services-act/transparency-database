@@ -33,14 +33,18 @@ class AnalyticsController extends Controller
         $average_per_hour = number_format(($total_last_days / ($last_days * 24)), 2);
         $average_per_hour_per_platform = number_format((($total_last_days / ($last_days * 24)) / $platforms_total), 2);
 
-        $midnight = Carbon::now()->format('Y-m-d 00:00:00');
-        $total = Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
+
+        $total = $this->platform_day_totals_service->globalStatementsTotal();
+
+        // Don't do any query count on the statement table
+        // very slow, use the service
+        //Statement::query()->whereRaw("created_at < ?", [$midnight])->count();
 
         $top_x = 5;
         $top_platforms = $this->platform_day_totals_service->topPlatforms(Carbon::now()->subDays($last_days), Carbon::now());
-        $top_platforms = array_slice($top_platforms, 0, 5);
+        $top_platforms = array_slice($top_platforms, 0, $top_x);
         $top_categories = $this->platform_day_totals_service->topCategories(Carbon::now()->subDays($last_days), Carbon::now());
-        $top_categories = array_slice($top_categories, 0, 5);
+        $top_categories = array_slice($top_categories, 0, $top_x);
 
         $last_history_days = 30;
         $day_totals = $this->platform_day_totals_service->globalDayCountsForRange(Carbon::now()->subDays($last_history_days), Carbon::now());
@@ -75,7 +79,7 @@ class AnalyticsController extends Controller
 
     public function platforms(Request $request)
     {
-        $platforms_total = Platform::count();
+        $platforms_total = max(1, Platform::nonDsa()->count());
         $last_days = 90;
 
         $platform_totals = [];
