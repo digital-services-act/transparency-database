@@ -14,7 +14,7 @@ class CompilePlatformDayTotalsKeywords extends Command
      *
      * @var string
      */
-    protected $signature = 'platform:compile-day-totals-keywords {platform_id=all} {days=10}';
+    protected $signature = 'platform:compile-day-totals-keywords {platform_id=all} {days=5}';
 
     /**
      * The console command description.

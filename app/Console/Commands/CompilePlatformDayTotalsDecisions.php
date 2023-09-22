@@ -14,7 +14,7 @@ class CompilePlatformDayTotalsDecisions extends Command
      *
      * @var string
      */
-    protected $signature = 'platform:compile-day-totals-decisions {platform_id=all} {days=10}';
+    protected $signature = 'platform:compile-day-totals-decisions {platform_id=all} {days=5}';
 
     /**
      * The console command description.
