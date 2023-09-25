@@ -28,6 +28,7 @@ class PlatformController extends Controller
         if ($request->get('s')) {
             $platforms = Platform::where('name', 'like', '%' . $request->get('s') . '%');
         }
+        $platforms->orderBy('name');
         $platforms = $platforms->paginate(50)->withQueryString();
 
         return view('platform.index', [

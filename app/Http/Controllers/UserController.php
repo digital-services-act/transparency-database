@@ -31,6 +31,7 @@ class UserController extends Controller
                 $inner_query->where('name', 'like', '%' . $s . '%');
             });
         }
+        $users->orderBy('name');
         $users = $users->paginate(50)->withQueryString();
 
         return view('user.index', [
