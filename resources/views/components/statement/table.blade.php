@@ -15,8 +15,6 @@
         <th class="ecl-table__header">Restrictions</th>
         <th class="ecl-table__header">Category</th>
         <th class="ecl-table__header">Creation Date</th>
-
-
     </tr>
     </thead>
     <tbody class="ecl-table__body">
