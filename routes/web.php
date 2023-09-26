@@ -51,8 +51,6 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
 
-
-
     });
 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
@@ -70,18 +68,12 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
 
-        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
-        Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
-        Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
-        Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
-        Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
-        Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
-        Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
-        Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
-        Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
+
     });
 
 });
+
+// Public Open Routes.
 
 Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
 Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
@@ -89,8 +81,18 @@ Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('st
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
+Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
+Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
+Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
+Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
+Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
+Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
+Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
-// Public Open Routes. POR
+
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
