@@ -128,17 +128,17 @@
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
                     </li>
-                    @can('view dashboard')
+
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Search for statements of reasons</a>
                         </li>
-                    @endcan
 
-                    @can('view dashboard')
+
+
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>
                         </li>
-                    @endcan
+
 
                     @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a

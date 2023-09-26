@@ -25,13 +25,13 @@ class AnalyticsRoutingTest extends TestCase
     /**
      * @test
      */
-    public function regular_users_cant_access_analytics(): void
+    public function regular_users_can_access_analytics(): void
     {
 
         $response = $this->get(route('analytics.index'));
 
 
-        $response->assertRedirectContains('/login');
+        $response->assertOk();
 
     }
 
