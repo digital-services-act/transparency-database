@@ -223,6 +223,8 @@ return [
         Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
+        EcPhp\LaravelCas\Providers\AppServiceProvider::class,
+
     ],
 
     /*

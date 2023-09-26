@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Statements of Reasons"/>
+    <x-ecl.breadcrumb label="Search for Statements of Reasons"/>
 @endsection
 
 @section('content')
@@ -38,7 +38,7 @@
     <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
 
         <div class="ecl-u-type-paragraph ecl-u-mr-s">
-            Statements of Reasons Found: {{ $total }} out of {{ $global_total }}
+            Statements of Reasons Found: {{ $total }}
         </div>
 
         <div class="ecl-u-type-paragraph ecl-u-mr-l">

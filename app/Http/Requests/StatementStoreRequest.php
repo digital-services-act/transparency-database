@@ -21,6 +21,7 @@ class StatementStoreRequest extends FormRequest
      */
     public function authorize()
     {
+//        dd($this->user());
         return $this->user()->can('create statements') && $this->user()->platform;
     }
 
@@ -70,12 +71,12 @@ class StatementStoreRequest extends FormRequest
 
             'content_language' => [$this->in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
-            'content_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01'],
-            'application_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2020-01-01'],
-            'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable'],
-            'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable'],
-            'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable'],
-            'end_date_visibility_restriction' => ['date_format:Y-m-d', 'nullable'],
+            'content_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01','before_or_equal:2038-01-01'],
+            'application_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2020-01-01','before_or_equal:2038-01-01'],
+            'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable','before_or_equal:2038-01-01'],
+            'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable','before_or_equal:2038-01-01'],
+            'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable','before_or_equal:2038-01-01'],
+            'end_date_visibility_restriction' => ['date_format:Y-m-d', 'nullable','before_or_equal:2038-01-01'],
 
             'decision_facts' => ['required', 'max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],

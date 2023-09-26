@@ -25,26 +25,27 @@ class AnalyticsRoutingTest extends TestCase
     /**
      * @test
      */
-    public function regular_users_cant_access_analytics(): void
+    public function regular_users_can_access_analytics(): void
     {
 
         $response = $this->get(route('analytics.index'));
 
-        $response->assertForbidden();
+
+        $response->assertOk();
 
     }
 
     /**
      * @test
      */
-    public function contributors_cant_access_analytics(): void
+    public function contributors_can_access_analytics(): void
     {
 
         $this->signInAsContributor();
 
         $response = $this->get(route('analytics.index'));
 
-        $response->assertForbidden();
+        $response->assertOk();
 
 
     }
