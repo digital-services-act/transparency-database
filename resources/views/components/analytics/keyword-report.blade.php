@@ -29,10 +29,10 @@
     </div>
 </div>
 
-<h2 class="ecl-u-type-heading-2">Created for the Last {{ $days_ago }} Days</h2>
+<h2 class="ecl-u-type-heading-2">Created for the Last {{ count($keyword_report['day_totals_values']) }} Days</h2>
 
-<x-analytics.line-chart :values="array_reverse($keyword_report['day_totals_values'])" :labels="array_reverse($keyword_report['day_totals_labels'])" height="400" id="apexkeyworddays"/>
+<x-analytics.line-chart :values="$keyword_report['day_totals_values']" :labels="$keyword_report['day_totals_labels']" height="400" id="apexkeyworddays"/>
 
-<h2 class="ecl-u-type-heading-2">Created for the Last {{ $months_ago }} Months</h2>
+<h2 class="ecl-u-type-heading-2">Created for the Last {{ count($keyword_report['month_totals_values']) }} {{Str::of('Month')->plural(count($keyword_report['month_totals_values']))}}</h2>
 
-<x-analytics.line-chart :values="array_reverse($keyword_report['month_totals_values'])" :labels="array_reverse($keyword_report['month_totals_labels'])" height="400" id="apexkeywordonths"/>
+<x-analytics.line-chart :values="$keyword_report['month_totals_values']" :labels="$keyword_report['month_totals_labels']" height="400" id="apexkeywordonths"/>
