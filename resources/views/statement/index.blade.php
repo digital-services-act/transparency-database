@@ -38,7 +38,7 @@
     <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
 
         <div class="ecl-u-type-paragraph ecl-u-mr-s">
-            Statements of Reasons Found: {{ $total }} out of {{ $global_total }}
+            Statements of Reasons Found: {{ $total }}
         </div>
 
         <div class="ecl-u-type-paragraph ecl-u-mr-l">

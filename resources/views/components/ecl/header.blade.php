@@ -55,7 +55,7 @@
                                             @endcan
 
                                             <hr class="ecl-site-header__login-separator"/>
-                                            <x-ecl.menu-item :link="route('logout')" title="Logout"/>
+                                            <x-ecl.menu-item link="/logout" title="Logout"/>
 
                                             <br/>
                                         </div>
@@ -128,17 +128,17 @@
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
                     </li>
-                    @can('view dashboard')
+
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Search for statements of reasons</a>
                         </li>
-                    @endcan
 
-                    @can('administrate')
+
+
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                             <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>
                         </li>
-                    @endcan
+
 
                     @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
@@ -151,6 +151,12 @@
                         <a
                             href="{{ route('page.show', ['documentation']) }}"
                             class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
+                    </li>
+
+                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                        <a
+                            href="{{ route('page.show', ['faq']) }}"
+                            class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>
                     </li>
 
                 </ul>
