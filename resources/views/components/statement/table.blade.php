@@ -23,10 +23,10 @@
     @foreach($statements as $statement)
 
         <tr class="ecl-table__row statement-row" data-url="{{ route('statement.show', [$statement]) }}">
-            <td class="ecl-table__cell">{{$statement->platform_name}}</td>
-            <td class="ecl-table__cell">{{$statement->restrictions()}}</td>
-            <td class="ecl-table__cell">{{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
-            <td class="ecl-table__cell">{{ $statement->created_at->format('Y-m-d') }}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Platform">{{$statement->platform_name}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{$statement->restrictions()}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Category">{{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Creation Date">{{ $statement->created_at->format('Y-m-d') }}</td>
         </tr>
 
     @endforeach
