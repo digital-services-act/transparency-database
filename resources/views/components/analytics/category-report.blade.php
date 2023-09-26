@@ -31,8 +31,8 @@
 
 <h2 class="ecl-u-type-heading-2">Created for the Last {{ count($category_report['day_totals_values']) }} Days</h2>
 
-<x-analytics.line-chart :values="array_reverse($category_report['day_totals_values'])" :labels="array_reverse($category_report['day_totals_labels'])" height="400" id="apexcategorydays"/>
+<x-analytics.line-chart :values="$category_report['day_totals_values']" :labels="$category_report['day_totals_labels']" height="400" id="apexcategorydays"/>
 
 <h2 class="ecl-u-type-heading-2">Created for the Last {{ count($category_report['month_totals_values']) }} {{Str::of('Month')->plural(count($category_report['month_totals_values']))}}</h2>
 
-<x-analytics.line-chart :values="array_reverse($category_report['month_totals_values'])" :labels="array_reverse($category_report['month_totals_labels'])" height="400" id="apexcategoryonths"/>
+<x-analytics.line-chart :values="$category_report['month_totals_values']" :labels="$category_report['month_totals_labels']" height="400" id="apexcategoryonths"/>
