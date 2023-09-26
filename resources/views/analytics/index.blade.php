@@ -103,7 +103,7 @@
 
     <h2 class="ecl-u-type-heading-2">Statements of reasons over {{ count($day_totals_values) }} days</h2>
 
-    <x-analytics.line-chart :values="array_reverse($day_totals_values)" :labels="array_reverse($day_totals_labels)"
+    <x-analytics.line-chart :values="$day_totals_values" :labels="$day_totals_labels"
                             height="400"/>
 
 @endsection

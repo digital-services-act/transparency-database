@@ -304,8 +304,8 @@ class PlatformDayTotalsService
         $date_counts         = $this->dayCountsForRange($platform, $start_days, $end);
         $month_counts        = $this->monthCountsForRange($platform, $start_months, $end);
 
-        $date_counts = array_reverse($date_counts);
-        $month_counts = array_reverse($month_counts);
+        $date_counts = collect($date_counts)->sortBy('date')->toArray();
+        $month_counts = collect($month_counts)->sortBy('date')->toArray();
 
         $platform_total = $this->totalForRange($platform, $beginning, $end);
 
@@ -354,8 +354,8 @@ class PlatformDayTotalsService
         $date_counts  = $this->globalDayCountsForRange($start_days, $end, 'category', $category);
         $month_counts = $this->globalMonthCountsForRange($start_months, $end, 'category', $category);
 
-        $date_counts  = array_reverse($date_counts);
-        $month_counts = array_reverse($month_counts);
+        $date_counts = collect($date_counts)->sortBy('date')->toArray();
+        $month_counts = collect($month_counts)->sortBy('date')->toArray();
 
         $category_total = $this->globalTotalForRange($beginning, $end, 'category', $category);
 
@@ -404,8 +404,8 @@ class PlatformDayTotalsService
         $date_counts  = $this->globalDayCountsForRange($start_days, $end, 'category_specification', $keyword);
         $month_counts = $this->globalMonthCountsForRange($start_months, $end, 'category_specification', $keyword);
 
-        $date_counts  = array_reverse($date_counts);
-        $month_counts = array_reverse($month_counts);
+        $date_counts = collect($date_counts)->sortBy('date')->toArray();
+        $month_counts = collect($month_counts)->sortBy('date')->toArray();
 
         $keyword_total = $this->globalTotalForRange($beginning, $end, 'category_specification', $keyword);
 
