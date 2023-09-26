@@ -69,11 +69,6 @@ Route::middleware(['auth'])->group(function() {
         Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
 
-        Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
-        Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
-
-        Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
-        Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
@@ -87,6 +82,13 @@ Route::middleware(['auth'])->group(function() {
     });
 
 });
+
+Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
+Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
+
+Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
+Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
+
 
 // Public Open Routes. POR
 Route::get('/', function () {
