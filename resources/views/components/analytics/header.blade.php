@@ -12,7 +12,13 @@
     </div>
 </div>
 
-<h1 class="ecl-u-type-heading-1">Analytics <span style="font-size: 14px">(Analytics are updated once a day at midnight. Last update occurred {{Illuminate\Support\Carbon::now('UTC')->diffInHours(Illuminate\Support\Carbon::now('UTC')->startOfDay())}} hours ago.)</span></h1>
+<h1 class="ecl-u-type-heading-1">Analytics</h1>
+
+<p class="ecl-u-type-paragraph-xs">
+    Analytics are updated once a day at midnight. Last update occurred
+    {{Illuminate\Support\Carbon::now('UTC')->diffInHours(Illuminate\Support\Carbon::now('UTC')->startOfDay())}}
+    hours ago.
+</p>
 
 <div class="ecl-u-flex ecl-u-mb-l">
     <a href="{{ route('analytics.index') }}" class="ecl-link ecl-link--standalone">Overview</a> |
