@@ -97,26 +97,35 @@ class StatementSearchService
 
     private function applyCreatedAtFilter(array $filters): string
     {
-        // Start but no end.
-        if (($filters['created_at_start'] ?? false) && !($filters['created_at_end'] ?? false)) {
-            $now = date('Y-m-d\TH:i:s');
-            $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
-            return 'created_at:['.$start->format('Y-m-d\TH:i:s').' TO '.$now.']';
-        }
+        try {
+            // Start but no end.
+            if (($filters['created_at_start'] ?? false) && ! ($filters['created_at_end'] ?? false)) {
+                $now   = date('Y-m-d\TH:i:s');
+                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
 
-        // End but no start.
-        if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false)) {
-            $beginning = date('Y-m-d\TH:i:s',strtotime('2020-01-01'));
-            $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
-            return 'created_at:['.$beginning.' TO '.$end->format('Y-m-d\TH:i:s').']';
-        }
+                return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $now . ']';
+            }
 
-        // both start and end.
-        if (($filters['created_at_start'] ?? false) && ($filters['created_at_end'] ?? false)) {
-            $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
-            $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
-            return 'created_at:['.$start->format('Y-m-d\TH:i:s').' TO '.$end->format('Y-m-d\TH:i:s').']';
+            // End but no start.
+            if (($filters['created_at_end'] ?? false) && ! ($filters['created_at_start'] ?? false)) {
+                $beginning = date('Y-m-d\TH:i:s', strtotime('2020-01-01'));
+                $end       = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
+
+                return 'created_at:[' . $beginning . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
+            }
+
+            // both start and end.
+            if (($filters['created_at_start'] ?? false) && ($filters['created_at_end'] ?? false)) {
+                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
+                $end   = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
+
+                return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
+            }
+        } catch (\Exception $e) {
+            // Most likely the date supplied for the start or the end was bad.
+            return '';
         }
+        // Normally we don't get here.
         return '';
     }
 
