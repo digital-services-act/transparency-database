@@ -48,7 +48,9 @@ class AnalyticsController extends Controller
 
         $last_history_days = 30;
         $day_totals = $this->platform_day_totals_service->globalDayCountsForRange(Carbon::now()->subDays($last_history_days), Carbon::now());
-        $day_totals = array_reverse($day_totals);
+
+        $day_totals = collect($day_totals)->sortBy('date')->toArray();
+
 
         $day_totals_values = array_map(function ($item) {
             return $item->total;
@@ -57,6 +59,8 @@ class AnalyticsController extends Controller
         $day_totals_labels = array_map(function ($item) {
             return $item->date;
         }, $day_totals);
+
+
 
         return view('analytics.index', compact(
             'total',
@@ -157,6 +161,7 @@ class AnalyticsController extends Controller
         }
 
         $category_report = $this->platform_day_totals_service->prepareReportForCategory($category);
+
 
         $options = $this->prepareOptions();
 

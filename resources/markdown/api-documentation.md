@@ -13,7 +13,7 @@ send an email request with your platform information to the following:
     CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
 </pre>
 
-Once verified your account will then be link to your platform and you will have the 
+Once verified your account will then be linked to your platform and you will have the 
 ability to generate an API token.
 
 If you have other inquiries to discuss then please email the following:
@@ -58,7 +58,7 @@ For this request you will need to provide authorization, accept, and content typ
 headers of the request:
 
 <pre>
-    Authorization: Bearer <YOUR_TOKEN>
+    Authorization: Bearer YOUR_TOKEN
     Accept: application/json
     Content-Type: application/json
 </pre>
