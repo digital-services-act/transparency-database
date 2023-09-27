@@ -15,9 +15,15 @@
 <h1 class="ecl-u-type-heading-1">Analytics</h1>
 
 <p class="ecl-u-type-paragraph-xs">
-    Analytics are updated once a day at midnight. Last update occurred
-    {{Illuminate\Support\Carbon::now('UTC')->diffInHours(Illuminate\Support\Carbon::now('UTC')->startOfDay())}}
-    hours ago.
+    Analytics are updated once a day at midnight
+    (
+        <a target="_blank" href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+            <span class="ecl-link__label">UTC</span>
+            <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
+                <x-ecl.icon icon="external"/>
+            </svg>
+        </a>
+    ).
 </p>
 
 <div class="ecl-u-flex ecl-u-mb-l">
