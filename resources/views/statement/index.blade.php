@@ -27,9 +27,11 @@
         <div class="ecl-col-l-6">
 
             <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statements of Reasons</h1>
+
             @can('create statements')
                 <x-ecl.cta-button label="Create a Statement of Reason" url="{{ route('statement.create') }}" />
             @endcan
+
             <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
                 <div class="ecl-u-type-paragraph ecl-u-mr-s">
                     Statements of Reasons Found: {{ $total }}
