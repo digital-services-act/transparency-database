@@ -97,8 +97,8 @@
         ECL.autoInit();
     @endif
 </script>
-@if(env('SITEID', false) && env('SITEPATH', false))
-<script type="application/json">{"utility":"analytics","siteID":"{{ env('SITEID') }}","sitePath":["{{ env('SITEPATH') }}"],"instance":"ec"}</script>
+@if(config('dsa.SITEID', false) && config('dsa.SITEPATH', false))
+<script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
 @endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
 </body>
