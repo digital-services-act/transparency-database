@@ -41,12 +41,12 @@ cd dsa-module2 && composer install
 
 ### Step 2
 
-Create `.env` based on `.env.example` file, and add your database credentials and the email that will be set as
-administrator.
+Create a local database
 
 ### Step 3
 
-Create the database with the default values
+Create `.env` based on `.env.example` file, and add your database credentials and the email that will be set as
+administrator.
 
 ### Step 4
 
@@ -61,9 +61,7 @@ php artisan reset-application
 
 #### Running the app
 
-```bash
-php artisan serve
-```
+    $ php artisan serve
 
 #### Viewing the app
 
@@ -75,11 +73,19 @@ $BROWSER 'http://127.0.0.1:8000'
 
     $ php artisan test
 
-#### Parallelizing Tests
+#### Parallelize Tests
 
 You can speed up tests by running them in parallel:
 
     $ php artisan test --parallel
+
+#### Login and Authentications
+
+To use the authenticated parts of the application you will need to have an EU login account.
+
+Additionally, your local installation will need to be hosted on a domain that ends with "europa.eu".
+
+ex, https://transparency.test.europa.eu
 
 License
 =======

@@ -12,10 +12,6 @@
 @section('content')
 
 
-
-
-
-
     <x-analytics.header/>
 
 

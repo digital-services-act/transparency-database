@@ -20,10 +20,15 @@ class DriveInService
         $headers = $this->buildHeaders();
         $response = $this->makeRequest($payload, $headers);
         $results = $response->json('result');
-        return $this->parseSimilarityResults($results);
+        // Sometimes we get a null from the service...
+        if (is_array($results)) {
+            return $this->parseSimilarityResults($results);
+        } else {
+            return [];
+        }
     }
 
-    private function parseSimilarityResults($results): array
+    private function parseSimilarityResults(array $results): array
     {
         return array_map(function($item){
             return str_replace("_", " ", $item);
