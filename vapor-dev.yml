@@ -8,7 +8,7 @@ environments:
     queue-database-session-persist: true
     database: dsa-dev-serverless
     domain: dev.sor.dsa.ec.europa.eu
-    load-balancer: dsa-dev-lb
+    load-balancer: dsa-dev-lb-2
     network: vapor-network-1673505770
     memory: 2048
     cli-memory: 1024

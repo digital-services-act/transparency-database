@@ -3,6 +3,7 @@ name: dsa-acc
 environments:
   production:
     queue-database-session-persist: true
+    cache: redis-acc-small
     database: acc-serverless-db-eu
     domain: acc.sor.dsa.ec.europa.eu
     network: vapor-network-1686047238

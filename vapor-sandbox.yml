@@ -4,6 +4,7 @@ environments:
   production:
     warm: 10
     timeout: 180
+    cache: redis-sandbox-us
     queue-database-session-persist: true
     database: sandbox-serverless-db-us
     network: vapor-network-1688550103
