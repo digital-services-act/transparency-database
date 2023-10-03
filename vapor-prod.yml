@@ -4,6 +4,8 @@ environments:
   production:
     warm: 10
     timeout: 180
+    cache: redis-prod
+    queue-database-session-persist: true
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
     memory: 2048

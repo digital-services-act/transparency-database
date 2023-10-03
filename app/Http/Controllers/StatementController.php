@@ -62,11 +62,20 @@ class StatementController extends Controller
      */
     public function index(Request $request): View|Factory|Application
     {
+        // Limit the page query var to 200, other wise opensearch can error out on max result window.
+        $max_pages = 200;
+        $page = $request->get('page', 0);
+        if ($page > $max_pages) {
+            $request->query->set('page', $max_pages);
+        }
+
         $setup = $this->setupQuery($request);
+
+        $pagination_per_page = 50;
 
         $statements = $setup['statements'];
         $options = $this->prepareOptions();
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
+        $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
         $total = $setup['total'];
 
         $similarity_results = null;
@@ -101,6 +110,8 @@ class StatementController extends Controller
         if (config('scout.driver') == 'opensearch') {
             $statements = $this->statement_search_service->query($request->query());
             $total = $this->statement_search_service->query($request->query(),[
+                'size' => 1,
+                'from' => 0,
                 'track_total_hits' => true
             ])->paginate(1)->total();
         } else {
