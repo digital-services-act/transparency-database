@@ -14,6 +14,7 @@ use App\Http\Controllers\StatementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
 
@@ -99,6 +100,3 @@ Route::get('/', function () {
 
 Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
-
-
-
