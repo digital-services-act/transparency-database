@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
@@ -92,6 +93,9 @@ Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name(
 Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
+
+Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
 
 
 Route::get('/', function () {
