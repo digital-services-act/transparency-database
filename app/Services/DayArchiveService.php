@@ -37,13 +37,14 @@ class DayArchiveService
         $today = Carbon::today();
 
         if ($date && $date < $today) {
-            if ($force) {
-                DayArchive::query()->where('date', $date->format('Y-m-d'))->delete();
-            }
-
+            
             $existing = $this->getDayArchiveByDate($date->format('Y-m-d'));
             if ($existing) {
-                throw new Exception("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
+                if ($force) {
+                    $existing->delete();
+                } else {
+                    throw new Exception("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
+                }
             }
 
             // Create the holding model.
