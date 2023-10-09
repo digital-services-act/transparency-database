@@ -37,7 +37,7 @@ class DayArchiveService
         $today = Carbon::today();
 
         if ($date && $date < $today) {
-            
+
             $existing = $this->getDayArchiveByDate($date->format('Y-m-d'));
             if ($existing) {
                 if ($force) {
@@ -94,6 +94,8 @@ class DayArchiveService
                 $day_archive->completed_at = Carbon::now();
                 $day_archive->save();
 
+            } else {
+                throw new Exception("Day archives have to be upload to a dedicate s3ds disk. please sure that there is one to write to.");
             }
 
             return $day_archive;
