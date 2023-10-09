@@ -7,6 +7,7 @@ use App\Exports\StatementExportTrait;
 use App\Exports\StatementsDayExport;
 use App\Jobs\MarkDayArchiveCompleted;
 use App\Models\DayArchive;
+use App\Models\Platform;
 use App\Models\Statement;
 use Exception;
 use Illuminate\Support\Carbon;
@@ -61,12 +62,11 @@ class DayArchiveService
                 $url                = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $file;
 
 
+                $platforms = Platform::all()->pluck('name', 'id')->toArray();
 
                 $raw = DB::table('statements')
                     ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
                     ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
-                    ->whereNull('statements.deleted_at')
-                    ->join('platforms', 'statements.platform_id', 'platforms.id')
                     ->orderBy('statements.id', 'desc');
 
 
@@ -79,10 +79,10 @@ class DayArchiveService
                 $csvFile = fopen($path, 'w');
 
                 fputcsv($csvFile, $this->headings());
-                
-                $raw->chunk(100, function(Collection $statements) use ($csvFile) {
+
+                $raw->chunk(100000, function(Collection $statements) use ($csvFile, $platforms) {
                     foreach ($statements as $statement) {
-                        fputcsv($csvFile, $this->mapRaw($statement));
+                        fputcsv($csvFile, $this->mapRaw($statement, $platforms));
                     }
                 });
 

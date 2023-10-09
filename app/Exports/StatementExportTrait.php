@@ -118,7 +118,7 @@ trait StatementExportTrait
         ];
     }
 
-    public function mapRaw($statement): array
+    public function mapRaw($statement, $platforms): array
     {
         return [
             $statement->uuid,
@@ -170,7 +170,7 @@ trait StatementExportTrait
             $statement->automated_detection,
             $statement->automated_decision,
 
-            $statement->name,
+            $platforms[$statement->platform_id],
 
             $statement->created_at,
         ];
