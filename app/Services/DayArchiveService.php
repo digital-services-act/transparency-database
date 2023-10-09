@@ -10,6 +10,7 @@ use App\Models\DayArchive;
 use App\Models\Statement;
 use Exception;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel;
@@ -68,7 +69,7 @@ class DayArchiveService
                     ->join('platforms', 'statements.platform_id', 'platforms.id')
                     ->orderBy('statements.id', 'desc');
 
-                
+
                 $day_archive->url   = $url;
                 $day_archive->total = $raw->count();;
                 $day_archive->save();
@@ -78,9 +79,11 @@ class DayArchiveService
                 $csvFile = fopen($path, 'w');
 
                 fputcsv($csvFile, $this->headings());
-
-                $raw->lazy()->each(function($statement) use ($csvFile) {
-                    fputcsv($csvFile, $this->mapRaw($statement));
+                
+                $raw->chunk(100, function(Collection $statements) use ($csvFile) {
+                    foreach ($statements as $statement) {
+                        fputcsv($csvFile, $this->mapRaw($statement));
+                    }
                 });
 
                 fclose($csvFile);
