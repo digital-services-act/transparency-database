@@ -47,8 +47,8 @@ class ResetApplication extends Command
                 $this->info('Optimize has completed.');
             }
 
+            DayArchive::query()->forceDelete();
             if ($this->confirm('Create Day Archives?', true)) {
-                DayArchive::query()->forceDelete();
                 $yesterday = Carbon::yesterday();
                 $date = $yesterday->clone();
                 $date->subDays(10);
