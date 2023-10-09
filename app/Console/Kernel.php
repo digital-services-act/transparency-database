@@ -21,18 +21,20 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals-categories')->daily();
         $schedule->command('platform:compile-day-totals-keywords')->daily();
         $schedule->command('platform:compile-day-totals-decisions')->daily();
+        $schedule->command('statements:day-archive')->daily();
 
         /*
 
           Put any typical commands that need to be run after dev/local reset-application here so that a dev can have first initial db..
 
-        php artisan statements:optimize-index &&
-        php artisan platform:compile-day-totals &&
-        php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT &&
-        php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT &&
-        php artisan platform:compile-day-totals-categories &&
-        php artisan platform:compile-day-totals-keywords &&
-        php artisan platform:compile-day-totals-decisions
+            php artisan statements:optimize-index &&
+            php artisan platform:compile-day-totals &&
+            php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT &&
+            php artisan platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT &&
+            php artisan platform:compile-day-totals-categories &&
+            php artisan platform:compile-day-totals-keywords &&
+            php artisan platform:compile-day-totals-decisions &&
+            php artisan statements:day-archive
 
         */
     }

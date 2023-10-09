@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\StatementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
 
@@ -92,6 +94,9 @@ Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->nam
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
 
+Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
+
 
 Route::get('/', function () {
     return view('home');
@@ -99,6 +104,3 @@ Route::get('/', function () {
 
 Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
-
-
-
