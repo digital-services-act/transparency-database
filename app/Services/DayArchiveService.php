@@ -68,11 +68,9 @@ class DayArchiveService
                     ->join('platforms', 'statements.platform_id', 'platforms.id')
                     ->orderBy('statements.id', 'desc');
 
-
-
-                $total              = $raw->count();
+                
                 $day_archive->url   = $url;
-                $day_archive->total = $total;
+                $day_archive->total = $raw->count();;
                 $day_archive->save();
 
                 $path = Storage::path($file);
@@ -90,7 +88,6 @@ class DayArchiveService
                 Storage::disk('s3ds')->put($file, fopen($path, 'r') );
                 Storage::delete($file);
 
-                $day_archive->total = $total;
                 $day_archive->completed_at = Carbon::now();
                 $day_archive->save();
 
