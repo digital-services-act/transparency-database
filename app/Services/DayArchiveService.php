@@ -10,6 +10,7 @@ use App\Models\DayArchive;
 use App\Models\Statement;
 use Exception;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel;
 
@@ -57,9 +58,18 @@ class DayArchiveService
                 $file               = 'statements-of-reason-' . $date->format('Y-m-d') . '.csv';
                 $url                = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $file;
 
-                $query = Statement::query()->where('created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')->where('created_at', '<=', $date->format('Y-m-d') . ' 23:59:59');
 
-                $total              = $query->count();
+
+                $raw = DB::table('statements')
+                    ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
+                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                    ->whereNull('statements.deleted_at')
+                    ->join('platforms', 'statements.platform_id', 'platforms.id')
+                    ->orderBy('statements.id', 'desc');
+
+
+
+                $total              = $raw->count();
                 $day_archive->url   = $url;
                 $day_archive->total = $total;
                 $day_archive->save();
@@ -70,20 +80,16 @@ class DayArchiveService
 
                 fputcsv($csvFile, $this->headings());
 
-                // Fetch data from the database
-                $statements = $query->orderBy('id', 'desc');
-
-                $statements->each(function (Statement $statement) use ($csvFile) {
-                    fputcsv($csvFile, $this->map($statement));
+                $raw->lazy()->each(function($statement) use ($csvFile) {
+                    fputcsv($csvFile, $this->mapRaw($statement));
                 });
-
 
                 fclose($csvFile);
 
-                //Storage::disk('s3ds')->move($path, $file);
                 Storage::disk('s3ds')->put($file, fopen($path, 'r') );
                 Storage::delete($file);
 
+                $day_archive->total = $total;
                 $day_archive->completed_at = Carbon::now();
                 $day_archive->save();
 

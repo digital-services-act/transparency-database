@@ -117,4 +117,62 @@ trait StatementExportTrait
             $statement->getRawOriginal('created_at'),
         ];
     }
+
+    public function mapRaw($statement): array
+    {
+        return [
+            $statement->uuid,
+
+            $statement->decision_visibility,
+            $statement->decision_visibility_other,
+            $statement->end_date_visibility_restriction,
+
+            $statement->decision_monetary,
+            $statement->decision_monetary_other,
+            $statement->end_date_monetary_restriction,
+
+            $statement->decision_provision,
+            $statement->end_date_service_restriction,
+
+            $statement->decision_account,
+            $statement->end_date_account_restriction,
+
+            $statement->account_type,
+
+            $statement->decision_ground,
+            $statement->decision_ground_reference_url,
+
+            $statement->illegal_content_legal_ground,
+            $statement->illegal_content_legal_ground,
+            $statement->incompatible_content_ground,
+            $statement->incompatible_content_explanation,
+            $statement->incompatible_content_illegal,
+
+            $statement->category,
+            $statement->category_addition,
+            $statement->category_specification,
+            $statement->category_specification_other,
+
+            $statement->content_type,
+            $statement->content_type_other,
+            $statement->content_language,
+            $statement->content_date,
+
+            $statement->territorial_scope,
+
+            $statement->application_date,
+
+            $statement->decision_facts,
+
+            $statement->source_type,
+            $statement->source_identity,
+
+            $statement->automated_detection,
+            $statement->automated_decision,
+
+            $statement->name,
+
+            $statement->created_at,
+        ];
+    }
 }
