@@ -111,7 +111,7 @@ class DayArchiveService
                 $day_archive->save();
 
             } else {
-                throw new Exception("Day archives have to be upload to a dedicate s3ds disk. please sure that there is one to write to.");
+                throw new Exception("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
             }
 
             return $day_archive;
