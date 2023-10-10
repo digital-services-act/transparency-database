@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel;
+use ZipArchive;
 
 
 class DayArchiveService
@@ -59,7 +60,12 @@ class DayArchiveService
             if (config('filesystems.disks.s3ds.bucket')) {
                 // Make the url and get the total and queue.
                 $file               = 'statements-of-reason-' . $date->format('Y-m-d') . '.csv';
-                $url                = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $file;
+                $path = Storage::path($file);
+
+                $zipfile               = 'statements-of-reason-' . $date->format('Y-m-d') . '.csv.zip';
+                $zippath = Storage::path($zipfile);
+
+                $url                = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfile;
 
 
                 $platforms = Platform::all()->pluck('name', 'id')->toArray();
@@ -74,7 +80,6 @@ class DayArchiveService
                 $day_archive->total = $raw->count();;
                 $day_archive->save();
 
-                $path = Storage::path($file);
 
                 $csvFile = fopen($path, 'w');
 
@@ -88,8 +93,19 @@ class DayArchiveService
 
                 fclose($csvFile);
 
-                Storage::disk('s3ds')->put($file, fopen($path, 'r') );
+                $zip = new ZipArchive;
+
+                if ($zip->open($zippath, ZipArchive::CREATE) === TRUE)
+                {
+                    $zip->addFile($path, $file);
+                    $zip->close();
+                } else {
+                    throw new Exception('Issue with creating the zip file.');
+                }
+
+                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'r+') );
                 Storage::delete($file);
+                Storage::delete($zipfile);
 
                 $day_archive->completed_at = Carbon::now();
                 $day_archive->save();
