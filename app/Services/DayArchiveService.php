@@ -59,13 +59,20 @@ class DayArchiveService
             // There needs to be a s3ds bucket.
             if (config('filesystems.disks.s3ds.bucket')) {
                 // Make the url and get the total and queue.
-                $file               = 'statements-of-reason-' . $date->format('Y-m-d') . '.csv';
-                $path = Storage::path($file);
+                $file               = 'sor-' . $date->format('Y-m-d') . '-full.csv';
+                $filelight               = 'sor-' . $date->format('Y-m-d') . '-light.csv';
 
-                $zipfile               = 'statements-of-reason-' . $date->format('Y-m-d') . '.csv.zip';
+                $path = Storage::path($file);
+                $pathlight = Storage::path($filelight);
+
+                $zipfile               = $file . '.zip';
+                $zipfilelight               = $filelight . '.zip';
+
                 $zippath = Storage::path($zipfile);
+                $zippathlight = Storage::path($zipfilelight);
 
                 $url                = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfile;
+                $urllight                = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfilelight;
 
 
                 $platforms = Platform::all()->pluck('name', 'id')->toArray();
@@ -77,21 +84,31 @@ class DayArchiveService
 
 
                 $day_archive->url   = $url;
+                $day_archive->urllight   = $urllight;
                 $day_archive->total = $raw->count();;
                 $day_archive->save();
 
 
-                $csvFile = fopen($path, 'w');
+                $csv_file = fopen($path, 'w');
+                $csv_filelight = fopen($pathlight, 'w');
 
-                fputcsv($csvFile, $this->headingsLight());
+                fputcsv($csv_file, $this->headings());
+                fputcsv($csv_filelight, $this->headingsLight());
 
-                $raw->chunk(100000, function(Collection $statements) use ($csvFile, $platforms) {
+                $raw->chunk(100000, function(Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
                     foreach ($statements as $statement) {
-                        fputcsv($csvFile, $this->mapRawLight($statement, $platforms));
+                        fputcsv($csv_file, $this->mapRaw($statement, $platforms));
+                        fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
                     }
                 });
 
-                fclose($csvFile);
+                fclose($csv_file);
+                fclose($csv_filelight);
+
+
+
+                $day_archive->size = Storage::size($file);
+                $day_archive->sizelight = Storage::size($filelight);
 
                 $zip = new ZipArchive;
 
@@ -103,9 +120,22 @@ class DayArchiveService
                     throw new Exception('Issue with creating the zip file.');
                 }
 
+                $ziplight = new ZipArchive;
+
+                if ($ziplight->open($zippathlight, ZipArchive::CREATE) === TRUE)
+                {
+                    $ziplight->addFile($pathlight, $filelight);
+                    $ziplight->close();
+                } else {
+                    throw new Exception('Issue with creating the zip light file.');
+                }
+
                 Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'r+') );
+                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'r+') );
                 Storage::delete($file);
+                Storage::delete($filelight);
                 Storage::delete($zipfile);
+                Storage::delete($zipfilelight);
 
                 $day_archive->completed_at = Carbon::now();
                 $day_archive->save();

@@ -32,4 +32,13 @@ class DayArchiveController extends Controller
         }
         abort(Response::HTTP_NOT_FOUND);
     }
+
+    public function downloadLight(string $date)
+    {
+        $dayarchive = $this->day_archive_service->getDayArchiveByDate($date);
+        if ($dayarchive && $dayarchive->completed_at) {
+            return redirect($dayarchive->urllight);
+        }
+        abort(Response::HTTP_NOT_FOUND);
+    }
 }
