@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->string('url', 500)->nullable();
+            $table->string('urllight', 500)->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->bigInteger('total')->default(0)->unsigned();
+            $table->bigInteger('size')->default(0)->unsigned();
+            $table->bigInteger('sizelight')->default(0)->unsigned();
             $table->timestamps();
             $table->unique(['date'], 'date_index');
         });

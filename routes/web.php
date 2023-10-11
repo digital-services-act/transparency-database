@@ -96,6 +96,7 @@ Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKey
 
 Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
 Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
+Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
 
 Route::get('/', function () {
