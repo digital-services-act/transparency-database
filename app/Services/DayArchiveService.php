@@ -83,11 +83,11 @@ class DayArchiveService
 
                 $csvFile = fopen($path, 'w');
 
-                fputcsv($csvFile, $this->headings());
+                fputcsv($csvFile, $this->headingsLight());
 
                 $raw->chunk(100000, function(Collection $statements) use ($csvFile, $platforms) {
                     foreach ($statements as $statement) {
-                        fputcsv($csvFile, $this->mapRaw($statement, $platforms));
+                        fputcsv($csvFile, $this->mapRawLight($statement, $platforms));
                     }
                 });
 
