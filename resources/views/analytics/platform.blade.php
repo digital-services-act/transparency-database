@@ -35,7 +35,7 @@
     </div>
 
     @if($platform_report)
-        <x-platform.report :platform_report="$platform_report" :days_ago="$days_ago" :months_ago="$months_ago" />
+        <x-platform.report :platform="$platform" :platform_report="$platform_report" :days_ago="$days_ago" :months_ago="$months_ago" />
     @endif
 
 @endsection

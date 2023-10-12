@@ -288,6 +288,19 @@ class PlatformDayTotalsService
                  ->get()->toArray();
     }
 
+    public function topCategoriesPlatform(Platform $platform, Carbon $start, Carbon $end)
+    {
+        return DB::table('platform_day_totals')
+                 ->selectRaw('value, SUM(total) as total')
+                 ->where('platform_id', '=', $platform->id)
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', 'category')
+                 ->groupBy('value')
+                 ->orderBy('total', 'desc')
+                 ->get()->toArray();
+    }
+
     public function prepareReportForPlatform(Platform $platform, int $days = 20, int $months = 12): array
     {
         $start_days_ago = $days;
@@ -325,6 +338,8 @@ class PlatformDayTotalsService
             return $item->month;
         }, $month_counts);
 
+        $top_categories = $this->topCategoriesPlatform($platform, $start_days, $end);
+
         return compact(
             'date_counts',
             'month_counts',
@@ -334,7 +349,8 @@ class PlatformDayTotalsService
             'day_totals_labels',
             'day_totals_values',
             'month_totals_labels',
-            'month_totals_values'
+            'month_totals_values',
+            'top_categories'
         );
     }
 
@@ -358,6 +374,56 @@ class PlatformDayTotalsService
         $month_counts = collect($month_counts)->sortBy('date')->toArray();
 
         $category_total = $this->globalTotalForRange($beginning, $end, 'category', $category);
+
+        $day_totals_values = array_map(function ($item) {
+            return $item->total;
+        }, $date_counts);
+
+        $day_totals_labels = array_map(function ($item) {
+            return $item->date;
+        }, $date_counts);
+
+        $month_totals_values = array_map(function ($item) {
+            return $item->total;
+        }, $month_counts);
+
+        $month_totals_labels = array_map(function ($item) {
+            return $item->month;
+        }, $month_counts);
+
+        return compact(
+            'date_counts',
+            'month_counts',
+            'category_total',
+            'category_last_months_ago',
+            'category_last_days_ago',
+            'day_totals_labels',
+            'day_totals_values',
+            'month_totals_labels',
+            'month_totals_values'
+        );
+    }
+
+    public function prepareReportForPlatformCategory(Platform $platform, string $category, int $days = 20, int $months = 12)
+    {
+        $start_days_ago   = $days;
+        $start_months_ago = $months;
+
+        $start_days   = Carbon::now()->subDays($start_days_ago);
+        $start_months = Carbon::now()->subMonths($start_months_ago);
+        $end          = Carbon::now();
+        $beginning = Carbon::createFromDate(2020, 1, 1);
+
+        $category_last_days_ago   = $this->totalForRange($platform, $start_days, $end, 'category', $category);
+        $category_last_months_ago = $this->totalForRange($platform, $start_months, $end, 'category', $category);
+
+        $date_counts  = $this->dayCountsForRange($platform, $start_days, $end, 'category', $category);
+        $month_counts = $this->monthCountsForRange($platform, $start_months, $end, 'category', $category);
+
+        $date_counts = collect($date_counts)->sortBy('date')->toArray();
+        $month_counts = collect($month_counts)->sortBy('date')->toArray();
+
+        $category_total = $this->totalForRange($platform, $beginning, $end, 'category', $category);
 
         $day_totals_values = array_map(function ($item) {
             return $item->total;
