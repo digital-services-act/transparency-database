@@ -174,6 +174,43 @@ class AnalyticsController extends Controller
         ));
     }
 
+    public function forPlatformCategory(Request $request): Application|View|Factory|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
+    {
+        $uuid = $request->get('uuid', '');
+        $category = $request->get('category', '');
+
+        $days_ago = 20;
+        $months_ago = 12;
+        $platform = false;
+        $platform_category_report = false;
+
+        if ($uuid) {
+            /** @var Platform $platform */
+            $platform = Platform::query()->where('uuid', $uuid)->first();
+            if (!$platform) {
+                return redirect(route('analytics.platform-category'));
+            }
+        }
+        if ($category && !isset($category, Statement::STATEMENT_CATEGORIES[$category])) {
+            return redirect(route('analytics.platform-category'));
+        }
+
+        if ($platform && $category) {
+            $platform_category_report = $this->platform_day_totals_service->prepareReportForPlatformCategory($platform, $category);
+        }
+
+        $options = $this->prepareOptions();
+
+        return view('analytics.platform-category', compact(
+            'platform',
+            'category',
+            'platform_category_report',
+            'options',
+            'days_ago',
+            'months_ago'
+        ));
+    }
+
     public function forKeyword(Request $request, string $keyword = ''): Application|View|Factory|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
     {
         $days_ago = 20;

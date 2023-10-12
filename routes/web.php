@@ -93,6 +93,8 @@ Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name(
 Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
+Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
+
 
 Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
 Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
