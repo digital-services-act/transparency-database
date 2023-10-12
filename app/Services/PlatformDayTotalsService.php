@@ -288,6 +288,19 @@ class PlatformDayTotalsService
                  ->get()->toArray();
     }
 
+    public function topCategoriesPlatform(Platform $platform, Carbon $start, Carbon $end)
+    {
+        return DB::table('platform_day_totals')
+                 ->selectRaw('value, SUM(total) as total')
+                 ->where('platform_id', '=', $platform->id)
+                 ->where('date', '>=', $start->format('Y-m-d 00:00:00'))
+                 ->where('date', '<=', $end->format('Y-m-d 00:00:00'))
+                 ->where('attribute', 'category')
+                 ->groupBy('value')
+                 ->orderBy('total', 'desc')
+                 ->get()->toArray();
+    }
+
     public function prepareReportForPlatform(Platform $platform, int $days = 20, int $months = 12): array
     {
         $start_days_ago = $days;
@@ -325,6 +338,8 @@ class PlatformDayTotalsService
             return $item->month;
         }, $month_counts);
 
+        $top_categories = $this->topCategoriesPlatform($platform, $start_days, $end);
+
         return compact(
             'date_counts',
             'month_counts',
@@ -334,7 +349,8 @@ class PlatformDayTotalsService
             'day_totals_labels',
             'day_totals_values',
             'month_totals_labels',
-            'month_totals_values'
+            'month_totals_values',
+            'top_categories'
         );
     }
 

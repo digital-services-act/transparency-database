@@ -138,6 +138,7 @@ class AnalyticsController extends Controller
                 return redirect(route('analytics.platforms'));
             }
             $platform_report = $this->platform_day_totals_service->prepareReportForPlatform($platform, $days_ago, $months_ago);
+            $platform_report['top_categories'] = array_slice($platform_report['top_categories'], 0, 5);
         }
 
         $options = $this->prepareOptions();
