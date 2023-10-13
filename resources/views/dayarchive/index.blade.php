@@ -13,7 +13,9 @@
 
     <div class="ecl-fact-figures ecl-fact-figures--col-1">
         <div class="ecl-fact-figures__description">
-            On this page you can download archives of statement of reasons by date.
+            On this page you can download archives of statement of reasons by date. Full archives
+            contain all of the public data of the individual statements. Light archives do not
+            contain the free text fields or territory scope.
         </div>
     </div>
 
