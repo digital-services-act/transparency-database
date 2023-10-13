@@ -13,11 +13,11 @@
 
     <x-analytics.header />
 
-    <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mb-l">
-        <div>
+    <div class="ecl-row">
+        <div class="ecl-col-l-6">
             <h2 class="ecl-u-type-heading-2">Keywords for the Last {{ $last_days }} Days</h2>
         </div>
-        <div>
+        <div class="ecl-col-l-6">
             <form method="get" id="category">
                 <x-ecl.select label="Select a Keyword" name="keyword" id="keyword"
                               justlabel="true"
@@ -34,6 +34,6 @@
     </div>
 
 
-    <x-analytics.bar-chart :values="$keyword_totals_values" :labels="$keyword_totals_labels" height="800"/>
+    <x-analytics.bar-chart :values="$keyword_totals_values" :labels="$keyword_totals_labels" height="1200"/>
 
 @endsection

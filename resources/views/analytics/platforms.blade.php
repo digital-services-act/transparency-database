@@ -13,11 +13,11 @@
 
     <x-analytics.header />
 
-    <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mb-l">
-        <div>
+    <div class="ecl-row">
+        <div class="ecl-col-l-6">
             <h2 class="ecl-u-type-heading-2">Platform Statements of Reasons for the Last {{ $last_days }} Days</h2>
         </div>
-        <div>
+        <div class="ecl-col-l-6">
             <form method="get" id="platform">
                 <x-ecl.select label="Select a Platform" name="uuid" id="uuid"
                               justlabel="true"

@@ -14,8 +14,8 @@
 
     <x-analytics.header/>
 
-    <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mb-l">
-        <div>
+    <div class="ecl-row ecl-u-mb-l">
+        <div class="ecl-col-l-6">
             <h2 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">
                 @if($platform)
                     <a class="ecl-link ecl-link--standalone" href="{{ route('analytics.platform', [$platform->uuid]) }}">{{ $platform->name }}</a>
@@ -30,7 +30,7 @@
                 @endif
             </h2>
         </div>
-        <div>
+        <div class="ecl-col-l-6">
             <form method="get" id="platform">
                 <x-ecl.select label="Select a Platform" name="uuid" id="uuid"
                               justlabel="true"
@@ -42,21 +42,6 @@
                 />
                 <x-ecl.button label="GO"/>
             </form>
-            <script>
-              // var uuid = document.getElementById('uuid');
-              // var category = document.getElementById('category');
-
-              // re-use the paltform route so we get all the https:// stuff and then build manually.
-              {{--uuid.onchange = (event) => {--}}
-              {{--  document.location.href = '{{ route('analytics.platform') }}/' + uuid.value + '/category/' +--}}
-              {{--    category.value;--}}
-              {{--}--}}
-
-              {{--category.onchange = (event) => {--}}
-              {{--  document.location.href = '{{ route('analytics.platform') }}/' + uuid.value + '/category/' +--}}
-              {{--    category.value;--}}
-              {{--}--}}
-            </script>
         </div>
     </div>
 

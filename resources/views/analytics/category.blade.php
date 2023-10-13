@@ -15,15 +15,15 @@
 
     <x-analytics.header/>
 
-    <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mb-l">
-        <div>
+    <div class="ecl-row">
+        <div class="ecl-col-l-6">
             <h2 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">@if($category)
                     {{ Statement::STATEMENT_CATEGORIES[$category] }}
                 @else
                     Category
                 @endif</h2>
         </div>
-        <div>
+        <div class="ecl-col-l-6">
             <form method="get" id="category">
                 <x-ecl.select label="Select a Category" name="category" id="category"
                               justlabel="true"
