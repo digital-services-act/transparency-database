@@ -59,7 +59,6 @@ Route::middleware(['auth'])->group(function() {
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
 
-
         // Register the Platform
         Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
         Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
@@ -68,8 +67,6 @@ Route::middleware(['auth'])->group(function() {
 
         Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
-
-
 
     });
 
@@ -95,11 +92,9 @@ Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKey
 
 Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
 
-
 Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
 Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
 Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
 Route::get('/', [PageController::class, 'showHome'])->name('home');
-
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
