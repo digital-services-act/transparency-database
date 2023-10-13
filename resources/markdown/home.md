@@ -36,7 +36,7 @@ releases of the database.
     
 The database does not contain personal information. It is the legal obligation of the providers of online
 platforms to ensure that the information submitted by them does not contain personal data. You can find more
-legal information <a href="{{ route('legal-information') }}">here</a>.    
+legal information <a href="{{ route('page.show','legal-information') }}">here</a>.    
 
     
 If you have any further questions, please consult the <a href="{{ route('page.show','faq') }}">FAQ</a> section. 

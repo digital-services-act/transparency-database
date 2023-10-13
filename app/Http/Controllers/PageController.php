@@ -62,11 +62,6 @@ class PageController extends Controller
         return $this->show('home');
     }
 
-    public function showLegalInformation()
-    {
-        return $this->show('legal-information');
-    }
-
     public function dashboardShow(string $page): Factory|View|Application
     {
         return $this->show($page, 'dashboard-page');

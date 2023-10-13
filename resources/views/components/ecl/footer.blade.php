@@ -56,7 +56,7 @@
                         <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'privacy-policy']) }}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Cookie Policy">Privacy Policy</a></li>
-                        <li class="ecl-site-footer__list-item"><a href="{{ route('legal-information') }}"
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'legal-information']) }}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Cookie Policy">Legal Notice</a></li>
 

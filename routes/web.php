@@ -100,8 +100,6 @@ Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarc
 Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
 Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
-
 Route::get('/', [PageController::class, 'showHome'])->name('home');
-Route::get('/legal-information', [PageController::class, 'showLegalInformation'])->name('legal-information');
 
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
