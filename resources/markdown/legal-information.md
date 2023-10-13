@@ -1,4 +1,4 @@
-# Legal information
+# Legal Information
 
 **Legal Disclaimer**: As established under Article 24(5) of Regulation (EU) 2022/2065 on a Single
 Market For Digital Services and amending Directive 2000/31/EC (Digital Services Act), or the ‘DSA’, providers

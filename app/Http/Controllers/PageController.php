@@ -37,6 +37,15 @@ class PageController extends Controller
 
         $page_title = ucwords(str_replace("-", " ", $page));
 
+        $page_title_mods = [
+            'Faq' => 'FAQ',
+            'Home' => ''
+        ];
+
+        if (isset($page_title_mods[$page_title])) {
+            $page_title = $page_title_mods[$page_title];
+        }
+
         $page_content = '';
         $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
