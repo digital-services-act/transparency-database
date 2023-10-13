@@ -1,3 +1,7 @@
+# Digital Services Act FAQ
+
+_Frequently Asked Questions and Answers_
+
 <x-ecl.accordion label="What is the DSA? ">
 <a href="https://digital-strategy.ec.europa.eu/en/faqs/digital-services-act-questions-and-answers#:~:text=What%20is%20the%20Digital%20Services%20Act%20%28DSA%29%3F%20How,Digital%20Services%20Act%20%28DSA%29%20replace%20the%20e-Commerce%20Directive%3F">
 Digital Services Act: Questions and Answers | Shaping Europe’s digital future (europa.eu)</a>
