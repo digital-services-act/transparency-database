@@ -163,6 +163,7 @@ class AnalyticsController extends Controller
 
         $category_report = $this->platform_day_totals_service->prepareReportForCategory($category);
 
+        $category_report['top_platforms'] = array_slice($category_report['top_platforms'], 0, 5);
 
         $options = $this->prepareOptions();
 

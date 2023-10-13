@@ -18,13 +18,13 @@
         <div>
             <h2 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">
                 @if($platform)
-                    {{ $platform->name }}
+                    <a class="ecl-link ecl-link--standalone" href="{{ route('analytics.platform', [$platform->uuid]) }}">{{ $platform->name }}</a>
                 @else
                     Platform
                 @endif
                 &
                 @if($category)
-                    {{ Statement::STATEMENT_CATEGORIES[$category] }}
+                        <a class="ecl-link ecl-link--standalone" href="{{ route('analytics.category', [$category]) }}">{{ Statement::STATEMENT_CATEGORIES[$category] }}</a>
                 @else
                     Category
                 @endif

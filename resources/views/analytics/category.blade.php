@@ -40,7 +40,7 @@
     </div>
 
     @if($category_report)
-        <x-analytics.category-report :category_report="$category_report" :days_ago="$days_ago" :months_ago="$months_ago"/>
+        <x-analytics.category-report :category="$category" :category_report="$category_report" :days_ago="$days_ago" :months_ago="$months_ago"/>
     @endif
 
 @endsection

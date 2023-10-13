@@ -1,4 +1,4 @@
-@props(['category_report' => null, 'days_ago' => 0, 'months_ago' => 0 ])
+@props(['category' => null, 'category_report' => null, 'days_ago' => 0, 'months_ago' => 0 ])
 <div class="ecl-fact-figures ecl-fact-figures--col-3">
     <div class="ecl-fact-figures__items">
 
@@ -27,6 +27,22 @@
         </div>
 
     </div>
+</div>
+
+<div class="ecl-row">
+    @isset($category_report['top_platforms'])
+        <div class="ecl-col-6">
+            <h3 class="ecl-u-type-heading-3">Most Reporting Platforms</h3>
+            <ul class="ecl-unordered-list">
+                @foreach($category_report['top_platforms'] as $top_platform)
+                    <li class="ecl-unordered-list__item">
+                        <a href="{{ route('analytics.platform-category', ['uuid' => $top_platform->uuid, 'category' => $category]) }}"
+                           class="ecl-link--standalone">{{ $top_platform->name }}</a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 </div>
 
 <h2 class="ecl-u-type-heading-2">Created for the Last {{ count($category_report['day_totals_values']) }} Days</h2>
