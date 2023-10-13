@@ -39,7 +39,8 @@ class PageController extends Controller
 
         $page_title_mods = [
             'Faq' => 'FAQ',
-            'Home' => ''
+            'Home' => '',
+            'Api Documentation' => 'API Documentation'
         ];
 
         if (isset($page_title_mods[$page_title])) {
