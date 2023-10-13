@@ -101,9 +101,7 @@ Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'downlo
 Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [PageController::class, 'showHome'])->name('home');
+Route::get('/legal-information', [PageController::class, 'showLegalInformation'])->name('legal-information');
 
-Route::view('legal-information','legal-information')->name('legal-information');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');

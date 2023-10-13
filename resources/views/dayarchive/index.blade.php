@@ -3,7 +3,7 @@
 @section('title', 'Day Archives')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
     <x-ecl.breadcrumb label="Day Archives" />
 @endsection
 

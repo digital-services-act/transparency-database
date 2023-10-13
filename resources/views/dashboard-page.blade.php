@@ -65,7 +65,8 @@
         trim().
         replace(/[^\w\s-]/g, '').
         replace(/[\s_-]+/g, '-').
-        replace(/^-+|-+$/g, '')
+        replace(/^-+|-+$/g, '');
+
 
       jQuery(document).ready(function ($) {
         $('#content-area > h1').each(function (e) {
@@ -88,9 +89,14 @@
           var id = slugify(t)
           dis.attr('id', id)
           dis.addClass('ecl-u-type-heading-2')
+
           $('#toc-list').
             append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
-              '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>')
+              '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
+          $('#toc-wrapper').removeClass('ecl-u-d-none');
+          $('#content-wrapper').removeClass('ecl-col-l-12');
+          $('#content-wrapper').addClass('ecl-col-l-9');
+
         })
       })
 
@@ -145,6 +151,13 @@
         $('#content-area > ul > li').each(function (e) {
           var dis = $(this)
           dis.addClass('ecl-unordered-list__item')
+        })
+      })
+
+      jQuery(document).ready(function ($) {
+        $('#content-area > p > a').each(function (e) {
+          var dis = $(this)
+          dis.addClass('ecl-link')
         })
       })
 
