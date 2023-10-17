@@ -21,6 +21,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals-categories')->daily();
         $schedule->command('platform:compile-day-totals-keywords')->daily();
         $schedule->command('platform:compile-day-totals-decisions')->daily();
+        $schedule->command('applicationdateaggregate:compile')->daily();
+        $schedule->command('contentdateaggregate:compile')->daily();
+
         //$schedule->command('statements:day-archive')->daily();
 
         /*
@@ -34,7 +37,22 @@ class Kernel extends ConsoleKernel
             php artisan platform:compile-day-totals-categories &&
             php artisan platform:compile-day-totals-keywords &&
             php artisan platform:compile-day-totals-decisions &&
-            //php artisan statements:day-archive
+
+            php artisan statements:day-archive
+            php artisan statements:day-archive 2023-10-01
+            php artisan statements:day-archive 2023-10-02
+            php artisan statements:day-archive 2023-10-03
+            ...
+
+            php artisan applicationdateaggregate:compile 2023-10-01
+            php artisan applicationdateaggregate:compile 2023-10-02
+            php artisan applicationdateaggregate:compile 2023-10-03
+            ...
+
+            php artisan contentdateaggregate:compile 2023-10-01
+            php artisan contentdateaggregate:compile 2023-10-02
+            php artisan contentdateaggregate:compile 2023-10-03
+            ...
 
         */
     }

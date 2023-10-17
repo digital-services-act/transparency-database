@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\DayArchive;
 use App\Models\PlatformDayTotal;
 use App\Models\Statement;
-use App\Services\PlatformDayTotalsService;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\UserSeeder;
@@ -51,7 +50,7 @@ class ResetApplication extends Command
             if ($this->confirm('Create Day Archives?', true)) {
                 $yesterday = Carbon::yesterday();
                 $date = $yesterday->clone();
-                $date->subDays(10);
+                $date->subDays(100);
                 while($date < $yesterday)
                 {
                     $this->call('statements:day-archive', ['date' => $date->format('Y-m-d')]);
@@ -60,18 +59,31 @@ class ResetApplication extends Command
                 $this->info('Day Archives created.');
             }
 
+            \App\Models\ContentDateAggregate::query()->forceDelete();
+            \App\Models\ApplicationDateAggregate::query()->forceDelete();
+            if ($this->confirm('Create Content and Application Date Aggregates?', true)) {
+                $yesterday = Carbon::yesterday();
+                $date = $yesterday->clone();
+                $date->subDays(100);
+                while($date < $yesterday)
+                {
+                    $this->call('applicationdateaggregate:compile', ['date' => $date->format('Y-m-d')]);
+                    $this->call('contentdateaggregate:compile', ['date' => $date->format('Y-m-d')]);
+                    $date->addDay();
+                }
+                $this->info('Aggregates created.');
+            }
+
             if ($this->confirm('Compile the day totals?', true)) {
                 $this->call('platform:compile-day-totals');
-
-                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_visibility', 'value' => 'all']);
-                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_monetary', 'value' => 'all']);
-                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_provision', 'value' => 'all']);
-                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_account', 'value' => 'all']);
 
                 $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_ILLEGAL_CONTENT']);
                 $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT']);
 
                 $this->call('platform:compile-day-totals-categories');
+                $this->call('platform:compile-day-totals-keywords');
+                $this->call('platform:compile-day-totals-decisions');
+
                 $this->info('Day totals has completed.');
             }
         } else {

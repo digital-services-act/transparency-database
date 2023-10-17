@@ -18,7 +18,7 @@ class PageController extends Controller
      *
      * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse|Redirector
      */
-    public function show(string $page, string $view = 'page'): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
+    public function show(string $page, bool $dashboard = false): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
@@ -39,7 +39,6 @@ class PageController extends Controller
 
         $page_title_mods = [
             'Faq' => 'FAQ',
-            'Home' => '',
             'Api Documentation' => 'API Documentation'
         ];
 
@@ -47,11 +46,26 @@ class PageController extends Controller
             $page_title = $page_title_mods[$page_title];
         }
 
+
+        $breadcrumb = ucwords(str_replace("-", " ", $page));
+
+        $breadcrumb_mods = [
+            'Home' => '',
+            'Faq' => 'FAQ',
+            'Api Documentation' => 'API Documentation'
+        ];
+
+        if (isset($breadcrumb_mods[$breadcrumb])) {
+            $breadcrumb = $breadcrumb_mods[$breadcrumb];
+        }
+
         $page_content = '';
         $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
         $view_data = [
+            'dashboard' => $dashboard,
             'page_title' => $page_title,
+            'breadcrumb' => $breadcrumb,
             'baseurl' => route('home'),
             'ecl_init' => true,
         ];
@@ -64,7 +78,7 @@ class PageController extends Controller
 
         $view_data['page_content'] = $page_content;
 
-        return view($view, $view_data);
+        return view('page', $view_data);
     }
 
     public function showHome()
@@ -74,7 +88,7 @@ class PageController extends Controller
 
     public function dashboardShow(string $page): Factory|View|Application
     {
-        return $this->show($page, 'dashboard-page');
+        return $this->show($page, true);
     }
 
 
