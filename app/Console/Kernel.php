@@ -21,9 +21,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals-categories')->daily();
         $schedule->command('platform:compile-day-totals-keywords')->daily();
         $schedule->command('platform:compile-day-totals-decisions')->daily();
-        $schedule->command('applicationdateaggregate:compile')->daily();
-        $schedule->command('contentdateaggregate:compile')->daily();
 
+        // These ones run on a separate machine long running process.
+        //$schedule->command('applicationdateaggregate:compile')->daily();
+        //$schedule->command('contentdateaggregate:compile')->daily();
         //$schedule->command('statements:day-archive')->daily();
 
         /*
