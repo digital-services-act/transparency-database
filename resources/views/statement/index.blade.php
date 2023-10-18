@@ -19,6 +19,9 @@
 
             Please note that only the first 10 000 results are paginated, and only the first 1000 statements of reasons
             can be exported in .csv format at a given time.
+
+            To submit feedback on the content of this page and to propose additional features, please visit the
+            <a href="" class="ecl-link ecl-link--standalone">link</a> to the feedback form.
         </div>
     </div>
 
