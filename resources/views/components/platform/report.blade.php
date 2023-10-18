@@ -34,19 +34,19 @@
     </div>
 </div>
 
-<div class="ecl-row">
-    <div class="ecl-col-6">
-        <h3 class="ecl-u-type-heading-3">Most Used Categories</h3>
-        <ul class="ecl-unordered-list">
-            @foreach($platform_report['top_categories'] as $top_category)
-                <li class="ecl-unordered-list__item">
-                    <a href="{{ route('analytics.platform-category', ['uuid' => $platform->uuid, 'category' => $top_category->value]) }}"
-                       class="ecl-link--standalone">{{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}</a>
-                </li>
-            @endforeach
-        </ul>
-    </div>
-</div>
+{{--<div class="ecl-row">--}}
+{{--    <div class="ecl-col-6">--}}
+{{--        <h3 class="ecl-u-type-heading-3">Most Used Categories</h3>--}}
+{{--        <ul class="ecl-unordered-list">--}}
+{{--            @foreach($platform_report['top_categories'] as $top_category)--}}
+{{--                <li class="ecl-unordered-list__item">--}}
+{{--                    <a href="{{ route('analytics.platform-category', ['uuid' => $platform->uuid, 'category' => $top_category->value]) }}"--}}
+{{--                       class="ecl-link--standalone">{{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}</a>--}}
+{{--                </li>--}}
+{{--            @endforeach--}}
+{{--        </ul>--}}
+{{--    </div>--}}
+{{--</div>--}}
 
 <h2 class="ecl-u-type-heading-2">Created for the Last {{ count($platform_report['day_totals_values']) }} Days</h2>
 
