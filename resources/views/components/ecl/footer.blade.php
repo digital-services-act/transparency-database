@@ -47,6 +47,9 @@
                         <li class="ecl-site-footer__list-item"><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Link to Information about the DG">Digital Services Act Regulation</a></li>
+                        <li class="ecl-site-footer__list-item"><a href="{{route('page.show', ['faq'])}}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Link to Digital Services Act: Questions and Answers">Digital Services Act: Questions and Answers</a></li>
                     </ul>
                 </div>
                 <div class="ecl-site-footer__section">
@@ -59,7 +62,6 @@
                         <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'legal-information']) }}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Cookie Policy">Legal Notice</a></li>
-
 
                     </ul>
                 </div>
