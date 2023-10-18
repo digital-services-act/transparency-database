@@ -6,7 +6,7 @@
             <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="data"/>
             </svg>
-            <div class="ecl-fact-figures__value">{{ $category_report['category_total'] }} statements of reasons</div>
+            <div class="ecl-fact-figures__value">@aif($category_report['category_total']) statements of reasons</div>
             <div class="ecl-fact-figures__title">All Time Total</div>
         </div>
 
@@ -14,16 +14,16 @@
             <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="growth"/>
             </svg>
-            <div class="ecl-fact-figures__value">{{ $category_report['category_last_days_ago'] }} statements of reasons</div>
-            <div class="ecl-fact-figures__title">Last {{ $days_ago }} Days</div>
+            <div class="ecl-fact-figures__value">@aif($category_report['category_last_days_ago']) statements of reasons</div>
+            <div class="ecl-fact-figures__title">Last @aif($days_ago) Days</div>
         </div>
 
         <div class="ecl-fact-figures__item">
             <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="infographic"/>
             </svg>
-            <div class="ecl-fact-figures__value">{{ $category_report['category_last_months_ago'] }} statements of reasons</div>
-            <div class="ecl-fact-figures__title">Last {{ $months_ago }} months</div>
+            <div class="ecl-fact-figures__value">@aif($category_report['category_last_months_ago']) statements of reasons</div>
+            <div class="ecl-fact-figures__title">Last @aif($months_ago) months</div>
         </div>
 
     </div>
@@ -45,10 +45,10 @@
     @endif
 </div>
 
-<h2 class="ecl-u-type-heading-2">Created for the Last {{ count($category_report['day_totals_values']) }} Days</h2>
+<h2 class="ecl-u-type-heading-2">Created for the Last @aif(count($category_report['day_totals_values'])) Days</h2>
 
 <x-analytics.line-chart :values="$category_report['day_totals_values']" :labels="$category_report['day_totals_labels']" height="400" id="apexcategorydays"/>
 
-<h2 class="ecl-u-type-heading-2">Created for the Last {{ count($category_report['month_totals_values']) }} {{Str::of('Month')->plural(count($category_report['month_totals_values']))}}</h2>
+<h2 class="ecl-u-type-heading-2">Created for the Last @aif(count($category_report['month_totals_values'])) {{Str::of('Month')->plural(count($category_report['month_totals_values']))}}</h2>
 
 <x-analytics.line-chart :values="$category_report['month_totals_values']" :labels="$category_report['month_totals_labels']" height="400" id="apexcategoryonths"/>

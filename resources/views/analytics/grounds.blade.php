@@ -13,7 +13,7 @@
 
     <x-analytics.header />
 
-    <h2 class="ecl-u-type-heading-2">Grounds for the Last {{ $last_days }} Days</h2>
+    <h2 class="ecl-u-type-heading-2">Grounds for the Last @aif($last_days) Days</h2>
 
     <x-analytics.bar-chart :values="$ground_totals_values" :labels="$ground_totals_labels" height="200"/>
 

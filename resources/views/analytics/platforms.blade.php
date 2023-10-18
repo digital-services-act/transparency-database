@@ -15,7 +15,7 @@
 
     <div class="ecl-row">
         <div class="ecl-col-l-6">
-            <h2 class="ecl-u-type-heading-2">Platform Statements of Reasons for the Last {{ $last_days }} Days</h2>
+            <h2 class="ecl-u-type-heading-2">Platform Statements of Reasons for the Last @aif($last_days) Days</h2>
         </div>
         <div class="ecl-col-l-6">
             <form method="get" id="platform">
