@@ -23,6 +23,9 @@
                         <li class="ecl-site-footer__list-item"><a href="{{route('feedback.index')}}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Link to Contact information of the DG">Feedback</a></li>
+                        <li class="ecl-site-footer__list-item"><a href="{{route('page.show', ['faq'])}}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Link to Contact information of the DG">FAQ</a></li>
                     </ul>
                 </div>
 {{--                <div class="ecl-site-footer__section">--}}
