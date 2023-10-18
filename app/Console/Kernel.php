@@ -44,12 +44,12 @@ class Kernel extends ConsoleKernel
             php artisan statements:day-archive 2023-10-02
             php artisan statements:day-archive 2023-10-03
             ...
-
+            php artisan applicationdateaggregate:compile
             php artisan applicationdateaggregate:compile 2023-10-01
             php artisan applicationdateaggregate:compile 2023-10-02
             php artisan applicationdateaggregate:compile 2023-10-03
             ...
-
+            php artisan contentdateaggregate:compile
             php artisan contentdateaggregate:compile 2023-10-01
             php artisan contentdateaggregate:compile 2023-10-02
             php artisan contentdateaggregate:compile 2023-10-03
