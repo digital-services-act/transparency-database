@@ -1,22 +1,22 @@
 # Welcome to the DSA Transparency Database!
 
 Regulation (EU) 2022/2065 on a Single Market for Digital Services and amending Directive 2000/31/EC 
-(**Digital Services Act**), or the ‘DSA’, is a **comprehensive set of new rules** regulating the
+(Digital Services Act), or the ‘DSA’, is a comprehensive set of new rules regulating the
 responsibilities of digital services that act as intermediaries within the EU to connect consumers with goods, services and content. These
-intermediary services include online platforms, such as **online marketplaces** or social media
+intermediary services include online platforms, such as online marketplaces or social media
 networks, that store and disseminate information to the public at the request of the recipients of the service. You can find more
 information about the DSA 
 [on the dedicated Commission website](https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/europe-fit-digital-age/digital-services-act-ensuring-safe-and-accountable-online-environment_en).
     
-Article 17 of the DSA obliges providers of hosting services to send clear and specific **statements of reasons** to
+Article 17 of the DSA obliges providers of hosting services to send clear and specific statements of reasons to
 any affected recipient when they remove or otherwise restrict availability of and access to information provided
 by the recipient. In other words, providers of hosting services need to inform their users of the content
 moderation decisions they take and explain the reasons behind those decisions.
 
     
 To ensure transparency and to enable scrutiny over the content moderation decisions of the providers of online
-platforms and to monitor the spread of illegal and harmful content online, the **DSA Transparency Database**
-collects the **statements of reasons submitted by providers of online platforms** to the Commission, in accordance
+platforms and to monitor the spread of illegal and harmful content online, the DSA Transparency Database
+collects the statements of reasons submitted by providers of online platforms to the Commission, in accordance
 with Article 24(5) of the DSA.
     
 
