@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Services\DayArchiveService;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 class StatementsDayArchive extends Command
 {
@@ -14,7 +14,7 @@ class StatementsDayArchive extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:day-archive {date=yesterday} {--force}';
+    protected $signature = 'statements:day-archive {date=yesterday} {--force} {--info}';
 
     /**
      * The console command description.
@@ -29,24 +29,35 @@ class StatementsDayArchive extends Command
      */
     public function handle(DayArchiveService $day_archive_service)
     {
-        if (!config('filesystems.disks.s3ds.bucket')) {
+        if ( ! config('filesystems.disks.s3ds.bucket')) {
             $this->error('In order to make day archives, you need to define the "s3ds" bucket.');
+
             return;
         }
-        try {
-            $date = $this->argument('date');
-            if ($date === 'yesterday') {
-                $date = Carbon::yesterday();
-            } else {
+
+        $date = $this->argument('date');
+        if ($date === 'yesterday') {
+            $date = Carbon::yesterday();
+        } else {
+            try {
                 $date = Carbon::createFromFormat('Y-m-d', $date);
+            } catch (Exception $e) {
+                $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
             }
-            $force = (bool)$this->option('force', false);
-            $day_archive_service->createDayArchive($date->format('Y-m-d'), $force);
+        }
+
+        $force = (bool)$this->option('force', false);
+        $info  = (bool)$this->option('info', false);
+
+        try {
+            $day_archive_service->createDayArchive($date, $force);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
 
-        $this->info('Usage: ' . $this->formatBytes(memory_get_peak_usage()));
+        if ($info) {
+            $this->info('Memory Usage: ' . $this->formatBytes(memory_get_peak_usage()));
+        }
 
     }
 

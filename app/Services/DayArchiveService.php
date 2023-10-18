@@ -4,17 +4,13 @@ namespace App\Services;
 
 
 use App\Exports\StatementExportTrait;
-use App\Exports\StatementsDayExport;
-use App\Jobs\MarkDayArchiveCompleted;
 use App\Models\DayArchive;
 use App\Models\Platform;
-use App\Models\Statement;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Excel;
 use ZipArchive;
 
 
@@ -29,19 +25,14 @@ class DayArchiveService
      * @return DayArchive
      * @throws Exception
      */
-    public function createDayArchive(string $date, bool $force = false): DayArchive
+    public function createDayArchive(Carbon $date, bool $force = false): DayArchive
     {
-        try {
-            $date = Carbon::createFromFormat('Y-m-d', $date);
-        } catch (Exception $e) {
-            throw new Exception('That date provided was not valid YYYY-MM-DD');
-        }
 
         $today = Carbon::today();
 
-        if ($date && $date < $today) {
+        if ($date < $today) {
 
-            $existing = $this->getDayArchiveByDate($date->format('Y-m-d'));
+            $existing = $this->getDayArchiveByDate($date);
             if ($existing) {
                 if ($force) {
                     $existing->delete();
@@ -146,7 +137,7 @@ class DayArchiveService
 
             return $day_archive;
         } else {
-            throw new Exception("When creating a day export you must supply a YYYY-MM-DD date and it needs to be in the past.");
+            throw new Exception("When creating a day export you must supply a date in the past.");
         }
     }
 
@@ -155,8 +146,8 @@ class DayArchiveService
         return DayArchive::query()->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
-    public function getDayArchiveByDate(string $date)
+    public function getDayArchiveByDate(Carbon $date)
     {
-        return DayArchive::query()->where('date', $date)->first();
+        return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
     }
 }

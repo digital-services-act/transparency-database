@@ -85,12 +85,8 @@ class DayArchiveServiceTest extends TestCase
             'total' => 1
         ]);
 
-        $dayarchive = $this->day_archive_service->getDayArchiveByDate('2023-10-02');
+        $dayarchive = $this->day_archive_service->getDayArchiveByDate(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
         $this->assertNotNull($dayarchive);
-
-        // Yes you need to have leading zeroes
-        $dayarchive = $this->day_archive_service->getDayArchiveByDate('2023-10-2');
-        $this->assertNull($dayarchive);
     }
 
     /**
@@ -98,7 +94,7 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_creates_a_day_archive()
     {
-        $day_archive = $this->day_archive_service->createDayArchive('2023-10-02');
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
         $this->assertNotNull($day_archive);
         $this->assertEquals(0, $day_archive->total);
     }
@@ -108,28 +104,20 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_does_not_allow_overwriting()
     {
-        $day_archive = $this->day_archive_service->createDayArchive('2023-10-02');
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
         $this->assertNotNull($day_archive);
 
         $this->expectExceptionMessage('A day archive for the date: 2023-10-02 already exists.');
-        $day_archive = $this->day_archive_service->createDayArchive('2023-10-02');
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
     }
 
-    /**
-     * @test
-     */
-    public function it_ensures_there_is_date()
-    {
-        $this->expectExceptionMessage('That date provided was not valid YYYY-MM-DD');
-        $day_archive = $this->day_archive_service->createDayArchive('YACK!');
-    }
 
     /**
      * @test
      */
     public function it_ensures_the_date_is_in_the_past()
     {
-        $this->expectExceptionMessage('When creating a day export you must supply a YYYY-MM-DD date and it needs to be in the past.');
-        $day_archive = $this->day_archive_service->createDayArchive('2070-01-01');
+        $this->expectExceptionMessage('When creating a day export you must supply a date in the past.');
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2070-10-02'));
     }
 }

@@ -4,7 +4,10 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="{{ $page_title }}"/>
+    @if ($dashboard)
+        <x-ecl.breadcrumb label="Dashboard" url="{{ route('dashboard') }}"/>
+    @endif
+    <x-ecl.breadcrumb label="{{ $breadcrumb }}"/>
 @endsection
 
 
