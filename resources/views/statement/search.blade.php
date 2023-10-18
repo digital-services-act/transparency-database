@@ -18,7 +18,7 @@
     <p class="ecl-u-type-paragraph">
         With the form below you can now specify many more filters on the statements of reasons.
         To submit feedback on the content of this page and to propose additional features, please visit the
-        <a href="" class="ecl-link ecl-link--standalone">link</a> to the feedback form.
+        <a href="{{ route('feedback.index') }}" class="ecl-link ecl-link--standalone">link</a> to the feedback form.
     </p>
 
     <x-statement.search-form :options="$options" />
