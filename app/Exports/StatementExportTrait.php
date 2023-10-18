@@ -56,6 +56,7 @@ trait StatementExportTrait
             "automated_decision",
 
             "platform_name",
+            "platform_uid",
             "created_at"
         ];
     }
@@ -113,6 +114,7 @@ trait StatementExportTrait
             "automated_decision",
 
             "platform_name",
+            "platform_uid",
             "created_at"
         ];
     }
@@ -169,7 +171,8 @@ trait StatementExportTrait
             $statement->getRawOriginal('automated_detection'),
             $statement->getRawOriginal('automated_decision'),
 
-            $statement->getRawOriginal('platform_name'),
+            $statement->platform ? $statement->platform->getRawOriginal('name') : '',
+            $statement->getRawOriginal('puid'),
 
             $statement->getRawOriginal('created_at'),
         ];
@@ -228,6 +231,7 @@ trait StatementExportTrait
             $statement->automated_decision,
 
             $platforms[$statement->platform_id],
+            $statement->puid,
 
             $statement->created_at,
         ];
@@ -286,6 +290,7 @@ trait StatementExportTrait
             $statement->automated_decision,
 
             $platforms[$statement->platform_id],
+            $statement->puid,
 
             $statement->created_at,
         ];
