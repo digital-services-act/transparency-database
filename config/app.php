@@ -210,6 +210,7 @@ return [
         App\Providers\EuropeanCountriesServiceProvider::class,
         App\Providers\PlatformDayTotalsServiceProvider::class,
         App\Providers\EuropeanLanguagesServiceProvider::class,
+        App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
         App\Providers\StatementStatsServiceProvider::class,
         App\Providers\AppServiceProvider::class,

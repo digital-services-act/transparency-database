@@ -16,21 +16,21 @@
 
 <p class="ecl-u-type-paragraph-xs">
     Analytics are updated once a day at midnight
-    (
-        <a target="_blank" href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+
+        (<a target="_blank" href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
             <span class="ecl-link__label">UTC</span>
             <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
                 <x-ecl.icon icon="external"/>
             </svg>
-        </a>
-    ).
+        </a>).
 </p>
 
 <div class="ecl-u-flex ecl-u-mb-l">
     <a href="{{ route('analytics.index') }}" class="ecl-link ecl-link--standalone">Overview</a> |
     <a href="{{ route('analytics.platforms') }}" class="ecl-link ecl-link--standalone">Platforms</a> |
-    <a href="{{ route('analytics.restrictions') }}" class="ecl-link ecl-link--standalone">Restrictions</a> |
     <a href="{{ route('analytics.categories') }}" class="ecl-link ecl-link--standalone">Categories</a> |
+{{--    <a href="{{ route('analytics.platform-category') }}" class="ecl-link ecl-link--standalone">Platform & Category</a> |--}}
+    <a href="{{ route('analytics.restrictions') }}" class="ecl-link ecl-link--standalone">Restrictions</a> |
     <a href="{{ route('analytics.keywords') }}" class="ecl-link ecl-link--standalone">Keywords</a> |
     <a href="{{ route('analytics.grounds') }}" class="ecl-link ecl-link--standalone">Grounds</a>
 </div>

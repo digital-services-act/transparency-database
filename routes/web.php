@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetsController;
+use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\StatementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
 
@@ -51,12 +53,16 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
 
-    });
+       Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+       Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
+       Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
+
+
+   });
 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
-
 
         // Register the Platform
         Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
@@ -66,8 +72,6 @@ Route::middleware(['auth'])->group(function() {
 
         Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
         Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
-
-
 
     });
 
@@ -91,14 +95,8 @@ Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name(
 Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
+Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
 
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-
-Route::view('legal-information','legal-information')->name('legal-information');
+Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
-
-
-
