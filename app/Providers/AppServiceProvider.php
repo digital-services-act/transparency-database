@@ -11,6 +11,8 @@ use loophp\psr17\Psr17;
 use loophp\psr17\Psr17Interface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
+use App\Models\PersonalAccessToken;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,6 +55,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Sanctum::usePersonalAccessTokenModel(
+            PersonalAccessToken::class
+        );
 
         Blade::withoutDoubleEncoding();
 
