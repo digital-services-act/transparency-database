@@ -57,5 +57,17 @@ class AppServiceProvider extends ServiceProvider
         Blade::withoutDoubleEncoding();
 
         view()->share('ecl_init', true);
+
+
+        // Analytics Float Format
+        Blade::directive('aff', function (string $expression) {
+            return "<?php echo number_format(floatval($expression), 2, '.', '&nbsp;'); ?>";
+        });
+
+        // Analytics Int Format
+        Blade::directive('aif', function (string $expression) {
+            return "<?php echo number_format(intval($expression), 0, '', '&nbsp;'); ?>";
+        });
+
     }
 }
