@@ -1,21 +1,17 @@
-id: 40918
-name: DSA-POC
-default-environment: dev
+id: 49452
+name: dsa-prod
 environments:
-  dev:
+  production:
     warm: 10
     timeout: 180
+    cache: redis-prod
     queue-database-session-persist: true
-    database: dsa-dev-serverless
-    domain: dev.sor.dsa.ec.europa.eu
-    load-balancer: dsa-dev-lb
-    network: vapor-network-1673505770
+    database: prod-serverless-db
+    domain: transparency.dsa.ec.europa.eu
     memory: 2048
     cli-memory: 1024
     queue-memory: 1024
     runtime: 'php-8.2:al2-arm'
-    storage: sor-dsa-m2-dev
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
       - 'php artisan event:cache'
-
