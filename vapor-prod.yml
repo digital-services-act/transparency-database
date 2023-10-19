@@ -2,13 +2,13 @@ id: 49452
 name: dsa-prod
 environments:
   production:
-    warm: 10
-    timeout: 180
+    timeout: 60
+    warm: 20
     cache: redis-prod
     queue-database-session-persist: true
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
-    memory: 256
+    memory: 512
     cli-memory: 256
     queue-memory: 256
     runtime: 'php-8.2:al2-arm'
