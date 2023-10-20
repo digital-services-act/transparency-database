@@ -68,30 +68,34 @@ class DayArchiveService
 
                 $platforms = Platform::all()->pluck('name', 'id')->toArray();
 
-                $raw = DB::table('statements')
-                    ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
-                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
-                    ->orderBy('statements.id', 'desc');
+                $first_id = $this->getFirstIdOfDate($date);
+                $last_id = $this->getLastIdOfDate($date);
 
-
-                $day_archive->url   = $url;
-                $day_archive->urllight   = $urllight;
-                $day_archive->total = $raw->count();;
-                $day_archive->save();
-
-
-                $csv_file = fopen($path, 'w');
+                $csv_file      = fopen($path, 'w');
                 $csv_filelight = fopen($pathlight, 'w');
 
                 fputcsv($csv_file, $this->headings());
                 fputcsv($csv_filelight, $this->headingsLight());
 
-                $raw->chunk(100000, function(Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
-                    foreach ($statements as $statement) {
-                        fputcsv($csv_file, $this->mapRaw($statement, $platforms));
-                        fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
-                    }
-                });
+                $day_archive->url      = $url;
+                $day_archive->urllight = $urllight;
+
+                if ($first_id && $last_id) {
+                    $raw = DB::table('statements')
+                             ->where('statements.id', '>=', $first_id)
+                             ->where('statements.id', '<=', $last_id)
+                             ->orderBy('statements.id');
+                    
+                    $day_archive->total    = $last_id - $first_id;
+                    $day_archive->save();
+
+                    $raw->chunk(100000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
+                        foreach ($statements as $statement) {
+                            fputcsv($csv_file, $this->mapRaw($statement, $platforms));
+                            fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
+                        }
+                    });
+                }
 
                 fclose($csv_file);
                 fclose($csv_filelight);
@@ -140,6 +144,49 @@ class DayArchiveService
             throw new Exception("When creating a day export you must supply a date in the past.");
         }
     }
+
+    public function getFirstIdOfDate(Carbon $date)
+    {
+        $first = null;
+        $date->hour = 0;
+        $date->minute = 0;
+        $date->second = 0;
+
+        $attempts_allowed = 100;
+
+        while(!$first && $attempts_allowed--)
+        {
+            $first = DB::table('statements')
+                    ->select('id')
+                    ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
+                    ->orderBy('statements.id')->first();
+            $date->addSecond();
+        }
+
+        return $first->id ?? 0;
+    }
+
+    public function getLastIdOfDate(Carbon $date)
+    {
+        $last = null;
+        $date->hour = 23;
+        $date->minute = 59;
+        $date->second = 59;
+
+        $attempts_allowed = 100;
+
+        while(!$last && $attempts_allowed--)
+        {
+            $last = DB::table('statements')
+                       ->select('id')
+                       ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
+                       ->orderBy('statements.id', 'desc')->first();
+            $date->subSecond();
+        }
+
+        return $last->id ?? 0;
+    }
+
 
     public function masterList()
     {
