@@ -80,22 +80,29 @@ class DayArchiveService
                 $day_archive->url      = $url;
                 $day_archive->urllight = $urllight;
 
-                if ($first_id && $last_id) {
+                $raw = DB::table('statements')
+                         ->where('statements.id', '>=', $first_id)
+                         ->where('statements.id', '<=', $last_id)
+                         ->orderBy('statements.id');
+                $day_archive->total    = $last_id - $first_id;
+
+                if (!$first_id || !$last_id) {
                     $raw = DB::table('statements')
-                             ->where('statements.id', '>=', $first_id)
-                             ->where('statements.id', '<=', $last_id)
-                             ->orderBy('statements.id');
-
-                    $day_archive->total    = $last_id - $first_id;
-                    $day_archive->save();
-
-                    $raw->chunk(100000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
-                        foreach ($statements as $statement) {
-                            fputcsv($csv_file, $this->mapRaw($statement, $platforms));
-                            fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
-                        }
-                    });
+                             ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
+                             ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                             ->orderBy('statements.id', 'desc');
+                    $day_archive->total    = $raw->count();
                 }
+
+                $day_archive->save();
+
+                $raw->chunk(100000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
+                    foreach ($statements as $statement) {
+                        fputcsv($csv_file, $this->mapRaw($statement, $platforms));
+                        fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
+                    }
+                });
+
 
                 fclose($csv_file);
                 fclose($csv_filelight);
