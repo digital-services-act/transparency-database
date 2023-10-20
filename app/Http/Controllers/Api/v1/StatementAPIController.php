@@ -58,7 +58,8 @@ class StatementAPIController extends Controller
             $statement = Statement::create($validated);
         } catch (QueryException $e) {
             if (
-                str_contains($e->getMessage(), "statements_platform_id_puid_unique")
+                str_contains($e->getMessage(), "statements_platform_id_puid_unique") || // mysql
+                str_contains($e->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
             ) {
                 $errors = [
                     'puid' => [
@@ -67,7 +68,13 @@ class StatementAPIController extends Controller
                 ];
                 $message = 'The identifier given is not unique within this platform.';
 
-                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+                $out = ['message' => $message, 'errors' => $errors];
+                $existing = Statement::query()->where('puid', $validated['puid'])->where('platform_id', $validated['platform_id'])->first();
+                if ($existing) {
+                    $out['existing'] = $existing;
+                }
+
+                return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
                 $errors = [

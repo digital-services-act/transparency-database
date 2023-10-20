@@ -2,15 +2,14 @@ id: 49452
 name: dsa-prod
 environments:
   production:
-    timeout: 60
-    warm: 20
+    timeout: 30
     cache: redis-prod
-    queue-database-session-persist: true
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
-    memory: 512
+    memory: 256
     cli-memory: 256
-    queue-memory: 256
+    queue-memory: 512
+    queue-timeout: 30
     runtime: 'php-8.2:al2-arm'
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
