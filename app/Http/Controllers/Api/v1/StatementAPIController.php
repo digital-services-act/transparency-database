@@ -9,6 +9,7 @@ use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -27,6 +28,17 @@ class StatementAPIController extends Controller
     public function show(Statement $statement): Statement
     {
         return $statement;
+    }
+
+    public function existingPuid(Request $request, String $puid)
+    {
+        $platform_id = $request->user()->platform_id;
+
+        $statement = Statement::query()->where('puid', $puid)->where('platform_id', $platform_id)->first();
+        if ($statement) {
+            return response()->json($statement, Response::HTTP_FOUND);
+        }
+        return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
     }
 
     public function store(StatementStoreRequest $request): JsonResponse

@@ -72,6 +72,45 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function api_statement_existing_puid_works()
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_FOUND);
+        $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
+        $this->assertEquals($this->statement->uuid, $response->json('uuid'));
+        $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_existing_puid_gives_404()
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @test
+     */
     public function api_statement_show_requires_auth()
     {
         $this->setUpFullySeededDatabase();
