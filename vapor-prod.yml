@@ -3,7 +3,7 @@ name: dsa-prod
 environments:
   production:
     firewall:
-      rate-limit: 15000
+      rate-limit: 10000
       bot-control:
         - CategoryAdvertising
         - CategoryArchiver
