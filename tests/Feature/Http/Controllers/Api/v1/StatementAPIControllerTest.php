@@ -84,7 +84,7 @@ class StatementAPIControllerTest extends TestCase
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
             'Accept' => 'application/json'
         ]);
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
         $this->assertEquals($this->statement->uuid, $response->json('uuid'));
         $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
