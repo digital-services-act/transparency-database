@@ -3,6 +3,11 @@ name: DSA-POC
 default-environment: dev
 environments:
   dev:
+    firewall:
+      bot-control:
+        - CategoryAdvertising
+        - CategoryArchiver
+        - SignalNonBrowserUserAgent
     warm: 10
     timeout: 180
     queue-database-session-persist: true

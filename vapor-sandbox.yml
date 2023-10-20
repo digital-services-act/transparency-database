@@ -2,6 +2,16 @@ id: 49369
 name: dsa-sandbox
 environments:
   production:
+    firewall:
+      bot-control:
+        - CategoryAdvertising
+        - CategoryArchiver
+        - CategoryContentFetcher
+        - CategoryLinkChecker
+        - CategoryMiscellaneous
+        - CategoryScrapingFramework
+        - SignalAutomatedBrowser
+        - SignalKnownBotDataCenter
     warm: 10
     timeout: 180
     cache: redis-sandbox-us
