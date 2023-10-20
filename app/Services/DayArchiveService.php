@@ -85,7 +85,7 @@ class DayArchiveService
                              ->where('statements.id', '>=', $first_id)
                              ->where('statements.id', '<=', $last_id)
                              ->orderBy('statements.id');
-                    
+
                     $day_archive->total    = $last_id - $first_id;
                     $day_archive->save();
 
