@@ -537,17 +537,18 @@ class StatementAPIControllerTest extends TestCase
 
         $count_before = Statement::all()->count();
 
-        // Check that a SQLITE error was caught and thrown...
-        Log::shouldReceive('error')
-           ->once()
-           ->withArgs(function ($message) {
-               return str_contains($message, 'Statement Creation Query Exception Thrown: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: statements.platform_id, statements.puid');
-           });
-
         // Let's do it again
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
+
+        $response->assertUnprocessable();
+
+        $response->assertJsonValidationErrors('puid');
+
+        $this->assertArrayHasKey('existing', $response->json());
+
+        $this->assertArrayHasKey('uuid', $response->json('existing'));
 
         $count_after = Statement::all()->count();
 
