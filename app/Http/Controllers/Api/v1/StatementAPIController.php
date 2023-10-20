@@ -9,6 +9,7 @@ use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -29,6 +30,17 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
+    public function existingPuid(Request $request, String $puid)
+    {
+        $platform_id = $request->user()->platform_id;
+
+        $statement = Statement::query()->where('puid', $puid)->where('platform_id', $platform_id)->first();
+        if ($statement) {
+            return response()->json($statement, Response::HTTP_FOUND);
+        }
+        return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
+    }
+
     public function store(StatementStoreRequest $request): JsonResponse
     {
 
@@ -46,7 +58,8 @@ class StatementAPIController extends Controller
             $statement = Statement::create($validated);
         } catch (QueryException $e) {
             if (
-                str_contains($e->getMessage(), "statements_platform_id_puid_unique")
+                str_contains($e->getMessage(), "statements_platform_id_puid_unique") || // mysql
+                str_contains($e->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
             ) {
                 $errors = [
                     'puid' => [
@@ -55,7 +68,13 @@ class StatementAPIController extends Controller
                 ];
                 $message = 'The identifier given is not unique within this platform.';
 
-                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+                $out = ['message' => $message, 'errors' => $errors];
+                $existing = Statement::query()->where('puid', $validated['puid'])->where('platform_id', $validated['platform_id'])->first();
+                if ($existing) {
+                    $out['existing'] = $existing;
+                }
+
+                return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
                 $errors = [

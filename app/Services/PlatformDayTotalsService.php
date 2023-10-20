@@ -25,7 +25,14 @@ class PlatformDayTotalsService
 
     public function deleteDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*')
     {
-        $platform->dayTotals()->whereDate('date', $date)->where('attribute', $attribute)->where('value', $value)->delete();
+        $query = $platform->dayTotals()->whereDate('date', $date);
+        if ($attribute !== '*' ) {
+            $query->where('attribute', $attribute);
+        }
+        if ($value !== '*') {
+            $query->where('value', $value);
+        }
+        $query->delete();
     }
 
     public function deleteAllDayTotals(Platform $platform)

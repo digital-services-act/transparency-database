@@ -28,15 +28,28 @@ class DeletePlatformDayTotal extends Command
      */
     public function handle(PlatformDayTotalsService $platform_day_totals_service)
     {
-        $platform_id = (int)$this->argument('platform_id');
+        $platform_id = $this->argument('platform_id');
+        $platforms = [];
+        if ($platform_id === 'all') {
+            $platforms = Platform::all();
+        }
+
+        if ($platform_id !== 'all') {
+            $platform = Platform::find($platform_id);
+            if ($platform) {
+                $platforms[] = $platform;
+            }
+        }
         $date = $this->argument('date');
         $attribute = $this->argument('attribute') !== 'all' ?  $this->argument('attribute') : '*';
         $value = $this->argument('value') !== 'all' ? $this->argument('value') : '*';
-
-        $platform = Platform::find($platform_id);
         $date = Carbon::createFromFormat('Y-m-d', $date);
-        if ($platform && $date) {
-            $platform_day_totals_service->deleteDayTotal($platform, $date, $attribute, $value);
+
+        if ($platforms && $date) {
+
+            foreach ($platforms as $platform) {
+                $platform_day_totals_service->deleteDayTotal($platform, $date, $attribute, $value);
+            }
         } else {
             $this->warn('The platform id or date were invalid.');
         }

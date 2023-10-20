@@ -72,6 +72,45 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function api_statement_existing_puid_works()
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_FOUND);
+        $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
+        $this->assertEquals($this->statement->uuid, $response->json('uuid'));
+        $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_existing_puid_gives_404()
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @test
+     */
     public function api_statement_show_requires_auth()
     {
         $this->setUpFullySeededDatabase();
@@ -537,17 +576,18 @@ class StatementAPIControllerTest extends TestCase
 
         $count_before = Statement::all()->count();
 
-        // Check that a SQLITE error was caught and thrown...
-        Log::shouldReceive('error')
-           ->once()
-           ->withArgs(function ($message) {
-               return str_contains($message, 'Statement Creation Query Exception Thrown: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: statements.platform_id, statements.puid');
-           });
-
         // Let's do it again
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
+
+        $response->assertUnprocessable();
+
+        $response->assertJsonValidationErrors('puid');
+
+        $this->assertArrayHasKey('existing', $response->json());
+
+        $this->assertArrayHasKey('uuid', $response->json('existing'));
 
         $count_after = Statement::all()->count();
 

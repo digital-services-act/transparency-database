@@ -2,15 +2,26 @@ id: 49452
 name: dsa-prod
 environments:
   production:
+    firewall:
+      rate-limit: 5000
+      bot-control:
+        - CategoryAdvertising
+        - CategoryArchiver
+        - CategoryContentFetcher
+        - CategoryLinkChecker
+        - CategoryMiscellaneous
+        - CategoryScrapingFramework
+        - SignalAutomatedBrowser
+        - SignalKnownBotDataCenter
     warm: 10
-    timeout: 180
+    timeout: 30
     cache: redis-prod
     queue-database-session-persist: true
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
-    memory: 2048
-    cli-memory: 1024
-    queue-memory: 1024
+    memory: 512
+    cli-memory: 512
+    queue-memory: 512
     runtime: 'php-8.2:al2-arm'
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'

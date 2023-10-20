@@ -30,8 +30,8 @@ class AnalyticsController extends Controller
         $total_last_months = $this->platform_day_totals_service->globalTotalForRange(Carbon::now()->subMonths($last_months), Carbon::now());
         //To avoid division by zero if no non-DSA platforms are defined
         $platforms_total = max(1, Platform::nonDsa()->count());
-        $average_per_hour = number_format(($total_last_days / ($last_days * 24)), 2);
-        $average_per_hour_per_platform = number_format((($total_last_days / ($last_days * 24)) / $platforms_total), 2);
+        $average_per_hour = intval($total_last_days / ($last_days * 24));
+        $average_per_hour_per_platform = intval((($total_last_days / ($last_days * 24)) / $platforms_total));
 
 
         $total = $this->platform_day_totals_service->globalStatementsTotal();
