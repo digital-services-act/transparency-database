@@ -36,7 +36,7 @@ class StatementAPIController extends Controller
 
         $statement = Statement::query()->where('puid', $puid)->where('platform_id', $platform_id)->first();
         if ($statement) {
-            return $statement;
+            return response()->json($statement, Response::HTTP_FOUND);
         }
         return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
     }

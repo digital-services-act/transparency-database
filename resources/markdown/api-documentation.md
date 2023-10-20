@@ -584,6 +584,51 @@ This attribute is required and it must be unique within your platform.
 
 Limited to 500 characters.
 
+## Existing PUID
+
+There is an end point that will allow you to check if a PUID value is already used.
+
+To check if an existing PUID is alread used in a statement of reason using the API you will need to make a
+```GET``` request to this endpoint.
+
+<pre>
+    {{route('api.v'.config('app.api_latest').'.statement.existing-puid', ['puid' => '&lt;PUID&gt;'])}}
+</pre>
+
+Where ```<PUID>``` is the puid that you would like to check if it is existing already in the database.
+
+For this request you will need to provide authorization, accept, and content type
+headers of the request:
+
+<pre>
+    Authorization: Bearer YOUR_TOKEN
+    Accept: application/json
+    Content-Type: application/json
+</pre>
+
+The response will either be ```404 Not Found``` or ```302 Found```.
+
+When there is no statement found the body will contain the message.
+
+```javascript
+{
+    "message": "statement of reason not found"
+}
+```
+
+When there is a statement found the existing statement will be returned in the body.
+
+```javascript
+{
+    "uuid": "4b449e79-a41f-4934-aa9a-9c442899951e",
+    "decision_visibility": [
+        "DECISION_VISIBILITY_CONTENT_REMOVED"
+    ],
+    "decision_visibility_other": null,
+    ...
+```
+
+
 ## Errors
 
 When a call to the API has been made AND there was an error in the call you may 
@@ -691,6 +736,35 @@ troubleshoot and resolve the problem.
 
 When there is an error of 5XX we are immediately notified and there is no need 
 to report the issue.
+
+### PUID Error
+
+When you attempt to create a statement for your platform and there exists a statement with the same puid, the
+response will still be ```422 Unproccessable Content``` and the error returned will contain the existing 
+the statement. This will look like the following:
+
+```javascript
+{
+  "message": "The identifier given is not unique within this platform.",
+  "errors": {
+    "puid": [
+      "The identifier given is not unique within this platform."
+    ]
+  },
+  "existing": {
+    "uuid": "6bf8beb0-765c-4e79-8cb1-dc93fc7478bb",
+    "decision_visibility": [
+      ...
+    ],
+    ...
+    "permalink": "... /statement/6bf8beb0-765c-4e79-8cb1-dc93fc7478bb",
+    "self": "... /api/v1/statement/6bf8beb0-765c-4e79-8cb1-dc93fc7478bb"
+  }
+}
+```
+
+
+
  
 ## Source Code
 
