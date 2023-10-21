@@ -16,7 +16,6 @@
 <style>
     .dayarchive-row:hover {
         background-color: #EBEBEB !important;
-        cursor: pointer !important;
     }
 </style>
 
@@ -36,7 +35,7 @@
 
         <tr class="ecl-table__row dayarchive-row">
             <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date}}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="Statements">{{$dayarchive->total}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Statements">@aif($dayarchive->total)</td>
             <td class="ecl-table__cell" data-ecl-table-header="File Full">
                 <a download href="{{ route('dayarchive.download', [$dayarchive->date]) }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
