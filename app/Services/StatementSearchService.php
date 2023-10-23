@@ -280,6 +280,8 @@ class StatementSearchService
     private function applyContentLanguageFilter(array $filter_values)
     {
         $ors = [];
+        $all_isos = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
+        $filter_values = array_intersect($filter_values, $all_isos);
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'content_language:"'.$filter_value.'"';
@@ -313,6 +315,8 @@ class StatementSearchService
     private function applyPlatformIdFilter(array $filter_values)
     {
         $ors = [];
+        $platform_ids = Platform::nonDsa()->pluck('id')->toArray();
+        $filter_values = array_intersect($platform_ids, $filter_values);
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'platform_id:' . $filter_value;
