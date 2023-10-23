@@ -2,11 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Models\DayArchive;
+use App\Models\PlatformDayTotal;
 use App\Models\Statement;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 class ResetApplication extends Command
 {
@@ -33,8 +36,56 @@ class ResetApplication extends Command
             PlatformSeeder::resetPlatforms();
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();
+            PlatformDayTotal::query()->forceDelete();
             Statement::query()->forceDelete();
             Statement::factory()->count(1000)->create();
+            $this->info('Reset has completed.');
+
+            if ($this->confirm('Optimize the opensearch index?', true)) {
+                $this->call('statements:optimize-index');
+                $this->info('Optimize has completed.');
+            }
+
+            DayArchive::query()->forceDelete();
+            if ($this->confirm('Create Day Archives?', true)) {
+                $yesterday = Carbon::yesterday();
+                $date = $yesterday->clone();
+                $date->subDays(100);
+                while($date < $yesterday)
+                {
+                    $this->call('statements:day-archive', ['date' => $date->format('Y-m-d')]);
+                    $date->addDay();
+                }
+                $this->info('Day Archives created.');
+            }
+
+            \App\Models\ContentDateAggregate::query()->forceDelete();
+            \App\Models\ApplicationDateAggregate::query()->forceDelete();
+            if ($this->confirm('Create Content and Application Date Aggregates?', true)) {
+                $yesterday = Carbon::yesterday();
+                $date = $yesterday->clone();
+                $date->subDays(100);
+                while($date < $yesterday)
+                {
+                    $this->call('applicationdateaggregate:compile', ['date' => $date->format('Y-m-d')]);
+                    $this->call('contentdateaggregate:compile', ['date' => $date->format('Y-m-d')]);
+                    $date->addDay();
+                }
+                $this->info('Aggregates created.');
+            }
+
+            if ($this->confirm('Compile the day totals?', true)) {
+                $this->call('platform:compile-day-totals');
+
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_ILLEGAL_CONTENT']);
+                $this->call('platform:compile-day-totals', ['platform_id' => 'all', 'attribute' => 'decision_ground', 'value' => 'DECISION_GROUND_INCOMPATIBLE_CONTENT']);
+
+                $this->call('platform:compile-day-totals-categories');
+                $this->call('platform:compile-day-totals-keywords');
+                $this->call('platform:compile-day-totals-decisions');
+
+                $this->info('Day totals has completed.');
+            }
         } else {
             $this->error('Oh hell no!');
             $this->error('We do not run this in production.');

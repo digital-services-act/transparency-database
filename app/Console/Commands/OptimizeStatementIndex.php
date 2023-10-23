@@ -16,28 +16,28 @@ class OptimizeStatementIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'optimize-statement-index';
+    protected $signature = 'statements:optimize-index';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Optimize the Opensearch Statement Index';
+    protected $description = 'Optimize the Opensearch Statements Index';
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        if (env('SCOUT_DRIVER', '') !== 'opensearch')
-        {
+        if (env('SCOUT_DRIVER', '') !== 'opensearch') {
             $this->error('opensearch is not the SCOUT_DRIVER');
+
             return;
         }
 
         /** @var Client $client */
-        $client  = app(Client::class);
+        $client = app(Client::class);
 
         $index_name = 'statement_' . env('APP_ENV');
 
@@ -50,7 +50,7 @@ class OptimizeStatementIndex extends Command
                 [
                     'automated_decision'               =>
                         [
-                            'type' => 'boolean'
+                            'type' => 'keyword'
                         ],
                     'automated_detection'              =>
                         [
@@ -60,19 +60,31 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'keyword'
                         ],
+                    'category_specification'           =>
+                        [
+                            'type' => 'text'
+                        ],
                     'content_type'                     =>
                         [
-                            'type' => 'keyword'
+                            'type' => 'text'
                         ],
                     'content_type_other'               =>
                         [
                             'type' => 'text'
+                        ],
+                    'content_language'                 =>
+                        [
+                            'type' => 'keyword'
                         ],
                     'created_at'                       =>
                         [
                             'type' => 'date'
                         ],
                     'decision_account'                 =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'account_type'                     =>
                         [
                             'type' => 'keyword'
                         ],
@@ -94,7 +106,7 @@ class OptimizeStatementIndex extends Command
                         ],
                     'decision_visibility'              =>
                         [
-                            'type' => 'keyword'
+                            'type' => 'text'
                         ],
                     'id'                               =>
                         [
@@ -120,7 +132,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'long',
                         ],
-                    'source'                           =>
+                    'source_identity'                  =>
                         [
                             'type' => 'text'
                         ],
@@ -148,7 +160,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
-                    'territorial_scope'                   =>
+                    'territorial_scope'                =>
                         [
                             'type' => 'text'
                         ],

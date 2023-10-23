@@ -3,16 +3,23 @@ name: DSA-POC
 default-environment: dev
 environments:
   dev:
+    firewall:
+      bot-control:
+        - CategoryAdvertising
+        - CategoryArchiver
+        - SignalNonBrowserUserAgent
     warm: 10
     timeout: 180
     queue-database-session-persist: true
+    proxy: proxy-serverless
     database: dsa-dev-serverless
     domain: dev.sor.dsa.ec.europa.eu
-    load-balancer: dsa-dev-lb
+    load-balancer: dsa-dev-lb-2
     network: vapor-network-1673505770
     memory: 2048
     cli-memory: 1024
     queue-memory: 1024
+    queue-timeout: 30
     runtime: 'php-8.2:al2-arm'
     storage: sor-dsa-m2-dev
     build:

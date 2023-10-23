@@ -208,6 +208,9 @@ return [
         App\Providers\StatementQueryServiceProvider::class,
         App\Providers\StatementSearchServiceProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,
+        App\Providers\PlatformDayTotalsServiceProvider::class,
+        App\Providers\EuropeanLanguagesServiceProvider::class,
+        App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
         App\Providers\StatementStatsServiceProvider::class,
         App\Providers\AppServiceProvider::class,
@@ -219,6 +222,9 @@ return [
 
         MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class,
         Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
+        EcPhp\LaravelCas\Providers\AppServiceProvider::class,
 
     ],
 

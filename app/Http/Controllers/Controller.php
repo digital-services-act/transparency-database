@@ -29,7 +29,7 @@ class Controller extends BaseController
 
     protected function sanitizeDate($date): ?string
     {
-        return $date ? Carbon::createFromFormat('d-m-Y', $date)->format('Y-m-d 00:00:00') : null;
+        return $date ? Carbon::createFromFormat('Y-m-d', $date)->format('Y-m-d 00:00:00') : null;
     }
 
     /**

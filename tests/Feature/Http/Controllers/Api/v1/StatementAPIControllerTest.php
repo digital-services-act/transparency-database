@@ -29,21 +29,21 @@ class StatementAPIControllerTest extends TestCase
         parent::setUp();
 
         $this->required_fields = [
-            'decision_visibility' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
-            'category' => 'STATEMENT_CATEGORY_FRAUD',
+            'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
             'illegal_content_legal_ground' => 'foo',
             'illegal_content_explanation' => 'bar',
-            'url' => 'https://www.test.com',
             'puid' => 'TK421',
             'territorial_scope' => ['BE', 'DE', 'FR'],
             'source_type' => 'SOURCE_ARTICLE_16',
-            'source' => 'foo',
+            'source_identity' => 'foo',
             'decision_facts' => 'decision and facts',
-            'content_type' => 'CONTENT_TYPE_VIDEO',
+            'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
-            'automated_decision' => 'No',
-            'start_date' => '03-01-2023'
+            'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
+            'application_date' => '2023-05-18',
+            'content_date' => '2023-05-18'
         ];
     }
 
@@ -66,6 +66,46 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
         $this->assertEquals($this->statement->uuid, $response->json('uuid'));
+        $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_existing_puid_works()
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_FOUND);
+        $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
+        $this->assertEquals($this->statement->uuid, $response->json('uuid'));
+        $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_existing_puid_gives_404()
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -108,8 +148,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '08-12-2023',
-            'end_date' => '09-12-2023',
+            'application_date' => '2023-12-20',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
@@ -120,8 +159,169 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+        $this->assertNull($statement->account_type);
+        $this->assertNull($statement->content_language);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_content_language_is_stored()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
+            'content_language' => 'EN'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+        $this->assertNotNull($statement->account_type);
+        $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
+        $this->assertNotNull($statement->content_type);
+        $this->assertEquals('EN', $statement->content_language);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_content_language_can_be_non_european()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
+            'content_language' => 'VI'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+        $this->assertNotNull($statement->account_type);
+        $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
+        $this->assertNotNull($statement->content_type);
+        $this->assertEquals('VI', $statement->content_language);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_content_language_must_be_valid()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
+            'content_language' => 'XX'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_content_language_must_be_uppercase()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
+            'content_language' => 'en'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_account_type_is_stored()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+
+        $this->assertNotNull($statement->account_type);
+        $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function api_statement_account_type_is_validated()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20-05',
+
+            'account_type' => 'ACCOUNT_TYPE_NOT_VALID'
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
     }
 
     /**
@@ -134,8 +334,8 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => '15-07-2023',
-            'end_date' => '16-07-2023',
+            'application_date' => '2023-07-15',
+
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -163,25 +363,31 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
 
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+
+        $this->assertNull($statement->decision_ground_reference_url);
     }
+
 
 
     /**
      * @test
      */
-    public function start_date_can_be_with_and_without_leading_zeroes()
+    public function application_date_must_be_correct_format()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $date = Carbon::createFromDate(2023, 2, 5);
+        $date = Carbon::createFromDate(2023, 2, 5,);
 
         $this->assertCount(10, Statement::all());
+
+        $application_date_in = date('Y-m-d');
+        $end_date_in = date('Y-m-d', time() + (7 * 24 * 60 * 60));
+
         $fields = array_merge($this->required_fields, [
-            'start_date' => $date->format('d-m-Y'),
-            'end_date' => $date->format('j-n-Y'),
+            'application_date' => $application_date_in,
+            'end_date_monetary_restriction' => $end_date_in
         ]);
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
@@ -209,78 +415,70 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
 
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_monetary_restriction);
 
-        /** @var Carbon $start_date */
-        $start_date = $statement->start_date;
-        $this->assertEquals(2023, $start_date->year);
-        $this->assertEquals(2, $start_date->month);
-        $this->assertEquals(5, $start_date->day);
-
-        /** @var Carbon $end_date */
-        $end_date = $statement->end_date;
-        $this->assertEquals(2023, $end_date->year);
-        $this->assertEquals(2, $end_date->month);
-        $this->assertEquals(5, $end_date->day);
+        $resource = $statement->toArray();
+        $this->assertEquals($application_date_in, $resource['application_date']);
     }
 
     /**
      * @test
      */
-    public function start_date_can_be_a_mix_with_and_without_leading_zeroes()
+    public function request_rejects_bad_dates()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $date = Carbon::createFromDate(2023, 2, 5);
+        $application_date_in = '2023-4-4-4';
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => $application_date_in,
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The application date does not match the format YYYY-MM-DD.', $response->json('message'));
+    }
+
+    /**
+     * @test
+     */
+    public function api_statement_store_rejects_bad_decision_ground_urls()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'start_date' => $date->format('d-n-Y'),
-            'end_date' => $date->format('j-m-Y'),
+            'decision_ground_reference_url' => 'notvalidurl',
         ]);
-        $object = new \stdClass();
-        foreach ($fields as $key => $value) {
-            $object->$key = $value;
-        }
-        $json = json_encode($object);
-        $response = $this->call(
-            'POST',
-            route('api.v1.statement.store'),
-            [],
-            [],
-            [],
-            $headers = [
-                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json'
-            ],
-            $json
-        );
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(10, Statement::all());
+    }
 
+    /**
+     * @test
+     */
+    public function api_statement_store_accepts_google_decision_ground_urls()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'decision_ground_reference_url' => 'https://www.goodurl.com',
+        ]);
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(11, Statement::all());
-        $statement = Statement::where('uuid', $response->json('uuid'))->first();
-        $this->assertNotNull($statement);
-        $this->assertEquals('API', $statement->method);
-        $this->assertEquals($user->id, $statement->user->id);
-
-        $this->assertInstanceOf(Carbon::class, $statement->start_date);
-        $this->assertInstanceOf(Carbon::class, $statement->end_date);
-
-
-        /** @var Carbon $start_date */
-        $start_date = $statement->start_date;
-        $this->assertEquals(2023, $start_date->year);
-        $this->assertEquals(2, $start_date->month);
-        $this->assertEquals(5, $start_date->day);
-
-        /** @var Carbon $end_date */
-        $end_date = $statement->end_date;
-        $this->assertEquals(2023, $end_date->year);
-        $this->assertEquals(2, $end_date->month);
-        $this->assertEquals(5, $end_date->day);
     }
 
     /**
@@ -351,37 +549,16 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_requires_url_but_does_not_force_url()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $response = $this->post(route('api.v1.statement.store'), ['url' => ''], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $json = $response->json();
-        $this->assertNotNull($json['errors']);
-        $this->assertNotNull($json['errors']['url']);
-
-        $response = $this->post(route('api.v1.statement.store'), ['url' => 'not empty'], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $json = $response->json();
-        $this->assertNotNull($json['errors']);
-        $this->assertArrayNotHasKey('url', $json['errors']);
-    }
-
-    /**
-     * @test
-     */
     public function store_enforces_puid_uniqueness()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $response = $this->post(route('api.v1.statement.store'), ['puid' => ''], [
+        $fields = array_merge($this->required_fields, [
+            'puid' => ''
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -391,14 +568,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
 
 
-        $response = $this->post(route('api.v1.statement.store'), ['puid' => 'THX1138'], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $json = $response->json();
-        $this->assertNotNull($json['errors']);
-        $this->assertArrayNotHasKey('puid', $json['errors']);
-
         // Now let's create one
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
@@ -407,17 +576,18 @@ class StatementAPIControllerTest extends TestCase
 
         $count_before = Statement::all()->count();
 
-        // Check that a SQLITE error was caught and thrown...
-        Log::shouldReceive('error')
-           ->once()
-           ->withArgs(function ($message) {
-               return str_contains($message, 'Statement Creation Query Exception Thrown: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: statements.platform_id, statements.puid');
-           });
-
         // Let's do it again
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
+
+        $response->assertUnprocessable();
+
+        $response->assertJsonValidationErrors('puid');
+
+        $this->assertArrayHasKey('existing', $response->json());
+
+        $this->assertArrayHasKey('uuid', $response->json('existing'));
 
         $count_after = Statement::all()->count();
 
@@ -466,5 +636,206 @@ class StatementAPIControllerTest extends TestCase
         $this->assertStringNotContainsString('"puid":', $content);
 
     }
+
+    /**
+     * @test
+     */
+    public function store_should_save_content_type_other()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'content_type' => ['CONTENT_TYPE_APP','CONTENT_TYPE_OTHER'],
+            'content_type_other' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->content_type);
+        $this->assertNotNull($statement->content_type_other);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_not_save_content_type_other()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'content_type' => ['CONTENT_TYPE_AUDIO','CONTENT_TYPE_APP','CONTENT_TYPE_VIDEO'],
+            'content_type_other' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->content_type);
+        $this->assertNull($statement->content_type_other);
+    }
+
+
+    /**
+     * @test
+     */
+    public function store_should_save_source_identity()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'source_type' => 'SOURCE_TYPE_OTHER_NOTIFICATION',
+            'source_identity' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->source_type);
+        $this->assertNotNull($statement->source_identity);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_not_save_source_identity()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'source_type' => 'SOURCE_VOLUNTARY',
+            'source_identity' => 'foobar other',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->source_type);
+        $this->assertNull($statement->source_identity);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_save_end_dates()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'end_date_visibility_restriction' => '2023-08-10',
+            'end_date_monetary_restriction' => '2023-08-11',
+            'end_date_service_restriction' => '2023-08-12',
+            'end_date_account_restriction' => '2023-08-13',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_visibility_restriction);
+        $this->assertEquals('2023-08-10 00:00:00', (string)$statement->end_date_visibility_restriction);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_monetary_restriction);
+        $this->assertEquals('2023-08-11 00:00:00', (string)$statement->end_date_monetary_restriction);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_service_restriction);
+        $this->assertEquals('2023-08-12 00:00:00', (string)$statement->end_date_service_restriction);
+        $this->assertInstanceOf(Carbon::class, $statement->end_date_account_restriction);
+        $this->assertEquals('2023-08-13 00:00:00', (string)$statement->end_date_account_restriction);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_save_keywords_with_other()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'category_specification' => ['KEYWORD_ADULT_SEXUAL_MATERIAL','KEYWORD_DESIGN_INFRINGEMENT','KEYWORD_OTHER'],
+            'category_specification_other' => 'foobar keyword',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->category_specification);
+        $this->assertNotNull($statement->category_specification_other);
+
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_save_not_duplicate_categories()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'category' => 'STATEMENT_CATEGORY_VIOLENCE',
+            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_VIOLENCE'],
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->category);
+        $this->assertNotNull($statement->category_addition);
+        $this->assertCount(1,$statement->category_addition);
+
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_save_not_empty_additional_categories()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'category' => 'STATEMENT_CATEGORY_VIOLENCE',
+            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_VIOLENCE'],
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement->category);
+        $this->assertNotNull($statement->category_addition);
+        $this->assertCount(1,$statement->category_addition);
+
+    }
+
+
+
 }
 

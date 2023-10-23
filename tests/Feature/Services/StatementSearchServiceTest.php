@@ -65,20 +65,13 @@ class StatementSearchServiceTest extends TestCase
     public function it_filters_on_automatic_decision()
     {
         $filters = [
-            'automated_decision' => [Statement::AUTOMATED_DECISION_YES]
+            'automated_decision' => array_keys(Statement::AUTOMATED_DECISIONS),
         ];
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(automated_decision:true)', $query);
+        $this->assertEquals('(automated_decision:AUTOMATED_DECISION_FULLY OR automated_decision:AUTOMATED_DECISION_PARTIALLY OR automated_decision:AUTOMATED_DECISION_NOT_AUTOMATED)', $query);
 
-        $filters = [
-            'automated_decision' => [Statement::AUTOMATED_DECISION_YES, Statement::AUTOMATED_DECISION_NO]
-        ];
-        $search = $this->statement_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search->query;
-        $this->assertEquals('(automated_decision:true OR automated_decision:false)', $query);
     }
 
     /**
@@ -92,7 +85,7 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source:"example" OR url:"example" OR uuid:"example" OR puid:"example")', $query);
+        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example")', $query);
     }
 
     /**
@@ -106,7 +99,21 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(decision_visibility:DECISION_VISIBILITY_CONTENT_REMOVED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DISABLED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DEMOTED OR decision_visibility:DECISION_VISIBILITY_OTHER)', $query);
+        $this->assertEquals('(decision_visibility:DECISION_VISIBILITY_CONTENT_REMOVED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DISABLED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DEMOTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_LABELLED OR decision_visibility:DECISION_VISIBILITY_OTHER)', $query);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_category_specification()
+    {
+        $filters = [
+            'category_specification' => array_keys(Statement::KEYWORDS),
+        ];
+        $search = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertStringContainsString('category_specification:KEYWORD_ANIMAL_HARM OR category_specification:', $query);
     }
 
     /**
@@ -154,6 +161,20 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
+    public function it_filters_on_account_type()
+    {
+        $filters = [
+            'account_type' => array_keys(Statement::ACCOUNT_TYPES),
+        ];
+        $search = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertEquals('(account_type:ACCOUNT_TYPE_BUSINESS OR account_type:ACCOUNT_TYPE_PRIVATE)', $query);
+    }
+
+    /**
+     * @test
+     */
     public function it_filters_on_decision_grounds()
     {
         $filters = [
@@ -176,7 +197,7 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertStringContainsString('category:STATEMENT_CATEGORY_PIRACY OR', $query);
+        $this->assertStringContainsString('category:STATEMENT_CATEGORY_ANIMAL_WELFARE OR', $query);
     }
 
     /**
@@ -196,7 +217,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_platform_id()
+    public function it_filters_only_real_platform_ids()
     {
         $filters = [
             'platform_id' => [99,100],
@@ -204,7 +225,26 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(platform_id:99 OR platform_id:100)', $query);
+        $this->assertNotEquals('(platform_id:99 OR platform_id:100)', $query);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_platform_id()
+    {
+        $this->setUpFullySeededDatabase();
+        $platform_id_one = Platform::first()->id;
+        $platform_id_two = Platform::query()->whereNot('id', $platform_id_one)->inRandomOrder()->first()->id;
+
+        $filters = [
+            'platform_id' => [$platform_id_one, $platform_id_two],
+        ];
+
+        $search = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertEquals('(platform_id:'.$platform_id_one.' OR platform_id:'.$platform_id_two.')', $query);
     }
 
     /**

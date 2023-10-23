@@ -21,6 +21,7 @@ class DashboardController extends Controller
     public function dashboard(Request $request): Factory|View|Application
     {
         return view('dashboard',[
+            'has_platform' => (bool)$request->user()->platform,
             'platform_name' => $request->user()->platform->name ?? ''
         ]);
     }
@@ -32,6 +33,7 @@ class DashboardController extends Controller
      */
     public function apiIndex(Request $request): Factory|View|Application
     {
+
         $token_plain_text = null;
         /** @var PersonalAccessToken $token */
         $token = $request->user()->tokens()->where('name', User::API_TOKEN_KEY)->get()->last();

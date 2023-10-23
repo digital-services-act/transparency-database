@@ -8,7 +8,16 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-
+/**
+ * This service does raw queries and such on the statements table.
+ * This should only be used for local development purposes.
+ * Even then you should setup a local dev opensearch account and use the searching service with indexing.
+ * Look in the .env.example
+ * #SCOUT_DRIVER=opensearch
+ * #OPENSEARCH_HOST=XXX
+ * #OPENSEARCH_USERNAME=XXXX
+ * #OPENSEARCH_PASSWORD=XXXXS
+ */
 class StatementQueryService
 {
     // These are the filters that we are allowed to filter on.
@@ -29,8 +38,10 @@ class StatementQueryService
         'decision_monetary',
         'decision_provision',
         'decision_account',
+        'account_type',
         'category',
         'content_type',
+        'content_language',
         'territorial_scope',
         'source_type'
     ];
@@ -78,8 +89,8 @@ class StatementQueryService
         $query->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%');
         $query->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('source', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('url', 'LIKE', '%' . $filter_value . '%');
+        $query->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%');
+
     }
 
     /**
@@ -132,7 +143,7 @@ class StatementQueryService
      */
     private function applyAutomatedDecisionFilter(Builder $query, array $filter_value): void
     {
-        $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DECISIONS);
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::AUTOMATED_DECISIONS));
         if ($filter_values_validated) {
             $query->whereIn('automated_decision', $filter_values_validated);
         }
@@ -162,7 +173,9 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
         if ($filter_values_validated) {
-            $query->whereIn('decision_visibility', $filter_value);
+            foreach ($filter_values_validated as $decision_visibility) {
+                $query->where('decision_visibility', 'LIKE', '%"' . $decision_visibility . '"%');
+            }
         }
     }
 
@@ -208,6 +221,25 @@ class StatementQueryService
         }
     }
 
+    private function applyAccountTypeFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::ACCOUNT_TYPES));
+        if ($filter_values_validated) {
+            $query->whereIn('account_type', $filter_value);
+        }
+    }
+
+    private function applyCategorySpecificationFilter(Builder $query, array $filter_value): void
+    {
+        $filter_values_validated = array_intersect($filter_value, array_keys(Statement::KEYWORDS));
+        if ($filter_values_validated) {
+            foreach ($filter_values_validated as $category_specification) {
+                $query->where('category_specification', 'LIKE', '%"' . $category_specification . '"%');
+            }
+        }
+    }
+
+
     /**
      * @param Builder $query
      * @param array $filter_value
@@ -218,8 +250,21 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
         if ($filter_values_validated) {
-            $query->whereIn('content_type', $filter_value);
+            foreach ($filter_values_validated as $content_type) {
+                $query->where('content_type', 'LIKE', '%"' . $content_type . '"%');
+            }
         }
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter_value
+     *
+     * @return void
+     */
+    private function applyContentLanguageFilter(Builder $query, array $filter_value): void
+    {
+        $query->whereIn('content_type', $filter_value);
     }
 
     /**
@@ -232,7 +277,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::STATEMENT_CATEGORIES));
         if ($filter_values_validated) {
-            $query->whereIn('category', $filter_value);
+            $query->whereIn('category', $filter_values_validated);
         }
     }
 
@@ -275,4 +320,6 @@ class StatementQueryService
             }
         }
     }
+
+
 }

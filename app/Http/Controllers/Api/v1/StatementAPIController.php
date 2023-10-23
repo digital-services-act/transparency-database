@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class StatementAPIController extends Controller
 {
+    use Sanitizer;
+
     protected EuropeanCountriesService $european_countries_service;
     public function __construct(
         EuropeanCountriesService $european_countries_service,
@@ -26,8 +30,20 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
+    public function existingPuid(Request $request, String $puid)
+    {
+        $platform_id = $request->user()->platform_id;
+
+        $statement = Statement::query()->where('puid', $puid)->where('platform_id', $platform_id)->first();
+        if ($statement) {
+            return response()->json($statement, Response::HTTP_FOUND);
+        }
+        return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
+    }
+
     public function store(StatementStoreRequest $request): JsonResponse
     {
+
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $request->user()->platform_id,
@@ -36,15 +52,14 @@ class StatementAPIController extends Controller
             ]
         )->toArray();
 
-        $validated['start_date'] = $this->sanitizeDate($validated['start_date'] ?? null);
-        $validated['end_date'] = $this->sanitizeDate($validated['end_date'] ?? null);
-        $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
+        $validated = $this->sanitizeData($validated);
 
         try {
             $statement = Statement::create($validated);
         } catch (QueryException $e) {
             if (
-                str_contains($e->getMessage(), "statements_platform_id_puid_unique")
+                str_contains($e->getMessage(), "statements_platform_id_puid_unique") || // mysql
+                str_contains($e->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
             ) {
                 $errors = [
                     'puid' => [
@@ -53,7 +68,13 @@ class StatementAPIController extends Controller
                 ];
                 $message = 'The identifier given is not unique within this platform.';
 
-                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+                $out = ['message' => $message, 'errors' => $errors];
+                $existing = Statement::query()->where('puid', $validated['puid'])->where('platform_id', $validated['platform_id'])->first();
+                if ($existing) {
+                    $out['existing'] = $existing;
+                }
+
+                return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
                 $errors = [
@@ -66,9 +87,12 @@ class StatementAPIController extends Controller
             }
         }
 
+
         $out = $statement->toArray();
         $out['puid'] = $statement->puid; // Show the puid on a store.
 
         return response()->json($out, Response::HTTP_CREATED);
     }
+
+
 }

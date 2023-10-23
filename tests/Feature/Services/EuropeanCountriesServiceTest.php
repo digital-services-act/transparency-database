@@ -91,6 +91,17 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
+    public function it_does_not_break_on_empty()
+    {
+        $country_codes = [];
+        $result = $this->european_countries_service->filterSortEuropeanCountries($country_codes);
+        $this->assertCount(0, $result);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
     public function ensure_that_country_codes_arrays_are_in_alphabetical_order()
     {
         $codes = EuropeanCountriesService::EUROPEAN_COUNTRY_CODES;

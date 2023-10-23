@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PlatformRegisterStoreRequest;
 use App\Http\Requests\PlatformStoreRequest;
 use App\Http\Requests\PlatformUpdateRequest;
 use App\Models\Platform;
-use App\Models\Statement;
-use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -29,6 +28,7 @@ class PlatformController extends Controller
         if ($request->get('s')) {
             $platforms = Platform::where('name', 'like', '%' . $request->get('s') . '%');
         }
+        $platforms->orderBy('name');
         $platforms = $platforms->paginate(50)->withQueryString();
 
         return view('platform.index', [
@@ -158,10 +158,36 @@ class PlatformController extends Controller
         return redirect()->route('platform.index')->with('success', 'The platform has been deleted');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
+     */
+    public function platformRegister(Request $request)
+    {
+        if ($request->user()->platform && $request->user()->platform->name !== Platform::LABEL_DSA_TEAM) {
+            return redirect()->route('dashboard')->with('error', 'Your account is currently linked to a platform and therefor you may not register a new platform.');
+        }
+
+        $options = $this->prepareOptions();
+        return view('platform.register', compact(
+            'options'
+        ));
+    }
+
+    public function platformRegisterStore(PlatformRegisterStoreRequest $request): RedirectResponse
+    {
+        $validated = $request->safe()->merge([
+
+        ])->toArray();
+
+        return redirect()->route('dashboard')->with('success', 'The platform has been registered, representatives will be in contact with you shortly.');
+    }
+
     private function prepareOptions(): array
     {
-
-
         return [];
     }
+
+
 }

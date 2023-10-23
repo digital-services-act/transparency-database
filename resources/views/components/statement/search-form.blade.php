@@ -75,6 +75,15 @@
         />
 
         <x-ecl.checkboxes
+                :label="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
+                justlabel="true"
+                name="account_type"
+                id="account_type"
+                :default="request()->get('account_type', [])"
+                :options="$options['account_types']"
+        />
+
+        <x-ecl.checkboxes
                 :label="Statement::LABEL_STATEMENT_CATEGORY"
                 justlabel="true"
                 name="category"
@@ -83,10 +92,20 @@
                 :options="$options['categories']"
         />
 
+        <x-ecl.checkboxes
+            :label="Statement::LABEL_KEYWORDS"
+            justlabel="true"
+            name="category_specification"
+            id="category_specification"
+            :default="request()->get('category_specification', [])"
+            :options="$options['category_specifications']"
+        />
+
         <x-ecl.checkboxes-flex :label="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
                                name="territorial_scope"
                                id="territorial_scope"
                                justlabel="true"
+                               width="10%"
                                :options="$options['countries']" :default="request()->get('territorial_scope', [])"
         />
 
@@ -158,6 +177,16 @@
                 id="content_type"
                 :default="request()->get('content_type', [])"
                 :options="$options['content_types']"
+        />
+
+        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE"
+                      name="content_language"
+                      justlabel="true"
+                      id="content_language"
+                      :default="request()->get('content_language', [])"
+                      :options="$options['languages']"
+                      select_all="All languages" select_item="Select one or more languages"
+                      enter_keyword="Enter a language name"
         />
 
 

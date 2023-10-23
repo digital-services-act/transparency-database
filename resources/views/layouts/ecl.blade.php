@@ -7,28 +7,34 @@
         <title>@yield('title', 'Home') - DSA Transparency Database</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec-default.css') }}"
+            href="{{ asset('static/ecl/styles/optional/ecl-ec-default.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-reset.css') }}"
+            href="{{ asset('static/ecl/styles/optional/ecl-reset.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
+                rel="stylesheet"
+                href="{{ asset('static/ecl/styles/optional/ecl-ec-default-print.css') }}"
+                crossorigin="anonymous"
+                media="print"
+        />
+        <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec-print.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec-print.css') }}"
             crossorigin="anonymous"
             media="print"
         />
@@ -46,22 +52,26 @@
         <div class="ecl-container ecl-u-mb-xl">
             <div class="ecl-row">
                 <div class="ecl-col-12">
+
                     <nav class="ecl-breadcrumb ecl-page-header__breadcrumb" aria-label="You&#x20;are&#x20;here&#x3A;"
                          data-ecl-breadcrumb="true" data-ecl-auto-init="Breadcrumb">
                         <ol class="ecl-breadcrumb__container">
                             @yield('breadcrumbs')
                         </ol>
                     </nav>
+
                     @if(session('success'))
                         <x-ecl.message type="success" icon="success" title="Success" :message="session('success')"/>
                     @endif
+
                     @if(session('error'))
                         <x-ecl.message type="error" icon="error" title="Error" :message="session('error')"/>
                     @endif
 
                     @if ($errors->any())
-                        <x-ecl.message type="error" icon="error" title="Errors" :message="$errors->all()"/>
+                        <x-ecl.message type="error" icon="error" title="Errors" message="Your request contained multiple errors. Please make sure to fill in all of the mandatory fields."/>
                     @endif
+
                 </div>
             </div>
             <div class="ecl-row">
@@ -79,7 +89,7 @@
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
 <script
-    src="{{ asset('static/scripts/ecl-ec.js') }}"
+    src="{{ asset('static/ecl/scripts/ecl-ec.js') }}"
     crossorigin="anonymous"
 ></script>
 <script>
@@ -87,8 +97,8 @@
         ECL.autoInit();
     @endif
 </script>
-@if(env('SITEID', false) && env('SITEPATH', false))
-<script type="application/json">{"utility":"analytics","siteID":"{{ env('SITEID') }}","sitePath":["{{ env('SITEPATH') }}"],"instance":"ec"}</script>
+@if(config('dsa.SITEID', false) && config('dsa.SITEPATH', false))
+<script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
 @endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
 </body>
