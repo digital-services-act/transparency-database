@@ -140,11 +140,12 @@
                            data-ecl-menu-link="">Analytics</a>
                     </li>
 
+                    @auth
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Day
                             Archives</a>
                     </li>
-
+                    @endauth
 
 
                     @can('view dashboard')
