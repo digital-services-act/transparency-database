@@ -217,7 +217,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_platform_id()
+    public function it_filters_only_real_platform_ids()
     {
         $filters = [
             'platform_id' => [99,100],
@@ -225,7 +225,26 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(platform_id:99 OR platform_id:100)', $query);
+        $this->assertNotEquals('(platform_id:99 OR platform_id:100)', $query);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_platform_id()
+    {
+        $this->setUpFullySeededDatabase();
+        $platform_id_one = Platform::first()->id;
+        $platform_id_two = Platform::query()->whereNot('id', $platform_id_one)->inRandomOrder()->first()->id;
+
+        $filters = [
+            'platform_id' => [$platform_id_one, $platform_id_two],
+        ];
+
+        $search = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertEquals('(platform_id:'.$platform_id_one.' OR platform_id:'.$platform_id_two.')', $query);
     }
 
     /**

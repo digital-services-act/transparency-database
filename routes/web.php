@@ -53,14 +53,12 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('user', UserController::class);
         Route::resource('platform', PlatformController::class);
 
-       Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
-       Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
-       Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
-
-
    });
 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+    Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
+    Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
 

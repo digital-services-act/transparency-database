@@ -139,12 +139,12 @@
                         <a href="{{route('analytics.index')}}" class="ecl-menu__link"
                            data-ecl-menu-link="">Analytics</a>
                     </li>
-                    @can('administrate')
-                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                            <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Day
-                                Archives</a>
-                        </li>
-                    @endcan
+
+                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Day
+                            Archives</a>
+                    </li>
+
 
 
                     @can('view dashboard')
