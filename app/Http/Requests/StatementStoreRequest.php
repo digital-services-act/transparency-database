@@ -135,7 +135,4 @@ class StatementStoreRequest extends FormRequest
         $check = (array)$this->get('source_type', []);
         return in_array('SOURCE_VOLUNTARY', $check);
     }
-
-
-
 }

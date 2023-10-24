@@ -124,10 +124,10 @@ class StatementAPIController extends Controller
         if (count($unique_puids_to_check) != count($puids_to_check)) {
             $errors  = [
                 'puid' => [
-                    'The identifier(s) are not unique within this API call.'
+                    'The identifier(s) are not unique within this call.'
                 ],
             ];
-            $message = 'The identifier(s) are not unique within this API call.';
+            $message = 'The identifier(s) are not unique within this call.';
             $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -162,11 +162,9 @@ class StatementAPIController extends Controller
             } catch (QueryException $e) {
                 Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
                 $errors = [
-                    'uncaught_exception' => [
-                        'Statement Creation Query Exception Thrown: ' . $e->getMessage()
-                    ]
+                    'Statement Creation Query Exception Thrown'
                 ];
-                $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
+                $message = 'Statement Creation Query Exception Thrown';
                 $out[$index] = ['message' => $message, 'errors' => $errors];
             }
         }
