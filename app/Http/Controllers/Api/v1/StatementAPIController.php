@@ -134,7 +134,8 @@ class StatementAPIController extends Controller
         }
 
 
-        $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->get('puid')->toArray();
+
+        $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
 
         if (count($existing)) {
             $errors  = [
@@ -143,7 +144,7 @@ class StatementAPIController extends Controller
                 ],
                 'existing_puids' => $existing
             ];
-            $message = 'The identifiers given are unique within this platform.';
+            $message = 'The identifiers given are not unique within this platform.';
             $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
