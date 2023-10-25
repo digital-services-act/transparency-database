@@ -38,7 +38,7 @@ class PageController extends Controller
         $page_title = ucwords(str_replace("-", " ", $page));
 
         $page_title_mods = [
-            'Faq' => 'FAQ',
+            'Faq' => 'DSA Transparency Database FAQ',
             'Api Documentation' => 'API Documentation'
         ];
 
@@ -51,7 +51,7 @@ class PageController extends Controller
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Faq' => 'FAQ',
+            'Faq' => 'DSA Transparency Database FAQ',
             'Api Documentation' => 'API Documentation'
         ];
 
