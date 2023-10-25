@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
+use App\Jobs\StatementInsert;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use Illuminate\Database\QueryException;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class StatementAPIController extends Controller
 {
@@ -43,7 +45,6 @@ class StatementAPIController extends Controller
 
     public function store(StatementStoreRequest $request): JsonResponse
     {
-
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $request->user()->platform_id,
@@ -94,5 +95,46 @@ class StatementAPIController extends Controller
         return response()->json($out, Response::HTTP_CREATED);
     }
 
+    public function storeDelayed(StatementStoreRequest $request): JsonResponse
+    {
+        $uuid = Str::uuid();
+        $validated = $request->safe()->merge(
+            [
+                'platform_id' => $request->user()->platform_id,
+                'user_id' => $request->user()->id,
+                'method' => Statement::METHOD_API,
+                'uuid' => $uuid
+            ]
+        )->toArray();
 
+        $validated = $this->sanitizeData($validated);
+
+        $existing = Statement::query()->where('platform_id', $validated['platform_id'])->where('puid', $validated['puid'])->first();
+        if ($existing) {
+            $errors = [
+                'puid' => [
+                    'The identifier given is not unique within this platform.'
+                ]
+            ];
+            $message = 'The identifier given is not unique within this platform.';
+            $out = ['message' => $message, 'errors' => $errors, 'existing' => $existing];
+            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        StatementInsert::dispatch($validated);
+
+        $out = $validated;
+
+        $out['permalink'] = route('home') . '/statement/' . $uuid;
+        $out['self'] = route('home') . '/api/v1/statement/' . $uuid;
+        $out['created_at'] = date('Y-m-d H:i:s');
+
+        unset($out['user_id']);
+        unset($out['platform_id']);
+        unset($out['method']);
+
+
+
+        return response()->json($out, Response::HTTP_CREATED);
+    }
 }

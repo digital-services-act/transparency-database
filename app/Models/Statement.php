@@ -349,7 +349,7 @@ class Statement extends Model
      */
     protected $guarded = [
         'id',
-        'uuid'
+        //'uuid'
     ];
 
     /**
@@ -397,7 +397,9 @@ class Statement extends Model
     {
         parent::boot();
         static::creating(function ($statement) {
-            $statement->uuid = Str::uuid();
+            if(!$statement->uuid) {
+                $statement->uuid = Str::uuid();
+            }
         });
     }
 
@@ -408,7 +410,7 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statement_' . env('APP_ENV');
+        return 'statement_' . config('app.env');
     }
 
     public function toSearchableArray()
