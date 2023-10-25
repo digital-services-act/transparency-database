@@ -1,4 +1,4 @@
-# Digital Services Act FAQ
+# DSA Transparency Database FAQ
 
 _Frequently Asked Questions and Answers_
 
