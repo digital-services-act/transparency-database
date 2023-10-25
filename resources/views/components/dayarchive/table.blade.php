@@ -23,7 +23,7 @@
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
         <th class="ecl-table__header">Date</th>
-        <th class="ecl-table__header">Statements</th>
+        <th class="ecl-table__header">Statements of Reasons</th>
         <th class="ecl-table__header">File Full</th>
         <th class="ecl-table__header">Size Full</th>
         <th class="ecl-table__header">File Light</th>
@@ -35,7 +35,7 @@
 
         <tr class="ecl-table__row dayarchive-row">
             <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date}}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="Statements">@aif($dayarchive->total)</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>
             <td class="ecl-table__cell" data-ecl-table-header="File Full">
                 <a download href="{{ route('dayarchive.download', [$dayarchive->date]) }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">

@@ -140,13 +140,10 @@
                            data-ecl-menu-link="">Analytics</a>
                     </li>
 
-                    @auth
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Day
+                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Daily
                             Archives</a>
                     </li>
-                    @endauth
-
 
                     @can('view dashboard')
                         <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
@@ -164,7 +161,7 @@
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a
                             href="{{ route('page.show', ['faq']) }}"
-                            class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>
+                            class="ecl-menu__link" data-ecl-menu-link="">DSA Transparency Database FAQ</a>
                     </li>
 
                 </ul>
