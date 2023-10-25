@@ -129,6 +129,7 @@ class DayArchiveService
 
                 $selects[] = "REPLACE(puid, '\n',' ') AS puid";
                 $selects[] = "created_at";
+                $selects[] = "platform_id";
 
                 $select_raw = implode(", ", $selects);
 
