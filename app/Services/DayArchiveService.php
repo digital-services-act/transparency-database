@@ -98,8 +98,17 @@ class DayArchiveService
 
                 $raw->chunk(100000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
                     foreach ($statements as $statement) {
-                        fputcsv($csv_file, $this->mapRaw($statement, $platforms));
-                        fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
+                        $row = $this->mapRaw($statement, $platforms);
+                        foreach ($row as $key => $value) {
+                            $row[$key] = str_replace(["\r\n", "\n", "\r"], "", $value);
+                        }
+                        fputcsv($csv_file, $row);
+
+                        $row = $this->mapRawLight($statement, $platforms);
+                        foreach ($row as $key => $value) {
+                            $row[$key] = str_replace(["\r\n", "\n", "\r"], "", $value);
+                        }
+                        fputcsv($csv_filelight, $row);
                     }
                 });
 
