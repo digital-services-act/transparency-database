@@ -80,17 +80,71 @@ class DayArchiveService
                 $day_archive->url      = $url;
                 $day_archive->urllight = $urllight;
 
+
+                $selects = [];
+                $selects[] = "uuid";
+                $selects[] = "decision_visibility";
+                $selects[] = "REPLACE(decision_visibility_other, '\n', ' ') AS decision_visibility_other";
+                $selects[] = "end_date_visibility_restriction";
+
+                $selects[] = "decision_monetary";
+                $selects[] = "REPLACE(decision_monetary_other, '\n', ' ') AS decision_monetary_other";
+                $selects[] = "end_date_monetary_restriction";
+
+                $selects[] = "decision_provision";
+                $selects[] = "end_date_service_restriction";
+
+                $selects[] = "decision_account";
+                $selects[] = "end_date_account_restriction";
+                $selects[] = "account_type";
+
+                $selects[] = "decision_ground";
+                $selects[] = "REPLACE(decision_ground_reference_url, '\n',' ') AS decision_ground_reference_url";
+
+                $selects[] = "REPLACE(illegal_content_legal_ground, '\n',' ') AS illegal_content_legal_ground";
+                $selects[] = "REPLACE(illegal_content_explanation, '\n',' ') AS illegal_content_explanation";
+                $selects[] = "REPLACE(incompatible_content_ground, '\n',' ') AS incompatible_content_ground";
+                $selects[] = "REPLACE(incompatible_content_explanation, '\n',' ') AS incompatible_content_explanation";
+                $selects[] = "incompatible_content_illegal";
+
+                $selects[] = "category";
+                $selects[] = "category_addition";
+                $selects[] = "category_specification";
+                $selects[] = "REPLACE(category_specification_other, '\n',' ') AS category_specification_other";
+
+                $selects[] = "content_type";
+                $selects[] = "REPLACE(content_type_other, '\n',' ') AS content_type_other";
+                $selects[] = "content_language";
+                $selects[] = "content_date";
+
+                $selects[] = "territorial_scope";
+                $selects[] = "application_date";
+                $selects[] = "REPLACE(decision_facts, '\n',' ') AS decision_facts";
+
+                $selects[] = "source_type";
+                $selects[] = "REPLACE(source_identity, '\n',' ') AS source_identity";
+
+                $selects[] = "automated_detection";
+                $selects[] = "automated_decision";
+
+                $selects[] = "REPLACE(puid, '\n',' ') AS puid";
+                $selects[] = "created_at";
+
+                $select_raw = implode(", ", $selects);
+
                 $raw = DB::table('statements')
-                         ->where('statements.id', '>=', $first_id)
-                         ->where('statements.id', '<=', $last_id)
-                         ->orderBy('statements.id');
+                    ->selectRaw($select_raw)
+                    ->where('statements.id', '>=', $first_id)
+                    ->where('statements.id', '<=', $last_id)
+                    ->orderBy('statements.id');
                 $day_archive->total    = $last_id - $first_id;
 
                 if (!$first_id || !$last_id) {
                     $raw = DB::table('statements')
-                             ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
-                             ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
-                             ->orderBy('statements.id', 'desc');
+                        ->selectRaw($select_raw)
+                        ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
+                        ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                        ->orderBy('statements.id', 'desc');
                     $day_archive->total    = $raw->count();
                 }
 
@@ -99,15 +153,9 @@ class DayArchiveService
                 $raw->chunk(100000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
                     foreach ($statements as $statement) {
                         $row = $this->mapRaw($statement, $platforms);
-                        foreach ($row as $key => $value) {
-                            $row[$key] = str_replace(["\r\n", "\n", "\r"], " ", $value);
-                        }
                         fputcsv($csv_file, $row);
 
                         $row = $this->mapRawLight($statement, $platforms);
-                        foreach ($row as $key => $value) {
-                            $row[$key] = str_replace(["\r\n", "\n", "\r"], " ", $value);
-                        }
                         fputcsv($csv_filelight, $row);
                     }
                 });
