@@ -56,9 +56,7 @@ Route::middleware(['auth'])->group(function() {
    });
 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::get('/day-archive', [DayArchiveController::class, 'index'])->name('dayarchive.index');
-    Route::get('/day-archive/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
-    Route::get('/day-archive/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
+
 
     Route::group(['middleware' => ['can:view dashboard']], function(){
 
@@ -92,6 +90,10 @@ Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forC
 Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
 Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
+
+Route::get('/daily-archives', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+Route::get('/daily-archives/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
+Route::get('/daily-archives/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
 Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
 
