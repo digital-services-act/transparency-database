@@ -100,13 +100,13 @@ class DayArchiveService
                     foreach ($statements as $statement) {
                         $row = $this->mapRaw($statement, $platforms);
                         foreach ($row as $key => $value) {
-                            $row[$key] = str_replace(["\r\n", "\n", "\r"], "", $value);
+                            $row[$key] = str_replace(["\r\n", "\n", "\r"], " ", $value);
                         }
                         fputcsv($csv_file, $row);
 
                         $row = $this->mapRawLight($statement, $platforms);
                         foreach ($row as $key => $value) {
-                            $row[$key] = str_replace(["\r\n", "\n", "\r"], "", $value);
+                            $row[$key] = str_replace(["\r\n", "\n", "\r"], " ", $value);
                         }
                         fputcsv($csv_filelight, $row);
                     }
