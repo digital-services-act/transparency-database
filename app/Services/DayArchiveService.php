@@ -161,17 +161,13 @@ class DayArchiveService
                     }
                 });
 
-
                 fclose($csv_file);
                 fclose($csv_filelight);
-
-
 
                 $day_archive->size = Storage::size($file);
                 $day_archive->sizelight = Storage::size($filelight);
 
                 $zip = new ZipArchive;
-
                 if ($zip->open($zippath, ZipArchive::CREATE) === TRUE)
                 {
                     $zip->addFile($path, $file);
@@ -181,7 +177,6 @@ class DayArchiveService
                 }
 
                 $ziplight = new ZipArchive;
-
                 if ($ziplight->open($zippathlight, ZipArchive::CREATE) === TRUE)
                 {
                     $ziplight->addFile($pathlight, $filelight);
@@ -190,8 +185,11 @@ class DayArchiveService
                     throw new Exception('Issue with creating the zip light file.');
                 }
 
-                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'r+') );
-                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'r+') );
+                // Put them on the s3
+                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'r') );
+                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'r') );
+
+                // Clean up the files.
                 Storage::delete($file);
                 Storage::delete($filelight);
                 Storage::delete($zipfile);
