@@ -7,7 +7,7 @@
         if ($factor == 0) $dec = 0;
 
 
-        return sprintf("%.{$dec}f %s", $bytes / (1024 ** $factor), $size[$factor]);
+        return sprintf("%.{$dec}f%s", $bytes / (1024 ** $factor), $size[$factor]);
 
     }
 @endphp
@@ -30,7 +30,7 @@
         <th class="ecl-table__header">Size Light</th>
     </tr>
     </thead>
-    <tbody class="ecl-table__body">
+    <tbody class="ecl-table__body" style="font-size: smaller;">
     @foreach($dayarchives as $dayarchive)
 
         <tr class="ecl-table__row dayarchive-row">
