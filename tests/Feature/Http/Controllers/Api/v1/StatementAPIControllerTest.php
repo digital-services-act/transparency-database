@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
@@ -342,6 +343,65 @@ class StatementAPIControllerTest extends TestCase
             $object->$key = $value;
         }
         $json = json_encode($object);
+        $response = $this->call(
+            'POST',
+            route('api.v1.statement.store'),
+            [],
+            [],
+            [],
+            $headers = [
+                'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json'
+            ],
+            $json
+        );
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(11, Statement::all());
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertEquals('API', $statement->method);
+        $this->assertEquals($user->id, $statement->user->id);
+
+        $this->assertInstanceOf(Carbon::class, $statement->application_date);
+
+        $this->assertNull($statement->decision_ground_reference_url);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function api_statement_json_store_populates_cache()
+    {
+
+
+
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-07-15',
+
+        ]);
+        $object = new \stdClass();
+        foreach ($fields as $key => $value) {
+            $object->$key = $value;
+        }
+        $json = json_encode($object);
+
+        $key = 'queued|' . $user->platform->id . '|' . $object->puid;
+        Cache::shouldReceive('get')
+             ->with($key);
+
+        Cache::shouldReceive('put')
+             ->once()
+             ->withSomeOfArgs($key);
+
+        Cache::shouldReceive('delete')->once();
+
         $response = $this->call(
             'POST',
             route('api.v1.statement.store'),

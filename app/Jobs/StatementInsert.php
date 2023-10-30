@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 
 class StatementInsert implements ShouldQueue
 {
@@ -30,6 +31,8 @@ class StatementInsert implements ShouldQueue
      */
     public function handle(): void
     {
+        $key = 'queued|' . $this->payload['platform_id'] . '|' . $this->payload['puid'];
         Statement::create($this->payload);
+        Cache::delete($key);
     }
 }

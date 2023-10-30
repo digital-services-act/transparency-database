@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -109,19 +110,34 @@ class StatementAPIController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
-        $existing = Statement::query()->where('platform_id', $validated['platform_id'])->where('puid', $validated['puid'])->first();
-        if ($existing) {
+        $existing_in_db = Statement::query()->where('platform_id', $validated['platform_id'])->where('puid', $validated['puid'])->first();
+        if ($existing_in_db) {
             $errors = [
                 'puid' => [
                     'The identifier given is not unique within this platform.'
                 ]
             ];
             $message = 'The identifier given is not unique within this platform.';
-            $out = ['message' => $message, 'errors' => $errors, 'existing' => $existing];
+            $out = ['message' => $message, 'errors' => $errors, 'existing' => $existing_in_db];
+            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $key = 'queued|' . $validated['platform_id'] . '|' . $validated['puid'];
+        $existing_in_cache = Cache::get($key);
+        if ($existing_in_cache) {
+            $errors = [
+                'puid' => [
+                    'The identifier given is not unique within this platform.'
+                ]
+            ];
+            $message = 'The identifier given is not unique within this platform.';
+            $out = ['message' => $message, 'errors' => $errors, 'existing' => $existing_in_cache];
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         StatementInsert::dispatch($validated);
+        Cache::put($key, $validated, 120);
+
 
         $out = $validated;
 
