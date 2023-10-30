@@ -141,7 +141,7 @@
                     </li>
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Day
+                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Daily
                             Archives</a>
                     </li>
 
