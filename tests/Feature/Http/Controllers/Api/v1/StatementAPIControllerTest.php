@@ -376,16 +376,14 @@ class StatementAPIControllerTest extends TestCase
     public function api_statement_json_store_populates_cache()
     {
 
-
-
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-07-15',
-
         ]);
+
         $object = new \stdClass();
         foreach ($fields as $key => $value) {
             $object->$key = $value;

@@ -17,15 +17,13 @@ class StatementInsert implements ShouldQueue
 
     public array $payload;
 
-
     /**
      * Create a new job instance.
      */
     public function __construct($payload)
     {
         $this->payload = $payload;
-        $key = 'queued|' . $this->payload['platform_id'] . '|' . $this->payload['puid'];
-        Cache::put($key, $payload);
+        Cache::put($this->key(), $payload);
     }
 
     /**
@@ -33,8 +31,12 @@ class StatementInsert implements ShouldQueue
      */
     public function handle(): void
     {
-        $key = 'queued|' . $this->payload['platform_id'] . '|' . $this->payload['puid'];
         Statement::create($this->payload);
-        Cache::delete($key);
+        Cache::delete($this->key());
+    }
+
+    private function key(): string
+    {
+        return 'queued|' . $this->payload['platform_id'] . '|' . $this->payload['puid'];
     }
 }
