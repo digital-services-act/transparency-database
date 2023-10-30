@@ -110,17 +110,9 @@ class StatementAPIController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
-        $existing_in_db = Statement::query()->where('platform_id', $validated['platform_id'])->where('puid', $validated['puid'])->first();
-        if ($existing_in_db) {
-            $errors = [
-                'puid' => [
-                    'The identifier given is not unique within this platform.'
-                ]
-            ];
-            $message = 'The identifier given is not unique within this platform.';
-            $out = ['message' => $message, 'errors' => $errors, 'existing' => $existing_in_db];
-            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+
+        // If in cache or in db stop!
+        // Not in cache, not in db then go!
 
         $key = 'queued|' . $validated['platform_id'] . '|' . $validated['puid'];
         $existing_in_cache = Cache::get($key);
@@ -135,12 +127,21 @@ class StatementAPIController extends Controller
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        StatementInsert::dispatch($validated);
-        Cache::put($key, $validated, 120);
+        $existing_in_db = Statement::query()->where('platform_id', $validated['platform_id'])->where('puid', $validated['puid'])->first();
+        if ($existing_in_db) {
+            $errors = [
+                'puid' => [
+                    'The identifier given is not unique within this platform.'
+                ]
+            ];
+            $message = 'The identifier given is not unique within this platform.';
+            $out = ['message' => $message, 'errors' => $errors, 'existing' => $existing_in_db];
+            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
+        StatementInsert::dispatch($validated);
 
         $out = $validated;
-
         $out['permalink'] = route('home') . '/statement/' . $uuid;
         $out['self'] = route('home') . '/api/v1/statement/' . $uuid;
         $out['created_at'] = date('Y-m-d H:i:s');

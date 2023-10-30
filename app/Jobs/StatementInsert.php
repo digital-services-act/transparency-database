@@ -24,6 +24,8 @@ class StatementInsert implements ShouldQueue
     public function __construct($payload)
     {
         $this->payload = $payload;
+        $key = 'queued|' . $this->payload['platform_id'] . '|' . $this->payload['puid'];
+        Cache::put($key, $payload);
     }
 
     /**
