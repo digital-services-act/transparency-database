@@ -3,23 +3,56 @@
 namespace App\Models;
 
 use Exception;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 
+/**
+ * @method static create(array $validated)
+ * @property mixed $decision_monetary
+ * @property mixed $decision_visibility
+ * @property mixed $category_specification
+ * @property mixed $decision_visibility_other
+ * @property mixed $decision_monetary_other
+ * @property mixed $decision_provision
+ * @property mixed $decision_account
+ * @property mixed $account_type
+ * @property mixed $decision_ground
+ * @property mixed $content_type
+ * @property mixed $content_type_other
+ * @property mixed $content_language
+ * @property mixed $illegal_content_legal_ground
+ * @property mixed $illegal_content_explanation
+ * @property mixed $incompatible_content_ground
+ * @property mixed $incompatible_content_explanation
+ * @property mixed $source_type
+ * @property mixed $platform
+ * @property mixed $id
+ * @property mixed $territorial_scope
+ * @property mixed $puid
+ * @property mixed $uuid
+ * @property mixed $created_at
+ * @property mixed $platform_id
+ * @property mixed $category_addition
+ * @property mixed $category
+ * @property mixed $automated_decision
+ * @property mixed $automated_detection
+ * @property mixed $decision_facts
+ * @property mixed $source_identity
+ */
 class Statement extends Model
 {
     use HasFactory, Searchable, SoftDeletes;
-
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
     public const METHODS = [
         'METHOD_FORM' => self::METHOD_FORM,
-        'METHOD_API' => self::METHOD_API
+        'METHOD_API'  => self::METHOD_API
     ];
 
     public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
@@ -27,7 +60,7 @@ class Statement extends Model
     public const ACCOUNT_TYPE_PRIVATE = "Private";
     public const ACCOUNT_TYPES = [
         'ACCOUNT_TYPE_BUSINESS' => self::ACCOUNT_TYPE_BUSINESS,
-        'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE
+        'ACCOUNT_TYPE_PRIVATE'  => self::ACCOUNT_TYPE_PRIVATE
     ];
 
 
@@ -38,10 +71,10 @@ class Statement extends Model
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
     public const SOURCE_TYPE_OTHER_NOTIFICATION = 'Other type of notification';
     public const SOURCE_TYPES = [
-        'SOURCE_ARTICLE_16' => self::SOURCE_ARTICLE_16,
-        'SOURCE_TRUSTED_FLAGGER' => self::SOURCE_TRUSTED_FLAGGER,
+        'SOURCE_ARTICLE_16'              => self::SOURCE_ARTICLE_16,
+        'SOURCE_TRUSTED_FLAGGER'         => self::SOURCE_TRUSTED_FLAGGER,
         'SOURCE_TYPE_OTHER_NOTIFICATION' => self::SOURCE_TYPE_OTHER_NOTIFICATION,
-        'SOURCE_VOLUNTARY' => self::SOURCE_VOLUNTARY,
+        'SOURCE_VOLUNTARY'               => self::SOURCE_VOLUNTARY,
     ];
 
 
@@ -55,14 +88,14 @@ class Statement extends Model
     public const CONTENT_TYPE_IMAGE = 'Image';
     public const CONTENT_TYPE_OTHER = 'Other';
     public const CONTENT_TYPES = [
-        'CONTENT_TYPE_APP' => self::CONTENT_TYPE_APP,
-        'CONTENT_TYPE_AUDIO' => self::CONTENT_TYPE_AUDIO,
-        'CONTENT_TYPE_IMAGE' => self::CONTENT_TYPE_IMAGE,
-        'CONTENT_TYPE_PRODUCT' => self::CONTENT_TYPE_PRODUCT,
+        'CONTENT_TYPE_APP'             => self::CONTENT_TYPE_APP,
+        'CONTENT_TYPE_AUDIO'           => self::CONTENT_TYPE_AUDIO,
+        'CONTENT_TYPE_IMAGE'           => self::CONTENT_TYPE_IMAGE,
+        'CONTENT_TYPE_PRODUCT'         => self::CONTENT_TYPE_PRODUCT,
         'CONTENT_TYPE_SYNTHETIC_MEDIA' => self::CONTENT_TYPE_SYNTHETIC_MEDIA,
-        'CONTENT_TYPE_TEXT' => self::CONTENT_TYPE_TEXT,
-        'CONTENT_TYPE_VIDEO' => self::CONTENT_TYPE_VIDEO,
-        'CONTENT_TYPE_OTHER' => self::CONTENT_TYPE_OTHER,
+        'CONTENT_TYPE_TEXT'            => self::CONTENT_TYPE_TEXT,
+        'CONTENT_TYPE_VIDEO'           => self::CONTENT_TYPE_VIDEO,
+        'CONTENT_TYPE_OTHER'           => self::CONTENT_TYPE_OTHER,
     ];
 
     public const LABEL_STATEMENT_AUTOMATED_DETECTION = 'Was the content detected/identified using automated means?';
@@ -79,8 +112,8 @@ class Statement extends Model
     public const AUTOMATED_DECISION_PARTIALLY = 'Partially automated';
     public const AUTOMATED_DECISION_NOT_AUTOMATED = 'Not Automated';
     public const AUTOMATED_DECISIONS = [
-        'AUTOMATED_DECISION_FULLY' => self::AUTOMATED_DECISION_FULLY,
-        'AUTOMATED_DECISION_PARTIALLY' => self::AUTOMATED_DECISION_PARTIALLY,
+        'AUTOMATED_DECISION_FULLY'         => self::AUTOMATED_DECISION_FULLY,
+        'AUTOMATED_DECISION_PARTIALLY'     => self::AUTOMATED_DECISION_PARTIALLY,
         'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED
     ];
 
@@ -90,7 +123,7 @@ class Statement extends Model
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
     public const DECISION_GROUNDS = [
-        'DECISION_GROUND_ILLEGAL_CONTENT' => self::DECISION_GROUND_ILLEGAL_CONTENT,
+        'DECISION_GROUND_ILLEGAL_CONTENT'      => self::DECISION_GROUND_ILLEGAL_CONTENT,
         'DECISION_GROUND_INCOMPATIBLE_CONTENT' => self::DECISION_GROUND_INCOMPATIBLE_CONTENT
     ];
 
@@ -127,13 +160,13 @@ class Statement extends Model
     public const DECISION_VISIBILITY_CONTENT_LABELLED = 'Labelled content';
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
     public const DECISION_VISIBILITIES = [
-        'DECISION_VISIBILITY_CONTENT_REMOVED' => self::DECISION_VISIBILITY_CONTENT_REMOVED,
-        'DECISION_VISIBILITY_CONTENT_DISABLED' => self::DECISION_VISIBILITY_CONTENT_DISABLED,
-        'DECISION_VISIBILITY_CONTENT_DEMOTED' => self::DECISION_VISIBILITY_CONTENT_DEMOTED,
-        'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED,
+        'DECISION_VISIBILITY_CONTENT_REMOVED'                => self::DECISION_VISIBILITY_CONTENT_REMOVED,
+        'DECISION_VISIBILITY_CONTENT_DISABLED'               => self::DECISION_VISIBILITY_CONTENT_DISABLED,
+        'DECISION_VISIBILITY_CONTENT_DEMOTED'                => self::DECISION_VISIBILITY_CONTENT_DEMOTED,
+        'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'         => self::DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED,
         'DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED,
-        'DECISION_VISIBILITY_CONTENT_LABELLED' => self::DECISION_VISIBILITY_CONTENT_LABELLED,
-        'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER
+        'DECISION_VISIBILITY_CONTENT_LABELLED'               => self::DECISION_VISIBILITY_CONTENT_LABELLED,
+        'DECISION_VISIBILITY_OTHER'                          => self::DECISION_VISIBILITY_OTHER
     ];
 
     public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary payments suspension, termination or other restriction';
@@ -142,9 +175,9 @@ class Statement extends Model
     public const DECISION_MONETARY_OTHER = 'Other restriction (please specify)';
 
     public const DECISION_MONETARIES = [
-        'DECISION_MONETARY_SUSPENSION' => self::DECISION_MONETARY_SUSPENSION,
+        'DECISION_MONETARY_SUSPENSION'  => self::DECISION_MONETARY_SUSPENSION,
         'DECISION_MONETARY_TERMINATION' => self::DECISION_MONETARY_TERMINATION,
-        'DECISION_MONETARY_OTHER' => self::DECISION_MONETARY_OTHER
+        'DECISION_MONETARY_OTHER'       => self::DECISION_MONETARY_OTHER
     ];
 
     public const LABEL_STATEMENT_DECISION_PROVISION = 'Suspension or termination of the provision of the service';
@@ -153,10 +186,10 @@ class Statement extends Model
     public const DECISION_PROVISION_PARTIAL_TERMINATION = 'Partial termination of the provision of the service';
     public const DECISION_PROVISION_TOTAL_TERMINATION = 'Total termination of the provision of the service';
     public const DECISION_PROVISIONS = [
-        'DECISION_PROVISION_PARTIAL_SUSPENSION' => self::DECISION_PROVISION_PARTIAL_SUSPENSION,
-        'DECISION_PROVISION_TOTAL_SUSPENSION' => self::DECISION_PROVISION_TOTAL_SUSPENSION,
+        'DECISION_PROVISION_PARTIAL_SUSPENSION'  => self::DECISION_PROVISION_PARTIAL_SUSPENSION,
+        'DECISION_PROVISION_TOTAL_SUSPENSION'    => self::DECISION_PROVISION_TOTAL_SUSPENSION,
         'DECISION_PROVISION_PARTIAL_TERMINATION' => self::DECISION_PROVISION_PARTIAL_TERMINATION,
-        'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
+        'DECISION_PROVISION_TOTAL_TERMINATION'   => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
     public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account';
@@ -164,7 +197,7 @@ class Statement extends Model
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
     public const DECISION_ACCOUNTS = [
-        'DECISION_ACCOUNT_SUSPENDED' => self::DECISION_ACCOUNT_SUSPENDED,
+        'DECISION_ACCOUNT_SUSPENDED'  => self::DECISION_ACCOUNT_SUSPENDED,
         'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED
     ];
 
@@ -191,20 +224,20 @@ class Statement extends Model
 
 
     public const STATEMENT_CATEGORIES = [
-        'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
-        'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS' => self::STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS,
-        'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH' => self::STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH,
-        'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS' => self::STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS,
+        'STATEMENT_CATEGORY_ANIMAL_WELFARE'                                   => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
+        'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS'           => self::STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS,
+        'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH'                        => self::STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH,
+        'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS'              => self::STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS,
         'STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS' => self::STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS,
-        'STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR' => self::STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR,
-        'STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT' => self::STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT,
-        'STATEMENT_CATEGORY_PROTECTION_OF_MINORS' => self::STATEMENT_CATEGORY_PROTECTION_OF_MINORS,
-        'STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY' => self::STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY,
-        'STATEMENT_CATEGORY_SCAMS_AND_FRAUD' => self::STATEMENT_CATEGORY_SCAMS_AND_FRAUD,
-        'STATEMENT_CATEGORY_SELF_HARM' => self::STATEMENT_CATEGORY_SELF_HARM,
-        'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE' => self::STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE,
-        'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS' => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS,
-        'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
+        'STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR'                         => self::STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR,
+        'STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT'                => self::STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT,
+        'STATEMENT_CATEGORY_PROTECTION_OF_MINORS'                             => self::STATEMENT_CATEGORY_PROTECTION_OF_MINORS,
+        'STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY'                         => self::STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY,
+        'STATEMENT_CATEGORY_SCAMS_AND_FRAUD'                                  => self::STATEMENT_CATEGORY_SCAMS_AND_FRAUD,
+        'STATEMENT_CATEGORY_SELF_HARM'                                        => self::STATEMENT_CATEGORY_SELF_HARM,
+        'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE'                        => self::STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE,
+        'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS'                      => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS,
+        'STATEMENT_CATEGORY_VIOLENCE'                                         => self::STATEMENT_CATEGORY_VIOLENCE
     ];
 
     public const KEYWORD_ANIMAL_HARM = 'Animal Harm';
@@ -267,66 +300,62 @@ class Statement extends Model
     public const LABEL_KEYWORDS_OTHER = 'Other Keyword';
 
     public const KEYWORDS = [
-        'KEYWORD_ANIMAL_HARM' => self::KEYWORD_ANIMAL_HARM,
-        'KEYWORD_ADULT_SEXUAL_MATERIAL' => self::KEYWORD_ADULT_SEXUAL_MATERIAL,
-        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS,
-        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS,
-        'KEYWORD_BIOMETRIC_DATA_BREACH' => self::KEYWORD_BIOMETRIC_DATA_BREACH,
-        'KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL' => self::KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL,
-        'KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS' => self::KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS,
-        'KEYWORD_COORDINATED_HARM' => self::KEYWORD_COORDINATED_HARM,
-        'KEYWORD_COPYRIGHT_INFRINGEMENT' => self::KEYWORD_COPYRIGHT_INFRINGEMENT,
-        'KEYWORD_DANGEROUS_TOYS' => self::KEYWORD_DANGEROUS_TOYS,
-        'KEYWORD_DATA_FALSIFICATION' => self::KEYWORD_DATA_FALSIFICATION,
-        'KEYWORD_DEFAMATION' => self::KEYWORD_DEFAMATION,
-        'KEYWORD_DESIGN_INFRINGEMENT' => self::KEYWORD_DESIGN_INFRINGEMENT,
-        'KEYWORD_DISCRIMINATION' => self::KEYWORD_DISCRIMINATION,
-        'KEYWORD_DISINFORMATION' => self::KEYWORD_DISINFORMATION,
-        'KEYWORD_FOREIGN_INFORMATION_MANIPULATION' => self::KEYWORD_FOREIGN_INFORMATION_MANIPULATION,
-        'KEYWORD_GENDER_BASED_VIOLENCE' => self::KEYWORD_GENDER_BASED_VIOLENCE,
+        'KEYWORD_ANIMAL_HARM'                         => self::KEYWORD_ANIMAL_HARM,
+        'KEYWORD_ADULT_SEXUAL_MATERIAL'               => self::KEYWORD_ADULT_SEXUAL_MATERIAL,
+        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS'    => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS,
+        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS'           => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS,
+        'KEYWORD_BIOMETRIC_DATA_BREACH'               => self::KEYWORD_BIOMETRIC_DATA_BREACH,
+        'KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL'         => self::KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL,
+        'KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS'  => self::KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS,
+        'KEYWORD_COORDINATED_HARM'                    => self::KEYWORD_COORDINATED_HARM,
+        'KEYWORD_COPYRIGHT_INFRINGEMENT'              => self::KEYWORD_COPYRIGHT_INFRINGEMENT,
+        'KEYWORD_DANGEROUS_TOYS'                      => self::KEYWORD_DANGEROUS_TOYS,
+        'KEYWORD_DATA_FALSIFICATION'                  => self::KEYWORD_DATA_FALSIFICATION,
+        'KEYWORD_DEFAMATION'                          => self::KEYWORD_DEFAMATION,
+        'KEYWORD_DESIGN_INFRINGEMENT'                 => self::KEYWORD_DESIGN_INFRINGEMENT,
+        'KEYWORD_DISCRIMINATION'                      => self::KEYWORD_DISCRIMINATION,
+        'KEYWORD_DISINFORMATION'                      => self::KEYWORD_DISINFORMATION,
+        'KEYWORD_FOREIGN_INFORMATION_MANIPULATION'    => self::KEYWORD_FOREIGN_INFORMATION_MANIPULATION,
+        'KEYWORD_GENDER_BASED_VIOLENCE'               => self::KEYWORD_GENDER_BASED_VIOLENCE,
         'KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT' => self::KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT,
-        'KEYWORD_GEOGRAPHICAL_REQUIREMENTS' => self::KEYWORD_GEOGRAPHICAL_REQUIREMENTS,
-        'KEYWORD_GOODS_SERVICES_NOT_PERMITTED' => self::KEYWORD_GOODS_SERVICES_NOT_PERMITTED,
-        'KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS' => self::KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS,
-        'KEYWORD_HATE_SPEECH' => self::KEYWORD_HATE_SPEECH,
-        'KEYWORD_HUMAN_EXPLOITATION' => self::KEYWORD_HUMAN_EXPLOITATION,
-        'KEYWORD_HUMAN_TRAFFICKING' => self::KEYWORD_HUMAN_TRAFFICKING,
-        'KEYWORD_ILLEGAL_ORGANIZATIONS' => self::KEYWORD_ILLEGAL_ORGANIZATIONS,
-        'KEYWORD_IMAGE_BASED_SEXUAL_ABUSE' => self::KEYWORD_IMAGE_BASED_SEXUAL_ABUSE,
-        'KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING' => self::KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING,
-        'KEYWORD_INAUTHENTIC_ACCOUNTS' => self::KEYWORD_INAUTHENTIC_ACCOUNTS,
-        'KEYWORD_INAUTHENTIC_LISTINGS' => self::KEYWORD_INAUTHENTIC_LISTINGS,
-        'KEYWORD_INAUTHENTIC_USER_REVIEWS' => self::KEYWORD_INAUTHENTIC_USER_REVIEWS,
-        'KEYWORD_INCITEMENT_VIOLENCE_HATRED' => self::KEYWORD_INCITEMENT_VIOLENCE_HATRED,
-        'KEYWORD_INSUFFICIENT_INFORMATION_TRADERS' => self::KEYWORD_INSUFFICIENT_INFORMATION_TRADERS,
-        'KEYWORD_LANGUAGE_REQUIREMENTS' => self::KEYWORD_LANGUAGE_REQUIREMENTS,
-        'KEYWORD_MISINFORMATION' => self::KEYWORD_MISINFORMATION,
-        'KEYWORD_MISSING_PROCESSING_GROUND' => self::KEYWORD_MISSING_PROCESSING_GROUND,
-        'KEYWORD_NON_CONSENSUAL_IMAGE_SHARING' => self::KEYWORD_NON_CONSENSUAL_IMAGE_SHARING,
-        'KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE' => self::KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE,
-        'KEYWORD_NUDITY' => self::KEYWORD_NUDITY,
-        'KEYWORD_ONLINE_BULLYING_INTIMIDATION' => self::KEYWORD_ONLINE_BULLYING_INTIMIDATION,
-        'KEYWORD_PATENT_INFRINGEMENT' => self::KEYWORD_PATENT_INFRINGEMENT,
-        'KEYWORD_PHISHING' => self::KEYWORD_PHISHING,
-        'KEYWORD_PYRAMID_SCHEMES' => self::KEYWORD_PYRAMID_SCHEMES,
-        'KEYWORD_REGULATED_GOODS_SERVICES' => self::KEYWORD_REGULATED_GOODS_SERVICES,
-        'KEYWORD_RIGHT_TO_BE_FORGOTTEN' => self::KEYWORD_RIGHT_TO_BE_FORGOTTEN,
-        'KEYWORD_RISK_ENVIRONMENTAL_DAMAGE' => self::KEYWORD_RISK_ENVIRONMENTAL_DAMAGE,
-        'KEYWORD_RISK_PUBLIC_HEALTH' => self::KEYWORD_RISK_PUBLIC_HEALTH,
-        'KEYWORD_SELF_MUTILATION' => self::KEYWORD_SELF_MUTILATION,
-        'KEYWORD_STALKING' => self::KEYWORD_STALKING,
-        'KEYWORD_SUICIDE' => self::KEYWORD_SUICIDE,
-        'KEYWORD_TERRORIST_CONTENT' => self::KEYWORD_TERRORIST_CONTENT,
-        'KEYWORD_TRADE_SECRET_INFRINGEMENT' => self::KEYWORD_TRADE_SECRET_INFRINGEMENT,
-        'KEYWORD_TRADEMARK_INFRINGEMENT' => self::KEYWORD_TRADEMARK_INFRINGEMENT,
-        'KEYWORD_UNLAWFUL_SALE_ANIMALS' => self::KEYWORD_UNLAWFUL_SALE_ANIMALS,
-        'KEYWORD_UNSAFE_CHALLENGES' => self::KEYWORD_UNSAFE_CHALLENGES,
-        'KEYWORD_OTHER' => self::KEYWORD_OTHER,
+        'KEYWORD_GEOGRAPHICAL_REQUIREMENTS'           => self::KEYWORD_GEOGRAPHICAL_REQUIREMENTS,
+        'KEYWORD_GOODS_SERVICES_NOT_PERMITTED'        => self::KEYWORD_GOODS_SERVICES_NOT_PERMITTED,
+        'KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS'   => self::KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS,
+        'KEYWORD_HATE_SPEECH'                         => self::KEYWORD_HATE_SPEECH,
+        'KEYWORD_HUMAN_EXPLOITATION'                  => self::KEYWORD_HUMAN_EXPLOITATION,
+        'KEYWORD_HUMAN_TRAFFICKING'                   => self::KEYWORD_HUMAN_TRAFFICKING,
+        'KEYWORD_ILLEGAL_ORGANIZATIONS'               => self::KEYWORD_ILLEGAL_ORGANIZATIONS,
+        'KEYWORD_IMAGE_BASED_SEXUAL_ABUSE'            => self::KEYWORD_IMAGE_BASED_SEXUAL_ABUSE,
+        'KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING'     => self::KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING,
+        'KEYWORD_INAUTHENTIC_ACCOUNTS'                => self::KEYWORD_INAUTHENTIC_ACCOUNTS,
+        'KEYWORD_INAUTHENTIC_LISTINGS'                => self::KEYWORD_INAUTHENTIC_LISTINGS,
+        'KEYWORD_INAUTHENTIC_USER_REVIEWS'            => self::KEYWORD_INAUTHENTIC_USER_REVIEWS,
+        'KEYWORD_INCITEMENT_VIOLENCE_HATRED'          => self::KEYWORD_INCITEMENT_VIOLENCE_HATRED,
+        'KEYWORD_INSUFFICIENT_INFORMATION_TRADERS'    => self::KEYWORD_INSUFFICIENT_INFORMATION_TRADERS,
+        'KEYWORD_LANGUAGE_REQUIREMENTS'               => self::KEYWORD_LANGUAGE_REQUIREMENTS,
+        'KEYWORD_MISINFORMATION'                      => self::KEYWORD_MISINFORMATION,
+        'KEYWORD_MISSING_PROCESSING_GROUND'           => self::KEYWORD_MISSING_PROCESSING_GROUND,
+        'KEYWORD_NON_CONSENSUAL_IMAGE_SHARING'        => self::KEYWORD_NON_CONSENSUAL_IMAGE_SHARING,
+        'KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE'       => self::KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE,
+        'KEYWORD_NUDITY'                              => self::KEYWORD_NUDITY,
+        'KEYWORD_ONLINE_BULLYING_INTIMIDATION'        => self::KEYWORD_ONLINE_BULLYING_INTIMIDATION,
+        'KEYWORD_PATENT_INFRINGEMENT'                 => self::KEYWORD_PATENT_INFRINGEMENT,
+        'KEYWORD_PHISHING'                            => self::KEYWORD_PHISHING,
+        'KEYWORD_PYRAMID_SCHEMES'                     => self::KEYWORD_PYRAMID_SCHEMES,
+        'KEYWORD_REGULATED_GOODS_SERVICES'            => self::KEYWORD_REGULATED_GOODS_SERVICES,
+        'KEYWORD_RIGHT_TO_BE_FORGOTTEN'               => self::KEYWORD_RIGHT_TO_BE_FORGOTTEN,
+        'KEYWORD_RISK_ENVIRONMENTAL_DAMAGE'           => self::KEYWORD_RISK_ENVIRONMENTAL_DAMAGE,
+        'KEYWORD_RISK_PUBLIC_HEALTH'                  => self::KEYWORD_RISK_PUBLIC_HEALTH,
+        'KEYWORD_SELF_MUTILATION'                     => self::KEYWORD_SELF_MUTILATION,
+        'KEYWORD_STALKING'                            => self::KEYWORD_STALKING,
+        'KEYWORD_SUICIDE'                             => self::KEYWORD_SUICIDE,
+        'KEYWORD_TERRORIST_CONTENT'                   => self::KEYWORD_TERRORIST_CONTENT,
+        'KEYWORD_TRADE_SECRET_INFRINGEMENT'           => self::KEYWORD_TRADE_SECRET_INFRINGEMENT,
+        'KEYWORD_TRADEMARK_INFRINGEMENT'              => self::KEYWORD_TRADEMARK_INFRINGEMENT,
+        'KEYWORD_UNLAWFUL_SALE_ANIMALS'               => self::KEYWORD_UNLAWFUL_SALE_ANIMALS,
+        'KEYWORD_UNSAFE_CHALLENGES'                   => self::KEYWORD_UNSAFE_CHALLENGES,
+        'KEYWORD_OTHER'                               => self::KEYWORD_OTHER,
     ];
-
-
-
-
 
 
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
@@ -358,20 +387,20 @@ class Statement extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'uuid' => 'string',
-        'content_date' => 'datetime:Y-m-d',
-        'application_date' => 'datetime:Y-m-d',
-        'end_date_account_restriction' => 'datetime:Y-m-d',
-        'end_date_monetary_restriction' => 'datetime:Y-m-d',
-        'end_date_service_restriction' => 'datetime:Y-m-d',
+        'id'                              => 'integer',
+        'uuid'                            => 'string',
+        'content_date'                    => 'datetime:Y-m-d',
+        'application_date'                => 'datetime:Y-m-d',
+        'end_date_account_restriction'    => 'datetime:Y-m-d',
+        'end_date_monetary_restriction'   => 'datetime:Y-m-d',
+        'end_date_service_restriction'    => 'datetime:Y-m-d',
         'end_date_visibility_restriction' => 'datetime:Y-m-d',
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'territorial_scope' => 'array',
-        'content_type' => 'array',
-        'decision_visibility' => 'array',
-        'category_addition' => 'array',
-        'category_specification' => 'array'
+        'created_at'                      => 'datetime:Y-m-d H:i:s',
+        'territorial_scope'               => 'array',
+        'content_type'                    => 'array',
+        'decision_visibility'             => 'array',
+        'category_addition'               => 'array',
+        'category_specification'          => 'array'
     ];
 
     protected $hidden = [
@@ -393,11 +422,11 @@ class Statement extends Model
         'self'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
-        static::creating(function ($statement) {
-            if(!$statement->uuid) {
+        static::creating(static function ($statement) {
+            if ( ! $statement->uuid) {
                 $statement->uuid = Str::uuid();
             }
         });
@@ -408,42 +437,42 @@ class Statement extends Model
      *
      * @return string
      */
-    public function searchableAs()
+    public function searchableAs(): string
     {
         return 'statement_' . config('app.env');
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         return [
-            'decision_visibility' => $this->decision_visibility,
-            'category_specification' => $this->category_specification,
-            'decision_visibility_other' => $this->decision_visibilit_other,
-            'decision_monetary' => $this->decision_monetary,
-            'decision_monetary_other' => $this->decision_monetary_other,
-            'decision_provision' => $this->decision_provision,
-            'decision_account' => $this->decision_account,
-            'account_type' => $this->account_type,
-            'decision_ground' => $this->decision_ground,
-            'content_type' => $this->content_type,
-            'content_type_other' => $this->content_type_other,
-            'content_language' => $this->content_language,
-            'illegal_content_legal_ground' => $this->illegal_content_legal_ground,
-            'illegal_content_explanation' => $this->illegal_content_explanation,
-            'incompatible_content_ground' => $this->incompatible_content_ground,
+            'decision_visibility'              => $this->decision_visibility,
+            'category_specification'           => $this->category_specification,
+            'decision_visibility_other'        => $this->decision_visibility_other,
+            'decision_monetary'                => $this->decision_monetary,
+            'decision_monetary_other'          => $this->decision_monetary_other,
+            'decision_provision'               => $this->decision_provision,
+            'decision_account'                 => $this->decision_account,
+            'account_type'                     => $this->account_type,
+            'decision_ground'                  => $this->decision_ground,
+            'content_type'                     => $this->content_type,
+            'content_type_other'               => $this->content_type_other,
+            'content_language'                 => $this->content_language,
+            'illegal_content_legal_ground'     => $this->illegal_content_legal_ground,
+            'illegal_content_explanation'      => $this->illegal_content_explanation,
+            'incompatible_content_ground'      => $this->incompatible_content_ground,
             'incompatible_content_explanation' => $this->incompatible_content_explanation,
-            'source_type' => $this->source_type,
-            'source_identity' => $this->source_identity,
-            'decision_facts' => $this->decision_facts,
-            'automated_detection' => $this->automated_detection === self::AUTOMATED_DETECTION_YES,
-            'automated_decision' => $this->automated_decision,
-            'category' => $this->category,
-            'category_addition' => $this->category_addition,
-            'platform_id' => $this->platform_id,
-            'created_at' => $this->created_at,
-            'uuid' => $this->uuid,
-            'puid' => $this->puid,
-            'territorial_scope' => $this->territorial_scope
+            'source_type'                      => $this->source_type,
+            'source_identity'                  => $this->source_identity,
+            'decision_facts'                   => $this->decision_facts,
+            'automated_detection'              => $this->automated_detection === self::AUTOMATED_DETECTION_YES,
+            'automated_decision'               => $this->automated_decision,
+            'category'                         => $this->category,
+            'category_addition'                => $this->category_addition,
+            'platform_id'                      => $this->platform_id,
+            'created_at'                       => $this->created_at,
+            'uuid'                             => $this->uuid,
+            'puid'                             => $this->puid,
+            'territorial_scope'                => $this->territorial_scope
         ];
     }
 
@@ -458,17 +487,17 @@ class Statement extends Model
     /**
      * Get the key name used to index the model.
      */
-    public function getScoutKeyName(): mixed
+    public function getScoutKeyName(): string
     {
         return 'id';
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function platform(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function platform(): HasOne
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
@@ -576,24 +605,20 @@ class Statement extends Model
      */
     public function getRawKeys($key): mixed
     {
-        if(is_null($this->getRawOriginal($key))) return [];
-        $out = null;
+        if (is_null($this->getRawOriginal($key))) {
+            return [];
+        }
 
+        $out = [];
         // Catch potential bad json here.
         try {
-            $out = json_decode($this->getRawOriginal($key));
-        } catch (Exception $e) {
-            $out = [];
-        }
-
-
-        if (is_array($out)) {
+            $out = json_decode($this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
+            if (!is_array($out)) {
+                $out = [];
+            }
             sort($out);
-        } else {
-            $out = [];
+        } catch (Exception) {
         }
-
         return $out;
     }
-
 }

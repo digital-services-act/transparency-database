@@ -25,7 +25,7 @@
                 />
             </form>
             <script>
-              var category = document.getElementById('category');
+              let category = document.getElementById('category')
               category.onchange = (event) => {
                 document.location.href = '{{ route('analytics.category') }}/' + event.target.value;
               }

@@ -33,7 +33,7 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function existingPuid(Request $request, String $puid)
+    public function existingPuid(Request $request, String $puid): JsonResponse
     {
         $platform_id = $request->user()->platform_id;
 
@@ -77,16 +77,17 @@ class StatementAPIController extends Controller
                 }
 
                 return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
-            } else {
-                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
-                $errors = [
-                    'uncaught_exception' => [
-                        'Statement Creation Query Exception Thrown: ' . $e->getMessage()
-                    ]
-                ];
-                $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
-                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
+
+            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+            $errors  = [
+                'uncaught_exception' => [
+                    'Statement Creation Query Exception Thrown: ' . $e->getMessage()
+                ]
+            ];
+            $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
+
+            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 
@@ -146,11 +147,7 @@ class StatementAPIController extends Controller
         $out['self'] = route('home') . '/api/v1/statement/' . $uuid;
         $out['created_at'] = date('Y-m-d H:i:s');
 
-        unset($out['user_id']);
-        unset($out['platform_id']);
-        unset($out['method']);
-
-
+        unset($out['user_id'], $out['platform_id'], $out['method']);
 
         return response()->json($out, Response::HTTP_CREATED);
     }
