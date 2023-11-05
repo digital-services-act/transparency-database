@@ -43,6 +43,15 @@ use Laravel\Scout\Searchable;
  * @property mixed $automated_detection
  * @property mixed $decision_facts
  * @property mixed $source_identity
+ * @property mixed $method
+ * @property mixed $user
+ * @property mixed $application_date
+ * @property mixed $decision_ground_reference_url
+ * @property mixed $end_date_monetary_restriction
+ * @property mixed $end_date_visibility_restriction
+ * @property mixed $end_date_service_restriction
+ * @property mixed $end_date_account_restriction
+ * @property mixed $category_specification_other
  */
 class Statement extends Model
 {
