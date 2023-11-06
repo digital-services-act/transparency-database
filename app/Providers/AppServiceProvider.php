@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Blade;

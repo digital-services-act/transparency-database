@@ -7,10 +7,13 @@ use App\Exports\StatementExportTrait;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use ZipArchive;
 
 
@@ -37,7 +40,7 @@ class DayArchiveService
                 if ($force) {
                     $existing->delete();
                 } else {
-                    throw new Exception("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
+                    throw new \RuntimeException("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
                 }
             }
 
@@ -80,40 +83,98 @@ class DayArchiveService
                 $day_archive->url      = $url;
                 $day_archive->urllight = $urllight;
 
+
+                $selects = [];
+                $selects[] = "uuid";
+                $selects[] = "decision_visibility";
+                $selects[] = "REPLACE(decision_visibility_other, '\n', ' ') AS decision_visibility_other";
+                $selects[] = "end_date_visibility_restriction";
+
+                $selects[] = "decision_monetary";
+                $selects[] = "REPLACE(decision_monetary_other, '\n', ' ') AS decision_monetary_other";
+                $selects[] = "end_date_monetary_restriction";
+
+                $selects[] = "decision_provision";
+                $selects[] = "end_date_service_restriction";
+
+                $selects[] = "decision_account";
+                $selects[] = "end_date_account_restriction";
+                $selects[] = "account_type";
+
+                $selects[] = "decision_ground";
+                $selects[] = "REPLACE(decision_ground_reference_url, '\n',' ') AS decision_ground_reference_url";
+
+                $selects[] = "REPLACE(illegal_content_legal_ground, '\n',' ') AS illegal_content_legal_ground";
+                $selects[] = "REPLACE(illegal_content_explanation, '\n',' ') AS illegal_content_explanation";
+                $selects[] = "REPLACE(incompatible_content_ground, '\n',' ') AS incompatible_content_ground";
+                $selects[] = "REPLACE(incompatible_content_explanation, '\n',' ') AS incompatible_content_explanation";
+                $selects[] = "incompatible_content_illegal";
+
+                $selects[] = "category";
+                $selects[] = "category_addition";
+                $selects[] = "category_specification";
+                $selects[] = "REPLACE(category_specification_other, '\n',' ') AS category_specification_other";
+
+                $selects[] = "content_type";
+                $selects[] = "REPLACE(content_type_other, '\n',' ') AS content_type_other";
+                $selects[] = "content_language";
+                $selects[] = "content_date";
+
+                $selects[] = "territorial_scope";
+                $selects[] = "application_date";
+                $selects[] = "REPLACE(decision_facts, '\n',' ') AS decision_facts";
+
+                $selects[] = "source_type";
+                $selects[] = "REPLACE(source_identity, '\n',' ') AS source_identity";
+
+                $selects[] = "automated_detection";
+                $selects[] = "automated_decision";
+
+                $selects[] = "REPLACE(puid, '\n',' ') AS puid";
+                $selects[] = "created_at";
+                $selects[] = "platform_id";
+
+                $select_raw = implode(", ", $selects);
+
                 $raw = DB::table('statements')
-                         ->where('statements.id', '>=', $first_id)
-                         ->where('statements.id', '<=', $last_id)
-                         ->orderBy('statements.id');
-                $day_archive->total    = $last_id - $first_id;
+                    ->selectRaw($select_raw)
+                    ->where('statements.id', '>=', $first_id)
+                    ->where('statements.id', '<=', $last_id)
+                    ->orderBy('statements.id');
+                $day_archive->total    = 0;
 
                 if (!$first_id || !$last_id) {
                     $raw = DB::table('statements')
-                             ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
-                             ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
-                             ->orderBy('statements.id', 'desc');
-                    $day_archive->total    = $raw->count();
+                        ->selectRaw($select_raw)
+                        ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
+                        ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                        ->orderBy('statements.id', 'desc');
+                    $day_archive->total    = 0;
                 }
 
                 $day_archive->save();
 
-                $raw->chunk(100000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
+                $total_statements = 0;
+
+                $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms, $total_statements) {
+                    $total_statements += $statements->count();
                     foreach ($statements as $statement) {
-                        fputcsv($csv_file, $this->mapRaw($statement, $platforms));
-                        fputcsv($csv_filelight, $this->mapRawLight($statement, $platforms));
+                        $row = $this->mapRaw($statement, $platforms);
+                        fputcsv($csv_file, $row);
+
+                        $row = $this->mapRawLight($statement, $platforms);
+                        fputcsv($csv_filelight, $row);
                     }
                 });
-
 
                 fclose($csv_file);
                 fclose($csv_filelight);
 
-
-
                 $day_archive->size = Storage::size($file);
                 $day_archive->sizelight = Storage::size($filelight);
+                $day_archive->total = $total_statements;
 
                 $zip = new ZipArchive;
-
                 if ($zip->open($zippath, ZipArchive::CREATE) === TRUE)
                 {
                     $zip->addFile($path, $file);
@@ -123,17 +184,19 @@ class DayArchiveService
                 }
 
                 $ziplight = new ZipArchive;
-
                 if ($ziplight->open($zippathlight, ZipArchive::CREATE) === TRUE)
                 {
                     $ziplight->addFile($pathlight, $filelight);
                     $ziplight->close();
                 } else {
-                    throw new Exception('Issue with creating the zip light file.');
+                    throw new RuntimeException('Issue with creating the zip light file.');
                 }
 
-                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'r+') );
-                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'r+') );
+                // Put them on the s3
+                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'rb') );
+                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'rb') );
+
+                // Clean up the files.
                 Storage::delete($file);
                 Storage::delete($filelight);
                 Storage::delete($zipfile);
@@ -143,12 +206,12 @@ class DayArchiveService
                 $day_archive->save();
 
             } else {
-                throw new Exception("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
+                throw new \RuntimeException("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
             }
 
             return $day_archive;
         } else {
-            throw new Exception("When creating a day export you must supply a date in the past.");
+            throw new \RuntimeException("When creating a day export you must supply a date in the past.");
         }
     }
 
@@ -200,7 +263,12 @@ class DayArchiveService
         return DayArchive::query()->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
-    public function getDayArchiveByDate(Carbon $date)
+    /**
+     * @param Carbon $date
+     *
+     * @return DayArchive|Model|Builder|null
+     */
+    public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
     {
         return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
     }

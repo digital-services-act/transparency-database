@@ -21,7 +21,7 @@
             can be exported in .csv format at a given time.
 
             To submit feedback on the content of this page and to propose additional features, please visit the
-            <a href="{{ route('feedback.index') }}" class="ecl-link ecl-link--standalone">link</a> to the feedback form.
+            <a href="{{ route('feedback.index') }}">feedback form</a>.
         </div>
     </div>
 
