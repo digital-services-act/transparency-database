@@ -138,7 +138,7 @@ class DayArchiveService
                     ->where('statements.id', '>=', $first_id)
                     ->where('statements.id', '<=', $last_id)
                     ->orderBy('statements.id');
-                $day_archive->total    = $last_id - $first_id;
+                $day_archive->total    = 0;
 
                 if (!$first_id || !$last_id) {
                     $raw = DB::table('statements')
@@ -146,18 +146,22 @@ class DayArchiveService
                         ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
                         ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
                         ->orderBy('statements.id', 'desc');
-                    $day_archive->total    = $raw->count();
+                    $day_archive->total    = 0;
                 }
 
                 $day_archive->save();
 
-                $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
+                $total_statements = 0;
+
+                $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms, $total_statements) {
                     foreach ($statements as $statement) {
                         $row = $this->mapRaw($statement, $platforms);
                         fputcsv($csv_file, $row);
 
                         $row = $this->mapRawLight($statement, $platforms);
                         fputcsv($csv_filelight, $row);
+
+                        $total_statements++;
                     }
                 });
 
@@ -166,6 +170,7 @@ class DayArchiveService
 
                 $day_archive->size = Storage::size($file);
                 $day_archive->sizelight = Storage::size($filelight);
+                $day_archive->total = $total_statements;
 
                 $zip = new ZipArchive;
                 if ($zip->open($zippath, ZipArchive::CREATE) === TRUE)

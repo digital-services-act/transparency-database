@@ -25,7 +25,7 @@ class CompilePlatformDayTotals extends Command
     /**
      * Execute the console command.
      */
-    public function handle(PlatformDayTotalsService $platform_day_totals_service)
+    public function handle(PlatformDayTotalsService $platform_day_totals_service): void
     {
         $platform_id = $this->argument('platform_id');
         $attribute = $this->argument('attribute') !== 'all' ?  $this->argument('attribute') : '*';
