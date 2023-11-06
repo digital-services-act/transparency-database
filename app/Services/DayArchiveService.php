@@ -7,10 +7,13 @@ use App\Exports\StatementExportTrait;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use ZipArchive;
 
 
@@ -37,7 +40,7 @@ class DayArchiveService
                 if ($force) {
                     $existing->delete();
                 } else {
-                    throw new Exception("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
+                    throw new \RuntimeException("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
                 }
             }
 
@@ -154,14 +157,13 @@ class DayArchiveService
                 $total_statements = 0;
 
                 $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms, $total_statements) {
+                    $total_statements += $statements->count();
                     foreach ($statements as $statement) {
                         $row = $this->mapRaw($statement, $platforms);
                         fputcsv($csv_file, $row);
 
                         $row = $this->mapRawLight($statement, $platforms);
                         fputcsv($csv_filelight, $row);
-
-                        $total_statements++;
                     }
                 });
 
@@ -187,12 +189,12 @@ class DayArchiveService
                     $ziplight->addFile($pathlight, $filelight);
                     $ziplight->close();
                 } else {
-                    throw new Exception('Issue with creating the zip light file.');
+                    throw new RuntimeException('Issue with creating the zip light file.');
                 }
 
                 // Put them on the s3
-                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'r') );
-                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'r') );
+                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'rb') );
+                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'rb') );
 
                 // Clean up the files.
                 Storage::delete($file);
@@ -204,12 +206,12 @@ class DayArchiveService
                 $day_archive->save();
 
             } else {
-                throw new Exception("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
+                throw new \RuntimeException("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
             }
 
             return $day_archive;
         } else {
-            throw new Exception("When creating a day export you must supply a date in the past.");
+            throw new \RuntimeException("When creating a day export you must supply a date in the past.");
         }
     }
 
@@ -261,7 +263,12 @@ class DayArchiveService
         return DayArchive::query()->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
-    public function getDayArchiveByDate(Carbon $date)
+    /**
+     * @param Carbon $date
+     *
+     * @return DayArchive|Model|Builder|null
+     */
+    public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
     {
         return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
     }
