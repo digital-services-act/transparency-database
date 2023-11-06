@@ -31,7 +31,7 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function existingPuid(Request $request, String $puid)
+    public function existingPuid(Request $request, String $puid): JsonResponse
     {
         $platform_id = $request->user()->platform_id;
 
@@ -76,16 +76,17 @@ class StatementAPIController extends Controller
                 }
 
                 return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
-            } else {
-                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
-                $errors = [
-                    'uncaught_exception' => [
-                        'Statement Creation Query Exception Thrown: ' . $e->getMessage()
-                    ]
-                ];
-                $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
-                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
+
+            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+            $errors  = [
+                'uncaught_exception' => [
+                    'Statement Creation Query Exception Thrown: ' . $e->getMessage()
+                ]
+            ];
+            $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
+
+            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 
@@ -116,12 +117,12 @@ class StatementAPIController extends Controller
         }
 
 
-        $puids_to_check = array_map(function ($potential_statement) {
+        $puids_to_check = array_map(static function ($potential_statement) {
             return $potential_statement['puid'];
         }, $potential_statements);
 
         $unique_puids_to_check = array_unique($puids_to_check);
-        if (count($unique_puids_to_check) != count($puids_to_check)) {
+        if (count($unique_puids_to_check) !== count($puids_to_check)) {
             $errors  = [
                 'puid' => [
                     'The identifier(s) are not unique within this call.'
