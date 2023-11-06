@@ -46,6 +46,11 @@ class StatementAPIController extends Controller
 
     public function store(StatementStoreRequest $request): JsonResponse
     {
+
+        if (config('dsa.STATEMENT_INSERT') === 'queued') {
+            return $this->storeDelayed($request);
+        }
+
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $request->user()->platform_id,

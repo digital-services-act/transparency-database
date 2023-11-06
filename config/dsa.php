@@ -8,4 +8,5 @@ return [
     'SITEID' => env('SITEID', ''),
     'SITEPATH' => env('SITEPATH', ''),
 
+    'STATEMENT_INSERT' => env('STATEMENT_INSERT', 'direct'),
 ];
