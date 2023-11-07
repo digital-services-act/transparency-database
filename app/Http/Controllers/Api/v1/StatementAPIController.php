@@ -128,10 +128,10 @@ class StatementAPIController extends Controller
         if (count($unique_puids_to_check) !== count($puids_to_check)) {
             $errors  = [
                 'puid' => [
-                    'The identifier(s) are not unique within this call.'
+                    'The platform identifier(s) are not all unique within this call.'
                 ],
             ];
-            $message = 'The identifier(s) are not unique within this call.';
+            $message = 'The platform identifier(s) are not all unique within this call.';
             $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -144,11 +144,11 @@ class StatementAPIController extends Controller
         if (count($existing)) {
             $errors  = [
                 'puid'           => [
-                    'The identifier(s) are not unique within this platform.'
+                    'The platform identifier(s) are not all unique within this platform.'
                 ],
                 'existing_puids' => $existing
             ];
-            $message = 'The identifiers given are not unique within this platform.';
+            $message = 'The platform identifier(s) given are not all unique within this platform.';
             $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
