@@ -156,7 +156,7 @@ class DayArchiveService
 
 
 
-                $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms, $total_statements) {
+                $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
 
                     foreach ($statements as $statement) {
                         $row = $this->mapRaw($statement, $platforms);
