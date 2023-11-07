@@ -8,11 +8,14 @@ use App\Http\Requests\StatementsStoreRequest;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class StatementAPIController extends Controller
 {
@@ -151,25 +154,49 @@ class StatementAPIController extends Controller
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $out = [];
+        $now = Carbon::now();
+
+        $uuids = [];
         foreach ($potential_statements as $index => $potential_statement) {
-            $potential_statement['platform_id'] = $platform_id;
-            $potential_statement['user_id'] = $user_id;
-            $potential_statement['method']  = $method;
-            try {
-                $statement = Statement::create($potential_statement);
-                $out[$index]         = $statement->toArray();
-                $out[$index]['puid'] = $statement->puid; // Show the puid on a store.
-            } catch (QueryException $e) {
-                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
-                $errors = [
-                    'Statement Creation Query Exception Thrown'
-                ];
-                $message = 'Statement Creation Query Exception Thrown';
-                $out[$index] = ['message' => $message, 'errors' => $errors];
+            $uuid                                        = Str::uuid();
+            $uuids[]                                     = $uuid;
+            $potential_statements[$index]['platform_id'] = $platform_id;
+            $potential_statements[$index]['user_id']     = $user_id;
+            $potential_statements[$index]['method']      = $method;
+            $potential_statements[$index]['uuid']        = $uuid;
+            $potential_statements[$index]['created_at']  = $now;
+            $potential_statements[$index]['updated_at']  = $now;
+
+            // stringify the arrays
+            foreach ($potential_statements[$index] as $key => $value) {
+                if (is_array($value)) {
+                    $potential_statements[$index][$key] = '["' . implode('","', $value) . '"]';
+                }
             }
         }
-        return response()->json($out, Response::HTTP_CREATED);
+
+        try {
+
+            Statement::insert($potential_statements);
+            $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
+            $created_statements->searchable();
+            $out = [];
+            foreach ($created_statements as $created_statement) {
+                $puid = $created_statement->puid;
+                $created_statement = $created_statement->toArray();
+                $created_statement['puid'] = $puid;
+                $out[] = $created_statement;
+            }
+            return response()->json($out, Response::HTTP_CREATED);
+
+        } catch (Exception $e) {
+            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+            $errors = [
+                'Statement Creation Query Exception Thrown'
+            ];
+            $message = 'Statement Creation Query Exception Thrown';
+            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
 }
