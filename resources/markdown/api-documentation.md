@@ -165,6 +165,108 @@ This UUID is then used in the urls for retrieving and viewing the statement onli
 
 These urls are present in the response after creating as the "uuid", "permalink" and "self" attributes.
 
+## Creating Multiple Statements
+
+We highly encourage all platforms to bundle and create multiple Statements of Reason in one API call
+using the multiple endpoint.
+
+Please to make a ```POST``` request to this endpoint.
+
+<pre>
+    {{route('api.v'.config('app.api_latest').'.statements.store')}}
+</pre>
+
+The payload of this request should contain an array of Statements of Reason and take on the following
+form:
+
+```javascript
+[
+    {
+        "decision_visibility": [
+            "DECISION_VISIBILITY_CONTENT_DISABLED"
+        ],
+        "decision_monetary": "DECISION_MONETARY_TERMINATION",
+        "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
+        ...
+        ...
+    },
+    {
+        "decision_visibility": [
+            "DECISION_VISIBILITY_CONTENT_DISABLED"
+        ],
+        "decision_monetary": "DECISION_MONETARY_TERMINATION",
+        "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
+        ...
+        ...
+    },
+    {
+        "decision_visibility": [
+            "DECISION_VISIBILITY_CONTENT_DISABLED"
+        ],
+        "decision_monetary": "DECISION_MONETARY_TERMINATION",
+        "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
+        ...
+        ...
+    }
+    ...
+]
+```
+
+The multiple endpoint is capable of making 1000 statements per call. 
+
+When the request has been sent and it is correct, a response of ```201``` ```Created``` will be
+sent back.
+
+The response payload when calling the multiple endpoint will be an array of the results when successful.
+
+```javascript
+[
+    {
+        "decision_visibility": [
+            "DECISION_VISIBILITY_CONTENT_DEMOTED"
+        ],
+        "decision_monetary": "DECISION_MONETARY_OTHER",
+        ...
+        ...
+        "uuid": "bf92a941-c77a-4b9d-a236-38956ae79cc5",
+        "created_at": "2023-11-07 07:53:43",
+        "platform_name": "DSA Team",
+        "permalink": "https://.../statement/bf92a941-c77a-4b9d-a236-38956ae79cc5",
+        "self": "https://.../api/v1/statement/bf92a941-c77a-4b9d-a236-38956ae79cc5",
+        "puid": "b5ec958d-892a-4c11-a3f2-6a3ad597eeb1"
+    },
+    {
+        "decision_visibility": [
+            "DECISION_VISIBILITY_CONTENT_DEMOTED"
+        ],
+        ...
+        ...
+        ...
+        "uuid": "174a1921-0d9e-4864-b095-6774fb0237da",
+        "created_at": "2023-11-07 07:53:44",
+        "platform_name": "DSA Team",
+        "permalink": "https://.../statement/174a1921-0d9e-4864-b095-6774fb0237da",
+        "self": "https://.../api/v1/statement/174a1921-0d9e-4864-b095-6774fb0237da",
+        "puid": "a12b436a-33b1-4403-99b2-8c16e3c5502f"
+    },
+    {
+        "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+        "account_type": "ACCOUNT_TYPE_PRIVATE",
+        "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+        ...
+        ...
+        ...
+        "uuid": "b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
+        "created_at": "2023-11-07 07:53:45",
+        "platform_name": "DSA Team",
+        "permalink": "https://.../statement/b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
+        "self": "https://.../api/v1/statement/b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
+        "puid": "649c58f6-8412-4100-b10c-010b76f5a41a"
+    },
+    ...
+]
+```
+
 ## Statement Attributes
 
 The attributes of the statement take on two main forms.
@@ -722,6 +824,29 @@ If you sent
     }
 }
 ```
+
+### Errors when Creating Multiple Statements of Reason
+
+When you are you calling the multiple endpoint you will encounter the same errors as the single endpoint.
+However, the errors will be indexed to the Statement of Reason that you are trying to create.
+
+ex,
+```javascript
+{
+    "message": "The selected 35.decision_visibility is invalid.",
+    "errors": {
+        "35.decision_visibility": [
+            "The selected 35.decision_visibility is invalid."
+        ]
+    }
+}
+```
+
+This means that the decision visibility in the statement of reason at position 35 in the array was invalid.
+
+In this case, **NONE** of the statements where created, the request needs to be fixed and resent.
+
+### Token Error
 
 Another common error that may occur when calling the API is that the authorization token is not valid.
 
