@@ -3,7 +3,7 @@ name: dsa-prod
 environments:
   production:
     firewall:
-      rate-limit: 10000
+      rate-limit: 25000
       bot-control:
         - CategoryAdvertising
         - CategoryArchiver
@@ -12,7 +12,6 @@ environments:
         - CategoryMiscellaneous
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
-        - SignalKnownBotDataCenter
     warm: 10
     timeout: 30
     cache: redis-prod
