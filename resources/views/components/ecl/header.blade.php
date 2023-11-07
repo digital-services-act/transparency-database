@@ -161,7 +161,7 @@
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a
                             href="{{ route('page.show', ['faq']) }}"
-                            class="ecl-menu__link" data-ecl-menu-link="">DSA Transparency Database FAQ</a>
+                            class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>
                     </li>
 
                 </ul>
