@@ -22,7 +22,7 @@ class DayArchiveService
     use StatementExportTrait;
 
     /**
-     * @param string $date
+     * @param Carbon $date
      * @param bool $force
      *
      * @return DayArchive
@@ -154,10 +154,10 @@ class DayArchiveService
 
                 $day_archive->save();
 
-                $total_statements = 0;
+
 
                 $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms, $total_statements) {
-                    $total_statements += $statements->count();
+
                     foreach ($statements as $statement) {
                         $row = $this->mapRaw($statement, $platforms);
                         fputcsv($csv_file, $row);
@@ -172,7 +172,7 @@ class DayArchiveService
 
                 $day_archive->size = Storage::size($file);
                 $day_archive->sizelight = Storage::size($filelight);
-                $day_archive->total = $total_statements;
+                $day_archive->total = app(PlatformDayTotalsService::class)->globalTotalForRange(Carbon::yesterday(), Carbon::yesterday());
 
                 $zip = new ZipArchive;
                 if ($zip->open($zippath, ZipArchive::CREATE) === TRUE)
