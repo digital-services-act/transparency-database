@@ -11,7 +11,6 @@ environments:
     warm: 10
     timeout: 180
     queue-database-session-persist: true
-    proxy: proxy-serverless
     database: dsa-dev-serverless
     domain: dev.sor.dsa.ec.europa.eu
     load-balancer: dsa-dev-lb-2
