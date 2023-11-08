@@ -21,7 +21,6 @@ class StatementStoreRequest extends FormRequest
      */
     public function authorize()
     {
-//        dd($this->user());
         return $this->user()->can('create statements') && $this->user()->platform;
     }
 
@@ -136,7 +135,4 @@ class StatementStoreRequest extends FormRequest
         $check = (array)$this->get('source_type', []);
         return in_array('SOURCE_VOLUNTARY', $check);
     }
-
-
-
 }
