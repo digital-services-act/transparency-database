@@ -202,7 +202,7 @@ class StatementAPIControllerTest extends TestCase
             $sors[]         = $fields;
         }
 
-        $response = $this->post(route('api.v1.statements.store'), $sors, [
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
@@ -233,12 +233,12 @@ class StatementAPIControllerTest extends TestCase
 
         $sors[3]['content_language'] = 'XX';
 
-        $response = $this->post(route('api.v1.statements.store'), $sors, [
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertEquals('The selected 3.content_language is invalid.', $response->json('message'));
+        $this->assertEquals('The selected statements.3.content_language is invalid.', $response->json('message'));
 
         $this->assertCount(10, Statement::all());
     }
@@ -266,7 +266,7 @@ class StatementAPIControllerTest extends TestCase
 
         $sors[0]['puid'] = $sors[5]['puid'];
 
-        $response = $this->post(route('api.v1.statements.store'), $sors, [
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -295,14 +295,14 @@ class StatementAPIControllerTest extends TestCase
             $sors[]         = $fields;
         }
 
-        $response = $this->post(route('api.v1.statements.store'), $sors, [
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(20, Statement::all());
 
-        $response = $this->post(route('api.v1.statements.store'), $sors, [
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

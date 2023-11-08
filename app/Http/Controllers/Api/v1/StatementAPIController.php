@@ -105,24 +105,11 @@ class StatementAPIController extends Controller
         $user_id     = $request->user()->id;
         $method      = Statement::METHOD_API;
 
-        $potential_statements = $request->validated();
-
-        if ( ! is_array($potential_statements) || count($potential_statements) > 1000) {
-            $errors  = [
-                'statements' => [
-                    'The body of the post needs to be an array of statement of reasons and no more than 1000.'
-                ]
-            ];
-            $message = 'The body of the post needs to be an array of statement of reasons and no more than 1000.';
-            $out     = ['message' => $message, 'errors' => $errors];
-
-            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
+        $payload = $request->validated();
 
         $puids_to_check = array_map(static function ($potential_statement) {
             return $potential_statement['puid'];
-        }, $potential_statements);
+        }, $payload['statements']);
 
         $unique_puids_to_check = array_unique($puids_to_check);
         if (count($unique_puids_to_check) !== count($puids_to_check)) {
@@ -137,10 +124,7 @@ class StatementAPIController extends Controller
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-
-
         $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
-
         if (count($existing)) {
             $errors  = [
                 'puid'           => [
@@ -154,30 +138,30 @@ class StatementAPIController extends Controller
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $now = Carbon::now();
 
+        $now = Carbon::now();
         $uuids = [];
-        foreach ($potential_statements as $index => $potential_statement) {
+        foreach ($payload['statements'] as $index => $potential_statement) {
             $uuid                                        = Str::uuid();
             $uuids[]                                     = $uuid;
-            $potential_statements[$index]['platform_id'] = $platform_id;
-            $potential_statements[$index]['user_id']     = $user_id;
-            $potential_statements[$index]['method']      = $method;
-            $potential_statements[$index]['uuid']        = $uuid;
-            $potential_statements[$index]['created_at']  = $now;
-            $potential_statements[$index]['updated_at']  = $now;
+            $payload['statements'][$index]['platform_id'] = $platform_id;
+            $payload['statements'][$index]['user_id']     = $user_id;
+            $payload['statements'][$index]['method']      = $method;
+            $payload['statements'][$index]['uuid']        = $uuid;
+            $payload['statements'][$index]['created_at']  = $now;
+            $payload['statements'][$index]['updated_at']  = $now;
 
             // stringify the arrays
-            foreach ($potential_statements[$index] as $key => $value) {
+            foreach ($payload['statements'][$index] as $key => $value) {
                 if (is_array($value)) {
-                    $potential_statements[$index][$key] = '["' . implode('","', $value) . '"]';
+                    $payload['statements'][$index][$key] = '["' . implode('","', $value) . '"]';
                 }
             }
         }
 
         try {
 
-            Statement::insert($potential_statements);
+            Statement::insert($payload['statements']);
             $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
             $created_statements->searchable();
             $out = [];
@@ -187,16 +171,15 @@ class StatementAPIController extends Controller
                 $created_statement['puid'] = $puid;
                 $out[] = $created_statement;
             }
-            return response()->json($out, Response::HTTP_CREATED);
+            return response()->json(['statements' => $out], Response::HTTP_CREATED);
 
         } catch (Exception $e) {
             Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
             $errors = [
-                'Statement Creation Query Exception Thrown'
+                'Multiple Statement Creation Query Exception Thrown'
             ];
-            $message = 'Statement Creation Query Exception Thrown';
+            $message = 'Multiple Statement Creation Query Exception Thrown';
             return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
 }
