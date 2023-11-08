@@ -172,7 +172,7 @@ class DayArchiveService
 
                 $day_archive->size = Storage::size($file);
                 $day_archive->sizelight = Storage::size($filelight);
-                $day_archive->total = app(PlatformDayTotalsService::class)->globalTotalForRange(Carbon::yesterday(), Carbon::yesterday());
+                $day_archive->total = app(PlatformDayTotalsService::class)->globalTotalForDate($date);
 
                 $zip = new ZipArchive;
                 if ($zip->open($zippath, ZipArchive::CREATE) === TRUE)
