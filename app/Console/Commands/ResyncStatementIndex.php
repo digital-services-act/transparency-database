@@ -34,18 +34,17 @@ class ResyncStatementIndex extends Command
 //            return;
 //        }
 
-        $chunk = 2000;
+        $chunk = 1000;
         $start = DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min;
-        $max = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
+        $end = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
 
-        while($start <= $max)
+        while($end >= $start && $end > 0)
         {
             if ($this->option('verbose')) {
-                $this->info('Start: '. $start);
+                $this->info('Start: '. $end);
             }
-            StatementSearchableChunk::dispatch($start, $start + $chunk);
-            $start += $chunk;
-
+            StatementSearchableChunk::dispatch($end - $chunk, $end);
+            $end -= ($chunk + 1);
         }
     }
 }
