@@ -44,7 +44,9 @@ class ResyncStatementIndex extends Command
 
         while($start <= $max)
         {
-            $this->info('Start: '. $start);
+            if ($this->option('verbose')) {
+                $this->info('Start: '. $start);
+            }
             StatementSearchableChunk::dispatch($start, $start + $chunk);
             $start += $chunk;
 
