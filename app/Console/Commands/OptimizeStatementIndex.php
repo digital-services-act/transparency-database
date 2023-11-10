@@ -80,6 +80,14 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'date'
                         ],
+                    'content_date'                     =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'application_date'                 =>
+                        [
+                            'type' => 'date'
+                        ],
                     'decision_account'                 =>
                         [
                             'type' => 'keyword'
@@ -172,7 +180,7 @@ class OptimizeStatementIndex extends Command
         ];
 
         $client->indices()->create(['index' => $index_name, 'body' => $body]);
-        Statement::where('id', '>', 0)->searchable();
+        Statement::query()->searchable();
     }
 
 }

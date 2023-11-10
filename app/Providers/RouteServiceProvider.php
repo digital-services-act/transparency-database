@@ -50,19 +50,19 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
-//        RateLimiter::for('api', function (Request $request) {
-//            return $request->user() ? Limit::perMinute(5000)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
-//                ->response(function (Request $request, array $headers) {
-//                    return response('Limit Reached. Please do not overload the API', 429, $headers);
-//                });
-//        });
-//
-//        RateLimiter::for('web', function (Request $request) {
-//            return $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
-//                ->response(function (Request $request, array $headers) {
-//                    return response('Limit Reached. Please do not overload the application', 429, $headers);
-//                });
-//        });
+        RateLimiter::for('api', function (Request $request) {
+            return $request->user() ? Limit::perMinute(3000)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
+                ->response(function (Request $request, array $headers) {
+                    return response('Limit Reached. Please do not overload the API', 429, $headers);
+                });
+        });
+
+        RateLimiter::for('web', function (Request $request) {
+            return $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
+                ->response(function (Request $request, array $headers) {
+                    return response('Limit Reached. Please do not overload the application', 429, $headers);
+                });
+        });
     }
 
     /**
