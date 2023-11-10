@@ -180,7 +180,6 @@ class OptimizeStatementIndex extends Command
         ];
 
         $client->indices()->create(['index' => $index_name, 'body' => $body]);
-        Statement::query()->searchable();
     }
 
 }

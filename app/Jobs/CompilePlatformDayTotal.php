@@ -29,8 +29,6 @@ class CompilePlatformDayTotal implements ShouldQueue
         $this->date = $date;
         $this->attribute = $attribute;
         $this->value = $value;
-
-
     }
 
     /**
