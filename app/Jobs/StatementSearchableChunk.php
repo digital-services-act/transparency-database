@@ -14,15 +14,17 @@ class StatementSearchableChunk implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $start;
-    public int $end;
+    public int $chunk;
+    public int $min;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(int $start, int $end)
+    public function __construct(int $start, int $chunk, int $min)
     {
         $this->start = $start;
-        $this->end = $end;
+        $this->min = $min;
+        $this->chunk = $chunk;
     }
 
     /**
@@ -30,7 +32,12 @@ class StatementSearchableChunk implements ShouldQueue
      */
     public function handle(): void
     {
-        $range = range($this->start, $this->end);
+        $end = $this->start - $this->chunk;
+        $range = range($this->start, $end);
+        if ($end > $this->min) {
+            $next_start = $this->start - $this->chunk - 1;
+            self::dispatch($next_start, $this->chunk, $this->min);
+        }
         Statement::query()->whereIn('id', $range)->searchable();
     }
 }

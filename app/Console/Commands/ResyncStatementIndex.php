@@ -29,13 +29,8 @@ class ResyncStatementIndex extends Command
     public function handle(): void
     {
         $chunk = 100;
-        $start = DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min;
-        $end = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
-
-        while($end >= $start && $end > 0)
-        {
-            StatementSearchableChunk::dispatch($end - $chunk, $end);
-            $end -= ($chunk + 1);
-        }
+        $min = DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min;
+        $max = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
+        StatementSearchableChunk::dispatch($max, $chunk, $min);
     }
 }
