@@ -28,21 +28,12 @@ class ResyncStatementIndex extends Command
      */
     public function handle(): void
     {
-//        if (env('SCOUT_DRIVER', '') !== 'opensearch') {
-//            $this->error('opensearch is not the SCOUT_DRIVER');
-//
-//            return;
-//        }
-
-        $chunk = 1000;
+        $chunk = 100;
         $start = DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min;
         $end = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
 
         while($end >= $start && $end > 0)
         {
-            if ($this->option('verbose')) {
-                $this->info('Start: '. $end);
-            }
             StatementSearchableChunk::dispatch($end - $chunk, $end);
             $end -= ($chunk + 1);
         }
