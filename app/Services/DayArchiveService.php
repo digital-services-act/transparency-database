@@ -269,6 +269,6 @@ class DayArchiveService
         $selects[] = "created_at";
         $selects[] = "platform_id";
 
-        $select_raw = implode(", ", $selects);
+        return implode(", ", $selects);
     }
 }
