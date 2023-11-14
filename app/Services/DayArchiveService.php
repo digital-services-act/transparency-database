@@ -40,7 +40,7 @@ class DayArchiveService
                 if ($force) {
                     $existing->delete();
                 } else {
-                    throw new \RuntimeException("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
+                    throw new RuntimeException("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
                 }
             }
 
@@ -74,8 +74,8 @@ class DayArchiveService
                 $first_id = $this->getFirstIdOfDate($date);
                 $last_id = $this->getLastIdOfDate($date);
 
-                $csv_file      = fopen($path, 'w');
-                $csv_filelight = fopen($pathlight, 'w');
+                $csv_file      = fopen($path, 'wb');
+                $csv_filelight = fopen($pathlight, 'wb');
 
                 fputcsv($csv_file, $this->headings());
                 fputcsv($csv_filelight, $this->headingsLight());
@@ -180,7 +180,7 @@ class DayArchiveService
                     $zip->addFile($path, $file);
                     $zip->close();
                 } else {
-                    throw new Exception('Issue with creating the zip file.');
+                    throw new RuntimeException('Issue with creating the zip file.');
                 }
 
                 $ziplight = new ZipArchive;
@@ -196,6 +196,7 @@ class DayArchiveService
                 Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'rb') );
                 Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'rb') );
 
+
                 // Clean up the files.
                 Storage::delete($file);
                 Storage::delete($filelight);
@@ -206,12 +207,12 @@ class DayArchiveService
                 $day_archive->save();
 
             } else {
-                throw new \RuntimeException("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
+                throw new RuntimeException("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
             }
 
             return $day_archive;
         } else {
-            throw new \RuntimeException("When creating a day export you must supply a date in the past.");
+            throw new RuntimeException("When creating a day export you must supply a date in the past.");
         }
     }
 

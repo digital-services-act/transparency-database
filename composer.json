@@ -22,7 +22,7 @@
         "laravel/tinker": "^2.8",
         "laravel/vapor-core": "^2.26",
         "laravel/vapor-ui": "^1.7",
-        "league/flysystem-aws-s3-v3": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.19",
         "maatwebsite/excel": "^3.1",
         "margatampu/laravel-teams-logging": "dev-laravel-10",
         "nyholm/psr7": "^1.8",
