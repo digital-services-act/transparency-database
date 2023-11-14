@@ -28,7 +28,7 @@ class DayArchiveController extends Controller
 
     public function download(string $date)
     {
-
+        dd("here");
         try {
             $date = Carbon::createFromFormat('Y-m-d', $date);
             $dayarchive = $this->day_archive_service->getDayArchiveByDate($date);
