@@ -156,9 +156,9 @@ class DayArchiveService
             }
 
             return $day_archive;
-        } else {
-            throw new RuntimeException("When creating a day export you must supply a date in the past.");
         }
+
+        throw new RuntimeException("When creating a day export you must supply a date in the past.");
     }
 
     public function getFirstIdOfDate(Carbon $date)
