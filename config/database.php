@@ -44,6 +44,7 @@ return [
         ],
 
         'mysql' => [
+            'sticky' => true,
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'read' => [
