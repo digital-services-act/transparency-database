@@ -25,8 +25,7 @@ class SearchAPIController extends Controller
                 'index' => $index_name,
                 'body'  => $payload_in,
             ]);
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Log::error('OpenSearch Count Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -46,8 +45,7 @@ class SearchAPIController extends Controller
                 'index' => $index_name,
                 'body'  => $payload_in,
             ]);
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Log::error('OpenSearch Count Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -59,8 +57,7 @@ class SearchAPIController extends Controller
         $client = app(Client::class);
         try {
             return $client->sql()->query($request->toArray());
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
