@@ -31,7 +31,7 @@ class OptimizeStatementIndex extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client = app(Client::class);
+        $client     = app(Client::class);
         $index_name = 'statement_' . config('app.env');
 
         if ($client->indices()->exists(['index' => $index_name])) {
@@ -132,6 +132,14 @@ class OptimizeStatementIndex extends Command
                     'platform_id'                      =>
                         [
                             'type' => 'long',
+                        ],
+                    'platform_name'                    =>
+                        [
+                            'type' => 'text',
+                        ],
+                    'platform_uuid'                    =>
+                        [
+                            'type' => 'text',
                         ],
                     'source_identity'                  =>
                         [

@@ -438,6 +438,8 @@ class Statement extends Model
             'category' => $this->category,
             'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
+            'platform_name' => $this->platform->name,
+            'platform_uuid' => $this->platform->uuid,
             'content_date' => $this->content_date,
             'application_date' => $this->application_date,
             'created_at' => $this->created_at,
