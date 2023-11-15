@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
 class SearchAPIController extends Controller
 {
-    public function search(Request $request): callable|array
+    public function search(Request $request): callable|array|JsonResponse
     {
         /** @var Client $client */
         $client = app(Client::class);
@@ -16,14 +20,20 @@ class SearchAPIController extends Controller
 
         $payload_in = $request->toArray();
 
-        return $client->search([
-            'index' => $index_name,
-            'body' => $payload_in,
-            'track_total_hits' => true
-        ]);
+        try {
+            return $client->search([
+                'index' => $index_name,
+                'body'  => $payload_in,
+            ]);
+        } catch (Exception $e)
+        {
+            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
     }
 
-    public function count(Request $request): callable|array
+    public function count(Request $request): callable|array|JsonResponse
     {
         /** @var Client $client */
         $client = app(Client::class);
@@ -31,17 +41,28 @@ class SearchAPIController extends Controller
 
         $payload_in = $request->toArray();
 
-        return $client->count([
-            'index' => $index_name,
-            'body' => $payload_in,
-        ]);
+        try {
+            return $client->count([
+                'index' => $index_name,
+                'body'  => $payload_in,
+            ]);
+        } catch (Exception $e)
+        {
+            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
-    public function sql(Request $request): callable|array
+    public function sql(Request $request): array|JsonResponse
     {
         /** @var Client $client */
         $client = app(Client::class);
-        $payload_in = $request->toArray();
-        return $client->sql()->query($payload_in);
+        try {
+            return $client->sql()->query($request->toArray());
+        } catch (Exception $e)
+        {
+            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 }
