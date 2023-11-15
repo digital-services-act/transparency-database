@@ -18,12 +18,10 @@ class SearchAPIController extends Controller
         $client = app(Client::class);
         $index_name = 'statement_' . config('app.env');
 
-        $payload_in = $request->toArray();
-
         try {
             return $client->search([
                 'index' => $index_name,
-                'body'  => $payload_in,
+                'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
             Log::error('OpenSearch Count Exception: ' . $e->getMessage());
@@ -38,12 +36,10 @@ class SearchAPIController extends Controller
         $client = app(Client::class);
         $index_name = 'statement_' . config('app.env');
 
-        $payload_in = $request->toArray();
-
         try {
             return $client->count([
                 'index' => $index_name,
-                'body'  => $payload_in,
+                'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
             Log::error('OpenSearch Count Exception: ' . $e->getMessage());
