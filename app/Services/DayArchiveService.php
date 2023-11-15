@@ -163,44 +163,52 @@ class DayArchiveService
 
     public function getFirstIdOfDate(Carbon $date)
     {
-        $first        = null;
         $date->hour   = 0;
         $date->minute = 0;
         $date->second = 0;
 
-        $attempts_allowed = 100;
+        $attempts_allowed = 500;
 
-        while ( ! $first && $attempts_allowed--) {
-            $first = DB::table('statements')
-                       ->select('id')
-                       ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
-                       ->orderBy('statements.id')->first();
+        $in = [];
+        while($attempts_allowed-- > 0)
+        {
+            $in[] = $date->format('Y-m-d H:i:s');
             $date->addSecond();
         }
+
+        $first = DB::table('statements')
+                   ->select('id')
+                   ->whereIn('statements.created_at', $in)
+                   ->orderBy('statements.id')->first();
 
         return $first->id ?? 0;
     }
 
+
     public function getLastIdOfDate(Carbon $date)
     {
-        $last         = null;
         $date->hour   = 23;
         $date->minute = 59;
         $date->second = 59;
 
-        $attempts_allowed = 100;
+        $attempts_allowed = 500;
 
-        while ( ! $last && $attempts_allowed--) {
-            $last = DB::table('statements')
-                      ->select('id')
-                      ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
-                      ->orderBy('statements.id', 'desc')->first();
+        $in = [];
+        while($attempts_allowed-- > 0)
+        {
+            $in[] = $date->format('Y-m-d H:i:s');
             $date->subSecond();
         }
 
+
+        $last = DB::table('statements')
+                  ->select('id')
+                  ->whereIn('statements.created_at', $in)
+                  ->orderBy('statements.id', 'desc')->first();
+
+
         return $last->id ?? 0;
     }
-
 
     public function masterList()
     {
