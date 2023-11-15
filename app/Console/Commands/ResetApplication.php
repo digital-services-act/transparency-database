@@ -59,21 +59,6 @@ class ResetApplication extends Command
                 $this->info('Day Archives created.');
             }
 
-            \App\Models\ContentDateAggregate::query()->forceDelete();
-            \App\Models\ApplicationDateAggregate::query()->forceDelete();
-            if ($this->confirm('Create Content and Application Date Aggregates?', true)) {
-                $yesterday = Carbon::yesterday();
-                $date = $yesterday->clone();
-                $date->subDays(100);
-                while($date < $yesterday)
-                {
-                    $this->call('applicationdateaggregate:compile', ['date' => $date->format('Y-m-d')]);
-                    $this->call('contentdateaggregate:compile', ['date' => $date->format('Y-m-d')]);
-                    $date->addDay();
-                }
-                $this->info('Aggregates created.');
-            }
-
             if ($this->confirm('Compile the day totals?', true)) {
                 $this->call('platform:compile-day-totals');
 
