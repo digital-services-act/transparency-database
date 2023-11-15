@@ -22,7 +22,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('statements', [StatementAPIController::class,'storeMultiple'])->name('api.v1.statements.store')->can('create statements');
 
     Route::group(['middleware' => ['can:administrate']], static function(){
-        Route::post('search', [SearchAPIController::class, 'passThrough'])->name('api.v1.search');
+        Route::post('opensearch/search', [SearchAPIController::class, 'search'])->name('api.v1.opensearch.search');
+        Route::post('opensearch/count', [SearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
+        Route::post('opensearch/sql', [SearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
     });
 });
 
