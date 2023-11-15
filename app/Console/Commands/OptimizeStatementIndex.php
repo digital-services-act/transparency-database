@@ -30,20 +30,13 @@ class OptimizeStatementIndex extends Command
      */
     public function handle(): void
     {
-        if (env('SCOUT_DRIVER', '') !== 'opensearch') {
-            $this->error('opensearch is not the SCOUT_DRIVER');
-
-            return;
-        }
-
         /** @var Client $client */
         $client = app(Client::class);
-
-        $index_name = 'statement_' . env('APP_ENV');
+        $index_name = 'statement_' . config('app.env');
 
         if ($client->indices()->exists(['index' => $index_name])) {
             $client->indices()->delete(['index' => $index_name]);
-        };
+        }
 
         $properties = [
             'properties' =>
