@@ -111,7 +111,7 @@ class SearchAPIController extends Controller
     public function platforms(Request $request): JsonResponse|array|null
     {
         try {
-            return Platform::nonDSA()->get()->pluck('name', 'id')->toArray();
+            return Platform::nonDSA()->pluck('name', 'id')->toArray();
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
