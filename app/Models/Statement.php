@@ -420,6 +420,7 @@ class Statement extends Model
 
         return [
             'decision_visibility' => $this->decision_visibility,
+            'decision_visibility_single' => implode("__", $this->decision_visibility),
             'category_specification' => $this->category_specification,
             'decision_visibility_other' => $this->decision_visibilit_other,
             'decision_monetary' => $this->decision_monetary,
@@ -429,6 +430,7 @@ class Statement extends Model
             'account_type' => $this->account_type,
             'decision_ground' => $this->decision_ground,
             'content_type' => $this->content_type,
+            'content_type_single' => implode('__', $this->content_type),
             'content_type_other' => $this->content_type_other,
             'content_language' => $this->content_language,
             'illegal_content_legal_ground' => $this->illegal_content_legal_ground,

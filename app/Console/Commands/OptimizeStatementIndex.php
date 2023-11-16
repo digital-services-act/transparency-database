@@ -61,6 +61,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
+                    'content_type_single'                     =>
+                        [
+                            'type' => 'keyword'
+                        ],
                     'content_type_other'               =>
                         [
                             'type' => 'text'
@@ -112,6 +116,10 @@ class OptimizeStatementIndex extends Command
                     'decision_visibility'              =>
                         [
                             'type' => 'text'
+                        ],
+                    'decision_visibility_single'              =>
+                        [
+                            'type' => 'keyword'
                         ],
                     'id'                               =>
                         [
