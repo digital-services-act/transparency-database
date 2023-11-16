@@ -408,7 +408,7 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statement_' . env('APP_ENV');
+        return 'statement_' . config('app.env');
     }
 
     public function toSearchableArray()
