@@ -24,6 +24,11 @@ class SearchAPIController extends Controller
         $this->index_name = 'statement_' . config('app.env');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return callable|array|JsonResponse
+     */
     public function search(Request $request): callable|array|JsonResponse
     {
         try {
@@ -37,6 +42,11 @@ class SearchAPIController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return callable|array|JsonResponse
+     */
     public function count(Request $request): callable|array|JsonResponse
     {
         try {
@@ -50,6 +60,11 @@ class SearchAPIController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return array|JsonResponse
+     */
     public function sql(Request $request): array|JsonResponse
     {
         try {
@@ -60,7 +75,13 @@ class SearchAPIController extends Controller
         }
     }
 
-    public function aggregate(Request $request, string $date_in)
+    /**
+     * @param Request $request
+     * @param string $date_in
+     *
+     * @return JsonResponse|array
+     */
+    public function aggregate(Request $request, string $date_in): JsonResponse|array
     {
         try {
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
@@ -82,7 +103,12 @@ class SearchAPIController extends Controller
         }
     }
 
-    public function platforms(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse|array|null
+     */
+    public function platforms(Request $request): JsonResponse|array|null
     {
         try {
             return Platform::nonDSA()->get()->pluck('name', 'id')->toArray();
@@ -92,7 +118,12 @@ class SearchAPIController extends Controller
         }
     }
 
-    public function labels(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function labels(Request $request): JsonResponse|array
     {
         try {
             return [
