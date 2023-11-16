@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
+            $table->string('aggregate_type')->default('HOURLY');
             $table->string('sor_count');
             $table->integer('platform_id');
             $table->string('category')->nullable();
