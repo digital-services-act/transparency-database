@@ -64,11 +64,12 @@ class SearchAPIController extends Controller
     public function aggregate(Request $request, string $date_in)
     {
         try {
+            $index_name = 'statement_' . config('app.env');
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
 
             $sql = "SELECT count(id) as total, platform_id, decision_visibility_single, decision_monetary, 
             decision_provision, decision_account, category, decision_ground, automated_detection, automated_decision, 
-            content_type_single, source_type FROM statement_local WHERE 
+            content_type_single, source_type FROM " . $index_name . " WHERE 
             created_at >= '" . $date->format('Y-m-d') . ' 00:00:00' . "' AND created_at <= '" . $date->format('Y-m-d') . ' 23:59:59' . "' 
             GROUP BY platform_id, decision_visibility_single, decision_monetary, decision_provision, decision_account, 
             category, decision_ground, automated_detection, automated_decision, content_type_single, source_type";
