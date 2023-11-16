@@ -413,6 +413,11 @@ class Statement extends Model
 
     public function toSearchableArray()
     {
+        $received_date = $this->created_at->clone();
+        $received_date->hour = 0;
+        $received_date->minute = 0;
+        $received_date->second = 0;
+
         return [
             'decision_visibility' => $this->decision_visibility,
             'category_specification' => $this->category_specification,
@@ -443,7 +448,7 @@ class Statement extends Model
             'content_date' => $this->content_date,
             'application_date' => $this->application_date,
             'created_at' => $this->created_at,
-            'created_at_date' => $this->created_at->format('Y-m-d'),
+            'received_date' => $received_date,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope

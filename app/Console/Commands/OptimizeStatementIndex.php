@@ -73,7 +73,7 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'date'
                         ],
-                    'created_at_date'                  =>
+                    'received_date'                    =>
                         [
                             'type' => 'date'
                         ],
