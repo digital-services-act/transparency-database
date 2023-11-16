@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Platform;
+use App\Models\Statement;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -85,6 +86,27 @@ class SearchAPIController extends Controller
     {
         try {
             return Platform::nonDSA()->get()->pluck('name', 'id')->toArray();
+        } catch (Exception $e) {
+            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function labels(Request $request)
+    {
+        try {
+            return [
+                'decision_visibilities' => Statement::DECISION_VISIBILITIES,
+                'decision_monetaries' => Statement::DECISION_MONETARIES,
+                'decision_provisions' => Statement::DECISION_PROVISIONS,
+                'decision_accounts' => Statement::DECISION_ACCOUNTS,
+                'categories' => Statement::STATEMENT_CATEGORIES,
+                'decision_grounds' => Statement::DECISION_GROUNDS,
+                'automated_detections' => Statement::AUTOMATED_DETECTIONS,
+                'automated_decisions' => Statement::AUTOMATED_DECISIONS,
+                'content_types' => Statement::CONTENT_TYPES,
+                'source_types' => Statement::SOURCE_TYPES
+            ];
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
