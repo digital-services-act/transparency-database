@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Platform;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,35 +15,32 @@ use OpenSearch\Client;
 class SearchAPIController extends Controller
 {
     private Client $client;
+    private string $index_name;
 
     public function __construct(Client $client)
     {
         $this->client = $client;
+        $this->index_name = 'statement_' . config('app.env');
     }
 
     public function search(Request $request): callable|array|JsonResponse
     {
-        $index_name = 'statement_' . config('app.env');
-
         try {
             return $this->client->search([
-                'index' => $index_name,
+                'index' => $this->index_name,
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
             Log::error('OpenSearch Count Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
     }
 
     public function count(Request $request): callable|array|JsonResponse
     {
-        $index_name = 'statement_' . config('app.env');
-
         try {
             return $this->client->count([
-                'index' => $index_name,
+                'index' => $this->index_name,
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
@@ -64,20 +62,29 @@ class SearchAPIController extends Controller
     public function aggregate(Request $request, string $date_in)
     {
         try {
-            $index_name = 'statement_' . config('app.env');
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
 
             $sql = "SELECT count(id) as total, platform_id, decision_visibility_single, decision_monetary, 
             decision_provision, decision_account, category, decision_ground, automated_detection, automated_decision, 
-            content_type_single, source_type FROM " . $index_name . " WHERE 
+            content_type_single, source_type FROM " . $this->index_name . " WHERE 
             created_at >= '" . $date->format('Y-m-d') . ' 00:00:00' . "' AND created_at <= '" . $date->format('Y-m-d') . ' 23:59:59' . "' 
             GROUP BY platform_id, decision_visibility_single, decision_monetary, decision_provision, decision_account, 
-            category, decision_ground, automated_detection, automated_decision, content_type_single, source_type";
+            category, decision_ground, automated_detection, automated_decision, content_type_single, source_type LIMIT 10000";
 
             return $this->client->sql()->query([
                 "query" => $sql
             ]);
 
+        } catch (Exception $e) {
+            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function platforms(Request $request)
+    {
+        try {
+            return Platform::nonDSA()->get()->pluck('name', 'id')->toArray();
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
