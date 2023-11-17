@@ -139,7 +139,16 @@ class SearchAPIController extends Controller
     public function platforms(Request $request): JsonResponse|array|null
     {
         try {
-            return Platform::all()->pluck('name', 'id')->toArray();
+            $platforms = Platform::all()->pluck('name', 'id')->toArray();
+            $out = [];
+            foreach ($platforms as $id => $name)
+            {
+                $out[] = [
+                    'id' => $id,
+                    'name' => $name
+                ];
+            }
+            return response()->json($out);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
 
