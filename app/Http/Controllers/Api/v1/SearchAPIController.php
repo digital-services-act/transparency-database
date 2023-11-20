@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 use OpenSearch\Client;
+use stdClass;
 
 class SearchAPIController extends Controller
 {
@@ -100,11 +102,16 @@ class SearchAPIController extends Controller
      *
      * @return JsonResponse|array
      */
-    public function aggregate(Request $request, string $date_in): JsonResponse|array
+    public function aggregate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
     {
         try {
+
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
             $query = $this->aggregateQuery($date);
+            if ($attributes_in) {
+                $attributes = explode("__", $attributes_in);
+                $query = $this->aggregateQuery($date, $attributes);
+            }
 
             $result = $this->client->search([
                 'index' => $this->index_name,
@@ -115,7 +122,9 @@ class SearchAPIController extends Controller
             foreach ($buckets as $bucket) {
                 $item = [];
                 $attributes = $bucket['key'];
-                $attributes['automated_detection'] = (int)$attributes['automated_detection'];
+                if (isset($attributes['automated_detection'])) {
+                    $attributes['automated_detection'] = (int)$attributes['automated_detection'];
+                }
                 $item['attributes'] = $attributes;
                 $item['permutation'] = implode(',', array_map(function($key, $value){
                     return $key . ":" . $value;
@@ -185,10 +194,37 @@ class SearchAPIController extends Controller
 
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
-    private function aggregateQuery(Carbon $date)
-    {
+    private function aggregateQuery(Carbon $date, array $attributes = [
+        'platform_id',
+        'decision_visibility_single',
+        'decision_monetary',
+        'decision_provision',
+        'decision_account',
+        'decision_ground',
+        'automated_detection',
+        'automated_decision',
+        'content_type_single',
+        'source_type'
+    ]) {
+
+
+        $allowed_attributes = [
+            'platform_id',
+            'decision_visibility_single',
+            'decision_monetary',
+            'decision_provision',
+            'decision_account',
+            'decision_ground',
+            'automated_detection',
+            'automated_decision',
+            'content_type_single',
+            'source_type'
+        ];
+
+
+
         $query_string = <<<JSON
 {
   "from": 0,
@@ -235,118 +271,7 @@ class SearchAPIController extends Controller
     "composite_buckets": {
       "composite": {
         "size": 1000,
-        "sources": [
-          {
-            "platform_id": {
-              "terms": {
-                "field": "platform_id",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "decision_visibility_single": {
-              "terms": {
-                "field": "decision_visibility_single",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "decision_monetary": {
-              "terms": {
-                "field": "decision_monetary",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "decision_provision": {
-              "terms": {
-                "field": "decision_provision",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "decision_account": {
-              "terms": {
-                "field": "decision_account",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "category": {
-              "terms": {
-                "field": "category",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "decision_ground": {
-              "terms": {
-                "field": "decision_ground",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "automated_detection": {
-              "terms": {
-                "field": "automated_detection",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "automated_decision": {
-              "terms": {
-                "field": "automated_decision",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "content_type_single": {
-              "terms": {
-                "field": "content_type_single",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          },
-          {
-            "source_type": {
-              "terms": {
-                "field": "source_type",
-                "missing_bucket": true,
-                "missing_order": "first",
-                "order": "asc"
-              }
-            }
-          }
-        ]
+        "sources": []
       },
       "aggregations": {
         "count(*)": {
@@ -375,6 +300,31 @@ JSON;
         $query->query->bool->filter[0]->range->created_at->from = $start->getTimestampMs();
         $query->query->bool->filter[1]->range->created_at->to = $end->getTimestampMs();
 
+        $sources = [];
+        if (! in_array('platform_id', $attributes, true)) {
+            $sources[] = $this->queryAggregate('platform_id');
+        }
+        foreach ($attributes as $attribute) {
+            if (in_array($attribute, $allowed_attributes, true)) {
+                $sources[] = $this->queryAggregate($attribute);
+            }
+        }
+
+        $query->aggregations->composite_buckets->composite->sources = $sources;
+
         return $query;
+    }
+
+    private function queryAggregate($attribute): stdClass
+    {
+        $source = new stdClass();
+        $source->$attribute = new stdClass();
+        $source->$attribute->terms = new stdClass();
+        $source->$attribute->terms->field = $attribute;
+        $source->$attribute->terms->missing_bucket = true;
+        $source->$attribute->terms->missing_order = "first";
+        $source->$attribute->terms->order = "asc";
+
+        return $source;
     }
 }
