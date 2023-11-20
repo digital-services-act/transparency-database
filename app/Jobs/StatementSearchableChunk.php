@@ -47,7 +47,7 @@ class StatementSearchableChunk implements ShouldQueue
         $range = range($this->start, $end);
         if ($end > $this->min) {
             $next_start = $this->start - $this->chunk - 1;
-            self::dispatch($next_start, $this->chunk, $this->min)->onQueue('reindexing');
+            self::dispatch($next_start, $this->chunk, $this->min);
         }
         Statement::query()->whereIn('id', $range)->searchable();
     }
