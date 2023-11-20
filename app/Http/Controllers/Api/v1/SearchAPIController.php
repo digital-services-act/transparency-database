@@ -123,13 +123,22 @@ class SearchAPIController extends Controller
             foreach ($buckets as $bucket) {
                 $item = [];
                 $attributes = $bucket['key'];
+
+                // Manipulate the results
                 if (isset($attributes['automated_detection'])) {
                     $attributes['automated_detection'] = (int)$attributes['automated_detection'];
                 }
-                $item['attributes'] = $attributes;
-                $item['permutation'] = implode(',', array_map(function($key, $value){
+
+                // Put the attributes on the root item
+                foreach ($attributes as $key => $value) {
+                    $item[$key] = $value;
+                }
+
+                // build a permutation string
+                $item['permutation'] = implode(',', array_map(function($key, $value) {
                     return $key . ":" . $value;
                 }, array_keys($attributes), array_values($attributes)));
+
                 $item['total'] = $bucket['doc_count'];
                 $total += $bucket['doc_count'];
                 $out[] = $item;
