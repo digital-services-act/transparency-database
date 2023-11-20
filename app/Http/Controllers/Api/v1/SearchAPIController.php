@@ -119,6 +119,7 @@ class SearchAPIController extends Controller
             ]);
             $buckets = $result['aggregations']['composite_buckets']['buckets'];
             $out = [];
+            $total = 0;
             foreach ($buckets as $bucket) {
                 $item = [];
                 $attributes = $bucket['key'];
@@ -130,9 +131,11 @@ class SearchAPIController extends Controller
                     return $key . ":" . $value;
                 }, array_keys($attributes), array_values($attributes)));
                 $item['total'] = $bucket['doc_count'];
+                $total += $bucket['doc_count'];
                 $out[] = $item;
             }
-            return response()->json($out);
+
+            return response()->json(['aggregates' => $out, 'total' => $total]);
 
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
@@ -157,7 +160,7 @@ class SearchAPIController extends Controller
                     'name' => $name
                 ];
             }
-            return response()->json($out);
+            return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
 

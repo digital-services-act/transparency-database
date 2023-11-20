@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
 
 class StatementSearchableChunk implements ShouldQueue
@@ -25,6 +26,16 @@ class StatementSearchableChunk implements ShouldQueue
         $this->start = $start;
         $this->min = $min;
         $this->chunk = $chunk;
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, object>
+     */
+    public function middleware(): array
+    {
+        return [new RateLimited('reindexing')];
     }
 
     /**
