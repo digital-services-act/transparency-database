@@ -30,7 +30,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 |
 */
 
-
+Route::middleware(['force.auth'])->group(function () {
+    // Your routes that require authentication in non-production environments
 
 Route::middleware(['auth'])->group(function() {
 
@@ -101,3 +102,4 @@ Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlat
 Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
+});
