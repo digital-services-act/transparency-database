@@ -202,6 +202,7 @@ class SearchAPIController extends Controller
         'decision_monetary',
         'decision_provision',
         'decision_account',
+        'category',
         'decision_ground',
         'automated_detection',
         'automated_decision',
@@ -212,6 +213,7 @@ class SearchAPIController extends Controller
 
         $allowed_attributes = [
             'platform_id',
+            'category',
             'decision_visibility_single',
             'decision_monetary',
             'decision_provision',
