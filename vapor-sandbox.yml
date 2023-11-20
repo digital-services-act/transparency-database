@@ -15,7 +15,7 @@ environments:
     timeout: 180
     cache: redis-sandbox-us
     queue-database-session-persist: true
-    database: test-db-serverless
+    database: sandbox-serverless-db-us
     network: vapor-network-1688550103
     domain: sandbox.sor.dsa.ec.europa.eu
     memory: 2048
