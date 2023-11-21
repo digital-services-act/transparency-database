@@ -103,7 +103,7 @@ class StatementAPIController extends Controller
     {
         $platform_id = $request->user()->platform_id;
         $user_id     = $request->user()->id;
-        $method      = Statement::METHOD_API;
+        $method      = Statement::METHOD_API_MULTI;
 
         $payload = $request->validated();
 

@@ -17,9 +17,11 @@ class Statement extends Model
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
+    public const METHOD_API_MULTI = 'API_MULTI';
     public const METHODS = [
         'METHOD_FORM' => self::METHOD_FORM,
-        'METHOD_API' => self::METHOD_API
+        'METHOD_API' => self::METHOD_API,
+        'METHOD_API_MULTI' => self::METHOD_API_MULTI
     ];
 
     public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
