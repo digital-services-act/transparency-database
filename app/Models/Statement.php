@@ -598,6 +598,7 @@ class Statement extends Model
 
 
         if (is_array($out)) {
+            $out = array_unique($out);
             sort($out);
         } else {
             $out = [];
