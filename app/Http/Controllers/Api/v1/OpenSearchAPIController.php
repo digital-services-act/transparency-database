@@ -15,7 +15,7 @@ use JsonException;
 use OpenSearch\Client;
 use stdClass;
 
-class SearchAPIController extends Controller
+class OpenSearchAPIController extends Controller
 {
     private Client $client;
     private string $index_name;
@@ -99,52 +99,55 @@ class SearchAPIController extends Controller
     /**
      * @param Request $request
      * @param string $date_in
+     * @param string|null $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
+    public function aggregates(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
     {
         try {
 
-            $date = Carbon::createFromFormat('Y-m-d', $date_in);
-            $query = $this->aggregateQuery($date);
+            $start = Carbon::createFromFormat('Y-m-d', $date_in);
+            $end = $start->clone();
+            $query = $this->aggregateQuery($start, $end);
             if ($attributes_in) {
                 $attributes = explode("__", $attributes_in);
-                $query = $this->aggregateQuery($date, $attributes);
+                $query = $this->aggregateQuery($start, $end, $attributes);
             }
 
-            $result = $this->client->search([
-                'index' => $this->index_name,
-                'body'  => $query,
-            ]);
-            $buckets = $result['aggregations']['composite_buckets']['buckets'];
-            $out = [];
-            $total = 0;
-            foreach ($buckets as $bucket) {
-                $item = [];
-                $attributes = $bucket['key'];
+            $results = $this->processAggregateQuery($query);
 
-                // Manipulate the results
-                if (isset($attributes['automated_detection'])) {
-                    $attributes['automated_detection'] = (int)$attributes['automated_detection'];
-                }
+            return response()->json($results);
 
-                // Put the attributes on the root item
-                foreach ($attributes as $key => $value) {
-                    $item[$key] = $value;
-                }
+        } catch (Exception $e) {
+            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
 
-                // build a permutation string
-                $item['permutation'] = implode(',', array_map(function($key, $value) {
-                    return $key . ":" . $value;
-                }, array_keys($attributes), array_values($attributes)));
+    /**
+     * @param Request $request
+     * @param string $start_in
+     * @param string $end_in
+     * @param string|null $attributes_in
+     *
+     * @return JsonResponse|array
+     */
+    public function aggregatesRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    {
+        try {
 
-                $item['total'] = $bucket['doc_count'];
-                $total += $bucket['doc_count'];
-                $out[] = $item;
+            $start = Carbon::createFromFormat('Y-m-d', $start_in);
+            $end = Carbon::createFromFormat('Y-m-d', $end_in);
+            $query = $this->aggregateQuery($start, $end);
+            if ($attributes_in) {
+                $attributes = explode("__", $attributes_in);
+                $query = $this->aggregateQuery($start, $end, $attributes);
             }
 
-            return response()->json(['aggregates' => $out, 'total' => $total]);
+            $results = $this->processAggregateQuery($query);
+
+            return response()->json($results);
 
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
@@ -204,11 +207,57 @@ class SearchAPIController extends Controller
         }
     }
 
+    /**
+     * @param stdClass $query
+     *
+     * @return array
+     */
+    private function processAggregateQuery(stdClass $query): array
+    {
+        $result = $this->client->search([
+            'index' => $this->index_name,
+            'body'  => $query,
+        ]);
+        $buckets = $result['aggregations']['composite_buckets']['buckets'];
+        $out = [];
+        $total = 0;
+        $total_aggregates = 0;
+        foreach ($buckets as $bucket) {
+            $item = [];
+            $attributes = $bucket['key'];
+
+            // Manipulate the results
+            if (isset($attributes['automated_detection'])) {
+                $attributes['automated_detection'] = (int)$attributes['automated_detection'];
+            }
+
+            if (isset($attributes['received_date'])) {
+                $attributes['received_date'] = date( 'Y-m-d', ($attributes['received_date'] /  1000));
+            }
+
+            // Put the attributes on the root item
+            foreach ($attributes as $key => $value) {
+                $item[$key] = $value;
+            }
+
+            // build a permutation string
+            $item['permutation'] = implode(',', array_map(function($key, $value) {
+                return $key . ":" . $value;
+            }, array_keys($attributes), array_values($attributes)));
+
+            $item['total'] = $bucket['doc_count'];
+            $total += $bucket['doc_count'];
+            $total_aggregates++;
+            $out[] = $item;
+        }
+        return ['aggregates' => $out, 'total' => $total, 'total_aggregates' => $total_aggregates];
+    }
+
 
     /**
      * @throws JsonException
      */
-    private function aggregateQuery(Carbon $date, array $attributes = [
+    private function aggregateQuery(Carbon $start, Carbon $end, array $attributes = [
         'platform_id',
         'decision_visibility_single',
         'decision_monetary',
@@ -219,7 +268,8 @@ class SearchAPIController extends Controller
         'automated_detection',
         'automated_decision',
         'content_type_single',
-        'source_type'
+        'source_type',
+        'received_date'
     ]) {
 
 
@@ -234,7 +284,8 @@ class SearchAPIController extends Controller
             'automated_detection',
             'automated_decision',
             'content_type_single',
-            'source_type'
+            'source_type',
+            'received_date'
         ];
 
 
@@ -299,9 +350,6 @@ class SearchAPIController extends Controller
 }
 JSON;
         $query = json_decode($query_string, false, 512, JSON_THROW_ON_ERROR);
-
-        $start = $date->clone();
-        $end = $date->clone();
 
         $start->hour = 0;
         $start->minute = 0;
