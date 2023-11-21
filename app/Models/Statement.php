@@ -582,18 +582,20 @@ class Statement extends Model
     }
 
     /**
-     * @return array|mixed
+     * @return array
      */
-    public function getRawKeys($key): mixed
+    public function getRawKeys($key): array
     {
-        if(is_null($this->getRawOriginal($key))) return [];
+        if(is_null($this->getRawOriginal($key))) {
+            return [];
+        }
         $out = null;
 
         // Catch potential bad json here.
         try {
-            $out = json_decode($this->getRawOriginal($key));
+            $out = json_decode($this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $e) {
-            $out = [];
+            return [];
         }
 
 
