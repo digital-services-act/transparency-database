@@ -30,12 +30,6 @@ class OpenSearchIndexInfo extends Command
      */
     public function handle(): void
     {
-        if (env('SCOUT_DRIVER', '') !== 'opensearch')
-        {
-            $this->error('opensearch is not the SCOUT_DRIVER');
-            return;
-        }
-
         $index = $this->argument('index');
         if (!$index)
         {

@@ -24,10 +24,10 @@
     <tr class="ecl-table__row">
         <th class="ecl-table__header">Date</th>
         <th class="ecl-table__header">Statements of Reasons</th>
-        <th class="ecl-table__header">File Full</th>
-        <th class="ecl-table__header">Size Full</th>
-        <th class="ecl-table__header">File Light</th>
-        <th class="ecl-table__header">Size Light</th>
+        <th class="ecl-table__header">Full</th>
+        <th class="ecl-table__header">Size</th>
+        <th class="ecl-table__header">Light</th>
+        <th class="ecl-table__header">Size</th>
     </tr>
     </thead>
     <tbody class="ecl-table__body" style="font-size: smaller;">
@@ -36,8 +36,8 @@
         <tr class="ecl-table__row dayarchive-row">
             <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date}}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>
-            <td class="ecl-table__cell" data-ecl-table-header="File Full">
-                <a download href="{{ route('dayarchive.download', [$dayarchive->date]) }}"
+            <td class="ecl-table__cell" data-ecl-table-header="File">
+                <a href="{{ $dayarchive->url }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">{{basename($dayarchive->url)}}</span>
                     <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
@@ -45,9 +45,9 @@
                     </svg>
                 </a>
             </td>
-            <td class="ecl-table__cell" data-ecl-table-header="Size Full">{{human_filesize($dayarchive->size)}}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="File Light">
-                <a download href="{{ route('dayarchive.download-light', [$dayarchive->date]) }}"
+            <td class="ecl-table__cell" data-ecl-table-header="Size">{{human_filesize($dayarchive->size)}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="File">
+                <a download href="{{ $dayarchive->urllight }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">{{basename($dayarchive->urllight)}}</span>
                     <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
@@ -55,7 +55,7 @@
                     </svg>
                 </a>
             </td>
-            <td class="ecl-table__cell" data-ecl-table-header="Size Light">{{human_filesize($dayarchive->sizelight)}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Size">{{human_filesize($dayarchive->sizelight)}}</td>
         </tr>
 
     @endforeach

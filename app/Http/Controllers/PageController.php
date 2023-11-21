@@ -23,6 +23,12 @@ class PageController extends Controller
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
 
+
+        //TODO: remove on 2023-11-27
+        if(strtolower(config('app.env_real')) == 'production' && $page == 'api-documentation'){
+            $page = 'api-documentation-production';
+        }
+
         // sanitize
         $page = preg_replace("/[^a-z-]/", "", $page);
 

@@ -157,7 +157,7 @@ class StatementSearchService
             $ors[] = $textfield . ':"' . $filter_value . '"';
         }
 
-        if (env('SCOUT_DRIVER', '') === 'database' && env('APP_ENV', '') !== 'testing') {
+        if (config('scout.driver', '') === 'database' && config('app.env', '') !== 'testing') {
             return $filter_value;
         }
 

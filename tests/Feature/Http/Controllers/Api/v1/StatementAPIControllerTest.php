@@ -30,6 +30,9 @@ class StatementAPIControllerTest extends TestCase
 
         $this->required_fields = [
             'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
+            'decision_monetary' => null,
+            'decision_provision' => null,
+            'decision_account' => null,
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
             'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
             'illegal_content_legal_ground' => 'foo',
@@ -141,6 +144,20 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function api_statements_store_requires_auth()
+    {
+        $this->setUpFullySeededDatabase();
+        // Not signing in.
+        $this->assertCount(10, Statement::all());
+        $response = $this->post(route('api.v1.statements.store'), [$this->required_fields], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @test
+     */
     public function api_statement_store_works()
     {
         $this->setUpFullySeededDatabase();
@@ -162,6 +179,136 @@ class StatementAPIControllerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertNull($statement->account_type);
         $this->assertNull($statement->content_language);
+    }
+
+    /**
+     * @test
+     */
+    public function api_statements_store_works()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+        $create = 10;
+        $sors = [];
+        while($create--) {
+            $fields['puid'] = uniqid();
+            $sors[]         = $fields;
+        }
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(20, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function api_statements_store_validates()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+        $create = 10;
+        $sors = [];
+        while($create--) {
+            $fields['puid'] = uniqid();
+            $sors[]         = $fields;
+        }
+
+        $sors[3]['content_language'] = 'XX';
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertEquals('The selected statements.3.content_language is invalid.', $response->json('message'));
+
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function api_statements_store_detect_non_unique_in_call()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+        $create = 10;
+        $sors = [];
+        while($create--) {
+            $fields['puid'] = uniqid();
+            $sors[]         = $fields;
+        }
+
+        $sors[0]['puid'] = $sors[5]['puid'];
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function api_statements_store_detects_previous_puid()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+        $create = 10;
+        $sors = [];
+        while($create--) {
+            $fields['puid'] = uniqid();
+            $sors[]         = $fields;
+        }
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(20, Statement::all());
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
+
+        $this->assertCount(20, Statement::all());
     }
 
     /**

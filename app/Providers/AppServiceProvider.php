@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use GuzzleHttp\Client;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use loophp\psr17\Psr17;
 use loophp\psr17\Psr17Interface;
@@ -60,19 +62,18 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Blade::withoutDoubleEncoding();
-
         view()->share('ecl_init', true);
-
 
         // Analytics Float Format
         Blade::directive('aff', function (string $expression) {
             return "<?php echo number_format(floatval($expression), 2, '.', '&nbsp;'); ?>";
         });
-
         // Analytics Int Format
         Blade::directive('aif', function (string $expression) {
             return "<?php echo number_format(intval($expression), 0, '', '&nbsp;'); ?>";
         });
-
+        RateLimiter::for('reindexing', static function (object $job) {
+            return Limit::perMinute(1000);
+        });
     }
 }

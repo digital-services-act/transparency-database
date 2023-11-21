@@ -17,9 +17,11 @@ class Statement extends Model
 
     public const METHOD_FORM = 'FORM';
     public const METHOD_API = 'API';
+    public const METHOD_API_MULTI = 'API_MULTI';
     public const METHODS = [
         'METHOD_FORM' => self::METHOD_FORM,
-        'METHOD_API' => self::METHOD_API
+        'METHOD_API' => self::METHOD_API,
+        'METHOD_API_MULTI' => self::METHOD_API_MULTI
     ];
 
     public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
@@ -408,13 +410,19 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statement_' . env('APP_ENV');
+        return 'statement_' . config('app.env');
     }
 
     public function toSearchableArray()
     {
+        $received_date = $this->created_at->clone();
+        $received_date->hour = 0;
+        $received_date->minute = 0;
+        $received_date->second = 0;
+
         return [
             'decision_visibility' => $this->decision_visibility,
+            'decision_visibility_single' => implode("__", $this->decision_visibility),
             'category_specification' => $this->category_specification,
             'decision_visibility_other' => $this->decision_visibilit_other,
             'decision_monetary' => $this->decision_monetary,
@@ -424,6 +432,7 @@ class Statement extends Model
             'account_type' => $this->account_type,
             'decision_ground' => $this->decision_ground,
             'content_type' => $this->content_type,
+            'content_type_single' => implode('__', $this->content_type),
             'content_type_other' => $this->content_type_other,
             'content_language' => $this->content_language,
             'illegal_content_legal_ground' => $this->illegal_content_legal_ground,
@@ -438,10 +447,16 @@ class Statement extends Model
             'category' => $this->category,
             'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
+            'platform_name' => $this->platform->name,
+            'platform_uuid' => $this->platform->uuid,
+            'content_date' => $this->content_date,
+            'application_date' => $this->application_date,
             'created_at' => $this->created_at,
+            'received_date' => $received_date,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
-            'territorial_scope' => $this->territorial_scope
+            'territorial_scope' => $this->territorial_scope,
+            'method' => $this->method
         ];
     }
 
@@ -570,22 +585,25 @@ class Statement extends Model
     }
 
     /**
-     * @return array|mixed
+     * @return array
      */
-    public function getRawKeys($key): mixed
+    public function getRawKeys($key): array
     {
-        if(is_null($this->getRawOriginal($key))) return [];
+        if(is_null($this->getRawOriginal($key))) {
+            return [];
+        }
         $out = null;
 
         // Catch potential bad json here.
         try {
-            $out = json_decode($this->getRawOriginal($key));
+            $out = json_decode($this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $e) {
-            $out = [];
+            return [];
         }
 
 
         if (is_array($out)) {
+            $out = array_unique($out);
             sort($out);
         } else {
             $out = [];

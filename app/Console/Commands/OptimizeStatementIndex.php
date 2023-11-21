@@ -30,20 +30,13 @@ class OptimizeStatementIndex extends Command
      */
     public function handle(): void
     {
-        if (env('SCOUT_DRIVER', '') !== 'opensearch') {
-            $this->error('opensearch is not the SCOUT_DRIVER');
-
-            return;
-        }
-
         /** @var Client $client */
-        $client = app(Client::class);
-
-        $index_name = 'statement_' . env('APP_ENV');
+        $client     = app(Client::class);
+        $index_name = 'statement_' . config('app.env');
 
         if ($client->indices()->exists(['index' => $index_name])) {
             $client->indices()->delete(['index' => $index_name]);
-        };
+        }
 
         $properties = [
             'properties' =>
@@ -68,6 +61,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
+                    'content_type_single'                     =>
+                        [
+                            'type' => 'keyword'
+                        ],
                     'content_type_other'               =>
                         [
                             'type' => 'text'
@@ -77,6 +74,18 @@ class OptimizeStatementIndex extends Command
                             'type' => 'keyword'
                         ],
                     'created_at'                       =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'received_date'                    =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'content_date'                     =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'application_date'                 =>
                         [
                             'type' => 'date'
                         ],
@@ -108,6 +117,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
+                    'decision_visibility_single'              =>
+                        [
+                            'type' => 'keyword'
+                        ],
                     'id'                               =>
                         [
                             'type' => 'long'
@@ -131,6 +144,14 @@ class OptimizeStatementIndex extends Command
                     'platform_id'                      =>
                         [
                             'type' => 'long',
+                        ],
+                    'platform_name'                    =>
+                        [
+                            'type' => 'text',
+                        ],
+                    'platform_uuid'                    =>
+                        [
+                            'type' => 'text',
                         ],
                     'source_identity'                  =>
                         [
@@ -164,6 +185,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
+                    'method'                =>
+                        [
+                            'type' => 'keyword'
+                        ],
                 ]
         ];
 
@@ -172,7 +197,6 @@ class OptimizeStatementIndex extends Command
         ];
 
         $client->indices()->create(['index' => $index_name, 'body' => $body]);
-        Statement::where('id', '>', 0)->searchable();
     }
 
 }

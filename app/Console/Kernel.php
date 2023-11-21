@@ -23,8 +23,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals-decisions')->daily();
 
         // These ones run on a separate machine long running process.
-        //$schedule->command('applicationdateaggregate:compile')->daily();
-        //$schedule->command('contentdateaggregate:compile')->daily();
         //$schedule->command('statements:day-archive')->daily();
 
         /*
@@ -43,16 +41,6 @@ class Kernel extends ConsoleKernel
             php artisan statements:day-archive 2023-10-01
             php artisan statements:day-archive 2023-10-02
             php artisan statements:day-archive 2023-10-03
-            ...
-            php artisan applicationdateaggregate:compile
-            php artisan applicationdateaggregate:compile 2023-10-01
-            php artisan applicationdateaggregate:compile 2023-10-02
-            php artisan applicationdateaggregate:compile 2023-10-03
-            ...
-            php artisan contentdateaggregate:compile
-            php artisan contentdateaggregate:compile 2023-10-01
-            php artisan contentdateaggregate:compile 2023-10-02
-            php artisan contentdateaggregate:compile 2023-10-03
             ...
 
         */

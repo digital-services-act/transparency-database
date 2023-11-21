@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\Sanitizer;
+use App\Http\Requests\StatementsStoreRequest;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class StatementAPIController extends Controller
 {
@@ -30,7 +34,7 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function existingPuid(Request $request, String $puid)
+    public function existingPuid(Request $request, String $puid): JsonResponse
     {
         $platform_id = $request->user()->platform_id;
 
@@ -75,16 +79,17 @@ class StatementAPIController extends Controller
                 }
 
                 return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
-            } else {
-                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
-                $errors = [
-                    'uncaught_exception' => [
-                        'Statement Creation Query Exception Thrown: ' . $e->getMessage()
-                    ]
-                ];
-                $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
-                return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
+
+            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+            $errors  = [
+                'uncaught_exception' => [
+                    'Statement Creation Query Exception Thrown: ' . $e->getMessage()
+                ]
+            ];
+            $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
+
+            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 
@@ -94,5 +99,87 @@ class StatementAPIController extends Controller
         return response()->json($out, Response::HTTP_CREATED);
     }
 
+    public function storeMultiple(StatementsStoreRequest $request): JsonResponse
+    {
+        $platform_id = $request->user()->platform_id;
+        $user_id     = $request->user()->id;
+        $method      = Statement::METHOD_API_MULTI;
 
+        $payload = $request->validated();
+
+        $puids_to_check = array_map(static function ($potential_statement) {
+            return $potential_statement['puid'];
+        }, $payload['statements']);
+
+        $unique_puids_to_check = array_unique($puids_to_check);
+        if (count($unique_puids_to_check) !== count($puids_to_check)) {
+            $errors  = [
+                'puid' => [
+                    'The platform identifier(s) are not all unique within this call.'
+                ],
+            ];
+            $message = 'The platform identifier(s) are not all unique within this call.';
+            $out     = ['message' => $message, 'errors' => $errors];
+
+            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
+        if (count($existing)) {
+            $errors  = [
+                'puid'           => [
+                    'The platform identifier(s) are not all unique within this platform.'
+                ],
+                'existing_puids' => $existing
+            ];
+            $message = 'The platform identifier(s) given are not all unique within this platform.';
+            $out     = ['message' => $message, 'errors' => $errors];
+
+            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+
+        $now = Carbon::now();
+        $uuids = [];
+        foreach ($payload['statements'] as $index => $potential_statement) {
+            $uuid                                        = Str::uuid();
+            $uuids[]                                     = $uuid;
+            $payload['statements'][$index]['platform_id'] = $platform_id;
+            $payload['statements'][$index]['user_id']     = $user_id;
+            $payload['statements'][$index]['method']      = $method;
+            $payload['statements'][$index]['uuid']        = $uuid;
+            $payload['statements'][$index]['created_at']  = $now;
+            $payload['statements'][$index]['updated_at']  = $now;
+
+            // stringify the arrays
+            foreach ($payload['statements'][$index] as $key => $value) {
+                if (is_array($value)) {
+                    $payload['statements'][$index][$key] = '["' . implode('","', $value) . '"]';
+                }
+            }
+        }
+
+        try {
+
+            Statement::insert($payload['statements']);
+            $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
+            $created_statements->searchable();
+            $out = [];
+            foreach ($created_statements as $created_statement) {
+                $puid = $created_statement->puid;
+                $created_statement = $created_statement->toArray();
+                $created_statement['puid'] = $puid;
+                $out[] = $created_statement;
+            }
+            return response()->json(['statements' => $out], Response::HTTP_CREATED);
+
+        } catch (Exception $e) {
+            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+            $errors = [
+                'Multiple Statement Creation Query Exception Thrown'
+            ];
+            $message = 'Multiple Statement Creation Query Exception Thrown';
+            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
 }

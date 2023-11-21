@@ -30,7 +30,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 |
 */
 
-
+Route::middleware(['force.auth'])->group(function () {
+    // Your routes that require authentication in non-production environments
 
 Route::middleware(['auth'])->group(function() {
 
@@ -92,11 +93,13 @@ Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->nam
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
 Route::get('/daily-archives', [DayArchiveController::class, 'index'])->name('dayarchive.index');
-Route::get('/daily-archives/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
-Route::get('/daily-archives/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
+//Route::get('/daily-archives/download/{date}', [DayArchiveController::class, 'download'])->name('dayarchive.download');
+//Route::get('/daily-archives/download-light/{date}', [DayArchiveController::class, 'downloadLight'])->name('dayarchive.download-light');
 
 Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
 
 
 Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
+
+});
