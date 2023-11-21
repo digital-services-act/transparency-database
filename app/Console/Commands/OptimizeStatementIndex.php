@@ -185,6 +185,10 @@ class OptimizeStatementIndex extends Command
                         [
                             'type' => 'text'
                         ],
+                    'method'                =>
+                        [
+                            'type' => 'keyword'
+                        ],
                 ]
         ];
 
