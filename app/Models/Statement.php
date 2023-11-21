@@ -455,7 +455,8 @@ class Statement extends Model
             'received_date' => $received_date,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
-            'territorial_scope' => $this->territorial_scope
+            'territorial_scope' => $this->territorial_scope,
+            'method' => $this->method
         ];
     }
 
