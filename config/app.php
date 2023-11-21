@@ -160,6 +160,14 @@ return [
     'api_versions' => [1],
 
     /*
+    |-------------------------------------------
+    | Real Environment
+    |-------------------------------------------
+    | Specify the real environment as each environment is knows as production from Vapor configuration file.
+    */
+    'env_real' => env('APP_ENV_REAL', 'production'),
+
+    /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
