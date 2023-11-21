@@ -165,7 +165,7 @@ return [
     |-------------------------------------------
     | Specify the real environment as each environment is knows as production from Vapor configuration file.
     */
-    'env_real' => env('APP_ENV_REAL', 'production'),
+    'env_real' => env('APP_ENV_REAL', 'local'),
 
     /*
     |--------------------------------------------------------------------------
