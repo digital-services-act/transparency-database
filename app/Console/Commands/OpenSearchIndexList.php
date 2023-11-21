@@ -30,12 +30,6 @@ class OpenSearchIndexList extends Command
      */
     public function handle(): void
     {
-        if (env('SCOUT_DRIVER', '') !== 'opensearch')
-        {
-            $this->error('opensearch is not the SCOUT_DRIVER');
-            return;
-        }
-
         /** @var Client $client */
         $client  = app(Client::class);
 

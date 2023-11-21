@@ -13,7 +13,7 @@ class ResetStatementsTable extends Command
 
     public function handle()
     {
-        if (env('APP_ENV') != 'production' || ($this->option('force') && $this->option('reallyforce'))) {
+        if (config('app.env') !== 'production' || ($this->option('force') && $this->option('reallyforce'))) {
             $tableName = 'statements';
 
             if (Schema::hasTable($tableName)) {

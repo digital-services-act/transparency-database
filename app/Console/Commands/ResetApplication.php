@@ -32,7 +32,7 @@ class ResetApplication extends Command
      */
     public function handle(): void
     {
-        if (env('APP_ENV') != 'production' || ($this->option('force') && $this->option('reallyforce'))) {
+        if (config('app.env') !== 'production' || ($this->option('force') && $this->option('reallyforce'))) {
             PlatformSeeder::resetPlatforms();
             UserSeeder::resetUsers();
             PermissionsSeeder::resetRolesAndPermissions();

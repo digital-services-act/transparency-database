@@ -109,11 +109,8 @@ class OpenSearchAPIController extends Controller
 
             $start = Carbon::createFromFormat('Y-m-d', $date_in);
             $end = $start->clone();
-            $query = $this->aggregateQuery($start, $end);
-            if ($attributes_in) {
-                $attributes = explode("__", $attributes_in);
-                $query = $this->aggregateQuery($start, $end, $attributes);
-            }
+            $attributes = explode("__", $attributes_in);
+            $query = $this->aggregateQuery($start, $end, $attributes);
 
             $results = $this->processAggregateQuery($query);
 
@@ -139,11 +136,8 @@ class OpenSearchAPIController extends Controller
 
             $start = Carbon::createFromFormat('Y-m-d', $start_in);
             $end = Carbon::createFromFormat('Y-m-d', $end_in);
-            $query = $this->aggregateQuery($start, $end);
-            if ($attributes_in) {
-                $attributes = explode("__", $attributes_in);
-                $query = $this->aggregateQuery($start, $end, $attributes);
-            }
+            $attributes = explode("__", $attributes_in);
+            $query = $this->aggregateQuery($start, $end, $attributes);
 
             $results = $this->processAggregateQuery($query);
 
@@ -257,7 +251,7 @@ class OpenSearchAPIController extends Controller
     /**
      * @throws JsonException
      */
-    private function aggregateQuery(Carbon $start, Carbon $end, array $attributes = [
+    private function aggregateQuery(Carbon $start, Carbon $end, $attributes = [
         'platform_id',
         'decision_visibility_single',
         'decision_monetary',
@@ -363,14 +357,18 @@ JSON;
         $query->query->bool->filter[1]->range->created_at->to = $end->getTimestampMs();
 
         $sources = [];
-        if (! in_array('platform_id', $attributes, true)) {
+        if (!is_array($attributes) || ! in_array('platform_id', $attributes, true)) {
             $sources[] = $this->queryAggregate('platform_id');
         }
-        foreach ($attributes as $attribute) {
-            if (in_array($attribute, $allowed_attributes, true)) {
-                $sources[] = $this->queryAggregate($attribute);
+
+        if (is_array($attributes)) {
+            foreach ($attributes as $attribute) {
+                if (in_array($attribute, $allowed_attributes, true)) {
+                    $sources[] = $this->queryAggregate($attribute);
+                }
             }
         }
+
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
 
