@@ -90,7 +90,7 @@ class DayArchiveService
                                         ->where('statements.id', '>=', $first_id)
                                         ->where('statements.id', '<=', $last_id)
                                         ->orderBy('statements.id');
-                $day_archive->total = 0;
+
 
                 if ( ! $first_id || ! $last_id) {
                     $raw                = DB::table('statements')
@@ -98,7 +98,7 @@ class DayArchiveService
                                             ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
                                             ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
                                             ->orderBy('statements.id', 'desc');
-                    $day_archive->total = 0;
+
                 }
 
                 $day_archive->save();
