@@ -29,6 +29,11 @@ class Platform extends Model
         $query->where('name', '!=', self::LABEL_DSA_TEAM);
     }
 
+    public function scopeVlop(Builder $query): void
+    {
+        $query->where('name', '!=', self::LABEL_DSA_TEAM)->where('vlop', 1);
+    }
+
     public function isDSA()
     {
         return $this->name === self::LABEL_DSA_TEAM;
