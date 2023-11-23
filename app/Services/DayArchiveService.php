@@ -41,15 +41,16 @@ class DayArchiveService
                     throw new RuntimeException("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
                 }
             }
-
-            // Create the holding model.
-            $day_archive = DayArchive::create([
-                'date'  => $date->format('Y-m-d'),
-                'total' => 0
-            ]);
-
+            
             // There needs to be a s3ds bucket.
             if (config('filesystems.disks.s3ds.bucket')) {
+
+                // Create the holding model.
+                $day_archive = DayArchive::create([
+                    'date'  => $date->format('Y-m-d'),
+                    'total' => 0
+                ]);
+
                 // Make the url and get the total and queue.
                 $file      = 'sor-' . $date->format('Y-m-d') . '-full.csv';
                 $filelight = 'sor-' . $date->format('Y-m-d') . '-light.csv';
