@@ -41,7 +41,7 @@ class DayArchiveService
                     throw new RuntimeException("A day archive for the date: " . $date->format('Y-m-d') . ' already exists.');
                 }
             }
-            
+
             // There needs to be a s3ds bucket.
             if (config('filesystems.disks.s3ds.bucket')) {
 
