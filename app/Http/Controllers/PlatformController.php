@@ -73,6 +73,7 @@ class PlatformController extends Controller
         $platform = Platform::create([
             'name' => $validated['name'],
             'url' => $validated['url'],
+            'vlop' => $validated['vlop']
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
@@ -127,6 +128,7 @@ class PlatformController extends Controller
         ])->toArray();
         $platform->name = $validated['name'];
         $platform->url = $validated['url'];
+        $platform->vlop = $validated['vlop'];
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');
     }
@@ -186,7 +188,17 @@ class PlatformController extends Controller
 
     private function prepareOptions(): array
     {
-        return [];
+        $vlops = [
+            [
+                'label' => 'Yes',
+                'value' => 1
+            ],
+            [
+                'label' => 'No',
+                'value' => 0
+            ]
+        ];
+        return compact('vlops');
     }
 
 
