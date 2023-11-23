@@ -60,11 +60,20 @@ class DayArchiveService
                 $zipfile      = $file . '.zip';
                 $zipfilelight = $filelight . '.zip';
 
+                $zipfilesha1      = $file . '.zip.sha1';
+                $zipfilelightsha1 = $filelight . '.zip.sha1';
+
                 $zippath      = Storage::path($zipfile);
                 $zippathlight = Storage::path($zipfilelight);
 
+                $zippathsha1      = Storage::path($zipfilesha1);
+                $zippathlightsha1 = Storage::path($zipfilelightsha1);
+
                 $url      = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfile;
                 $urllight = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfilelight;
+
+                $sha1url      = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfilesha1;
+                $sha1urllight = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfilelightsha1;
 
 
                 $platforms = Platform::all()->pluck('name', 'id')->toArray();
@@ -77,6 +86,10 @@ class DayArchiveService
 
                 $day_archive->url      = $url;
                 $day_archive->urllight = $urllight;
+
+                $day_archive->sha1url      = $sha1url;
+                $day_archive->sha1urllight = $sha1urllight;
+
                 $day_archive->total    = app(PlatformDayTotalsService::class)->globalTotalForDate($date);
                 $day_archive->save();
 
@@ -123,6 +136,8 @@ class DayArchiveService
                     $zip->addFile($path, $file);
                     $zip->close();
                     $day_archive->size = filesize($zippath);
+                    $day_archive->sha1 = sha1_file($zippath);
+                    Storage::put($zipfilesha1, $day_archive->sha1 . "  " . $zipfile);
                 } else {
                     throw new RuntimeException('Issue with creating the zip file.');
                 }
@@ -133,14 +148,19 @@ class DayArchiveService
                     $ziplight->addFile($pathlight, $filelight);
                     $ziplight->close();
                     $day_archive->sizelight = filesize($zippathlight);
+                    $day_archive->sha1light = sha1_file($zippathlight);
+                    Storage::put($zipfilelightsha1, $day_archive->sha1light . "  " . $zipfilelight);
                 } else {
                     throw new RuntimeException('Issue with creating the zip light file.');
                 }
                 $day_archive->save();
 
+
                 // Put them on the s3
                 Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'rb'));
                 Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'rb'));
+                Storage::disk('s3ds')->put($zipfilesha1, fopen($zippathsha1, 'rb'));
+                Storage::disk('s3ds')->put($zipfilelightsha1, fopen($zippathlightsha1, 'rb'));
 
 
                 // Clean up the files.
@@ -148,6 +168,8 @@ class DayArchiveService
                 Storage::delete($filelight);
                 Storage::delete($zipfile);
                 Storage::delete($zipfilelight);
+                Storage::delete($zipfilesha1);
+                Storage::delete($zipfilelightsha1);
 
                 $day_archive->completed_at = Carbon::now();
                 $day_archive->save();
