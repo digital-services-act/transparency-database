@@ -7,9 +7,12 @@ use App\Models\Statement;
 use App\Services\DayArchiveService;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DayArchiveServiceTest extends TestCase
@@ -95,9 +98,40 @@ class DayArchiveServiceTest extends TestCase
     }
 
     /**
+     * @return void
      * @test
      */
-    public function it_retrieves_an_archive_by_date()
+    public function it_starts_csvs_closes_and_cleans_up(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $day_archives = $this->day_archive_service->buildStartingDayArchivesArray(Carbon::yesterday());
+        $this->day_archive_service->startAllCsvFiles($day_archives);
+        Storage::assertExists($day_archives[5]['file']);
+        Storage::assertExists($day_archives[13]['file']);
+        $content = Storage::get($day_archives[4]['file']);
+        $headings = $this->day_archive_service->headings();
+        $headings_string = implode(',', $headings) . "\n";
+        $this->assertEquals($headings_string, $content);
+        $this->day_archive_service->closeAllCsvFiles($day_archives);
+        $this->day_archive_service->generateZipsSha1sAndUpdate($day_archives);
+        Storage::assertExists($day_archives[9]['zipfile']);
+        Storage::assertExists($day_archives[11]['zipfile']);
+        Storage::assertExists($day_archives[10]['zipfilesha1']);
+        Storage::assertExists($day_archives[3]['zipfilesha1']);
+        $this->day_archive_service->cleanUpCsvFiles($day_archives);
+        Storage::assertMissing($day_archives[7]['file']);
+        Storage::assertMissing($day_archives[18]['file']);
+        $this->day_archive_service->cleanUpZipAndSha1Files($day_archives);
+        Storage::assertMissing($day_archives[2]['zipfile']);
+        Storage::assertMissing($day_archives[4]['zipfile']);
+        Storage::assertMissing($day_archives[6]['zipfilesha1']);
+        Storage::assertMissing($day_archives[8]['zipfilesha1']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_retrieves_an_archive_by_date(): void
     {
         DayArchive::create([
             'date' => '2023-10-02',
@@ -110,23 +144,27 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
+     * @throws Exception
      */
-    public function it_creates_a_day_archive()
+    public function it_creates_a_day_archive(): void
     {
-        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
-        $this->assertTrue($day_archive);
+        Log::shouldReceive('debug')
+           ->with('There was no first or last id to base the day archives query from, so we fell back to the slow query');
+        $result = $this->day_archive_service->createDayArchive(Carbon::yesterday());
+        $this->assertTrue($result);
     }
 
     /**
      * @test
+     * @throws Exception
      */
-    public function it_does_not_allow_overwriting()
+    public function it_does_not_allow_overwriting(): void
     {
-        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::yesterday());
         $this->assertNotNull($day_archive);
 
-        $this->expectExceptionMessage('A day archive for the date: 2023-10-02 already exists.');
-        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
+        $this->expectExceptionMessage('A day archive for the date:');
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::yesterday());
     }
 
 
@@ -207,6 +245,20 @@ class DayArchiveServiceTest extends TestCase
         $this->assertCount(500, $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 23:59:59'), $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 23:51:40'), $in);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_builds_a_starting_array(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $result = $this->day_archive_service->buildStartingDayArchivesArray(Carbon::yesterday());
+        $this->assertNotNull($result);
+        $this->assertCount(20, $result);
+        $this->assertEquals('global', $result[0]['slug']);
+        $this->assertCount(20, DayArchive::all());
     }
 
     /**
