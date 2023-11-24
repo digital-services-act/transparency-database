@@ -29,7 +29,7 @@ class ResyncStatementIndex extends Command
     public function handle(): void
     {
         $statuses = 1000000;
-        $chunk = 200;
+        $chunk = 100;
 
         $min = DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min;
         $max = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
