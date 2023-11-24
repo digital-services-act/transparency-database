@@ -158,7 +158,7 @@ class OpenSearchAPIController extends Controller
     public function platforms(Request $request): JsonResponse|array|null
     {
         try {
-            $platforms = Platform::Vlops()->pluck('name', 'id')->toArray();
+            $platforms = Platform::all()->pluck('name', 'id')->toArray();
             $out = [];
             foreach ($platforms as $id => $name)
             {
