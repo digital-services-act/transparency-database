@@ -208,42 +208,61 @@ class DayArchiveService
 
     public function getFirstIdOfDate(Carbon $date)
     {
-        $first        = null;
-        $date->hour   = 0;
-        $date->minute = 0;
-        $date->second = 0;
+        $in = $this->buildStartOfDateArray($date);
 
-        $attempts_allowed = 100;
-
-        while ( ! $first && $attempts_allowed--) {
-            $first = DB::table('statements')
-                       ->select('id')
-                       ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
-                       ->orderBy('statements.id')->first();
-            $date->addSecond();
-        }
+        $first = DB::table('statements')
+                   ->select('id')
+                   ->whereIn('statements.created_at', $in)
+                   ->orderBy('statements.id')->limit(1)->first();
 
         return $first->id ?? 0;
     }
 
+    public function buildStartOfDateArray(Carbon $date): array
+    {
+        $date->hour   = 0;
+        $date->minute = 0;
+        $date->second = 0;
+
+        $attempts_allowed = 500;
+
+        $in = [];
+        while($attempts_allowed-- > 0)
+        {
+            $in[] = $date->format('Y-m-d H:i:s');
+            $date->addSecond();
+        }
+        return $in;
+    }
+
     public function getLastIdOfDate(Carbon $date)
     {
-        $last         = null;
+        $in = $this->buildEndOfDateArray($date);
+
+        $last = DB::table('statements')
+                  ->select('id')
+                  ->whereIn('statements.created_at', $in)
+                  ->orderBy('statements.id', 'desc')->limit(1)->first();
+
+
+        return $last->id ?? 0;
+    }
+
+    public function buildEndOfDateArray(Carbon $date): array
+    {
         $date->hour   = 23;
         $date->minute = 59;
         $date->second = 59;
 
-        $attempts_allowed = 100;
+        $attempts_allowed = 500;
 
-        while ( ! $last && $attempts_allowed--) {
-            $last = DB::table('statements')
-                      ->select('id')
-                      ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
-                      ->orderBy('statements.id', 'desc')->first();
+        $in = [];
+        while($attempts_allowed-- > 0)
+        {
+            $in[] = $date->format('Y-m-d H:i:s');
             $date->subSecond();
         }
-
-        return $last->id ?? 0;
+        return $in;
     }
 
 
@@ -267,6 +286,11 @@ class DayArchiveService
         return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
     }
 
+    /**
+     * @param Carbon $date
+     *
+     * @return Builder
+     */
     public function getDayArchivesByDate(Carbon $date): Builder
     {
         return DayArchive::query()->where('date', $date->format('Y-m-d'));
