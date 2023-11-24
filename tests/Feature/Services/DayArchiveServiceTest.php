@@ -101,13 +101,15 @@ class DayArchiveServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_starts_csvs_closes_and_cleans_up(): void
+    public function it_starts_csvs_closes_makes_zips_and_sha1s_and_cleans_up(): void
     {
         $this->setUpFullySeededDatabase();
         $day_archives = $this->day_archive_service->buildStartingDayArchivesArray(Carbon::yesterday());
         $this->day_archive_service->startAllCsvFiles($day_archives);
         Storage::assertExists($day_archives[5]['file']);
         Storage::assertExists($day_archives[13]['file']);
+        Storage::assertExists($day_archives[5]['filelight']);
+        Storage::assertExists($day_archives[13]['filelight']);
         $content = Storage::get($day_archives[4]['file']);
         $headings = $this->day_archive_service->headings();
         $headings_string = implode(',', $headings) . "\n";
@@ -118,14 +120,28 @@ class DayArchiveServiceTest extends TestCase
         Storage::assertExists($day_archives[11]['zipfile']);
         Storage::assertExists($day_archives[10]['zipfilesha1']);
         Storage::assertExists($day_archives[3]['zipfilesha1']);
+        Storage::assertExists($day_archives[9]['zipfilelight']);
+        Storage::assertExists($day_archives[11]['zipfilelight']);
+        Storage::assertExists($day_archives[10]['zipfilelightsha1']);
+        Storage::assertExists($day_archives[3]['zipfilelightsha1']);
         $this->day_archive_service->cleanUpCsvFiles($day_archives);
         Storage::assertMissing($day_archives[7]['file']);
         Storage::assertMissing($day_archives[18]['file']);
+        Storage::assertMissing($day_archives[1]['file']);
+        Storage::assertMissing($day_archives[3]['file']);
+        Storage::assertMissing($day_archives[7]['filelight']);
+        Storage::assertMissing($day_archives[18]['filelight']);
+        Storage::assertMissing($day_archives[1]['filelight']);
+        Storage::assertMissing($day_archives[3]['filelight']);
         $this->day_archive_service->cleanUpZipAndSha1Files($day_archives);
         Storage::assertMissing($day_archives[2]['zipfile']);
         Storage::assertMissing($day_archives[4]['zipfile']);
         Storage::assertMissing($day_archives[6]['zipfilesha1']);
         Storage::assertMissing($day_archives[8]['zipfilesha1']);
+        Storage::assertMissing($day_archives[2]['zipfilelight']);
+        Storage::assertMissing($day_archives[4]['zipfilelight']);
+        Storage::assertMissing($day_archives[6]['zipfilelightsha1']);
+        Storage::assertMissing($day_archives[8]['zipfilelightsha1']);
     }
 
     /**
