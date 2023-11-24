@@ -110,10 +110,17 @@ class DayArchiveServiceTest extends TestCase
         Storage::assertExists($day_archives[13]['file']);
         Storage::assertExists($day_archives[5]['filelight']);
         Storage::assertExists($day_archives[13]['filelight']);
+
         $content = Storage::get($day_archives[4]['file']);
         $headings = $this->day_archive_service->headings();
         $headings_string = implode(',', $headings) . "\n";
         $this->assertEquals($headings_string, $content);
+
+        $content = Storage::get($day_archives[4]['filelight']);
+        $headings = $this->day_archive_service->headingsLight();
+        $headings_string = implode(',', $headings) . "\n";
+        $this->assertEquals($headings_string, $content);
+
         $this->day_archive_service->closeAllCsvFiles($day_archives);
         $this->day_archive_service->generateZipsSha1sAndUpdate($day_archives);
         Storage::assertExists($day_archives[9]['zipfile']);
