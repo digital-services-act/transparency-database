@@ -3,6 +3,7 @@ name: dsa-sandbox
 environments:
   production:
     firewall:
+      rate-limit: 12500
       bot-control:
         - CategoryAdvertising
         - CategoryArchiver

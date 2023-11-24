@@ -11,9 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('statements', function (Blueprint $table) {
-            $table->dropIndex('uuidindex');
+//            $table->dropIndex('uuidindex');
             // Then, create a new unique index
-            $table->unique('uuid', 'uuidindex');
+//            $table->unique('uuid', 'uuidindex');
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('statements', function (Blueprint $table) {
-            $table->dropIndex('uuidindex');
-            $table->index('uuid', 'uuidindex');
+//            $table->dropIndex('uuidindex');
+//            $table->index('uuid', 'uuidindex');
         });
     }
 };
