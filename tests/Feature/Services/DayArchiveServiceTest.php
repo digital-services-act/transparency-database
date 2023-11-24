@@ -48,7 +48,7 @@ class DayArchiveServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_retrieves_master_list()
+    public function it_retrieves_global_list()
     {
         DayArchive::create([
             'date' => '2023-10-02',
@@ -62,7 +62,7 @@ class DayArchiveServiceTest extends TestCase
         ]);
 
 
-        $list = $this->day_archive_service->masterList()->get();
+        $list = $this->day_archive_service->globalList()->get();
         $this->assertCount(2, $list);
 
         // First one needs the 2
@@ -78,7 +78,7 @@ class DayArchiveServiceTest extends TestCase
     /**
      * @test
      */
-    public function master_list_must_be_completed_day_archive()
+    public function gloabl_list_must_be_completed_day_archive()
     {
         DayArchive::create([
             'date' => '2023-10-02',
@@ -90,7 +90,7 @@ class DayArchiveServiceTest extends TestCase
         ]);
 
 
-        $list = $this->day_archive_service->masterList()->get();
+        $list = $this->day_archive_service->globalList()->get();
         $this->assertCount(0, $list);
     }
 
@@ -114,8 +114,7 @@ class DayArchiveServiceTest extends TestCase
     public function it_creates_a_day_archive()
     {
         $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
-        $this->assertNotNull($day_archive);
-        $this->assertEquals(0, $day_archive->total);
+        $this->assertTrue($day_archive);
     }
 
     /**
@@ -182,6 +181,32 @@ class DayArchiveServiceTest extends TestCase
         $first_id = $this->day_archive_service->getFirstIdOfDate(Carbon::createFromDate(2030, 1, 1));
 
         $this->assertEquals(0, $first_id);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_builds_a_nice_array_for_the_start_of_a_date(): void
+    {
+        $in = $this->day_archive_service->buildStartOfDateArray(Carbon::now());
+        $this->assertNotNull($in);
+        $this->assertCount(500, $in);
+        $this->assertContains(Carbon::now()->format('Y-m-d 00:00:00'), $in);
+        $this->assertContains(Carbon::now()->format('Y-m-d 00:08:19'), $in);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_builds_a_nice_array_for_the_end_of_a_date(): void
+    {
+        $in = $this->day_archive_service->buildEndOfDateArray(Carbon::now());
+        $this->assertNotNull($in);
+        $this->assertCount(500, $in);
+        $this->assertContains(Carbon::now()->format('Y-m-d 23:59:59'), $in);
+        $this->assertContains(Carbon::now()->format('Y-m-d 23:51:40'), $in);
     }
 
     /**

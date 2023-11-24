@@ -29,6 +29,11 @@ class Platform extends Model
         $query->where('name', '!=', self::LABEL_DSA_TEAM);
     }
 
+    public function scopeVlops(Builder $query): void
+    {
+        $query->where('name', '!=', self::LABEL_DSA_TEAM)->where('vlop', 1);
+    }
+
     public function isDSA()
     {
         return $this->name === self::LABEL_DSA_TEAM;
@@ -37,6 +42,11 @@ class Platform extends Model
     public static function getDsaPlatform()
     {
         return Platform::where('name', self::LABEL_DSA_TEAM)->first();
+    }
+
+    public function slugifyName()
+    {
+        return Str::slug($this->name);
     }
 
     protected static function boot()

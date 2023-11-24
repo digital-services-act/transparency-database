@@ -1,15 +1,19 @@
 @extends('layouts/ecl')
 
-@section('title', 'Daily Archives')
+
+@if($platform)
+    @section('title', 'Daily Archives for ' . $platform->name)
+@else
+    @section('title', 'Daily Archives')
+@endif
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="Daily Archives" />
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Daily Archives"/>
 @endsection
 
 
 @section('content')
-
 
     <div class="ecl-fact-figures ecl-fact-figures--col-1">
         <div class="ecl-fact-figures__description">
@@ -24,10 +28,32 @@
         </div>
     </div>
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives</h1>
+    <div class="ecl-row ecl-u-mt-l">
+        <div class="ecl-col-l-6">
+            @if($platform)
+                <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives for {{ $platform->name }}</h1>
+            @else
+                <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives</h1>
+            @endif
 
+        </div>
 
-    <x-dayarchive.table :dayarchives="$dayarchives" />
+        <div class="ecl-col-l-6">
+            <form method="get" id="platform">
+                <x-ecl.select label="Select a Platform" name="uuid" id="uuid"
+                              justlabel="true"
+                              :options="$options['platforms']" :default="request()->route('uuid')"
+                />
+            </form>
+            <script>
+              var uuid = document.getElementById('uuid')
+              uuid.onchange = (event) => {
+                document.location.href = '{{ route('dayarchive.index') }}/' + event.target.value
+              }
+            </script>
+        </div>
+    </div>
 
+    <x-dayarchive.table :dayarchives="$dayarchives"/>
 
 @endsection
