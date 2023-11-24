@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-
 use App\Exports\StatementExportTrait;
 use App\Models\DayArchive;
 use App\Models\Platform;
@@ -12,29 +11,36 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use ZipArchive;
-
 
 class DayArchiveService
 {
     use StatementExportTrait;
 
+    protected PlatformDayTotalsService $platform_day_totals_service;
+
+    public function __construct(PlatformDayTotalsService $platform_day_totals_service)
+    {
+        $this->platform_day_totals_service  = $platform_day_totals_service;
+    }
+
     /**
      * @param Carbon $date
      * @param bool $force
      *
-     * @return DayArchive
+     * @return bool
      * @throws Exception
      */
-    public function createDayArchive(Carbon $date, bool $force = false): DayArchive
+    public function createDayArchive(Carbon $date, bool $force = false): bool
     {
         $today = Carbon::today();
 
         if ($date < $today) {
-            $existing = $this->getDayArchiveByDate($date);
-            if ($existing) {
+            $existing = $this->getDayArchivesByDate($date);
+            if ($existing->count()) {
                 if ($force) {
                     $existing->delete();
                 } else {
@@ -42,169 +48,300 @@ class DayArchiveService
                 }
             }
 
-            // Create the holding model.
-            $day_archive = DayArchive::create([
-                'date'  => $date->format('Y-m-d'),
-                'total' => 0
-            ]);
-
             // There needs to be a s3ds bucket.
             if (config('filesystems.disks.s3ds.bucket')) {
-                // Make the url and get the total and queue.
-                $file      = 'sor-' . $date->format('Y-m-d') . '-full.csv';
-                $filelight = 'sor-' . $date->format('Y-m-d') . '-light.csv';
-
-                $path      = Storage::path($file);
-                $pathlight = Storage::path($filelight);
-
-                $zipfile      = $file . '.zip';
-                $zipfilelight = $filelight . '.zip';
-
-                $zippath      = Storage::path($zipfile);
-                $zippathlight = Storage::path($zipfilelight);
-
-                $url      = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfile;
-                $urllight = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/' . $zipfilelight;
-
 
                 $platforms = Platform::all()->pluck('name', 'id')->toArray();
+                $day_archives = $this->buildStartingDayArchivesArray($date);
 
-                $first_id = $this->getFirstIdOfDate($date);
-                $last_id  = $this->getLastIdOfDate($date);
+                $this->startAllCsvFiles($day_archives);
+                $raw = $this->getRawQuery($date);
+                $this->chunkAndWrite($raw, $day_archives, $platforms);
+                $this->closeAllCsvFiles($day_archives);
+                $this->generateZipsSha1sAndUpdate($day_archives);
+                $this->uploadTheZipsAndSha1s($day_archives);
+                $this->cleanUpCsvFiles($day_archives);
+                $this->cleanUpZipAndSha1Files($day_archives);
+                $this->markArchivesComplete($day_archives);
 
-                $csv_file      = fopen($path, 'wb');
-                $csv_filelight = fopen($pathlight, 'wb');
-
-                $day_archive->url      = $url;
-                $day_archive->urllight = $urllight;
-                $day_archive->total    = app(PlatformDayTotalsService::class)->globalTotalForDate($date);
-                $day_archive->save();
-
-                fputcsv($csv_file, $this->headings());
-                fputcsv($csv_filelight, $this->headingsLight());
-
-                $select_raw = $this->getSelectRawString();
-
-                $raw                = DB::table('statements')
-                                        ->selectRaw($select_raw)
-                                        ->where('statements.id', '>=', $first_id)
-                                        ->where('statements.id', '<=', $last_id)
-                                        ->orderBy('statements.id');
-                $day_archive->total = 0;
-
-                if ( ! $first_id || ! $last_id) {
-                    $raw                = DB::table('statements')
-                                            ->selectRaw($select_raw)
-                                            ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
-                                            ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
-                                            ->orderBy('statements.id', 'desc');
-                    $day_archive->total = 0;
-                }
-
-                $day_archive->save();
-
-
-                $raw->chunk(1000000, function (Collection $statements) use ($csv_file, $csv_filelight, $platforms) {
-                    foreach ($statements as $statement) {
-                        $row = $this->mapRaw($statement, $platforms);
-                        fputcsv($csv_file, $row);
-
-                        $row = $this->mapRawLight($statement, $platforms);
-                        fputcsv($csv_filelight, $row);
-                    }
-                });
-
-                fclose($csv_file);
-                fclose($csv_filelight);
-
-
-                $zip = new ZipArchive;
-                if ($zip->open($zippath, ZipArchive::CREATE) === true) {
-                    $zip->addFile($path, $file);
-                    $zip->close();
-                    $day_archive->size = filesize($zippath);
-                } else {
-                    throw new RuntimeException('Issue with creating the zip file.');
-                }
-                $day_archive->save();
-
-                $ziplight = new ZipArchive;
-                if ($ziplight->open($zippathlight, ZipArchive::CREATE) === true) {
-                    $ziplight->addFile($pathlight, $filelight);
-                    $ziplight->close();
-                    $day_archive->sizelight = filesize($zippathlight);
-                } else {
-                    throw new RuntimeException('Issue with creating the zip light file.');
-                }
-                $day_archive->save();
-
-                // Put them on the s3
-                Storage::disk('s3ds')->put($zipfile, fopen($zippath, 'rb'));
-                Storage::disk('s3ds')->put($zipfilelight, fopen($zippathlight, 'rb'));
-
-
-                // Clean up the files.
-                Storage::delete($file);
-                Storage::delete($filelight);
-                Storage::delete($zipfile);
-                Storage::delete($zipfilelight);
-
-                $day_archive->completed_at = Carbon::now();
-                $day_archive->save();
             } else {
-                throw new RuntimeException("Day archives have to be upload to a dedicated s3ds disk. please sure that there is one to write to.");
+                throw new RuntimeException("Day archives have to be uploaded to a dedicated s3ds disk. please be sure that there is one to write to.");
             }
 
-            return $day_archive;
+            return true;
         }
 
         throw new RuntimeException("When creating a day export you must supply a date in the past.");
     }
 
+    public function markArchivesComplete($day_archives): void
+    {
+        foreach ($day_archives as $day_archive) {
+            $day_archive['model']->completed_at = Carbon::now();
+            $day_archive['model']->save();
+        }
+    }
+
+    public function cleanUpZipAndSha1Files($day_archives): void
+    {
+        foreach ($day_archives as $day_archive) {
+            // Clean up the files.
+            Storage::delete($day_archive['zipfile']);
+            Storage::delete($day_archive['zipfilelight']);
+            Storage::delete($day_archive['zipfilesha1']);
+            Storage::delete($day_archive['zipfilelightsha1']);
+        }
+    }
+
+    public function cleanUpCsvFiles($day_archives)
+    {
+        foreach ($day_archives as $day_archive) {
+            // Clean up the files.
+            Storage::delete($day_archive['file']);
+            Storage::delete($day_archive['filelight']);
+        }
+    }
+
+    public function uploadTheZipsAndSha1s($day_archives)
+    {
+        foreach ($day_archives as $day_archive) {
+            // Put them on the s3
+            Storage::disk('s3ds')->put($day_archive['zipfile'], fopen($day_archive['zippath'], 'rb'));
+            Storage::disk('s3ds')->put($day_archive['zipfilelight'], fopen($day_archive['zippathlight'], 'rb'));
+            Storage::disk('s3ds')->put($day_archive['zipfilesha1'], fopen($day_archive['zippathsha1'], 'rb'));
+            Storage::disk('s3ds')->put($day_archive['zipfilelightsha1'], fopen($day_archive['zippathlightsha1'], 'rb'));
+        }
+    }
+
+    public function generateZipsSha1sAndUpdate(&$day_archives): void
+    {
+        foreach ($day_archives as $day_archive)
+        {
+            $zip = new ZipArchive;
+            if ($zip->open($day_archive['zippath'], ZipArchive::CREATE) === true) {
+                $zip->addFile($day_archive['path'], $day_archive['file']);
+                $zip->close();
+                $day_archive['model']->size = filesize($day_archive['zippath']);
+                $day_archive['model']->sha1 = sha1_file($day_archive['zippath']);
+                Storage::put($day_archive['zipfilesha1'], $day_archive['model']->sha1 . "  " . $day_archive['zipfile']);
+            } else {
+                throw new RuntimeException('Issue with creating the zip file.');
+            }
+            $day_archive['model']->save();
+
+            $ziplight = new ZipArchive;
+            if ($ziplight->open($day_archive['zippathlight'], ZipArchive::CREATE) === true) {
+                $ziplight->addFile($day_archive['pathlight'], $day_archive['filelight']);
+                $ziplight->close();
+                $day_archive['model']->sizelight = filesize($day_archive['zippathlight']);
+                $day_archive['model']->sha1light = sha1_file($day_archive['zippathlight']);
+                Storage::put($day_archive['zipfilelightsha1'], $day_archive['model']->sha1light . "  " . $day_archive['zipfilelight']);
+            } else {
+                throw new RuntimeException('Issue with creating the zip file.');
+            }
+            $day_archive['model']->save();
+        }
+    }
+
+    public function closeAllCsvFiles($day_archives): void
+    {
+        foreach ($day_archives as $day_archive) {
+            fclose($day_archive['csv_file']);
+            fclose($day_archive['csv_filelight']);
+        }
+    }
+
+    /**
+     * @param Carbon $date
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function getRawQuery(Carbon $date): \Illuminate\Database\Query\Builder
+    {
+        $first_id = $this->getFirstIdOfDate($date);
+        $last_id  = $this->getLastIdOfDate($date);
+
+        $select_raw = $this->getSelectRawString();
+
+        // There is no id to base off so we fall back to this query.
+        if (!$first_id || !$last_id) {
+            Log::debug('There was no first or last id to base the day archives query from, so we fell back to the slow query');
+            $raw                = DB::table('statements')
+                                    ->selectRaw($select_raw)
+                                    ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
+                                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                                    ->orderBy('statements.id', 'desc');
+
+        } else {
+            $raw                = DB::table('statements')
+                                    ->selectRaw($select_raw)
+                                    ->where('statements.id', '>=', $first_id)
+                                    ->where('statements.id', '<=', $last_id)
+                                    ->orderBy('statements.id');
+        }
+
+        return $raw;
+    }
+
+    public function startAllCsvFiles(&$day_archives): void
+    {
+        foreach ($day_archives as $index => $day_archive) {
+            $day_archive['csv_file'] = fopen($day_archive['path'], 'wb');
+            $day_archive['csv_filelight'] = fopen($day_archive['pathlight'], 'wb');
+            fputcsv($day_archive['csv_file'], $this->headings());
+            fputcsv($day_archive['csv_filelight'], $this->headingsLight());
+            $day_archives[$index] = $day_archive;
+        }
+    }
+
+    public function chunkAndWrite($raw, $day_archives, $platforms)
+    {
+        $raw->chunk(1000000, function (Collection $statements) use ($day_archives, $platforms) {
+            foreach ($statements as $statement) {
+
+                // Write to the global no matter what.
+                $row = $this->mapRaw($statement, $platforms);
+                $rowlight = $this->mapRawLight($statement, $platforms);
+                fputcsv($day_archives[0]['csv_file'], $row);
+                fputcsv($day_archives[0]['csv_filelight'], $rowlight);
+
+                // Potentially also write to the platform file
+                if (isset($day_archives[$statement->platform_id])) {
+                    fputcsv($day_archives[$statement->platform_id]['csv_file'], $row);
+                    fputcsv($day_archives[$statement->platform_id]['csv_filelight'], $rowlight);
+                }
+            }
+        });
+    }
+
+
+    public function buildStartingDayArchivesArray(Carbon $date): array
+    {
+        $day_archives = [];
+
+        $global = [
+            'slug' => 'global',
+            'id' => null,
+        ];
+        $day_archives[] = $global;
+
+        $vlops = Platform::Vlops()->get();
+
+        foreach($vlops as $vlop) {
+            $day_archive = [
+                'slug' => $vlop->slugifyName(),
+                'id' => $vlop->id
+            ];
+            $day_archives[$vlop->id] = $day_archive;
+        }
+
+        $base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
+
+        foreach ($day_archives as $index => $day_archive) {
+            $day_archive['file']             = 'sor-' . $day_archive['slug'] . '-' . $date->format('Y-m-d') . '-full.csv';
+            $day_archive['filelight']        = 'sor-' . $day_archive['slug'] . '-' . $date->format('Y-m-d') . '-light.csv';
+            $day_archive['path']             = Storage::path($day_archive['file']);
+            $day_archive['pathlight']        = Storage::path($day_archive['filelight']);
+            $day_archive['zipfile']          = $day_archive['file'] . '.zip';
+            $day_archive['zipfilelight']     = $day_archive['filelight'] . '.zip';
+            $day_archive['zipfilesha1']      = $day_archive['file'] . '.zip.sha1';
+            $day_archive['zipfilelightsha1'] = $day_archive['filelight'] . '.zip.sha1';
+            $day_archive['zippath']          = Storage::path($day_archive['zipfile']);
+            $day_archive['zippathlight']     = Storage::path($day_archive['zipfilelight']);
+            $day_archive['zippathsha1']      = Storage::path($day_archive['zipfilesha1']);
+            $day_archive['zippathlightsha1'] = Storage::path($day_archive['zipfilelightsha1']);
+            $day_archive['url']              = $base_s3_url . $day_archive['zipfile'];
+            $day_archive['urllight']         = $base_s3_url . $day_archive['zipfilelight'];
+            $day_archive['sha1url']          = $base_s3_url . $day_archive['zipfilesha1'];
+            $day_archive['sha1urllight']     = $base_s3_url . $day_archive['zipfilelightsha1'];
+
+            $platform = Platform::find($day_archive['id']);
+            $model = DayArchive::create([
+                'date'  => $date->format('Y-m-d'),
+                'total' => $day_archive['slug'] === 'global' ? $this->platform_day_totals_service->globalTotalForDate($date) : $this->platform_day_totals_service->getDayTotal($platform, $date),
+                'platform_id' => $day_archive['id'],
+                'url' => $day_archive['url'],
+                'urllight' => $day_archive['urllight'],
+                'sha1url' => $day_archive['sha1url'],
+                'sha1urllight' => $day_archive['sha1urllight'],
+            ]);
+
+            $day_archive['model'] = $model;
+
+            $day_archives[$index] = $day_archive;
+        }
+
+        return $day_archives;
+    }
+
     public function getFirstIdOfDate(Carbon $date)
     {
-        $first        = null;
-        $date->hour   = 0;
-        $date->minute = 0;
-        $date->second = 0;
+        $in = $this->buildStartOfDateArray($date);
 
-        $attempts_allowed = 100;
-
-        while ( ! $first && $attempts_allowed--) {
-            $first = DB::table('statements')
-                       ->select('id')
-                       ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
-                       ->orderBy('statements.id')->first();
-            $date->addSecond();
-        }
+        $first = DB::table('statements')
+                   ->select('id')
+                   ->whereIn('statements.created_at', $in)
+                   ->orderBy('statements.id')->limit(1)->first();
 
         return $first->id ?? 0;
     }
 
+    public function buildStartOfDateArray(Carbon $date): array
+    {
+        $date->hour   = 0;
+        $date->minute = 0;
+        $date->second = 0;
+
+        $attempts_allowed = 500;
+
+        $in = [];
+        while($attempts_allowed-- > 0)
+        {
+            $in[] = $date->format('Y-m-d H:i:s');
+            $date->addSecond();
+        }
+        return $in;
+    }
+
     public function getLastIdOfDate(Carbon $date)
     {
-        $last         = null;
-        $date->hour   = 23;
-        $date->minute = 59;
-        $date->second = 59;
+        $in = $this->buildEndOfDateArray($date);
 
-        $attempts_allowed = 100;
+        $last = DB::table('statements')
+                  ->select('id')
+                  ->whereIn('statements.created_at', $in)
+                  ->orderBy('statements.id', 'desc')->limit(1)->first();
 
-        while ( ! $last && $attempts_allowed--) {
-            $last = DB::table('statements')
-                      ->select('id')
-                      ->where('statements.created_at', '=', $date->format('Y-m-d H:i:s'))
-                      ->orderBy('statements.id', 'desc')->first();
-            $date->subSecond();
-        }
 
         return $last->id ?? 0;
     }
 
-
-    public function masterList()
+    public function buildEndOfDateArray(Carbon $date): array
     {
-        return DayArchive::query()->whereNotNull('completed_at')->orderBy('date', 'DESC');
+        $date->hour   = 23;
+        $date->minute = 59;
+        $date->second = 59;
+
+        $attempts_allowed = 500;
+
+        $in = [];
+        while($attempts_allowed-- > 0)
+        {
+            $in[] = $date->format('Y-m-d H:i:s');
+            $date->subSecond();
+        }
+        return $in;
+    }
+
+
+    public function globalList()
+    {
+        return DayArchive::query()->whereNull('platform_id')->whereNotNull('completed_at')->orderBy('date', 'DESC');
+    }
+
+    public function platformList(Platform $platform)
+    {
+        return DayArchive::query()->where('platform_id', $platform->id)->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
     /**
@@ -215,6 +352,16 @@ class DayArchiveService
     public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
     {
         return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
+    }
+
+    /**
+     * @param Carbon $date
+     *
+     * @return Builder
+     */
+    public function getDayArchivesByDate(Carbon $date): Builder
+    {
+        return DayArchive::query()->where('date', $date->format('Y-m-d'));
     }
 
     private function getSelectRawString(): string

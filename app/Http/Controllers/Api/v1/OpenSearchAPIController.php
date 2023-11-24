@@ -107,6 +107,7 @@ class OpenSearchAPIController extends Controller
     {
         try {
 
+
             $start = Carbon::createFromFormat('Y-m-d', $date_in);
             $end = $start->clone();
             $attributes = explode("__", $attributes_in);
@@ -251,20 +252,7 @@ class OpenSearchAPIController extends Controller
     /**
      * @throws JsonException
      */
-    private function aggregateQuery(Carbon $start, Carbon $end, $attributes = [
-        'platform_id',
-        'decision_visibility_single',
-        'decision_monetary',
-        'decision_provision',
-        'decision_account',
-        'category',
-        'decision_ground',
-        'automated_detection',
-        'automated_decision',
-        'content_type_single',
-        'source_type',
-        'received_date'
-    ]) {
+    private function aggregateQuery(Carbon $start, Carbon $end, $attributes) {
 
 
         $allowed_attributes = [
@@ -356,26 +344,26 @@ JSON;
         $query->query->bool->filter[0]->range->created_at->from = $start->getTimestampMs();
         $query->query->bool->filter[1]->range->created_at->to = $end->getTimestampMs();
 
-        $sources = [];
-        if (!is_array($attributes) || ! in_array('platform_id', $attributes, true)) {
-            $sources[] = $this->queryAggregate('platform_id');
+        if (!is_array($attributes)) {
+            $attributes = $allowed_attributes;
         }
 
-        if (is_array($attributes)) {
-            foreach ($attributes as $attribute) {
-                if (in_array($attribute, $allowed_attributes, true)) {
-                    $sources[] = $this->queryAggregate($attribute);
-                }
+        $sources = [];
+        if (!in_array('platform_id', $attributes, true)) {
+            $sources[] = $this->queryBucket('platform_id');
+        }
+
+        foreach ($attributes as $attribute) {
+            if (in_array($attribute, $allowed_attributes, true)) {
+                $sources[] = $this->queryBucket($attribute);
             }
         }
 
-
         $query->aggregations->composite_buckets->composite->sources = $sources;
-
         return $query;
     }
 
-    private function queryAggregate($attribute): stdClass
+    private function queryBucket($attribute): stdClass
     {
         $source = new stdClass();
         $source->$attribute = new stdClass();

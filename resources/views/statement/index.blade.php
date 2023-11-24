@@ -36,9 +36,11 @@
             @endcan
 
             <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center">
+
                 <div class="ecl-u-type-paragraph ecl-u-mr-s">
-                    Statements of Reasons Found: {{ $total }}
+                    Statements of Reasons @if(!$reindexing)Found: {{ $total }}@endif
                 </div>
+
 
                 <div class="ecl-u-type-paragraph ecl-u-mr-l">
 

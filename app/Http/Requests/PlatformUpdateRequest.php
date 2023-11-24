@@ -27,6 +27,7 @@ class PlatformUpdateRequest extends FormRequest
         return [
             'name' => ['string', 'required', 'max:255'],
             'url' => ['url', 'required', 'max:255'],
+            'vlop' => ['int', 'required']
         ];
     }
 

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Excel;
 use App\Http\Controllers\Traits\Sanitizer;
@@ -83,11 +84,14 @@ class StatementController extends Controller
             $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
         }
 
+        $reindexing = Cache::get('reindexing', false);
+
         return view('statement.index', compact(
             'statements',
             'options',
             'total',
-            'similarity_results'
+            'similarity_results',
+            'reindexing'
         ));
     }
 

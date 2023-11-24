@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class StatementSearchableChunk implements ShouldQueue
@@ -19,16 +20,18 @@ class StatementSearchableChunk implements ShouldQueue
     public int $chunk;
     public int $min;
     public int $statuses;
+    public bool $first;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(int $start, int $chunk, int $min, int $statuses)
+    public function __construct(int $start, int $chunk, int $min, int $statuses, bool $first = false)
     {
         $this->start = $start;
         $this->min = $min;
         $this->chunk = $chunk;
         $this->statuses = $statuses;
+        $this->first = $first;
     }
 
     /**
@@ -46,11 +49,17 @@ class StatementSearchableChunk implements ShouldQueue
      */
     public function handle(): void
     {
+        if ($this->first) {
+            Cache::forever('reindexing', true);
+        }
         $end = $this->start - $this->chunk;
         $range = range($this->start, $end);
         foreach ($range as $id) {
             if ($id === $this->min || $id % $this->statuses === 0) {
                 Log::debug('Reindexing: ' . $id);
+            }
+            if ($id === $this->min) {
+                Cache::delete('reindexing');
             }
         }
         if ($end > $this->min) {
