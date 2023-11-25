@@ -14,7 +14,7 @@ class ResyncStatementIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:resync-index';
+    protected $signature = 'statements:resync-index {min=default} {max=default}';
 
     /**
      * The console command description.
@@ -31,8 +31,9 @@ class ResyncStatementIndex extends Command
         $statuses = 1000000;
         $chunk = 100;
 
-        $min = DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min;
-        $max = DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max;
+        $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
+        $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
+        
         StatementSearchableChunk::dispatch($max, $chunk, $min, $statuses, true);
     }
 }
