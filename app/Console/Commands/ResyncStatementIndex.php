@@ -33,7 +33,7 @@ class ResyncStatementIndex extends Command
 
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
-        
+
         StatementSearchableChunk::dispatch($max, $chunk, $min, $statuses, true);
     }
 }
