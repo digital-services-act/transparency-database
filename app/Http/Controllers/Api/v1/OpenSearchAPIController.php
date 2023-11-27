@@ -217,6 +217,13 @@ class OpenSearchAPIController extends Controller
             'body'  => $query,
         ]);
         $buckets = $result['aggregations']['composite_buckets']['buckets'];
+
+        $platforms = [];
+        // Do we need platforms
+        if ($buckets[0]['key']['platform_id'] ?? false) {
+            $platforms = Platform::all()->pluck('name', 'id')->toArray();
+        }
+
         $out = [];
         $total = 0;
         $total_aggregates = 0;
@@ -242,6 +249,13 @@ class OpenSearchAPIController extends Controller
             $item['permutation'] = implode(',', array_map(function($key, $value) {
                 return $key . ":" . $value;
             }, array_keys($attributes), array_values($attributes)));
+
+            // add the platform name on at the end if we need to.
+            if (isset($item['platform_id'])) {
+                // yes we will need it.
+                $item['platform_name'] = $platforms[$item['platform_id']] ?? '';
+            }
+
 
             $item['total'] = $bucket['doc_count'];
             $total += $bucket['doc_count'];

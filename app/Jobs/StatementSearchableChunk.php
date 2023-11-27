@@ -55,7 +55,7 @@ class StatementSearchableChunk implements ShouldQueue
         $end = $this->start - $this->chunk;
         $range = range($this->start, $end);
         foreach ($range as $id) {
-            if ($id === $this->min || $id % $this->statuses === 0) {
+            if ($this->statuses !== -1 && ($id === $this->min || $id % $this->statuses === 0)) {
                 Log::debug('Reindexing: ' . $id);
             }
             if ($id === $this->min) {
