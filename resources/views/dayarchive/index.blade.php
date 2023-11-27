@@ -19,7 +19,9 @@
         <div class="ecl-fact-figures__description">
             On this page, you can download daily archives of statements of reasons. Full archive files contain
             all of the public data of the individual statements of reasons submitted on a given day, i.e. each
-            file contains the entire attribute schema of the database. Light archive files do not contain free
+            file contains the
+            <a href="{{ route('page.show', ['api-documentation']) }}">entire attribute schema of the database</a>.
+            Light archive files do not contain free
             text attributes with a character limit higher than 2000 characters, i.e. they do not contain the
             attributes illegal_content_explanation, incompatible_content_explanation & decision_facts. Light
             archive files also do not contain the territorial_scope attribute. The archiving feature is currently

@@ -92,11 +92,14 @@ Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name(
 Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
+
 Route::get('/daily-archives/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
 
 Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
 
-
+if(strtolower(config('app.env_real')) !== 'production') {
+    Route::view('/analytics/dashboard', 'analytics.dashboard')->name('analytics.dashboard');
+}
 Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 
