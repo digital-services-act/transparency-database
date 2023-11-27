@@ -121,7 +121,7 @@ class DayArchiveService
             if ($zip->open($day_archive['zippath'], ZipArchive::CREATE) === true) {
                 $zip->addFile($day_archive['path'], $day_archive['file']);
                 $zip->close();
-                $day_archive['model']->size = filesize($day_archive['zippath']);
+                $day_archive['model']->zipsize = filesize($day_archive['zippath']);
                 $day_archive['model']->sha1 = sha1_file($day_archive['zippath']);
                 Storage::put($day_archive['zipfilesha1'], $day_archive['model']->sha1 . "  " . $day_archive['zipfile']);
             } else {
@@ -133,7 +133,7 @@ class DayArchiveService
             if ($ziplight->open($day_archive['zippathlight'], ZipArchive::CREATE) === true) {
                 $ziplight->addFile($day_archive['pathlight'], $day_archive['filelight']);
                 $ziplight->close();
-                $day_archive['model']->sizelight = filesize($day_archive['zippathlight']);
+                $day_archive['model']->ziplightsize = filesize($day_archive['zippathlight']);
                 $day_archive['model']->sha1light = sha1_file($day_archive['zippathlight']);
                 Storage::put($day_archive['zipfilelightsha1'], $day_archive['model']->sha1light . "  " . $day_archive['zipfilelight']);
             } else {
@@ -148,6 +148,10 @@ class DayArchiveService
         foreach ($day_archives as $day_archive) {
             fclose($day_archive['csv_file']);
             fclose($day_archive['csv_filelight']);
+
+            $day_archive['model']->size = filesize($day_archive['path']);
+            $day_archive['model']->sizelight = filesize($day_archive['pathlight']);
+            $day_archive['model']->save();
         }
     }
 
