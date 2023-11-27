@@ -41,13 +41,10 @@
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
-{{--                <br />--}}
-{{--                <a href="{{ $dayarchive->sha1url }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">--}}
-{{--                    <span class="ecl-link__label">{{basename($dayarchive->sha1url)}}</span>--}}
-{{--                    <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">--}}
-{{--                        <x-ecl.icon icon="download"/>--}}
-{{--                    </svg>--}}
-{{--                </a>--}}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{{ $dayarchive->sha1url }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+                    <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
+                </a>
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Size">
                 {{human_filesize($dayarchive->size)}}&nbsp;.csv<br/>
@@ -58,13 +55,10 @@
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
-{{--                <br />--}}
-{{--                <a href="{{ $dayarchive->sha1urllight }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">--}}
-{{--                    <span class="ecl-link__label">{{basename($dayarchive->sha1urllight)}}</span>--}}
-{{--                    <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">--}}
-{{--                        <x-ecl.icon icon="download"/>--}}
-{{--                    </svg>--}}
-{{--                </a>--}}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{{ $dayarchive->sha1urllight }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+                    <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
+                </a>
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Size">
                 {{human_filesize($dayarchive->sizelight)}}&nbsp;.csv<br />
