@@ -29,7 +29,7 @@ class VerifyStatementIndex extends Command
     public function handle(): void
     {
 
-        $chunk = 10000;
+        $chunk = 100000;
 
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
