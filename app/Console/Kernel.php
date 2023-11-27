@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('platform:compile-day-totals')->daily();
+        $schedule->command('platform:compile-day-totals')->dailyAt('01:00');
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->dailyAt('01:00');
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->dailyAt('01:00');
         $schedule->command('platform:compile-day-totals-categories')->dailyAt('01:00');
