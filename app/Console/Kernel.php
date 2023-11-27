@@ -16,11 +16,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('platform:compile-day-totals')->daily();
-        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->daily();
-        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->daily();
-        $schedule->command('platform:compile-day-totals-categories')->daily();
-        $schedule->command('platform:compile-day-totals-keywords')->daily();
-        $schedule->command('platform:compile-day-totals-decisions')->daily();
+        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->dailyAt('01:00');
+        $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_INCOMPATIBLE_CONTENT')->dailyAt('01:00');
+        $schedule->command('platform:compile-day-totals-categories')->dailyAt('01:00');
+        $schedule->command('platform:compile-day-totals-keywords')->dailyAt('01:00');
+        $schedule->command('platform:compile-day-totals-decisions')->dailyAt('01:00');
 
         // These ones run on a separate machine long running process.
         //$schedule->command('statements:day-archive')->daily();
