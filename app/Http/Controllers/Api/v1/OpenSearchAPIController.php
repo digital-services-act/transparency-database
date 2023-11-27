@@ -106,17 +106,15 @@ class OpenSearchAPIController extends Controller
     public function aggregates(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-
-
+            if ($date_in === 'yesterday') {
+                $date_in = Carbon::yesterday()->format('Y-m-d');
+            }
             $start = Carbon::createFromFormat('Y-m-d', $date_in);
             $end = $start->clone();
             $attributes = explode("__", $attributes_in);
             $query = $this->aggregateQuery($start, $end, $attributes);
-
             $results = $this->processAggregateQuery($query);
-
             return response()->json($results);
-
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
             return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -134,7 +132,12 @@ class OpenSearchAPIController extends Controller
     public function aggregatesRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-
+            if ($start_in === 'start') {
+                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
+            }
+            if ($end_in === 'yesterday') {
+                $end_in = Carbon::yesterday()->format('Y-m-d');
+            }
             $start = Carbon::createFromFormat('Y-m-d', $start_in);
             $end = Carbon::createFromFormat('Y-m-d', $end_in);
             $attributes = explode("__", $attributes_in);
@@ -349,14 +352,15 @@ JSON;
         }
 
         $sources = [];
-        if (!in_array('platform_id', $attributes, true)) {
-            $sources[] = $this->queryBucket('platform_id');
-        }
 
         foreach ($attributes as $attribute) {
             if (in_array($attribute, $allowed_attributes, true)) {
                 $sources[] = $this->queryBucket($attribute);
             }
+        }
+
+        if (count($sources) === 0) {
+            $sources[] = $this->queryBucket('received_date');
         }
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
