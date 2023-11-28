@@ -53,6 +53,9 @@ class StatementSearchableChunk implements ShouldQueue
             Cache::forever('reindexing', true);
         }
         $end = $this->start - $this->chunk;
+        if ($end < 1 ) {
+            $end = 1;
+        }
         $range = range($this->start, $end);
         foreach ($range as $id) {
             if ($this->statuses !== -1 && ($id === $this->min || $id % $this->statuses === 0)) {

@@ -49,6 +49,9 @@ class VerifyIndex implements ShouldQueue
     {
 
         $end = $this->start - $this->chunk;
+        if ($end < 1) {
+            $end = 1;
+        }
         $db_count = Statement::query()->where('id', '<=', $this->start)->where('id', '>', $end)->count();
         $opensearch_query = [
             "query" => [
