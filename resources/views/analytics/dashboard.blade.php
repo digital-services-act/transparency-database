@@ -12,6 +12,6 @@
 
 @section('content')
 
-    <iframe title="Analytics Dashboard" width="1600" height="1000" src="https://app.powerbi.com/view?r=eyJrIjoiNDVkZjM2MDAtOTYyOS00YzUxLTlhMzgtNjI4ODlkMjA0NmJiIiwidCI6ImIyNGM4YjA2LTUyMmMtNDZmZS05MDgwLTcwOTI2ZjhkZGRiMSIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
+    <iframe title="Analytics Dashboard" width="1300" height="1000" src="https://app.powerbi.com/view?r=eyJrIjoiNDVkZjM2MDAtOTYyOS00YzUxLTlhMzgtNjI4ODlkMjA0NmJiIiwidCI6ImIyNGM4YjA2LTUyMmMtNDZmZS05MDgwLTcwOTI2ZjhkZGRiMSIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
 @endsection
