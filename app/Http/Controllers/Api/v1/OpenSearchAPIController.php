@@ -109,6 +109,9 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
     {
         try {
+
+            $timestart = microtime(true);
+
             if ($date_in === 'yesterday') {
                 $date_in = Carbon::yesterday()->format('Y-m-d');
             }
@@ -134,8 +137,13 @@ class OpenSearchAPIController extends Controller
                 return $this->statement_search_service->processAggregateQuery($query);
             });
 
+            $timeend = microtime(true);
+
+            $timediff = $timeend - $timestart;
+
             $results['key']   = $key;
             $results['cache'] = $cache;
+            $results['duration'] = (float)number_format($timediff, 4);
 
             return response()->json($results);
         } catch (Exception $e) {
