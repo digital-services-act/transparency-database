@@ -123,18 +123,17 @@ class OpenSearchAPIController extends Controller
                 throw new RuntimeException('aggregates must done on dates in the past');
             }
 
-            $cache   = 'miss';
-            $results = Cache::get($key);
-            if ($results && (int)$request->query('cache', 1) !== 0) {
-                $cache = 'hit';
-            } else {
+            if ((int)$request->query('cache', 1) === 0) {
                 Cache::delete($key);
-                $results = Cache::rememberForever($key, function () use ($date, $attributes) {
-                    $query = $this->statement_search_service->aggregateQuerySingleDate($date, $attributes);
-                    return $this->statement_search_service->processAggregateQuery($query);
-                });
             }
 
+            $cache   = 'hit';
+            $results = Cache::rememberForever($key, function () use ($date, $attributes, &$cache) {
+                $query = $this->statement_search_service->aggregateQuerySingleDate($date, $attributes);
+                $cache = 'miss';
+                return $this->statement_search_service->processAggregateQuery($query);
+            });
+            
             $results['key']   = $key;
             $results['cache'] = $cache;
 
