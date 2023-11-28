@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\v1\OpenSearchAPIController;
+use App\Http\Controllers\Api\v1\PlatformAPIController;
 use App\Http\Controllers\Api\v1\StatementAPIController;
+use App\Http\Controllers\PlatformController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +34,15 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('opensearch/aggregates/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRange'])->name('api.v1.opensearch.aggregates.range');
         Route::get('opensearch/platforms', [OpenSearchAPIController::class, 'platforms'])->name('api.v1.opensearch.platforms');
         Route::get('opensearch/labels', [OpenSearchAPIController::class, 'labels'])->name('api.v1.opensearch.labels');
+    });
+
+    //Onboarding routes
+    Route::group(['middleware' => ['can:administrate']], static function(){
+        // Create a Platform
+        Route::post('platform', [PlatformAPIController::class, 'store'])->name('api.v1.platform.store');
+
+        // Add Users to a Platform
+
     });
 });
 
