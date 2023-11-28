@@ -349,6 +349,15 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    public function getAllowedAggregateAttributes(bool $remove_received_date = false): array
+    {
+        $out = $this->allowed_aggregate_attributes;
+        if ($remove_received_date) {
+            $out = array_diff($out, ['received_date']);
+        }
+        return $out;
+    }
+
     /**
      * @throws JsonException
      */

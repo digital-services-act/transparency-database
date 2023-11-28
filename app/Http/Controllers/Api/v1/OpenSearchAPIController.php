@@ -119,6 +119,9 @@ class OpenSearchAPIController extends Controller
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
             $date->subSeconds($date->secondsSinceMidnight());
             $attributes = explode("__", $attributes_in);
+            if ($attributes[0] === 'all') {
+                $attributes = $this->statement_search_service->getAllowedAggregateAttributes(true);
+            }
             $this->statement_search_service->sanitizeAggregateAttributes($attributes);
             $key = $date->format('Y-m-d') . '__' . implode('__', $attributes);
 
@@ -186,6 +189,9 @@ class OpenSearchAPIController extends Controller
             }
 
             $attributes = explode("__", $attributes_in);
+            if ($attributes[0] === 'all') {
+                $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
+            }
             $this->statement_search_service->sanitizeAggregateAttributes($attributes);
             $key = $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
