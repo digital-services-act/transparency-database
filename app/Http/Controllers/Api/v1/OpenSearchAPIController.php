@@ -141,6 +141,8 @@ class OpenSearchAPIController extends Controller
 
             $timediff = $timeend - $timestart;
 
+            $results['date'] = $date->format('Y-m-d');
+            $results['attributes'] = $attributes;
             $results['key']   = $key;
             $results['cache'] = $cache;
             $results['duration'] = (float)number_format($timediff, 4);
@@ -163,20 +165,50 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
+            $timestart = microtime(true);
 
             if ($start_in === 'start') {
                 $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
             }
+
             if ($end_in === 'yesterday') {
                 $end_in = Carbon::yesterday()->format('Y-m-d');
             }
+
             $start      = Carbon::createFromFormat('Y-m-d', $start_in);
+            $start->subSeconds($start->secondsSinceMidnight());
+
             $end        = Carbon::createFromFormat('Y-m-d', $end_in);
+            $end->addDay()->subSeconds($end->secondsSinceMidnight()+1);
+
+            if ($start >= $end || $end >= Carbon::today()) {
+                throw new RuntimeException('Start must be less than end, and end must be in the past');
+            }
+
             $attributes = explode("__", $attributes_in);
             $this->statement_search_service->sanitizeAggregateAttributes($attributes);
+            $key = $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-            $query      = $this->statement_search_service->aggregateQueryRange($start, $end, $attributes);
-            $results = $this->statement_search_service->processAggregateQuery($query);
+            if ((int)$request->query('cache', 1) === 0) {
+                Cache::delete($key);
+            }
+
+            $cache   = 'hit';
+            $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, &$cache) {
+                $query = $this->statement_search_service->aggregateQueryRange($start, $end, $attributes);
+                $cache = 'miss';
+                return $this->statement_search_service->processAggregateQuery($query);
+            });
+
+            $timeend = microtime(true);
+            $timediff = $timeend - $timestart;
+
+
+            $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+            $results['attributes'] = $attributes;
+            $results['key']   = $key;
+            $results['cache'] = $cache;
+            $results['duration'] = (float)number_format($timediff, 4);
 
             return response()->json($results);
         } catch (Exception $e) {
