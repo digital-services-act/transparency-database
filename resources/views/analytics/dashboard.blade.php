@@ -12,6 +12,6 @@
 
 @section('content')
 
-    <iframe title="Transparency Database Dashboard (v.1.0)" width="1600" height="1000" src="https://app.powerbi.com/reportEmbed?reportId=e5b3a8bb-2c85-43b8-82da-957cb07e7af6&autoAuth=true&ctid=b24c8b06-522c-46fe-9080-70926f8dddb1" frameborder="0" allowFullScreen="true"></iframe>
+    <iframe title="Analytics Dashboard" width="1600" height="1000" src="https://app.powerbi.com/view?r=eyJrIjoiNDVkZjM2MDAtOTYyOS00YzUxLTlhMzgtNjI4ODlkMjA0NmJiIiwidCI6ImIyNGM4YjA2LTUyMmMtNDZmZS05MDgwLTcwOTI2ZjhkZGRiMSIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
 @endsection
