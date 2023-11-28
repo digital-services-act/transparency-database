@@ -5,25 +5,28 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\StatementSearchService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use JsonException;
 use OpenSearch\Client;
-use stdClass;
+use RuntimeException;
 
 class OpenSearchAPIController extends Controller
 {
     private Client $client;
+    private StatementSearchService $statement_search_service;
     private string $index_name;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, StatementSearchService $statement_search_service)
     {
-        $this->client     = $client;
-        $this->index_name = 'statement_' . config('app.env');
+        $this->client                   = $client;
+        $this->statement_search_service = $statement_search_service;
+        $this->index_name               = 'statement_' . config('app.env');
     }
 
     /**
@@ -103,21 +106,42 @@ class OpenSearchAPIController extends Controller
      *
      * @return JsonResponse|array
      */
-    public function aggregates(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
     {
         try {
             if ($date_in === 'yesterday') {
                 $date_in = Carbon::yesterday()->format('Y-m-d');
             }
-            $start = Carbon::createFromFormat('Y-m-d', $date_in);
-            $end = $start->clone();
+
+            $date = Carbon::createFromFormat('Y-m-d', $date_in);
+            $date->subSeconds($date->secondsSinceMidnight());
             $attributes = explode("__", $attributes_in);
-            $query = $this->aggregateQuery($start, $end, $attributes);
-            $results = $this->processAggregateQuery($query);
+            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
+            $key = $date->format('Y-m-d') . '__' . implode('__', $attributes);
+
+            if ($date > Carbon::yesterday()) {
+                throw new RuntimeException('aggregates must done on dates in the past');
+            }
+
+            $cache   = 'miss';
+            $results = Cache::get($key);
+            if ($results && (int)$request->query('cache', 1) !== 0) {
+                $cache = 'hit';
+            } else {
+                Cache::delete($key);
+                $results = Cache::rememberForever($key, function () use ($date, $attributes) {
+                    $query = $this->statement_search_service->aggregateQuerySingleDate($date, $attributes);
+                    return $this->statement_search_service->processAggregateQuery($query);
+                });
+            }
+
+            $results['key']   = $key;
+            $results['cache'] = $cache;
+
             return response()->json($results);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregate attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -129,27 +153,29 @@ class OpenSearchAPIController extends Controller
      *
      * @return JsonResponse|array
      */
-    public function aggregatesRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
+
             if ($start_in === 'start') {
                 $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
             }
             if ($end_in === 'yesterday') {
                 $end_in = Carbon::yesterday()->format('Y-m-d');
             }
-            $start = Carbon::createFromFormat('Y-m-d', $start_in);
-            $end = Carbon::createFromFormat('Y-m-d', $end_in);
+            $start      = Carbon::createFromFormat('Y-m-d', $start_in);
+            $end        = Carbon::createFromFormat('Y-m-d', $end_in);
             $attributes = explode("__", $attributes_in);
-            $query = $this->aggregateQuery($start, $end, $attributes);
+            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
 
-            $results = $this->processAggregateQuery($query);
+            $query      = $this->statement_search_service->aggregateQueryRange($start, $end, $attributes);
+            $results = $this->statement_search_service->processAggregateQuery($query);
 
             return response()->json($results);
-
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+            return response()->json(['error' => 'invalid aggregate range attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -162,19 +188,18 @@ class OpenSearchAPIController extends Controller
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
-            $out = [];
-            foreach ($platforms as $id => $name)
-            {
+            $out       = [];
+            foreach ($platforms as $id => $name) {
                 $out[] = [
-                    'id' => $id,
+                    'id'   => $id,
                     'name' => $name
                 ];
             }
+
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid platforms attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -200,197 +225,7 @@ class OpenSearchAPIController extends Controller
             ];
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid labels attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-    }
-
-    /**
-     * @param stdClass $query
-     *
-     * @return array
-     */
-    private function processAggregateQuery(stdClass $query): array
-    {
-        $result = $this->client->search([
-            'index' => $this->index_name,
-            'body'  => $query,
-        ]);
-        $buckets = $result['aggregations']['composite_buckets']['buckets'];
-
-        $platforms = [];
-        // Do we need platforms
-        if ($buckets[0]['key']['platform_id'] ?? false) {
-            $platforms = Platform::all()->pluck('name', 'id')->toArray();
-        }
-
-        $out = [];
-        $total = 0;
-        $total_aggregates = 0;
-        foreach ($buckets as $bucket) {
-            $item = [];
-            $attributes = $bucket['key'];
-
-            // Manipulate the results
-            if (isset($attributes['automated_detection'])) {
-                $attributes['automated_detection'] = (int)$attributes['automated_detection'];
-            }
-
-            if (isset($attributes['received_date'])) {
-                $attributes['received_date'] = date( 'Y-m-d', ($attributes['received_date'] /  1000));
-            }
-
-            // Put the attributes on the root item
-            foreach ($attributes as $key => $value) {
-                $item[$key] = $value;
-            }
-
-            // build a permutation string
-            $item['permutation'] = implode(',', array_map(function($key, $value) {
-                return $key . ":" . $value;
-            }, array_keys($attributes), array_values($attributes)));
-
-            // add the platform name on at the end if we need to.
-            if (isset($item['platform_id'])) {
-                // yes we will need it.
-                $item['platform_name'] = $platforms[$item['platform_id']] ?? '';
-            }
-
-
-            $item['total'] = $bucket['doc_count'];
-            $total += $bucket['doc_count'];
-            $total_aggregates++;
-            $out[] = $item;
-        }
-        return ['aggregates' => $out, 'total' => $total, 'total_aggregates' => $total_aggregates];
-    }
-
-
-    /**
-     * @throws JsonException
-     */
-    private function aggregateQuery(Carbon $start, Carbon $end, $attributes) {
-
-
-        $allowed_attributes = [
-            'platform_id',
-            'category',
-            'decision_visibility_single',
-            'decision_monetary',
-            'decision_provision',
-            'decision_account',
-            'decision_ground',
-            'automated_detection',
-            'automated_decision',
-            'content_type_single',
-            'source_type',
-            'received_date'
-        ];
-
-
-
-        $query_string = <<<JSON
-{
-  "from": 0,
-  "size": 0,
-  "timeout": "1m",
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "range": {
-            "created_at": {
-              "from": 1700092800000,
-              "to": null,
-              "include_lower": true,
-              "include_upper": true,
-              "boost": 1.0
-            }
-          }
-        },
-        {
-          "range": {
-            "created_at": {
-              "from": null,
-              "to": 1700179199000,
-              "include_lower": true,
-              "include_upper": true,
-              "boost": 1.0
-            }
-          }
-        }
-      ],
-      "adjust_pure_negative": true,
-      "boost": 1.0
-    }
-  },
-  "sort": [
-    {
-      "_doc": {
-        "order": "asc"
-      }
-    }
-  ],
-  "aggregations": {
-    "composite_buckets": {
-      "composite": {
-        "size": 1000,
-        "sources": []
-      },
-      "aggregations": {
-        "count(*)": {
-          "value_count": {
-            "field": "_index"
-          }
-        }
-      }
-    }
-  }
-}
-JSON;
-        $query = json_decode($query_string, false, 512, JSON_THROW_ON_ERROR);
-
-        $start->hour = 0;
-        $start->minute = 0;
-        $start->second = 0;
-
-        $end->hour = 23;
-        $end->minute = 59;
-        $end->second = 59;
-
-        $query->query->bool->filter[0]->range->created_at->from = $start->getTimestampMs();
-        $query->query->bool->filter[1]->range->created_at->to = $end->getTimestampMs();
-
-        if (!is_array($attributes)) {
-            $attributes = $allowed_attributes;
-        }
-
-        $sources = [];
-
-        foreach ($attributes as $attribute) {
-            if (in_array($attribute, $allowed_attributes, true)) {
-                $sources[] = $this->queryBucket($attribute);
-            }
-        }
-
-        if (count($sources) === 0) {
-            $sources[] = $this->queryBucket('received_date');
-        }
-
-        $query->aggregations->composite_buckets->composite->sources = $sources;
-        return $query;
-    }
-
-    private function queryBucket($attribute): stdClass
-    {
-        $source = new stdClass();
-        $source->$attribute = new stdClass();
-        $source->$attribute->terms = new stdClass();
-        $source->$attribute->terms->field = $attribute;
-        $source->$attribute->terms->missing_bucket = true;
-        $source->$attribute->terms->missing_order = "first";
-        $source->$attribute->terms->order = "asc";
-
-        return $source;
     }
 }

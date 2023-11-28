@@ -6,6 +6,7 @@ use App\Services\StatementSearchService;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
+use OpenSearch\Client;
 
 class StatementSearchServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -14,7 +15,7 @@ class StatementSearchServiceProvider extends ServiceProvider implements Deferrab
      */
     public function register(): void
     {
-        $this->app->singleton(StatementSearchService::class, fn(Application $app) => new StatementSearchService());
+        $this->app->singleton(StatementSearchService::class, fn(Application $app) => new StatementSearchService(app(Client::class)));
     }
 
     /**
