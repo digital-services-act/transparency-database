@@ -19,7 +19,7 @@ information about the DSA
     :links="[
         [
             'label' => 'General FAQ',
-            'url' => route('page.show', ['faq'])
+            'url' => route('page.show', ['faq']) . '#general-faq'
         ],
         [
             'label' => 'Dashboard',
@@ -35,7 +35,7 @@ information about the DSA
     :links="[
     [
     'label' => 'Technical FAQ',
-    'url' => route('dashboard.page.show',['api-documentation'])
+    'url' => route('page.show', ['faq']) . '#technical-faq'
     ],
     [
     'label' => 'Data Download',
@@ -59,7 +59,7 @@ information about the DSA
     ],
     [
     'label' => 'Platforms FAQ',
-    'url' => route('page.show', ['faq'])
+    'url' => route('page.show', ['faq']) . '#platforms-faq'
     ],
     [
     'label' => 'Documentation',
