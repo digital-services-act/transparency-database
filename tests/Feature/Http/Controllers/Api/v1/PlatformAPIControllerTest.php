@@ -69,13 +69,6 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(21, Platform::all());
 
-//        $statement = Statement::where('uuid', $response->json('uuid'))->first();
-//        $this->assertNotNull($statement);
-//        $this->assertEquals('API', $statement->method);
-//        $this->assertEquals($user->id, $statement->user->id);
-//        $this->assertInstanceOf(Carbon::class, $statement->application_date);
-//        $this->assertNull($statement->account_type);
-//        $this->assertNull($statement->content_language);
     }
 
 
