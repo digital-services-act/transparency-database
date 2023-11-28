@@ -133,7 +133,7 @@ class OpenSearchAPIController extends Controller
                 $cache = 'miss';
                 return $this->statement_search_service->processAggregateQuery($query);
             });
-            
+
             $results['key']   = $key;
             $results['cache'] = $cache;
 

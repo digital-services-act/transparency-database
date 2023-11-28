@@ -49,26 +49,41 @@ class StatementSearchableChunk implements ShouldQueue
      */
     public function handle(): void
     {
+        $stop = config('dsa.STOPREINDEXING', 0);
+
         if ($this->first) {
             Cache::forever('reindexing', true);
         }
+
         $end = $this->start - $this->chunk;
-        if ($end < 1 ) {
-            $end = 1;
+
+        if ($end < $this->min ) {
+            $end = $this->min;
         }
         $range = range($this->start, $end);
         foreach ($range as $id) {
-            if ($this->statuses !== -1 && ($id === $this->min || $id % $this->statuses === 0)) {
+            if ($this->statuses !== -1 && ($id % $this->statuses === 0)) {
                 Log::debug('Reindexing: ' . $id);
             }
-            if ($id === $this->min) {
-                Cache::delete('reindexing');
-            }
         }
+
         if ($end > $this->min) {
             $next_start = $this->start - $this->chunk - 1;
-            self::dispatch($next_start, $this->chunk, $this->min, $this->statuses);
+            if(!$stop) {
+                self::dispatch($next_start, $this->chunk, $this->min, $this->statuses);
+            }
         }
+
+        if ($end === $this->min) {
+            Log::debug('Finish Reindexing: ' . $end);
+            Cache::delete('reindexing');
+        }
+
         Statement::query()->whereIn('id', $range)->searchable();
+
+        if ($stop) {
+            Log::debug('Stopping Reindexing: ' . $this->start);
+            Cache::delete('reindexing');
+        }
     }
 }
