@@ -126,43 +126,42 @@
                 <ul class="ecl-menu__list">
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="">Home</a>
+                        <a href="{{route('home')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('home')}}">Home</a>
                     </li>
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Search for
-                            statements of reasons</a>
-                    </li>
-
-
-                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('analytics.index')}}" class="ecl-menu__link"
-                           data-ecl-menu-link="">Analytics</a>
+                        <a href="{{route('statement.index')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('statement.index')}}">Search for statements of reasons</a>
                     </li>
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Daily
-                            Archives</a>
+                        <a href="{{route('dashboard')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('dashboard')}}">Dashboard</a>
                     </li>
 
-                    @can('view dashboard')
-                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false"><a
-                                href="{{route('dashboard')}}" class="ecl-menu__link"
-                                data-ecl-menu-link="">Dashboard</a>
-                        </li>
-                    @endcan
+{{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
+{{--                        <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>--}}
+{{--                    </li>--}}
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a
-                            href="{{ route('page.show', ['documentation']) }}"
-                            class="ecl-menu__link" data-ecl-menu-link="">Documentation</a>
+                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('dayarchive.index')}}">Data Download</a>
+                    </li>
+
+{{--                    @can('view dashboard')--}}
+{{--                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
+{{--                            <a href="{{route('dashboard')}}" class="ecl-menu__link" data-ecl-menu-link="">Dashboard</a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+
+                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                        <a href="{{ route('page.show', ['faq']) }}" class="ecl-menu__link" data-ecl-menu-link="{{ route('page.show', ['faq']) }}">FAQ</a>
                     </li>
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a
-                            href="{{ route('page.show', ['faq']) }}"
-                            class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>
+                        <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141" class="ecl-menu__link" data-ecl-menu-link="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141">More about transparency in the DSA</a>
                     </li>
+
+{{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
+{{--                        <a href="{{ route('page.show', ['faq']) }}" class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>--}}
+{{--                    </li>--}}
 
                 </ul>
             </section>
