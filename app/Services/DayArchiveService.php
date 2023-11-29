@@ -173,15 +173,15 @@ class DayArchiveService
             $raw                = DB::table('statements')
                                     ->selectRaw($select_raw)
                                     ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
-                                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
-                                    ->orderBy('statements.id', 'desc');
+                                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59');
+                                    //->orderBy('statements.id', 'desc');
 
         } else {
             $raw                = DB::table('statements')
                                     ->selectRaw($select_raw)
                                     ->where('statements.id', '>=', $first_id)
-                                    ->where('statements.id', '<=', $last_id)
-                                    ->orderBy('statements.id');
+                                    ->where('statements.id', '<=', $last_id);
+                                    //->orderBy('statements.id');
         }
 
         return $raw;
@@ -198,11 +198,14 @@ class DayArchiveService
         }
     }
 
-    public function chunkAndWrite($raw, $day_archives, $platforms)
+    public function chunkAndWrite($raw, $day_archives, $platforms): void
     {
-        $raw->chunk(1000000, function (Collection $statements) use ($day_archives, $platforms) {
-            foreach ($statements as $statement) {
+        $c = 1;
+        $raw->chunk(3000000, function (Collection $statements) use ($day_archives, $platforms, &$c) {
 
+            Log::info('Day Archiving Chunk Start: ' . $c);
+
+            foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row = $this->mapRaw($statement, $platforms);
                 $rowlight = $this->mapRawLight($statement, $platforms);
@@ -215,6 +218,10 @@ class DayArchiveService
                     fputcsv($day_archives[$statement->platform_id]['csv_filelight'], $rowlight);
                 }
             }
+
+            Log::info('Day Archiving Chunk End: ' . $c);
+            $c++;
+
         });
     }
 
@@ -296,7 +303,7 @@ class DayArchiveService
         $date->minute = 0;
         $date->second = 0;
 
-        $attempts_allowed = 500;
+        $attempts_allowed = 100;
 
         $in = [];
         while($attempts_allowed-- > 0)
@@ -326,7 +333,7 @@ class DayArchiveService
         $date->minute = 59;
         $date->second = 59;
 
-        $attempts_allowed = 500;
+        $attempts_allowed = 100;
 
         $in = [];
         while($attempts_allowed-- > 0)
