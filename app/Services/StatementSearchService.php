@@ -356,7 +356,7 @@ class StatementSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = $date->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'osa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');

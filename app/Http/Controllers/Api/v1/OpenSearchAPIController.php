@@ -166,7 +166,7 @@ class OpenSearchAPIController extends Controller
                 $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
             }
             $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+            $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
             if ((int)$request->query('cache', 1) === 0) {
                 Cache::delete($key);
@@ -222,7 +222,7 @@ class OpenSearchAPIController extends Controller
             $start->subSeconds($start->secondsSinceMidnight());
 
             $end        = Carbon::createFromFormat('Y-m-d', $end_in);
-            $end->addDay()->subSeconds($end->secondsSinceMidnight()+1);
+            $end->subSeconds($end->secondsSinceMidnight());
 
             if ($start >= $end || $end >= Carbon::today()) {
                 throw new RuntimeException('Start must be less than end, and end must be in the past');
@@ -233,7 +233,7 @@ class OpenSearchAPIController extends Controller
                 $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
             }
             $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+            $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
             $caching = (bool)$request->query('cache', 1);
             if (!$caching) {
@@ -244,7 +244,8 @@ class OpenSearchAPIController extends Controller
             $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $caching, &$cache) {
                 $days = [];
                 $current = $end->clone();
-                while($current > $start) {
+
+                while($current >= $start) {
                     $days[] = $this->statement_search_service->processDateAggregate($current, $attributes, $caching);
                     $current->subDay();
                 }
