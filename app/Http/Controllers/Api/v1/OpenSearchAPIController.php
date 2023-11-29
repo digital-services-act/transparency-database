@@ -241,12 +241,12 @@ class OpenSearchAPIController extends Controller
             }
 
             $cache   = 'hit';
-            $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $caching, &$cache) {
+            $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, &$cache) {
                 $days = [];
                 $current = $end->clone();
 
                 while($current >= $start) {
-                    $days[] = $this->statement_search_service->processDateAggregate($current, $attributes, $caching);
+                    $days[] = $this->statement_search_service->processDateAggregate($current, $attributes);
                     $current->subDay();
                 }
                 $cache = 'miss';
