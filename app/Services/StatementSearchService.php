@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JsonException;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
+use RuntimeException;
 use stdClass;
 
 
@@ -349,6 +351,38 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    public function processDateAggregate(Carbon $date, array $attributes, bool $caching = true)
+    {
+        $timestart = microtime(true);
+
+        $this->sanitizeAggregateAttributes($attributes);
+        $key = $date->format('Y-m-d') . '__' . implode('__', $attributes);
+
+        if ($date > Carbon::yesterday()) {
+            throw new RuntimeException('aggregates must done on dates in the past');
+        }
+        if (!$caching) {
+            Cache::delete($key);
+        }
+        $cache   = 'hit';
+        $results = Cache::rememberForever($key, function () use ($date, $attributes, &$cache) {
+            $query = $this->aggregateQuerySingleDate($date, $attributes);
+            $cache = 'miss';
+            return $this->processAggregateQuery($query);
+        });
+
+        $timeend = microtime(true);
+        $timediff = $timeend - $timestart;
+
+        $results['date'] = $date->format('Y-m-d');
+        $results['attributes'] = $attributes;
+        $results['key']   = $key;
+        $results['cache'] = $cache;
+        $results['duration'] = (float)number_format($timediff, 4);
+
+        return $results;
+    }
+
     public function getAllowedAggregateAttributes(bool $remove_received_date = false): array
     {
         $out = $this->allowed_aggregate_attributes;
@@ -566,6 +600,7 @@ JSON;
     {
         sort($attributes);
         $attributes = array_intersect($attributes, $this->allowed_aggregate_attributes);
+        $attributes = array_unique($attributes);
         if (count($attributes) === 0) {
             $attributes[] = 'received_date';
         }

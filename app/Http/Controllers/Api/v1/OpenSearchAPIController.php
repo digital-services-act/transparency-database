@@ -110,8 +110,6 @@ class OpenSearchAPIController extends Controller
     {
         try {
 
-            $timestart = microtime(true);
-
             if ($date_in === 'yesterday') {
                 $date_in = Carbon::yesterday()->format('Y-m-d');
             }
@@ -122,33 +120,8 @@ class OpenSearchAPIController extends Controller
             if ($attributes[0] === 'all') {
                 $attributes = $this->statement_search_service->getAllowedAggregateAttributes(true);
             }
-            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = $date->format('Y-m-d') . '__' . implode('__', $attributes);
 
-            if ($date > Carbon::yesterday()) {
-                throw new RuntimeException('aggregates must done on dates in the past');
-            }
-
-            if ((int)$request->query('cache', 1) === 0) {
-                Cache::delete($key);
-            }
-
-            $cache   = 'hit';
-            $results = Cache::rememberForever($key, function () use ($date, $attributes, &$cache) {
-                $query = $this->statement_search_service->aggregateQuerySingleDate($date, $attributes);
-                $cache = 'miss';
-                return $this->statement_search_service->processAggregateQuery($query);
-            });
-
-            $timeend = microtime(true);
-
-            $timediff = $timeend - $timestart;
-
-            $results['date'] = $date->format('Y-m-d');
-            $results['attributes'] = $attributes;
-            $results['key']   = $key;
-            $results['cache'] = $cache;
-            $results['duration'] = (float)number_format($timediff, 4);
+            $results = $this->statement_search_service->processDateAggregate($date, $attributes, (bool)$request->query('cache', 1));
 
             return response()->json($results);
         } catch (Exception $e) {
@@ -210,6 +183,84 @@ class OpenSearchAPIController extends Controller
             $timediff = $timeend - $timestart;
 
 
+            $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+            $results['attributes'] = $attributes;
+            $results['key']   = $key;
+            $results['cache'] = $cache;
+            $results['duration'] = (float)number_format($timediff, 4);
+
+            return response()->json($results);
+        } catch (Exception $e) {
+            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+
+            return response()->json(['error' => 'invalid aggregate range attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param string $start_in
+     * @param string $end_in
+     * @param string|null $attributes_in
+     *
+     * @return JsonResponse|array
+     */
+    public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    {
+        try {
+            $timestart = microtime(true);
+
+            if ($start_in === 'start') {
+                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
+            }
+
+            if ($end_in === 'yesterday') {
+                $end_in = Carbon::yesterday()->format('Y-m-d');
+            }
+
+            $start      = Carbon::createFromFormat('Y-m-d', $start_in);
+            $start->subSeconds($start->secondsSinceMidnight());
+
+            $end        = Carbon::createFromFormat('Y-m-d', $end_in);
+            $end->addDay()->subSeconds($end->secondsSinceMidnight()+1);
+
+            if ($start >= $end || $end >= Carbon::today()) {
+                throw new RuntimeException('Start must be less than end, and end must be in the past');
+            }
+
+            $attributes = explode("__", $attributes_in);
+            if ($attributes[0] === 'all') {
+                $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
+            }
+            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
+            $key = $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+
+            $caching = (bool)$request->query('cache', 1);
+            if (!$caching) {
+                Cache::delete($key);
+            }
+
+            $cache   = 'hit';
+            $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $caching, &$cache) {
+                $days = [];
+                $current = $end->clone();
+                while($current > $start) {
+                    $days[] = $this->statement_search_service->processDateAggregate($current, $attributes, $caching);
+                    $current->subDay();
+                }
+                $cache = 'miss';
+                return $days;
+            });
+
+            $total = array_sum(array_map(function($day){
+                return $day['total'];
+            }, $days));
+
+            $timeend = microtime(true);
+            $timediff = $timeend - $timestart;
+
+            $results['days'] = $days;
+            $results['total'] = $total;
             $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
             $results['attributes'] = $attributes;
             $results['key']   = $key;
