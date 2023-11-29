@@ -43,7 +43,7 @@ class PlatformFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->randomElement($this->platform_names),
-            'url' => $this->faker->url(),
+            'dsa_common_id' => $this->faker->uuid(),
         ];
     }
 }

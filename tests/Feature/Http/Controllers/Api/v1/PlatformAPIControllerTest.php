@@ -30,13 +30,9 @@ class PlatformAPIControllerTest extends TestCase
 
         $this->required_fields = [
             'name' => 'New Platform',
-            'url' => 'https://wedontcare.com',
             'vlop' => 0
         ];
     }
-
-
-
 
     /**
      * @test

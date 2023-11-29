@@ -32,11 +32,7 @@ class PlatformAPIController extends Controller
         ])->toArray();
 
         try {
-            $platform = Platform::create([
-                'name' => $validated['name'],
-                'url' => $validated['url'],
-                'vlop' => $validated['vlop']
-            ]);
+            $platform = Platform::create($validated);
         } catch (QueryException $e) {
 
 

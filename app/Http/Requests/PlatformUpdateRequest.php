@@ -26,8 +26,8 @@ class PlatformUpdateRequest extends FormRequest
     {
         return [
             'name' => ['string', 'required', 'max:255'],
-            'url' => ['url', 'required', 'max:255'],
-            'vlop' => ['int', 'required']
+            'vlop' => ['int', 'required'],
+            'dsa_common_id' => ['string', 'nullable', 'unique:platforms,dsa_common_id']
         ];
     }
 
