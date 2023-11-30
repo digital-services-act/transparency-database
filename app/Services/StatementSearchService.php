@@ -77,7 +77,6 @@ class StatementSearchService
     public function query(array $filters, array $options = []): Builder
     {
         $query = $this->buildQuery($filters);
-
         return $this->basicQuery($query, $options);
     }
 
@@ -193,7 +192,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionVisibilityFilter(array $filter_values)
+    private function applyDecisionVisibilityFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
         $ors           = [];
@@ -204,7 +203,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionMonetaryFilter(array $filter_values)
+    private function applyDecisionMonetaryFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
         $ors           = [];
@@ -215,7 +214,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionProvisionFilter(array $filter_values)
+    private function applyDecisionProvisionFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
         $ors           = [];
@@ -226,7 +225,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyTerritorialScopeFilter(array $filter_values)
+    private function applyTerritorialScopeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         $ors           = [];
@@ -238,7 +237,7 @@ class StatementSearchService
     }
 
 
-    private function applyDecisionAccountFilter(array $filter_values)
+    private function applyDecisionAccountFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
         $ors           = [];
@@ -249,7 +248,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyAccountTypeFilter(array $filter_values)
+    private function applyAccountTypeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
         $ors           = [];
@@ -260,7 +259,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyCategorySpecificationFilter(array $filter_values)
+    private function applyCategorySpecificationFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
 
@@ -272,7 +271,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionGroundFilter(array $filter_values)
+    private function applyDecisionGroundFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
         $ors           = [];
@@ -283,7 +282,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyCategoryFilter(array $filter_values)
+    private function applyCategoryFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
         $ors           = [];
@@ -294,7 +293,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyContentTypeFilter(array $filter_values)
+    private function applyContentTypeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
         $ors           = [];
@@ -305,7 +304,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyContentLanguageFilter(array $filter_values)
+    private function applyContentLanguageFilter(array $filter_values): string
     {
         $ors           = [];
         $all_isos      = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
@@ -317,7 +316,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyAutomatedDetectionFilter(array $filter_values)
+    private function applyAutomatedDetectionFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
         $ors           = [];
@@ -328,7 +327,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyAutomatedDecisionFilter(array $filter_values)
+    private function applyAutomatedDecisionFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         $ors           = [];
