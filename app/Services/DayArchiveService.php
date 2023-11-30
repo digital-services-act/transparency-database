@@ -173,15 +173,15 @@ class DayArchiveService
             $raw                = DB::table('statements')
                                     ->selectRaw($select_raw)
                                     ->where('statements.created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
-                                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59');
-                                    //->orderBy('statements.id', 'desc');
+                                    ->where('statements.created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                                    ->orderBy('statements.id', 'desc');
 
         } else {
             $raw                = DB::table('statements')
                                     ->selectRaw($select_raw)
                                     ->where('statements.id', '>=', $first_id)
-                                    ->where('statements.id', '<=', $last_id);
-                                    //->orderBy('statements.id');
+                                    ->where('statements.id', '<=', $last_id)
+                                    ->orderBy('statements.id');
         }
 
         return $raw;

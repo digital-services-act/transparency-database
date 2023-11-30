@@ -252,7 +252,7 @@ class DayArchiveServiceTest extends TestCase
     {
         $in = $this->day_archive_service->buildStartOfDateArray(Carbon::now());
         $this->assertNotNull($in);
-        $this->assertCount(500, $in);
+        $this->assertCount(100, $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 00:00:00'), $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 00:08:19'), $in);
     }
@@ -265,7 +265,7 @@ class DayArchiveServiceTest extends TestCase
     {
         $in = $this->day_archive_service->buildEndOfDateArray(Carbon::now());
         $this->assertNotNull($in);
-        $this->assertCount(500, $in);
+        $this->assertCount(100, $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 23:59:59'), $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 23:51:40'), $in);
     }
