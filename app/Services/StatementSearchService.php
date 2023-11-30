@@ -351,7 +351,81 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    public function processDateAggregate(Carbon $date, array $attributes, bool $caching = true)
+    public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true)
+    {
+        $timestart = microtime(true);
+
+        $this->sanitizeAggregateAttributes($attributes);
+        $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+
+        if (!$caching) {
+            Cache::delete($key);
+        }
+
+        $cache   = 'hit';
+        $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, &$cache) {
+            $query = $this->aggregateQueryRange($start, $end, $attributes);
+            $cache = 'miss';
+            return $this->processAggregateQuery($query);
+        });
+
+        $timeend = microtime(true);
+        $timediff = $timeend - $timestart;
+
+
+        $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+        $results['attributes'] = $attributes;
+        $results['key']   = $key;
+        $results['cache'] = $cache;
+        $results['duration'] = (float)number_format($timediff, 4);
+
+        return $results;
+    }
+
+    public function processDatesAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true, bool $daycache = true): array
+    {
+        $timestart = microtime(true);
+
+        $this->sanitizeAggregateAttributes($attributes);
+        $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+
+        if (!$caching) {
+            Cache::delete($key);
+        }
+
+        $cache   = 'hit';
+        $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $daycache, &$cache) {
+            $days = [];
+            $current = $end->clone();
+
+            while($current >= $start) {
+                $days[] = $this->processDateAggregate($current, $attributes, $daycache);
+                $current->subDay();
+            }
+
+            $cache = 'miss';
+            return $days;
+        });
+
+        $total = array_sum(array_map(function($day){
+            return $day['total'];
+        }, $days));
+
+        $timeend = microtime(true);
+        $timediff = $timeend - $timestart;
+
+        $results['days'] = $days;
+        $results['total'] = $total;
+        $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+        $results['attributes'] = $attributes;
+        $results['key']   = $key;
+        $results['cache'] = $cache;
+        $results['duration'] = (float)number_format($timediff, 4);
+
+        return $results;
+    }
+
+    public function processDateAggregate(Carbon $date, array $attributes, bool $caching = true): array
     {
         $timestart = microtime(true);
 

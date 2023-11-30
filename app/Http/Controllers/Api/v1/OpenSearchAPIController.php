@@ -91,11 +91,19 @@ class OpenSearchAPIController extends Controller
     public function explain(Request $request): array|JsonResponse
     {
         try {
-            return $this->client->sql()->explain($request->toArray());
+
+            $results = $this->client->sql()->explain($request->toArray());
+            $query = $results['root']['children'][0]['description']['request'] ?? false;
+            $query = '{' . ltrim(strstr($query, '{'), '{');
+            $query = substr($query, 0, strrpos( $query, '}')) . '}';
+            $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
+
+            return $results;
+
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -116,6 +124,7 @@ class OpenSearchAPIController extends Controller
 
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
             $date->subSeconds($date->secondsSinceMidnight());
+
             $attributes = explode("__", $attributes_in);
             if ($attributes[0] === 'all') {
                 $attributes = $this->statement_search_service->getAllowedAggregateAttributes(true);
@@ -141,7 +150,6 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-            $timestart = microtime(true);
 
             if ($start_in === 'start') {
                 $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
@@ -165,29 +173,8 @@ class OpenSearchAPIController extends Controller
             if ($attributes[0] === 'all') {
                 $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
             }
-            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-            if ((int)$request->query('cache', 1) === 0) {
-                Cache::delete($key);
-            }
-
-            $cache   = 'hit';
-            $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, &$cache) {
-                $query = $this->statement_search_service->aggregateQueryRange($start, $end, $attributes);
-                $cache = 'miss';
-                return $this->statement_search_service->processAggregateQuery($query);
-            });
-
-            $timeend = microtime(true);
-            $timediff = $timeend - $timestart;
-
-
-            $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
-            $results['attributes'] = $attributes;
-            $results['key']   = $key;
-            $results['cache'] = $cache;
-            $results['duration'] = (float)number_format($timediff, 4);
+            $results = $this->statement_search_service->processRangeAggregate($start, $end, $attributes, (bool)$request->query('cache', 1));
 
             return response()->json($results);
         } catch (Exception $e) {
@@ -208,7 +195,6 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-            $timestart = microtime(true);
 
             if ($start_in === 'start') {
                 $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
@@ -232,50 +218,14 @@ class OpenSearchAPIController extends Controller
             if ($attributes[0] === 'all') {
                 $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
             }
-            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-            $caching = (bool)$request->query('cache', 1);
-            if (!$caching) {
-                Cache::delete($key);
-            }
-
-            $subcaching = (int)$request->query('daycache', 1) === 1;
-
-            $cache   = 'hit';
-            $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $subcaching, &$cache) {
-                $days = [];
-                $current = $end->clone();
-
-                while($current >= $start) {
-                    $days[] = $this->statement_search_service->processDateAggregate($current, $attributes, $subcaching);
-                    $current->subDay();
-                }
-
-                $cache = 'miss';
-                return $days;
-            });
-
-            $total = array_sum(array_map(function($day){
-                return $day['total'];
-            }, $days));
-
-            $timeend = microtime(true);
-            $timediff = $timeend - $timestart;
-
-            $results['days'] = $days;
-            $results['total'] = $total;
-            $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
-            $results['attributes'] = $attributes;
-            $results['key']   = $key;
-            $results['cache'] = $cache;
-            $results['duration'] = (float)number_format($timediff, 4);
+            $results = $this->statement_search_service->processDatesAggregate($start, $end, $attributes, (bool)$request->query('cache', 1), (bool)$request->query('daycache', 1));
 
             return response()->json($results);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid aggregate range attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregate dates attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
