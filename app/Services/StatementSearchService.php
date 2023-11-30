@@ -384,6 +384,12 @@ class StatementSearchService
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 
+    public function totalForPlatformDate(Platform $platform, Carbon $date): int
+    {
+        $sql = $this->startCountQuery() . " WHERE platform_id = ".$platform->id." AND received_date = '".$date->format('Y-m-d')." 00:00:00'";
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
     public function totalForDateRange(Carbon $start, Carbon $end): int
     {
         $sql = $this->startCountQuery() . " WHERE received_date BETWEEN '".$start->format('Y-m-d')." 00:00:00' AND '".$end->format('Y-m-d')." 00:00:00'";
