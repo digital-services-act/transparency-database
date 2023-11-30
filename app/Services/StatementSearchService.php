@@ -339,7 +339,12 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyPlatformIdFilter(array $filter_values)
+    /**
+     * @param array $filter_values
+     *
+     * @return string
+     */
+    private function applyPlatformIdFilter(array $filter_values): string
     {
         $ors           = [];
         $platform_ids  = Platform::nonDsa()->pluck('id')->toArray();
@@ -358,7 +363,7 @@ class StatementSearchService
      */
     public function pushOSAKey($key): void
     {
-        $keys = Cache::get('osa_cache', []);
+        $keys   = Cache::get('osa_cache', []);
         $keys[] = $key;
         Cache::forever('osa_cache', array_unique($keys));
     }
@@ -375,14 +380,22 @@ class StatementSearchService
         Cache::delete('osa_cache');
     }
 
-    public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true)
+    /**
+     * @param Carbon $start
+     * @param Carbon $end
+     * @param array $attributes
+     * @param bool $caching
+     *
+     * @return array
+     */
+    public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true): array
     {
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
         $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-        if (!$caching) {
+        if ( ! $caching) {
             Cache::delete($key);
         }
 
@@ -391,18 +404,19 @@ class StatementSearchService
             $query = $this->aggregateQueryRange($start, $end, $attributes);
             $cache = 'miss';
             $this->pushOSAKey($key);
+
             return $this->processAggregateQuery($query);
         });
 
-        $timeend = microtime(true);
+        $timeend  = microtime(true);
         $timediff = $timeend - $timestart;
 
 
-        $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+        $results['dates']      = [$start->format('Y-m-d'), $end->format('Y-m-d')];
         $results['attributes'] = $attributes;
-        $results['key']   = $key;
-        $results['cache'] = $cache;
-        $results['duration'] = (float)number_format($timediff, 4);
+        $results['key']        = $key;
+        $results['cache']      = $cache;
+        $results['duration']   = (float)number_format($timediff, 4);
 
         return $results;
     }
@@ -414,16 +428,16 @@ class StatementSearchService
         $this->sanitizeAggregateAttributes($attributes);
         $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-        if (!$caching) {
+        if ( ! $caching) {
             Cache::delete($key);
         }
 
-        $cache   = 'hit';
-        $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $daycache, $key, &$cache) {
-            $days = [];
+        $cache = 'hit';
+        $days  = Cache::rememberForever($key, function () use ($start, $end, $attributes, $daycache, $key, &$cache) {
+            $days    = [];
             $current = $end->clone();
 
-            while($current >= $start) {
+            while ($current >= $start) {
                 $days[] = $this->processDateAggregate($current, $attributes, $daycache);
                 $current->subDay();
             }
@@ -434,20 +448,20 @@ class StatementSearchService
             return $days;
         });
 
-        $total = array_sum(array_map(function($day){
+        $total = array_sum(array_map(function ($day) {
             return $day['total'];
         }, $days));
 
-        $timeend = microtime(true);
+        $timeend  = microtime(true);
         $timediff = $timeend - $timestart;
 
-        $results['days'] = $days;
-        $results['total'] = $total;
-        $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+        $results['days']       = $days;
+        $results['total']      = $total;
+        $results['dates']      = [$start->format('Y-m-d'), $end->format('Y-m-d')];
         $results['attributes'] = $attributes;
-        $results['key']   = $key;
-        $results['cache'] = $cache;
-        $results['duration'] = (float)number_format($timediff, 4);
+        $results['key']        = $key;
+        $results['cache']      = $cache;
+        $results['duration']   = (float)number_format($timediff, 4);
 
         return $results;
     }
@@ -462,7 +476,7 @@ class StatementSearchService
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
         }
-        if (!$caching) {
+        if ( ! $caching) {
             Cache::delete($key);
         }
         $cache   = 'hit';
@@ -470,17 +484,18 @@ class StatementSearchService
             $query = $this->aggregateQuerySingleDate($date, $attributes);
             $cache = 'miss';
             $this->pushOSAKey($key);
+
             return $this->processAggregateQuery($query);
         });
 
-        $timeend = microtime(true);
+        $timeend  = microtime(true);
         $timediff = $timeend - $timestart;
 
-        $results['date'] = $date->format('Y-m-d');
+        $results['date']       = $date->format('Y-m-d');
         $results['attributes'] = $attributes;
-        $results['key']   = $key;
-        $results['cache'] = $cache;
-        $results['duration'] = (float)number_format($timediff, 4);
+        $results['key']        = $key;
+        $results['cache']      = $cache;
+        $results['duration']   = (float)number_format($timediff, 4);
 
         return $results;
     }
@@ -491,13 +506,14 @@ class StatementSearchService
         if ($remove_received_date) {
             $out = array_diff($out, ['received_date']);
         }
+
         return $out;
     }
 
     /**
      * @throws JsonException
      */
-    public function aggregateQueryRange(Carbon $start, Carbon $end, $attributes)
+    private function aggregateQueryRange(Carbon $start, Carbon $end, $attributes)
     {
         $query_string = <<<JSON
 {
@@ -570,7 +586,7 @@ JSON;
     /**
      * @throws JsonException
      */
-    public function aggregateQuerySingleDate(Carbon $date, $attributes)
+    private function aggregateQuerySingleDate(Carbon $date, $attributes)
     {
         $query_string = <<<JSON
 {
