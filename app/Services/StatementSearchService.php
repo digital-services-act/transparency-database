@@ -355,6 +355,41 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    private function startCountQuery(): string
+    {
+        return "SELECT count(*) FROM " . $this->index_name;
+    }
+
+    private function extractCountQueryResult($result): int
+    {
+        return (int)($result['datarows'][0][0] ?? 0);
+    }
+
+    private function runSql(string $sql): array
+    {
+        return $this->client->sql()->query([
+            'query' => $sql
+        ]);
+    }
+
+    public function grandTotal(): int
+    {
+        $sql = $this->startCountQuery();
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function totalForDate(Carbon $date): int
+    {
+        $sql = $this->startCountQuery() . " WHERE received_date = '".$date->format('Y-m-d')." 00:00:00'";
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function totalForDateRange(Carbon $start, Carbon $end): int
+    {
+        $sql = $this->startCountQuery() . " WHERE received_date BETWEEN '".$start->format('Y-m-d')." 00:00:00' AND '".$end->format('Y-m-d')." 00:00:00'";
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
     /**
      * @param $key
      *

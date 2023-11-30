@@ -128,14 +128,12 @@ class OpenSearchAPIController extends Controller
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
             $date->subSeconds($date->secondsSinceMidnight());
 
-            $attributes = explode("__", $attributes_in);
-            if ($attributes[0] === 'all') {
-                $attributes = $this->statement_search_service->getAllowedAggregateAttributes(true);
-            }
+            $attributes = $this->sanitizeAttributes($attributes_in, true);
 
             $results = $this->statement_search_service->processDateAggregate($date, $attributes, (bool)$request->query('cache', 1));
 
             return response()->json($results);
+
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
 
@@ -154,30 +152,15 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-            if ($start_in === 'start') {
-                $start_in = (string)config('dsa.start_date');
-            }
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in, true);
 
-            if ($end_in === 'yesterday') {
-                $end_in = Carbon::yesterday()->format('Y-m-d');
-            }
-
-            $start = Carbon::createFromFormat('Y-m-d', $start_in);
-            $start->subSeconds($start->secondsSinceMidnight());
-
-            $end = Carbon::createFromFormat('Y-m-d', $end_in);
-            $end->addDay()->subSeconds($end->secondsSinceMidnight() + 1);
-
-            if ($start >= $end || $end >= Carbon::today()) {
+            if ($dates['start'] >= $dates['end'] || $dates['end'] >= Carbon::today()) {
                 throw new RuntimeException('Start must be less than end, and end must be in the past');
             }
 
-            $attributes = explode("__", $attributes_in);
-            if ($attributes[0] === 'all') {
-                $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
-            }
+            $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_search_service->processRangeAggregate($start, $end, $attributes, (bool)$request->query('cache', 1));
+            $results = $this->statement_search_service->processRangeAggregate($dates['start'], $dates['end'], $attributes, (bool)$request->query('cache', 1));
 
             return response()->json($results);
         } catch (Exception $e) {
@@ -198,30 +181,15 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-            if ($start_in === 'start') {
-                $start_in = (string)config('dsa.start_date');
-            }
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            if ($end_in === 'yesterday') {
-                $end_in = Carbon::yesterday()->format('Y-m-d');
-            }
-
-            $start = Carbon::createFromFormat('Y-m-d', $start_in);
-            $start->subSeconds($start->secondsSinceMidnight());
-
-            $end = Carbon::createFromFormat('Y-m-d', $end_in);
-            $end->subSeconds($end->secondsSinceMidnight());
-
-            if ($start >= $end || $end >= Carbon::today()) {
+            if ($dates['start'] >= $dates['end'] || $dates['end'] >= Carbon::today()) {
                 throw new RuntimeException('Start must be less than end, and end must be in the past');
             }
 
-            $attributes = explode("__", $attributes_in);
-            if ($attributes[0] === 'all') {
-                $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
-            }
+            $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_search_service->processDatesAggregate($start, $end, $attributes, (bool)$request->query('cache', 1), (bool)$request->query('daycache', 1));
+            $results = $this->statement_search_service->processDatesAggregate($dates['start'], $dates['end'], $attributes, (bool)$request->query('cache', 1), (bool)$request->query('daycache', 1));
 
             return response()->json($results);
         } catch (Exception $e) {
@@ -274,8 +242,84 @@ class OpenSearchAPIController extends Controller
             ];
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid labels attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    public function total(Request $request): JsonResponse
+    {
+        return response()->json($this->statement_search_service->grandTotal());
+    }
+
+    public function dateTotal(Request $request, string $date_in): JsonResponse
+    {
+        try {
+            if ($date_in === 'yesterday') {
+                $date_in = Carbon::yesterday()->format('Y-m-d');
+            }
+            $date = Carbon::createFromFormat('Y-m-d', $date_in);
+            return response()->json($this->statement_search_service->totalForDate($date));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function dateTotalRange(Request $request, string $start_in, string $end_in): JsonResponse
+    {
+        try {
+
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total range attempt, see logs. ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private function sanitizeDateString(string $date_in): bool|Carbon
+    {
+        try {
+            if ($date_in === 'start') {
+                $date_in = (string)config('dsa.start_date');
+            }
+
+            if ($date_in === 'yesterday') {
+                $date_in = Carbon::yesterday()->format('Y-m-d');
+            }
+
+            $date = Carbon::createFromFormat('Y-m-d', $date_in);
+            $date->subSeconds($date->secondsSinceMidnight());
+
+            return $date;
+        } catch (Exception $e) {
+            throw new RuntimeException("Can't sanitize this date: '".$date_in."'");
+        }
+    }
+
+    private function sanitizeDateStartEndStrings(string $start_in, string $end_in, bool $range = false): array
+    {
+        try {
+            $start = $this->sanitizeDateString($start_in);
+            $end   = $this->sanitizeDateString($end_in);
+        } catch (Exception $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
+        $end->subSeconds($end->secondsSinceMidnight());
+
+        if ($range) {
+            $end->addDay()->subSecond();
+        }
+
+        return ['start' => $start, 'end' => $end];
+    }
+
+    private function sanitizeAttributes(string $attributes_in, bool $remove_received_date = false): array
+    {
+        $attributes = explode("__", $attributes_in);
+        if ($attributes[0] === 'all') {
+            $attributes = $this->statement_search_service->getAllowedAggregateAttributes($remove_received_date);
+        }
+        return $attributes;
     }
 }

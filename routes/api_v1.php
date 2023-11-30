@@ -34,6 +34,9 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('opensearch/aggregatesd/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRangeDates'])->name('api.v1.opensearch.aggregates.range.dates');
         Route::get('opensearch/platforms', [OpenSearchAPIController::class, 'platforms'])->name('api.v1.opensearch.platforms');
         Route::get('opensearch/labels', [OpenSearchAPIController::class, 'labels'])->name('api.v1.opensearch.labels');
+        Route::get('opensearch/total', [OpenSearchAPIController::class, 'total'])->name('api.v1.opensearch.total');
+        Route::get('opensearch/datetotal/{date}', [OpenSearchAPIController::class, 'dateTotal'])->name('api.v1.opensearch.datetotal');
+        Route::get('opensearch/datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
     });
 });
 
