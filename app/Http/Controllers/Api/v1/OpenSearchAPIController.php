@@ -105,6 +105,12 @@ class OpenSearchAPIController extends Controller
         }
     }
 
+    public function clearAggregateCache(Request $request)
+    {
+        $this->statement_search_service->clearOSACache();
+        return 'ok';
+    }
+
     /**
      * @param Request $request
      * @param string $date_in

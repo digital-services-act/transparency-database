@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('opensearch/count', [OpenSearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
         Route::post('opensearch/sql', [OpenSearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
         Route::post('opensearch/explain', [OpenSearchAPIController::class, 'explain'])->name('api.v1.opensearch.explain');
+        Route::post('opensearch/cacheclear', [OpenSearchAPIController::class, 'clearAggregateCache'])->name('api.v1.opensearch.cacheclear');
         Route::get('opensearch/aggregates/{date}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForDate'])->name('api.v1.opensearch.aggregates.date');
         Route::get('opensearch/aggregates/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRange'])->name('api.v1.opensearch.aggregates.range');
         Route::get('opensearch/aggregatesd/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRangeDates'])->name('api.v1.opensearch.aggregates.range.dates');

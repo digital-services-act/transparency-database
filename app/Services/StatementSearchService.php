@@ -351,6 +351,30 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    /**
+     * @param $key
+     *
+     * @return void
+     */
+    public function pushOSAKey($key): void
+    {
+        $keys = Cache::get('osa_cache', []);
+        $keys[] = $key;
+        Cache::forever('osa_cache', array_unique($keys));
+    }
+
+    /**
+     * @return void
+     */
+    public function clearOSACache(): void
+    {
+        $keys = Cache::get('osa_cache', []);
+        foreach ($keys as $key) {
+            Cache::delete($key);
+        }
+        Cache::delete('osa_cache');
+    }
+
     public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true)
     {
         $timestart = microtime(true);
@@ -363,9 +387,10 @@ class StatementSearchService
         }
 
         $cache   = 'hit';
-        $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, &$cache) {
+        $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, $key, &$cache) {
             $query = $this->aggregateQueryRange($start, $end, $attributes);
             $cache = 'miss';
+            $this->pushOSAKey($key);
             return $this->processAggregateQuery($query);
         });
 
@@ -394,7 +419,7 @@ class StatementSearchService
         }
 
         $cache   = 'hit';
-        $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $daycache, &$cache) {
+        $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $daycache, $key, &$cache) {
             $days = [];
             $current = $end->clone();
 
@@ -404,6 +429,8 @@ class StatementSearchService
             }
 
             $cache = 'miss';
+            $this->pushOSAKey($key);
+
             return $days;
         });
 
@@ -439,9 +466,10 @@ class StatementSearchService
             Cache::delete($key);
         }
         $cache   = 'hit';
-        $results = Cache::rememberForever($key, function () use ($date, $attributes, &$cache) {
+        $results = Cache::rememberForever($key, function () use ($date, $attributes, $key, &$cache) {
             $query = $this->aggregateQuerySingleDate($date, $attributes);
             $cache = 'miss';
+            $this->pushOSAKey($key);
             return $this->processAggregateQuery($query);
         });
 
