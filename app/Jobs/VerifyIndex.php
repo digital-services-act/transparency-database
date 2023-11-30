@@ -83,7 +83,7 @@ class VerifyIndex implements ShouldQueue
         ])['count'] ?? -1;
 
         if ($db_count > $opensearch_count) {
-            Log::debug('Fixing Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
+            //Log::debug('Fixing Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
             if (!$stop) {
                 StatementSearchableChunk::dispatch($this->start, 100, $end, -1);
             }
