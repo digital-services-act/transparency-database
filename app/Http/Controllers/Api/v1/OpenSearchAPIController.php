@@ -263,7 +263,7 @@ class OpenSearchAPIController extends Controller
             /** @var Platform $platform */
             $platform = Platform::find($platform_id_in);
             if (!$platform) {
-                throw new RuntimeException('Platform uuid not found');
+                throw new RuntimeException('Platform not found');
             }
 
             return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
