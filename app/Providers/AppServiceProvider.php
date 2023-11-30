@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo number_format(intval($expression), 0, '', '&nbsp;'); ?>";
         });
         RateLimiter::for('reindexing', static function (object $job) {
-            return Limit::perMinute(1000);
+            return Limit::perMinute(2000);
         });
     }
 }
