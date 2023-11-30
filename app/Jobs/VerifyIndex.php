@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Statement;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,10 +44,12 @@ class VerifyIndex implements ShouldQueue
 
     /**
      * Execute the job.
-     * @throws \Exception
+     * @throws Exception
      */
     public function handle(Client $client): void
     {
+
+        $stop = config('dsa.STOPREINDEXING', 0);
 
         $end = $this->start - $this->chunk;
         if ($end < 1) {
@@ -81,11 +84,13 @@ class VerifyIndex implements ShouldQueue
 
         if ($db_count > $opensearch_count) {
             Log::debug('Fixing Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
-            StatementSearchableChunk::dispatch($this->start, 100, $end, -1);
+            if (!$stop) {
+                StatementSearchableChunk::dispatch($this->start, 100, $end, -1);
+            }
         }
 
 
-        if ($end > $this->min) {
+        if ($end > $this->min && !$stop) {
             self::dispatch($end, $this->chunk, $this->min);
         }
 
