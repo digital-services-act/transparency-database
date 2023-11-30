@@ -255,6 +255,23 @@ class OpenSearchAPIController extends Controller
         }
     }
 
+    public function platformDateTotal(Request $request, string $platform_id_in, string $date_in): JsonResponse
+    {
+        try {
+            $date = $this->sanitizeDateString($date_in);
+
+            /** @var Platform $platform */
+            $platform = Platform::find($platform_id_in);
+            if (!$platform) {
+                throw new RuntimeException('Platform uuid not found');
+            }
+
+            return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total platform attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     public function dateTotalRange(Request $request, string $start_in, string $end_in): JsonResponse
     {
         try {
