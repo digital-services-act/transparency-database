@@ -367,9 +367,19 @@ class StatementSearchService
 
     private function runSql(string $sql): array
     {
-        return $this->client->sql()->query([
-            'query' => $sql
-        ]);
+        if (config('scout.driver') === 'opensearch') {
+            return $this->client->sql()->query([
+                'query' => $sql
+            ]);
+        }
+
+        return [
+            'datarows' => [
+                [
+                    0
+                ]
+            ]
+        ];
     }
 
     public function grandTotal(): int
