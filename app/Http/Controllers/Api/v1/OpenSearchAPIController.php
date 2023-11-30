@@ -11,8 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 use RuntimeException;
 
@@ -99,7 +97,7 @@ class OpenSearchAPIController extends Controller
         }
     }
 
-    public function clearAggregateCache(Request $request)
+    public function clearAggregateCache(): string
     {
         $this->statement_search_service->clearOSACache();
 
@@ -107,13 +105,12 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param string $date_in
      * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = ''): JsonResponse|array
+    public function aggregatesForDate(string $date_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
             $date = $this->sanitizeDateString($date_in);
@@ -137,14 +134,13 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param string $start_in
      * @param string $end_in
      * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
+    public function aggregatesForRange(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in, true);
@@ -167,14 +163,13 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param string $start_in
      * @param string $end_in
      * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
+    public function aggregatesForRangeDates(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
@@ -198,11 +193,10 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
      *
      * @return JsonResponse|array
      */
-    public function platforms(Request $request): JsonResponse|array
+    public function platforms(): JsonResponse|array
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
@@ -217,11 +211,10 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
      *
      * @return JsonResponse|array
      */
-    public function labels(Request $request): JsonResponse|array
+    public function labels(): JsonResponse|array
     {
         try {
             return [
@@ -241,12 +234,12 @@ class OpenSearchAPIController extends Controller
         }
     }
 
-    public function total(Request $request): JsonResponse
+    public function total(): JsonResponse
     {
         return response()->json($this->statement_search_service->grandTotal());
     }
 
-    public function dateTotal(Request $request, string $date_in): JsonResponse
+    public function dateTotal(string $date_in): JsonResponse
     {
         try {
             $date = $this->sanitizeDateString($date_in);
@@ -257,7 +250,7 @@ class OpenSearchAPIController extends Controller
         }
     }
 
-    public function platformDateTotal(Request $request, string $platform_id_in, string $date_in): JsonResponse
+    public function platformDateTotal(string $platform_id_in, string $date_in): JsonResponse
     {
         try {
             $date = $this->sanitizeDateString($date_in);
@@ -274,7 +267,7 @@ class OpenSearchAPIController extends Controller
         }
     }
 
-    public function dateTotalRange(Request $request, string $start_in, string $end_in): JsonResponse
+    public function dateTotalRange(string $start_in, string $end_in): JsonResponse
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
@@ -285,7 +278,7 @@ class OpenSearchAPIController extends Controller
         }
     }
 
-    public function dateTotalsRange(Request $request, string $start_in, string $end_in): JsonResponse
+    public function dateTotalsRange(string $start_in, string $end_in): JsonResponse
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
@@ -316,7 +309,7 @@ class OpenSearchAPIController extends Controller
 
             return $date;
         } catch (Exception $e) {
-            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "'");
+            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $e->getMessage());
         }
     }
 
