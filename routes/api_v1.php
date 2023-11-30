@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('opensearch/total', [OpenSearchAPIController::class, 'total'])->name('api.v1.opensearch.total');
         Route::get('opensearch/datetotal/{date}', [OpenSearchAPIController::class, 'dateTotal'])->name('api.v1.opensearch.datetotal');
         Route::get('opensearch/datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
+        Route::get('opensearch/datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
     });
 });
 

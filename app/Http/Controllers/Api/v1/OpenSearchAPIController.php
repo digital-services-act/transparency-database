@@ -266,6 +266,17 @@ class OpenSearchAPIController extends Controller
         }
     }
 
+    public function dateTotalsRange(Request $request, string $start_in, string $end_in): JsonResponse
+    {
+        try {
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            return response()->json($this->statement_search_service->datesTotalsForRange($dates['start'], $dates['end']));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date totals range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     private function sanitizeDateString(string $date_in): bool|Carbon
     {
         try {

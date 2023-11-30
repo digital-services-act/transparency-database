@@ -406,6 +406,29 @@ class StatementSearchService
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 
+    public function datesTotalsForRange(Carbon $start, Carbon $end): array
+    {
+        $prepare = [];
+        $current = $start->clone();
+        while($current <= $end) {
+            $prepare[$current->format('Y-m-d')] = 0;
+            $current->addDay();
+        }
+
+        $results = $this->processRangeAggregate($start, $end, ['received_date']);
+
+        foreach ($results['aggregates'] as $aggregate) {
+            $prepare[$aggregate['received_date']] = $aggregate['total'];
+        }
+
+        return array_map(function($date, $total){
+            return [
+                'date' => $date,
+                'total' => $total
+            ];
+        }, array_keys($prepare), array_values($prepare));
+    }
+
     /**
      * @param $key
      *
@@ -621,11 +644,11 @@ JSON;
 
         $sources = [];
         foreach ($attributes as $attribute) {
-            $sources[] = $this->queryBucket($attribute);
+            $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
         if (count($sources) === 0) {
-            $sources[] = $this->queryBucket('received_date');
+            $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
@@ -678,11 +701,11 @@ JSON;
 
         $sources = [];
         foreach ($attributes as $attribute) {
-            $sources[] = $this->queryBucket($attribute);
+            $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
         if (count($sources) === 0) {
-            $sources[] = $this->queryBucket('received_date');
+            $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
@@ -690,7 +713,7 @@ JSON;
         return $query;
     }
 
-    private function queryBucket($attribute): stdClass
+    private function aggregateQueryBucket($attribute): stdClass
     {
         $source                                    = new stdClass();
         $source->$attribute                        = new stdClass();
