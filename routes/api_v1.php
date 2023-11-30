@@ -28,11 +28,17 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('opensearch/count', [OpenSearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
         Route::post('opensearch/sql', [OpenSearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
         Route::post('opensearch/explain', [OpenSearchAPIController::class, 'explain'])->name('api.v1.opensearch.explain');
+        Route::post('opensearch/cacheclear', [OpenSearchAPIController::class, 'clearAggregateCache'])->name('api.v1.opensearch.cacheclear');
         Route::get('opensearch/aggregates/{date}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForDate'])->name('api.v1.opensearch.aggregates.date');
         Route::get('opensearch/aggregates/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRange'])->name('api.v1.opensearch.aggregates.range');
         Route::get('opensearch/aggregatesd/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRangeDates'])->name('api.v1.opensearch.aggregates.range.dates');
         Route::get('opensearch/platforms', [OpenSearchAPIController::class, 'platforms'])->name('api.v1.opensearch.platforms');
         Route::get('opensearch/labels', [OpenSearchAPIController::class, 'labels'])->name('api.v1.opensearch.labels');
+        Route::get('opensearch/total', [OpenSearchAPIController::class, 'total'])->name('api.v1.opensearch.total');
+        Route::get('opensearch/datetotal/{date}', [OpenSearchAPIController::class, 'dateTotal'])->name('api.v1.opensearch.datetotal');
+        Route::get('opensearch/platformdatetotal/{platform_id}/{date}', [OpenSearchAPIController::class, 'platformDateTotal'])->name('api.v1.opensearch.platformdatetotal');
+        Route::get('opensearch/datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
+        Route::get('opensearch/datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
     });
 });
 
