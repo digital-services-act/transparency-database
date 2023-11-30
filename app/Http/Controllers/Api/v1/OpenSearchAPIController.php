@@ -91,15 +91,13 @@ class OpenSearchAPIController extends Controller
     public function explain(Request $request): array|JsonResponse
     {
         try {
-
-            $results = $this->client->sql()->explain($request->toArray());
-            $query = $results['root']['children'][0]['description']['request'] ?? false;
-            $query = '{' . ltrim(strstr($query, '{'), '{');
-            $query = substr($query, 0, strrpos( $query, '}')) . '}';
+            $results          = $this->client->sql()->explain($request->toArray());
+            $query            = $results['root']['children'][0]['description']['request'] ?? false;
+            $query            = '{' . ltrim(strstr($query, '{'), '{');
+            $query            = substr($query, 0, strrpos($query, '}')) . '}';
             $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
 
             return $results;
-
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
 
@@ -117,7 +115,6 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-
             if ($date_in === 'yesterday') {
                 $date_in = Carbon::yesterday()->format('Y-m-d');
             }
@@ -135,6 +132,7 @@ class OpenSearchAPIController extends Controller
             return response()->json($results);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+
             return response()->json(['error' => 'invalid aggregate attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -150,20 +148,19 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-
             if ($start_in === 'start') {
-                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
+                $start_in = (string)config('dsa.start_date');
             }
 
             if ($end_in === 'yesterday') {
                 $end_in = Carbon::yesterday()->format('Y-m-d');
             }
 
-            $start      = Carbon::createFromFormat('Y-m-d', $start_in);
+            $start = Carbon::createFromFormat('Y-m-d', $start_in);
             $start->subSeconds($start->secondsSinceMidnight());
 
-            $end        = Carbon::createFromFormat('Y-m-d', $end_in);
-            $end->addDay()->subSeconds($end->secondsSinceMidnight()+1);
+            $end = Carbon::createFromFormat('Y-m-d', $end_in);
+            $end->addDay()->subSeconds($end->secondsSinceMidnight() + 1);
 
             if ($start >= $end || $end >= Carbon::today()) {
                 throw new RuntimeException('Start must be less than end, and end must be in the past');
@@ -195,19 +192,18 @@ class OpenSearchAPIController extends Controller
     public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
     {
         try {
-
             if ($start_in === 'start') {
-                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
+                $start_in = (string)config('dsa.start_date');
             }
 
             if ($end_in === 'yesterday') {
                 $end_in = Carbon::yesterday()->format('Y-m-d');
             }
 
-            $start      = Carbon::createFromFormat('Y-m-d', $start_in);
+            $start = Carbon::createFromFormat('Y-m-d', $start_in);
             $start->subSeconds($start->secondsSinceMidnight());
 
-            $end        = Carbon::createFromFormat('Y-m-d', $end_in);
+            $end = Carbon::createFromFormat('Y-m-d', $end_in);
             $end->subSeconds($end->secondsSinceMidnight());
 
             if ($start >= $end || $end >= Carbon::today()) {
@@ -232,23 +228,20 @@ class OpenSearchAPIController extends Controller
     /**
      * @param Request $request
      *
-     * @return JsonResponse|array|null
+     * @return JsonResponse|array
      */
-    public function platforms(Request $request): JsonResponse|array|null
+    public function platforms(Request $request): JsonResponse|array
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
-            $out       = [];
-            foreach ($platforms as $id => $name) {
-                $out[] = [
-                    'id'   => $id,
-                    'name' => $name
-                ];
-            }
+            $out       = array_map(static function ($id, $name) {
+                return ['id' => $id, 'name' => $name];
+            }, array_keys($platforms), array_values($platforms));
 
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+
             return response()->json(['error' => 'invalid platforms attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -275,6 +268,7 @@ class OpenSearchAPIController extends Controller
             ];
         } catch (Exception $e) {
             Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+
             return response()->json(['error' => 'invalid labels attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
