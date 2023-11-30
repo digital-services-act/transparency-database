@@ -42,8 +42,6 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Query Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -61,8 +59,6 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -77,8 +73,6 @@ class OpenSearchAPIController extends Controller
         try {
             return $this->client->sql()->query($request->toArray());
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -99,8 +93,6 @@ class OpenSearchAPIController extends Controller
 
             return $results;
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -138,8 +130,6 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -170,8 +160,6 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -203,8 +191,6 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -224,8 +210,6 @@ class OpenSearchAPIController extends Controller
 
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -251,8 +235,6 @@ class OpenSearchAPIController extends Controller
                 'source_types'          => Statement::SOURCE_TYPES
             ];
         } catch (Exception $e) {
-            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
-
             return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
