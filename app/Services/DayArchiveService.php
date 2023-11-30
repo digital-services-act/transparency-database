@@ -93,7 +93,7 @@ class DayArchiveService
         }
     }
 
-    public function cleanUpCsvFiles($day_archives)
+    public function cleanUpCsvFiles($day_archives): void
     {
         foreach ($day_archives as $day_archive) {
             // Clean up the files.
@@ -102,7 +102,7 @@ class DayArchiveService
         }
     }
 
-    public function uploadTheZipsAndSha1s($day_archives)
+    public function uploadTheZipsAndSha1s($day_archives): void
     {
         foreach ($day_archives as $day_archive) {
             // Put them on the s3
@@ -113,7 +113,7 @@ class DayArchiveService
         }
     }
 
-    public function generateZipsSha1sAndUpdate(&$day_archives): void
+    public function generateZipsSha1sAndUpdate($day_archives): void
     {
         foreach ($day_archives as $day_archive)
         {
@@ -345,12 +345,12 @@ class DayArchiveService
     }
 
 
-    public function globalList()
+    public function globalList(): Builder
     {
         return DayArchive::query()->whereNull('platform_id')->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
-    public function platformList(Platform $platform)
+    public function platformList(Platform $platform): Builder
     {
         return DayArchive::query()->where('platform_id', $platform->id)->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
