@@ -22,6 +22,8 @@ class OpenSearchAPIController extends Controller
     private StatementSearchService $statement_search_service;
     private string $index_name;
 
+    private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
+
     public function __construct(Client $client, StatementSearchService $statement_search_service)
     {
         $this->client                   = $client;
@@ -42,7 +44,7 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -59,7 +61,7 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -73,7 +75,7 @@ class OpenSearchAPIController extends Controller
         try {
             return $this->client->sql()->query($request->toArray());
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -93,7 +95,7 @@ class OpenSearchAPIController extends Controller
 
             return $results;
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -130,7 +132,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -160,7 +162,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -191,7 +193,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -210,7 +212,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -235,7 +237,7 @@ class OpenSearchAPIController extends Controller
                 'source_types'          => Statement::SOURCE_TYPES
             ];
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -251,7 +253,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($this->statement_search_service->totalForDate($date));
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid date total attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -268,7 +270,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total platform attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid date total platform attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -279,7 +281,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid date total range attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -290,7 +292,7 @@ class OpenSearchAPIController extends Controller
 
             return response()->json($this->statement_search_service->datesTotalsForRange($dates['start'], $dates['end']));
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date totals range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid date totals range attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
