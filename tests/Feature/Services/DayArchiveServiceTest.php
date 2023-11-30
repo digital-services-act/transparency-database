@@ -254,7 +254,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertNotNull($in);
         $this->assertCount(100, $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 00:00:00'), $in);
-        $this->assertContains(Carbon::now()->format('Y-m-d 00:08:19'), $in);
+        $this->assertContains(Carbon::now()->format('Y-m-d 00:01:39'), $in);
     }
 
     /**
@@ -267,7 +267,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertNotNull($in);
         $this->assertCount(100, $in);
         $this->assertContains(Carbon::now()->format('Y-m-d 23:59:59'), $in);
-        $this->assertContains(Carbon::now()->format('Y-m-d 23:51:40'), $in);
+        $this->assertContains(Carbon::now()->format('Y-m-d 23:58:20'), $in);
     }
 
     /**
