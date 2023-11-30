@@ -77,7 +77,6 @@ class StatementSearchService
     public function query(array $filters, array $options = []): Builder
     {
         $query = $this->buildQuery($filters);
-
         return $this->basicQuery($query, $options);
     }
 
@@ -193,7 +192,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionVisibilityFilter(array $filter_values)
+    private function applyDecisionVisibilityFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
         $ors           = [];
@@ -204,7 +203,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionMonetaryFilter(array $filter_values)
+    private function applyDecisionMonetaryFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
         $ors           = [];
@@ -215,7 +214,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionProvisionFilter(array $filter_values)
+    private function applyDecisionProvisionFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
         $ors           = [];
@@ -226,7 +225,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyTerritorialScopeFilter(array $filter_values)
+    private function applyTerritorialScopeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         $ors           = [];
@@ -238,7 +237,7 @@ class StatementSearchService
     }
 
 
-    private function applyDecisionAccountFilter(array $filter_values)
+    private function applyDecisionAccountFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
         $ors           = [];
@@ -249,7 +248,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyAccountTypeFilter(array $filter_values)
+    private function applyAccountTypeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
         $ors           = [];
@@ -260,7 +259,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyCategorySpecificationFilter(array $filter_values)
+    private function applyCategorySpecificationFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
 
@@ -272,7 +271,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyDecisionGroundFilter(array $filter_values)
+    private function applyDecisionGroundFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
         $ors           = [];
@@ -283,7 +282,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyCategoryFilter(array $filter_values)
+    private function applyCategoryFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
         $ors           = [];
@@ -294,7 +293,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyContentTypeFilter(array $filter_values)
+    private function applyContentTypeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
         $ors           = [];
@@ -305,7 +304,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyContentLanguageFilter(array $filter_values)
+    private function applyContentLanguageFilter(array $filter_values): string
     {
         $ors           = [];
         $all_isos      = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
@@ -317,7 +316,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyAutomatedDetectionFilter(array $filter_values)
+    private function applyAutomatedDetectionFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
         $ors           = [];
@@ -328,7 +327,7 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyAutomatedDecisionFilter(array $filter_values)
+    private function applyAutomatedDecisionFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         $ors           = [];
@@ -339,7 +338,12 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    private function applyPlatformIdFilter(array $filter_values)
+    /**
+     * @param array $filter_values
+     *
+     * @return string
+     */
+    private function applyPlatformIdFilter(array $filter_values): string
     {
         $ors           = [];
         $platform_ids  = Platform::nonDsa()->pluck('id')->toArray();
@@ -351,7 +355,191 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
-    public function processDateAggregate(Carbon $date, array $attributes, bool $caching = true)
+    private function startCountQuery(): string
+    {
+        return "SELECT count(*) FROM " . $this->index_name;
+    }
+
+    private function extractCountQueryResult($result): int
+    {
+        return (int)($result['datarows'][0][0] ?? 0);
+    }
+
+    private function runSql(string $sql): array
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return $this->client->sql()->query([
+                'query' => $sql
+            ]);
+        }
+
+        return [
+            'datarows' => [
+                [
+                    0
+                ]
+            ]
+        ];
+    }
+
+    public function grandTotal(): int
+    {
+        $sql = $this->startCountQuery();
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function totalForDate(Carbon $date): int
+    {
+        $sql = $this->startCountQuery() . " WHERE received_date = '".$date->format('Y-m-d')." 00:00:00'";
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function totalForPlatformDate(Platform $platform, Carbon $date): int
+    {
+        $sql = $this->startCountQuery() . " WHERE platform_id = ".$platform->id." AND received_date = '".$date->format('Y-m-d')." 00:00:00'";
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function totalForDateRange(Carbon $start, Carbon $end): int
+    {
+        $sql = $this->startCountQuery() . " WHERE received_date BETWEEN '".$start->format('Y-m-d')." 00:00:00' AND '".$end->format('Y-m-d')." 00:00:00'";
+        return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function datesTotalsForRange(Carbon $start, Carbon $end): array
+    {
+        $prepare = [];
+        $current = $start->clone();
+        while($current <= $end) {
+            $prepare[$current->format('Y-m-d')] = 0;
+            $current->addDay();
+        }
+
+        $results = $this->processRangeAggregate($start, $end, ['received_date']);
+
+        foreach ($results['aggregates'] as $aggregate) {
+            $prepare[$aggregate['received_date']] = $aggregate['total'];
+        }
+
+        return array_map(function($date, $total){
+            return [
+                'date' => $date,
+                'total' => $total
+            ];
+        }, array_keys($prepare), array_values($prepare));
+    }
+
+    /**
+     * @param $key
+     *
+     * @return void
+     */
+    public function pushOSAKey($key): void
+    {
+        $keys   = Cache::get('osa_cache', []);
+        $keys[] = $key;
+        Cache::forever('osa_cache', array_unique($keys));
+    }
+
+    /**
+     * @return void
+     */
+    public function clearOSACache(): void
+    {
+        $keys = Cache::get('osa_cache', []);
+        foreach ($keys as $key) {
+            Cache::delete($key);
+        }
+        Cache::delete('osa_cache');
+    }
+
+    /**
+     * @param Carbon $start
+     * @param Carbon $end
+     * @param array $attributes
+     * @param bool $caching
+     *
+     * @return array
+     */
+    public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true): array
+    {
+        $timestart = microtime(true);
+
+        $this->sanitizeAggregateAttributes($attributes);
+        $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+
+        if ( ! $caching) {
+            Cache::delete($key);
+        }
+
+        $cache   = 'hit';
+        $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, $key, &$cache) {
+            $query = $this->aggregateQueryRange($start, $end, $attributes);
+            $cache = 'miss';
+            $this->pushOSAKey($key);
+
+            return $this->processAggregateQuery($query);
+        });
+
+        $timeend  = microtime(true);
+        $timediff = $timeend - $timestart;
+
+
+        $results['dates']      = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+        $results['attributes'] = $attributes;
+        $results['key']        = $key;
+        $results['cache']      = $cache;
+        $results['duration']   = (float)number_format($timediff, 4);
+
+        return $results;
+    }
+
+    public function processDatesAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true, bool $daycache = true): array
+    {
+        $timestart = microtime(true);
+
+        $this->sanitizeAggregateAttributes($attributes);
+        $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+
+        if ( ! $caching) {
+            Cache::delete($key);
+        }
+
+        $cache = 'hit';
+        $days  = Cache::rememberForever($key, function () use ($start, $end, $attributes, $daycache, $key, &$cache) {
+            $days    = [];
+            $current = $end->clone();
+
+            while ($current >= $start) {
+                $days[] = $this->processDateAggregate($current, $attributes, $daycache);
+                $current->subDay();
+            }
+
+            $cache = 'miss';
+            $this->pushOSAKey($key);
+
+            return $days;
+        });
+
+        $total = array_sum(array_map(function ($day) {
+            return $day['total'];
+        }, $days));
+
+        $timeend  = microtime(true);
+        $timediff = $timeend - $timestart;
+
+        $results['days']       = $days;
+        $results['total']      = $total;
+        $results['dates']      = [$start->format('Y-m-d'), $end->format('Y-m-d')];
+        $results['attributes'] = $attributes;
+        $results['key']        = $key;
+        $results['cache']      = $cache;
+        $results['duration']   = (float)number_format($timediff, 4);
+
+        return $results;
+    }
+
+    public function processDateAggregate(Carbon $date, array $attributes, bool $caching = true): array
     {
         $timestart = microtime(true);
 
@@ -361,24 +549,26 @@ class StatementSearchService
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
         }
-        if (!$caching) {
+        if ( ! $caching) {
             Cache::delete($key);
         }
         $cache   = 'hit';
-        $results = Cache::rememberForever($key, function () use ($date, $attributes, &$cache) {
+        $results = Cache::rememberForever($key, function () use ($date, $attributes, $key, &$cache) {
             $query = $this->aggregateQuerySingleDate($date, $attributes);
             $cache = 'miss';
+            $this->pushOSAKey($key);
+
             return $this->processAggregateQuery($query);
         });
 
-        $timeend = microtime(true);
+        $timeend  = microtime(true);
         $timediff = $timeend - $timestart;
 
-        $results['date'] = $date->format('Y-m-d');
+        $results['date']       = $date->format('Y-m-d');
         $results['attributes'] = $attributes;
-        $results['key']   = $key;
-        $results['cache'] = $cache;
-        $results['duration'] = (float)number_format($timediff, 4);
+        $results['key']        = $key;
+        $results['cache']      = $cache;
+        $results['duration']   = (float)number_format($timediff, 4);
 
         return $results;
     }
@@ -389,13 +579,14 @@ class StatementSearchService
         if ($remove_received_date) {
             $out = array_diff($out, ['received_date']);
         }
+
         return $out;
     }
 
     /**
      * @throws JsonException
      */
-    public function aggregateQueryRange(Carbon $start, Carbon $end, $attributes)
+    private function aggregateQueryRange(Carbon $start, Carbon $end, $attributes)
     {
         $query_string = <<<JSON
 {
@@ -453,11 +644,11 @@ JSON;
 
         $sources = [];
         foreach ($attributes as $attribute) {
-            $sources[] = $this->queryBucket($attribute);
+            $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
         if (count($sources) === 0) {
-            $sources[] = $this->queryBucket('received_date');
+            $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
@@ -468,7 +659,7 @@ JSON;
     /**
      * @throws JsonException
      */
-    public function aggregateQuerySingleDate(Carbon $date, $attributes)
+    private function aggregateQuerySingleDate(Carbon $date, $attributes)
     {
         $query_string = <<<JSON
 {
@@ -510,11 +701,11 @@ JSON;
 
         $sources = [];
         foreach ($attributes as $attribute) {
-            $sources[] = $this->queryBucket($attribute);
+            $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
         if (count($sources) === 0) {
-            $sources[] = $this->queryBucket('received_date');
+            $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
@@ -522,7 +713,7 @@ JSON;
         return $query;
     }
 
-    private function queryBucket($attribute): stdClass
+    private function aggregateQueryBucket($attribute): stdClass
     {
         $source                                    = new stdClass();
         $source->$attribute                        = new stdClass();

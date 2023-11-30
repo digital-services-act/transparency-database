@@ -11,8 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 use RuntimeException;
 
@@ -21,6 +19,8 @@ class OpenSearchAPIController extends Controller
     private Client $client;
     private StatementSearchService $statement_search_service;
     private string $index_name;
+
+    private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
     public function __construct(Client $client, StatementSearchService $statement_search_service)
     {
@@ -42,9 +42,7 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -61,9 +59,7 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -77,9 +73,7 @@ class OpenSearchAPIController extends Controller
         try {
             return $this->client->sql()->query($request->toArray());
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -91,224 +85,136 @@ class OpenSearchAPIController extends Controller
     public function explain(Request $request): array|JsonResponse
     {
         try {
-            return $this->client->sql()->explain($request->toArray());
-        } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            $results          = $this->client->sql()->explain($request->toArray());
+            $query            = $results['root']['children'][0]['description']['request'] ?? false;
+            $query            = '{' . ltrim(strstr($query, '{'), '{');
+            $query            = substr($query, 0, strrpos($query, '}')) . '}';
+            $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
 
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $results;
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
+    public function clearAggregateCache(): string
+    {
+        $this->statement_search_service->clearOSACache();
+
+        return 'ok';
+    }
+
     /**
-     * @param Request $request
      * @param string $date_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForDate(string $date_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
+            $date = $this->sanitizeDateString($date_in);
 
-            if ($date_in === 'yesterday') {
-                $date_in = Carbon::yesterday()->format('Y-m-d');
+            if ($date >= Carbon::today()) {
+                throw new RuntimeException('Aggregate date must be in the past.');
             }
 
-            $date = Carbon::createFromFormat('Y-m-d', $date_in);
-            $date->subSeconds($date->secondsSinceMidnight());
-            $attributes = explode("__", $attributes_in);
-            if ($attributes[0] === 'all') {
-                $attributes = $this->statement_search_service->getAllowedAggregateAttributes(true);
-            }
+            $attributes = $this->sanitizeAttributes($attributes_in, true);
 
-            $results = $this->statement_search_service->processDateAggregate($date, $attributes, (bool)$request->query('cache', 1));
+            $results = $this->statement_search_service->processDateAggregate(
+                $date,
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid aggregate attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
      * @param string $start_in
      * @param string $end_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForRange(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
-            $timestart = microtime(true);
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in, true);
 
-            if ($start_in === 'start') {
-                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
-            }
+            $this->verifyStartEndOrderAndPast($dates['start'], $dates['end']);
 
-            if ($end_in === 'yesterday') {
-                $end_in = Carbon::yesterday()->format('Y-m-d');
-            }
+            $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $start      = Carbon::createFromFormat('Y-m-d', $start_in);
-            $start->subSeconds($start->secondsSinceMidnight());
-
-            $end        = Carbon::createFromFormat('Y-m-d', $end_in);
-            $end->addDay()->subSeconds($end->secondsSinceMidnight()+1);
-
-            if ($start >= $end || $end >= Carbon::today()) {
-                throw new RuntimeException('Start must be less than end, and end must be in the past');
-            }
-
-            $attributes = explode("__", $attributes_in);
-            if ($attributes[0] === 'all') {
-                $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
-            }
-            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
-
-            if ((int)$request->query('cache', 1) === 0) {
-                Cache::delete($key);
-            }
-
-            $cache   = 'hit';
-            $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, &$cache) {
-                $query = $this->statement_search_service->aggregateQueryRange($start, $end, $attributes);
-                $cache = 'miss';
-                return $this->statement_search_service->processAggregateQuery($query);
-            });
-
-            $timeend = microtime(true);
-            $timediff = $timeend - $timestart;
-
-
-            $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
-            $results['attributes'] = $attributes;
-            $results['key']   = $key;
-            $results['cache'] = $cache;
-            $results['duration'] = (float)number_format($timediff, 4);
+            $results = $this->statement_search_service->processRangeAggregate(
+                $dates['start'],
+                $dates['end'],
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid aggregate range attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
      * @param string $start_in
      * @param string $end_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForRangeDates(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
-            $timestart = microtime(true);
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            if ($start_in === 'start') {
-                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
-            }
+            $this->verifyStartEndOrderAndPast($dates['start'], $dates['end']);
 
-            if ($end_in === 'yesterday') {
-                $end_in = Carbon::yesterday()->format('Y-m-d');
-            }
+            $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $start      = Carbon::createFromFormat('Y-m-d', $start_in);
-            $start->subSeconds($start->secondsSinceMidnight());
-
-            $end        = Carbon::createFromFormat('Y-m-d', $end_in);
-            $end->subSeconds($end->secondsSinceMidnight());
-
-            if ($start >= $end || $end >= Carbon::today()) {
-                throw new RuntimeException('Start must be less than end, and end must be in the past');
-            }
-
-            $attributes = explode("__", $attributes_in);
-            if ($attributes[0] === 'all') {
-                $attributes = $this->statement_search_service->getAllowedAggregateAttributes();
-            }
-            $this->statement_search_service->sanitizeAggregateAttributes($attributes);
-            $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
-
-            $caching = (bool)$request->query('cache', 1);
-            if (!$caching) {
-                Cache::delete($key);
-            }
-
-            $subcaching = (int)$request->query('daycache', 1) === 1;
-
-            $cache   = 'hit';
-            $days = Cache::rememberForever($key, function () use ($start, $end, $attributes, $subcaching, &$cache) {
-                $days = [];
-                $current = $end->clone();
-
-                while($current >= $start) {
-                    $days[] = $this->statement_search_service->processDateAggregate($current, $attributes, $subcaching);
-                    $current->subDay();
-                }
-
-                $cache = 'miss';
-                return $days;
-            });
-
-            $total = array_sum(array_map(function($day){
-                return $day['total'];
-            }, $days));
-
-            $timeend = microtime(true);
-            $timediff = $timeend - $timestart;
-
-            $results['days'] = $days;
-            $results['total'] = $total;
-            $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
-            $results['attributes'] = $attributes;
-            $results['key']   = $key;
-            $results['cache'] = $cache;
-            $results['duration'] = (float)number_format($timediff, 4);
+            $results = $this->statement_search_service->processDatesAggregate(
+                $dates['start'],
+                $dates['end'],
+                $attributes,
+                $this->booleanizeQueryParam('cache'),
+                $this->booleanizeQueryParam('daycache')
+            );
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid aggregate range attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
      *
-     * @return JsonResponse|array|null
+     * @return JsonResponse|array
      */
-    public function platforms(Request $request): JsonResponse|array|null
+    public function platforms(): JsonResponse|array
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
-            $out       = [];
-            foreach ($platforms as $id => $name) {
-                $out[] = [
-                    'id'   => $id,
-                    'name' => $name
-                ];
-            }
+            $out       = array_map(static function ($id, $name) {
+                return ['id' => $id, 'name' => $name];
+            }, array_keys($platforms), array_values($platforms));
 
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid platforms attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
      *
      * @return JsonResponse|array
      */
-    public function labels(Request $request): JsonResponse|array
+    public function labels(): JsonResponse|array
     {
         try {
             return [
@@ -324,8 +230,126 @@ class OpenSearchAPIController extends Controller
                 'source_types'          => Statement::SOURCE_TYPES
             ];
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid labels attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], $this->error_code);
         }
+    }
+
+    public function total(): JsonResponse
+    {
+        return response()->json($this->statement_search_service->grandTotal());
+    }
+
+    public function dateTotal(string $date_in): JsonResponse
+    {
+        try {
+            $date = $this->sanitizeDateString($date_in);
+
+            return response()->json($this->statement_search_service->totalForDate($date));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    public function platformDateTotal(string $platform_id_in, string $date_in): JsonResponse
+    {
+        try {
+            $date = $this->sanitizeDateString($date_in);
+
+            /** @var Platform $platform */
+            $platform = Platform::find($platform_id_in);
+            if (!$platform) {
+                throw new RuntimeException('Platform not found');
+            }
+
+            return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total platform attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    public function dateTotalRange(string $start_in, string $end_in): JsonResponse
+    {
+        try {
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total range attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    public function dateTotalsRange(string $start_in, string $end_in): JsonResponse
+    {
+        try {
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            return response()->json($this->statement_search_service->datesTotalsForRange($dates['start'], $dates['end']));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date totals range attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    private function sanitizeDateString(string $date_in): bool|Carbon
+    {
+        try {
+            if ($date_in === 'start') {
+                $date_in = (string)config('dsa.start_date');
+            }
+
+            if ($date_in === 'yesterday') {
+                $date_in = Carbon::yesterday()->format('Y-m-d');
+            }
+
+            if ($date_in === 'today') {
+                $date_in = Carbon::today()->format('Y-m-d');
+            }
+
+            $date = Carbon::createFromFormat('Y-m-d', $date_in);
+            $date->subSeconds($date->secondsSinceMidnight());
+
+            return $date;
+        } catch (Exception $e) {
+            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $e->getMessage());
+        }
+    }
+
+    private function sanitizeDateStartEndStrings(string $start_in, string $end_in, bool $range = false): array
+    {
+        try {
+            $start = $this->sanitizeDateString($start_in);
+            $end   = $this->sanitizeDateString($end_in);
+        } catch (Exception $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
+        $end->subSeconds($end->secondsSinceMidnight());
+
+        if ($range) {
+            $end->addDay()->subSecond();
+        }
+
+        return ['start' => $start, 'end' => $end];
+    }
+
+    private function sanitizeAttributes(string $attributes_in, bool $remove_received_date = false): array
+    {
+        $attributes = explode("__", $attributes_in);
+        if ($attributes[0] === 'all') {
+            $attributes = $this->statement_search_service->getAllowedAggregateAttributes($remove_received_date);
+        }
+
+        return $attributes;
+    }
+
+    private function verifyStartEndOrderAndPast(Carbon $start, Carbon $end): void
+    {
+        if ($start >= $end || $end >= Carbon::today()) {
+            throw new RuntimeException('Start must be less than end, and end must be in the past');
+        }
+    }
+
+    private function booleanizeQueryParam(string $param): bool
+    {
+        return (bool)request($param, 1);
     }
 }

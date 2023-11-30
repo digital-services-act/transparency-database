@@ -20,11 +20,11 @@ class DayArchiveService
 {
     use StatementExportTrait;
 
-    protected PlatformDayTotalsService $platform_day_totals_service;
+    protected StatementSearchService $statement_search_service;
 
-    public function __construct(PlatformDayTotalsService $platform_day_totals_service)
+    public function __construct(StatementSearchService $statement_search_service)
     {
-        $this->platform_day_totals_service  = $platform_day_totals_service;
+        $this->statement_search_service = $statement_search_service;
     }
 
     /**
@@ -93,7 +93,7 @@ class DayArchiveService
         }
     }
 
-    public function cleanUpCsvFiles($day_archives)
+    public function cleanUpCsvFiles($day_archives): void
     {
         foreach ($day_archives as $day_archive) {
             // Clean up the files.
@@ -102,7 +102,7 @@ class DayArchiveService
         }
     }
 
-    public function uploadTheZipsAndSha1s($day_archives)
+    public function uploadTheZipsAndSha1s($day_archives): void
     {
         foreach ($day_archives as $day_archive) {
             // Put them on the s3
@@ -113,7 +113,7 @@ class DayArchiveService
         }
     }
 
-    public function generateZipsSha1sAndUpdate(&$day_archives): void
+    public function generateZipsSha1sAndUpdate($day_archives): void
     {
         foreach ($day_archives as $day_archive)
         {
@@ -269,7 +269,7 @@ class DayArchiveService
             $platform = Platform::find($day_archive['id']);
             $model = DayArchive::create([
                 'date'  => $date->format('Y-m-d'),
-                'total' => $day_archive['slug'] === 'global' ? $this->platform_day_totals_service->globalTotalForDate($date) : $this->platform_day_totals_service->getDayTotal($platform, $date),
+                'total' => $day_archive['slug'] === 'global' ? $this->statement_search_service->totalForDate($date) : $this->statement_search_service->totalForPlatformDate($platform, $date),
                 'platform_id' => $day_archive['id'],
                 'url' => $day_archive['url'],
                 'urllight' => $day_archive['urllight'],
@@ -345,12 +345,12 @@ class DayArchiveService
     }
 
 
-    public function globalList()
+    public function globalList(): Builder
     {
         return DayArchive::query()->whereNull('platform_id')->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
-    public function platformList(Platform $platform)
+    public function platformList(Platform $platform): Builder
     {
         return DayArchive::query()->where('platform_id', $platform->id)->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
