@@ -42,9 +42,9 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Query Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -63,7 +63,7 @@ class OpenSearchAPIController extends Controller
         } catch (Exception $e) {
             Log::error('OpenSearch Count Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -77,9 +77,9 @@ class OpenSearchAPIController extends Controller
         try {
             return $this->client->sql()->query($request->toArray());
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -99,7 +99,7 @@ class OpenSearchAPIController extends Controller
 
             return $results;
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
 
             return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -108,36 +108,39 @@ class OpenSearchAPIController extends Controller
     public function clearAggregateCache(Request $request)
     {
         $this->statement_search_service->clearOSACache();
+
         return 'ok';
     }
 
     /**
      * @param Request $request
      * @param string $date_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForDate(Request $request, string $date_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
-            if ($date_in === 'yesterday') {
-                $date_in = Carbon::yesterday()->format('Y-m-d');
-            }
+            $date = $this->sanitizeDateString($date_in);
 
-            $date = Carbon::createFromFormat('Y-m-d', $date_in);
-            $date->subSeconds($date->secondsSinceMidnight());
+            if ($date >= Carbon::today()) {
+                throw new RuntimeException('Aggregate date must be in the past.');
+            }
 
             $attributes = $this->sanitizeAttributes($attributes_in, true);
 
-            $results = $this->statement_search_service->processDateAggregate($date, $attributes, (bool)$request->query('cache', 1));
+            $results = $this->statement_search_service->processDateAggregate(
+                $date,
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
 
             return response()->json($results);
-
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid aggregate attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -145,28 +148,31 @@ class OpenSearchAPIController extends Controller
      * @param Request $request
      * @param string $start_in
      * @param string $end_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in, true);
 
-            if ($dates['start'] >= $dates['end'] || $dates['end'] >= Carbon::today()) {
-                throw new RuntimeException('Start must be less than end, and end must be in the past');
-            }
+            $this->verifyStartEndOrderAndPast($dates['start'], $dates['end']);
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_search_service->processRangeAggregate($dates['start'], $dates['end'], $attributes, (bool)$request->query('cache', 1));
+            $results = $this->statement_search_service->processRangeAggregate(
+                $dates['start'],
+                $dates['end'],
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid aggregate range attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -174,28 +180,32 @@ class OpenSearchAPIController extends Controller
      * @param Request $request
      * @param string $start_in
      * @param string $end_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForRangeDates(Request $request, string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            if ($dates['start'] >= $dates['end'] || $dates['end'] >= Carbon::today()) {
-                throw new RuntimeException('Start must be less than end, and end must be in the past');
-            }
+            $this->verifyStartEndOrderAndPast($dates['start'], $dates['end']);
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_search_service->processDatesAggregate($dates['start'], $dates['end'], $attributes, (bool)$request->query('cache', 1), (bool)$request->query('daycache', 1));
+            $results = $this->statement_search_service->processDatesAggregate(
+                $dates['start'],
+                $dates['end'],
+                $attributes,
+                $this->booleanizeQueryParam('cache'),
+                $this->booleanizeQueryParam('daycache')
+            );
 
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid aggregate dates attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -214,9 +224,9 @@ class OpenSearchAPIController extends Controller
 
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
 
-            return response()->json(['error' => 'invalid platforms attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -241,8 +251,9 @@ class OpenSearchAPIController extends Controller
                 'source_types'          => Statement::SOURCE_TYPES
             ];
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid labels attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            Log::error('OpenSearch Controller Exception: ' . $e->getMessage());
+
+            return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -254,25 +265,22 @@ class OpenSearchAPIController extends Controller
     public function dateTotal(Request $request, string $date_in): JsonResponse
     {
         try {
-            if ($date_in === 'yesterday') {
-                $date_in = Carbon::yesterday()->format('Y-m-d');
-            }
-            $date = Carbon::createFromFormat('Y-m-d', $date_in);
+            $date = $this->sanitizeDateString($date_in);
+
             return response()->json($this->statement_search_service->totalForDate($date));
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total attempt, see logs.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid date total attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
     public function dateTotalRange(Request $request, string $start_in, string $end_in): JsonResponse
     {
         try {
-
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
             return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
         } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total range attempt, see logs. ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid date total range attempt: ' . $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -287,12 +295,16 @@ class OpenSearchAPIController extends Controller
                 $date_in = Carbon::yesterday()->format('Y-m-d');
             }
 
+            if ($date_in === 'today') {
+                $date_in = Carbon::today()->format('Y-m-d');
+            }
+
             $date = Carbon::createFromFormat('Y-m-d', $date_in);
             $date->subSeconds($date->secondsSinceMidnight());
 
             return $date;
         } catch (Exception $e) {
-            throw new RuntimeException("Can't sanitize this date: '".$date_in."'");
+            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "'");
         }
     }
 
@@ -320,6 +332,19 @@ class OpenSearchAPIController extends Controller
         if ($attributes[0] === 'all') {
             $attributes = $this->statement_search_service->getAllowedAggregateAttributes($remove_received_date);
         }
+
         return $attributes;
+    }
+
+    private function verifyStartEndOrderAndPast(Carbon $start, Carbon $end): void
+    {
+        if ($start >= $end || $end >= Carbon::today()) {
+            throw new RuntimeException('Start must be less than end, and end must be in the past');
+        }
+    }
+
+    private function booleanizeQueryParam(string $param): bool
+    {
+        return (bool)request($param, 1);
     }
 }
