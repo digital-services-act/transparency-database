@@ -62,6 +62,11 @@ class Platform extends Model
         return $this->hasMany(User::class, 'platform_id', 'id');
     }
 
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class, 'platform_id', 'id');
+    }
+
     public function statements()
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id');

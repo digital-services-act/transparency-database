@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\OpenSearchAPIController;
 use App\Http\Controllers\Api\v1\PlatformAPIController;
+use App\Http\Controllers\Api\v1\PlatformUserAPIController;
 use App\Http\Controllers\Api\v1\StatementAPIController;
 use App\Http\Controllers\PlatformController;
 use Illuminate\Support\Facades\Route;
@@ -40,9 +41,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::group(['middleware' => ['can:administrate']], static function(){
         // Create a Platform
         Route::post('platform', [PlatformAPIController::class, 'store'])->name('api.v1.platform.store');
-
         // Add Users to a Platform
-
+        Route::post('platform/{platform:dsa_common_id}/users', [PlatformUserAPIController::class, 'store'])->name('api.v1.platform-users.store');
     });
 });
 
