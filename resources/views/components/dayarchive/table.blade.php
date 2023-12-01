@@ -2,12 +2,12 @@
 @php
     function human_filesize($bytes, $dec = 2): string {
 
-        $size   = array('b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb');
+        $size   = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
         $factor = floor((strlen($bytes) - 1) / 3);
         if ($factor == 0) $dec = 0;
 
 
-        return sprintf("%.{$dec}f%s", $bytes / (1024 ** $factor), $size[$factor]);
+        return sprintf("%.{$dec}f %s", $bytes / (1024 ** $factor), $size[$factor]);
 
     }
 @endphp
@@ -42,13 +42,13 @@
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
                 &nbsp;&nbsp;&nbsp;
-{{--                <a download href="{{ $dayarchive->sha1url }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">--}}
-{{--                    <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>--}}
-{{--                </a>--}}
+                <a download href="{{ $dayarchive->sha1url }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+                    <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
+                </a>
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Size">
-{{--                {{human_filesize($dayarchive->size)}}&nbsp;.csv<br/>--}}
-                {{human_filesize($dayarchive->zipsize)}}&nbsp;.zip
+                csv:&nbsp;{{human_filesize($dayarchive->size)}}<br/>
+                zip:&nbsp;{{human_filesize($dayarchive->zipsize)}}&nbsp
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="File">
                 <a download href="{{ $dayarchive->urllight }}"
@@ -56,13 +56,13 @@
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
                 &nbsp;&nbsp;&nbsp;
-{{--                <a download href="{{ $dayarchive->sha1urllight }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">--}}
-{{--                    <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>--}}
-{{--                </a>--}}
+                <a download href="{{ $dayarchive->sha1urllight }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+                    <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
+                </a>
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Size">
-{{--                {{human_filesize($dayarchive->sizelight)}}&nbsp;.csv<br />--}}
-                {{human_filesize($dayarchive->ziplightsize)}}&nbsp;.zip
+                csv:&nbsp;{{human_filesize($dayarchive->sizelight)}}<br />
+                zip:&nbsp;{{human_filesize($dayarchive->ziplightsize)}}
             </td>
         </tr>
 

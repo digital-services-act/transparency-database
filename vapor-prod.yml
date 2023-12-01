@@ -13,7 +13,7 @@ environments:
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
     warm: 10
-    timeout: 30
+    timeout: 120
     cache: redis-prod
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu

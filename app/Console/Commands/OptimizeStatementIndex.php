@@ -194,6 +194,9 @@ class OptimizeStatementIndex extends Command
 
         $body = [
             'mappings' => $properties,
+            'settings' => [
+                'number_of_shards' => 200
+            ]
         ];
 
         $client->indices()->create(['index' => $index_name, 'body' => $body]);
