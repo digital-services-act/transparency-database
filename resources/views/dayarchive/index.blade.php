@@ -40,20 +40,20 @@
 
         </div>
 
-{{--        <div class="ecl-col-l-6">--}}
-{{--            <form method="get" id="platform">--}}
-{{--                <x-ecl.select label="Select a Platform" name="uuid" id="uuid"--}}
-{{--                              justlabel="true"--}}
-{{--                              :options="$options['platforms']" :default="request()->route('uuid')"--}}
-{{--                />--}}
-{{--            </form>--}}
-{{--            <script>--}}
-{{--              var uuid = document.getElementById('uuid')--}}
-{{--              uuid.onchange = (event) => {--}}
-{{--                document.location.href = '{{ route('dayarchive.index') }}/' + event.target.value--}}
-{{--              }--}}
-{{--            </script>--}}
-{{--        </div>--}}
+        <div class="ecl-col-l-6">
+            <form method="get" id="platform">
+                <x-ecl.select label="Select a Platform" name="uuid" id="uuid"
+                              justlabel="true"
+                              :options="$options['platforms']" :default="request()->route('uuid')"
+                />
+            </form>
+            <script>
+              var uuid = document.getElementById('uuid')
+              uuid.onchange = (event) => {
+                document.location.href = '{{ route('dayarchive.index') }}/' + event.target.value
+              }
+            </script>
+        </div>
     </div>
 
     <x-dayarchive.table :dayarchives="$dayarchives"/>
