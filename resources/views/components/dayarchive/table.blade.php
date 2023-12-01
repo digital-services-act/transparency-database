@@ -7,7 +7,7 @@
         if ($factor == 0) $dec = 0;
 
 
-        return sprintf("%.{$dec}f%s", $bytes / (1024 ** $factor), $size[$factor]);
+        return sprintf("%.{$dec}f %s", $bytes / (1024 ** $factor), $size[$factor]);
 
     }
 @endphp
@@ -47,8 +47,8 @@
                 </a>
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Size">
-                csv:&nbsp;{{human_filesize($dayarchive->size)}}&nbsp;.csv<br/>
-                zip:&nbsp;{{human_filesize($dayarchive->zipsize)}}&nbsp;.zip
+                csv:&nbsp;{{human_filesize($dayarchive->size)}}<br/>
+                zip:&nbsp;{{human_filesize($dayarchive->zipsize)}}&nbsp
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="File">
                 <a download href="{{ $dayarchive->urllight }}"
