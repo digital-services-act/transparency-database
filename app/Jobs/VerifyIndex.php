@@ -98,7 +98,7 @@ class VerifyIndex implements ShouldQueue
             self::dispatch($end, $this->chunk, $this->min);
         }
 
-        if ($end < $this->min) {
+        if ($end <= $this->min) {
             Log::info('Finished Verifying Index: ' . $this->start . " :: "  . $end);
         }
     }
