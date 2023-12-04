@@ -44,11 +44,13 @@ class OpensearchIndexReindex extends Command
 
         $result = $client->reindex([
             'body' => [
+                'conflicts' => "proceed",
                 'source' => [
                     'index' => $index
                 ],
                 'dest' => [
-                    'index' => $target
+                    'index' => $target,
+                    'op_type' => 'create'
                 ]
             ]
         ]);

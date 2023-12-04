@@ -60,10 +60,10 @@ class DayArchiveService
                 $this->closeAllCsvFiles($day_archives);
                 $this->generateZipsSha1sAndUpdate($day_archives);
 
-//                $this->uploadTheZipsAndSha1s($day_archives);
-//                $this->cleanUpCsvFiles($day_archives);
-//                $this->cleanUpZipAndSha1Files($day_archives);
-//                $this->markArchivesComplete($day_archives);
+                $this->uploadTheZipsAndSha1s($day_archives);
+                $this->cleanUpCsvFiles($day_archives);
+                $this->cleanUpZipAndSha1Files($day_archives);
+                $this->markArchivesComplete($day_archives);
 
             } else {
                 throw new RuntimeException("Day archives have to be uploaded to a dedicated s3ds disk. please be sure that there is one to write to.");
