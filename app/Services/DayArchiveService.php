@@ -59,10 +59,11 @@ class DayArchiveService
                 $this->chunkAndWrite($raw, $day_archives, $platforms);
                 $this->closeAllCsvFiles($day_archives);
                 $this->generateZipsSha1sAndUpdate($day_archives);
-                $this->uploadTheZipsAndSha1s($day_archives);
-                $this->cleanUpCsvFiles($day_archives);
-                $this->cleanUpZipAndSha1Files($day_archives);
-                $this->markArchivesComplete($day_archives);
+
+//                $this->uploadTheZipsAndSha1s($day_archives);
+//                $this->cleanUpCsvFiles($day_archives);
+//                $this->cleanUpZipAndSha1Files($day_archives);
+//                $this->markArchivesComplete($day_archives);
 
             } else {
                 throw new RuntimeException("Day archives have to be uploaded to a dedicated s3ds disk. please be sure that there is one to write to.");
@@ -73,6 +74,25 @@ class DayArchiveService
 
         throw new RuntimeException("When creating a day export you must supply a date in the past.");
     }
+
+    public function recoverUpload(Carbon $date): bool
+    {
+        $existing = $this->getDayArchivesByDate($date);
+        if ($existing->count()) {
+            if (config('filesystems.disks.s3ds.bucket')) {
+                $day_archives = $this->buildStartingDayArchivesArray($date, true);
+                $this->uploadTheZipsAndSha1s($day_archives);
+                $this->cleanUpCsvFiles($day_archives);
+                $this->cleanUpZipAndSha1Files($day_archives);
+                $this->markArchivesComplete($day_archives);
+
+            } else {
+                throw new RuntimeException("Day archives have to be uploaded to a dedicated s3ds disk. please be sure that there is one to write to.");
+            }
+        }
+        return true;
+    }
+
 
     public function markArchivesComplete($day_archives): void
     {
@@ -226,7 +246,7 @@ class DayArchiveService
     }
 
 
-    public function buildStartingDayArchivesArray(Carbon $date): array
+    public function buildStartingDayArchivesArray(Carbon $date, bool $existing = false): array
     {
         $day_archives = [];
 
@@ -266,16 +286,25 @@ class DayArchiveService
             $day_archive['sha1url']          = $base_s3_url . $day_archive['zipfilesha1'];
             $day_archive['sha1urllight']     = $base_s3_url . $day_archive['zipfilelightsha1'];
 
-            $platform = Platform::find($day_archive['id']);
-            $model = DayArchive::create([
-                'date'  => $date->format('Y-m-d'),
-                'total' => $day_archive['slug'] === 'global' ? $this->statement_search_service->totalForDate($date) : $this->statement_search_service->totalForPlatformDate($platform, $date),
-                'platform_id' => $day_archive['id'],
-                'url' => $day_archive['url'],
-                'urllight' => $day_archive['urllight'],
-                'sha1url' => $day_archive['sha1url'],
-                'sha1urllight' => $day_archive['sha1urllight'],
-            ]);
+            $platform = Platform::find($day_archive['id']); // can be null
+
+            if (!$existing) {
+                $model = DayArchive::create([
+                    'date'         => $date->format('Y-m-d'),
+                    'total'        => $day_archive['slug'] === 'global' ? $this->statement_search_service->totalForDate($date) : $this->statement_search_service->totalForPlatformDate($platform, $date),
+                    'platform_id'  => $day_archive['id'],
+                    'url'          => $day_archive['url'],
+                    'urllight'     => $day_archive['urllight'],
+                    'sha1url'      => $day_archive['sha1url'],
+                    'sha1urllight' => $day_archive['sha1urllight'],
+                ]);
+            } else {
+                $model = $day_archive['slug'] === 'global' ? $this->getDayArchiveByDate($date) : $this->getDayArchiveByPlatformDate($platform, $date);
+            }
+
+            if (!$model) {
+                throw new RuntimeException('Day Archive model is null');
+            }
 
             $day_archive['model'] = $model;
 
@@ -363,6 +392,16 @@ class DayArchiveService
     public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
     {
         return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
+    }
+
+    /**
+     * @param Carbon $date
+     *
+     * @return DayArchive|Model|Builder|null
+     */
+    public function getDayArchiveByPlatformDate(Platform $platform, Carbon $date): DayArchive|Model|Builder|null
+    {
+        return DayArchive::query()->where('date', $date->format('Y-m-d'))->where('platform_id', $platform->id)->first();
     }
 
     /**
