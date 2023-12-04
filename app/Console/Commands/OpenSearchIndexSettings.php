@@ -13,7 +13,7 @@ class OpenSearchIndexSettings extends Command
      *
      * @var string
      */
-    protected $signature = 'opensearch:index_settings {index}';
+    protected $signature = 'opensearch:index-settings {index}';
 
     /**
      * The console command description.

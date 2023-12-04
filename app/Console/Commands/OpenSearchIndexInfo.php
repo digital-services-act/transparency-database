@@ -46,6 +46,7 @@ class OpenSearchIndexInfo extends Command
         }
 
         $index_stats = $client->indices()->stats()['indices'][$index];
+
         $this->info('UUID: ' . $index_stats['uuid']);
         $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
         $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
@@ -63,6 +64,21 @@ class OpenSearchIndexInfo extends Command
             $fields[] = [$field,$field_info['type']];
         }
         $this->table(['Field', 'Type'], $fields);
+
+        $shards = $client->cat()->shards(['index' => $index]);
+
+        $shards_report = [];
+        foreach ($shards as $shard) {
+            if ($shard['prirep'] === 'p') {
+                $shards_report[]= [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
+            }
+        }
+
+        $this->newLine();
+        $this->info('Shards:');
+        $this->table(['Shard', 'State', 'Docs', 'Store'], $shards_report);
+
+
     }
 
     private function humanFileSize($size,$unit="") {
