@@ -6,14 +6,14 @@ use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
-class DeleteOpensearchIndex extends Command
+class OpensearchIndexDelete extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'opensearch:delete-index {index}';
+    protected $signature = 'opensearch:index-delete-index {index}';
 
     /**
      * The console command description.

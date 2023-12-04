@@ -6,7 +6,7 @@ use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
-class CreateStatementIndex extends Command
+class StatementsCreateIndex extends Command
 {
     /**
      * The name and signature of the console command.

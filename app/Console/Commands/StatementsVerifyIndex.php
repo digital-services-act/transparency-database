@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 
-class VerifyStatementIndex extends Command
+class StatementsVerifyIndex extends Command
 {
     /**
      * The name and signature of the console command.
