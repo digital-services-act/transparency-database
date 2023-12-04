@@ -45,7 +45,15 @@ class OpenSearchIndexInfo extends Command
             return;
         }
 
-        $index_stats = $client->indices()->stats()['indices'][$index];
+        $stats = $client->indices()->stats();
+        $indices = $stats['indices'];
+
+        if (!isset($indices[$index])) {
+            $this->warn('The index is not in the indices stats, probably you used an alias?');
+            return;
+        }
+
+        $index_stats = $indices[$index];
 
         $this->info('UUID: ' . $index_stats['uuid']);
         $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
@@ -78,6 +86,18 @@ class OpenSearchIndexInfo extends Command
         $this->info('Shards:');
         $this->table(['Shard', 'State', 'Docs', 'Store'], $shards_report);
 
+
+        $alias = $client->indices()->getAlias(['index' => $index]);
+        $aliases = array_keys($alias[$index]['aliases']);
+        $out = [];
+        foreach ($aliases as $alias) {
+            $out[] = [
+                'alias' => $alias
+            ];
+        }
+        $this->newLine();
+        $this->info('Aliases:');
+        $this->table(['Alias'], $out);
 
     }
 

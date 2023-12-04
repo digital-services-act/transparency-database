@@ -6,21 +6,21 @@ use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
-class OpensearchIndexDelete extends Command
+class OpensearchIndexAliasCreate extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'opensearch:index-delete {index}';
+    protected $signature = 'opensearch:index-alias-create {index} {alias}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Delete an Opensearch Index';
+    protected $description = 'Create an alias on an Opensearch Index';
 
     /**
      * Execute the console command.
@@ -30,9 +30,16 @@ class OpensearchIndexDelete extends Command
         /** @var Client $client */
         $client     = app(Client::class);
         $index = $this->argument('index');
+        $alias = $this->argument('alias');
 
         if ($client->indices()->exists(['index' => $index])) {
-            $client->indices()->delete(['index' => $index]);
+            if (!$client->indices()->existsAlias(['index' => $index, 'name' => $alias])) {
+                $client->indices()->putAlias(['index' => $index, 'name' => $alias]);
+            } else {
+                $this->warn('Alias already exists on this index!');
+            }
+        } else {
+            $this->warn('Index does not exist!');
         }
     }
 }
