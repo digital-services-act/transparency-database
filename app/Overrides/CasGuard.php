@@ -41,7 +41,6 @@ final class CasGuard implements AuthGuard
         if (null === $user) {
             return null;
         }
-
         $user->acceptInvitation();
 
         $this->setUser($user);

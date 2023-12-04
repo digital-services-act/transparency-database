@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\Platform;
+use App\Rules\UniquePlatformAndUser;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,7 +31,8 @@ class PlatformUsersStoreRequest extends FormRequest
             'emails' => ['required', 'array'],
             'emails.*' => [
                 'email',
-                Rule::unique('invitations', 'email')
+                Rule::unique('invitations', 'email'),
+                new UniquePlatformAndUser()
             ],
         ];
     }
