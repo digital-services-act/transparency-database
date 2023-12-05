@@ -55,7 +55,7 @@ class VerifyIndex implements ShouldQueue
             $end = 1;
         }
 
-        Log::info('Verifying Index: ' . $this->start . ' :: ' . $end);
+        Log::info('Verifying Index: ' . $this->start . ' :: ' . $end . " :: " . $this->chunk);
 
         $db_count = Statement::query()->where('id', '<=', $this->start)->where('id', '>', $end)->count();
         $opensearch_query = [
@@ -87,10 +87,11 @@ class VerifyIndex implements ShouldQueue
 
         if ($db_count > $opensearch_count && !$stop) {
             Log::info('Missing Statements in  Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
-            if ($this->chunk < 10000) {
-                StatementSearchableChunk::dispatch($this->start, 100, $end);
+            if ($this->chunk <= 100) {
+                $range = range($this->start, $end);
+                Statement::query()->whereIn('id', $range)->searchable();
             } else {
-                self::dispatch($this->start, $end, ($this->chunk / 10));
+                self::dispatch($this->start, ($this->chunk / 10), $end);
             }
         }
 
@@ -99,7 +100,7 @@ class VerifyIndex implements ShouldQueue
         }
 
         if ($end <= $this->min) {
-            Log::info('Finished Verifying Index: ' . $this->start . " :: "  . $end);
+            Log::info('Finished Verifying Index to: ' . $end);
         }
     }
 }
