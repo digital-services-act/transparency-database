@@ -48,7 +48,7 @@ class OpensearchIndexReindex extends Command
         $chunk = 1000000;
 
         while ($current >= $lowest) {
-            $this->reindexChunk($client, $index, $target, $current, $current - $chunk);
+            $this->reindexChunk($client, $index, $target, $current, max(($current - $chunk), $lowest));
             $current -= $chunk;
         }
 
