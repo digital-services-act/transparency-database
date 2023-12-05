@@ -13,7 +13,7 @@ class OpensearchIndexReindex extends Command
      *
      * @var string
      */
-    protected $signature = 'opensearch:index-reindex {index} {target}';
+    protected $signature = 'opensearch:index-reindex {index} {target} {lowest=default';
 
     /**
      * The console command description.
@@ -42,7 +42,7 @@ class OpensearchIndexReindex extends Command
             return;
         }
 
-        $lowest = $this->lowestId($client, $index);
+        $lowest = $this->argument('lowest') === 'default' ? $this->lowestId($client, $index) : (int)$this->argument('lowest');
         $current = $this->highestId($client, $index);
 
         $chunk = 1000000;

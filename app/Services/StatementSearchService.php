@@ -615,7 +615,7 @@ class StatementSearchService
   "aggregations": {
     "composite_buckets": {
       "composite": {
-        "size": 1000,
+        "size": 5000,
         "sources": []
       },
       "aggregations": {
@@ -677,7 +677,7 @@ JSON;
   "aggregations": {
     "composite_buckets": {
       "composite": {
-        "size": 1000,
+        "size": 5000,
         "sources": []
       },
       "aggregations": {
