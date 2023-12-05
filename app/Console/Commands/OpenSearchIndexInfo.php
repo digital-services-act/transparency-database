@@ -78,9 +78,11 @@ class OpenSearchIndexInfo extends Command
         $shards_report = [];
         foreach ($shards as $shard) {
             if ($shard['prirep'] === 'p') {
-                $shards_report[]= [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
+                $shards_report[$shard['shard']]= [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
             }
         }
+
+        ksort($shards_report);
 
         $this->newLine();
         $this->info('Shards:');
@@ -98,6 +100,12 @@ class OpenSearchIndexInfo extends Command
         $this->newLine();
         $this->info('Aliases:');
         $this->table(['Alias'], $out);
+
+        $this->newLine();
+
+        $this->info('UUID: ' . $index_stats['uuid']);
+        $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
+        $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
 
     }
 
