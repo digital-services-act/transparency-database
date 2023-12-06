@@ -8,6 +8,7 @@ use App\Http\Requests\PlatformStoreRequest;
 use App\Http\Requests\PlatformUsersStoreRequest;
 use App\Http\Requests\StatementsStoreRequest;
 use App\Http\Requests\StatementStoreRequest;
+use App\Http\Resources\PlatformResource;
 use App\Models\Invitation;
 use App\Models\Platform;
 use App\Models\Statement;
@@ -28,10 +29,6 @@ class PlatformUserAPIController extends Controller
 
     public function store(PlatformUsersStoreRequest $request, Platform $platform): JsonResponse
     {
-
-//        $validated = $request->safe()->merge([
-//
-//        ])->toArray();
 
         $validated = $request->validated();
 
@@ -59,7 +56,8 @@ class PlatformUserAPIController extends Controller
 
         }
 
-        $out = $platform->toArray();
+        $out = new PlatformResource($platform);
+
 
         return response()->json($out, Response::HTTP_CREATED);
         }

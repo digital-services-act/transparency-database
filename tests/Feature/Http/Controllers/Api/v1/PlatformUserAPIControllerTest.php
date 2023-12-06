@@ -19,21 +19,8 @@ class PlatformUserAPIControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    private array $required_fields;
+    private array $emails;
     private Platform $platform;
-
-
-
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->required_fields = [
-            'name' => 'New Platform',
-            'vlop' => 0
-        ];
-    }
 
     /**
      * @test
@@ -42,9 +29,10 @@ class PlatformUserAPIControllerTest extends TestCase
     {
         $this->setUpFullySeededDatabase();
         // Not signing in.
+
         $platform = Platform::first();
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->required_fields, [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),[], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -61,14 +49,14 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $platform = Platform::first();
 
-        $this->required_fields = [
+        $this->emails = [
             'emails' => [
                 'email1@platform.com',
                 'email2@platform.com',
             ]
         ];
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->required_fields, [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
             'Accept' => 'application/json'
         ]);
 
@@ -76,7 +64,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->assertCount(2, $platform->fresh()->invitations);
 
         //If we retry with the same users, we get an error as the emails can't be duplicates
-        $retry = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->required_fields, [
+        $retry = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
             'Accept' => 'application/json'
         ]);
 
@@ -109,7 +97,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $platform = Platform::first();
 
-        $this->required_fields = [
+        $this->emails = [
             'emails' => [
                 'email1@platform.com'
             ]
@@ -125,7 +113,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $platform_user->assignRole('Contributor');
 
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->required_fields, [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
             'Accept' => 'application/json'
         ]);
 
@@ -155,7 +143,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $platform = Platform::first();
 
-        $this->required_fields = [
+        $this->emails = [
             'emails' => [
                 'email1@platform.com'
             ]
@@ -168,7 +156,7 @@ class PlatformUserAPIControllerTest extends TestCase
             );
 
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->required_fields, [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
             'Accept' => 'application/json'
         ]);
 
@@ -193,7 +181,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $platform = Platform::first();
 
-        $this->required_fields = [
+        $this->emails = [
             'emails' => [
                 'email1@platform.com'
             ]
@@ -205,7 +193,7 @@ class PlatformUserAPIControllerTest extends TestCase
                 ['email' => 'email1@platform.com']
             );
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->required_fields, [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
             'Accept' => 'application/json'
         ]);
 

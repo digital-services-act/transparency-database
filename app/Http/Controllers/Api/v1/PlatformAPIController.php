@@ -7,6 +7,7 @@ use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\PlatformStoreRequest;
 use App\Http\Requests\StatementsStoreRequest;
 use App\Http\Requests\StatementStoreRequest;
+use App\Http\Resources\PlatformResource;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
@@ -23,6 +24,18 @@ class PlatformAPIController extends Controller
 {
     use Sanitizer;
 
+    public function get(Platform $platform)
+    {
+
+        // Check if the application is in dev, acc or sandbox
+        if (strtolower(config('app.env_real')) !== 'production') {
+            $platform = Platform::withCount(['form_statements', 'api_statements', 'api_multi_statements'])->find($platform->id);
+        }
+        $out = new PlatformResource($platform);
+
+
+        return response()->json($out, Response::HTTP_OK);
+    }
 
     public function store(PlatformStoreRequest $request): JsonResponse
     {
@@ -48,7 +61,8 @@ class PlatformAPIController extends Controller
 
         }
 
-        $out = $platform->toArray();
+
+        $out = new PlatformResource($platform);
 
         return response()->json($out, Response::HTTP_CREATED);
         }

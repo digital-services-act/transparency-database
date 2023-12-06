@@ -3,34 +3,25 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Platform;
-use App\Models\Statement;
-use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
-
-
 
 class PlatformAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase, WithFaker;
+    use RefreshDatabase, WithFaker;
 
-    private array $required_fields;
+    private array $requiredFields;
     private Platform $platform;
-
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->required_fields = [
+        $this->requiredFields = [
             'name' => 'New Platform',
-            'vlop' => 0
+            'vlop' => 0,
         ];
     }
 
@@ -40,11 +31,14 @@ class PlatformAPIControllerTest extends TestCase
     public function api_platform_store_requires_auth()
     {
         $this->setUpFullySeededDatabase();
+
         // Not signing in.
         $this->assertCount(20, Platform::all());
-        $response = $this->post(route('api.v1.platform.store'), $this->required_fields, [
-            'Accept' => 'application/json'
+
+        $response = $this->post(route('api.v1.platform.store'), $this->requiredFields, [
+            'Accept' => 'application/json',
         ]);
+
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
@@ -58,18 +52,38 @@ class PlatformAPIControllerTest extends TestCase
 
         $this->assertCount(20, Platform::all());
 
-        $response = $this->post(route('api.v1.platform.store'), $this->required_fields, [
-            'Accept' => 'application/json'
+        $this->requiredFields['dsa_common_id'] = '123-ABC-456';
+
+        $response = $this->post(route('api.v1.platform.store'), $this->requiredFields, [
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(21, Platform::all());
 
+        $createdPlatform = Platform::firstWhere('id', $response->json('id'));
+
+        $this->assertEquals('123-ABC-456', $createdPlatform->dsa_common_id);
+        $this->assertCount(21, Platform::all());
     }
 
+    /**
+     * @test
+     */
+    public function it_should_give_platform_data()
+    {
+        $this->withoutExceptionHandling();
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
 
+        $platform = Platform::factory()->create([
+            'name' => 'test platform',
+            'dsa_common_id' => 'foobar',
+        ]);
 
+        $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields, [
+            'Accept' => 'application/json',
+        ]);
 
-
+        $response->assertStatus(Response::HTTP_OK);
+    }
 }
-

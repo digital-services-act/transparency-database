@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function() {
     //Onboarding routes
     Route::group(['middleware' => ['can:administrate']], static function(){
         // Create a Platform
+        Route::get('platform/{platform:dsa_common_id}', [PlatformAPIController::class, 'get'])->name('api.v1.platform.get');
         Route::post('platform', [PlatformAPIController::class, 'store'])->name('api.v1.platform.store');
         // Add Users to a Platform
         Route::post('platform/{platform:dsa_common_id}/users', [PlatformUserAPIController::class, 'store'])->name('api.v1.platform-users.store');
