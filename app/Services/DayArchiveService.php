@@ -60,9 +60,11 @@ class DayArchiveService
                 $this->closeAllCsvFiles($day_archives);
                 $this->generateZipsSha1sAndUpdate($day_archives);
 
-                $this->uploadTheZipsAndSha1s($day_archives);
-                $this->cleanUpCsvFiles($day_archives);
-                $this->cleanUpZipAndSha1Files($day_archives);
+                if (!Storage::exists('s3ds/mounted.txt')) {
+                    $this->uploadTheZipsAndSha1s($day_archives);
+                    $this->cleanUpCsvFiles($day_archives);
+                    $this->cleanUpZipAndSha1Files($day_archives);
+                }
                 $this->markArchivesComplete($day_archives);
 
             } else {
@@ -266,6 +268,12 @@ class DayArchiveService
             $day_archives[$vlop->id] = $day_archive;
         }
 
+        // Do we have the s3ds mounted?
+        $s3ds = '';
+        if (Storage::exists('s3ds/mounted.txt')) {
+            $s3ds = 's3ds/';
+        }
+
         $base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
 
         foreach ($day_archives as $index => $day_archive) {
@@ -277,10 +285,10 @@ class DayArchiveService
             $day_archive['zipfilelight']     = $day_archive['filelight'] . '.zip';
             $day_archive['zipfilesha1']      = $day_archive['file'] . '.zip.sha1';
             $day_archive['zipfilelightsha1'] = $day_archive['filelight'] . '.zip.sha1';
-            $day_archive['zippath']          = Storage::path($day_archive['zipfile']);
-            $day_archive['zippathlight']     = Storage::path($day_archive['zipfilelight']);
-            $day_archive['zippathsha1']      = Storage::path($day_archive['zipfilesha1']);
-            $day_archive['zippathlightsha1'] = Storage::path($day_archive['zipfilelightsha1']);
+            $day_archive['zippath']          = Storage::path($s3ds . $day_archive['zipfile']);
+            $day_archive['zippathlight']     = Storage::path($s3ds . $day_archive['zipfilelight']);
+            $day_archive['zippathsha1']      = Storage::path($s3ds . $day_archive['zipfilesha1']);
+            $day_archive['zippathlightsha1'] = Storage::path($s3ds . $day_archive['zipfilelightsha1']);
             $day_archive['url']              = $base_s3_url . $day_archive['zipfile'];
             $day_archive['urllight']         = $base_s3_url . $day_archive['zipfilelight'];
             $day_archive['sha1url']          = $base_s3_url . $day_archive['zipfilesha1'];
