@@ -62,9 +62,10 @@ class DayArchiveService
 
                 if (!Storage::exists('s3ds/mounted.txt')) {
                     $this->uploadTheZipsAndSha1s($day_archives);
-                    $this->cleanUpCsvFiles($day_archives);
                     $this->cleanUpZipAndSha1Files($day_archives);
                 }
+
+                $this->cleanUpCsvFiles($day_archives);
                 $this->markArchivesComplete($day_archives);
 
             } else {
@@ -137,6 +138,12 @@ class DayArchiveService
 
     public function generateZipsSha1sAndUpdate($day_archives): void
     {
+        // Do we have the s3ds mounted?
+        $s3ds = '';
+        if (Storage::exists('s3ds/mounted.txt')) {
+            $s3ds = 's3ds/';
+        }
+
         foreach ($day_archives as $day_archive)
         {
             $zip = new ZipArchive;
@@ -145,7 +152,7 @@ class DayArchiveService
                 $zip->close();
                 $day_archive['model']->zipsize = filesize($day_archive['zippath']);
                 $day_archive['model']->sha1 = sha1_file($day_archive['zippath']);
-                Storage::put($day_archive['zipfilesha1'], $day_archive['model']->sha1 . "  " . $day_archive['zipfile']);
+                Storage::put($s3ds . $day_archive['zipfilesha1'], $day_archive['model']->sha1 . "  " . $day_archive['zipfile']);
             } else {
                 throw new RuntimeException('Issue with creating the zip file.');
             }
@@ -157,7 +164,7 @@ class DayArchiveService
                 $ziplight->close();
                 $day_archive['model']->ziplightsize = filesize($day_archive['zippathlight']);
                 $day_archive['model']->sha1light = sha1_file($day_archive['zippathlight']);
-                Storage::put($day_archive['zipfilelightsha1'], $day_archive['model']->sha1light . "  " . $day_archive['zipfilelight']);
+                Storage::put($s3ds . $day_archive['zipfilelightsha1'], $day_archive['model']->sha1light . "  " . $day_archive['zipfilelight']);
             } else {
                 throw new RuntimeException('Issue with creating the zip file.');
             }
