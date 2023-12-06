@@ -28,7 +28,7 @@ class OpenSearchAPIController extends Controller
     {
         $this->client                   = $client;
         $this->statement_search_service = $statement_search_service;
-        $this->index_name               = 'statement_' . config('app.env');
+        $this->index_name               = 'statement_index';
     }
 
     /**

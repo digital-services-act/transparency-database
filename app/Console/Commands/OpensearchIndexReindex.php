@@ -13,7 +13,7 @@ class OpensearchIndexReindex extends Command
      *
      * @var string
      */
-    protected $signature = 'opensearch:index-reindex {index} {target} {lowest=default';
+    protected $signature = 'opensearch:index-reindex {index} {target} {lowest=default}';
 
     /**
      * The console command description.

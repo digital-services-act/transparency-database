@@ -410,7 +410,7 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statement_' . config('app.env');
+        return 'statement_index';
     }
 
     public function toSearchableArray()

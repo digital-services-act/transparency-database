@@ -65,7 +65,7 @@ class StatementSearchService
     public function __construct(Client $client)
     {
         $this->client     = $client;
-        $this->index_name = 'statement_' . config('app.env');
+        $this->index_name = 'statement_index';
     }
 
     /**

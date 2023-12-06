@@ -81,7 +81,7 @@ class VerifyIndex implements ShouldQueue
         ];
 
         $opensearch_count = $client->count([
-            'index' => 'statement_' . config('app.env'),
+            'index' => 'statement_index',
             'body'  => $opensearch_query,
         ])['count'] ?? -1;
 
