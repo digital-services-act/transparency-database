@@ -410,6 +410,8 @@ class Statement extends Model
      */
     public function searchableAs()
     {
+        // This is an alias, not the actual index.
+        // So in your opensearch you need to have an index with an alias 'statement_index'
         return 'statement_index';
     }
 

@@ -96,7 +96,7 @@ class VerifyIndex implements ShouldQueue
         }
 
         if ($end > $this->min && !$stop) {
-            self::dispatch($end, $this->chunk, $this->min);
+            self::dispatch($end - 1, $this->chunk, $this->min);
         }
 
         if ($end <= $this->min) {
