@@ -461,7 +461,7 @@ class StatementSearchService
      *
      * @return array
      */
-    public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true): array
+    public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, array $filters = [], bool $caching = true): array
     {
         $timestart = microtime(true);
 
@@ -473,8 +473,8 @@ class StatementSearchService
         }
 
         $cache   = 'hit';
-        $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, $key, &$cache) {
-            $query = $this->aggregateQueryRange($start, $end, $attributes);
+        $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, $filters, $key, &$cache) {
+            $query = $this->aggregateQueryRange($start, $end, $attributes, $filters);
             $cache = 'miss';
             $this->pushOSAKey($key);
 
@@ -586,7 +586,7 @@ class StatementSearchService
     /**
      * @throws JsonException
      */
-    private function aggregateQueryRange(Carbon $start, Carbon $end, $attributes)
+    private function aggregateQueryRange(Carbon $start, Carbon $end, array $attributes, array $filters)
     {
         $query_string = <<<JSON
 {
@@ -652,6 +652,18 @@ JSON;
         }
 
         $query->aggregations->composite_buckets->composite->sources = $sources;
+
+        // Now add on the filters
+        foreach ($filters as $filter) {
+            $query->query->bool->filter[] = [
+                'term' => [
+                    $filter['field'] => [
+                        'value' => $filter['value'],
+                        'boost' => 1
+                    ]
+                ]
+            ];
+        }
 
         return $query;
     }

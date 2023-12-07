@@ -150,7 +150,7 @@ class OpenSearchAPIController extends Controller
      *
      * @return JsonResponse|array
      */
-    public function aggregatesForRange(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
+    public function aggregatesForRange(Request $request, string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in, true);
@@ -159,10 +159,13 @@ class OpenSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
+            $filters = $request->query('filters', []);
+
             $results = $this->statement_search_service->processRangeAggregate(
                 $dates['start'],
                 $dates['end'],
                 $attributes,
+                $request->query('filters', []),
                 $this->booleanizeQueryParam('cache')
             );
 
