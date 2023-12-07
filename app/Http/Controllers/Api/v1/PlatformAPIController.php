@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\PlatformStoreRequest;
 use App\Models\Platform;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
@@ -13,7 +12,7 @@ use Illuminate\Http\Response;
 
 class PlatformAPIController extends Controller
 {
-    use Sanitizer, ExceptionHandlingTrait;
+    use ExceptionHandlingTrait;
 
     public function get(Platform $platform)
     {

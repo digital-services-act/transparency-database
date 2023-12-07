@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
+use Database\Seeders\OnboardingPermissionsSeeder;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\StatementSeeder;
@@ -18,6 +19,15 @@ abstract class TestCase extends BaseTestCase
     protected function signInAsAdmin($user = null) {
         $user = $this->signIn($user);
         $user->assignRole('Admin');
+        $dsa_platform = Platform::getDsaPlatform();
+        $this->assignPlatform($user, $dsa_platform);
+        return $user;
+    }
+
+    protected function signInAsOnboarding($user = null) {
+        $this->seed(OnboardingPermissionsSeeder::class);
+        $user = $this->signIn($user);
+        $user->assignRole('Onboarding');
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
         return $user;

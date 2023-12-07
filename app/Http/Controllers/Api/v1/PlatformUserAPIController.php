@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\PlatformUsersStoreRequest;
 use App\Models\Invitation;
 use App\Models\Platform;
@@ -15,7 +14,7 @@ use Illuminate\Http\Response;
 
 class PlatformUserAPIController extends Controller
 {
-    use Sanitizer, ExceptionHandlingTrait;
+    use ExceptionHandlingTrait;
 
     public function store(PlatformUsersStoreRequest $request, Platform $platform): JsonResponse
     {

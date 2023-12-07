@@ -48,7 +48,8 @@ class PlatformAPIControllerTest extends TestCase
     public function api_platform_store_works()
     {
         $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
+        $user = $this->signInAsOnboarding();
+        $this->withoutExceptionHandling();
 
         $this->assertCount(20, Platform::all());
 
@@ -73,7 +74,7 @@ class PlatformAPIControllerTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         $platform = Platform::factory()->create([
             'name' => 'test platform',

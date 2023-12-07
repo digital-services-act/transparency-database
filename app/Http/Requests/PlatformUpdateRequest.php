@@ -14,7 +14,7 @@ class PlatformUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('administrate');
+        return $this->user()->canAny(['administrate','create platforms','view platforms']);
     }
 
     /**

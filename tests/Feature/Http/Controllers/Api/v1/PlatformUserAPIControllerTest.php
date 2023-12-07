@@ -45,7 +45,7 @@ class PlatformUserAPIControllerTest extends TestCase
     {
         $this->setUpFullySeededDatabase();
 
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         $platform = Platform::first();
 
@@ -93,7 +93,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $this->setUpFullySeededDatabase();
 
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         $platform = Platform::first();
 
@@ -139,20 +139,20 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $this->setUpFullySeededDatabase();
 
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         $platform = Platform::first();
 
         $this->emails = [
             'emails' => [
-                'email1@platform.com'
+                'email10@platform.com'
             ]
         ];
 
         //Create a user with the same email
         $platform_user = User::factory()
             ->create(
-                ['email' => 'email1@platform.com']
+                ['email' => 'email10@platform.com']
             );
 
 
@@ -177,7 +177,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->setUpFullySeededDatabase();
         $this->withoutExceptionHandling();
 
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         $platform = Platform::first();
 

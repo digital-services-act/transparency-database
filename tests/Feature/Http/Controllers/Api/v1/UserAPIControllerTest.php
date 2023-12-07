@@ -22,7 +22,7 @@ class UserAPIControllerTest extends TestCase
     public function it_should_not_find_the_route_for_unknown_user()
     {
         $this->setUpFullySeededDatabase();
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
 
         $response = $this->get(route('api.v1.user.get', ['email' => 'foo@bar.com']), [
@@ -40,7 +40,7 @@ class UserAPIControllerTest extends TestCase
     public function it_should_return_invited_users_as_inactive()
     {
         $this->setUpFullySeededDatabase();
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
 
         Invitation::factory()
@@ -65,7 +65,7 @@ class UserAPIControllerTest extends TestCase
     public function it_should_say_email_is_not_active()
     {
         $this->setUpFullySeededDatabase();
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         User::factory()
             ->create(
@@ -89,7 +89,7 @@ class UserAPIControllerTest extends TestCase
     public function it_should_say_user_is_active_when_he_created_a_token()
     {
         $this->setUpFullySeededDatabase();
-        $this->signInAsAdmin();
+        $this->signInAsOnboarding();
 
         $user = User::factory()
             ->create(
