@@ -91,7 +91,7 @@ class VerifyIndex implements ShouldQueue
                 $range = range($this->start, $end);
                 Statement::query()->whereIn('id', $range)->searchable();
             } else {
-                self::dispatch($this->start, ($this->chunk / 10), $end);
+                self::dispatch($this->start, floor($this->chunk / 10), $end);
             }
         }
 
