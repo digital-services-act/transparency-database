@@ -4,23 +4,9 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\Sanitizer;
-use App\Http\Requests\PlatformStoreRequest;
-use App\Http\Requests\StatementsStoreRequest;
-use App\Http\Requests\StatementStoreRequest;
-use App\Http\Resources\PlatformResource;
 use App\Models\Invitation;
-use App\Models\Platform;
-use App\Models\Statement;
 use App\Models\User;
-use App\Services\EuropeanCountriesService;
-use Exception;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class UserAPIController extends Controller
 {

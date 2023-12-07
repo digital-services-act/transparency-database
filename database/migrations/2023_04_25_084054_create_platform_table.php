@@ -18,12 +18,6 @@ return new class extends Migration
             $table->string('url');
 
 
-            $table->string('icon_file_name')->nullable();
-            $table->integer('icon_file_size')->nullable();
-            $table->string('icon_content_type')->nullable();
-            $table->timestamp('icon_updated_at')->nullable();
-
-
             $table->timestamps();
             $table->softDeletes();
 

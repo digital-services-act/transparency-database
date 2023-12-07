@@ -14,6 +14,13 @@ class Platform extends Model
 
     public const LABEL_DSA_TEAM = 'DSA Team';
 
+    protected $hidden = [
+        'deleted_at',
+        'updated_at',
+        'created_at',
+        'uuid',
+        'user_id',
+    ];
 
     /**
      * The attributes that are mass assignable.

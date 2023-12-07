@@ -32,7 +32,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $platform = Platform::first();
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),[], [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), [], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -104,7 +104,7 @@ class PlatformUserAPIControllerTest extends TestCase
         ];
 
         //Create a user with the same email
-        $platform_user= User::factory()
+        $platform_user = User::factory()
             ->create(
                 ['email' => 'email1@platform.com',
                     'platform_id' => $platform->id]

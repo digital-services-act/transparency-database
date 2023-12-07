@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasColumn('platforms', 'url')) {
-            Schema::dropColumns('platforms', 'url');
-        }
+        Schema::table('platforms', function (Blueprint $table) {
+            $table->string('dsa_common_id')->nullable()->index()->unique();
+        });
     }
 
     /**
@@ -21,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('platforms', function (Blueprint $table) {
+            $table->removeColumn('dsa_common_id');
+        });
     }
 };
