@@ -5,25 +5,30 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\StatementSearchService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use JsonException;
 use OpenSearch\Client;
-use stdClass;
+use RuntimeException;
 
 class OpenSearchAPIController extends Controller
 {
     private Client $client;
+    private StatementSearchService $statement_search_service;
     private string $index_name;
 
-    public function __construct(Client $client)
+    private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
+
+    private int $response_size_limit = 5242880;
+
+    public function __construct(Client $client, StatementSearchService $statement_search_service)
     {
-        $this->client     = $client;
-        $this->index_name = 'statement_' . config('app.env');
+        $this->client                   = $client;
+        $this->statement_search_service = $statement_search_service;
+        $this->index_name               = 'statement_index';
     }
 
     /**
@@ -39,9 +44,7 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -58,9 +61,7 @@ class OpenSearchAPIController extends Controller
                 'body'  => $request->toArray(),
             ]);
         } catch (Exception $e) {
-            Log::error('OpenSearch Count Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -74,9 +75,7 @@ class OpenSearchAPIController extends Controller
         try {
             return $this->client->sql()->query($request->toArray());
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
@@ -88,102 +87,160 @@ class OpenSearchAPIController extends Controller
     public function explain(Request $request): array|JsonResponse
     {
         try {
-            return $this->client->sql()->explain($request->toArray());
-        } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
+            $results          = $this->client->sql()->explain($request->toArray());
+            $query            = $results['root']['children'][0]['description']['request'] ?? false;
+            $query            = '{' . ltrim(strstr($query, '{'), '{');
+            $query            = substr($query, 0, strrpos($query, '}')) . '}';
+            $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
 
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $results;
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
+    public function clearAggregateCache(): string
+    {
+        $this->statement_search_service->clearOSACache();
+
+        return 'ok';
+    }
+
     /**
-     * @param Request $request
      * @param string $date_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregates(Request $request, string $date_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForDate(string $date_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
-            if ($date_in === 'yesterday') {
-                $date_in = Carbon::yesterday()->format('Y-m-d');
+            $date = $this->sanitizeDateString($date_in);
+
+            if ($date >= Carbon::today()) {
+                throw new RuntimeException('Aggregate date must be in the past.');
             }
-            $start = Carbon::createFromFormat('Y-m-d', $date_in);
-            $end = $start->clone();
-            $attributes = explode("__", $attributes_in);
-            $query = $this->aggregateQuery($start, $end, $attributes);
-            $results = $this->processAggregateQuery($query);
+
+            $attributes = $this->sanitizeAttributes($attributes_in, true);
+
+            $results = $this->statement_search_service->processDateAggregate(
+                $date,
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
+
+            $json = json_encode($results, JSON_THROW_ON_ERROR);
+            $size = mb_strlen($json);
+            $results['size'] = $size;
+
+            if ($size > $this->response_size_limit) {
+                return response()->json(['error' => 'Your request will return too much data (5mb), please ask less'], $this->error_code);
+            }
+
             return response()->json($results);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
      * @param string $start_in
      * @param string $end_in
-     * @param string|null $attributes_in
+     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
-    public function aggregatesRange(Request $request, string $start_in, string $end_in, string $attributes_in = null): JsonResponse|array
+    public function aggregatesForRange(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
     {
         try {
-            if ($start_in === 'start') {
-                $start_in = Carbon::createFromDate(2023, 9, 25)->format('Y-m-d');
-            }
-            if ($end_in === 'yesterday') {
-                $end_in = Carbon::yesterday()->format('Y-m-d');
-            }
-            $start = Carbon::createFromFormat('Y-m-d', $start_in);
-            $end = Carbon::createFromFormat('Y-m-d', $end_in);
-            $attributes = explode("__", $attributes_in);
-            $query = $this->aggregateQuery($start, $end, $attributes);
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in, true);
 
-            $results = $this->processAggregateQuery($query);
+            $this->verifyStartEndOrderAndPast($dates['start'], $dates['end']);
+
+            $attributes = $this->sanitizeAttributes($attributes_in);
+
+            $results = $this->statement_search_service->processRangeAggregate(
+                $dates['start'],
+                $dates['end'],
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
+
+            $json = json_encode($results, JSON_THROW_ON_ERROR);
+            $size = mb_strlen($json);
+            $results['size'] = $size;
+
+            if ($size > $this->response_size_limit) {
+                return response()->json(['error' => 'Your request will return too much data (5mb), please ask less'], $this->error_code);
+            }
 
             return response()->json($results);
-
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
+     * @param string $start_in
+     * @param string $end_in
+     * @param string $attributes_in
      *
-     * @return JsonResponse|array|null
+     * @return JsonResponse|array
      */
-    public function platforms(Request $request): JsonResponse|array|null
+    public function aggregatesForRangeDates(string $start_in, string $end_in, string $attributes_in = ''): JsonResponse|array
+    {
+        try {
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            $this->verifyStartEndOrderAndPast($dates['start'], $dates['end']);
+
+            $attributes = $this->sanitizeAttributes($attributes_in);
+
+            $results = $this->statement_search_service->processDatesAggregate(
+                $dates['start'],
+                $dates['end'],
+                $attributes,
+                $this->booleanizeQueryParam('cache'),
+                $this->booleanizeQueryParam('daycache')
+            );
+
+            $json = json_encode($results, JSON_THROW_ON_ERROR);
+            $size = mb_strlen($json);
+            $results['size'] = $size;
+
+            if ($size > $this->response_size_limit) {
+                return response()->json(['error' => 'Your request will return too much data (5mb), please ask less'], $this->error_code);
+            }
+
+            return response()->json($results);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    /**
+     *
+     * @return JsonResponse|array
+     */
+    public function platforms(): JsonResponse|array
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
-            $out = [];
-            foreach ($platforms as $id => $name)
-            {
-                $out[] = [
-                    'id' => $id,
-                    'name' => $name
-                ];
-            }
+            $out       = array_map(static function ($id, $name) {
+                return ['id' => $id, 'name' => $name];
+            }, array_keys($platforms), array_values($platforms));
+
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
      *
      * @return JsonResponse|array
      */
-    public function labels(Request $request): JsonResponse|array
+    public function labels(): JsonResponse|array
     {
         try {
             return [
@@ -199,198 +256,126 @@ class OpenSearchAPIController extends Controller
                 'source_types'          => Statement::SOURCE_TYPES
             ];
         } catch (Exception $e) {
-            Log::error('OpenSearch SQL Exception: ' . $e->getMessage());
-
-            return response()->json(['error' => 'invalid query attempt'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], $this->error_code);
         }
     }
 
-    /**
-     * @param stdClass $query
-     *
-     * @return array
-     */
-    private function processAggregateQuery(stdClass $query): array
+    public function total(): JsonResponse
     {
-        $result = $this->client->search([
-            'index' => $this->index_name,
-            'body'  => $query,
-        ]);
-        $buckets = $result['aggregations']['composite_buckets']['buckets'];
-
-        $platforms = [];
-        // Do we need platforms
-        if ($buckets[0]['key']['platform_id'] ?? false) {
-            $platforms = Platform::all()->pluck('name', 'id')->toArray();
-        }
-
-        $out = [];
-        $total = 0;
-        $total_aggregates = 0;
-        foreach ($buckets as $bucket) {
-            $item = [];
-            $attributes = $bucket['key'];
-
-            // Manipulate the results
-            if (isset($attributes['automated_detection'])) {
-                $attributes['automated_detection'] = (int)$attributes['automated_detection'];
-            }
-
-            if (isset($attributes['received_date'])) {
-                $attributes['received_date'] = date( 'Y-m-d', ($attributes['received_date'] /  1000));
-            }
-
-            // Put the attributes on the root item
-            foreach ($attributes as $key => $value) {
-                $item[$key] = $value;
-            }
-
-            // build a permutation string
-            $item['permutation'] = implode(',', array_map(function($key, $value) {
-                return $key . ":" . $value;
-            }, array_keys($attributes), array_values($attributes)));
-
-            // add the platform name on at the end if we need to.
-            if (isset($item['platform_id'])) {
-                // yes we will need it.
-                $item['platform_name'] = $platforms[$item['platform_id']] ?? '';
-            }
-
-
-            $item['total'] = $bucket['doc_count'];
-            $total += $bucket['doc_count'];
-            $total_aggregates++;
-            $out[] = $item;
-        }
-        return ['aggregates' => $out, 'total' => $total, 'total_aggregates' => $total_aggregates];
+        return response()->json($this->statement_search_service->grandTotal());
     }
 
-
-    /**
-     * @throws JsonException
-     */
-    private function aggregateQuery(Carbon $start, Carbon $end, $attributes) {
-
-
-        $allowed_attributes = [
-            'platform_id',
-            'category',
-            'decision_visibility_single',
-            'decision_monetary',
-            'decision_provision',
-            'decision_account',
-            'decision_ground',
-            'automated_detection',
-            'automated_decision',
-            'content_type_single',
-            'source_type',
-            'received_date'
-        ];
-
-
-
-        $query_string = <<<JSON
-{
-  "from": 0,
-  "size": 0,
-  "timeout": "1m",
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "range": {
-            "created_at": {
-              "from": 1700092800000,
-              "to": null,
-              "include_lower": true,
-              "include_upper": true,
-              "boost": 1.0
-            }
-          }
-        },
-        {
-          "range": {
-            "created_at": {
-              "from": null,
-              "to": 1700179199000,
-              "include_lower": true,
-              "include_upper": true,
-              "boost": 1.0
-            }
-          }
-        }
-      ],
-      "adjust_pure_negative": true,
-      "boost": 1.0
-    }
-  },
-  "sort": [
+    public function dateTotal(string $date_in): JsonResponse
     {
-      "_doc": {
-        "order": "asc"
-      }
-    }
-  ],
-  "aggregations": {
-    "composite_buckets": {
-      "composite": {
-        "size": 1000,
-        "sources": []
-      },
-      "aggregations": {
-        "count(*)": {
-          "value_count": {
-            "field": "_index"
-          }
+        try {
+            $date = $this->sanitizeDateString($date_in);
+
+            return response()->json($this->statement_search_service->totalForDate($date));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total attempt: ' . $e->getMessage()], $this->error_code);
         }
-      }
-    }
-  }
-}
-JSON;
-        $query = json_decode($query_string, false, 512, JSON_THROW_ON_ERROR);
-
-        $start->hour = 0;
-        $start->minute = 0;
-        $start->second = 0;
-
-        $end->hour = 23;
-        $end->minute = 59;
-        $end->second = 59;
-
-        $query->query->bool->filter[0]->range->created_at->from = $start->getTimestampMs();
-        $query->query->bool->filter[1]->range->created_at->to = $end->getTimestampMs();
-
-        if (!is_array($attributes)) {
-            $attributes = $allowed_attributes;
-        }
-
-        $sources = [];
-
-        foreach ($attributes as $attribute) {
-            if (in_array($attribute, $allowed_attributes, true)) {
-                $sources[] = $this->queryBucket($attribute);
-            }
-        }
-
-        if (count($sources) === 0) {
-            $sources[] = $this->queryBucket('received_date');
-        }
-
-        $query->aggregations->composite_buckets->composite->sources = $sources;
-        return $query;
     }
 
-    private function queryBucket($attribute): stdClass
+    public function platformDateTotal(string $platform_id_in, string $date_in): JsonResponse
     {
-        $source = new stdClass();
-        $source->$attribute = new stdClass();
-        $source->$attribute->terms = new stdClass();
-        $source->$attribute->terms->field = $attribute;
-        $source->$attribute->terms->missing_bucket = true;
-        $source->$attribute->terms->missing_order = "first";
-        $source->$attribute->terms->order = "asc";
+        try {
+            $date = $this->sanitizeDateString($date_in);
 
-        return $source;
+            /** @var Platform $platform */
+            $platform = Platform::find($platform_id_in);
+            if (!$platform) {
+                throw new RuntimeException('Platform not found');
+            }
+
+            return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total platform attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    public function dateTotalRange(string $start_in, string $end_in): JsonResponse
+    {
+        try {
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date total range attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    public function dateTotalsRange(string $start_in, string $end_in): JsonResponse
+    {
+        try {
+            $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
+
+            return response()->json($this->statement_search_service->datesTotalsForRange($dates['start'], $dates['end']));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid date totals range attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    private function sanitizeDateString(string $date_in): bool|Carbon
+    {
+        try {
+            if ($date_in === 'start') {
+                $date_in = (string)config('dsa.start_date');
+            }
+
+            if ($date_in === 'yesterday') {
+                $date_in = Carbon::yesterday()->format('Y-m-d');
+            }
+
+            if ($date_in === 'today') {
+                $date_in = Carbon::today()->format('Y-m-d');
+            }
+
+            $date = Carbon::createFromFormat('Y-m-d', $date_in);
+            $date->subSeconds($date->secondsSinceMidnight());
+
+            return $date;
+        } catch (Exception $e) {
+            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $e->getMessage());
+        }
+    }
+
+    private function sanitizeDateStartEndStrings(string $start_in, string $end_in, bool $range = false): array
+    {
+        try {
+            $start = $this->sanitizeDateString($start_in);
+            $end   = $this->sanitizeDateString($end_in);
+        } catch (Exception $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
+        $end->subSeconds($end->secondsSinceMidnight());
+
+        if ($range) {
+            $end->addDay()->subSecond();
+        }
+
+        return ['start' => $start, 'end' => $end];
+    }
+
+    private function sanitizeAttributes(string $attributes_in, bool $remove_received_date = false): array
+    {
+        $attributes = explode("__", $attributes_in);
+        if ($attributes[0] === 'all') {
+            $attributes = $this->statement_search_service->getAllowedAggregateAttributes($remove_received_date);
+        }
+
+        return $attributes;
+    }
+
+    private function verifyStartEndOrderAndPast(Carbon $start, Carbon $end): void
+    {
+        if ($start >= $end || $end >= Carbon::today()) {
+            throw new RuntimeException('Start must be less than end, and end must be in the past');
+        }
+    }
+
+    private function booleanizeQueryParam(string $param): bool
+    {
+        return (bool)request($param, 1);
     }
 }

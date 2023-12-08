@@ -72,7 +72,7 @@ class PlatformController extends Controller
         /** @var Platform $platform */
         $platform = Platform::create([
             'name' => $validated['name'],
-            'url' => $validated['url'],
+            'dsa_common_id' => $validated['dsa_common_id'],
             'vlop' => $validated['vlop']
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
@@ -127,7 +127,7 @@ class PlatformController extends Controller
 
         ])->toArray();
         $platform->name = $validated['name'];
-        $platform->url = $validated['url'];
+        $platform->dsa_common_id = $validated['dsa_common_id'];
         $platform->vlop = $validated['vlop'];
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');

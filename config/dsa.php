@@ -7,5 +7,7 @@ return [
     'FEEDBACK_MAIL' => env('FEEDBACK_MAIL', ''),
     'SITEID' => env('SITEID', ''),
     'SITEPATH' => env('SITEPATH', ''),
+    'STOPREINDEXING' => env('STOPREINDEXING', 0),
+    'start_date' => '2023-09-25',
 
 ];

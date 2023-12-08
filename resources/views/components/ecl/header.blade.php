@@ -45,9 +45,9 @@
 
                                         <div id="login-box-id" class="ecl-site-header__login-box"
                                              data-ecl-login-box="true">
+
                                             @can('create statements')
                                                 <x-ecl.menu-item icon="gear" :link="route('profile.api.index')"
-                                                                 title="API Token Management"/>
                                             @endcan
 
                                             <hr class="ecl-site-header__login-separator"/>

@@ -3,9 +3,11 @@
 namespace Tests\Feature\Models;
 
 use App\Models\Invitation;
+use App\Models\Platform;
 use App\Models\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -31,4 +33,8 @@ class UserTest extends TestCase
         $this->assertNotNull($user->fresh()->invitation);
 
     }
+
+
+
+
 }

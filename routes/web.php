@@ -14,6 +14,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -33,11 +34,15 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 Route::middleware(['force.auth'])->group(function () {
     // Your routes that require authentication in non-production environments
 
-Route::middleware(['auth'])->group(function() {
+    Route::middleware(['auth'])->group(function () {
 
+        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+        Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
 
-    Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
-    Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
+        Route::group(['middleware' => ['can:create statements']], function () {
+            Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
+            Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
+        });
 
     Route::group(['middleware' => ['can:create statements']], function() {
         Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
@@ -45,20 +50,21 @@ Route::middleware(['auth'])->group(function() {
     });
 
     Route::group(['middleware' => ['can:administrate']], function(){
-
         Route::prefix('/admin/')->group(function () {
             Route::resource('role', RoleController::class);
             Route::resource('permission', PermissionController::class);
             Route::resource('invitation', InvitationController::class);
             Route::resource('user', UserController::class);
             Route::resource('platform', PlatformController::class);
-        });
 
+        });
     });
 
 
     Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
     Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
+
+
 
     Route::group(['middleware' => ['can:create statements']], function() {
         Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index');
@@ -69,34 +75,16 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
     Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
-});
+    });
 
-// Public Open Routes.
 
 Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
-Route::get('statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
-
+Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
-
-Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
-Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
-Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
-Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
-Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
-Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
-Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
-Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
-Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
-
-
 Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
-
-Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
-
-Route::view('/dashboard', 'dashboard')->name('dashboard');
-
 Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
+Route::view('/dashboard', 'dashboard')->name('dashboard');
 
 });

@@ -14,6 +14,14 @@ class Platform extends Model
 
     public const LABEL_DSA_TEAM = 'DSA Team';
 
+    protected $hidden = [
+        'deleted_at',
+        'updated_at',
+        'created_at',
+        'uuid',
+        'user_id',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -62,10 +70,30 @@ class Platform extends Model
         return $this->hasMany(User::class, 'platform_id', 'id');
     }
 
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class, 'platform_id', 'id');
+    }
+
     public function statements()
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id');
     }
+
+    public function form_statements()
+    {
+        return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','FORM');
+    }
+    public function api_statements()
+    {
+        return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','API');
+    }
+    public function api_multi_statements()
+    {
+        return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','API_MULTI');
+    }
+
+
 
     public function dayTotals()
     {

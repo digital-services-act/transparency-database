@@ -2,38 +2,35 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementSearchableChunk;
+use App\Jobs\VerifyIndex;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 
-class ResyncStatementIndex extends Command
+class StatementsVerifyIndex extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:resync-index {min=default} {max=default}';
+    protected $signature = 'statements:verify-index {min=default} {max=default} {chunk=default}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Resync the Opensearch Statements Index';
+    protected $description = 'Verify and fix the Opensearch Statements Index';
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        $statuses = 1000000;
-        $chunk = 100;
-
+        $chunk = $this->argument('chunk') === 'default' ? 1000000 : (int)$this->argument('chunk');
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
-
-        StatementSearchableChunk::dispatch($max, $chunk, $min, $statuses, true);
+        VerifyIndex::dispatch($max, $chunk, $min);
     }
 }

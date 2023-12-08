@@ -16,7 +16,7 @@ class OpenSearchIndexInfo extends Command
      *
      * @var string
      */
-    protected $signature = 'opensearch:index_info {index}';
+    protected $signature = 'opensearch:index-info {index}';
 
     /**
      * The console command description.
@@ -45,7 +45,16 @@ class OpenSearchIndexInfo extends Command
             return;
         }
 
-        $index_stats = $client->indices()->stats()['indices'][$index];
+        $stats = $client->indices()->stats();
+        $indices = $stats['indices'];
+
+        if (!isset($indices[$index])) {
+            $this->warn('The index is not in the indices stats, probably you used an alias?');
+            return;
+        }
+
+        $index_stats = $indices[$index];
+
         $this->info('UUID: ' . $index_stats['uuid']);
         $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
         $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
@@ -63,6 +72,41 @@ class OpenSearchIndexInfo extends Command
             $fields[] = [$field,$field_info['type']];
         }
         $this->table(['Field', 'Type'], $fields);
+
+        $shards = $client->cat()->shards(['index' => $index]);
+
+        $shards_report = [];
+        foreach ($shards as $shard) {
+            if ($shard['prirep'] === 'p') {
+                $shards_report[$shard['shard']]= [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
+            }
+        }
+
+        ksort($shards_report);
+
+        $this->newLine();
+        $this->info('Shards:');
+        $this->table(['Shard', 'State', 'Docs', 'Store'], $shards_report);
+
+
+        $alias = $client->indices()->getAlias(['index' => $index]);
+        $aliases = array_keys($alias[$index]['aliases']);
+        $out = [];
+        foreach ($aliases as $alias) {
+            $out[] = [
+                'alias' => $alias
+            ];
+        }
+        $this->newLine();
+        $this->info('Aliases:');
+        $this->table(['Alias'], $out);
+
+        $this->newLine();
+
+        $this->info('UUID: ' . $index_stats['uuid']);
+        $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
+        $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
+
     }
 
     private function humanFileSize($size,$unit="") {

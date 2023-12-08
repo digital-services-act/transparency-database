@@ -4,21 +4,27 @@ default-environment: dev
 environments:
   dev:
     firewall:
+      rate-limit: 12500
       bot-control:
         - CategoryAdvertising
         - CategoryArchiver
-        - SignalNonBrowserUserAgent
-    warm: 10
-    timeout: 180
+        - CategoryContentFetcher
+        - CategoryLinkChecker
+        - CategoryMiscellaneous
+        - CategoryScrapingFramework
+        - SignalAutomatedBrowser
+    warm: 1
+    cache: redis-cache-dev
     queue-database-session-persist: true
     database: dsa-dev-serverless
     domain: dev.sor.dsa.ec.europa.eu
     load-balancer: dsa-dev-lb-2
     network: vapor-network-1673505770
-    memory: 2048
-    cli-memory: 1024
-    queue-memory: 1024
     queue-timeout: 30
+    timeout: 30
+    memory: 512
+    cli-memory: 512
+    queue-memory: 512
     runtime: 'php-8.2:al2-arm'
     storage: sor-dsa-m2-dev
     build:

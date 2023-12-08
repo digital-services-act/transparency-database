@@ -16,7 +16,7 @@ class OpenSearchIndexList extends Command
      *
      * @var string
      */
-    protected $signature = 'opensearch:index_list';
+    protected $signature = 'opensearch:index-list';
 
     /**
      * The console command description.

@@ -23,7 +23,7 @@ class PlatformDayTotalsService
             ->first()->total ?? false;
     }
 
-    public function deleteDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*')
+    public function deleteDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): void
     {
         $query = $platform->dayTotals()->whereDate('date', $date);
         if ($attribute !== '*' ) {
@@ -82,12 +82,13 @@ class PlatformDayTotalsService
      * @param Carbon $date
      * @param string $attribute
      * @param string $value
+     * @param bool $delete_existing
      *
      * @return int
      *
      * This should only be called by a queued job
      */
-    public function compileDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*'): int
+    public function compileDayTotal(Platform $platform, Carbon $date, string $attribute = '*', string $value = '*', bool $delete_existing = false): int
     {
 
         // This function should only be called in the context of a queued job.
@@ -103,7 +104,12 @@ class PlatformDayTotalsService
             return false;
         }
 
+        if ($delete_existing) {
+            $this->deleteDayTotal($platform, $date, $attribute, $value);
+        }
+
         $existing = $this->getDayTotal($platform, $date, $attribute, $value);
+
         if ($existing !== false) {
             return $existing;
         }
