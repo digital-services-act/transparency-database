@@ -23,8 +23,8 @@ content online.
             'url' => route('page.show', ['faq']) . '#general-faq'
         ],
         [
-            'label' => 'Dashboard',
-            'url' => route('dashboard')
+            'label' => 'Analytics',
+            'url' => route('analytics.index')
         ]
     ]"
 />
