@@ -3,23 +3,22 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementsStoreRequest;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
-use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class StatementAPIController extends Controller
 {
-    use Sanitizer;
+    use Sanitizer,ExceptionHandlingTrait;
 
     protected EuropeanCountriesService $european_countries_service;
     public function __construct(
@@ -81,15 +80,8 @@ class StatementAPIController extends Controller
                 return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
-            $errors  = [
-                'uncaught_exception' => [
-                    'Statement Creation Query Exception Thrown: ' . $e->getMessage()
-                ]
-            ];
-            $message = 'Statement Creation Query Exception Thrown: ' . $e->getMessage();
+            return $this->handleQueryException($e, 'Statement');
 
-            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 
@@ -173,13 +165,8 @@ class StatementAPIController extends Controller
             }
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
 
-        } catch (Exception $e) {
-            Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
-            $errors = [
-                'Multiple Statement Creation Query Exception Thrown'
-            ];
-            $message = 'Multiple Statement Creation Query Exception Thrown';
-            return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (QueryException $e) {
+            return $this->handleQueryException($e, 'Statement');
         }
     }
 }

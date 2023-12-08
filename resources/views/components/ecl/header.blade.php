@@ -45,7 +45,7 @@
 
                                         <div id="login-box-id" class="ecl-site-header__login-box"
                                              data-ecl-login-box="true">
-                                            @can('create statements')
+                                            @can('view dashboard')
 
                                                 <x-ecl.menu-item icon="gear" :link="route('api-index')"
                                                                  title="API Token Management"/>

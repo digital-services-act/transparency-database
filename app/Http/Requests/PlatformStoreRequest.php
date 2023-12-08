@@ -14,7 +14,7 @@ class PlatformStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('administrate');
+        return $this->user()->canAny(['administrate','create platforms','view platforms']);
     }
 
     /**
@@ -26,8 +26,8 @@ class PlatformStoreRequest extends FormRequest
     {
         return [
             'name' => ['string', 'required', 'max:255'],
-            'url' => ['url', 'required', 'max:255'],
-            'vlop' => ['int', 'required']
+            'vlop' => ['int', 'required'],
+            'dsa_common_id' => ['string', 'required', 'unique:platforms,dsa_common_id']
         ];
     }
 
