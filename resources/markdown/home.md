@@ -56,7 +56,7 @@ content online.
     :links="[
     [
     'label' => 'Login',
-    'url' => route('dashboard')
+    'url' => route('profile.start')
     ],
     [
     'label' => 'Platforms FAQ',
