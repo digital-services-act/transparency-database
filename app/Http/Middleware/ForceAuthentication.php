@@ -15,7 +15,7 @@ class ForceAuthentication
             // Force authentication logic here
             if (!auth()->check()) {
                 // Redirect to the dashboard page for authentication logic
-                return redirect('/dashboard');
+                return redirect('/profile/start');
             }
         }
 
