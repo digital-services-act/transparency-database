@@ -121,7 +121,7 @@
                     </li>
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('dashboard')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('dashboard')}}">Dashboard</a>
+                        <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('analytics.index')}}">Analytics</a>
                     </li>
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
