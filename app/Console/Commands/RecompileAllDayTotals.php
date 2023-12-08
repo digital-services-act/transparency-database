@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Platform;
 use App\Models\PlatformDayTotal;
 use App\Services\PlatformDayTotalsService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class RecompileAllDayTotals extends Command
@@ -14,7 +15,7 @@ class RecompileAllDayTotals extends Command
      *
      * @var string
      */
-    protected $signature = 'platform:recompile-allday-totals';
+    protected $signature = 'platform:recompile-allday-totals {start=default}';
 
     /**
      * The console command description.
@@ -28,7 +29,8 @@ class RecompileAllDayTotals extends Command
      */
     public function handle(PlatformDayTotalsService $platform_day_totals_service): void
     {
-        $platform_day_totals = PlatformDayTotal::all();
+        $start = $this->argument('start') === 'default' ? '2023-09-25 00:00:00' : Carbon::createFromFormat('Y-m-d', $this->argument('start'))->format('Y-m-d 00:00:00');
+        $platform_day_totals = PlatformDayTotal::query()->where('date', '>=', $start)->get();
         foreach ($platform_day_totals as $platform_day_total) {
             \App\Jobs\CompilePlatformDayTotal::dispatch(
                 $platform_day_total->platform_id,
