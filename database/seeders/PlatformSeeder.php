@@ -25,7 +25,6 @@ class PlatformSeeder extends Seeder
         // Create the generic DSA platform for the DSA Team
         Platform::create([
             'name' => Platform::LABEL_DSA_TEAM,
-            'url' => 'https://transparency.dsa.ec.europa.eu',
             'vlop' => 1
         ]);
     }

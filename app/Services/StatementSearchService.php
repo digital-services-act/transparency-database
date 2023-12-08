@@ -65,7 +65,7 @@ class StatementSearchService
     public function __construct(Client $client)
     {
         $this->client     = $client;
-        $this->index_name = 'statement_' . config('app.env');
+        $this->index_name = 'statement_index';
     }
 
     /**
@@ -615,7 +615,7 @@ class StatementSearchService
   "aggregations": {
     "composite_buckets": {
       "composite": {
-        "size": 1000,
+        "size": 5000,
         "sources": []
       },
       "aggregations": {
@@ -677,7 +677,7 @@ JSON;
   "aggregations": {
     "composite_buckets": {
       "composite": {
-        "size": 1000,
+        "size": 5000,
         "sources": []
       },
       "aggregations": {
@@ -795,5 +795,162 @@ JSON;
         if (count($attributes) === 0) {
             $attributes[] = 'received_date';
         }
+    }
+
+    public function statementIndexProperties(): array
+    {
+        return [
+            'properties' =>
+                [
+                    'automated_decision'               =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'automated_detection'              =>
+                        [
+                            'type' => 'boolean'
+                        ],
+                    'category'                         =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'category_specification'           =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'content_type'                     =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'content_type_single'                     =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'content_type_other'               =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'content_language'                 =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'created_at'                       =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'received_date'                    =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'content_date'                     =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'application_date'                 =>
+                        [
+                            'type' => 'date'
+                        ],
+                    'decision_account'                 =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'account_type'                     =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'decision_facts'                   =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'decision_ground'                  =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'decision_monetary'                =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'decision_provision'               =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'decision_visibility'              =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'decision_visibility_single'              =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'id'                               =>
+                        [
+                            'type' => 'long'
+                        ],
+                    'illegal_content_explanation'      =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'illegal_content_legal_ground'     =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'incompatible_content_explanation' =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'incompatible_content_ground'      =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'platform_id'                      =>
+                        [
+                            'type' => 'long',
+                        ],
+                    'platform_name'                    =>
+                        [
+                            'type' => 'text',
+                        ],
+                    'platform_uuid'                    =>
+                        [
+                            'type' => 'text',
+                        ],
+                    'source_identity'                  =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'source_type'                      =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                    'url'                              =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'uuid'                             =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'puid'                             =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'decision_visibility_other'        =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'decision_monetary_other'          =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'territorial_scope'                =>
+                        [
+                            'type' => 'text'
+                        ],
+                    'method'                =>
+                        [
+                            'type' => 'keyword'
+                        ],
+                ]
+        ];
     }
 }

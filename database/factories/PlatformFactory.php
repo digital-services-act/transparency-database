@@ -32,6 +32,16 @@ class PlatformFactory extends Factory
         'Zalando',
         'Bing',
         'Google Search',
+        'Platform 1',
+        'Platform 2',
+        'Platform 3',
+        'Platform 4',
+        'Platform 5',
+        'Platform 6',
+        'Platform 7',
+        'Platform 8',
+        'Platform 9',
+        'Platform 10'
     ];
 
     /**
@@ -43,7 +53,7 @@ class PlatformFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->randomElement($this->platform_names),
-            'url' => $this->faker->url(),
+            'dsa_common_id' => $this->faker->uuid(),
         ];
     }
 }

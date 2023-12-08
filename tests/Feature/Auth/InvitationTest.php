@@ -49,7 +49,7 @@ class InvitationTest extends TestCase
         $this->signIn($user);
         $user->acceptInvitation();
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->get(route('statement.create'));
         $response->assertOk();
 
     }
@@ -71,7 +71,7 @@ class InvitationTest extends TestCase
         $this->signIn($user);
         $user->acceptInvitation();
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->get(route('statement.create'));
         $response->assertOk();
 
     }

@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\v1\OpenSearchAPIController;
+use App\Http\Controllers\Api\v1\PlatformAPIController;
+use App\Http\Controllers\Api\v1\PlatformUserAPIController;
 use App\Http\Controllers\Api\v1\StatementAPIController;
+use App\Http\Controllers\Api\v1\UserAPIController;
+use App\Http\Controllers\PlatformController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,15 +19,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function() {
-    Route::get('statement/{statement:uuid}', [StatementAPIController::class,'show'])->name('api.v1.statement.show')->can('view statements');
-    Route::get('statement/existing-puid/{puid}', [StatementAPIController::class,'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
-    Route::post('statement', [StatementAPIController::class,'store'])->name('api.v1.statement.store')->can('create statements');
-    Route::post('statements', [StatementAPIController::class,'storeMultiple'])->name('api.v1.statements.store')->can('create statements');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('statement/{statement:uuid}', [StatementAPIController::class, 'show'])->name('api.v1.statement.show')->can('view statements');
+    Route::get('statement/existing-puid/{puid}', [StatementAPIController::class, 'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
+    Route::post('statement', [StatementAPIController::class, 'store'])->name('api.v1.statement.store')->can('create statements');
+    Route::post('statements', [StatementAPIController::class, 'storeMultiple'])->name('api.v1.statements.store')->can('create statements');
 
 
-
-    Route::group(['middleware' => ['can:administrate']], static function(){
+    Route::group(['middleware' => ['can:administrate']], static function () {
         Route::post('opensearch/search', [OpenSearchAPIController::class, 'search'])->name('api.v1.opensearch.search');
         Route::post('opensearch/count', [OpenSearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
         Route::post('opensearch/sql', [OpenSearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
@@ -40,5 +43,14 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('opensearch/datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
         Route::get('opensearch/datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
     });
+
+    //Onboarding routes
+
+
+    Route::get('platform/{platform:dsa_common_id}', [PlatformAPIController::class, 'get'])->name('api.v1.platform.get')->can('view platforms');
+    Route::post('platform', [PlatformAPIController::class, 'store'])->name('api.v1.platform.store')->can('create platforms');
+    Route::get('user/{email}', [UserAPIController::class, 'get'])->name('api.v1.user.get')->can('view users');
+    Route::post('platform/{platform:dsa_common_id}/users', [PlatformUserAPIController::class, 'store'])->name('api.v1.platform-users.store')->can('create users');
+
 });
 

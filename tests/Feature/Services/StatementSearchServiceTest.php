@@ -235,11 +235,12 @@ class StatementSearchServiceTest extends TestCase
     {
         $this->setUpFullySeededDatabase();
         $platform_id_one = Platform::first()->id;
-        $platform_id_two = Platform::query()->whereNot('id', $platform_id_one)->inRandomOrder()->first()->id;
+        $platform_id_two = Platform::nonDsa()->whereNotIn('id',  [$platform_id_one])->inRandomOrder()->first()->id;
 
         $filters = [
             'platform_id' => [$platform_id_one, $platform_id_two],
         ];
+
 
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);

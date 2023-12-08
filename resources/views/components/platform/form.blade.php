@@ -1,7 +1,7 @@
 @props(['platform' => null, 'options' => null ])
 
 <x-ecl.textfield label="Name" name="name" id="name" required=true value="{{ $platform->name }}" />
-<x-ecl.textfield label="Url" name="url" id="url" required=true value="{{ $platform->url }}" />
+<x-ecl.textfield label="DSA Common ID" name="dsa_common_id" id="dsa_common_id" value="{{ $platform->dsa_common_id }}" />
 
 <x-ecl.radio label="Platform is VLOP"
              name="vlop"

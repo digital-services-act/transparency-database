@@ -410,7 +410,9 @@ class Statement extends Model
      */
     public function searchableAs()
     {
-        return 'statement_' . config('app.env');
+        // This is an alias, not the actual index.
+        // So in your opensearch you need to have an index with an alias 'statement_index'
+        return 'statement_index';
     }
 
     public function toSearchableArray()

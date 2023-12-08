@@ -27,17 +27,5 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-//TODO: accept invitation when logged in
-//
-//        Auth::viaRequest('eu-login', function ($request) {
-//            if (session()->get('cas_user')) {
-//                if (cas()->isAuthenticated()) {
-//                    $user =  User::firstOrCreateByAttributes(cas()->getAttributes());
-//
-//                    $user->acceptInvitation();
-//                    return $user;
-//                } else return null;
-//            } else return null;
-//        });
     }
 }

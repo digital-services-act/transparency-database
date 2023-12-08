@@ -14,7 +14,7 @@ class StatementsDayArchive extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:day-archive {date=yesterday} {--force} {--info}';
+    protected $signature = 'statements:day-archive {date=yesterday} {--recoverupload} {--force} {--info}';
 
     /**
      * The console command description.
@@ -46,13 +46,22 @@ class StatementsDayArchive extends Command
             }
         }
 
+        $recoverupload = (bool)$this->option('recoverupload', false);
         $force = (bool)$this->option('force', false);
         $info  = (bool)$this->option('info', false);
 
-        try {
-            $day_archive_service->createDayArchive($date, $force);
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
+        if (!$recoverupload) {
+            try {
+                $day_archive_service->createDayArchive($date, $force);
+            } catch (Exception $e) {
+                $this->error($e->getMessage());
+            }
+        } else {
+            try {
+                $day_archive_service->recoverUpload($date);
+            } catch (Exception $e) {
+                $this->error($e->getMessage());
+            }
         }
 
         if ($info) {

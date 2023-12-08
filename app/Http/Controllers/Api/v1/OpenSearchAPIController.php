@@ -22,11 +22,13 @@ class OpenSearchAPIController extends Controller
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
+    private int $response_size_limit = 5242880;
+
     public function __construct(Client $client, StatementSearchService $statement_search_service)
     {
         $this->client                   = $client;
         $this->statement_search_service = $statement_search_service;
-        $this->index_name               = 'statement_' . config('app.env');
+        $this->index_name               = 'statement_index';
     }
 
     /**
@@ -127,6 +129,14 @@ class OpenSearchAPIController extends Controller
                 $this->booleanizeQueryParam('cache')
             );
 
+            $json = json_encode($results, JSON_THROW_ON_ERROR);
+            $size = mb_strlen($json);
+            $results['size'] = $size;
+
+            if ($size > $this->response_size_limit) {
+                return response()->json(['error' => 'Your request will return too much data (5mb), please ask less'], $this->error_code);
+            }
+
             return response()->json($results);
         } catch (Exception $e) {
             return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], $this->error_code);
@@ -155,6 +165,14 @@ class OpenSearchAPIController extends Controller
                 $attributes,
                 $this->booleanizeQueryParam('cache')
             );
+
+            $json = json_encode($results, JSON_THROW_ON_ERROR);
+            $size = mb_strlen($json);
+            $results['size'] = $size;
+
+            if ($size > $this->response_size_limit) {
+                return response()->json(['error' => 'Your request will return too much data (5mb), please ask less'], $this->error_code);
+            }
 
             return response()->json($results);
         } catch (Exception $e) {
@@ -185,6 +203,14 @@ class OpenSearchAPIController extends Controller
                 $this->booleanizeQueryParam('cache'),
                 $this->booleanizeQueryParam('daycache')
             );
+
+            $json = json_encode($results, JSON_THROW_ON_ERROR);
+            $size = mb_strlen($json);
+            $results['size'] = $size;
+
+            if ($size > $this->response_size_limit) {
+                return response()->json(['error' => 'Your request will return too much data (5mb), please ask less'], $this->error_code);
+            }
 
             return response()->json($results);
         } catch (Exception $e) {

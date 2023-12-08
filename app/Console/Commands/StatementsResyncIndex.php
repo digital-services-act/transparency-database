@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 
-class ResyncStatementIndex extends Command
+class StatementsResyncIndex extends Command
 {
     /**
      * The name and signature of the console command.

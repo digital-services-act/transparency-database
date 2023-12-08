@@ -6,21 +6,9 @@ efficiency and allows for automation.
 
 ## Requesting API access
 
-If you would like to have API access to create statements of reason, then please
-send an email request with your platform information to the following:
+Only designated VLOPs currently have access to the API (both sandbox/test and production) for submissions of statements of reasons under the DSA.
 
-<pre>
-    CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
-</pre>
-
-Once verified your account will then be linked to your platform and you will have the 
-ability to generate an API token.
-
-If you have other inquiries to discuss then please email the following:
-
-<pre>
-    CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
-</pre>
+If you are an Online Platform, you will be contacted for onboarding in early 2024.
 
 ## Your API Token
 
