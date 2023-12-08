@@ -34,7 +34,7 @@ This token looks something like this:
 </pre>
 
 If you do not know your token or need to generate a new token you may do so
-in the [dashboard](/dashboard) of this application. Simply click the button "Generate New Token"
+in the [user profile](/profile/start) of this application. Simply click the button "Generate New Token"
 
 This token will be shown one time, so it will need to be copied and stored safely.
 
