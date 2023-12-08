@@ -68,8 +68,7 @@
 
     <div class="ecl-site-header__banner">
         <div class="ecl-container">
-            <div class="ecl-site-header__site-name">DSA Transparency Database @env('staging')
-                    (Sandbox)
+            <div class="ecl-site-header__site-name">DSA Transparency Database
                 @endenv</div>
         </div>
     </div>
