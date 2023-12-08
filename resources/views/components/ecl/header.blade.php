@@ -46,12 +46,21 @@
                                         <div id="login-box-id" class="ecl-site-header__login-box"
                                              data-ecl-login-box="true">
 
-                                            @can('create statements')
-                                                <x-ecl.menu-item icon="gear" :link="route('profile.api.index')"
-                                            @endcan
+                                            @auth()
+                                                <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
+                                                                 title="Your Profile"/>
 
-                                            <hr class="ecl-site-header__login-separator"/>
-                                            <x-ecl.menu-item link="/logout" title="Logout"/>
+                                                @can('create statements')
+
+                                                    <x-ecl.menu-item icon="gear" :link="route('profile.api.index')"
+                                                                     title="API Token Management"/>
+
+                                                @endcan
+
+                                                <hr class="ecl-site-header__login-separator"/>
+                                                <x-ecl.menu-item link="/logout" title="Logout"/>
+
+                                            @endauth
 
                                             <br/>
                                         </div>
@@ -68,8 +77,7 @@
 
     <div class="ecl-site-header__banner">
         <div class="ecl-container">
-            <div class="ecl-site-header__site-name">DSA Transparency Database
-                @endenv</div>
+            <div class="ecl-site-header__site-name">DSA Transparency Database</div>
         </div>
     </div>
 
