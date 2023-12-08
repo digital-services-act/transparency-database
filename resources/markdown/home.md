@@ -1,12 +1,13 @@
 # Welcome to the DSA Transparency Database!
 
-Regulation (EU) 2022/2065 on a Single Market for Digital Services and amending Directive 2000/31/EC 
-(Digital Services Act), or the ‘DSA’, is a comprehensive set of new rules regulating the
-responsibilities of digital services that act as intermediaries within the EU to connect consumers with goods, services and content. These
-intermediary services include online platforms, such as online marketplaces or social media
-networks, that store and disseminate information to the public at the request of the recipients of the service. You can find more
-information about the DSA 
-[on the dedicated Commission website](https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/europe-fit-digital-age/digital-services-act-ensuring-safe-and-accountable-online-environment_en).
+The Digital Services Act (DSA), obliges providers of hosting services to inform their users of the content 
+moderation decisions they take and explain the reasons behind those decisions in so-called statements of reasons.  
+To enhance transparency and facilitate scrutiny over content moderation decisions, **providers of online platforms 
+need to submit these statements of reasons to the DSA Transparency Database**. The database allows to track the 
+content moderation decisions taken by providers of online platforms in almost real-time. It also offers various 
+tools for accessing, analysing, and downloading the information that platforms need to make available when they 
+take content moderation decisions, contributing to the monitoring of the dissemination of illegal and harmful 
+content online.
 
 
 

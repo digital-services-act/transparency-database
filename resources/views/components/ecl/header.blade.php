@@ -46,12 +46,8 @@
                                         <div id="login-box-id" class="ecl-site-header__login-box"
                                              data-ecl-login-box="true">
                                             @can('create statements')
-
-                                                <x-ecl.menu-item icon="gear" :link="route('api-index')"
+                                                <x-ecl.menu-item icon="gear" :link="route('profile.api.index')"
                                                                  title="API Token Management"/>
-                                                <x-ecl.menu-item icon="growth"
-                                                                 :link="route('analytics.platform',auth()->user()->platform->uuid)"
-                                                                 title="Your Platform Analytics"/>
                                             @endcan
 
                                             <hr class="ecl-site-header__login-separator"/>
@@ -62,16 +58,7 @@
 
                                     </div>
                                     @endauth
-
-                                    </a>
                             </div>
-
-                            {{--                            <div class="">--}}
-                            {{--                                @auth--}}
-                            {{--                                    <x-impersonate />--}}
-                            {{--                                @endauth--}}
-                            {{--                            </div>--}}
-
                         </div>
                     </div>
                 </div>
@@ -137,19 +124,9 @@
                         <a href="{{route('dashboard')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('dashboard')}}">Dashboard</a>
                     </li>
 
-{{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-{{--                        <a href="{{route('analytics.index')}}" class="ecl-menu__link" data-ecl-menu-link="">Analytics</a>--}}
-{{--                    </li>--}}
-
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a href="{{route('dayarchive.index')}}" class="ecl-menu__link" data-ecl-menu-link="{{route('dayarchive.index')}}">Data Download</a>
                     </li>
-
-{{--                    @can('view dashboard')--}}
-{{--                        <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-{{--                            <a href="{{route('dashboard')}}" class="ecl-menu__link" data-ecl-menu-link="">Dashboard</a>--}}
-{{--                        </li>--}}
-{{--                    @endcan--}}
 
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a href="{{ route('page.show', ['faq']) }}" class="ecl-menu__link" data-ecl-menu-link="{{ route('page.show', ['faq']) }}">FAQ</a>
@@ -158,10 +135,6 @@
                     <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
                         <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141" class="ecl-menu__link" data-ecl-menu-link="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141">More about transparency in the DSA</a>
                     </li>
-
-{{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-{{--                        <a href="{{ route('page.show', ['faq']) }}" class="ecl-menu__link" data-ecl-menu-link="">FAQ</a>--}}
-{{--                    </li>--}}
 
                 </ul>
             </section>

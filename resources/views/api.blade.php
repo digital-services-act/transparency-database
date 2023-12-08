@@ -1,10 +1,10 @@
 @extends('layouts/ecl')
 
-@section('title', 'Profile Dashboard')
+@section('title', 'User Profile')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Dashboard" url="{{ route('dashboard') }}"/>
+    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}"/>
     <x-ecl.breadcrumb label="API" />
 @endsection
 
@@ -39,7 +39,7 @@
                 generate a new one, click the button below. This will invalidate any old tokens.
             </p>
             <p class="ecl-u-type-paragraph">
-            <form method="POST" action="{{ route('new-token') }}">
+            <form method="POST" action="{{ route('profile.api.new-token') }}">
                 @csrf
                 <input type="submit" class="ecl-button ecl-button--primary" value="Generate New Token" />
             </form>
@@ -52,7 +52,7 @@
             Would you like to create statements of reasons using the API?
         </p>
         <p class="ecl-u-type-paragraph">
-            <a href="{{ route('dashboard.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>
+            <a href="{{ route('profile.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">API Documentation</a>
         </p>
 
     </div>

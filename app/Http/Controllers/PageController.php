@@ -18,7 +18,7 @@ class PageController extends Controller
      *
      * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse|Redirector
      */
-    public function show(string $page, bool $dashboard = false): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
+    public function show(string $page, bool $profile = false): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
@@ -64,7 +64,7 @@ class PageController extends Controller
         $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
         $view_data = [
-            'dashboard' => $dashboard,
+            'profile' => $profile,
             'page_title' => $page_title,
             'breadcrumb' => $breadcrumb,
             'baseurl' => route('home'),
@@ -87,7 +87,7 @@ class PageController extends Controller
         return $this->show('home');
     }
 
-    public function dashboardShow(string $page): Factory|View|Application
+    public function profileShow(string $page): Factory|View|Application
     {
         return $this->show($page, true);
     }

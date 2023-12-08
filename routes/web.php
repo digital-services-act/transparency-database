@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyticsController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DatasetsController;
 use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\FeedbackController;
@@ -39,38 +39,35 @@ Route::middleware(['auth'])->group(function() {
     Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
     Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
 
-
-    Route::group(['middleware' => ['can:create statements']], function(){
+    Route::group(['middleware' => ['can:create statements']], function() {
         Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
         Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
     });
 
+    Route::group(['middleware' => ['can:administrate']], function(){
 
-   Route::group(['middleware' => ['can:administrate']], function(){
-
-        Route::resource('role', RoleController::class);
-        Route::resource('permission', PermissionController::class);
-        Route::resource('invitation', InvitationController::class);
-        Route::resource('user', UserController::class);
-        Route::resource('platform', PlatformController::class);
-
-   });
-
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
-
-    Route::group(['middleware' => ['can:view dashboard']], function(){
-
-        // Register the Platform
-        Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
-        Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
-
-        Route::get('/dashboard/api', [DashboardController::class, 'apiIndex'])->name('api-index');
-
-        Route::post('/new-token', [DashboardController::class, 'newToken'])->name('new-token');
-        Route::get('/dashboard/page/{page}', [PageController::class, 'dashboardShow'])->name('dashboard.page.show');
+        Route::prefix('/admin/')->group(function () {
+            Route::resource('role', RoleController::class);
+            Route::resource('permission', PermissionController::class);
+            Route::resource('invitation', InvitationController::class);
+            Route::resource('user', UserController::class);
+            Route::resource('platform', PlatformController::class);
+        });
 
     });
+
+
+    Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
+    Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
+
+    Route::group(['middleware' => ['can:create statements']], function() {
+        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index');
+        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token');
+    });
+
+    // Register the Platform
+    Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
+    Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
 });
 
@@ -93,13 +90,12 @@ Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->nam
 Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
 
 
-Route::get('/daily-archives/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
 
 Route::get('/analytics/platform-category', [AnalyticsController::class, 'forPlatformCategory'])->name('analytics.platform-category');
 
-if(strtolower(config('app.env_real')) !== 'production') {
-    Route::view('/analytics/dashboard', 'analytics.dashboard')->name('analytics.dashboard');
-}
+Route::view('/dashboard', 'dashboard')->name('dashboard');
+
 Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 

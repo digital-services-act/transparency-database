@@ -11,16 +11,16 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Laravel\Sanctum\PersonalAccessToken;
 
-class DashboardController extends Controller
+class ProfileController extends Controller
 {
     /**
      * @param Request $request
      *
      * @return Factory|View|Application
      */
-    public function dashboard(Request $request): Factory|View|Application
+    public function profile(Request $request): Factory|View|Application
     {
-        return view('dashboard',[
+        return view('profile',[
             'has_platform' => (bool)$request->user()->platform,
             'platform_name' => $request->user()->platform->name ?? ''
         ]);
@@ -55,6 +55,6 @@ class DashboardController extends Controller
     public function newToken(Request $request): Redirector|Application|RedirectResponse
     {
         $request->user()->tokens()->delete();
-        return redirect(route('api-index'));
+        return redirect(route('profile.api.index'));
     }
 }
