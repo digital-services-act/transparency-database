@@ -18,7 +18,7 @@
                             <div class="">
                                 @guest
                                     <a class="ecl-button ecl-button--ghost ecl-site-header-core__login-toggle"
-                                       href="{{ route('dashboard') }}">
+                                       href="{{ route('profile.start') }}">
                                         <svg class="ecl-icon ecl-icon--s ecl-site-header-core__icon" focusable="false"
                                              aria-hidden="true">
                                             <x-ecl.icon icon="log-in"/>
@@ -46,7 +46,7 @@
                                         <div id="login-box-id" class="ecl-site-header__login-box"
                                              data-ecl-login-box="true">
 
-                                            @auth()
+
                                                 <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
                                                                  title="Your Profile"/>
 
@@ -60,7 +60,7 @@
                                                 <hr class="ecl-site-header__login-separator"/>
                                                 <x-ecl.menu-item link="/logout" title="Logout"/>
 
-                                            @endauth
+                                            
 
                                             <br/>
                                         </div>
