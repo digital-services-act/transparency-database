@@ -27,8 +27,8 @@ class OnboardingTest extends TestCase
 
         $boardingUser = $this->signInAsOnboarding();
 
-        $this->get(route('dashboard'))->assertOk();
-        $this->get(route('api-index'))->assertOk();
+        $this->get(route('profile.start'))->assertOk();
+        $this->get(route('profile.api.index'))->assertOk();
 
 
 

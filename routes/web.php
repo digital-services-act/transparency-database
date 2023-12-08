@@ -71,6 +71,11 @@ Route::middleware(['force.auth'])->group(function () {
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token');
     });
 
+    Route::group(['middleware' => ['can:create platforms']], function() {
+        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index');
+        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token');
+    });
+
     // Register the Platform
     Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
     Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
