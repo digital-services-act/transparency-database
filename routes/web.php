@@ -14,6 +14,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -29,6 +30,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
 
 Route::middleware(['force.auth'])->group(function () {
     // Your routes that require authentication in non-production environments
