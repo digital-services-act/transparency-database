@@ -54,57 +54,10 @@ The DSA Transparency Database is publicly accessible. Visitors of the <a href="{
 can search, read, and download statements of reasons. You can find the “Search for statements of reasons”
 page <a href="{{route('statement.index')}}">here</a>. 
 
-[//]: # (For an interactive overview over the statements of reasons)
-
-[//]: # (contained in the DSA Transparency Database, you can find the “Dashboard” page <a href="{{ route&#40;'dashboard'&#41; }}">here</a>.)
 
 </x-ecl.accordion>
 
-[//]: # (<x-ecl.accordion label="What key features does the database offer for quickly summarizing information?">)
 
-[//]: # (The DSA Transparency Database dashboard offers a user-friendly interface that allows you to quickly access summarized)
-
-[//]: # (information on statements of reasons submitted by providers of online platforms. You can navigate across various)
-
-[//]: # (sections with different visualizations to obtain a comprehensive overview of the data. Each visualization can be)
-
-[//]: # (customized by a number of filters to focus, for example, on a specific &#40;set of&#41; online platforms, time frame or type of)
-
-[//]: # (restriction. The dashboard is designed to streamline the process of extracting meaningful insights from the DSA)
-
-[//]: # (Transparency Database, you can find it <a href="{{ route&#40;'dashboard'&#41; }}">here</a>.)
-
-[//]: # (</x-ecl.accordion>)
-
-[//]: # (<x-ecl.accordion label="Where can I find information on how to navigate through the dashboard? What data is displayed in)
-
-[//]: # (the dashboard?">)
-
-[//]: # (To learn more about the navigation and filtering options of the dashboard, you can visit its “Instructions &)
-
-[//]: # (Explanations” page <a href="{{ route&#40;'dashboard'&#41; }}">here</a>. This page also gives an overview of the data )
-
-[//]: # (points included in the dashboard.)
-
-[//]: # (</x-ecl.accordion>)
-
-[//]: # (<x-ecl.accordion label="Where can I find information about the data points included in the DSA Transparency Database?">)
-
-[//]: # (For more information about the data included in the DSA Transparency Database, please visit)
-
-[//]: # (this <a href="{{ route&#40;'page.show', ['documentation']&#41; }}">page</a>.)
-
-[//]: # (It explains what type of information is collected, and how the different data fields map onto Article 17 of the DSA,)
-
-[//]: # (which lays down the information required in a statement of reasons. A number of data points included in the DSA)
-
-[//]: # (Transparency database can be used to filter the aggregate visualizations of the DSA Transparency database dashboard.)
-
-[//]: # (For more information on how to navigate the dashboard & the information contained in it, please visit its)
-
-[//]: # (“Instructions & Explanations” page <a href="{{ route&#40;'dashboard'&#41; }}">here</a>.)
-
-[//]: # (</x-ecl.accordion>)
 
 <x-ecl.accordion label="What are other transparency initiatives under the DSA?">
 The DSA Transparency Database is one of many tools that the DSA has put in place to enable more transparency online. You
@@ -147,26 +100,6 @@ page. The first 1000 results from your <a href="{{ route('statement.search') }}"
 available for csv file download.
 </x-ecl.accordion>
 
-[//]: # (<x-ecl.accordion label="I would like to extract graphs directly from the dashboard. How do I do that?">)
-
-[//]: # (To extract visualizations directly from the dashboard in a jpg? Format, click on the “More options” menu on the top)
-
-[//]: # (right corner of the dashboard visualization you want to extract. Then, click on “Copy visual as image.” When your visual)
-
-[//]: # (is ready, you can paste your image to your desired destination, using “Ctrl + V” or “right-click > Paste.”)
-
-[//]: # (</x-ecl.accordion>)
-
-[//]: # ()
-[//]: # (<x-ecl.accordion label="When I export data from the visualizations of the dashboard, what are the numbers I am looking)
-
-[//]: # (at?">)
-
-[//]: # (In the dashboard, you can export the underlying data of each visualization into a csv or excel file. The data in those)
-
-[//]: # (files are the aggregate statistics based on which a particular visual is built.)
-
-[//]: # (</x-ecl.accordion>)
 
 <x-ecl.accordion label="I would like to get access to the content, for which a statement of reasons was created. How do
 I do that?">
