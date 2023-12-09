@@ -48,12 +48,8 @@ class VerifyIndex implements ShouldQueue
     public function handle(Client $client): void
     {
 
-        $stop = config('dsa.STOPREINDEXING', 0);
-
-        $end = $this->start - $this->chunk;
-        if ($end < 1) {
-            $end = 1;
-        }
+        $end = max( ($this->start - $this->chunk), $this->min);
+        
 
         Log::info('Verifying Index: ' . $this->start . ' :: ' . $end . " :: " . $this->chunk);
 
@@ -85,17 +81,17 @@ class VerifyIndex implements ShouldQueue
             'body'  => $opensearch_query,
         ])['count'] ?? -1;
 
-        if ($db_count > $opensearch_count && !$stop) {
+        if ($db_count > $opensearch_count) {
             Log::info('Missing Statements in  Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
             if ($this->chunk <= 1000) {
                 $range = range($this->start, $end);
-                Statement::query()->whereIn('id', $range)->searchable();
+                StatementIndexRange::dispatch($end, $this->start);
             } else {
                 self::dispatch($this->start, floor($this->chunk / 10), $end);
             }
         }
 
-        if ($end > $this->min && !$stop) {
+        if ($end > $this->min) {
             self::dispatch($end - 1, $this->chunk, $this->min);
         }
 
