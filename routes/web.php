@@ -44,41 +44,26 @@ Route::middleware(['force.auth'])->group(function () {
             Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
         });
 
-    Route::group(['middleware' => ['can:create statements']], function() {
-        Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
-        Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
-    });
+        Route::group(['middleware' => ['can:administrate']], function(){
+            Route::prefix('/admin/')->group(function () {
+                Route::resource('role', RoleController::class);
+                Route::resource('permission', PermissionController::class);
+                Route::resource('invitation', InvitationController::class);
+                Route::resource('user', UserController::class);
+                Route::resource('platform', PlatformController::class);
 
-    Route::group(['middleware' => ['can:administrate']], function(){
-        Route::prefix('/admin/')->group(function () {
-            Route::resource('role', RoleController::class);
-            Route::resource('permission', PermissionController::class);
-            Route::resource('invitation', InvitationController::class);
-            Route::resource('user', UserController::class);
-            Route::resource('platform', PlatformController::class);
-
+            });
         });
-    });
 
+        Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
+        Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
 
-    Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
-    Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
-
-
-
-    Route::group(['middleware' => ['can:create statements']], function() {
         Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index');
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token');
-    });
 
-    Route::group(['middleware' => ['can:create platforms']], function() {
-        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index');
-        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token');
-    });
-
-    // Register the Platform
-    Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
-    Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
+        // Register the Platform
+        Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
+        Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
     });
 

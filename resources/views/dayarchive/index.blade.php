@@ -9,10 +9,7 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Data Download"/>
-    @if($platform)
-        <x-ecl.breadcrumb :label="$platform->name"/>
-    @endif
+    <x-ecl.breadcrumb label="Data Download"/> @if($platform) <x-ecl.breadcrumb :label="$platform->name"/> @endif
 @endsection
 
 
@@ -40,7 +37,7 @@
             @if($platform)
                 <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives for {{ $platform->name }}</h1>
             @else
-                <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives</h1>
+                <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download</h1>
             @endif
 
         </div>

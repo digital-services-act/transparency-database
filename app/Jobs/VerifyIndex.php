@@ -87,7 +87,7 @@ class VerifyIndex implements ShouldQueue
 
         if ($db_count > $opensearch_count && !$stop) {
             Log::info('Missing Statements in  Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
-            if ($this->chunk <= 100) {
+            if ($this->chunk <= 1000) {
                 $range = range($this->start, $end);
                 Statement::query()->whereIn('id', $range)->searchable();
             } else {
