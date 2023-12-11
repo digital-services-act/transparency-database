@@ -48,7 +48,7 @@ class StatementIndexRange implements ShouldQueue
     public function handle(Client $client): void
     {
         // Set this in cache, to emergency stop reindexing.
-        $stop = Cache::get('stop_indexing', false);
+        $stop = Cache::get('stop_reindexing', false);
 
         if (!$stop) {
 

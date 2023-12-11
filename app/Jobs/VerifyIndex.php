@@ -49,7 +49,7 @@ class VerifyIndex implements ShouldQueue
      */
     public function handle(Client $client): void
     {
-        $stop = Cache::get('stop_indexing', false);
+        $stop = Cache::get('stop_reindexing', false);
 
         if (!$stop) {
             // The ID spread
