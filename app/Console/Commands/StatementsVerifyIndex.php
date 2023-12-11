@@ -32,6 +32,6 @@ class StatementsVerifyIndex extends Command
         $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 500 : (int)$this->argument('searchable_chunk');
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
-        VerifyIndex::dispatch($max, $min, $min, $query_chunk, $searchable_chunk);
+        VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
     }
 }

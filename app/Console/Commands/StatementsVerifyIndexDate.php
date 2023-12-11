@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\StatementIndexRange;
+use App\Jobs\VerifyIndex;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -10,14 +11,14 @@ use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
 
-class StatementsIndexDate extends Command
+class StatementsVerifyIndexDate extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:index-date {date=default} {chunk=default}';
+    protected $signature = 'statements:verify-index-date {date=default} {query_chunk=default} {searchable_chunk=default}';
 
     /**
      * The console command description.
@@ -31,15 +32,15 @@ class StatementsIndexDate extends Command
      */
     public function handle(DayArchiveService $day_archive_service, Client $client): void
     {
-        $chunk = $this->argument('chunk') === 'default' ? 500 : (int)$this->argument('chunk');
-        $date_in = $this->argument('date');
+        $query_chunk = $this->argument('query_chunk') === 'default' ? 1000000 : (int)$this->argument('query_chunk');
+        $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 500 : (int)$this->argument('searchable_chunk');
         $date = $this->argument('date') === 'default' ? Carbon::yesterday() : Carbon::createFromFormat('Y-m-d', $this->argument('date'));
 
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            StatementIndexRange::dispatch($max, $min, $chunk);
+            VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }

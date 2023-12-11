@@ -53,7 +53,6 @@ class StatementIndexRange implements ShouldQueue
         if (!$stop) {
 
             $difference = $this->max - $this->min;
-
             // If the difference is small enough then do the searchable.
             if ($difference <= $this->chunk) {
 

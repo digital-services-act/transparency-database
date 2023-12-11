@@ -58,34 +58,15 @@ class VerifyIndex implements ShouldQueue
             // Is the spread small enough to a decent query on?
             if ($id_difference <= $this->query_chunk) {
                 $db_count         = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->count();
-                $opensearch_query = [
-                    "query" => [
-                        "bool" => [
-                            "filter"               => [
-                                [
-                                    "range" => [
-                                        "id" => [
-                                            "from"          => $this->min,
-                                            "to"            => $this->max,
-                                            "include_lower" => true,
-                                            "include_upper" => true,
-                                            "boost"         => 1.0
-                                        ]
-                                    ]
-                                ]
-                            ],
-                            "adjust_pure_negative" => true,
-                            "boost"                => 1.0
-                        ]
-                    ]
-                ];
-                $opensearch_count = $client->count([
-                    'index' => 'statement_index',
-                    'body'  => $opensearch_query,
-                ])['count'] ?? -1;
+                $opensearch_sql = "SELECT count(id) FROM statement_index WHERE id >= ".$this->min. " AND id <= " . $this->max;
+
+                $opensearch_count = $client->sql()->query([
+                    'query'  => $opensearch_sql,
+                ])['datarows'][0][0] ?? -1;
 
                 // How much were we off?
                 $off = $db_count - $opensearch_count;
+
 
                 // Did we have a difference?
                 if ($off > 0) {

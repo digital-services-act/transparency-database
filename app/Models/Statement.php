@@ -422,6 +422,7 @@ class Statement extends Model
         $received_date->second = 0;
 
         return [
+            'id' => $this->id,
             'decision_visibility' => $this->decision_visibility,
             'decision_visibility_single' => implode("__", $this->decision_visibility),
             'category_specification' => $this->category_specification,
