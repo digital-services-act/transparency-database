@@ -527,7 +527,7 @@ The value provided must be an array with one of the following:
 
 ###  Other Keyword (category_specification_other)
 
-This is required if KEYWORD_OTHER is part of the category_specification.
+This field can be provided if KEYWORD_OTHER is part of the category_specification.
 
 Limited to 500 characters.
 
