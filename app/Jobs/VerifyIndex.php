@@ -49,7 +49,7 @@ class VerifyIndex implements ShouldQueue
     {
 
         $end = max( ($this->start - $this->chunk), $this->min);
-        
+
 
         Log::info('Verifying Index: ' . $this->start . ' :: ' . $end . " :: " . $this->chunk);
 

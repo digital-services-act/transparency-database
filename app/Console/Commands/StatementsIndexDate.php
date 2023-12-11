@@ -6,6 +6,7 @@ use App\Jobs\StatementIndexRange;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
 
@@ -37,11 +38,11 @@ class StatementsIndexDate extends Command
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
 
-        $current = $max;
-        while($current >= $min) {
-            $new_min = max(($current - $chunk), $min);
-            StatementIndexRange::dispatch($new_min, $current, ($new_min === $min));
-            $current -= ($chunk + 1);
+
+        if ($min && $max) {
+            StatementIndexRange::dispatch($min, $max, $min, $chunk);
+        } else {
+            Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
     }
 }
