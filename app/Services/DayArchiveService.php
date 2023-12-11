@@ -229,11 +229,7 @@ class DayArchiveService
 
     public function chunkAndWrite($raw, $day_archives, $platforms): void
     {
-        $c = 1;
-        $raw->chunk(1000000, function (Collection $statements) use ($day_archives, $platforms, &$c) {
-
-            Log::info('Day Archiving Chunk Start: ' . $c);
-
+        $raw->chunk(1000000, function (Collection $statements) use ($day_archives, $platforms) {
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row = $this->mapRaw($statement, $platforms);
@@ -247,10 +243,6 @@ class DayArchiveService
                     fputcsv($day_archives[$statement->platform_id]['csv_filelight'], $rowlight);
                 }
             }
-
-            Log::info('Day Archiving Chunk End: ' . $c);
-            $c++;
-
         });
     }
 
