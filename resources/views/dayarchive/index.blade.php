@@ -8,8 +8,14 @@
 @endif
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Data Download"/> @if($platform) <x-ecl.breadcrumb :label="$platform->name"/> @endif
+    @if($platform)
+        <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
+        <x-ecl.breadcrumb label="Data Download" url="{{ route('dayarchive.index') }}" />
+        <x-ecl.breadcrumb :label="$platform->name"/>
+    @else
+        <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
+        <x-ecl.breadcrumb label="Data Download" />
+    @endif
 @endsection
 
 

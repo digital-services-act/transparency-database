@@ -52,17 +52,9 @@ of illegal and harmful content online.
 <x-ecl.accordion label="Who can use the DSA Transparency Database?">
 The DSA Transparency Database is publicly accessible. Visitors of the <a href="{{route('home')}}">website</a>
 can search, read, and download statements of reasons. You can find the “Search for statements of reasons”
-page <a href="{{route('statement.index')}}">here</a>. 
-
-
+page <a href="{{route('statement.index')}}">here</a>.
 </x-ecl.accordion>
 
-
-
-<x-ecl.accordion label="What are other transparency initiatives under the DSA?">
-The DSA Transparency Database is one of many tools that the DSA has put in place to enable more transparency online. You
-can find out about other DSA transparency tools <a href="" target="_blank">here</a>.
-</x-ecl.accordion>
 
 <x-ecl.accordion label="Where can I find more information about the DSA?">
 The DSA is a comprehensive set of new rules that regulate the responsibilities of digital services. Find out more about

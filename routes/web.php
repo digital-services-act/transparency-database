@@ -15,6 +15,7 @@ use App\Http\Controllers\StatementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -72,7 +73,12 @@ Route::get('/statement', [StatementController::class, 'index'])->name('statement
 Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
 Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
+
 Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+Route::get('/daily-archives', function(){
+    return Redirect::to('/data-download', 301);
+});
+
 Route::get('/', [PageController::class, 'showHome'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 Route::view('/dashboard', 'dashboard')->name('dashboard');

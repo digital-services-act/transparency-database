@@ -139,10 +139,6 @@
                         <a href="{{ route('page.show', ['faq']) }}" class="ecl-menu__link" data-ecl-menu-link="{{ route('page.show', ['faq']) }}">FAQ</a>
                     </li>
 
-                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141" class="ecl-menu__link" data-ecl-menu-link="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141">More about transparency in the DSA</a>
-                    </li>
-
                 </ul>
             </section>
         </div>
