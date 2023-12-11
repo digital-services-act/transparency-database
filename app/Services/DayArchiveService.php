@@ -230,7 +230,7 @@ class DayArchiveService
     public function chunkAndWrite($raw, $day_archives, $platforms): void
     {
         $c = 1;
-        $raw->chunk(3000000, function (Collection $statements) use ($day_archives, $platforms, &$c) {
+        $raw->chunk(1000000, function (Collection $statements) use ($day_archives, $platforms, &$c) {
 
             Log::info('Day Archiving Chunk Start: ' . $c);
 
