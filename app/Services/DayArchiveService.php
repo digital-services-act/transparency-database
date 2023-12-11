@@ -243,6 +243,12 @@ class DayArchiveService
                     fputcsv($day_archives[$statement->platform_id]['csv_filelight'], $rowlight);
                 }
             }
+
+            // Flush
+            foreach ($day_archives as $day_archive) {
+                fflush($day_archive['csv_file']);
+                fflush($day_archive['csv_filelight']);
+            }
         });
     }
 
