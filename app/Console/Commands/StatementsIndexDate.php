@@ -28,7 +28,6 @@ class StatementsIndexDate extends Command
 
     /**
      * Execute the console command.
-     * @throws \JsonException
      */
     public function handle(DayArchiveService $day_archive_service, Client $client): void
     {
@@ -37,7 +36,6 @@ class StatementsIndexDate extends Command
 
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
-
 
         if ($min && $max) {
             StatementIndexRange::dispatch($min, $max, $min, $chunk);

@@ -14,7 +14,7 @@ class StatementsVerifyIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:verify-index {min=default} {max=default} {chunk=default}';
+    protected $signature = 'statements:verify-index {max=default} {min=default} {query_chunk=default} {searchable_chunk=default}';
 
     /**
      * The console command description.
@@ -28,9 +28,10 @@ class StatementsVerifyIndex extends Command
      */
     public function handle(): void
     {
-        $chunk = $this->argument('chunk') === 'default' ? 1000000 : (int)$this->argument('chunk');
+        $query_chunk = $this->argument('query_chunk') === 'default' ? 1000000 : (int)$this->argument('query_chunk');
+        $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 500 : (int)$this->argument('searchable_chunk');
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
-        VerifyIndex::dispatch($max, $chunk, $min);
+        VerifyIndex::dispatch($max, $min, $min, $query_chunk, $searchable_chunk);
     }
 }

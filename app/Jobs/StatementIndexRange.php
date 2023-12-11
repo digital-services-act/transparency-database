@@ -10,7 +10,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use JsonException;
 use OpenSearch\Client;
 
@@ -21,17 +20,15 @@ class StatementIndexRange implements ShouldQueue
     public int $min;
     public int $max;
     public int $chunk;
-    public int $absolute_min;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(int $max, int $min, int $absolute_min, int $chunk)
+    public function __construct(int $max, int $min, int $chunk)
     {
         $this->min = $min;
         $this->max = $max;
         $this->chunk = $chunk;
-        $this->absolute_min = $absolute_min;
     }
 
     /**
@@ -80,16 +77,11 @@ class StatementIndexRange implements ShouldQueue
                     $client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
                 }
 
-                // Did we get to the end?
-                if ($this->min === $this->absolute_min) {
-                    Log::info('Statement Indexing Done!');
-                }
-
             } else {
                 // The difference was too big, split it in half and dispatch those jobs.
                 $break = ceil($difference / 2);
-                self::dispatch($this->max, $this->max - $break, $this->absolute_min, $this->chunk); // first half
-                self::dispatch(($this->max - $break - 1), $this->min, $this->absolute_min, $this->chunk); // second half
+                self::dispatch($this->max, $this->max - $break, $this->chunk); // first half
+                self::dispatch(($this->max - $break - 1), $this->min, $this->chunk); // second half
             }
         }
     }

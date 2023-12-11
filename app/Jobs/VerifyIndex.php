@@ -10,25 +10,27 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use OpenSearch\Client;
 
 class VerifyIndex implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $start;
-    public int $chunk;
+    public int $max;
     public int $min;
+    public int $query_chunk;
+    public int $searchable_chunk;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(int $start, int $chunk, int $min)
+    public function __construct(int $max, int $min, int $query_chunk, int $searchable_chunk)
     {
-        $this->start = $start;
+        $this->max = $max;
         $this->min = $min;
-        $this->chunk = $chunk;
+        $this->query_chunk = $query_chunk;
+        $this->searchable_chunk = $searchable_chunk;
     }
 
     /**
@@ -47,56 +49,64 @@ class VerifyIndex implements ShouldQueue
      */
     public function handle(Client $client): void
     {
+        $stop = Cache::get('stop_indexing', false);
 
-        $end = max( ($this->start - $this->chunk), $this->min);
+        if (!$stop) {
+            // The ID spread
+            $id_difference = $this->max - $this->min;
 
-
-        Log::info('Verifying Index: ' . $this->start . ' :: ' . $end . " :: " . $this->chunk);
-
-        $db_count = Statement::query()->where('id', '<=', $this->start)->where('id', '>', $end)->count();
-        $opensearch_query = [
-            "query" => [
-                "bool" => [
-                    "filter" => [
-                            [
-                                "range" => [
-                                    "id" => [
-                                        "from" => $end,
-                                        "to" => $this->start,
-                                        "include_lower" => false,
-                                        "include_upper" => true,
-                                        "boost" => 1.0
+            // Is the spread small enough to a decent query on?
+            if ($id_difference <= $this->query_chunk) {
+                $db_count         = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->count();
+                $opensearch_query = [
+                    "query" => [
+                        "bool" => [
+                            "filter"               => [
+                                [
+                                    "range" => [
+                                        "id" => [
+                                            "from"          => $this->min,
+                                            "to"            => $this->max,
+                                            "include_lower" => true,
+                                            "include_upper" => true,
+                                            "boost"         => 1.0
+                                        ]
                                     ]
                                 ]
-                            ]
-                    ],
-                "adjust_pure_negative" => true,
-                "boost" => 1.0
-                ]
-            ]
-        ];
+                            ],
+                            "adjust_pure_negative" => true,
+                            "boost"                => 1.0
+                        ]
+                    ]
+                ];
+                $opensearch_count = $client->count([
+                    'index' => 'statement_index',
+                    'body'  => $opensearch_query,
+                ])['count'] ?? -1;
 
-        $opensearch_count = $client->count([
-            'index' => 'statement_index',
-            'body'  => $opensearch_query,
-        ])['count'] ?? -1;
+                // How much were we off?
+                $off = $db_count - $opensearch_count;
 
-        if ($db_count > $opensearch_count) {
-            Log::info('Missing Statements in  Index: ' . $this->start . ' to ' . $end . ' off by ' . ($db_count - $opensearch_count));
-            if ($this->chunk <= 1000) {
-                $range = range($this->start, $end);
-                StatementIndexRange::dispatch($end, $this->start);
+                // Did we have a difference?
+                if ($off > 0) {
+                    // Is the mega chunk we are working withing the searchable call limit?
+                    if ($id_difference <= $this->searchable_chunk) {
+                        // Make it searchable/indexed
+                        StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
+                    } else {
+                        // break it into 2
+                        $break = floor($id_difference / 2);
+                        self::dispatch($this->max, $this->max - $break, $this->query_chunk, $this->searchable_chunk);
+                        self::dispatch($this->max - $break - 1, $this->min, $this->query_chunk, $this->searchable_chunk);
+                    }
+                }
+
             } else {
-                self::dispatch($this->start, floor($this->chunk / 10), $end);
+                // Break into 2
+                $break = floor($id_difference / 2);
+                self::dispatch($this->max, $this->max - $break, $this->query_chunk, $this->searchable_chunk);
+                self::dispatch($this->max - $break - 1, $this->min, $this->query_chunk, $this->searchable_chunk);
             }
-        }
-
-        if ($end > $this->min) {
-            self::dispatch($end - 1, $this->chunk, $this->min);
-        }
-
-        if ($end <= $this->min) {
-            Log::info('Finished Verifying Index to: ' . $end);
         }
     }
 }
