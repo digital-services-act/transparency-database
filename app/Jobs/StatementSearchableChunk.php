@@ -53,6 +53,8 @@ class StatementSearchableChunk implements ShouldQueue
 
         $range = range($this->start, $end);
 
+        //Log::info('Searchable Chunk: ' . $this->start . ' :: ' . $end);
+
         if ($end > $this->min) {
             $next_start = $this->start - $this->chunk - 1;
             self::dispatch($next_start, $this->chunk, $this->min);

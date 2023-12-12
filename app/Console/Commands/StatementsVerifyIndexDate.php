@@ -41,7 +41,7 @@ class StatementsVerifyIndexDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            Log::info('Index verification started for date: ' . $date->format('Y-m-d'));
+            Log::info('Index verification started for date: ' . $date->format('Y-m-d') . ' :: ' . $max . ' :: ' . $min);
             Cache::forever('verify_jobs', 1);
             VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
         } else {

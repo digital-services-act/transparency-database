@@ -51,55 +51,60 @@ class VerifyIndex implements ShouldQueue
     public function handle(Client $client): void
     {
         $stop = Cache::get('stop_reindexing', false);
-
         if (!$stop) {
             // The ID spread
             $id_difference = $this->max - $this->min;
 
             // Is the spread small enough to a decent query on?
             if ($id_difference <= $this->query_chunk) {
-                $db_count         = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->count();
-                $opensearch_sql = "SELECT count(id) FROM statement_index WHERE id >= ".$this->min. " AND id <= " . $this->max;
+                try {
+                    $db_count       = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->count();
+                    $opensearch_sql = "SELECT count(id) FROM statement_index WHERE id >= " . $this->min . " AND id <= " . $this->max;
 
-                $opensearch_count = $client->sql()->query([
-                    'query'  => $opensearch_sql,
-                ])['datarows'][0][0] ?? -1;
+                    $opensearch_count = $client->sql()->query([
+                        'query' => $opensearch_sql,
+                    ])['datarows'][0][0] ?? -1;
 
-                // How much were we off?
-                $off = $db_count - $opensearch_count;
+                    // How much were we off?
+                    $off = $db_count - $opensearch_count;
 
 
-                // Did we have a difference?
-                if ($off > 0) {
-                    // Is the mega chunk we are working withing the searchable call limit?
-                    if ($id_difference <= $this->searchable_chunk) {
-                        // Make it searchable/indexed
-                        StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
-                    } else {
-                        // break it into 2
-                        $break = floor($id_difference / 2);
-                        Cache::increment('verify_jobs');
-                        self::dispatch($this->max, $this->max - $break, $this->query_chunk, $this->searchable_chunk);
-                        Cache::increment('verify_jobs');
-                        self::dispatch($this->max - $break - 1, $this->min, $this->query_chunk, $this->searchable_chunk);
+                    // Did we have a difference?
+                    if ($off > 0) {
+                        Log::info('Counts Did Not Match: ' . $off .  ' :: ' . $db_count . ' :: ' . $opensearch_count);
+                        // Is the mega chunk we are working within the searchable call limit?
+                        if ($id_difference <= $this->searchable_chunk) {
+                            // Make it searchable/indexed
+                            StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
+                        } else {
+                            // break it into 2
+                            $break = floor($id_difference / 2);
+                            Cache::increment('verify_jobs');
+                            self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
+                            Cache::increment('verify_jobs');
+                            self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
+                        }
                     }
+                } catch (Exception $exception) {
+                    Log::error($exception->getMessage());
                 }
 
             } else {
                 // Break into 2
                 $break = floor($id_difference / 2);
                 Cache::increment('verify_jobs');
-                self::dispatch($this->max, $this->max - $break, $this->query_chunk, $this->searchable_chunk);
+                self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
                 Cache::increment('verify_jobs');
-                self::dispatch($this->max - $break - 1, $this->min, $this->query_chunk, $this->searchable_chunk);
+                self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
             }
         }
 
         Cache::decrement('verify_jobs');
 
-        if (Cache::get('verify_jobs', -1) === 0) {
+        $jobs = (int)Cache::get('verify_jobs', -1);
+        //Log::info('Verify Jobs: ' . $jobs);
+        if ($jobs === 0) {
             Log::info('Verify Jobs Done');
         }
-
     }
 }
