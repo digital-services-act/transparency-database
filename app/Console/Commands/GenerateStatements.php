@@ -2,9 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\SpamStatementCreation;
 use App\Jobs\StatementCreation;
-use App\Models\Statement;
 use Illuminate\Console\Command;
 
 class GenerateStatements extends Command
@@ -14,7 +12,7 @@ class GenerateStatements extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:generate {amount=1000} ';
+    protected $signature = 'statements:generate {amount=200} {--now}';
 
     /**
      * The console command description.
@@ -28,8 +26,8 @@ class GenerateStatements extends Command
      */
     public function handle(): void
     {
-        for ($cpt = 0; $cpt < $this->argument('amount'); $cpt++) {
-            StatementCreation::dispatch();
+        for ($cpt = 0; $cpt < (int)$this->argument('amount'); $cpt++) {
+            StatementCreation::dispatch($this->option('now'));
         }
     }
 }

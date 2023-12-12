@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Statement;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,14 +15,13 @@ class StatementCreation implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $type;
-
+    public bool $now;
     /**
      * Create a new job instance.
      */
-    public function __construct($type = 'regular')
+    public function __construct(bool $now = false)
     {
-        $this->type = $type;
+        $this->now = $now;
     }
 
     /**
@@ -29,6 +29,14 @@ class StatementCreation implements ShouldQueue
      */
     public function handle(): void
     {
-        Statement::factory()->create();
+        if ($this->now) {
+            Statement::factory()->create([
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+        } else {
+            Statement::factory()->create();
+        }
+
     }
 }
