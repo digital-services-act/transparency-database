@@ -50,7 +50,7 @@ class VerifyIndex implements ShouldQueue
      */
     public function handle(Client $client): void
     {
-        $stop = Cache::get('stop_reindexing', false);
+        $stop = false;//Cache::get('stop_reindexing', false);
 
         if (!$stop) {
             // The ID spread
@@ -78,9 +78,9 @@ class VerifyIndex implements ShouldQueue
                     } else {
                         // break it into 2
                         $break = floor($id_difference / 2);
-                        Cache::increment('verify_jobs');
+//                        Cache::increment('verify_jobs');
                         self::dispatch($this->max, $this->max - $break, $this->query_chunk, $this->searchable_chunk);
-                        Cache::increment('verify_jobs');
+//                        Cache::increment('verify_jobs');
                         self::dispatch($this->max - $break - 1, $this->min, $this->query_chunk, $this->searchable_chunk);
                     }
                 }
@@ -88,18 +88,18 @@ class VerifyIndex implements ShouldQueue
             } else {
                 // Break into 2
                 $break = floor($id_difference / 2);
-                Cache::increment('verify_jobs');
+//                Cache::increment('verify_jobs');
                 self::dispatch($this->max, $this->max - $break, $this->query_chunk, $this->searchable_chunk);
-                Cache::increment('verify_jobs');
+//                Cache::increment('verify_jobs');
                 self::dispatch($this->max - $break - 1, $this->min, $this->query_chunk, $this->searchable_chunk);
             }
         }
 
-        Cache::decrement('verify_jobs');
+//        Cache::decrement('verify_jobs');
 
-        if (Cache::get('verify_jobs', -1) === 0) {
-            Log::info('Verify Jobs Done');
-        }
+//        if (Cache::get('verify_jobs', -1) === 0) {
+//            Log::info('Verify Jobs Done');
+//        }
 
     }
 }

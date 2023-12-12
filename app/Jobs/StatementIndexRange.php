@@ -36,10 +36,10 @@ class StatementIndexRange implements ShouldQueue
      *
      * @return array<int, object>
      */
-    public function middleware(): array
-    {
-        return [new RateLimited('reindexing')];
-    }
+//    public function middleware(): array
+//    {
+//        return [new RateLimited('reindexing')];
+//    }
 
     /**
      * Execute the job.
@@ -48,7 +48,7 @@ class StatementIndexRange implements ShouldQueue
     public function handle(Client $client): void
     {
         // Set this in cache, to emergency stop reindexing.
-        $stop = Cache::get('stop_reindexing', false);
+//        $stop = Cache::get('stop_reindexing', false);
 
         if (!$stop) {
 
