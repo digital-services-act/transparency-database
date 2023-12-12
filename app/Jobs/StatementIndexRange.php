@@ -79,7 +79,7 @@ class StatementIndexRange implements ShouldQueue
             } else {
                 // The difference was too big, split it in half and dispatch those jobs.
                 $break = ceil($difference / 2);
-                self::dispatch($this->max, $this->max - $break, $this->chunk); // first half
+                self::dispatch($this->max, ($this->max - $break), $this->chunk); // first half
                 self::dispatch(($this->max - $break - 1), $this->min, $this->chunk); // second half
             }
         }

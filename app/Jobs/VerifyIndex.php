@@ -55,7 +55,7 @@ class VerifyIndex implements ShouldQueue
             // The ID spread
             $id_difference = $this->max - $this->min;
 
-            // Is the spread small enough to a decent query on?
+            // Is the spread small enough to do a decent query on?
             if ($id_difference <= $this->query_chunk) {
                 try {
                     $db_count       = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->count();

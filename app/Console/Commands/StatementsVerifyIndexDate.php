@@ -33,8 +33,8 @@ class StatementsVerifyIndexDate extends Command
      */
     public function handle(DayArchiveService $day_archive_service, Client $client): void
     {
-        $query_chunk = $this->argument('query_chunk') === 'default' ? 10000 : (int)$this->argument('query_chunk');
-        $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 100 : (int)$this->argument('searchable_chunk');
+        $query_chunk = $this->argument('query_chunk') === 'default' ? 100000 : (int)$this->argument('query_chunk');
+        $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 1000 : (int)$this->argument('searchable_chunk');
         $date = $this->argument('date') === 'default' ? Carbon::yesterday() : Carbon::createFromFormat('Y-m-d', $this->argument('date'));
 
         $min = $day_archive_service->getFirstIdOfDate($date);
