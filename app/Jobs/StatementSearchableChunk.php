@@ -35,22 +35,16 @@ class StatementSearchableChunk implements ShouldQueue
      *
      * @return array<int, object>
      */
-    public function middleware(): array
-    {
-        return [new RateLimited('reindexing')];
-    }
+//    public function middleware(): array
+//    {
+//        return [new RateLimited('reindexing')];
+//    }
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        $stop = config('dsa.STOPREINDEXING', 0);
-
-        if ($stop) {
-            return;
-        }
-
         $end = $this->start - $this->chunk;
 
         if ($end < $this->min ) {
@@ -64,6 +58,7 @@ class StatementSearchableChunk implements ShouldQueue
             self::dispatch($next_start, $this->chunk, $this->min);
         }
 
+        //echo "searchable call\n";
         Statement::query()->whereIn('id', $range)->searchable();
     }
 }
