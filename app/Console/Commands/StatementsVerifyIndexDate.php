@@ -7,6 +7,7 @@ use App\Jobs\VerifyIndex;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
@@ -25,7 +26,7 @@ class StatementsVerifyIndexDate extends Command
      *
      * @var string
      */
-    protected $description = 'Index statements for a day';
+    protected $description = 'Verify the opensearch index for date.';
 
     /**
      * Execute the console command.
@@ -40,6 +41,8 @@ class StatementsVerifyIndexDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
+            Log::info('Index verification started for date: ' . $date->format('Y-m-d'));
+            Cache::forever('verify_jobs', 1);
             VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
