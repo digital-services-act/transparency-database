@@ -78,11 +78,7 @@ class VerifyIndex implements ShouldQueue
                             StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
                         } else {
                             // break it into 2
-                            $break = floor($id_difference / 2);
-                            Cache::increment('verify_jobs');
-                            self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
-                            Cache::increment('verify_jobs');
-                            self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
+                            $this->breakItIntoTwo($id_difference);
                         }
                     }
                 } catch (Exception $exception) {
@@ -91,11 +87,7 @@ class VerifyIndex implements ShouldQueue
 
             } else {
                 // Break into 2
-                $break = floor($id_difference / 2);
-                Cache::increment('verify_jobs');
-                self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
-                Cache::increment('verify_jobs');
-                self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
+                $this->breakItIntoTwo($id_difference);
             }
         }
 
@@ -106,5 +98,19 @@ class VerifyIndex implements ShouldQueue
         if ($jobs === 0) {
             Log::info('Verify Jobs Done');
         }
+    }
+
+    /**
+     * @param int $id_difference
+     *
+     * @return void
+     */
+    private function breakItIntoTwo(int $id_difference): void
+    {
+        $break = floor($id_difference / 2);
+        Cache::increment('verify_jobs');
+        self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
+        Cache::increment('verify_jobs');
+        self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
     }
 }
