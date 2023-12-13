@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Statement::disableSearchSyncing();
 
@@ -67,11 +67,11 @@ class AppServiceProvider extends ServiceProvider
         view()->share('ecl_init', true);
 
         // Analytics Float Format
-        Blade::directive('aff', function (string $expression) {
+        Blade::directive('aff', static function (string $expression) {
             return "<?php echo number_format(floatval($expression), 2, '.', '&nbsp;'); ?>";
         });
         // Analytics Int Format
-        Blade::directive('aif', function (string $expression) {
+        Blade::directive('aif', static function (string $expression) {
             return "<?php echo number_format(intval($expression), 0, '', '&nbsp;'); ?>";
         });
         RateLimiter::for('reindexing', static function (object $job) {
