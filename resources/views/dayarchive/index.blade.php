@@ -23,18 +23,21 @@
 
     <div class="ecl-fact-figures ecl-fact-figures--col-1">
         <div class="ecl-fact-figures__description">
+
             On this page, you can download zip files containing the daily submissions of statements of reasons,
-            either for all platforms collectively or for each platform individually. The files are provided in two
-            different versions: full and light.<br />
+            either for all platforms collectively or for each platform individually. The files are provided in
+            two different versions: full and light.<br />
             <br />
             Full archive files contain all of the public data points of each individual statement of reasons
-            submitted on a given day, i.e. each file contains the entire attribute schema of the database.<br />
-            <br />
+            submitted on a given day, i.e. each file contains the entire attribute schema of the database.
             Light archive files do not contain free text attributes with a character limit higher than 2000
             characters, i.e. they do not contain the attributes illegal_content_explanation,
-            incompatible_content_explanation & decision_facts. Light archive files also do not contain the
-            territorial_scope attribute. The archiving feature is currently in a beta version and the file structure
-            might change in future iterations, with additional file formats being considered as well.
+            incompatible_content_explanation & decision_facts.<br />
+            <br />
+            Light archive files also do not contain the territorial_scope attribute. The archiving feature is
+            currently in a beta version and the file structure might change in future iterations, with additional
+            file formats being considered as well.
+
         </div>
     </div>
 
