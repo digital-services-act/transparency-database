@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Platform;
 use App\Models\Statement;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -353,6 +354,27 @@ class StatementSearchService
         }
 
         return implode(' OR ', $ors);
+    }
+
+
+    public function bulkIndexStatements(Collection $statements)
+    {
+        if ($statements->count()) {
+            $bulk = [];
+            /** @var Statement $statement */
+            foreach ($statements as $statement) {
+                $doc    = $statement->toSearchableArray();
+                $bulk[] = json_encode([
+                    'index' => [
+                        '_index' => 'statement_index',
+                        '_id'    => $statement->id
+                    ]
+                ], JSON_THROW_ON_ERROR);
+                $bulk[] = json_encode($doc, JSON_THROW_ON_ERROR);
+            }
+            // Call the bulk and make them searchable.
+            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
+        }
     }
 
     private function startCountQuery(): string
