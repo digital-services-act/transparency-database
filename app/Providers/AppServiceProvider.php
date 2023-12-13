@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Statement;
 use GuzzleHttp\Client;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
@@ -56,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Statement::disableSearchSyncing();
 
         Sanctum::usePersonalAccessTokenModel(
             PersonalAccessToken::class

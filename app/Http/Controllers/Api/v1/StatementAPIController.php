@@ -155,7 +155,7 @@ class StatementAPIController extends Controller
 
             Statement::insert($payload['statements']);
             $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
-            $created_statements->searchable();
+
             $out = [];
             foreach ($created_statements as $created_statement) {
                 $puid = $created_statement->puid;

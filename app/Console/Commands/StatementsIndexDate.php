@@ -7,8 +7,6 @@ use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use OpenSearch\Client;
-
 
 class StatementsIndexDate extends Command
 {
@@ -29,7 +27,7 @@ class StatementsIndexDate extends Command
     /**
      * Execute the console command.
      */
-    public function handle(DayArchiveService $day_archive_service, Client $client): void
+    public function handle(DayArchiveService $day_archive_service): void
     {
         $chunk = $this->argument('chunk') === 'default' ? 500 : (int)$this->argument('chunk');
         $date_in = $this->argument('date');

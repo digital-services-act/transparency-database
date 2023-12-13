@@ -2,15 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementIndexRange;
 use App\Jobs\VerifyIndex;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenSearch\Client;
-
 
 class StatementsVerifyIndexDate extends Command
 {
@@ -31,7 +28,7 @@ class StatementsVerifyIndexDate extends Command
     /**
      * Execute the console command.
      */
-    public function handle(DayArchiveService $day_archive_service, Client $client): void
+    public function handle(DayArchiveService $day_archive_service): void
     {
         $query_chunk = $this->argument('query_chunk') === 'default' ? 100000 : (int)$this->argument('query_chunk');
         $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 1000 : (int)$this->argument('searchable_chunk');

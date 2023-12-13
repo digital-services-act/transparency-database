@@ -6,7 +6,6 @@ use App\Jobs\StatementSearchableChunk;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-
 class StatementsResyncIndex extends Command
 {
     /**

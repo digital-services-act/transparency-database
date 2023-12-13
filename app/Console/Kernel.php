@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
         $schedule->command('platform:compile-day-totals')->dailyAt('03:00');
         $schedule->command('platform:compile-day-totals all decision_ground DECISION_GROUND_ILLEGAL_CONTENT')->dailyAt('03:00');
@@ -21,6 +21,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals-categories')->dailyAt('03:00');
         $schedule->command('platform:compile-day-totals-keywords')->dailyAt('03:00');
         $schedule->command('platform:compile-day-totals-decisions')->dailyAt('03:00');
+
+        $schedule->command('statements:index-last-x')->everyFifteenMinutes();
 
         // These ones run on a separate machine long running process.
         //$schedule->command('statements:day-archive')->daily();
