@@ -15,7 +15,7 @@ class StatementsIndexLastX extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-last-x {minutes=17}';
+    protected $signature = 'statements:index-last-x {minutes=6}';
 
     /**
      * The console command description.

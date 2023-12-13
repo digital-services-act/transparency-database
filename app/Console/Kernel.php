@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:compile-day-totals-keywords')->dailyAt('03:00');
         $schedule->command('platform:compile-day-totals-decisions')->dailyAt('03:00');
 
-        $schedule->command('statements:index-last-x')->everyFifteenMinutes();
+        $schedule->command('statements:index-last-x')->everyFiveMinutes();
 
         // These ones run on a separate machine long running process.
         //$schedule->command('statements:day-archive')->daily();
