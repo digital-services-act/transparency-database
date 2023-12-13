@@ -103,6 +103,7 @@ class StatementAPIController extends Controller
             return $potential_statement['puid'];
         }, $payload['statements']);
 
+        // Are all the puids unique with in the call?
         $unique_puids_to_check = array_unique($puids_to_check);
         if (count($unique_puids_to_check) !== count($puids_to_check)) {
             $errors  = [
@@ -116,6 +117,7 @@ class StatementAPIController extends Controller
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        // Do any of the puids already exists in the DB?
         $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
         if (count($existing)) {
             $errors  = [
@@ -130,7 +132,9 @@ class StatementAPIController extends Controller
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        // Ok it is show time.
 
+        // Enrich the payload for bulk insert.
         $now = Carbon::now();
         $uuids = [];
         foreach ($payload['statements'] as $index => $potential_statement) {
@@ -153,9 +157,13 @@ class StatementAPIController extends Controller
 
         try {
 
+            // Bulk Insert
             Statement::insert($payload['statements']);
+
+            // Get them back
             $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
 
+            // Build an output.
             $out = [];
             foreach ($created_statements as $created_statement) {
                 $puid = $created_statement->puid;
