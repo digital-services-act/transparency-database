@@ -33,6 +33,10 @@ of illegal and harmful content online.
 [
 'label' => 'Analytics',
 'url' => route('analytics.index')
+],
+[
+'label' => 'Advanced Search',
+'url' => route('statement.search')
 ]
 ]"
 />
