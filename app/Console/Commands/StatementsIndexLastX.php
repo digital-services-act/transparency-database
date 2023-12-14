@@ -33,7 +33,7 @@ class StatementsIndexLastX extends Command
         $start->subMinutes((int)$this->argument('minutes'));
         $end = Carbon::now();
 
-        $statement_ids = Statement::query()->where('created_at', '>=', $start)->where('created_at', '<=', $end)->pluck('id');
+        $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->where('created_at', '<=', $end)->pluck('id');
 
         Log::info('Indexing: ' .  $statement_ids->count());
 
