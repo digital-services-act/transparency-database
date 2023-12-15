@@ -37,6 +37,8 @@ class StatementsVerifyIndex extends Command
 
         Log::info('Index verification started for ids: ' . $max . ' :: ' . $min);
         Cache::forever('verify_jobs', 1);
+        Cache::forever('verify_jobs_run', 1);
+        Cache::forever('verify_jobs_diff', 0);
         VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
     }
 }

@@ -40,6 +40,8 @@ class StatementsVerifyIndexDate extends Command
         if ($min && $max) {
             Log::info('Index verification started for date: ' . $date->format('Y-m-d') . ' :: ' . $max . ' :: ' . $min);
             Cache::forever('verify_jobs', 1);
+            Cache::forever('verify_jobs_run', 1);
+            Cache::forever('verify_jobs_diff', 0);
             VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));

@@ -71,7 +71,9 @@ class VerifyIndex implements ShouldQueue
 
                     // Did we have a difference?
                     if ($off > 0) {
-                        Log::info('Counts Did Not Match: ' . $off .  ' :: ' . $db_count . ' :: ' . $opensearch_count);
+                        $total_diff = (int)Cache::get('verify_jobs_diff');
+                        $total_diff += $off;
+                        Cache::forever('verify_jobs_diff', $total_diff);
                         // Is the mega chunk we are working within the searchable call limit?
                         if ($id_difference <= $this->searchable_chunk) {
                             // Make it searchable/indexed
@@ -97,6 +99,8 @@ class VerifyIndex implements ShouldQueue
         //Log::info('Verify Jobs: ' . $jobs);
         if ($jobs === 0) {
             Log::info('Verify Jobs Done');
+            Log::info('Verify Jobs Difference: ' . (int)Cache::get('verify_jobs_diff', 0));
+            Log::info('Verify Jobs Run: ' . (int)Cache::get('verify_jobs_run', 0));
         }
     }
 
@@ -109,8 +113,10 @@ class VerifyIndex implements ShouldQueue
     {
         $break = floor($id_difference / 2);
         Cache::increment('verify_jobs');
+        Cache::increment('verify_jobs_run');
         self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
         Cache::increment('verify_jobs');
+        Cache::increment('verify_jobs_run');
         self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
     }
 }
