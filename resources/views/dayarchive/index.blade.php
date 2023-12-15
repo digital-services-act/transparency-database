@@ -31,9 +31,9 @@
             submitted on a given day. That is, each file contains the entire attribute schema of the database.<br />
             <br />
             Light archive files do not contain free text attributes with a character limit higher than 2000
-            characters. That is, they do not contain the attributes illegal_content_explanation,
-            incompatible_content_explanation and decision_facts. Light archive files also do not contain
-            the territorial_scope attribute. The archiving feature is currently in a beta version and the
+            characters. That is, they do not contain the attributes <em>illegal_content_explanation</em>,
+            <em>incompatible_content_explanation</em> and <em>decision_facts</em>. Light archive files also do not contain
+            the <em>territorial_scope attribute</em>. The archiving feature is currently in a beta version and the
             file structure might change in future iterations, with additional file formats being considered as well.<br />
             <br />
             The files are provided in the Comma-Separated Values (CSV) zipped format. Each file is accompanied
