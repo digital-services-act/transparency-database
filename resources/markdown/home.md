@@ -3,7 +3,7 @@
 <div class="ecl-u-mb-l" style="width: 100% !important; color: #404040 !important;
 font: normal normal 400 1rem/1.5rem arial,sans-serif !important;">
 The Digital Services Act (DSA), obliges providers of hosting services to inform their users of the content moderation 
-decisions they take and explain the reasons behind those decisions in so-called statements of reasons.
+decisions they take and explain the reasons behind those decisions in so-called <strong>statements of reasons</strong>.
 </div>
 <div class="" style="width: 100% !important; color: #404040 !important;
 font: normal normal 400 1rem/1.5rem arial,sans-serif !important;">
