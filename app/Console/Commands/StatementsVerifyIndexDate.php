@@ -43,8 +43,14 @@ class StatementsVerifyIndexDate extends Command
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
             Log::warning('Will try the fall back query.');
-            $min = Statement::query()->selectRaw('min(id) as min')->where('created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')->first()->min;
-            $max = Statement::query()->selectRaw('max(id) as max')->where('created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')->first()->max;
+            $min = Statement::query()->selectRaw('min(id) as min')
+                                     ->where('created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')
+                                     ->where('created_at', '<=', $date->format('Y-m-d') . ' 00:30:00')
+                                     ->first()->min;
+            $max = Statement::query()->selectRaw('max(id) as max')
+                                     ->where('created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')
+                                     ->where('created_at', '>=', $date->format('Y-m-d') . ' 23:29:29')
+                                     ->first()->max;
             if ( ! $min || ! $max) {
                 Log::warning('Not able to obtain the highest or lowest ID for the day even with the fallback query: ' . $date->format('Y-m-d'));
                 return;
