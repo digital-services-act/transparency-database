@@ -15,7 +15,7 @@ class StatementsIndexLastX extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-last-x {minutes=5}';
+    protected $signature = 'statements:index-last-x {minutes=7}';
 
     /**
      * The console command description.
@@ -29,17 +29,12 @@ class StatementsIndexLastX extends Command
      */
     public function handle(): void
     {
-        // We can't try to index right to last second. The query can hang.
-        // So we shift 2 minutes back.
-
         $start = Carbon::now();
-        $ago = (int)$this->argument('minutes');
-        $start->subMinutes($ago)->subMinutes(3);
+        $start->subMinutes((int)$this->argument('minutes'));
 
-        $end = Carbon::now();
-        $end->subMinutes(2);
+        $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->pluck('id');
 
-        $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->where('created_at', '<=', $end)->pluck('id');
+        Log::info('Indexing: ' .  $statement_ids->count());
 
         $statement_ids->chunk(400)->each(function($bag){
             StatementIndexBag::dispatch($bag->toArray());
