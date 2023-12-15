@@ -6,6 +6,7 @@ use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class StatementsDayArchive extends Command
 {
@@ -29,6 +30,8 @@ class StatementsDayArchive extends Command
      */
     public function handle(DayArchiveService $day_archive_service)
     {
+        Log::debug('Day Archiving has been run!');
+
         if ( ! config('filesystems.disks.s3ds.bucket')) {
             $this->error('In order to make day archives, you need to define the "s3ds" bucket.');
 
