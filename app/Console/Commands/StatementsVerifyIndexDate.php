@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\VerifyIndex;
+use App\Models\Statement;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -45,6 +46,13 @@ class StatementsVerifyIndexDate extends Command
             VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
+            Log::warning('Will try the fall back query.');
+            $min = Statement::query()->selectRaw('min(id) as min')->where('created_at', '>=', $date->format('Y-m-d') . ' 00:00:00')->first()->min;
+            $max = Statement::query()->selectRaw('max(id) as max')->where('created_at', '<=', $date->format('Y-m-d') . ' 23:59:59')->first()->max;
+            Cache::forever('verify_jobs', 1);
+            Cache::forever('verify_jobs_run', 1);
+            Cache::forever('verify_jobs_diff', 0);
+            VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
         }
     }
 }
