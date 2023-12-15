@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $this->scheduleCommandsToRunDaily($schedule);
+        $schedule->command('statements:verify-index-date')->dailyAt('01:00');
         $schedule->command('statements:index-last-x')->everyFiveMinutes();
 
         // These ones run on a separate machine long running process.
