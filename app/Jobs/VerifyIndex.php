@@ -91,9 +91,11 @@ class VerifyIndex implements ShouldQueue
                 // Break into 2
                 $this->breakItIntoTwo($id_difference);
             }
-        }
 
-        Cache::decrement('verify_jobs');
+            Cache::decrement('verify_jobs');
+            Cache::increment('verify_verified', $id_difference);
+
+        }
 
         $jobs = (int)Cache::get('verify_jobs', -1);
         //Log::info('Verify Jobs: ' . $jobs);
@@ -101,6 +103,7 @@ class VerifyIndex implements ShouldQueue
             Log::info('Verify Jobs Done');
             Log::info('Verify Jobs Difference: ' . (int)Cache::get('verify_jobs_diff', 0));
             Log::info('Verify Jobs Run: ' . (int)Cache::get('verify_jobs_run', 0));
+            Log::info('Verify Verified: ' . (int)Cache::get('verify_verified', 0));
         }
     }
 

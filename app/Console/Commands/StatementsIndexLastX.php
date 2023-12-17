@@ -34,7 +34,7 @@ class StatementsIndexLastX extends Command
 
         $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->pluck('id');
 
-        Log::info('Indexing: ' .  $statement_ids->count());
+        //Log::info('Indexing: ' .  $statement_ids->count());
 
         $statement_ids->chunk(400)->each(function($bag){
             StatementIndexBag::dispatch($bag->toArray());

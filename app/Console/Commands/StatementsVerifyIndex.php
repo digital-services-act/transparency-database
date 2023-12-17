@@ -39,6 +39,7 @@ class StatementsVerifyIndex extends Command
         Cache::forever('verify_jobs', 1);
         Cache::forever('verify_jobs_run', 1);
         Cache::forever('verify_jobs_diff', 0);
+        Cache::forever('verify_verified', 0);
         VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
     }
 }
