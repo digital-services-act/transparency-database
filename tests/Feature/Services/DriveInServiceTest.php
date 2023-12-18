@@ -2,9 +2,7 @@
 
 namespace Tests\Feature\Services;
 
-use App\Models\Statement;
 use App\Services\DriveInService;
-use App\Services\EuropeanCountriesService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;

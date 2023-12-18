@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class StatementAPIController extends Controller
@@ -91,13 +92,34 @@ class StatementAPIController extends Controller
         return response()->json($out, Response::HTTP_CREATED);
     }
 
-    public function storeMultiple(StatementsStoreRequest $request): JsonResponse
+    public function storeMultiple(Request $request): JsonResponse
     {
         $platform_id = $this->getRequestUserPlatformId($request);
         $user_id     = $request->user()->id;
         $method      = Statement::METHOD_API_MULTI;
 
-        $payload = $request->validated();
+        $payload = $request->validate([
+            'statements' => 'required|array',
+        ]);
+
+        $statementValidator = new StatementStoreRequest();
+
+        $errors = [];
+        foreach ($payload['statements'] as $index => $statement) {
+
+            // Create a new validator instance for each statement
+            $validator = Validator::make($statement, $statementValidator->rules());
+
+            // Check if validation fails and collect errors
+            if ($validator->fails()) {
+                $errors["statement_{$index}"] = $validator->errors()->toArray();
+            }
+        }
+
+        if (!empty($errors)) {
+            // Return validation errors as a JSON response
+            return response()->json(['errors' => $errors], 422);
+        }
 
         $puids_to_check = array_map(static function ($potential_statement) {
             return $potential_statement['puid'];
@@ -122,19 +144,19 @@ class StatementAPIController extends Controller
         if (count($existing)) {
             $errors  = [
                 'puid'           => [
-                    'The platform identifier(s) are not all unique within this platform.'
+                    'the platform identifier(s) are not all unique within this platform.'
                 ],
                 'existing_puids' => $existing
             ];
-            $message = 'The platform identifier(s) given are not all unique within this platform.';
+            $message = 'the platform identifier(s) given are not all unique within this platform.';
             $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // Ok it is show time.
 
-        // Enrich the payload for bulk insert.
+
+        // enrich the payload for bulk insert.
         $now = Carbon::now();
         $uuids = [];
         foreach ($payload['statements'] as $index => $potential_statement) {

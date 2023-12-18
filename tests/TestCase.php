@@ -3,7 +3,6 @@
 namespace Tests;
 
 use App\Models\Platform;
-use App\Models\Statement;
 use App\Models\User;
 use Database\Seeders\OnboardingPermissionsSeeder;
 use Database\Seeders\PermissionsSeeder;

@@ -3,12 +3,10 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Invitation;
-use App\Models\Platform;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UserAPIControllerTest extends TestCase

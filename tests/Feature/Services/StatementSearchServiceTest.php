@@ -5,7 +5,6 @@ namespace Tests\Feature\Services;
 
 use App\Models\Platform;
 use App\Models\Statement;
-use App\Services\StatementQueryService;
 use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

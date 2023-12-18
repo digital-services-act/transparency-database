@@ -21,6 +21,6 @@ trait ExceptionHandlingTrait
 
         $message = "$subject Creation Query Exception Thrown: " . $e->getMessage();
 
-        return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+        return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

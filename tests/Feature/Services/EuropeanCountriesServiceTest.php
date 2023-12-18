@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

@@ -3,14 +3,10 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Platform;
-use App\Models\Statement;
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
