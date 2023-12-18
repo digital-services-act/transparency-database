@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Statement;
 use App\Services\StatementSearchService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 
 class StatementIndexRange implements ShouldQueue
@@ -56,9 +58,15 @@ class StatementIndexRange implements ShouldQueue
             // If the difference is small enough then do the searchable.
             if ($difference <= $this->chunk) {
 
-                $statements = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->get();
-                $statement_search_service->bulkIndexStatements($statements);
-
+                try {
+                    $statements = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->get();
+                    $statement_search_service->bulkIndexStatements($statements);
+                } catch (Exception $e) {
+                    // Do it again
+                    Log::error('Indexing Error: ' . $e->getMessage());
+                    Log::error('Trying again!');
+                    self::dispatch($this->max, $this->min, $this->chunk);
+                }
             } else {
                 // The difference was too big, split it in half and dispatch those jobs.
                 $break = ceil($difference / 2);

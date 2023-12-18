@@ -4,12 +4,14 @@ namespace App\Jobs;
 
 use App\Models\Statement;
 use App\Services\StatementSearchService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 
 class StatementIndexBag implements ShouldQueue
@@ -38,7 +40,13 @@ class StatementIndexBag implements ShouldQueue
 
         if ( ! $stop) {
             $statements = Statement::query()->whereIn('id', $this->statement_ids)->get();
-            $statement_search_service->bulkIndexStatements($statements);
+            try {
+                $statement_search_service->bulkIndexStatements($statements);
+            } catch (Exception $e) {
+                Log::error('Indexing Error: ' . $e->getMessage());
+                Log::error('Trying again!');
+                self::dispatch($this->statement_ids);
+            }
         }
     }
 }

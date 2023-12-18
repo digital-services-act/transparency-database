@@ -8,15 +8,18 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     private const DAILY_3AM = '03:00';
+    private const DAILY_1AM = '01:00';
 
     protected function schedule(Schedule $schedule): void
     {
-        $this->scheduleCommandsToRunDaily($schedule);
-        $schedule->command('statements:verify-index-date')->dailyAt('01:00');
+        // The main indexer
         $schedule->command('statements:index-last-x')->everyFiveMinutes();
 
-        // These ones run on a separate machine long running process.
-        //$schedule->command('statements:day-archive')->daily();
+        // Verify and fix things from yesterday
+        $schedule->command('statements:verify-index-date')->dailyAt(self::DAILY_1AM);
+
+        // Now the Day Totals
+        $this->scheduleCommandsToRunDaily($schedule);
     }
 
     private function scheduleCommandsToRunDaily(Schedule $schedule): void

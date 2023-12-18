@@ -35,7 +35,7 @@ class StatementAPIController extends Controller
 
     public function existingPuid(Request $request, String $puid): JsonResponse
     {
-        $platform_id = $request->user()->platform_id;
+        $platform_id = $this->getRequestUserPlatformId($request);
 
         $statement = Statement::query()->where('puid', $puid)->where('platform_id', $platform_id)->first();
         if ($statement) {
@@ -49,7 +49,7 @@ class StatementAPIController extends Controller
 
         $validated = $request->safe()->merge(
             [
-                'platform_id' => $request->user()->platform_id,
+                'platform_id' => $this->getRequestUserPlatformId($request),
                 'user_id' => $request->user()->id,
                 'method' => Statement::METHOD_API,
             ]
@@ -93,7 +93,7 @@ class StatementAPIController extends Controller
 
     public function storeMultiple(StatementsStoreRequest $request): JsonResponse
     {
-        $platform_id = $request->user()->platform_id;
+        $platform_id = $this->getRequestUserPlatformId($request);
         $user_id     = $request->user()->id;
         $method      = Statement::METHOD_API_MULTI;
 
@@ -176,5 +176,10 @@ class StatementAPIController extends Controller
         } catch (QueryException $e) {
             return $this->handleQueryException($e, 'Statement');
         }
+    }
+
+    private function getRequestUserPlatformId(Request $request): ?int
+    {
+        return $request->user()->platform_id ?? null;
     }
 }

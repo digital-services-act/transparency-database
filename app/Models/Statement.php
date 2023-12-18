@@ -5,7 +5,10 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 
@@ -394,10 +397,10 @@ class Statement extends Model
         'self'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
-        static::creating(function ($statement) {
+        static::creating(static function ($statement) {
             $statement->uuid = Str::uuid();
         });
     }
@@ -407,14 +410,14 @@ class Statement extends Model
      *
      * @return string
      */
-    public function searchableAs()
+    public function searchableAs(): string
     {
         // This is an alias, not the actual index.
         // So in your opensearch you need to have an index with an alias 'statement_index'
         return 'statement_index';
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         $received_date = $this->created_at->clone();
         $received_date->hour = 0;
@@ -473,17 +476,17 @@ class Statement extends Model
     /**
      * Get the key name used to index the model.
      */
-    public function getScoutKeyName(): mixed
+    public function getScoutKeyName(): string
     {
         return 'id';
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function platform(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function platform(): HasOne
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
@@ -517,22 +520,22 @@ class Statement extends Model
         return $this->getRawKeys('territorial_scope');
     }
 
-    public function getContentTypeAttribute()
+    public function getContentTypeAttribute(): array
     {
         return $this->getRawKeys('content_type');
     }
 
-    public function getDecisionVisibilityAttribute()
+    public function getDecisionVisibilityAttribute(): array
     {
         return $this->getRawKeys('decision_visibility');
     }
 
-    public function getCategoryAdditionAttribute()
+    public function getCategoryAdditionAttribute(): array
     {
         return $this->getRawKeys('category_addition');
     }
 
-    public function getCategorySpecificationAttribute()
+    public function getCategorySpecificationAttribute(): array
     {
         return $this->getRawKeys('category_specification');
     }
@@ -587,6 +590,8 @@ class Statement extends Model
     }
 
     /**
+     * @param $key
+     *
      * @return array
      */
     public function getRawKeys($key): array
@@ -594,12 +599,12 @@ class Statement extends Model
         if(is_null($this->getRawOriginal($key))) {
             return [];
         }
-        $out = null;
 
         // Catch potential bad json here.
         try {
             $out = json_decode($this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $e) {
+            Log::error('Statement::getRawKeys: ' . $e->getMessage());
             return [];
         }
 
@@ -613,5 +618,4 @@ class Statement extends Model
 
         return $out;
     }
-
 }
