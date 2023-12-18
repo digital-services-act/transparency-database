@@ -982,7 +982,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_store_multiple_submissions()
+    public function it_should_store_multiple_submissions_created_by_factory()
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
