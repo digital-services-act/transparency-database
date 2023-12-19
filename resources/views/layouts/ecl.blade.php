@@ -45,7 +45,7 @@
         @show
     </head>
 <body class="ecl">
-    <div id="root">
+    <div id="root" style="padding-top: 0 !important;">
 
         <x-ecl.header />
 
