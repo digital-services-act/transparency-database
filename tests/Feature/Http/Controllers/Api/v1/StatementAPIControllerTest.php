@@ -21,6 +21,23 @@ class StatementAPIControllerTest extends TestCase
     private array $required_fields;
     private Statement $statement;
 
+    /**
+     * @return array
+     */
+    public function createFullStatements($count = 5): array
+    {
+        $statements = Statement::factory()->count($count)->make()->toArray();
+
+        foreach ($statements as &$statement) {
+            $statement['puid'] = Str::uuid()->toString();
+            $statement['content_type'] = $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), 2, false);
+            unset($statement['permalink']);
+            unset($statement['platform_name']);
+            unset($statement['self']);
+        }
+        return $statements;
+    }
+
 
     protected function setUp(): void
     {
@@ -874,6 +891,8 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->source_identity);
     }
 
+
+
     /**
      * @test
      */
@@ -987,28 +1006,148 @@ class StatementAPIControllerTest extends TestCase
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
 
-        $statements = Statement::factory()->count(5)->make()->toArray();
+        $statements = $this->createFullStatements(5);
 
-        $this->assertCount(10, Statement::all());
-
-        foreach ($statements as &$statement) {
-            $statement['puid'] = Str::uuid()->toString();
-            $statement['content_type'] = $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES),2, false);
-            unset($statement['permalink']);
-            unset($statement['platform_name']);
-            unset($statement['self']);
-        }
-
-        $statementsArr = [
+        $response = $this->post(route('api.v1.statements.store'), [
             "statements" => $statements
-        ];
-        $response = $this->post(route('api.v1.statements.store'), $statementsArr, [
+        ], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(15, Statement::all());
 
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_require_decision_visibility_other_field_when_sending_multiple_statements()
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(5);
+
+        $statements[0]['decision_visibility'] = ['DECISION_VISIBILITY_OTHER'];
+        $statements[0]['decision_visibility_other'] = 'required field';
+        $statements[1]['decision_visibility'] = ['DECISION_VISIBILITY_OTHER'];
+        unset($statements[1]['decision_visibility_other']);
+        $statements[2]['decision_visibility'] = ['DECISION_VISIBILITY_OTHER'];
+        $statements[2]['decision_visibility_other'] = null;
+        $statements[3]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_LABELLED'];
+        $statements[3]['decision_visibility_other'] = null;
+        $statements[4]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_DEMOTED','DECISION_VISIBILITY_OTHER'];
+        $statements[4]['decision_visibility_other'] = null;
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(3, $response->json('errors'));
+        $this->assertEquals('The decision visibility other field is required.', $response->json('errors.statement_1.decision_visibility_other.0'));
+        $this->assertEquals('The decision visibility other field is required.', $response->json('errors.statement_2.decision_visibility_other.0'));
+        $this->assertEquals('The decision visibility other field is required.', $response->json('errors.statement_4.decision_visibility_other.0'));
+        $this->assertCount(10, Statement::all());
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_require_descriptions_when_other_fields_are_sent_via_multiple_statements()
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(5);
+
+        $statements[0]['content_type'] = ['CONTENT_TYPE_OTHER'];
+        $statements[0]['content_type_other'] = 'required field';
+        $statements[1]['content_type'] = ['CONTENT_TYPE_OTHER'];
+        unset($statements[1]['content_type_other']);
+        $statements[2]['content_type'] = ['CONTENT_TYPE_OTHER'];
+        $statements[2]['content_type_other'] = null;
+        $statements[3]['content_type'] = ['CONTENT_TYPE_IMAGE'];
+        $statements[3]['content_type_other'] = null;
+        $statements[4]['content_type'] = ['CONTENT_TYPE_IMAGE','CONTENT_TYPE_OTHER'];
+        $statements[4]['content_type_other'] = null;
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(3, $response->json('errors'));
+        $this->assertEquals('The content type other field is required.', $response->json('errors.statement_1.content_type_other.0'));
+        $this->assertEquals('The content type other field is required.', $response->json('errors.statement_2.content_type_other.0'));
+        $this->assertEquals('The content type other field is required.', $response->json('errors.statement_4.content_type_other.0'));
+        $this->assertCount(10, Statement::all());
+
+    }
+
+//    /**
+//     * @test
+//     */
+//    public function store_multiple_should_not_save_source_identity()
+//    {
+//        $this->setUpFullySeededDatabase();
+//        $this->signInAsContributor();
+//
+//        $statements = $this->createFullStatements(1);
+//
+//        $statements[0]['source_type'] = 'SOURCE_VOLUNTARY';
+//        $statements[0]['source_identity'] = 'should not be saved';
+//
+//        $response = $this->post(route('api.v1.statements.store'), [
+//            "statements" => $statements
+//        ], [
+//            'Accept' => 'application/json'
+//        ]);
+//
+//        $response->assertStatus(Response::HTTP_CREATED);
+////        $this->assertCount(11, Statement::all());
+//        //dd($response->json('statements.0.uuid'));
+//        $statement = Statement::where('uuid', $response->json('statements.0.uuid'))->first()->fresh();
+//        $this->assertNotNull($statement->source_type);
+//        $this->assertNull($statement->source_identity);
+//    }
+
+    /**
+     * @test
+     */
+    public function store_multiple_should_not_save_source_identity()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsContributor();
+
+        $this->assertCount(10, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+            'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
+            'decision_monetary_other' => 'some text that should not be saved'
+        ]);
+
+        $create = 1;
+        $sors = [];
+        while ($create--) {
+            $fields['puid'] = uniqid();
+            $sors[] = $fields;
+        }
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+//        $this->assertCount(11, Statement::all());
+//        dd($response->json('statements.0'));
+        $statement = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
+        $this->assertNotNull($statement->decision_monetary);
+        $this->assertNull($statement->decision_monetary_other);
     }
 
 

@@ -5,8 +5,6 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use App\Models\User;
 
-// Replace with the actual model you are using
-
 class UniquePlatformAndUser implements Rule
 {
     public function passes($attribute, $value)

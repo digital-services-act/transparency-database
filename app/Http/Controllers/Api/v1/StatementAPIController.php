@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -98,23 +99,26 @@ class StatementAPIController extends Controller
         $user_id     = $request->user()->id;
         $method      = Statement::METHOD_API_MULTI;
 
+
         $payload = $request->validate([
             'statements' => 'required|array',
         ]);
 
-        $statementValidator = new StatementStoreRequest();
+        $statementValidator = new StatementsStoreRequest();
 
         $errors = [];
         foreach ($payload['statements'] as $index => $statement) {
 
             // Create a new validator instance for each statement
-            $validator = Validator::make($statement, $statementValidator->rules());
+            $validator = Validator::make($statement, $statementValidator->rules($index));
 
             // Check if validation fails and collect errors
             if ($validator->fails()) {
                 $errors["statement_{$index}"] = $validator->errors()->toArray();
             }
         }
+
+
 
         if (!empty($errors)) {
             // Return validation errors as a JSON response
