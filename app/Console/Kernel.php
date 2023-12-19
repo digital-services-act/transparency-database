@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // The main indexer
-        $schedule->command('statements:index-last-x')->everyFiveMinutes();
+        $schedule->command('statements:index-last-x')->everyMinute();
 
         // Verify and fix things from yesterday
         $schedule->command('statements:verify-index-date')->dailyAt(self::DAILY_1AM);

@@ -15,14 +15,14 @@ class StatementsIndexLastX extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-last-x {minutes=6}';
+    protected $signature = 'statements:index-last-x {seconds=65}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Index statements for the last X minutes.';
+    protected $description = 'Index statements for the last X seconds.';
 
     /**
      * Execute the console command.
@@ -30,13 +30,13 @@ class StatementsIndexLastX extends Command
     public function handle(): void
     {
         $start = Carbon::now();
-        $start->subMinutes((int)$this->argument('minutes'));
+        $start->subSeconds((int)$this->argument('seconds'));
 
         $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->pluck('id');
 
         //Log::info('Indexing: ' .  $statement_ids->count());
 
-        $statement_ids->chunk(400)->each(function($bag){
+        $statement_ids->chunk(500)->each(function($bag){
             StatementIndexBag::dispatch($bag->toArray());
         });
     }
