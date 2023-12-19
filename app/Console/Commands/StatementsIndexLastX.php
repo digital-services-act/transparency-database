@@ -36,7 +36,7 @@ class StatementsIndexLastX extends Command
 
         //Log::info('Indexing: ' .  $statement_ids->count());
 
-        $statement_ids->chunk(1000)->each(function($bag){
+        $statement_ids->chunk(600)->each(function($bag){
             StatementIndexBag::dispatch($bag->toArray());
         });
     }
