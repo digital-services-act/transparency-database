@@ -173,6 +173,13 @@ class StatementAPIController extends Controller
             $payload['statements'][$index]['created_at']  = $now;
             $payload['statements'][$index]['updated_at']  = $now;
 
+            // Clean up the payload manually as the excludeIf rule is not working with multiple inputs.
+            if($payload['statements'][$index]['source_type'] == 'SOURCE_VOLUNTARY') {
+                $payload['statements'][$index]['source_identity'] = null;
+            } else {
+                $payload['statements'][$index]['source_identity'] = $payload['statements'][$index]['source_identity'] ?? '';
+            }
+
             // stringify the arrays
             foreach ($payload['statements'][$index] as $key => $value) {
                 if (is_array($value)) {

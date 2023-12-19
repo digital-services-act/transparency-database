@@ -1128,8 +1128,7 @@ class StatementAPIControllerTest extends TestCase
 
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
-            'decision_monetary_other' => 'some text that should not be saved'
+            'source_type' => 'SOURCE_VOLUNTARY'
         ]);
 
         $create = 1;
@@ -1146,8 +1145,8 @@ class StatementAPIControllerTest extends TestCase
 //        $this->assertCount(11, Statement::all());
 //        dd($response->json('statements.0'));
         $statement = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
-        $this->assertNotNull($statement->decision_monetary);
-        $this->assertNull($statement->decision_monetary_other);
+        $this->assertNotNull($statement->source_type);
+        $this->assertNull($statement->source_identity);
     }
 
 

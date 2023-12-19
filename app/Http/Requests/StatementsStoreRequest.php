@@ -35,6 +35,8 @@ class StatementsStoreRequest extends FormRequest
 
         $currentStatement = request()->get('statements')[$index];
 
+
+
         return [
             'decision_visibility' => ['array', $this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
             'decision_visibility_other' => ['max:500',
@@ -81,9 +83,7 @@ class StatementsStoreRequest extends FormRequest
 
             'decision_facts' => ['required', 'max:5000'],
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
-            'source_identity' => ['max:500',
-                Rule::excludeIf($this->checkForSourceVoluntary($currentStatement['source_type']))
-            ],
+            'source_identity' => ['max:500','nullable'],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(array_keys(Statement::AUTOMATED_DECISIONS))],
             'puid' => ['required', 'max:500'],
