@@ -31,7 +31,8 @@ class StatementIndexBag implements ShouldQueue
 
     /**
      * Execute the job.
-     * @throws JsonException
+     *
+     * @param StatementSearchService $statement_search_service
      */
     public function handle(StatementSearchService $statement_search_service): void
     {
