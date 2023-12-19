@@ -104,7 +104,7 @@ class DayArchiveServiceTest extends TestCase
     public function it_starts_csvs_closes_makes_zips_and_sha1s_and_cleans_up(): void
     {
         $this->setUpFullySeededDatabase();
-        $day_archives = $this->day_archive_service->buildStartingDayArchivesArray(Carbon::yesterday());
+        $day_archives = $this->day_archive_service->buildStartingDayArchivesArray(Carbon::createFromDate(2023, 8, 8));
         $this->day_archive_service->startAllCsvFiles($day_archives);
         Storage::assertExists($day_archives[5]['file']);
         Storage::assertExists($day_archives[13]['file']);
