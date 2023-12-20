@@ -34,7 +34,7 @@
     @foreach($dayarchives as $dayarchive)
 
         <tr class="ecl-table__row dayarchive-row">
-            <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date}}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date->format('Y-m-d')}}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>
             <td class="ecl-table__cell" data-ecl-table-header="File">
                 <a href="{{ $dayarchive->url }}"

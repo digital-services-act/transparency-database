@@ -70,11 +70,11 @@ class DayArchiveServiceTest extends TestCase
 
         // First one needs the 2
         $first = $list->first();
-        $this->assertEquals('2023-10-02', $first->date);
+        $this->assertEquals('2023-10-02', $first->date->format('Y-m-d'));
 
         // Needs to be in the right order.
         $last = $list->last();
-        $this->assertEquals('2023-10-01', $last->date);
+        $this->assertEquals('2023-10-01', $last->date->format('Y-m-d'));
 
     }
 
@@ -161,8 +161,21 @@ class DayArchiveServiceTest extends TestCase
             'total' => 1
         ]);
 
+        DayArchive::create([
+            'date' => '2023-10-02',
+            'total' => 5,
+            'platform_id' => 5
+        ]);
+
+        DayArchive::create([
+            'date' => '2023-10-01',
+            'total' => 1
+        ]);
+
         $dayarchive = $this->day_archive_service->getDayArchiveByDate(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
         $this->assertNotNull($dayarchive);
+        $this->assertEquals('2023-10-02', $dayarchive->date->format('Y-m-d'));
+        $this->assertEquals(1, $dayarchive->total);
     }
 
     /**
@@ -183,28 +196,29 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_does_not_allow_overwriting(): void
     {
-        $day_archive = $this->day_archive_service->createDayArchive(Carbon::yesterday());
+        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromDate(2023, 8, 8));
         $this->assertNotNull($day_archive);
 
         $this->expectExceptionMessage('A day archive for the date:');
-        $day_archive = $this->day_archive_service->createDayArchive(Carbon::yesterday());
+        $this->day_archive_service->createDayArchive(Carbon::createFromDate(2023, 8, 8));
     }
 
 
     /**
      * @test
+     * @throws Exception
      */
-    public function it_ensures_the_date_is_in_the_past()
+    public function it_ensures_the_date_is_in_the_past(): void
     {
         $this->expectExceptionMessage('When creating a day export you must supply a date in the past.');
-        $day_archive = $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2070-10-02'));
+        $this->day_archive_service->createDayArchive(Carbon::createFromFormat('Y-m-d', '2070-10-02'));
     }
 
     /**
      * @test
      * @return void
      */
-    public function it_gets_the_first_id_from_date()
+    public function it_gets_the_first_id_from_date(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();

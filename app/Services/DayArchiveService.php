@@ -303,7 +303,7 @@ class DayArchiveService
 
             if (!$existing) {
                 $model = DayArchive::create([
-                    'date'         => $date->format('Y-m-d'),
+                    'date'         => $date,
                     'total'        => $day_archive['slug'] === 'global' ? $this->statement_search_service->totalForDate($date) : $this->statement_search_service->totalForPlatformDate($platform, $date),
                     'platform_id'  => $day_archive['id'],
                     'url'          => $day_archive['url'],
@@ -404,17 +404,18 @@ class DayArchiveService
      */
     public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
     {
-        return DayArchive::query()->where('date', $date->format('Y-m-d'))->first();
+        return DayArchive::query()->whereDate('date', $date)->whereNull('platform_id')->first();
     }
 
     /**
+     * @param Platform $platform
      * @param Carbon $date
      *
      * @return DayArchive|Model|Builder|null
      */
     public function getDayArchiveByPlatformDate(Platform $platform, Carbon $date): DayArchive|Model|Builder|null
     {
-        return DayArchive::query()->where('date', $date->format('Y-m-d'))->where('platform_id', $platform->id)->first();
+        return DayArchive::query()->whereDate('date', $date)->where('platform_id', $platform->id)->first();
     }
 
     /**
@@ -424,7 +425,7 @@ class DayArchiveService
      */
     public function getDayArchivesByDate(Carbon $date): Builder
     {
-        return DayArchive::query()->where('date', $date->format('Y-m-d'));
+        return DayArchive::query()->whereDate('date', $date);
     }
 
     private function getSelectRawString(): string
