@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class DayArchive extends Model
 {
-    use HasFactory;
-
     protected $guarded = [];
+
+    protected $casts = [
+        'date' => 'date:Y-m-d'
+    ];
 
     public function scopeGlobal(Builder $query): void
     {

@@ -6,9 +6,8 @@ efficiency and allows for automation.
 
 ## Requesting API access
 
-Only designated VLOPs currently have access to the API (both sandbox/test and production) for submissions of statements of reasons under the DSA.
+If you are an online platform, please contact CNECT DIGITAL SERVICES at [CNECT-DIGITAL-SERVICES@ec.europa.eu](mailto:CNECT-DIGITAL-SERVICES@ec.europa.eu) to register your interest for onboarding. Currently, only designated VLOPs (Verified List of Platforms) have access to the API (both sandbox/test and production) for submissions of statements of reasons under the DSA (Digital Services Act). Other platforms that have notified the Commission will be contacted for onboarding in early 2024.
 
-If you are an Online Platform, you will be contacted for onboarding in early 2024.
 
 ## Your API Token
 
