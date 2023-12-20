@@ -40,8 +40,7 @@ class StatementsStoreRequest extends FormRequest
         return [
             'decision_visibility' => ['array', $this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
             'decision_visibility_other' => ['max:500',
-                Rule::requiredIf(in_array('DECISION_VISIBILITY_OTHER', $currentStatement['decision_visibility'])),
-                Rule::excludeIf(!in_array('DECISION_VISIBILITY_OTHER', $currentStatement['decision_visibility'])),
+                Rule::requiredIf(in_array('DECISION_VISIBILITY_OTHER', $currentStatement['decision_visibility']))
             ],
             'decision_monetary' => [$this->in(array_keys(Statement::DECISION_MONETARIES), true), 'required_without_all:decision_visibility,decision_provision,decision_account', 'nullable'],
             'decision_monetary_other' => ['required_if:decision_monetary,DECISION_MONETARY_OTHER', 'exclude_unless:decision_monetary,DECISION_MONETARY_OTHER', 'max:500'],
@@ -63,8 +62,7 @@ class StatementsStoreRequest extends FormRequest
             'content_type' => ['array', 'required', $this->in(array_keys(Statement::CONTENT_TYPES))],
 
             'content_type_other' => ['max:500',
-                Rule::requiredIf(in_array('CONTENT_TYPE_OTHER', $currentStatement['content_type'])),
-                Rule::excludeIf(!in_array('CONTENT_TYPE_OTHER', $currentStatement['content_type'])),
+                Rule::requiredIf(in_array('CONTENT_TYPE_OTHER', $currentStatement['content_type']))
             ],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],

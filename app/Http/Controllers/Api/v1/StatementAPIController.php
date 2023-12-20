@@ -173,12 +173,7 @@ class StatementAPIController extends Controller
             $payload['statements'][$index]['created_at']  = $now;
             $payload['statements'][$index]['updated_at']  = $now;
 
-            // Clean up the payload manually as the excludeIf rule is not working with multiple inputs.
-            if($payload['statements'][$index]['source_type'] == 'SOURCE_VOLUNTARY') {
-                $payload['statements'][$index]['source_identity'] = null;
-            } else {
-                $payload['statements'][$index]['source_identity'] = $payload['statements'][$index]['source_identity'] ?? '';
-            }
+            $payload = $this->processPayloadStatements($payload, $index);
 
             // stringify the arrays
             foreach ($payload['statements'][$index] as $key => $value) {
@@ -214,5 +209,79 @@ class StatementAPIController extends Controller
     private function getRequestUserPlatformId(Request $request): ?int
     {
         return $request->user()->platform_id ?? null;
+    }
+
+    /**
+     * @param array $payload
+     * @param int|string $index
+     * @return void
+     */
+    public function handleOtherFieldWithinArray(array &$payload, int|string $index, $field, $needle)
+    {
+        $field_other = $field . '_other';
+        $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
+        if (in_array($needle, $payload['statements'][$index][$field])) {
+            $payload['statements'][$index][$field_other] = $payload['statements'][$index][$field_other] ?? null;
+        } else {
+            $payload['statements'][$index][$field_other] = null;
+        }
+    }
+
+    public function handleOtherFieldWhenEqual(array &$payload, int|string $index, $field, $field_other, $needle){
+
+        $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
+        if ($payload['statements'][$index][$field] == $needle) {
+            $payload['statements'][$index][$field_other] = null;
+        } else {
+            $payload['statements'][$index][$field_other] = $payload['statements'][$index][$field_other] ?? null;
+        }
+    }
+
+    public function handleOtherFieldWhenNotEqual(array &$payload, int|string $index, $field, $field_other, $needle){
+
+        $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
+        if ($payload['statements'][$index][$field] !== $needle) {
+            $payload['statements'][$index][$field_other] = null;
+        } else {
+            $payload['statements'][$index][$field_other] = $payload['statements'][$index][$field_other] ?? null;
+        }
+    }
+
+    /**
+     * @param array $payload
+     * @param int|string $index
+     * @return array
+     */
+    public function processPayloadStatements(array $payload, int|string $index): array
+    {
+        $this->handleOtherFieldWithinArray($payload, $index, 'category_specification', 'KEYWORD_OTHER');
+        $this->handleOtherFieldWithinArray($payload, $index, 'content_type', 'CONTENT_TYPE_OTHER');
+        $this->handleOtherFieldWithinArray($payload, $index, 'decision_visibility', 'DECISION_VISIBILITY_OTHER');
+
+        $this->handleOtherFieldWhenEqual($payload, $index, 'source_type', 'source_identity','SOURCE_VOLUNTARY');
+        $this->handleOtherFieldWhenNotEqual($payload, $index, 'decision_monetary', 'decision_monetary_other','DECISION_MONETARY_OTHER');
+        $this->handleOtherFieldWhenNotEqual($payload, $index, 'decision_ground', 'illegal_content_legal_ground','DECISION_GROUND_ILLEGAL_CONTENT');
+        $this->handleOtherFieldWhenNotEqual($payload, $index, 'decision_ground', 'illegal_content_explanation','DECISION_GROUND_ILLEGAL_CONTENT');
+        $this->handleOtherFieldWhenNotEqual($payload, $index, 'decision_ground', 'incompatible_content_ground','DECISION_GROUND_INCOMPATIBLE_CONTENT');
+        $this->handleOtherFieldWhenNotEqual($payload, $index, 'decision_ground', 'incompatible_content_explanation','DECISION_GROUND_INCOMPATIBLE_CONTENT');
+        $this->handleOtherFieldWhenNotEqual($payload, $index, 'decision_ground', 'incompatible_content_illegal','DECISION_GROUND_INCOMPATIBLE_CONTENT');
+
+        return $payload;
+    }
+
+    /**
+     * @param array $payload
+     * @param int|string $index
+     * @param $field
+     * @param $field_other
+     * @return array
+     */
+    public function initFieldIfNotPresent(array $payload, int|string $index, $field, $field_other): array
+    {
+        if (!isset($payload['statements'][$index][$field])) {
+            $payload['statements'][$index][$field] = [];
+            $payload['statements'][$index][$field_other] = null;
+        }
+        return $payload;
     }
 }
