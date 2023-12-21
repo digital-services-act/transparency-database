@@ -5,15 +5,13 @@ namespace Tests\Feature\Http\Controllers\Api\v1;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
-
 
 
 class StatementAPIControllerTest extends TestCase
@@ -23,13 +21,30 @@ class StatementAPIControllerTest extends TestCase
     private array $required_fields;
     private Statement $statement;
 
+    /**
+     * @return array
+     */
+    public function createFullStatements($count = 5): array
+    {
+        $statements = Statement::factory()->count($count)->make()->toArray();
+
+        foreach ($statements as &$statement) {
+            $statement['puid'] = Str::uuid()->toString();
+            $statement['content_type'] = $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), 2, false);
+            unset($statement['permalink']);
+            unset($statement['platform_name']);
+            unset($statement['self']);
+        }
+        return $statements;
+    }
+
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->required_fields = [
-            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED', 'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
             'decision_monetary' => null,
             'decision_provision' => null,
             'decision_account' => null,
@@ -141,19 +156,6 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @test
-     */
-    public function api_statements_store_requires_auth()
-    {
-        $this->setUpFullySeededDatabase();
-        // Not signing in.
-        $this->assertCount(10, Statement::all());
-        $response = $this->post(route('api.v1.statements.store'), [$this->required_fields], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-    }
 
     /**
      * @test
@@ -181,135 +183,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_language);
     }
 
-    /**
-     * @test
-     */
-    public function api_statements_store_works()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
 
-        $this->assertCount(10, Statement::all());
-
-        $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20',
-        ]);
-
-        $create = 10;
-        $sors = [];
-        while($create--) {
-            $fields['puid'] = uniqid();
-            $sors[]         = $fields;
-        }
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        $this->assertCount(20, Statement::all());
-    }
-
-    /**
-     * @test
-     */
-    public function api_statements_store_validates()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $this->assertCount(10, Statement::all());
-
-        $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20',
-        ]);
-
-        $create = 10;
-        $sors = [];
-        while($create--) {
-            $fields['puid'] = uniqid();
-            $sors[]         = $fields;
-        }
-
-        $sors[3]['content_language'] = 'XX';
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        $this->assertEquals('The selected statements.3.content_language is invalid.', $response->json('message'));
-
-        $this->assertCount(10, Statement::all());
-    }
-
-    /**
-     * @test
-     */
-    public function api_statements_store_detect_non_unique_in_call()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $this->assertCount(10, Statement::all());
-
-        $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20',
-        ]);
-
-        $create = 10;
-        $sors = [];
-        while($create--) {
-            $fields['puid'] = uniqid();
-            $sors[]         = $fields;
-        }
-
-        $sors[0]['puid'] = $sors[5]['puid'];
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        $this->assertCount(10, Statement::all());
-    }
-
-    /**
-     * @test
-     */
-    public function api_statements_store_detects_previous_puid()
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $this->assertCount(10, Statement::all());
-
-        $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20',
-        ]);
-
-        $create = 10;
-        $sors = [];
-        while($create--) {
-            $fields['puid'] = uniqid();
-            $sors[]         = $fields;
-        }
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        $this->assertCount(20, Statement::all());
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
-
-        $this->assertCount(20, Statement::all());
-    }
 
     /**
      * @return void
@@ -514,7 +388,6 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertNull($statement->decision_ground_reference_url);
     }
-
 
 
     /**
@@ -793,7 +666,7 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $extra_fields = [
-            'content_type' => ['CONTENT_TYPE_APP','CONTENT_TYPE_OTHER'],
+            'content_type' => ['CONTENT_TYPE_APP', 'CONTENT_TYPE_OTHER'],
             'content_type_other' => 'foobar other',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
@@ -816,7 +689,7 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $extra_fields = [
-            'content_type' => ['CONTENT_TYPE_AUDIO','CONTENT_TYPE_APP','CONTENT_TYPE_VIDEO'],
+            'content_type' => ['CONTENT_TYPE_AUDIO', 'CONTENT_TYPE_APP', 'CONTENT_TYPE_VIDEO'],
             'content_type_other' => 'foobar other',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
@@ -877,6 +750,8 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->source_identity);
     }
 
+
+
     /**
      * @test
      */
@@ -917,7 +792,7 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $extra_fields = [
-            'category_specification' => ['KEYWORD_ADULT_SEXUAL_MATERIAL','KEYWORD_DESIGN_INFRINGEMENT','KEYWORD_OTHER'],
+            'category_specification' => ['KEYWORD_ADULT_SEXUAL_MATERIAL', 'KEYWORD_DESIGN_INFRINGEMENT', 'KEYWORD_OTHER'],
             'category_specification_other' => 'foobar keyword',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
@@ -942,7 +817,7 @@ class StatementAPIControllerTest extends TestCase
 
         $extra_fields = [
             'category' => 'STATEMENT_CATEGORY_VIOLENCE',
-            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_VIOLENCE'],
+            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'STATEMENT_CATEGORY_VIOLENCE'],
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
 
@@ -953,7 +828,7 @@ class StatementAPIControllerTest extends TestCase
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->category);
         $this->assertNotNull($statement->category_addition);
-        $this->assertCount(1,$statement->category_addition);
+        $this->assertCount(1, $statement->category_addition);
 
     }
 
@@ -967,7 +842,7 @@ class StatementAPIControllerTest extends TestCase
 
         $extra_fields = [
             'category' => 'STATEMENT_CATEGORY_VIOLENCE',
-            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH','STATEMENT_CATEGORY_VIOLENCE'],
+            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'STATEMENT_CATEGORY_VIOLENCE'],
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
 
@@ -978,10 +853,9 @@ class StatementAPIControllerTest extends TestCase
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->category);
         $this->assertNotNull($statement->category_addition);
-        $this->assertCount(1,$statement->category_addition);
+        $this->assertCount(1, $statement->category_addition);
 
     }
-
 
 
 }

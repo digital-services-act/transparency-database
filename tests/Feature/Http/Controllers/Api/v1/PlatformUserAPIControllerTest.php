@@ -3,14 +3,10 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Platform;
-use App\Models\Statement;
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
@@ -141,22 +137,27 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $this->signInAsOnboarding();
 
-        $platform = Platform::first();
+        $platform = Platform::factory()->create([
+            'dsa_common_id' =>"foobarID"
+        ]);
+
 
         $this->emails = [
             'emails' => [
-                'email10@platform.com'
+                'email_new@platform.com'
             ]
         ];
 
         //Create a user with the same email
         $platform_user = User::factory()
             ->create(
-                ['email' => 'email10@platform.com']
+                [
+                    'email' => 'email_new@platform.com'
+                ]
             );
 
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => 'foobarID']), $this->emails, [
             'Accept' => 'application/json'
         ]);
 

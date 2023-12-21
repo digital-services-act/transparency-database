@@ -60,7 +60,7 @@ class StatementFactory extends Factory
 
         return [
 
-            'decision_visibility' => $this->faker->randomElements(array_keys(Statement::DECISION_VISIBILITIES), rand(1, count(array_keys(Statement::DECISION_VISIBILITIES))), false),
+            'decision_visibility' => $this->faker->randomElements(array_keys(Statement::DECISION_VISIBILITIES), 2, false),
             'decision_visibility_other' => $this->faker->text(100),
 
             'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),
@@ -75,12 +75,12 @@ class StatementFactory extends Factory
             'decision_ground' => $decision_ground,
             'decision_ground_reference_url' => $this->faker->url(),
 
-            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), rand(1, count(array_keys(Statement::CONTENT_TYPES))), false),
+            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES),2, false),
             'content_type_other' => $this->faker->text(100),
 
             'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
-            'category_addition' => $this->faker->randomElements(array_keys(Statement::STATEMENT_CATEGORIES), rand(1, count(array_keys(Statement::STATEMENT_CATEGORIES))), false),
-            'category_specification' => $this->faker->randomElements(array_keys(Statement::KEYWORDS), rand(1, count(array_keys(Statement::KEYWORDS))), false),
+            'category_addition' => $this->faker->randomElements(array_keys(Statement::STATEMENT_CATEGORIES), 2, false),
+            'category_specification' => $this->faker->randomElements(array_keys(Statement::KEYWORDS), 2, false),
             'category_specification_other' => $this->faker->word(),
 
             'illegal_content_legal_ground' => $decision_ground === 'DECISION_GROUND_ILLEGAL_CONTENT' ? $this->faker->realText(100) : null,
@@ -93,8 +93,9 @@ class StatementFactory extends Factory
 
 
             'puid' => $this->faker->uuid,
+            'uuid' => $this->faker->uuid,
 
-            'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, rand(1, count(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)), false),
+            'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, 2, false),
 
             'content_language' => $this->faker->randomElement(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES),
 

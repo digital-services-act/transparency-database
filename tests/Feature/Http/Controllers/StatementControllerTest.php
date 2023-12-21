@@ -3,11 +3,8 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Statement;
-use App\Models\User;
-use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\Feature\Http\Controllers\Api\v1\StatementAPIControllerTest;
