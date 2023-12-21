@@ -576,7 +576,7 @@ class Statement extends Model
         $enumValues = [];
 
         foreach ($keys as $key) {
-            Log::info($key);
+
             // Use constant() to get the value of the constant by its name
             $value = constant('App\Models\Statement::' . $key);
 

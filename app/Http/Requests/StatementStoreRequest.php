@@ -35,8 +35,8 @@ class StatementStoreRequest extends FormRequest
             'decision_visibility' => ['array', $this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
 
             'decision_visibility_other' => ['max:500',
-                Rule::requiredIf($this->checkForDecisionVisibilityOther($this)),
-                Rule::excludeIf(!$this->checkForDecisionVisibilityOther($this)),
+                Rule::requiredIf($this->checkForDecisionVisibilityOther()),
+                Rule::excludeIf(!$this->checkForDecisionVisibilityOther()),
             ],
 
             'decision_monetary' => [$this->in(array_keys(Statement::DECISION_MONETARIES), true), 'required_without_all:decision_visibility,decision_provision,decision_account', 'nullable'],
@@ -124,9 +124,8 @@ class StatementStoreRequest extends FormRequest
         return in_array('CONTENT_TYPE_OTHER', $check);
     }
 
-    private function checkForDecisionVisibilityOther($arr): bool
+    private function checkForDecisionVisibilityOther(): bool
     {
-
         $check = (array)$this->get('decision_visibility', []);
         return in_array('DECISION_VISIBILITY_OTHER', $check);
     }

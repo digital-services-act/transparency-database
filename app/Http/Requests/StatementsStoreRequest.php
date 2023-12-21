@@ -118,12 +118,5 @@ class StatementsStoreRequest extends FormRequest
         ];
     }
 
-    private function checkForSourceVoluntary($source_type): bool
-    {
-        Log::info($source_type);
-        return false;
-//        $check = (array)$this->get($source_type, []);
-//        return in_array('SOURCE_VOLUNTARY', $check);
-    }
 
 }
