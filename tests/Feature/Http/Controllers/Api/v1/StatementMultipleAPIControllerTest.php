@@ -572,7 +572,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_totally_different_statements_as_input()
+    public function store_multiple_statements_with_different_attributes_should_be_persisted_and_visible()
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -614,6 +614,18 @@ class StatementMultipleAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(13, Statement::all());
+
+        $statementA = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
+        $statementB = Statement::where('puid', $response->json('statements.1.puid'))->first()->fresh();
+
+        //Check that both can be displayed without errors
+        $this->get(route('api.v1.statement.show', [$statementA]), [
+            'Accept' => 'application/json'
+        ])->assertStatus(Response::HTTP_OK);
+
+        $this->get(route('api.v1.statement.show', [$statementB]), [
+            'Accept' => 'application/json'
+        ])->assertStatus(Response::HTTP_OK);
 
     }
 

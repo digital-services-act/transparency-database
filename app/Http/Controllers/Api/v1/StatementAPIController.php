@@ -220,11 +220,16 @@ class StatementAPIController extends Controller
     {
         $field_other = $field . '_other';
         $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
+        if (is_null($payload['statements'][$index][$field])) {
+            return;
+        }
         if (in_array($needle, $payload['statements'][$index][$field])) {
             $payload['statements'][$index][$field_other] = $payload['statements'][$index][$field_other] ?? null;
         } else {
             $payload['statements'][$index][$field_other] = null;
         }
+
+
     }
 
     public function handleOtherFieldWhenEqual(array &$payload, int|string $index, $field, $field_other, $needle)
@@ -281,7 +286,7 @@ class StatementAPIController extends Controller
     public function initFieldIfNotPresent(array $payload, int|string $index, $field, $field_other): array
     {
         if (!isset($payload['statements'][$index][$field])) {
-            $payload['statements'][$index][$field] = [];
+            $payload['statements'][$index][$field] = null;
             $payload['statements'][$index][$field_other] = null;
         }
         return $payload;
@@ -321,7 +326,7 @@ class StatementAPIController extends Controller
             "illegal_content_explanation",
             "incompatible_content_illegal"];
 
-        foreach($optional_fields as $optional_field){
+        foreach ($optional_fields as $optional_field) {
             $statement[$optional_field] = $statement[$optional_field] ?? null;
         }
 
