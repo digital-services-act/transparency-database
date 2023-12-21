@@ -248,7 +248,7 @@ class DayArchiveServiceTest extends TestCase
      * @test
      * @return void
      */
-    public function it_gets_zero_on_first()
+    public function it_gets_zero_on_first(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
