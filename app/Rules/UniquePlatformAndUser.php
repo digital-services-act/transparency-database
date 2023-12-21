@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class UniquePlatformAndUser implements Rule
 {
@@ -15,8 +16,7 @@ class UniquePlatformAndUser implements Rule
 
         // Check the uniqueness for each combination
         foreach ($emails as $email) {
-            if (User::where('platform_id', $platform->id)
-                ->where('email', $email)
+            if (User::where([['platform_id', "=", $platform->id], ['email', '=', $email]])
                 ->exists()) {
                 return false;
             }
