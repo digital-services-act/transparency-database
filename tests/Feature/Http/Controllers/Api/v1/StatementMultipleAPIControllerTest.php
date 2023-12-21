@@ -66,8 +66,6 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-
-
     /**
      * @test
      */
@@ -214,7 +212,6 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-
     /**
      * @test
      */
@@ -254,7 +251,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[2]['decision_visibility_other'] = null;
         $statements[3]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_LABELLED'];
         $statements[3]['decision_visibility_other'] = null;
-        $statements[4]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_DEMOTED','DECISION_VISIBILITY_OTHER'];
+        $statements[4]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_DEMOTED', 'DECISION_VISIBILITY_OTHER'];
         $statements[4]['decision_visibility_other'] = null;
 
         $response = $this->post(route('api.v1.statements.store'), [
@@ -289,7 +286,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[2]['content_type_other'] = null;
         $statements[3]['content_type'] = ['CONTENT_TYPE_IMAGE'];
         $statements[3]['content_type_other'] = null;
-        $statements[4]['content_type'] = ['CONTENT_TYPE_IMAGE','CONTENT_TYPE_OTHER'];
+        $statements[4]['content_type'] = ['CONTENT_TYPE_IMAGE', 'CONTENT_TYPE_OTHER'];
         $statements[4]['content_type_other'] = null;
 
         $response = $this->post(route('api.v1.statements.store'), [
@@ -363,7 +360,7 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         $statement = Statement::where('puid', 'testA')->first()->fresh();
         $this->assertNotNull($statement->content_type);
-        $this->assertEquals('content type other required field',$statement->content_type_other);
+        $this->assertEquals('content type other required field', $statement->content_type_other);
 
     }
 
@@ -402,7 +399,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertNotNull($statementA->source_type);
         $this->assertNull($statementA->source_identity);
         $this->assertNotNull($statementB->source_type);
-        $this->assertEquals('source identity required field',$statementB->source_identity);
+        $this->assertEquals('source identity required field', $statementB->source_identity);
     }
 
     /**
@@ -441,7 +438,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statementC = Statement::where('puid', 'testDecisionMonetaryC')->first()->fresh();
         $this->assertNotNull($statementA->decision_monetary);
         $this->assertNotNull($statementA->decision_monetary_other);
-        $this->assertEquals('should be persisted',$statementA->decision_monetary_other);
+        $this->assertEquals('should be persisted', $statementA->decision_monetary_other);
 
         $this->assertNull($statementB->decision_monetary_other);
         $this->assertNull($statementC->decision_monetary_other);
@@ -481,7 +478,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statementB = Statement::where('puid', 'testB')->first()->fresh();
         $statementC = Statement::where('puid', 'testC')->first()->fresh();
         $this->assertNotNull($statementA->category_specification);
-        $this->assertEquals('category specification other field value',$statementA->category_specification_other);
+        $this->assertEquals('category specification other field value', $statementA->category_specification_other);
         $this->assertNull($statementB->category_specification_other);
         $this->assertNull($statementC->category_specification_other);
 
@@ -525,13 +522,13 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statementB = Statement::where('puid', 'testDecisionGroundB')->first()->fresh();
 
         $this->assertNotNull($statementA->decision_ground);
-        $this->assertEquals('illegal_content_legal_ground should be persisted',$statementA->illegal_content_legal_ground);
-        $this->assertEquals('illegal_content_explanation should be persisted',$statementA->illegal_content_explanation);
+        $this->assertEquals('illegal_content_legal_ground should be persisted', $statementA->illegal_content_legal_ground);
+        $this->assertEquals('illegal_content_explanation should be persisted', $statementA->illegal_content_explanation);
 
         $this->assertNotNull($statementB->decision_ground);
-        $this->assertEquals('incompatible_content_ground should be persisted',$statementB->incompatible_content_ground);
-        $this->assertEquals('incompatible_content_explanation should be persisted',$statementB->incompatible_content_explanation);
-        $this->assertEquals('Yes',$statementB->incompatible_content_illegal);
+        $this->assertEquals('incompatible_content_ground should be persisted', $statementB->incompatible_content_ground);
+        $this->assertEquals('incompatible_content_explanation should be persisted', $statementB->incompatible_content_explanation);
+        $this->assertEquals('Yes', $statementB->incompatible_content_illegal);
 
     }
 
@@ -546,7 +543,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements = $this->createFullStatements(2);
 
         $statements[0]['puid'] = 'testDecisionVisibilityA';
-        $statements[0]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_REMOVED','DECISION_VISIBILITY_OTHER'];
+        $statements[0]['decision_visibility'] = ['DECISION_VISIBILITY_CONTENT_REMOVED', 'DECISION_VISIBILITY_OTHER'];
         $statements[0]['decision_visibility_other'] = 'decision_visibility_other should be persisted';
 
         $statements[1]['puid'] = 'testDecisionVisibilityB';
@@ -565,10 +562,58 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statementB = Statement::where('puid', 'testDecisionVisibilityB')->first()->fresh();
 
         $this->assertNotNull($statementA->decision_visibility);
-        $this->assertEquals('decision_visibility_other should be persisted',$statementA->decision_visibility_other);
+        $this->assertEquals('decision_visibility_other should be persisted', $statementA->decision_visibility_other);
 
         $this->assertNotNull($statementB->decision_visibility);
         $this->assertNull($statementB->decision_visibility_other);
+
+    }
+
+    /**
+     * @test
+     */
+    public function store_multiple_with_totally_different_statements_as_input()
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsContributor();
+
+        $sors = [];
+
+        //Create the light one and add it to the sors array
+        $sors[] = [
+            'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
+            'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
+            'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+            'illegal_content_legal_ground' => 'foo',
+            'illegal_content_explanation' => 'bar',
+            'territorial_scope' => ['BE', 'DE', 'FR'],
+            'source_type' => 'SOURCE_ARTICLE_16',
+            'source_identity' => 'foo',
+            'decision_facts' => 'decision and facts',
+            'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
+            'automated_detection' => 'No',
+            'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
+            'application_date' => '2023-05-18',
+            'content_date' => '2023-05-18',
+            'puid' => 'sorLight',
+        ];
+
+        $full = Statement::factory()->create()->toArray();
+        $full['puid'] = "sorFull";
+        unset($full['permalink']);
+        unset($full['platform_name']);
+        unset($full['self']);
+        $sors[] = $full;
+
+
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $sors
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(13, Statement::all());
 
     }
 
