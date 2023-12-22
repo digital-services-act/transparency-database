@@ -26,8 +26,7 @@ class StatementAPIController extends Controller
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
-    )
-    {
+    ) {
         $this->european_countries_service = $european_countries_service;
     }
 
@@ -44,17 +43,17 @@ class StatementAPIController extends Controller
         if ($statement) {
             return response()->json($statement, Response::HTTP_FOUND);
         }
+
         return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
     }
 
     public function store(StatementStoreRequest $request): JsonResponse
     {
-
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $this->getRequestUserPlatformId($request),
-                'user_id' => $request->user()->id,
-                'method' => Statement::METHOD_API,
+                'user_id'     => $request->user()->id,
+                'method'      => Statement::METHOD_API,
             ]
         )->toArray();
 
@@ -67,14 +66,14 @@ class StatementAPIController extends Controller
                 str_contains($e->getMessage(), "statements_platform_id_puid_unique") || // mysql
                 str_contains($e->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
             ) {
-                $errors = [
+                $errors  = [
                     'puid' => [
                         'The identifier given is not unique within this platform.'
                     ]
                 ];
                 $message = 'The identifier given is not unique within this platform.';
 
-                $out = ['message' => $message, 'errors' => $errors];
+                $out      = ['message' => $message, 'errors' => $errors];
                 $existing = Statement::query()->where('puid', $validated['puid'])->where('platform_id', $validated['platform_id'])->first();
                 if ($existing) {
                     $out['existing'] = $existing;
@@ -84,11 +83,10 @@ class StatementAPIController extends Controller
             }
 
             return $this->handleQueryException($e, 'Statement');
-
         }
 
 
-        $out = $statement->toArray();
+        $out         = $statement->toArray();
         $out['puid'] = $statement->puid; // Show the puid on a store.
 
         return response()->json($out, Response::HTTP_CREATED);
@@ -97,8 +95,8 @@ class StatementAPIController extends Controller
     public function storeMultiple(Request $request): JsonResponse
     {
         $platform_id = $this->getRequestUserPlatformId($request);
-        $user_id = $request->user()->id;
-        $method = Statement::METHOD_API_MULTI;
+        $user_id     = $request->user()->id;
+        $method      = Statement::METHOD_API_MULTI;
 
 
         $payload = $request->validate([
@@ -109,7 +107,6 @@ class StatementAPIController extends Controller
 
         $errors = [];
         foreach ($payload['statements'] as $index => $statement) {
-
             // Create a new validator instance for each statement
             $validator = Validator::make($statement, $statementValidator->rules($index));
 
@@ -120,7 +117,7 @@ class StatementAPIController extends Controller
         }
 
 
-        if (!empty($errors)) {
+        if ( ! empty($errors)) {
             // Return validation errors as a JSON response
             return response()->json(['errors' => $errors], 422);
         }
@@ -132,13 +129,13 @@ class StatementAPIController extends Controller
         // Are all the puids unique with in the call?
         $unique_puids_to_check = array_unique($puids_to_check);
         if (count($unique_puids_to_check) !== count($puids_to_check)) {
-            $errors = [
+            $errors  = [
                 'puid' => [
                     'The platform identifier(s) are not all unique within this call.'
                 ],
             ];
             $message = 'The platform identifier(s) are not all unique within this call.';
-            $out = ['message' => $message, 'errors' => $errors];
+            $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -146,31 +143,31 @@ class StatementAPIController extends Controller
         // Do any of the puids already exists in the DB?
         $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
         if (count($existing)) {
-            $errors = [
-                'puid' => [
+            $errors  = [
+                'puid'           => [
                     'the platform identifier(s) are not all unique within this platform.'
                 ],
                 'existing_puids' => $existing
             ];
             $message = 'the platform identifier(s) given are not all unique within this platform.';
-            $out = ['message' => $message, 'errors' => $errors];
+            $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 
         // enrich the payload for bulk insert.
-        $now = Carbon::now();
+        $now   = Carbon::now();
         $uuids = [];
         foreach ($payload['statements'] as $index => $potential_statement) {
-            $uuid = Str::uuid();
-            $uuids[] = $uuid;
+            $uuid                                         = Str::uuid();
+            $uuids[]                                      = $uuid;
             $payload['statements'][$index]['platform_id'] = $platform_id;
-            $payload['statements'][$index]['user_id'] = $user_id;
-            $payload['statements'][$index]['method'] = $method;
-            $payload['statements'][$index]['uuid'] = $uuid;
-            $payload['statements'][$index]['created_at'] = $now;
-            $payload['statements'][$index]['updated_at'] = $now;
+            $payload['statements'][$index]['user_id']     = $user_id;
+            $payload['statements'][$index]['method']      = $method;
+            $payload['statements'][$index]['uuid']        = $uuid;
+            $payload['statements'][$index]['created_at']  = $now;
+            $payload['statements'][$index]['updated_at']  = $now;
 
             $this->initAllFields($payload['statements'][$index]);
             $payload = $this->validatePayloadStatements($payload, $index);
@@ -184,7 +181,6 @@ class StatementAPIController extends Controller
         }
 
         try {
-
             // Bulk Insert
             Statement::insert($payload['statements']);
 
@@ -194,13 +190,13 @@ class StatementAPIController extends Controller
             // Build an output.
             $out = [];
             foreach ($created_statements as $created_statement) {
-                $puid = $created_statement->puid;
-                $created_statement = $created_statement->toArray();
+                $puid                      = $created_statement->puid;
+                $created_statement         = $created_statement->toArray();
                 $created_statement['puid'] = $puid;
-                $out[] = $created_statement;
+                $out[]                     = $created_statement;
             }
-            return response()->json(['statements' => $out], Response::HTTP_CREATED);
 
+            return response()->json(['statements' => $out], Response::HTTP_CREATED);
         } catch (QueryException $e) {
             return $this->handleQueryException($e, 'Statement');
         }
@@ -214,12 +210,13 @@ class StatementAPIController extends Controller
     /**
      * @param array $payload
      * @param int|string $index
+     *
      * @return void
      */
     public function handleOtherFieldWithinArray(array &$payload, int|string $index, $field, $needle)
     {
         $field_other = $field . '_other';
-        $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
+        $payload     = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
         if (is_null($payload['statements'][$index][$field])) {
             return;
         }
@@ -228,13 +225,10 @@ class StatementAPIController extends Controller
         } else {
             $payload['statements'][$index][$field_other] = null;
         }
-
-
     }
 
     public function handleOtherFieldWhenEqual(array &$payload, int|string $index, $field, $field_other, $needle)
     {
-
         $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
         if ($payload['statements'][$index][$field] == $needle) {
             $payload['statements'][$index][$field_other] = null;
@@ -245,7 +239,6 @@ class StatementAPIController extends Controller
 
     public function handleOtherFieldWhenNotEqual(array &$payload, int|string $index, $field, $field_other, $needle)
     {
-
         $payload = $this->initFieldIfNotPresent($payload, $index, $field, $field_other);
         if ($payload['statements'][$index][$field] !== $needle) {
             $payload['statements'][$index][$field_other] = null;
@@ -257,6 +250,7 @@ class StatementAPIController extends Controller
     /**
      * @param array $payload
      * @param int|string $index
+     *
      * @return array
      */
     public function validatePayloadStatements(array $payload, int|string $index): array
@@ -281,20 +275,21 @@ class StatementAPIController extends Controller
      * @param int|string $index
      * @param $field
      * @param $field_other
+     *
      * @return array
      */
     public function initFieldIfNotPresent(array $payload, int|string $index, $field, $field_other): array
     {
-        if (!isset($payload['statements'][$index][$field])) {
-            $payload['statements'][$index][$field] = null;
+        if ( ! isset($payload['statements'][$index][$field])) {
+            $payload['statements'][$index][$field]       = null;
             $payload['statements'][$index][$field_other] = null;
         }
+
         return $payload;
     }
 
     private function initAllFields(&$statement)
     {
-
         $optional_fields = [
             "decision_visibility_other",
             "decision_monetary",
@@ -324,12 +319,11 @@ class StatementAPIController extends Controller
             "end_date_visibility_restriction",
             "decision_ground_reference_url",
             "illegal_content_explanation",
-            "incompatible_content_illegal"];
+            "incompatible_content_illegal"
+        ];
 
         foreach ($optional_fields as $optional_field) {
             $statement[$optional_field] = $statement[$optional_field] ?? null;
         }
-
-
     }
 }
