@@ -121,18 +121,18 @@ class StatementStoreRequest extends FormRequest
     private function checkForContentTypeOther(): bool
     {
         $check = (array)$this->get('content_type', []);
-        return in_array('CONTENT_TYPE_OTHER', $check);
+        return in_array('CONTENT_TYPE_OTHER', $check, true);
     }
 
     private function checkForDecisionVisibilityOther(): bool
     {
         $check = (array)$this->get('decision_visibility', []);
-        return in_array('DECISION_VISIBILITY_OTHER', $check);
+        return in_array('DECISION_VISIBILITY_OTHER', $check, true);
     }
 
     private function checkForSourceVoluntary(): bool
     {
         $check = (array)$this->get('source_type', []);
-        return in_array('SOURCE_VOLUNTARY', $check);
+        return in_array('SOURCE_VOLUNTARY', $check, true);
     }
 }
