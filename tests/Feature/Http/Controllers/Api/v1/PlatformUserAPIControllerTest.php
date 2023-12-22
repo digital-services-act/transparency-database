@@ -128,7 +128,7 @@ class PlatformUserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function creates_the_invitations_when_user_not_linked_to_the_platform()
+    public function creates_the_invitations_when_user_not_linked_to_the_platform(): void
     {
         // If the user already logged in with EU Login, he will have no rights.
         // Once the invitation has been created, he will get linked to the platform once he visits the website.
@@ -138,7 +138,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->signInAsOnboarding();
 
         $platform = Platform::factory()->create([
-            'dsa_common_id' =>"foobarID"
+            'dsa_common_id' => "foobarID"
         ]);
 
 
@@ -152,7 +152,8 @@ class PlatformUserAPIControllerTest extends TestCase
         $platform_user = User::factory()
             ->create(
                 [
-                    'email' => 'email_new@platform.com'
+                    'email' => 'email_new@platform.com',
+                    'platform_id' => null
                 ]
             );
 
@@ -191,7 +192,10 @@ class PlatformUserAPIControllerTest extends TestCase
         //Create a user with the same email
         $platform_user = User::factory()
             ->create(
-                ['email' => 'email1@platform.com']
+                [
+                    'email' => 'email1@platform.com',
+                    'platform_id' => null
+                ]
             );
 
         $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
