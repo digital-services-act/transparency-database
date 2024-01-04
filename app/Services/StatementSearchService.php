@@ -40,6 +40,7 @@ class StatementSearchService
         'decision_ground',
         'category',
         'content_type',
+        'source_type',
         'content_language',
         'automated_detection',
         'automated_decision',
@@ -355,6 +356,18 @@ class StatementSearchService
 
         return implode(' OR ', $ors);
     }
+
+    private function applySourceTypeFilter(array $filter_values): string
+    {
+        $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
+        $ors = [];
+        foreach ($filter_values as $filter_value) {
+            $ors[] = 'source_type:' . $filter_value;
+        }
+
+        return implode(' OR ', $ors);
+    }
+
 
 
     public function bulkIndexStatements(Collection $statements)
