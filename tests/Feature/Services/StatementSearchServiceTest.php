@@ -85,7 +85,6 @@ class StatementSearchServiceTest extends TestCase
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(source_type:SOURCE_ARTICLE_16 OR source_type:SOURCE_TRUSTED_FLAGGER OR source_type:SOURCE_TYPE_OTHER_NOTIFICATION OR source_type:SOURCE_VOLUNTARY)', $query);
-
     }
 
     /**
