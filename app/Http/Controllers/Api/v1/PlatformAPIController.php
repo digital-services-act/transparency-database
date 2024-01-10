@@ -54,7 +54,7 @@ class PlatformAPIController extends Controller
         $platform->vlop = $validated['vlop'];
         $platform->save();
 
-        return response()->json($platform, Response::HTTP_NO_CONTENT);
+        return response()->json($platform, Response::HTTP_OK);
     }
 
 

@@ -91,7 +91,7 @@ class PlatformAPIControllerTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $response->assertStatus(Response::HTTP_OK);
 
         $updatedPlatform = Platform::firstWhere('dsa_common_id', 'foobar');
 
@@ -117,6 +117,7 @@ class PlatformAPIControllerTest extends TestCase
         $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields, [
             'Accept' => 'application/json',
         ]);
+
 
         $response->assertStatus(Response::HTTP_OK);
     }
