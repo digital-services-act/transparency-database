@@ -52,7 +52,7 @@ class VerifyIndex implements ShouldQueue
     {
         $stop = Cache::get('stop_reindexing', false);
         if (!$stop) {
-            Log::debug($this->max . " :: " . $this->min . ' :: ' . $this->max - $this->min);
+            //Log::debug($this->max . " :: " . $this->min . ' :: ' . $this->max - $this->min);
             // The ID spread
             $id_difference = $this->max - $this->min;
 
@@ -72,7 +72,7 @@ class VerifyIndex implements ShouldQueue
 
                     // Did we have a difference?
                     if ($off > 0) {
-                        Log::debug('Diff: ' . $off);
+                        //Log::debug('Diff: ' . $off);
                         // Is the mega chunk we are working within the searchable call limit?
                         if ($id_difference <= $this->searchable_chunk) {
                             $total_diff = (int)Cache::get('verify_jobs_diff');
