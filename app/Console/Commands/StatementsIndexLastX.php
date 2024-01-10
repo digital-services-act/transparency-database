@@ -31,7 +31,6 @@ class StatementsIndexLastX extends Command
     {
         $start = Carbon::now();
         $start->subSeconds((int)$this->argument('seconds'));
-
         $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->pluck('id');
 
         //Log::info('Indexing: ' .  $statement_ids->count());
