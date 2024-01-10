@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlatformStoreRequest;
+use App\Http\Requests\PlatformUpdateRequest;
 use App\Models\Platform;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use Illuminate\Database\QueryException;
@@ -27,7 +28,6 @@ class PlatformAPIController extends Controller
     }
 
 
-
     public function store(PlatformStoreRequest $request): JsonResponse
     {
 
@@ -43,11 +43,19 @@ class PlatformAPIController extends Controller
         }
 
 
-
         return response()->json($platform, Response::HTTP_CREATED);
-        }
-
-
-
-
     }
+    public function update(Platform $platform, PlatformUpdateRequest $request): JsonResponse
+    {
+
+        $validated = $request->safe()->toArray();
+
+        $platform->name = $validated['name'];
+        $platform->vlop = $validated['vlop'];
+        $platform->save();
+
+        return response()->json($platform, Response::HTTP_NO_CONTENT);
+    }
+
+
+}
