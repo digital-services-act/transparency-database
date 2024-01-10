@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::get('platform/{platform:dsa_common_id}', [PlatformAPIController::class, 'get'])->name('api.v1.platform.get')->can('view platforms');
+    Route::put('platform/{platform:dsa_common_id}', [PlatformAPIController::class, 'update'])->name('api.v1.platform.update')->can('create platforms');
     Route::post('platform', [PlatformAPIController::class, 'store'])->name('api.v1.platform.store')->can('create platforms');
     Route::get('user/{email}', [UserAPIController::class, 'get'])->name('api.v1.user.get')->can('view users');
     Route::post('platform/{platform:dsa_common_id}/users', [PlatformUserAPIController::class, 'store'])->name('api.v1.platform-users.store')->can('create users');

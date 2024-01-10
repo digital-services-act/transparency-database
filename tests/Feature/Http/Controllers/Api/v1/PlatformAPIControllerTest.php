@@ -70,6 +70,39 @@ class PlatformAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function api_platform_update_works()
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsOnboarding();
+        $this->withoutExceptionHandling();
+
+        $this->assertCount(20, Platform::all());
+
+        Platform::factory()->create([
+            'name' => 'my test platform',
+            'dsa_common_id' => 'foobar',
+            'vlop'=> 0
+        ]);
+
+        $response = $this->put(route('api.v1.platform.update', ['platform' => 'foobar']), [
+            'name' => 'updated name for my test platform',
+            'vlop' => 1
+        ], [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $updatedPlatform = Platform::firstWhere('dsa_common_id', 'foobar');
+
+        $this->assertEquals('updated name for my test platform', $updatedPlatform->fresh()->name);
+        $this->assertEquals(true, $updatedPlatform->fresh()->vlop);
+        $this->assertCount(21, Platform::all());
+    }
+
+    /**
+     * @test
+     */
     public function it_should_give_platform_data()
     {
         $this->withoutExceptionHandling();
