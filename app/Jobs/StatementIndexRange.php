@@ -38,10 +38,10 @@ class StatementIndexRange implements ShouldQueue
      *
      * @return array<int, object>
      */
-    public function middleware(): array
-    {
-        return [new RateLimited('reindexing')];
-    }
+//    public function middleware(): array
+//    {
+//        return [new RateLimited('reindexing')];
+//    }
 
     /**
      * Execute the job.
