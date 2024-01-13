@@ -252,26 +252,32 @@ class DayArchiveService
         });
     }
 
-
-    public function buildStartingDayArchivesArray(Carbon $date, bool $existing = false): array
+    public function buildBasicArray(): array
     {
-        $day_archives = [];
+        $exports = [];
 
-        $global = [
+        $global    = [
             'slug' => 'global',
-            'id' => null,
+            'id'   => null,
         ];
-        $day_archives[] = $global;
+        $exports[] = $global;
 
         $vlops = Platform::Vlops()->get();
 
-        foreach($vlops as $vlop) {
-            $day_archive = [
+        foreach ($vlops as $vlop) {
+            $export             = [
                 'slug' => $vlop->slugifyName(),
-                'id' => $vlop->id
+                'id'   => $vlop->id
             ];
-            $day_archives[$vlop->id] = $day_archive;
+            $exports[$vlop->id] = $export;
         }
+        return $exports;
+    }
+
+
+    public function buildStartingDayArchivesArray(Carbon $date, bool $existing = false): array
+    {
+        $day_archives = $this->buildBasicArray();
 
         // Do we have the s3ds mounted?
         $s3ds = '';
@@ -345,7 +351,7 @@ class DayArchiveService
         $date->minute = 0;
         $date->second = 0;
 
-        $attempts_allowed = 100;
+        $attempts_allowed = 10;
 
         $in = [];
         while($attempts_allowed-- > 0)
@@ -375,7 +381,7 @@ class DayArchiveService
         $date->minute = 59;
         $date->second = 59;
 
-        $attempts_allowed = 100;
+        $attempts_allowed = 10;
 
         $in = [];
         while($attempts_allowed-- > 0)
@@ -428,7 +434,7 @@ class DayArchiveService
         return DayArchive::query()->whereDate('date', $date);
     }
 
-    private function getSelectRawString(): string
+    public function getSelectRawString(): string
     {
         $selects   = [];
         $selects[] = "uuid";

@@ -10,13 +10,15 @@ class Kernel extends ConsoleKernel
     private const DAILY_3AM = '03:00';
     private const DAILY_1AM = '01:00';
 
+    private const DAILY_MIDNIGHT = '00:00';
+
     protected function schedule(Schedule $schedule): void
     {
         // The main indexer
-        $schedule->command('statements:index-last-x')->everyMinute();
+        $schedule->command('statements:index-date')->dailyAt(self::DAILY_1AM);
 
         // Verify and fix things from yesterday
-        $schedule->command('statements:verify-index-date')->dailyAt(self::DAILY_1AM);
+        //$schedule->command('statements:verify-index-date')->dailyAt(self::DAILY_1AM);
 
         // Now the Day Totals
         $this->scheduleCommandsToRunDaily($schedule);
