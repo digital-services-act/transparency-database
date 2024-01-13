@@ -13,13 +13,13 @@ environments:
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
     warm: 10
-    timeout: 30
+    timeout: 120
     cache: redis-prod
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
-    memory: 512
+    memory: 1024
     cli-memory: 512
-    queue-memory: 512
+    queue-memory: 2048
     runtime: 'php-8.2:al2-arm'
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
