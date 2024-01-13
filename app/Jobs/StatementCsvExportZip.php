@@ -29,19 +29,10 @@ class StatementCsvExportZip implements ShouldQueue
 
     public function handle(): void
     {
-        $csv_glob = glob('storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv');
-        $zip = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
-        $sha1 = 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
-
-        $zip_archive = new ZipArchive;
-        if ($zip_archive->open($zip, ZipArchive::CREATE) === true) {
-            foreach ($csv_glob as $csv) {
-                $zip_archive->addFile($csv, basename($csv));
-            }
-            $zip_archive->close();
-            Storage::put($sha1, sha1_file($zip) . "  " . basename($zip));
-        } else {
-            throw new RuntimeException('Issue with creating the zip file.');
-        }
+        $csv = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
+        $zip = 'storage/app/s3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
+        $sha1 = 's3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
+        shell_exec('zip ' . $zip . ' ' . $csv);
+        Storage::put($sha1, sha1_file($zip) . "  " . basename($zip));
     }
 }
