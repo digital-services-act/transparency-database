@@ -29,10 +29,11 @@ class StatementCsvExportZip implements ShouldQueue
 
     public function handle(): void
     {
-        $csv = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
-        $zip = 'storage/app/s3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
+        $path = Storage::path('');
+        $csv = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
+        $zip = $path . 's3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
         $sha1 = 's3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
-        shell_exec('zip ' . $zip . ' ' . $csv);
+        shell_exec('/usr/bin/zip ' . $zip . ' ' . $csv);
         Storage::put($sha1, sha1_file($zip) . "  " . basename($zip));
     }
 }
