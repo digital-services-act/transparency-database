@@ -28,7 +28,7 @@ class StatementCsvExportCat implements ShouldQueue
     {
         $main = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
         $glob = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv';
-        shell_exec('cat ' . $glob . ' > ' . $main);
-        shell_exec('rm ' . $glob);
+        shell_exec('/usr/bin/cat ' . $glob . ' > ' . $main);
+        shell_exec('/usr/bin/rm ' . $glob);
     }
 }
