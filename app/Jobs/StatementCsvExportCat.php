@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportCat implements ShouldQueue
 {
@@ -26,8 +27,10 @@ class StatementCsvExportCat implements ShouldQueue
 
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $main = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
-        $glob = 'storage/app/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv';
+        $path = Storage::path('');
+        $main = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
+        $glob = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv';
+
         shell_exec('/usr/bin/cat ' . $glob . ' > ' . $main);
         shell_exec('/usr/bin/rm ' . $glob);
     }
