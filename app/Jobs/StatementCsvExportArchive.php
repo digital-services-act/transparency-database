@@ -24,7 +24,7 @@ class StatementCsvExportArchive implements ShouldQueue
     public string $platform_slug;
     public int $platform_id;
 
-    public function __construct(string $date, string $platform_slug, int $platform_id = null)
+    public function __construct(string $date, string $platform_slug, $platform_id = null)
     {
         $this->date = $date;
         $this->platform_slug = $platform_slug;
