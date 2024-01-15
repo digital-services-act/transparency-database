@@ -22,7 +22,7 @@ class StatementCsvExportArchive implements ShouldQueue
 
     public string $date;
     public string $platform_slug;
-    public int $platform_id;
+    public mixed $platform_id;
 
     public function __construct(string $date, string $platform_slug, $platform_id = null)
     {
