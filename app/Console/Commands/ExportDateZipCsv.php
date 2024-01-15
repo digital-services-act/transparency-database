@@ -22,7 +22,7 @@ class ExportDateZipCsv extends Command
      *
      * @var string
      */
-    protected $description = 'zip the csv files.';
+    protected $description = 'zip the csv zip parts files.';
 
     /**
      * Execute the console command.
@@ -45,8 +45,8 @@ class ExportDateZipCsv extends Command
         $exports = $day_archive_service->buildBasicArray();
 
         foreach ($exports as $export) {
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'full')->onQueue('zipping');
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'light')->onQueue('zipping');
+            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'full');
+            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'light');
         }
     }
 }
