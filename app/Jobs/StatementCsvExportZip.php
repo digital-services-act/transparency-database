@@ -33,16 +33,19 @@ class StatementCsvExportZip implements ShouldQueue
 
 
         $parts = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv.zip';
-        $partsglob = glob($parts);
         $zipfile = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
-        $sha1 = 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
+//        $partsglob = glob($parts);
+//        $zipfile = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
+//        $sha1 = 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
+//
+//        $zip = new ZipArchive;
+//        $zip->open($zipfile, ZipArchive::CREATE);
+//        foreach ($partsglob as $part) {
+//            $zip->addFile($part, basename($part), 0, 0, ZipArchive::CM_STORE);
+//        }
+//        $zip->close();
 
-        $zip = new ZipArchive;
-        $zip->open($zipfile, ZipArchive::CREATE);
-        foreach ($partsglob as $part) {
-            $zip->addFile($part, basename($part), 0, 0, ZipArchive::CM_STORE);
-        }
-        $zip->close();
+        shell_exec('/usr/bin/zip -0 -D ' . $zipfile . ' ' . $parts);
         Storage::put($sha1, sha1_file($zipfile) . "  " . basename($zipfile));
     }
 }
