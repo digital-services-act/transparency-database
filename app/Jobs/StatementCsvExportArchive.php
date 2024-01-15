@@ -39,7 +39,20 @@ class StatementCsvExportArchive implements ShouldQueue
         $platform = Platform::find($this->platform_id);
 
         $csvfile = $path . 'sor-full-' . $this->platform_slug . '-' . $this->date . '.csv';
-        $csvfilelight = $path . 'sor-full-' . $this->platform_slug . '-' . $this->date . '.csv';
+        $csvfiles = $path . 'sor-full-' . $this->platform_slug . '-' . $this->date . '-*.csv';
+        $csvfilesglob = glob($csvfiles);
+        $size = 0;
+        foreach ($csvfilesglob as $part) {
+            $size += filesize($part);
+        }
+
+        $csvfilelight = $path . 'sor-light-' . $this->platform_slug . '-' . $this->date . '.csv';
+        $csvfileslight = $path . 'sor-light-' . $this->platform_slug . '-' . $this->date . '-*.csv';
+        $csvfileslightglob = glob($csvfileslight);
+        $sizelight = 0;
+        foreach ($csvfileslightglob as $part) {
+            $sizelight += filesize($part);
+        }
 
         $zipfile = $path . 's3ds/sor-full-' . $this->platform_slug . '-' . $this->date . '.csv.zip';
         $zipfilelight = $path . 's3ds/sor-light-' . $this->platform_slug . '-' . $this->date . '.csv.zip';
@@ -59,8 +72,8 @@ class StatementCsvExportArchive implements ShouldQueue
             'sha1url'      => $base_s3_url . basename($zipfilesha1),
             'sha1urllight' => $base_s3_url . basename($zipfilelightsha1),
             'completed_at' => Carbon::now(),
-            'size' => filesize($csvfile),
-            'sizelight' => filesize($csvfilelight),
+            'size' => $size,
+            'sizelight' => $sizelight,
             'zipsize' => filesize($zipfile),
             'ziplightsize' => filesize($zipfilelight),
         ]);
