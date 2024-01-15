@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Models\DayArchive;
+use App\Models\Platform;
+use App\Services\DayArchiveService;
+use App\Services\StatementSearchService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
+use ZipArchive;
+
+class StatementCsvExportArchive implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public string $date;
+    public string $platform_slug;
+    public int $platform_id;
+
+    public function __construct(string $date, string $platform_slug, int $platform_id)
+    {
+        $this->date = $date;
+        $this->platform_slug = $platform_slug;
+        $this->platform_id = $platform_id;
+    }
+
+    public function handle(StatementSearchService $statement_search_service, DayArchiveService $day_archive_service): void
+    {
+        $path = Storage::path('');
+        $base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
+        $date = Carbon::createFromFormat('Y-m-d', $this->date);
+        $platform = Platform::find($this->platform_id);
+
+        $csvfile = $path . 'sor-full-' . $this->platform_slug . '-' . $this->date . '.csv';
+        $csvfilelight = $path . 'sor-full-' . $this->platform_slug . '-' . $this->date . '.csv';
+
+        $zipfile = $path . 's3ds/sor-full-' . $this->platform_slug . '-' . $this->date . '.csv.zip';
+        $zipfilelight = $path . 's3ds/sor-light-' . $this->platform_slug . '-' . $this->date . '.csv.zip';
+
+        $zipfilesha1 = $path . 's3ds/sor-full-' . $this->platform_slug . '-' . $this->date . '.csv.zip.sha1';
+        $zipfilelightsha1 = $path . 's3ds/sor-light-' . $this->platform_slug . '-' . $this->date . '.csv.zip.sha1';
+
+        $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
+        $existing?->delete();
+
+        DayArchive::create([
+            'date'         => $this->date,
+            'total'        => $this->platform_slug === 'global' ? $statement_search_service->totalForDate($date) : $statement_search_service->totalForPlatformDate($platform, $date),
+            'platform_id'  => $this->platform_slug === 'global' ? null : $this->platform_id,
+            'url'          => $base_s3_url . basename($zipfile),
+            'urllight'     => $base_s3_url . basename($zipfilelight),
+            'sha1url'      => $base_s3_url . basename($zipfilesha1),
+            'sha1urllight' => $base_s3_url . basename($zipfilelightsha1),
+            'completed_at' => Carbon::now(),
+            'size' => filesize($csvfile),
+            'sizelight' => filesize($csvfilelight),
+            'zipsize' => filesize($zipfile),
+            'ziplightsize' => filesize($zipfilelight),
+        ]);
+    }
+}
