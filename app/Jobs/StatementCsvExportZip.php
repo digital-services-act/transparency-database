@@ -34,13 +34,13 @@ class StatementCsvExportZip implements ShouldQueue
 
         $parts = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv.zip';
         $partsglob = glob($parts);
-        $zipfile = $path . 's3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
-        $sha1 = 's3ds/sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
+        $zipfile = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
+        $sha1 = 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
 
         $zip = new ZipArchive;
         $zip->open($zipfile, ZipArchive::CREATE);
         foreach ($partsglob as $part) {
-            $zip->addFile($part, basename($part));
+            $zip->addFile($part, basename($part), 0, 0, ZipArchive::CM_STORE);
         }
         $zip->close();
         Storage::put($sha1, sha1_file($zipfile) . "  " . basename($zipfile));
