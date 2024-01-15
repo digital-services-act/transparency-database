@@ -50,7 +50,7 @@ class ExportDateCopyS3 extends Command
             foreach ($versions as $version) {
                 $zip = 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '.csv.zip';
                 $sha1 = 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '.csv.zip.sha1';
-                StatementCsvExportCopyS3::dispatch($zip, $sha1);
+                StatementCsvExportCopyS3::dispatch($zip, $sha1);//->onQueue('s3copy');
             }
         }
     }

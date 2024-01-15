@@ -28,7 +28,8 @@ class StatementCsvExportCopyS3 implements ShouldQueue
     public function handle(): void
     {
         $path = Storage::path('');
-        shell_exec('/usr/bin/cp ' . $path . $this->zip . ' ' . $path . 's3ds/');
-        shell_exec('/usr/bin/cp ' . $path . $this->sha1 . ' ' . $path . 's3ds/');
+        $disk = Storage::disk('s3d2');
+        $disk->put($this->zip, fopen($path . $this->zip, 'r+'));
+        $disk->put($this->sha1, fopen($path . $this->sha1, 'r+'));
     }
 }
