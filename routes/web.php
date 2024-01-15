@@ -74,7 +74,7 @@ Route::get('/daily-archives', function(){
     return Redirect::to('/data-download', 301);
 });
 
-Route::get('/', [PageController::class, 'showHome'])->name('home');
+Route::view('/', 'home')->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 Route::view('/dashboard', 'dashboard')->name('dashboard');
 
