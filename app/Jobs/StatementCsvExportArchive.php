@@ -24,7 +24,7 @@ class StatementCsvExportArchive implements ShouldQueue
     public string $platform_slug;
     public int $platform_id;
 
-    public function __construct(string $date, string $platform_slug, int $platform_id)
+    public function __construct(string $date, string $platform_slug, int $platform_id = null)
     {
         $this->date = $date;
         $this->platform_slug = $platform_slug;
@@ -66,7 +66,7 @@ class StatementCsvExportArchive implements ShouldQueue
         DayArchive::create([
             'date'         => $this->date,
             'total'        => $this->platform_slug === 'global' ? $statement_search_service->totalForDate($date) : $statement_search_service->totalForPlatformDate($platform, $date),
-            'platform_id'  => $this->platform_slug === 'global' ? null : $this->platform_id,
+            'platform_id'  => $this->platform_id,
             'url'          => $base_s3_url . basename($zipfile),
             'urllight'     => $base_s3_url . basename($zipfilelight),
             'sha1url'      => $base_s3_url . basename($zipfilesha1),
