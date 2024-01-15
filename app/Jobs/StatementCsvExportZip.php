@@ -34,6 +34,7 @@ class StatementCsvExportZip implements ShouldQueue
 
         $parts = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv.zip';
         $zipfile = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
+        $sha1 = 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
 //        $partsglob = glob($parts);
 //        $zipfile = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip';
 //        $sha1 = 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv.zip.sha1';
@@ -45,7 +46,7 @@ class StatementCsvExportZip implements ShouldQueue
 //        }
 //        $zip->close();
 
-        shell_exec('/usr/bin/zip -0 -D ' . $zipfile . ' ' . $parts);
+        shell_exec('/usr/bin/zip -0 -j ' . $zipfile . ' ' . $parts);
         Storage::put($sha1, sha1_file($zipfile) . "  " . basename($zipfile));
     }
 }
