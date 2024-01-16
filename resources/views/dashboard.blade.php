@@ -15,13 +15,14 @@
         .responsive-iframe-container {
             position: relative;
             overflow: hidden;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 aspect ratio */
+            width: 110%;
+            padding-top: 63%;
+            margin-left:-20px;
         }
 
         .responsive-iframe-container iframe {
             position: absolute;
-            margin-left:-20px;
+
             top: 0;
             left: 0;
             width: 100%;
