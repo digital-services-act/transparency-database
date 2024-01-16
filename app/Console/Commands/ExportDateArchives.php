@@ -2,27 +2,28 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportZip;
+use App\Jobs\StatementCsvExportArchive;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
-class ExportDateZipCsv extends Command
+
+class ExportDateArchives extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'exportcsv:zipcsv {date=yesterday}';
+    protected $signature = 'exportcsv:archives {date=yesterday}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'zip the csv zip parts files.';
+    protected $description = 'Create archives entries for platforms and exports.';
 
     /**
      * Execute the console command.
@@ -45,8 +46,7 @@ class ExportDateZipCsv extends Command
         $exports = $day_archive_service->buildBasicArray();
 
         foreach ($exports as $export) {
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'full');
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'light');
+            StatementCsvExportArchive::dispatch($date->format('Y-m-d'), $export['slug'], $export['id']);
         }
     }
 }

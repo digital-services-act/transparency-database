@@ -2,27 +2,28 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportZip;
+use App\Jobs\StatementCsvExportCat;
+use App\Jobs\StatementCsvExportCopyS3;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
-class ExportDateZipCsv extends Command
+class ExportDateCopyS3 extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'exportcsv:zipcsv {date=yesterday}';
+    protected $signature = 'exportcsv:copys3 {date=yesterday}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'zip the csv zip parts files.';
+    protected $description = 'Concatenate the individual csv files to one.';
 
     /**
      * Execute the console command.
@@ -42,11 +43,15 @@ class ExportDateZipCsv extends Command
             }
         }
 
+        $date_string = $date->format('Y-m-d');
         $exports = $day_archive_service->buildBasicArray();
-
+        $versions = ['full', 'light'];
         foreach ($exports as $export) {
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'full');
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'light');
+            foreach ($versions as $version) {
+                $zip = 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '.csv.zip';
+                $sha1 = 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '.csv.zip.sha1';
+                StatementCsvExportCopyS3::dispatch($zip, $sha1)->onQueue('s3copy');
+            }
         }
     }
 }

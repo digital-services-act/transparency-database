@@ -3,26 +3,28 @@
 namespace App\Console\Commands;
 
 use App\Jobs\StatementCsvExportZip;
+use App\Jobs\StatementCsvExportZipPart;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
-class ExportDateZipCsv extends Command
+class ExportDateZipCsvParts extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'exportcsv:zipcsv {date=yesterday}';
+    protected $signature = 'exportcsv:zipcsvparts {date=yesterday}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'zip the csv zip parts files.';
+    protected $description = 'zip the csv files.';
 
     /**
      * Execute the console command.
@@ -42,11 +44,18 @@ class ExportDateZipCsv extends Command
             }
         }
 
+        $date_string = $date->format('Y-m-d');
+        $path = Storage::path('');
         $exports = $day_archive_service->buildBasicArray();
-
+        $versions = ['full', 'light'];
         foreach ($exports as $export) {
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'full');
-            StatementCsvExportZip::dispatch($date->format('Y-m-d'), $export['slug'], 'light');
+            foreach ($versions as $version) {
+                $parts = $path . 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '-*.csv';
+                $partsglob = glob($parts);
+                foreach ($partsglob as $part) {
+                    StatementCsvExportZipPart::dispatch($part);
+                }
+            }
         }
     }
 }
