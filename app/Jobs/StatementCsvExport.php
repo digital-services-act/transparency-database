@@ -39,8 +39,8 @@ class StatementCsvExport implements ShouldQueue
         $exports = $day_archive_service->buildBasicArray();
 
         foreach ($exports as $index => $export) {
-            $export['file']          = 'sor-full-' . $export['slug'] . '-' . $this->date . '-' . $this->part . '.csv';
-            $export['filelight']     = 'sor-light-' . $export['slug'] . '-' . $this->date . '-' . $this->part . '.csv';
+            $export['file']          = 'sor-' . $export['slug'] . '-' . $this->date . '-full-' . $this->part . '.csv';
+            $export['filelight']     = 'sor-' . $export['slug'] . '-' . $this->date . '-light-' . $this->part . '.csv';
             $export['path']          = Storage::path($export['file']);
             $export['pathlight']     = Storage::path($export['filelight']);
             $export['csv_file']      = fopen($export['path'], 'wb');

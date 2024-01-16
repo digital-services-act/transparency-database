@@ -9,10 +9,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
-use ZipArchive;
 
-class StatementCsvExportZip implements ShouldQueue
+class StatementCsvExportReduce implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,12 +28,23 @@ class StatementCsvExportZip implements ShouldQueue
     public function handle(): void
     {
         $path = Storage::path('');
+        $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
+        $parts = glob($glob);
+        foreach ($parts as $part) {
+            if (filesize($part) === 0) {
+                shell_exec('rm ' . $part);
+            }
+        }
 
-        $parts = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv.zip';
-        $zipfile = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
-        $sha1 = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip.sha1';
+        $parts_left = glob($glob);
+        $count = 0;
+        foreach ($parts_left as $part_left) {
+            $new_name = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-' . sprintf('%05d', $count) . '.csv';
+            if ($part_left !== $new_name) {
+                shell_exec('mv '. $part_left . ' ' . $new_name);
+            }
+            $count++;
+        }
 
-        shell_exec('cd ' . $path . ';/usr/bin/zip -0 ' . $zipfile . ' ' . $parts);
-        Storage::put($sha1, sha1_file($path . $zipfile) . "  " . basename($zipfile));
     }
 }

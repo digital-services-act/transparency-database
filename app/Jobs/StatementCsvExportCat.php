@@ -28,8 +28,8 @@ class StatementCsvExportCat implements ShouldQueue
     public function handle(DayArchiveService $day_archive_service): void
     {
         $path = Storage::path('');
-        $main = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '.csv';
-        $glob = $path . 'sor-' . $this->version . '-' . $this->platform . '-' . $this->date . '-*.csv';
+        $main = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv';
+        $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
 
         shell_exec('/usr/bin/cat ' . $glob . ' > ' . $main);
         shell_exec('/usr/bin/rm ' . $glob);
