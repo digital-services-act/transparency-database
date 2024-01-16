@@ -28,7 +28,8 @@ class PageController extends Controller
         $page = preg_replace("/[^a-z-]/", "", $page);
 
         $redirects = [
-            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en'
+            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
+//            'faq' => 'faq'
         ];
 
         if (isset($redirects[$page])) {

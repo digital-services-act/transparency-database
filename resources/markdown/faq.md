@@ -1,7 +1,3 @@
-# DSA Transparency Database FAQ
-
-_Frequently Asked Questions and Answers_
-
 <h2 class="ecl-u-type-heading-2">General FAQ</h2>
 
 <x-ecl.accordion label="What is the DSA Transparency Database?">
@@ -42,8 +38,7 @@ The statements of reasons that providers of online platforms are required to sub
 Database must contain this information.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Is there any part of a statement of reasons that is not published in the DSA Transparency
-Database?">
+<x-ecl.accordion label="Is there any part of a statement of reasons that is not published in the DSA Transparency Database?">
 Providers of online platforms are obliged to remove any personal data from the information they publish in the
 DSA Transparency Database, in accordance with Article 24(5) of the DSA. In case personal data is included in any
 of the statements of reasons, the Commission can be notified using the ‘Report an issue’ button.<br />

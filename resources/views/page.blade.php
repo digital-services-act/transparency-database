@@ -25,6 +25,22 @@
 
     </style>
 
+    @if($page_title === "DSA Transparency Database FAQ")
+        <h1 class="ecl-u-type-heading-1">DSA Transparency Database FAQ</h1>
+
+        <p class="ecl-u-type-paragraph">
+            If you can't find an answer to your question, feel free to use our <a href="{{route('feedback.index')}}">contact
+                form</a>
+        </p>
+    @endif
+
+    @if($page_title === "Documentation")
+        <h1 class="ecl-u-type-heading-1">Global Documentation</h1>
+    @endif
+
+    @if($page_title === "API Documentation")
+        <h1 class="ecl-u-type-heading-1">API Documentation</h1>
+    @endif
 
     <div class="ecl-row">
         <div class="ecl-col-l-3 ecl-u-d-none" id="toc-wrapper">
@@ -40,9 +56,12 @@
                             class="ecl-inpage-navigation__list"
                             data-ecl-inpage-navigation-list="true"
                         >
-                            <li class="ecl-inpage-navigation__item"><a href="#root"
-                                                                       class="ecl-link ecl-inpage-navigation__link"
-                                                                       data-ecl-inpage-navigation-link="">TOP</a></li>
+
+{{--                                <li class="ecl-inpage-navigation__item"><a href="#root"--}}
+{{--                                                                           class="ecl-link ecl-inpage-navigation__link"--}}
+{{--                                                                           data-ecl-inpage-navigation-link="">TOP</a>--}}
+{{--                                </li>--}}
+
                         </ul>
                     </div>
                 </div>
@@ -64,107 +83,100 @@
             integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 
     <script>
-      const slugify = str => str.toLowerCase().
-        trim().
-        replace(/[^\w\s-]/g, '').
-        replace(/[\s_-]+/g, '-').
-        replace(/^-+|-+$/g, '');
+        const slugify = str => str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
-      jQuery(document).ready(function ($) {
-        $('#content-area > h1').each(function (e) {
-          var dis = $(this)
-          var t = dis.text()
-          var id = slugify(t)
-          dis.attr('id', id)
-          dis.addClass('ecl-u-type-heading-1')
+        jQuery(document).ready(function ($) {
+            $('#content-area > h1').each(function (e) {
+                var dis = $(this)
+                var t = dis.text()
+                var id = slugify(t)
+                dis.attr('id', id)
+                dis.addClass('ecl-u-type-heading-1')
 
-          $('#toc-list').
-            append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
-              '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
+                $('#toc-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
+                    '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
+            })
         })
-      })
 
-      jQuery(document).ready(function ($) {
-        $('#content-area > h2').each(function (e) {
-          var dis = $(this)
-          var t = dis.text()
-          var id = slugify(t)
-          dis.attr('id', id)
-          dis.addClass('ecl-u-type-heading-2')
+        jQuery(document).ready(function ($) {
+            $('#content-area > h2').each(function (e) {
+                var dis = $(this)
+                var t = dis.text()
+                var id = slugify(t)
+                dis.attr('id', id)
+                dis.addClass('ecl-u-type-heading-2')
 
-          $('#toc-list').
-            append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
-              '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
-          $('#toc-wrapper').removeClass('ecl-u-d-none');
-          $('#content-wrapper').removeClass('ecl-col-l-12');
-          $('#content-wrapper').addClass('ecl-col-l-9');
+                $('#toc-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
+                    '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
+                $('#toc-wrapper').removeClass('ecl-u-d-none');
+                $('#content-wrapper').removeClass('ecl-col-l-12');
+                $('#content-wrapper').addClass('ecl-col-l-9');
+            })
         })
-      })
 
 
-
-      // Slugify the id so it can be linked but not necessarily in the TOC
-      jQuery(document).ready(function ($) {
-        $('#content-area > h3').each(function (e) {
-          var dis = $(this)
-          var t = dis.text()
-          var id = slugify(t)
-          dis.attr('id', id)
-          dis.addClass('ecl-u-type-heading-3')
+        // Slugify the id so it can be linked but not necessarily in the TOC
+        jQuery(document).ready(function ($) {
+            $('#content-area > h3').each(function (e) {
+                var dis = $(this)
+                var t = dis.text()
+                var id = slugify(t)
+                dis.attr('id', id)
+                dis.addClass('ecl-u-type-heading-3')
+            })
         })
-      })
 
-      // Slugify the id so it can be linked but not necessarily in the TOC
-      jQuery(document).ready(function ($) {
-        $('#content-area > h4').each(function (e) {
-          var dis = $(this)
-          var t = dis.text()
-          var id = slugify(t)
-          dis.attr('id', id)
-          dis.addClass('ecl-u-type-heading-4')
+        // Slugify the id so it can be linked but not necessarily in the TOC
+        jQuery(document).ready(function ($) {
+            $('#content-area > h4').each(function (e) {
+                var dis = $(this)
+                var t = dis.text()
+                var id = slugify(t)
+                dis.attr('id', id)
+                dis.addClass('ecl-u-type-heading-4')
+            })
         })
-      })
 
-      // Slugify the id so it can be linked but not necessarily in the TOC
-      jQuery(document).ready(function ($) {
-        $('#content-area > h5').each(function (e) {
-          var dis = $(this)
-          var t = dis.text()
-          var id = slugify(t)
-          dis.attr('id', id)
-          dis.addClass('ecl-u-type-heading-5')
+        // Slugify the id so it can be linked but not necessarily in the TOC
+        jQuery(document).ready(function ($) {
+            $('#content-area > h5').each(function (e) {
+                var dis = $(this)
+                var t = dis.text()
+                var id = slugify(t)
+                dis.attr('id', id)
+                dis.addClass('ecl-u-type-heading-5')
+            })
         })
-      })
 
-      jQuery(document).ready(function ($) {
-        $('#content-area > p').each(function (e) {
-          var dis = $(this)
-          dis.addClass('ecl-u-type-paragraph')
+        jQuery(document).ready(function ($) {
+            $('#content-area > p').each(function (e) {
+                var dis = $(this)
+                dis.addClass('ecl-u-type-paragraph')
+            })
         })
-      })
 
-      jQuery(document).ready(function ($) {
-        $('#content-area > ul').each(function (e) {
-          var dis = $(this)
-          dis.addClass('ecl-unordered-list')
+        jQuery(document).ready(function ($) {
+            $('#content-area > ul').each(function (e) {
+                var dis = $(this)
+                dis.addClass('ecl-unordered-list')
+            })
         })
-      })
 
-      jQuery(document).ready(function ($) {
-        $('#content-area > ul > li').each(function (e) {
-          var dis = $(this)
-          dis.addClass('ecl-unordered-list__item')
+        jQuery(document).ready(function ($) {
+            $('#content-area > ul > li').each(function (e) {
+                var dis = $(this)
+                dis.addClass('ecl-unordered-list__item')
+            })
         })
-      })
 
-      jQuery(document).ready(function ($) {
-        $('#content-area > p > a').each(function (e) {
-          var dis = $(this)
-          dis.addClass('ecl-link')
+        jQuery(document).ready(function ($) {
+            $('#content-area > p > a').each(function (e) {
+                var dis = $(this)
+                dis.addClass('ecl-link')
+            })
         })
-      })
 
-      hljs.highlightAll()
+        hljs.highlightAll()
     </script>
 
 @endsection

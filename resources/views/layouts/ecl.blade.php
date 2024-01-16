@@ -93,9 +93,9 @@
     crossorigin="anonymous"
 ></script>
 <script>
-    @if($ecl_init)
+{{--    @if($ecl_init)--}}
         ECL.autoInit();
-    @endif
+{{--    @endif--}}
 </script>
 @if(config('dsa.SITEID', false) && config('dsa.SITEPATH', false))
 <script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>

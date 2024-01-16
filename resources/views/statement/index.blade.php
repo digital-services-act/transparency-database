@@ -22,7 +22,7 @@
                 Through the advanced search button, you can easily find the statements of reasons submitted by each
                 platform, and filter by several data fields, e.g. the type of restriction(s) imposed, categories and
                 keywords, or the type or language of the content. Please note that only the first 10 000 results are
-                paginated, and only the first 1000 statements of reasons can be exported in .csv format at a given time.
+                paginated, and only the first 1000 statements of reasons can be exported in .csv format at a given time. The data is updated once every day.
                 If you want to access a larger subset of statements of reasons, please visit the “<a
                     href="{{route("dayarchive.index")}}">Data download</a>” page.
                 To submit feedback on the content of this page and to propose additional features, please visit the
@@ -72,26 +72,26 @@
 
 
 
-        <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center ecl-u-f-r">
+    <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center ecl-u-f-r">
 
-            <div class="ecl-u-type-paragraph ecl-u-mr-s">
-                Statements of Reasons @if(!$reindexing)
-                    Found: {{ $total }}
-                @endif
-            </div>
-
-
-            <div class="ecl-u-type-paragraph ecl-u-mr-l">
-
-                <a href="{{ route('statement.export', request()->query()) }}"
-                   class="ecl-link ecl-link--default ecl-link--icon ecl-link--icon-after">
-                    <span class="ecl-link__label">.csv</span>
-                    <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="download"/>
-                    </svg>
-                </a>
-            </div>
+        <div class="ecl-u-type-paragraph ecl-u-mr-s">
+            Statements of Reasons @if(!$reindexing)
+                Found: {{ $total }}
+            @endif
         </div>
+
+
+        <div class="ecl-u-type-paragraph ecl-u-mr-l">
+
+            <a href="{{ route('statement.export', request()->query()) }}"
+               class="ecl-link ecl-link--default ecl-link--icon ecl-link--icon-after">
+                <span class="ecl-link__label">.csv</span>
+                <svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true">
+                    <x-ecl.icon icon="download"/>
+                </svg>
+            </a>
+        </div>
+    </div>
 
 
     <x-statement.table :statements="$statements"/>

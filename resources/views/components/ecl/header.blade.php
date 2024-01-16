@@ -138,7 +138,8 @@
                                     class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
                                     focusable="false" aria-hidden="true" data-ecl-icon="">
                                     <x-ecl.icon icon="corner-arrow"/>
-                <use xlink:href="/component-library/dist/media/icons.75c96284.svg#corner-arrow"></use>
+
+
               </svg></span></button>
                         <div class="ecl-menu__mega" data-ecl-menu-mega="">
                             <ul class="ecl-menu__sublist">
@@ -186,18 +187,18 @@
                                     class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
                                     focusable="false" aria-hidden="true" data-ecl-icon="">
                                     <x-ecl.icon icon="corner-arrow"/>
-                <use xlink:href="/component-library/dist/media/icons.75c96284.svg#corner-arrow"></use>
+
               </svg></span></button>
                         <div class="ecl-menu__mega" data-ecl-menu-mega="">
                             <ul class="ecl-menu__sublist">
                                 <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('page.show', ['faq']) }}"
+                                        href="{{ route('page.show', ['faq#general-faq']) }}"
                                         class="ecl-menu__sublink">General</a></li>
                                 <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('page.show', ['faq']) }}"
+                                        href="{{ route('page.show', ['faq#technical-faq']) }}"
                                         class="ecl-menu__sublink">Technical</a></li>
                                 <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('page.show', ['faq']) }}"
+                                        href="{{ route('page.show', ['faq#platform-faq']) }}"
                                         class="ecl-menu__sublink">Platforms</a></li>
                             </ul>
                         </div>
@@ -219,7 +220,7 @@
                                     class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
                                     focusable="false" aria-hidden="true" data-ecl-icon="">
                                     <x-ecl.icon icon="corner-arrow"/>
-                <use xlink:href="/component-library/dist/media/icons.75c96284.svg#corner-arrow"></use>
+
               </svg></span></button>
                         <div class="ecl-menu__mega" data-ecl-menu-mega="">
                             <ul class="ecl-menu__sublist">
