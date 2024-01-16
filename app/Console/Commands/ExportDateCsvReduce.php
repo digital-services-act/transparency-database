@@ -2,30 +2,27 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportZip;
-use App\Jobs\StatementCsvExportZipPart;
-use App\Jobs\StatementCsvExportZipParts;
+use App\Jobs\StatementCsvExportReduce;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 
-class ExportDateZipCsvParts extends Command
+class ExportDateCsvReduce extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'exportcsv:zipcsvparts {date=yesterday}';
+    protected $signature = 'exportcsv:reduce {date=yesterday}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'zip the csv files.';
+    protected $description = 'reduce and remove 0 size files';
 
     /**
      * Execute the console command.
@@ -45,13 +42,11 @@ class ExportDateZipCsvParts extends Command
             }
         }
 
-        $date_string = $date->format('Y-m-d');
         $exports = $day_archive_service->buildBasicArray();
-        $versions = ['full', 'light'];
+
         foreach ($exports as $export) {
-            foreach ($versions as $version) {
-                StatementCsvExportZipParts::dispatch($date_string, $export['slug'], $version);
-            }
+            StatementCsvExportReduce::dispatch($date->format('Y-m-d'), $export['slug'], 'full');
+            StatementCsvExportReduce::dispatch($date->format('Y-m-d'), $export['slug'], 'light');
         }
     }
 }

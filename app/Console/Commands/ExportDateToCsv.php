@@ -17,7 +17,7 @@ class ExportDateToCsv extends Command
      *
      * @var string
      */
-    protected $signature = 'exportcsv:date {date=yesterday} {chunk=500000}';
+    protected $signature = 'exportcsv:csv {date=yesterday} {chunk=500000}';
 
     /**
      * The console command description.
