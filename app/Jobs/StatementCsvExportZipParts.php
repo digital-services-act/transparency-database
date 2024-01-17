@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Services\DayArchiveService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportZipParts implements ShouldQueue
@@ -29,9 +29,12 @@ class StatementCsvExportZipParts implements ShouldQueue
     {
         $path = Storage::path('');
         $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
+        $zip = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
         $parts = glob($glob);
+        $jobs = [];
         foreach ($parts as $part) {
-            StatementCsvExportZipPart::dispatch($part);
+            $jobs[] = new StatementCsvExportZipPart($part, $zip);
         }
+        Bus::chain($jobs)->dispatch();
     }
 }

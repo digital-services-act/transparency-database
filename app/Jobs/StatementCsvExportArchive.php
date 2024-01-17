@@ -38,27 +38,27 @@ class StatementCsvExportArchive implements ShouldQueue
         $date = Carbon::createFromFormat('Y-m-d', $this->date);
         $platform = Platform::find($this->platform_id);
 
-        $csvfile = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-full.csv';
-        $csvfiles = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-full-*.csv';
+        $csvfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv';
+        $csvfiles = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full-*.csv';
         $csvfilesglob = glob($csvfiles);
         $size = 0;
         foreach ($csvfilesglob as $part) {
             $size += filesize($part);
         }
 
-        $csvfilelight = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-light.csv';
-        $csvfileslight = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-light-*.csv';
+        $csvfilelight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv';
+        $csvfileslight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light-*.csv';
         $csvfileslightglob = glob($csvfileslight);
         $sizelight = 0;
         foreach ($csvfileslightglob as $part) {
             $sizelight += filesize($part);
         }
 
-        $zipfile = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-full.csv.zip';
-        $zipfilelight = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-light.csv.zip';
+        $zipfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv.zip';
+        $zipfilelight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv.zip';
 
-        $zipfilesha1 = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-full.csv.zip.sha1';
-        $zipfilelightsha1 = $path . 'sor-' . $export['slug'] . '-' . $this->date . '-light.csv.zip.sha1';
+        $zipfilesha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv.zip.sha1';
+        $zipfilelightsha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv.zip.sha1';
 
         $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
         $existing?->delete();
