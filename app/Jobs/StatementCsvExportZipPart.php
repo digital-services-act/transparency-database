@@ -25,7 +25,7 @@ class StatementCsvExportZipPart implements ShouldQueue
 
     public function middleware(): array
     {
-        return [new WithoutOverlapping($this->zip)];
+        return [(new WithoutOverlapping($this->zip))->releaseAfter(30)];
     }
 
     public function handle(): void
