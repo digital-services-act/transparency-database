@@ -28,8 +28,15 @@ class StatementCsvExportZipParts implements ShouldQueue
     public function handle(): void
     {
         $path = Storage::path('');
-        $pattern = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
-        $zip = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
-        shell_exec('cd ' . $path . ';zip ' . $zip . ' ' . $pattern);
+        $pattern = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
+        $parts = glob($pattern);
+        $zip_file = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
+
+        $zip = new \ZipArchive();
+        $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        foreach ($parts as $part) {
+            $zip->addFile($part, basename($part));
+        }
+        $zip->close();
     }
 }
