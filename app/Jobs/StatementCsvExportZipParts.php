@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportZipParts implements ShouldQueue
@@ -29,13 +28,8 @@ class StatementCsvExportZipParts implements ShouldQueue
     public function handle(): void
     {
         $path = Storage::path('');
-        $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
+        $pattern = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
         $zip = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
-        $parts = glob($glob);
-        $script = 'cd ' . $path . ';';
-        foreach ($parts as $part) {
-            $script .= 'zip ' . $zip . ' ' . $part . ';';
-        }
-        shell_exec($script);
+        shell_exec('cd ' . $path . ';zip ' . $zip . ' ' . $pattern);
     }
 }
