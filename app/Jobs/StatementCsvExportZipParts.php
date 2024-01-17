@@ -30,10 +30,11 @@ class StatementCsvExportZipParts implements ShouldQueue
     {
         $path = Storage::path('');
         $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
-        $zip = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
+        $zip = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
         $parts = glob($glob);
         foreach ($parts as $part) {
-            @shell_exec('cd ' . $path . ';zip ' . $zip . ' ' . basename($part));
+            shell_exec('cd ' . $path . ';zip ' . $zip . ' ' . basename($part));
+            sleep(2);
         }
     }
 }
