@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportCat;
 use App\Jobs\StatementCsvExportCopyS3;
 use App\Services\DayArchiveService;
 use Exception;
