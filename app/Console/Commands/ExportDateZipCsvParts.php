@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportZip;
+use App\Jobs\StatementCsvExportSha1;
 use App\Jobs\StatementCsvExportZipPart;
 use App\Jobs\StatementCsvExportZipParts;
 use App\Services\DayArchiveService;

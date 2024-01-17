@@ -15,14 +15,14 @@ class StatementsDayArchive extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:day-archive {date=yesterday} {--recoverupload} {--force} {--info}';
+    protected $signature = 'statements:day-archive {date=yesterday}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Queue a day archive compile job.';
+    protected $description = 'Queue a day archive compile jobs.';
 
     /**
      * Execute the console command.
@@ -48,41 +48,11 @@ class StatementsDayArchive extends Command
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
             }
         }
+        $date_string = $date->format('Y-m-d');
+        $exports = $day_archive_service->buildBasicArray();
 
-        $recoverupload = (bool)$this->option('recoverupload', false);
-        $force = (bool)$this->option('force', false);
-        $info  = (bool)$this->option('info', false);
 
-        if (!$recoverupload) {
-            try {
-                $day_archive_service->createDayArchive($date, $force);
-            } catch (Exception $e) {
-                $this->error($e->getMessage());
-            }
-        } else {
-            try {
-                $day_archive_service->recoverUpload($date);
-            } catch (Exception $e) {
-                $this->error($e->getMessage());
-            }
-        }
 
-        if ($info) {
-            $this->info('Memory Usage: ' . $this->formatBytes(memory_get_peak_usage()));
-        }
 
     }
-
-    public function formatBytes($bytes, $precision = 2) {
-        $units = array("b", "kb", "mb", "gb", "tb");
-
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-
-        $bytes /= (1 << (10 * $pow));
-
-        return round($bytes, $precision) . " " . $units[$pow];
-    }
-
 }
