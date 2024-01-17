@@ -38,7 +38,8 @@ The statements of reasons that providers of online platforms are required to sub
 Database must contain this information.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Is there any part of a statement of reasons that is not published in the DSA Transparency Database?">
+<x-ecl.accordion label="Is there any part of a statement of reasons that is not published in the DSA Transparency
+Database?">
 Providers of online platforms are obliged to remove any personal data from the information they publish in the
 DSA Transparency Database, in accordance with Article 24(5) of the DSA. In case personal data is included in any
 of the statements of reasons, the Commission can be notified using the ‘Report an issue’ button.<br />
@@ -66,11 +67,59 @@ reasons. For an interactive overview over the statements of reasons contained in
 visit the Analytics of the DSA Transparency Database.
 </x-ecl.accordion>
 
+<x-ecl.accordion label="What key features does the database offer for quickly summarizing information?">
+The DSA Transparency Database dashboard offers a user-friendly way to quickly access summarised information on
+statements of reasons submitted by providers of online platforms. You can navigate across various sections of the
+dashboard with different visualisations to obtain a comprehensive overview of the data.
+<br/><br/>
+Each visualisation can be customised by several filters to find the information you are looking for. For example, you
+can look at specific online platforms, search for a specific time frame or find a specific type of restriction. The
+dashboard is designed to streamline the process of extracting meaningful insights from the DSA Transparency Database.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="Where can I find information on how to navigate through the dashboard? What data is displayed in
+the dashboard? ">
+To learn more about the navigation and filtering options of the dashboard, you can visit the “Instructions” page of the
+<a href="{{route('dashboard')}}">dashboard</a>.  
+</x-ecl.accordion>
+
+<x-ecl.accordion label="Will the dashboard filters be updated and expanded with additional filtering options, such as a
+breakdown by member state?  ">
+We are always looking to improve the dashboard and its functionalities, including the available filters. In offering
+filtering options, the dashboard seeks to strike a balance between customizability and complexity, within the technical
+constraints of the database. For this reason, filtering options or breakdowns by member states or languages are
+currently not implemented. However, we are actively exploring solutions to incorporate such features in the future to
+enhance the dashboard's capabilities. To access the complete array of categories, you can make use of the <a
+href={{route('dayarchive.index')}}>“Data
+download”</a> page, which provides access to the entire database schema via daily files.
+</x-ecl.accordion>
+
 <x-ecl.accordion label="Where can I find information about the data points included in the DSA Transparency Database?">
 For more information about the data included in the DSA Transparency Database, please visit the
 <a href="https://transparency.dsa.ec.europa.eu/page/documentation">Documentation page</a>.
 It explains what type of information is collected, and how the different data fields map onto Article 17 of the DSA,
-which lays down the information required in a statement of reasons.
+which lays down the information required in a statement of reasons. Several attributes included in the DSA Transparency
+database can be used to filter the aggregate visualisations of the DSA Transparency database dashboard. For more
+information on how to navigate the dashboard & the information contained in it, please visit the “Instructions” page of
+the <a href="{{route('dashboard')}}">dashboard</a>.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="How can I search for specific statements of reasons? ">
+The <a href="{{route('statement.index')}}">“Search for statements of reasons”</a> page offers you the option to search
+the free text fields of the statements of
+reasons in the database for keywords of your choice.<br/><br/>
+
+When you click on the “Advanced Search” button, you are redirected to the “Advanced Search” page where you can look for
+statements of reasons from specific platforms or timeframes. You can also filter the statements of reasons according to
+any other data field (e.g. a specific type of restriction or keyword) that you are interested in.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="What is a free text field? Which free text fields are there in each statement of reason? ">
+In a free text field, providers of online platforms can provide information in their own words, for example to explain
+why the moderated content is illegal or to explain the facts and circumstances that led to the moderation decision(s).
+<br/><br/>
+For a full overview of the free text fields contained in the DSA Transparency Database schema, please consider
+the <a href="{{  route('profile.page.show', ['api-documentation']) }}">API documentation</a>.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="Where can I find more information about the DSA?">
@@ -85,6 +134,7 @@ you need to create an EU Login account.
 </x-ecl.accordion>
 
 <h2 class="ecl-u-type-heading-2">Technical FAQ</h2>
+
 <x-ecl.accordion label="I would like to extract a large number of statements of reasons from the DSA Transparency
 Database. How do I do that?">
 The <a href="https://transparency.dsa.ec.europa.eu/data-download">Data Download</a> page of the DSA Transparency
@@ -105,6 +155,27 @@ above the table displaying the results of a search for statements of reasons.<br
 By default, the latest 1000 results will be available for download. To adapt the content of the sample, you can specify
 search parameters in the advanced search page. The first 1000 results from your advanced search will then be available
 for .csv file download.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="What are the SHA1 files provided with the daily dumps and how do I use them? ">
+The files are provided in the Comma-Separated Values (CSV) zipped format. Each file is accompanied by an SHA1 checksum
+file containing the original filename and its hash. The SHA1 file allows to verify the downloaded csv.zip file using
+standard tools. For instance, on a bash terminal, having both the csv.zip and the csv.zip.sha1 files in the working
+folder, doing sha1sum -c sor-global-2023-09-25-full.csv.zip.sha1 should show OK if the
+sor-global-2023-09-25-full.csv.zip file has been correctly downloaded.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="I would like to extract graphs directly from the dashboard. How do I do that? ">
+To extract visualisations directly from the <a href="{{route('dashboard')}}">dashboard</a> in a .jpg format, click on
+the “More options” menu on the top
+right corner of the dashboard visualisation you want to extract. Then, click on “Copy visual as image.” When your visual
+is ready, you can paste your image to your desired destination, using “Ctrl + V” or right-click and select Paste.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="When I export data from the visualisations of the dashboard, what are the numbers I am looking
+at? ">
+In the dashboard, you can export the underlying data of each visualisation into a .csv or excel file. The data in those
+files are the aggregate statistics based on which specific visual is built.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="I would like to get access to the content for which a statement of reasons was created.
