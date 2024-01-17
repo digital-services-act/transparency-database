@@ -108,7 +108,7 @@ class StatementsDayArchive extends Command
 
         $archive_jobs = [];
         foreach ($exports as $export) {
-            $archive_jobs = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
+            $archive_jobs[] = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
         }
 
         $start_jobs = [
@@ -132,16 +132,16 @@ class StatementsDayArchive extends Command
 //        Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
 //            Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
 
-                Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
-                    Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
-                        Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(function() use($luggage) {
+//                Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
+//                    Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
+//                        Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(function() use($luggage) {
                             Bus::batch($luggage['archive_jobs'])->finally(function() use($luggage) {
                                 //@shell_exec('rm ' . Storage::path('') . '*' . $luggage['date_string'] . '*');
                                 Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                             })->dispatch();
-                        })->dispatch();
-                    })->dispatch();
-                })->dispatch();
+//                        })->dispatch();
+//                    })->dispatch();
+//                })->dispatch();
 
 //            })->dispatch();
 //        })->dispatch();
