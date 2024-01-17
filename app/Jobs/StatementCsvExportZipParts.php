@@ -32,9 +32,10 @@ class StatementCsvExportZipParts implements ShouldQueue
         $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
         $zip = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
         $parts = glob($glob);
+        $script = 'cd ' . $path . ';';
         foreach ($parts as $part) {
-            shell_exec('cd ' . $path . ';zip ' . $zip . ' ' . basename($part));
-            sleep(2);
+            $script .= 'zip ' . $zip . ' ' . $part . ';';
         }
+        shell_exec($script);
     }
 }
