@@ -1,3 +1,4 @@
+@php use App\Models\Statement; @endphp
 @extends('layouts/ecl')
 
 @section('title', 'User Profile')
@@ -103,55 +104,63 @@ font: normal normal 400 1rem/1.5rem arial,sans-serif !important;">
             <div class="ecl-fact-figures__items">
 
                 <div class="ecl-fact-figures__item">
-                    <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="data"/>
-                    </svg>
-                    <div class="ecl-fact-figures__value">4 000 000</div>
+                    <div class="ecl-fact-figures__value">
+                        <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" style="transform: translateY(10px);"
+                             focusable="false" aria-hidden="true">
+                            <x-ecl.icon icon="data"/>
+                        </svg>
+                        <span style="font-size: 1.5rem">@aif($total)</span></div>
                     <div class="ecl-fact-figures__title">Total number of statements of reasons submitted</div>
                 </div>
 
                 <div class="ecl-fact-figures__item">
-                    <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="list"/>
-                    </svg>
-                    <div class="ecl-fact-figures__value">Most Reported Violations</div>
-                    <div class="ecl-fact-figures__title">1. Scope of platform service</div>
-                    <div class="ecl-fact-figures__title">2. Illegal or harmful speech</div>
-                    <div class="ecl-fact-figures__title">3. Unsafe and/or illegal products</div>
+                    <div class="ecl-fact-figures__value">
+                        <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" style="transform: translateY(10px);"
+                             focusable="false" aria-hidden="true">
+                            <x-ecl.icon icon="list"/>
+                        </svg>
+                        <span style="font-size: 1.5rem; margin-left:10px;">Most Reported Violations</span></div>
+                    @foreach($top_categories as $top_category)
+                        <div class="ecl-fact-figures__title">{{$loop->iteration}}
+                            . {{ Statement::STATEMENT_CATEGORIES[$top_category->value] }}</div>
+                    @endforeach
+                </div>
+
+
+                <div class="ecl-fact-figures__item">
+                    <div class="ecl-fact-figures__value">
+                        <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" style="transform: translateY(10px);"
+                             focusable="false" aria-hidden="true">
+                            <x-ecl.icon icon="list"/>
+                        </svg>
+                        <span style="font-size: 1.5rem; margin-left:10px;">Top Restriction Types</span></div>
+                    @foreach($top_decisions_visibility as $top_decision_visibility)
+                        <div class="ecl-fact-figures__title">{{$loop->iteration}}
+                            . {{ $top_decision_visibility }}</div>
+                    @endforeach
                 </div>
 
                 <div class="ecl-fact-figures__item">
-                    <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="data"/>
-                    </svg>
-                    <div class="ecl-fact-figures__value">Most used restriction type</div>
-                    <div class="ecl-fact-figures__title">Visibility restriction</div>
+                    <div class="ecl-fact-figures__value">
+                        <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" style="transform: translateY(10px);"
+                             focusable="false" aria-hidden="true">
+                            <x-ecl.icon icon="data"/>
+                        </svg>
+                        <span style="font-size: 1.5rem">@aif($platforms_total)</span></div>
+                    <div class="ecl-fact-figures__title">Number of active platforms</div>
                 </div>
 
-                <div class="ecl-fact-figures__item">
-                    <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="infographic"/>
-                    </svg>
-                    <div class="ecl-fact-figures__value">15</div>
-                    <div class="ecl-fact-figures__title">Active platforms</div>
-                </div>
 
                 <div class="ecl-fact-figures__item">
-                    <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="growth"/>
-                    </svg>
-                    <div class="ecl-fact-figures__value">87%</div>
+                    <div class="ecl-fact-figures__value">
+                        <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" style="transform: translateY(10px);"
+                             focusable="false" aria-hidden="true">
+                            <x-ecl.icon icon="growth"/>
+                        </svg>
+                        <span style="font-size: 1.5rem">73%</span></div>
                     <div class="ecl-fact-figures__title">of fully automated decisions</div>
                 </div>
 
-
-                {{--                <div class="ecl-fact-figures__item">--}}
-                {{--                    <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">--}}
-                {{--                        <x-ecl.icon icon="growth"/>--}}
-                {{--                    </svg>--}}
-                {{--                    <div class="ecl-fact-figures__value">12</div>--}}
-                {{--                    <div class="ecl-fact-figures__title">Statements of reasons per hour per platform</div>--}}
-                {{--                </div>--}}
 
             </div>
         </div>

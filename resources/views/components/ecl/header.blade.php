@@ -149,9 +149,9 @@
                                 <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
                                         href="{{route('dayarchive.index')}}"
                                         class="ecl-menu__sublink">Data Download</a></li>
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{route('analytics.index')}}"
-                                        class="ecl-menu__sublink">Analytics</a></li>
+{{--                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a--}}
+{{--                                        href="{{route('analytics.index')}}"--}}
+{{--                                        class="ecl-menu__sublink">Analytics</a></li>--}}
                                 <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
                                         href="{{route('statement.index')}}"
                                         class="ecl-menu__sublink">Search for Statements of Reasons</a></li>

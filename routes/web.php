@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\FeedbackController;
@@ -74,7 +75,7 @@ Route::get('/daily-archives', function(){
     return Redirect::to('/data-download', 301);
 });
 
-Route::view('/', 'home')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 Route::view('/dashboard', 'dashboard')->name('dashboard');
 
