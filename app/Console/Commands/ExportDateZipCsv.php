@@ -8,7 +8,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
-class ExportDateZipCsv extends Command
+class ExportDateSha1 extends Command
 {
     /**
      * The name and signature of the console command.
