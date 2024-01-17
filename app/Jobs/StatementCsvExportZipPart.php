@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class StatementCsvExportZipPart implements ShouldQueue
 {
@@ -21,11 +20,6 @@ class StatementCsvExportZipPart implements ShouldQueue
     {
         $this->part = $part;
         $this->zip = $zip;
-    }
-
-    public function middleware(): array
-    {
-        return [(new WithoutOverlapping($this->zip))->releaseAfter(30)];
     }
 
     public function handle(): void

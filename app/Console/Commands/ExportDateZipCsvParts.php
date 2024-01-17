@@ -2,14 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportSha1;
-use App\Jobs\StatementCsvExportZipPart;
 use App\Jobs\StatementCsvExportZipParts;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 
 class ExportDateZipCsvParts extends Command
 {
