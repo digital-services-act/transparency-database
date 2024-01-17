@@ -71,54 +71,54 @@ class StatementsDayArchive extends Command
         };
         $jobs[] = new StatementCsvExportClean($date_string);
 
-        $csv_export_jobs = [];
-        while($current <= $last_id) {
-            $till = ($current + $chunk - 1);
-            $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
-            $part++;
-            $current += $chunk;
-        }
-        $jobs[] = $csv_export_jobs;
-
-        $reduce_jobs = [];
-        foreach ($exports as $export) {
-            foreach ($versions as $version) {
-                $reduce_jobs[] = new StatementCsvExportReduce($date->format('Y-m-d'), $export['slug'], $version);
+        $jobs[] = static function() use($current, $last_id, $chunk, $part, $date_string) {
+            while($current <= $last_id) {
+                $till = ($current + $chunk - 1);
+                StatementCsvExport::dispatch($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
+                $part++;
+                $current += $chunk;
             }
-        }
-        $jobs[] = $reduce_jobs;
+        };
 
-        $zip_jobs = [];
-        foreach ($exports as $export) {
-            foreach ($versions as $version) {
-                $zip_jobs[] = new StatementCsvExportZipParts($date_string, $export['slug'], $version);
+        $jobs[] = static function() use($exports, $versions, $date) {
+            foreach ($exports as $export) {
+                foreach ($versions as $version) {
+                    StatementCsvExportReduce::dispatch($date->format('Y-m-d'), $export['slug'], $version);
+                }
             }
-        }
-        $jobs[] = $zip_jobs;
+        };
 
-        $sha1_jobs = [];
-        foreach ($exports as $export) {
-            foreach ($versions as $version) {
-                $sha1_jobs[] = new StatementCsvExportSha1($date->format('Y-m-d'), $export['slug'], $version);
+        $jobs[] = static function() use($exports, $versions, $date_string) {
+            foreach ($exports as $export) {
+                foreach ($versions as $version) {
+                    StatementCsvExportZipParts::dispatch($date_string, $export['slug'], $version);
+                }
             }
-        }
-        $jobs[] = $sha1_jobs;
+        };
 
-        $copy_jobs = [];
-        foreach ($exports as $export) {
-            foreach ($versions as $version) {
-                $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
-                $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
-                $copy_jobs[] = (new StatementCsvExportCopyS3($zip, $sha1))->onQueue('s3copy');
+        $jobs[] = static function() use($exports, $versions, $date_string) {
+            foreach ($exports as $export) {
+                foreach ($versions as $version) {
+                    StatementCsvExportSha1::dispatch($date_string, $export['slug'], $version);
+                }
             }
-        }
-        $jobs[] = $copy_jobs;
+        };
 
-        $archive_jobs = [];
-        foreach ($exports as $export) {
-            $archive_jobs[] = new StatementCsvExportArchive($date->format('Y-m-d'), $export['slug'], $export['id']);
-        }
-        $jobs[] = $archive_jobs;
+        $jobs[] = static function() use($exports, $versions, $date_string) {
+            foreach ($exports as $export) {
+                foreach ($versions as $version) {
+                    $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
+                    $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
+                    StatementCsvExportCopyS3::dispatch($zip, $sha1)->onQueue('s3copy');
+                }
+            }
+        };
+
+        $jobs[] = static function () use($exports, $date_string) {
+            foreach ($exports as $export) {
+                StatementCsvExportArchive::dispatch($date_string, $export['slug'], $export['id']);
+            }
+        };
 
         $jobs[] = new StatementCsvExportClean($date_string);
         $jobs[] = static function() use($date_string) {
