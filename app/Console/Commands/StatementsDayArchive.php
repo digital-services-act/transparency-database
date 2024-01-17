@@ -111,7 +111,7 @@ class StatementsDayArchive extends Command
 
         $start_jobs = [
             static function() use($date_string) {
-                Log::debug('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
             },
             new StatementCsvExportClean($date_string),
         ];
@@ -119,14 +119,14 @@ class StatementsDayArchive extends Command
         $finish_jobs = [
             new StatementCsvExportClean($date_string),
             static function() use($date_string) {
-                Log::debug('Day Archiving Ended for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                Log::info('Day Archiving Ended for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
             }
         ];
 
         $luggage = compact('start_jobs', 'finish_jobs');
 
-        $finish_batch = Bus::batch($luggage['finish_jobs'])->finally(function() use($luggage) {
-            $start_batch = Bus::batch($luggage['start_jobs'])->dispatch();
+        Bus::batch($luggage['finish_jobs'])->finally(function() use($luggage) {
+            Bus::batch($luggage['start_jobs'])->dispatch();
         })->dispatch();
 
 
