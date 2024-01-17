@@ -123,37 +123,24 @@ class StatementsDayArchive extends Command
             }
         ];
 
-        $luggage = compact('start_jobs', 'finish_jobs');
+        $luggage = compact('start_jobs', 'finish_jobs', 'archive_jobs', 'csv_export_jobs', 'sha1_jobs', 'copys3_jobs', 'zip_jobs', 'reduce_jobs');
 
-        Bus::batch($luggage['finish_jobs'])->finally(function() use($luggage) {
-            Bus::batch($luggage['start_jobs'])->dispatch();
+        Bus::batch($luggage['start_jobs'])->finally(function () use($luggage) {
+            Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
+                Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
+                    Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
+                        Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
+                            Bus::batch($luggage['copys3_jobs'])->finally(function() use($luggage) {
+                                Bus::batch($luggage['archive_jobs'])->finally(function() use($luggage) {
+                                    Bus::batch($luggage['finish_jobs'])->finally(function() use($luggage) {
+                                    })->dispatch();
+                                })->dispatch();
+                            })->dispatch();
+                        })->dispatch();
+                    })->dispatch();
+                })->dispatch();
+            })->dispatch();
         })->dispatch();
 
-
-//        $start_batch = $batch = Bus::batch([
-//            static function() use($luggage) {
-//                Log::debug('Day Archiving Started for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-//            },
-//            new StatementCsvExportClean($luggage['date_string']),
-//        ])->finally(function (Batch $start_batch) use($luggage) {
-//            $csv_export_batch = Bus::batch($luggage['csv_export_jobs'])->finally(function (Batch $csv_export_batch) use($luggage) {
-//                $reduce_batch = Bus::batch($luggage['reduce_jobs'])->finally(function (Batch $reduce_batch) use($luggage) {
-//                    $zip_batch = Bus::batch($luggage['zip_jobs'])->finally(function(Batch $zip_batch) use($luggage) {
-//                        $sha1_batch = Bus::batch($luggage['sha1_jobs'])->finally(function(Batch $sha1_batch) use($luggage) {
-//                            $copys3_batch = Bus::batch($luggage['copys3_jobs'])->finally(function(Batch $copys3_batch) use($luggage) {
-//                                $archive_batch = Bus::batch($luggage['archive_jobs'])->finally(function(Batch $archive_batch) use($luggage) {
-//                                    $finish_batch = Bus::batch([
-//                                        new StatementCsvExportClean($luggage['date_string']),
-//                                        static function() use($luggage) {
-//                                            Log::debug('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-//                                        }
-//                                    ])->dispatch();
-//                                })->dispatch();
-//                            })->dispatch();
-//                        })->dispatch();
-//                    })->dispatch();
-//                })->dispatch();
-//            })->dispatch();
-//        })->dispatch();
     }
 }
