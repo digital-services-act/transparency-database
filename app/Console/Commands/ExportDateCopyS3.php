@@ -48,8 +48,8 @@ class ExportDateCopyS3 extends Command
         $versions = ['full', 'light'];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip = 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '.csv.zip';
-                $sha1 = 'sor-' . $version . '-' . $export['slug'] . '-' . $date_string . '.csv.zip.sha1';
+                $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
+                $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
                 StatementCsvExportCopyS3::dispatch($zip, $sha1)->onQueue('s3copy');
             }
         }
