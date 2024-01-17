@@ -2,9 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportCat;
 use App\Jobs\StatementCsvExportClean;
-use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;

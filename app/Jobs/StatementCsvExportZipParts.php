@@ -2,17 +2,17 @@
 
 namespace App\Jobs;
 
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportZipParts implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
 
     public string $date;
     public string $platform;
@@ -28,13 +28,15 @@ class StatementCsvExportZipParts implements ShouldQueue
     public function handle(): void
     {
         $path = Storage::path('');
-        $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
-        $zip = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
-        $parts = glob($glob);
-        $jobs = [];
+        $pattern = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
+        $parts = glob($pattern);
+        $zip_file = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
+
+        $zip = new \ZipArchive();
+        $zip->open($path . $zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         foreach ($parts as $part) {
-            $jobs[] = new StatementCsvExportZipPart($part, $zip);
+            $zip->addFile($part, basename($part));
         }
-        Bus::chain($jobs)->dispatch();
+        $zip->close();
     }
 }

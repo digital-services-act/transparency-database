@@ -11,10 +11,13 @@ use App\Jobs\StatementCsvExportSha1;
 use App\Jobs\StatementCsvExportZipParts;
 use App\Services\DayArchiveService;
 use Exception;
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class StatementsDayArchive extends Command
 {
@@ -35,14 +38,13 @@ class StatementsDayArchive extends Command
     /**
      * Execute the console command.
      * @throws Exception
+     * @throws Throwable
      */
     public function handle(DayArchiveService $day_archive_service)
     {
-        Log::debug('Day Archiving has been run for: ' . $this->argument('date'));
 
         if ( ! config('filesystems.disks.s3ds.bucket')) {
             $this->error('In order to make day archives, you need to define the "s3ds" bucket.');
-
             return;
         }
 
@@ -56,6 +58,7 @@ class StatementsDayArchive extends Command
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
             }
         }
+
         $date_string = $date->format('Y-m-d');
         $exports = $day_archive_service->buildBasicArray();
         $versions = ['full', 'light'];
@@ -65,66 +68,82 @@ class StatementsDayArchive extends Command
         $current = $first_id;
         $part = 0;
 
-        $jobs = [];
-        $jobs[] = static function() use($date_string) {
-            Log::debug('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-        };
-        $jobs[] = new StatementCsvExportClean($date_string);
+        $csv_export_jobs = [];
+        while($current <= $last_id) {
+            $till = ($current + $chunk - 1);
+            $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
+            $part++;
+            $current += $chunk;
+        }
 
-        $jobs[] = static function() use($current, $last_id, $chunk, $part, $date_string) {
-            while($current <= $last_id) {
-                $till = ($current + $chunk - 1);
-                StatementCsvExport::dispatch($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
-                $part++;
-                $current += $chunk;
+        $reduce_jobs = [];
+        foreach ($exports as $export) {
+            foreach ($versions as $version) {
+                $reduce_jobs[] = new StatementCsvExportReduce($date_string, $export['slug'], $version);
             }
-        };
+        }
 
-        $jobs[] = static function() use($exports, $versions, $date) {
-            foreach ($exports as $export) {
-                foreach ($versions as $version) {
-                    StatementCsvExportReduce::dispatch($date->format('Y-m-d'), $export['slug'], $version);
-                }
+        $zip_jobs = [];
+        foreach ($exports as $export) {
+            foreach ($versions as $version) {
+                $zip_jobs[] = new StatementCsvExportZipParts($date_string, $export['slug'], $version);
             }
-        };
+        }
 
-        $jobs[] = static function() use($exports, $versions, $date_string) {
-            foreach ($exports as $export) {
-                foreach ($versions as $version) {
-                    StatementCsvExportZipParts::dispatch($date_string, $export['slug'], $version);
-                }
+        $sha1_jobs = [];
+        foreach ($exports as $export) {
+            foreach ($versions as $version) {
+                $sha1_jobs[] = new StatementCsvExportSha1($date_string, $export['slug'], $version);
             }
-        };
+        }
 
-        $jobs[] = static function() use($exports, $versions, $date_string) {
-            foreach ($exports as $export) {
-                foreach ($versions as $version) {
-                    StatementCsvExportSha1::dispatch($date_string, $export['slug'], $version);
-                }
+        $copys3_jobs = [];
+        foreach ($exports as $export) {
+            foreach ($versions as $version) {
+                $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
+                $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
+                $copys3_jobs[] = new StatementCsvExportCopyS3($zip, $sha1);
             }
-        };
+        }
 
-        $jobs[] = static function() use($exports, $versions, $date_string) {
-            foreach ($exports as $export) {
-                foreach ($versions as $version) {
-                    $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
-                    $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
-                    StatementCsvExportCopyS3::dispatch($zip, $sha1)->onQueue('s3copy');
-                }
+        $archive_jobs = [];
+        foreach ($exports as $export) {
+            $archive_jobs = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
+        }
+
+        $start_jobs = [
+            static function() use($date_string) {
+                Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+            },
+            new StatementCsvExportClean($date_string),
+        ];
+
+        $finish_jobs = [
+            new StatementCsvExportClean($date_string),
+            static function() use($date_string) {
+                Log::info('Day Archiving Ended for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
             }
-        };
+        ];
 
-        $jobs[] = static function () use($exports, $date_string) {
-            foreach ($exports as $export) {
-                StatementCsvExportArchive::dispatch($date_string, $export['slug'], $export['id']);
-            }
-        };
+        $luggage = compact('date_string', 'start_jobs', 'finish_jobs', 'archive_jobs', 'csv_export_jobs', 'sha1_jobs', 'copys3_jobs', 'zip_jobs', 'reduce_jobs');
 
-        $jobs[] = new StatementCsvExportClean($date_string);
-        $jobs[] = static function() use($date_string) {
-            Log::debug('Day Archiving Ended for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-        };
+        Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+        //@shell_exec('rm ' . Storage::path('') . '*' . $date_string . '*');
+//        Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
+//            Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
 
-        Bus::chain($jobs)->dispatch();
+                Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
+                    Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
+                        Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(function() use($luggage) {
+                            Bus::batch($luggage['archive_jobs'])->finally(function() use($luggage) {
+                                //@shell_exec('rm ' . Storage::path('') . '*' . $luggage['date_string'] . '*');
+                                Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                            })->dispatch();
+                        })->dispatch();
+                    })->dispatch();
+                })->dispatch();
+
+//            })->dispatch();
+//        })->dispatch();
     }
 }
