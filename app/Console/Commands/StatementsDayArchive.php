@@ -16,6 +16,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class StatementsDayArchive extends Command
@@ -101,7 +102,7 @@ class StatementsDayArchive extends Command
             foreach ($versions as $version) {
                 $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
                 $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
-                $copys3_jobs[] = (new StatementCsvExportCopyS3($zip, $sha1))->onQueue('s3copy');
+                $copys3_jobs[] = new StatementCsvExportCopyS3($zip, $sha1);
             }
         }
 
@@ -127,19 +128,22 @@ class StatementsDayArchive extends Command
         $luggage = compact('date_string', 'start_jobs', 'finish_jobs', 'archive_jobs', 'csv_export_jobs', 'sha1_jobs', 'copys3_jobs', 'zip_jobs', 'reduce_jobs');
 
         Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+        //@shell_exec('rm ' . Storage::path('') . '*' . $date_string . '*');
+//        Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
+//            Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
 
-        Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
-            Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
                 Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
                     Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
-                        Bus::batch($luggage['copys3_jobs'])->finally(function() use($luggage) {
+                        Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(function() use($luggage) {
                             Bus::batch($luggage['archive_jobs'])->finally(function() use($luggage) {
+                                //@shell_exec('rm ' . Storage::path('') . '*' . $luggage['date_string'] . '*');
                                 Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                             })->dispatch();
                         })->dispatch();
                     })->dispatch();
                 })->dispatch();
-            })->dispatch();
-        })->dispatch();
+
+//            })->dispatch();
+//        })->dispatch();
     }
 }

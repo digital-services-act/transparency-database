@@ -32,10 +32,8 @@ class StatementCsvExportZipParts implements ShouldQueue
         $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
         $zip = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
         $parts = glob($glob);
-        $jobs = [];
         foreach ($parts as $part) {
-            $jobs[] = new StatementCsvExportZipPart($part, $zip);
+            @shell_exec('cd ' . $path . ';zip ' . $zip . ' ' . basename($part));
         }
-        Bus::chain($jobs)->dispatch();
     }
 }
