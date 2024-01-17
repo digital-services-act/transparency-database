@@ -16,6 +16,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class StatementsDayArchive extends Command
 {
@@ -36,7 +37,7 @@ class StatementsDayArchive extends Command
     /**
      * Execute the console command.
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function handle(DayArchiveService $day_archive_service)
     {
@@ -123,24 +124,22 @@ class StatementsDayArchive extends Command
             }
         ];
 
-        $luggage = compact('start_jobs', 'finish_jobs', 'archive_jobs', 'csv_export_jobs', 'sha1_jobs', 'copys3_jobs', 'zip_jobs', 'reduce_jobs');
+        $luggage = compact('date_string', 'start_jobs', 'finish_jobs', 'archive_jobs', 'csv_export_jobs', 'sha1_jobs', 'copys3_jobs', 'zip_jobs', 'reduce_jobs');
 
-        Bus::batch($luggage['start_jobs'])->finally(function () use($luggage) {
-            Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
-                Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
-                    Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
-                        Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
-                            Bus::batch($luggage['copys3_jobs'])->finally(function() use($luggage) {
-                                Bus::batch($luggage['archive_jobs'])->finally(function() use($luggage) {
-                                    Bus::batch($luggage['finish_jobs'])->finally(function() use($luggage) {
-                                    })->dispatch();
-                                })->dispatch();
+        Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+
+        Bus::batch($luggage['csv_export_jobs'])->finally(function() use($luggage) {
+            Bus::batch($luggage['reduce_jobs'])->finally(function() use($luggage) {
+                Bus::batch($luggage['zip_jobs'])->finally(function() use($luggage) {
+                    Bus::batch($luggage['sha1_jobs'])->finally(function() use($luggage) {
+                        Bus::batch($luggage['copys3_jobs'])->finally(function() use($luggage) {
+                            Bus::batch($luggage['archive_jobs'])->finally(function() use($luggage) {
+                                Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                             })->dispatch();
                         })->dispatch();
                     })->dispatch();
                 })->dispatch();
             })->dispatch();
         })->dispatch();
-
     }
 }
