@@ -33,7 +33,7 @@ class StatementCsvExportZipParts implements ShouldQueue
         $zip_file = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
 
         $zip = new \ZipArchive();
-        $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $zip->open($path . $zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         foreach ($parts as $part) {
             $zip->addFile($part, basename($part));
         }
