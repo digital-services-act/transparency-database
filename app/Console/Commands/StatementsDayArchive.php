@@ -91,7 +91,7 @@ class StatementsDayArchive extends Command
         $sha1_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $sha1_jobs[] = StatementCsvExportSha1::dispatch($date_string, $export['slug'], $version);
+                $sha1_jobs[] = new StatementCsvExportSha1($date_string, $export['slug'], $version);
             }
         }
 
