@@ -224,12 +224,12 @@ class DayArchiveServiceTest extends TestCase
 
         $fields_one['user_id'] = $admin->id;
         $fields_one['platform_id'] = $admin->platform->id;
-        $fields_one['created_at'] = '2030-01-01 00:00:10'; // also prove the while loop works
+        $fields_one['created_at'] = '2030-01-01 00:00:09'; // also prove the while loop works
 
         $fields_two['puid'] = 'TK422';
         $fields_two['user_id'] = $admin->id;
         $fields_two['platform_id'] = $admin->platform->id;
-        $fields_two['created_at'] = '2030-01-01 00:00:10';
+        $fields_two['created_at'] = '2030-01-01 00:00:09';
 
         $statement_one = Statement::create($fields_one);
         $statement_two = Statement::create($fields_two);
@@ -308,12 +308,12 @@ class DayArchiveServiceTest extends TestCase
 
         $fields_one['user_id'] = $admin->id;
         $fields_one['platform_id'] = $admin->platform->id;
-        $fields_one['created_at'] = '2030-01-01 23:59:40'; // also prove the while loop works
+        $fields_one['created_at'] = '2030-01-01 23:59:51'; // also prove the while loop works
 
         $fields_two['puid'] = 'TK422';
         $fields_two['user_id'] = $admin->id;
         $fields_two['platform_id'] = $admin->platform->id;
-        $fields_two['created_at'] = '2030-01-01 23:59:40';
+        $fields_two['created_at'] = '2030-01-01 23:59:51';
 
         $statement_one = Statement::create($fields_one);
         $statement_two = Statement::create($fields_two);
