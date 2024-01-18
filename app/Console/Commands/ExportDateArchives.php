@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
-
 class ExportDateArchives extends Command
 {
     /**
@@ -39,6 +38,7 @@ class ExportDateArchives extends Command
                 $date = Carbon::createFromFormat('Y-m-d', $date);
             } catch (Exception $e) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
+
                 return;
             }
         }

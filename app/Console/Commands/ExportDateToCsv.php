@@ -30,7 +30,7 @@ class ExportDateToCsv extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $date = $this->argument('date');
+        $date  = $this->argument('date');
         $chunk = (int)$this->argument('chunk');
 
         if ($date === 'yesterday') {
@@ -40,21 +40,22 @@ class ExportDateToCsv extends Command
                 $date = Carbon::createFromFormat('Y-m-d', $date);
             } catch (Exception $e) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
+
                 return;
             }
         }
 
         $first_id = $day_archive_service->getFirstIdOfDate($date);
-        $last_id = $day_archive_service->getLastIdOfDate($date);
-        $current = $first_id;
+        $last_id  = $day_archive_service->getLastIdOfDate($date);
+        $current  = $first_id;
 
-        $part = 0;
+        $part        = 0;
         $date_string = $date->format('Y-m-d');
 
 
         File::delete(File::glob('storage/app/*' . $date_string . '*.csv'));
 
-        while($current <= $last_id) {
+        while ($current <= $last_id) {
             $till = ($current + $chunk - 1);
             StatementCsvExport::dispatch($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
             $part++;

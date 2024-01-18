@@ -38,6 +38,7 @@ class ExportDateCsvReduce extends Command
                 $date = Carbon::createFromFormat('Y-m-d', $date);
             } catch (Exception $e) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
+
                 return;
             }
         }

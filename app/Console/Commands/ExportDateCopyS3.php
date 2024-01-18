@@ -38,17 +38,18 @@ class ExportDateCopyS3 extends Command
                 $date = Carbon::createFromFormat('Y-m-d', $date);
             } catch (Exception $e) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
+
                 return;
             }
         }
 
         $date_string = $date->format('Y-m-d');
-        $exports = $day_archive_service->buildBasicArray();
-        $versions = ['full', 'light'];
+        $exports     = $day_archive_service->buildBasicArray();
+        $versions    = ['full', 'light'];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
-                $sha1 = 'sor-' .  $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
+                $zip  = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
+                $sha1 = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
                 StatementCsvExportCopyS3::dispatch($zip, $sha1)->onQueue('s3copy');
             }
         }
