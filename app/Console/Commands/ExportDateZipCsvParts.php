@@ -38,13 +38,14 @@ class ExportDateZipCsvParts extends Command
                 $date = Carbon::createFromFormat('Y-m-d', $date);
             } catch (Exception $e) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
+
                 return;
             }
         }
 
         $date_string = $date->format('Y-m-d');
-        $exports = $day_archive_service->buildBasicArray();
-        $versions = ['full', 'light'];
+        $exports     = $day_archive_service->buildBasicArray();
+        $versions    = ['full', 'light'];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
                 StatementCsvExportZipParts::dispatch($date_string, $export['slug'], $version);
