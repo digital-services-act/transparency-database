@@ -199,7 +199,6 @@ class StatementAPIController extends Controller
             switch ($e->getCode()) {
                 case 23000:
                     return $this->handleIntegrityConstraintException($e, 'Statement');
-                    break;
                 default:
                     return $this->handleQueryException($e, 'Statement');
             }
