@@ -16,6 +16,7 @@ use Throwable;
 
 class GenerateAggregates extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -30,46 +31,23 @@ class GenerateAggregates extends Command
      */
     protected $description = 'Generate Daily Aggregates';
 
-    const NUMBER_OF_CHUNKS = 5;
+    public const NUMBER_OF_CHUNKS = 5;
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-
-        $date = $this->parseDateArgument();
-
+        $date = $this->sanitizeDateArgument();
         if ($this->checkExistingAggregates($date)) {
             return;
         }
-
         [$minId, $maxId] = $this->getMinMaxIds($date);
-
         if (is_null($minId)) {
             return;
         }
-
         $this->logMinMaxIds($minId, $maxId);
-
         $this->dispatchJobs($minId, $maxId, $date);
-    }
-
-    private function parseDateArgument()
-    {
-        $date = $this->argument('date');
-        Log::info("let's start the aggregates compilation for {$date}");
-
-        if ($date === 'yesterday') {
-            return Carbon::yesterday();
-        }
-
-        try {
-            return Carbon::createFromFormat('Y-m-d', $date);
-        } catch (Exception $e) {
-            $this->error('Issue with the date provided, check the format yyyy-mm-dd');
-            return null;
-        }
     }
 
     private function checkExistingAggregates($date)

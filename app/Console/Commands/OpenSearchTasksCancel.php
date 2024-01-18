@@ -19,7 +19,7 @@ class OpenSearchTasksCancel extends Command
      *
      * @var string
      */
-    protected $description = 'Get some info about the open search tasks.';
+    protected $description = 'Cancel any tasks that can be cancelled.';
 
     /**
      * Execute the console command.

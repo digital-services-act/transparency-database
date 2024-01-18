@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Setup;
 
 use App\Models\Platform;
 use Illuminate\Console\Command;

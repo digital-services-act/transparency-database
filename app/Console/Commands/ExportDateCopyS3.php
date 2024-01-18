@@ -4,12 +4,11 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatementCsvExportCopyS3;
 use App\Services\DayArchiveService;
-use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 
 class ExportDateCopyS3 extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -29,20 +28,7 @@ class ExportDateCopyS3 extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $date = $this->argument('date');
-
-        if ($date === 'yesterday') {
-            $date = Carbon::yesterday();
-        } else {
-            try {
-                $date = Carbon::createFromFormat('Y-m-d', $date);
-            } catch (Exception $e) {
-                $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
-
-                return;
-            }
-        }
-
+        $date = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
         $exports     = $day_archive_service->buildBasicArray();
         $versions    = ['full', 'light'];

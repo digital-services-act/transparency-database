@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 
 class ExportDateCsvReduce extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -29,25 +30,15 @@ class ExportDateCsvReduce extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $date = $this->argument('date');
-
-        if ($date === 'yesterday') {
-            $date = Carbon::yesterday();
-        } else {
-            try {
-                $date = Carbon::createFromFormat('Y-m-d', $date);
-            } catch (Exception $e) {
-                $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
-
-                return;
-            }
-        }
-
+        $date = $this->sanitizeDateArgument();
+        $date_string = $date->format('Y-m-d');
         $exports = $day_archive_service->buildBasicArray();
+        $versions = ['full', 'light'];
 
         foreach ($exports as $export) {
-            StatementCsvExportReduce::dispatch($date->format('Y-m-d'), $export['slug'], 'full');
-            StatementCsvExportReduce::dispatch($date->format('Y-m-d'), $export['slug'], 'light');
+            foreach ($versions as $version) {
+                StatementCsvExportReduce::dispatch($date_string, $export['slug'], $version);
+            }
         }
     }
 }

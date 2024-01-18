@@ -5,17 +5,17 @@ namespace App\Console\Commands;
 use App\Jobs\StatementIndexRange;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class StatementsIndexDate extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:index-date {date=default} {chunk=default}';
+    protected $signature = 'statements:index-date {date=yesterday} {chunk=500}';
 
     /**
      * The console command description.
@@ -29,9 +29,8 @@ class StatementsIndexDate extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $chunk = $this->argument('chunk') === 'default' ? 500 : (int)$this->argument('chunk');
-        $date_in = $this->argument('date');
-        $date = $this->argument('date') === 'default' ? Carbon::yesterday() : Carbon::createFromFormat('Y-m-d', $this->argument('date'));
+        $chunk = $this->intifyArgument('chunk');
+        $date = $this->sanitizeDateArgument();
 
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);

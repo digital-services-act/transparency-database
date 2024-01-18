@@ -8,12 +8,13 @@ use Illuminate\Console\Command;
 
 class GenerateStatements extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:generate {amount=200} {--now} {--sod} {--eod}';
+    protected $signature = 'statements:generate {amount=200} {date=today} {--sod} {--eod}';
 
     /**
      * The console command description.
@@ -27,23 +28,19 @@ class GenerateStatements extends Command
      */
     public function handle(): void
     {
-        $created_at = 0;
-        if ($this->option('now')) {
-            $created_at = Carbon::now()->timestamp;
-        }
+        $date = $this->sanitizeDateArgument();
+        $amount = $this->intifyArgument('amount');
 
         if ($this->option('sod')) {
-            $created_at = Carbon::now();
-            $created_at = $created_at->subSeconds($created_at->secondsSinceMidnight())->timestamp;
+            $date->subSeconds($date->secondsSinceMidnight());
         }
 
         if ($this->option('eod')) {
-            $created_at = Carbon::now();
-            $created_at = $created_at->addDay()->subSeconds($created_at->secondsSinceMidnight())->subSecond()->timestamp;
+            $date->addSeconds($date->secondsUntilEndOfDay());
         }
 
-        for ($cpt = 0; $cpt < (int)$this->argument('amount'); $cpt++) {
-            StatementCreation::dispatch($created_at);
+        for ($cpt = 0; $cpt < $amount; $cpt++) {
+            StatementCreation::dispatch($date);
         }
     }
 }

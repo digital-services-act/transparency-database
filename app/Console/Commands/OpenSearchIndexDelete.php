@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
-class OpensearchIndexDelete extends Command
+class OpenSearchIndexDelete extends Command
 {
     /**
      * The name and signature of the console command.

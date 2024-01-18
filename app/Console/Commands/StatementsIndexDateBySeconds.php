@@ -4,16 +4,16 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatementIndexSecond;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 
 class StatementsIndexDateBySeconds extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:index-date-by-seconds {date=default}';
+    protected $signature = 'statements:index-date-by-seconds {date=yesterday}';
 
     /**
      * The console command description.
@@ -28,9 +28,7 @@ class StatementsIndexDateBySeconds extends Command
     public function handle(): void
     {
 
-        $date_in = $this->argument('date');
-        $date = $this->argument('date') === 'default' ? Carbon::yesterday() : Carbon::createFromFormat('Y-m-d', $this->argument('date'));
-
+        $date = $this->sanitizeDateArgument();
         $start = $date->clone();
         $start->subSeconds($start->secondsSinceMidnight());
         $end = $date->clone();
