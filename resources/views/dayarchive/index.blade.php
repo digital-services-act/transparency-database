@@ -8,21 +8,15 @@
 @endif
 
 @section('breadcrumbs')
-    @if($platform)
-        <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-        <x-ecl.breadcrumb label="Data Download" url="{{ route('dayarchive.index') }}"/>
-        <x-ecl.breadcrumb :label="$platform->name"/>
-    @else
-        <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-        <x-ecl.breadcrumb label="Data Download"/>
-    @endif
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Data Download"/>
 @endsection
 
 
 @section('content')
 
     @if($platform)
-        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives for {{ $platform->name }}</h1>
+        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download for {{ $platform->name }}</h1>
     @else
         <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download</h1>
     @endif
@@ -76,18 +70,17 @@
         <div class="ecl-row ecl-u-mt-l" style="border-width: 50px">
 
             <div class="ecl-col-l-2">
-
-                <x-ecl.datepicker label="From" id="created_at_start" justlabel="true"
-                                  name="created_at_start" :value="request()->get('created_at_start', '')"/>
+                <x-ecl.datepicker label="From" id="from_date" justlabel="true"
+                                  name="from_date" :value="request()->get('from_date', '')"/>
             </div>
             <div class="ecl-col-l-2">
-                <x-ecl.datepicker label="To" id="created_at_end" justlabel="true"
-                                  name="created_at_end" :value="request()->get('created_at_end', '')"/>
+                <x-ecl.datepicker label="To" id="to_date" justlabel="true"
+                                  name="to_date" :value="request()->get('to_date', '')"/>
             </div>
             <div class="ecl-col-l-4">
                 <x-ecl.select label="Select a Platform" name="uuid" id="uuid"
                               justlabel="true"
-                              :options="$options['platforms']" :default="request()->route('uuid')"
+                              :options="$options['platforms']" :default="request()->get('uuid', '')"
                 />
 
             </div>
@@ -105,13 +98,26 @@
 
         </div>
     </form>
-    {{--    <script>--}}
-    {{--        var uuid = document.getElementById('uuid')--}}
-    {{--        uuid.onchange = (event) => {--}}
-    {{--            document.location.href = '{{ route('dayarchive.index') }}/' + event.target.value--}}
-    {{--        }--}}
-    {{--    </script>--}}
-    {{--    </div>--}}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var form = document.getElementById("platform");
+
+                // Function to submit the form
+                function submitForm() {
+                    form.submit();
+                }
+
+                // Attach event listeners to input fields
+                var fromInput = document.getElementById("from_date");
+                var toInput = document.getElementById("to_date");
+                var platformInput = document.getElementById("uuid");
+
+                fromInput.addEventListener("change", submitForm);
+                toInput.addEventListener("change", submitForm);
+                platformInput.addEventListener("change", submitForm);
+            });
+
+        </script>
 
     <x-dayarchive.table :dayarchives="$dayarchives"/>
 

@@ -93,9 +93,9 @@ font: normal normal 400 1rem/1.5rem arial,sans-serif !important;">
 
         <div class="ecl-col-l-4">
 
-            <a class="ecl-button ecl-button--primary" style="margin-bottom:1rem" href="{{ route('dashboard') }}">Visualize
+            <a class="ecl-button ecl-button--primary" style="margin-bottom:1rem; min-width:300px" href="{{ route('dashboard') }}">Visualize
                 the data in the dashboard</a>
-            <a class="ecl-button ecl-button--primary" style="margin-bottom:1rem" href="{{ route('statement.index') }}">Search
+            <a class="ecl-button ecl-button--primary" style="margin-bottom:1rem; min-width:300px" href="{{ route('statement.index') }}">Search
                 for Statements of Reasons</a>
 
         </div>

@@ -109,7 +109,7 @@ The <a href="{{route('statement.index')}}">“Search for statements of reasons�
 the free text fields of the statements of
 reasons in the database for keywords of your choice.<br/><br/>
 
-When you click on the “Advanced Search” button, you are redirected to the “Advanced Search” page where you can look for
+When you click on the “Advanced Search” button, you are redirected to the <a href="{{route('statement.search')}}">“Advanced Search”</a> page where you can look for
 statements of reasons from specific platforms or timeframes. You can also filter the statements of reasons according to
 any other data field (e.g. a specific type of restriction or keyword) that you are interested in.
 </x-ecl.accordion>
