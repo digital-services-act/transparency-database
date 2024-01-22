@@ -27,8 +27,8 @@ This token will be shown one time, so it will need to be copied and stored safel
 
 __Each time you generate a new token the old token becomes invalid!__
 
-<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies 
-calls to the API as you! Do not share this token with other entities. 
+<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies
+calls to the API as you! Do not share this token with other entities.
 They will be able to impersonate and act as you! If you believe that someone is using your token
 please generate a new token immediately to invalidate the old one." close="" />
 
@@ -139,9 +139,9 @@ You will also receive a payload with the statement as created in the database:
 }
 ```
 
-<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call 
-to an API you should always validate that you did receive the proper status, '201 Created'. 
-If you did not receive a 201 Created, then the statement was not made, it is not in the database 
+<x-ecl.message type="info" icon="information" title="Important" message="Anytime you make a call
+to an API you should always validate that you did receive the proper status, '201 Created'.
+If you did not receive a 201 Created, then the statement was not made, it is not in the database
 and you will need to retry at a later time." close="" />
 
 ## UUID
@@ -203,13 +203,13 @@ Here is an example:
 }
 ```
 
-The multiple endpoint is capable of making 100 statements per call. 
+The multiple endpoint is capable of making 100 statements per call.
 
 When the request has been sent and it is correct, a response of ```201``` ```Created``` will be
 sent back.
 
-The response payload when calling the multiple endpoint will be an array of the Statements of 
-Reason when successful. Each Statement of Reason will then have an 
+The response payload when calling the multiple endpoint will be an array of the Statements of
+Reason when successful. Each Statement of Reason will then have an
 uuid, created_at, self, and permalink attribute to reflect that it was created.
 
 ```javascript
@@ -324,7 +324,7 @@ The value provided must be one of the following:
 
 ###  Decision Monetary Other (decision_monetary_other)
 
-This is required if DECISION_MONETARY_OTHER was the decision_monetary. 
+This is required if DECISION_MONETARY_OTHER was the decision_monetary.
 
 Limited to 500 characters.
 
@@ -388,7 +388,7 @@ The value provided must be one of the following:
 
 ### Facts and circumstances relied on in taking the decision (decision_facts)
 
-This is a required textual field to describe the facts and circumstances relied on in 
+This is a required textual field to describe the facts and circumstances relied on in
 taking the decision.
 
 Limited to 5000 characters.
@@ -450,7 +450,7 @@ This is a possibility to indicate that the content was not only considered incom
 
 ### Content Type (content_type)
 
-This is a required attribute, and it tells us what type of content is targeted by the statement 
+This is a required attribute, and it tells us what type of content is targeted by the statement
 of reason.
 
 The value provided must be an array with at least one of the following:
@@ -533,7 +533,7 @@ Limited to 500 characters.
 ### Territorial Scope (territorial_scope)
 
 This is a required attribute that defines territorial scope of the restriction. Each value must be the 2-letter iso code
-for the country and the countries must be (EU/EEA) countries. 
+for the country and the countries must be (EU/EEA) countries.
 
 The value provided must be an array.
 
@@ -557,7 +557,7 @@ This attribute is optional.
 
 The value though must be one of the uppercase two letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) codes.
 
-Ex, 
+Ex,
 
 @php echo '"' . implode('", "', \App\Services\EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES) . '"'; @endphp
 
@@ -649,7 +649,7 @@ The value provided must be one of the following:
 
 ### Source Identity (source_identity)
 
-This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type' is set to 'SOURCE_VOLUNTARY'  
+This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type' is set to 'SOURCE_VOLUNTARY'
 
 Limited to 500 characters.
 
@@ -728,7 +728,7 @@ When there is a statement found the existing statement will be returned in the b
 
 ## Errors
 
-When a call to the API has been made AND there was an error in the call you may 
+When a call to the API has been made AND there was an error in the call you may
 expect the following to occur:
 
 - You will NOT receive a HTTP Status Code ```201 Created```.
@@ -798,7 +798,7 @@ The error messages for the individual fields will vary depending on what was att
 
 Such as the following:
 
-If you sent 
+If you sent
 ```
 {
     ...
@@ -828,16 +828,29 @@ However, the errors will be indexed to the Statement of Reason that you are tryi
 ex,
 ```javascript
 {
-    "message": "The selected 35.decision_visibility is invalid.",
     "errors": {
-        "35.decision_visibility": [
-            "The selected 35.decision_visibility is invalid."
-        ]
+        "statement_0": {
+            "decision_monetary": [
+                "The selected decision monetary is invalid."
+            ],
+                "decision_ground": [
+                "The selected decision ground is invalid."
+            ],
+                "automated_detection": [
+                "The automated detection field is required."
+            ]
+        },
+        "statement_2": {
+            "decision_provision": [
+                "The selected decision provision is invalid."
+            ]
+        }
     }
 }
 ```
 
-This means that the decision visibility in the statement of reason at position 35 in the array was invalid.
+This means that the decision monetary, the decision ground and the automated detection fields were invalid in the statement of reason at position 0 in the array.
+This means that the decision provision is invalid in the statement of reason at position 2 in the array.
 
 In this case, **NONE** of the statements where created, the request needs to be fixed and resent.
 
@@ -851,16 +864,16 @@ The API authorization token needs to be double checked or a new API authorizatio
 generated. See again the section above: [Your API Token](#your-api-token)
 
 In addition to the common ```422``` and ```401``` errors, Any of the standard 4XX HTTP can be
-encountered. 4XX statuses generally indicate that there is an issue with your request. Please try to 
+encountered. 4XX statuses generally indicate that there is an issue with your request. Please try to
 troubleshoot and resolve the problem.
 
-When there is an error of 5XX we are immediately notified and there is no need 
+When there is an error of 5XX we are immediately notified and there is no need
 to report the issue.
 
 ### PUID Error
 
 When you attempt to create a statement for your platform and there exists a statement with the same puid, the
-response will still be ```422 Unproccessable Content``` and the error returned will contain the existing 
+response will still be ```422 Unproccessable Content``` and the error returned will contain the existing
 the statement. This will look like the following:
 
 ```javascript
@@ -885,7 +898,7 @@ the statement. This will look like the following:
 
 
 
- 
+
 ## Source Code
 
 The source code for this application can be viewed here:
@@ -894,5 +907,5 @@ The source code for this application can be viewed here:
 
 Using the repository code you can even setup and run a local replica development testing area.
 
-Within the github environment you are also more than welcome to give feedback, pull requests and 
+Within the github environment you are also more than welcome to give feedback, pull requests and
 reviews concerning the source code. 

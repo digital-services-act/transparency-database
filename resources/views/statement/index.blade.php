@@ -11,14 +11,14 @@
 
     <div class="ecl-fact-figures ecl-fact-figures--col-1">
         <div class="ecl-fact-figures__description">
-            On this page you can search for statements of reasons submitted by providers of online platforms.
+            On this page you can search for statements of reasons submitted by providers of online platforms.<br/>
 
             Through the advanced search button, you can easily find the statements of reasons submitted by each
             platform, and filter by several data fields, e.g. the type of restriction(s) imposed, categories and
-            keywords, or the type or language of the content.
+            keywords, or the type or language of the content.<br/>
 
             Please note that only the first 10 000 results are paginated, and only the first 1000 statements of reasons
-            can be exported in .csv format at a given time.
+            can be exported in .csv format at a given time. The data is updated once every day.<br/><br/>
 
             To submit feedback on the content of this page and to propose additional features, please visit the
             <a href="{{ route('feedback.index') }}">feedback form</a>.
