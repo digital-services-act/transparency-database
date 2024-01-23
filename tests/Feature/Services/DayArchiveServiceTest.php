@@ -196,11 +196,10 @@ class DayArchiveServiceTest extends TestCase
     public function it_builds_a_starting_array(): void
     {
         $this->setUpFullySeededDatabase();
-        $result = $this->day_archive_service->buildStartingDayArchivesArray(Carbon::yesterday());
+        $result = $this->day_archive_service->buildBasicExportsArray();
         $this->assertNotNull($result);
         $this->assertCount(20, $result);
         $this->assertEquals('global', $result[0]['slug']);
-        $this->assertCount(20, DayArchive::all());
     }
 
     /**

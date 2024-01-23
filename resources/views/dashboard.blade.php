@@ -34,7 +34,7 @@
     <h1 class="ecl-u-type-heading-1">Dashboard</h1>
 
     <p class="ecl-u-type-paragraph">
-        The dashboard below allows you to explore summarised data in an easy and user-friendly manner, for a comprehensive overview. For more information on how to use it most effectively, please see its 'Instructions' panel.
+        The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Click on different elements to navigate. For detailed guidance on optimizing your use of this tool, please refer to the 'Instructions' panel.
     </p>
 
     <div class="responsive-iframe-container">
@@ -42,3 +42,4 @@
     </div>
 
 @endsection
+

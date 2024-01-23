@@ -8,68 +8,124 @@
 @endif
 
 @section('breadcrumbs')
-    @if($platform)
-        <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-        <x-ecl.breadcrumb label="Data Download" url="{{ route('dayarchive.index') }}" />
-        <x-ecl.breadcrumb :label="$platform->name"/>
-    @else
-        <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-        <x-ecl.breadcrumb label="Data Download" />
-    @endif
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Data Download"/>
 @endsection
 
 
 @section('content')
 
-    <div class="ecl-fact-figures ecl-fact-figures--col-1">
-        <div class="ecl-fact-figures__description">
-            On this page, you can download zipped .csv files containing the daily submissions of statements of reasons,
-            either for all platforms collectively or for each platform individually. The files are provided in
-            full and light versions.<br />
-            <br />
-            Full archive files contain all the public data points of each individual statement of reasons
-            submitted on a given day. That is, each file contains the entire attribute schema of the database.<br />
-            <br />
-            Light archive files do not contain free text attributes with a character limit higher than 2000
-            characters. That is, they do not contain the attributes <em>illegal_content_explanation</em>,
-            <em>incompatible_content_explanation</em> and <em>decision_facts</em>. Light archive files also do not contain
-            the <em>territorial_scope attribute</em>. The archiving feature is currently in a beta version and the
-            file structure might change in future iterations, with additional file formats being considered as well.<br />
-            <br />
-            The files are provided in the Comma-Separated Values (CSV) zipped format. Each file is accompanied
-            by an SHA1 checksum file containing the original filename and its hash. The SHA1 file allows to verify
-            the downloaded csv.zip file using standard tools. For instance, on a bash terminal, having both the
-            csv.zip and the csv.zip.sha1 files in the current folder, doing
-            sha1sum -c sor-global-2023-09-25-full.csv.zip.sha1 should show OK if the
-            sor-global-2023-09-25-full.csv.zip file has been correctly downloaded.
-        </div>
-    </div>
+    @if($platform)
+        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download for {{ $platform->name }}</h1>
+    @else
+        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download</h1>
+    @endif
+
+    <x-ecl.message type="warning" icon="warning" title="Work in progress"
+                   message="The Transparency Database infrastructure is still in development mode. We are constantly adapting the backend and the data processing pipelines to optimize performance and user experience. That is why, during the development phase only, the file format, name pattern and organization of the daily dumps are subject to change without notice."
+                   close="true"/>
 
     <div class="ecl-row ecl-u-mt-l">
-        <div class="ecl-col-l-6">
-            @if($platform)
-                <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Daily Archives for {{ $platform->name }}</h1>
-            @else
-                <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download</h1>
-            @endif
+        <div class="ecl-col-l-8">
+            <p class="ecl-u-type-paragraph">
+                On this page, you can download zipped .csv files containing the daily submissions of statements of
+                reasons,
+                either for all platforms collectively or for each platform individually. The files are provided in
+                full and light versions.<br/>
+                <br/>
+                Full archive files contain all the public data points of each individual statement of reasons
+                submitted on a given day. That is, each file contains the entire attribute schema of the database.<br/>
+                <br/>
+                The daily dumps are currently provided in a chunked csv format. Specifically, each .zip file contains
+                several zipped csv files containing all the statement of reasons received on a given day from the
+                selected platform.<br/>
+                <br/>
+
+
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in
+                    the FAQ</a><br/><br/>
+
+
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the
+                    FAQ</a>
+
+            </p>
 
         </div>
+        <div class="ecl-col-l-4">
 
-        <div class="ecl-col-l-6">
-            <form method="get" id="platform">
+            <div class="ecl-media-container">
+                <figure class="ecl-media-container__figure">
+                    <div class="ecl-media-container__caption">
+
+                        <picture class="ecl-picture ecl-media-container__picture"><img
+                                class="ecl-media-container__media"
+                                src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg"
+                                alt="Digital Services Act Logo"/></picture>
+
+
+                    </div>
+
+
+                </figure>
+
+
+            </div>
+        </div>
+
+    </div>
+    <form method="get" id="platform">
+        <div class="ecl-row ecl-u-mt-l" style="border-width: 50px">
+
+            <div class="ecl-col-l-2">
+                <x-ecl.datepicker label="From" id="from_date" justlabel="true"
+                                  name="from_date" :value="request()->get('from_date', '')"/>
+            </div>
+            <div class="ecl-col-l-2">
+                <x-ecl.datepicker label="To" id="to_date" justlabel="true"
+                                  name="to_date" :value="request()->get('to_date', '')"/>
+            </div>
+            <div class="ecl-col-l-4">
                 <x-ecl.select label="Select a Platform" name="uuid" id="uuid"
                               justlabel="true"
-                              :options="$options['platforms']" :default="request()->route('uuid')"
+                              :options="$options['platforms']" :default="request()->get('uuid', '')"
                 />
-            </form>
-            <script>
-              var uuid = document.getElementById('uuid')
-              uuid.onchange = (event) => {
-                document.location.href = '{{ route('dayarchive.index') }}/' + event.target.value
-              }
-            </script>
+
+            </div>
+            <div class="ecl-col-l-2 ecl-u-flex-l-row">
+                <button class="ecl-button ecl-button--primary" style="margin-top:36px" type="submit"><span
+                        class="ecl-button__container"><span
+                            class="ecl-button__label" data-ecl-label="true">Search</span><svg
+                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
+                            focusable="false" aria-hidden="true" data-ecl-icon="">
+                            <x-ecl.icon icon="corner-arrow"/>
+                            </svg></span>
+                </button>
+
+            </div>
+
         </div>
-    </div>
+    </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var form = document.getElementById("platform");
+
+            // Function to submit the form
+            function submitForm() {
+                form.submit();
+            }
+
+            // Attach event listeners to input fields
+            var fromInput = document.getElementById("from_date");
+            var toInput = document.getElementById("to_date");
+            var platformInput = document.getElementById("uuid");
+
+            fromInput.addEventListener("change", submitForm);
+            toInput.addEventListener("change", submitForm);
+            platformInput.addEventListener("change", submitForm);
+        });
+
+    </script>
 
     <x-dayarchive.table :dayarchives="$dayarchives"/>
 

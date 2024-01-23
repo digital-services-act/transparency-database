@@ -230,6 +230,7 @@ return [
         App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
         App\Providers\StatementStatsServiceProvider::class,
+        App\Providers\DayArchiveQueryServiceProvider::class,
 
         MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class,
         Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
