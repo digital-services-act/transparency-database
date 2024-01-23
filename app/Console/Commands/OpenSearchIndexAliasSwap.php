@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
-class OpensearchIndexAliasSwap extends Command
+class OpenSearchIndexAliasSwap extends Command
 {
     /**
      * The name and signature of the console command.

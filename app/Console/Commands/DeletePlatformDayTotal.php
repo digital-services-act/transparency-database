@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 
 class DeletePlatformDayTotal extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -26,7 +27,7 @@ class DeletePlatformDayTotal extends Command
     /**
      * Execute the console command.
      */
-    public function handle(PlatformDayTotalsService $platform_day_totals_service)
+    public function handle(PlatformDayTotalsService $platform_day_totals_service): void
     {
         $platform_id = $this->argument('platform_id');
         $platforms = [];
@@ -35,23 +36,21 @@ class DeletePlatformDayTotal extends Command
         }
 
         if ($platform_id !== 'all') {
-            $platform = Platform::find($platform_id);
+            $platform = Platform::find((int)$platform_id);
             if ($platform) {
                 $platforms[] = $platform;
             }
         }
-        $date = $this->argument('date');
+        $date = $this->sanitizeDateArgument();
         $attribute = $this->argument('attribute') !== 'all' ?  $this->argument('attribute') : '*';
         $value = $this->argument('value') !== 'all' ? $this->argument('value') : '*';
-        $date = Carbon::createFromFormat('Y-m-d', $date);
 
-        if ($platforms && $date) {
-
+        if ($platforms) {
             foreach ($platforms as $platform) {
                 $platform_day_totals_service->deleteDayTotal($platform, $date, $attribute, $value);
             }
         } else {
-            $this->warn('The platform id or date were invalid.');
+            $this->warn('The platform id were invalid.');
         }
     }
 }

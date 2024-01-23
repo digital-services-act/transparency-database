@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Platform;
 use App\Models\PlatformDayTotal;
 use App\Services\PlatformDayTotalsService;
 use Carbon\Carbon;

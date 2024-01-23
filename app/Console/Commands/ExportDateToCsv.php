@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 
 class ExportDateToCsv extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -30,20 +31,8 @@ class ExportDateToCsv extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $date  = $this->argument('date');
+        $date  = $this->sanitizeDateArgument();
         $chunk = (int)$this->argument('chunk');
-
-        if ($date === 'yesterday') {
-            $date = Carbon::yesterday();
-        } else {
-            try {
-                $date = Carbon::createFromFormat('Y-m-d', $date);
-            } catch (Exception $e) {
-                $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
-
-                return;
-            }
-        }
 
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
@@ -51,7 +40,6 @@ class ExportDateToCsv extends Command
 
         $part        = 0;
         $date_string = $date->format('Y-m-d');
-
 
         File::delete(File::glob('storage/app/*' . $date_string . '*.csv'));
 

@@ -2,15 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementIndexBag;
 use App\Jobs\StatementIndexSecond;
-use App\Models\Statement;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class StatementsIndexLastXBySeconds extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -32,7 +30,9 @@ class StatementsIndexLastXBySeconds extends Command
     {
         $end = Carbon::now();
         $start = $end->clone();
-        $start->subSeconds((int)$this->argument('seconds'));
+        $seconds = $this->intifyArgument('seconds');
+
+        $start->subSeconds($seconds);
         while($start <= $end) {
             StatementIndexSecond::dispatch($start->timestamp);
             $start->addSecond();

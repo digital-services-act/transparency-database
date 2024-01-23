@@ -2,11 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\SpamStatementCreation;
-use App\Jobs\StatementCreation;
-use App\Models\Statement;
 use Illuminate\Console\Command;
-use Illuminate\Console\View\Components\Info;
 use OpenSearch\Client;
 
 class OpenSearchIndexInfo extends Command
