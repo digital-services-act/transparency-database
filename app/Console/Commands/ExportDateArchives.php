@@ -32,7 +32,7 @@ class ExportDateArchives extends Command
     {
         $date = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
-        $exports = $day_archive_service->buildBasicArray();
+        $exports = $day_archive_service->buildBasicExportsArray();
         foreach ($exports as $export) {
             StatementCsvExportArchive::dispatch($date_string, $export['slug'], $export['id']);
         }

@@ -50,7 +50,7 @@ class StatementsDayArchive extends Command
         $date = $this->sanitizeDateArgument();
 
         $date_string = $date->format('Y-m-d');
-        $exports     = $day_archive_service->buildBasicArray();
+        $exports     = $day_archive_service->buildBasicExportsArray();
         $versions    = ['full', 'light'];
         $chunk       = 500000;
         $first_id    = $day_archive_service->getFirstIdOfDate($date);

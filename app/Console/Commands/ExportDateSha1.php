@@ -32,7 +32,7 @@ class ExportDateSha1 extends Command
     {
         $date = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
-        $exports = $day_archive_service->buildBasicArray();
+        $exports = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
 
         foreach ($exports as $export) {
