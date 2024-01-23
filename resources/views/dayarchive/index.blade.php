@@ -21,6 +21,10 @@
         <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download</h1>
     @endif
 
+    <x-ecl.message type="warning" icon="warning" title="Work in progress"
+                   message="The Transparency Database infrastructure is still in development mode. We are constantly adapting the backend and the data processing pipelines to optimize performance and user experience. That is why, during the development phase only, the file format, name pattern and organization of the daily dumps are subject to change without notice."
+                   close="true"/>
+
     <div class="ecl-row ecl-u-mt-l">
         <div class="ecl-col-l-8">
             <p class="ecl-u-type-paragraph">
@@ -31,6 +35,10 @@
                 <br/>
                 Full archive files contain all the public data points of each individual statement of reasons
                 submitted on a given day. That is, each file contains the entire attribute schema of the database.<br/>
+                <br/>
+                The daily dumps are currently provided in a chunked csv format. Specifically, each .zip file contains
+                several zipped csv files containing all the statement of reasons received on a given day from the
+                selected platform.<br/>
                 <br/>
 
 
@@ -98,26 +106,26 @@
 
         </div>
     </form>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var form = document.getElementById("platform");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var form = document.getElementById("platform");
 
-                // Function to submit the form
-                function submitForm() {
-                    form.submit();
-                }
+            // Function to submit the form
+            function submitForm() {
+                form.submit();
+            }
 
-                // Attach event listeners to input fields
-                var fromInput = document.getElementById("from_date");
-                var toInput = document.getElementById("to_date");
-                var platformInput = document.getElementById("uuid");
+            // Attach event listeners to input fields
+            var fromInput = document.getElementById("from_date");
+            var toInput = document.getElementById("to_date");
+            var platformInput = document.getElementById("uuid");
 
-                fromInput.addEventListener("change", submitForm);
-                toInput.addEventListener("change", submitForm);
-                platformInput.addEventListener("change", submitForm);
-            });
+            fromInput.addEventListener("change", submitForm);
+            toInput.addEventListener("change", submitForm);
+            platformInput.addEventListener("change", submitForm);
+        });
 
-        </script>
+    </script>
 
     <x-dayarchive.table :dayarchives="$dayarchives"/>
 
