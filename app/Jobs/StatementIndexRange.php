@@ -9,11 +9,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use JsonException;
 
 class StatementIndexRange implements ShouldQueue
 {
@@ -34,24 +32,12 @@ class StatementIndexRange implements ShouldQueue
     }
 
     /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-//    public function middleware(): array
-//    {
-//        return [new RateLimited('reindexing')];
-//    }
-
-    /**
      * Execute the job.
-     * @throws JsonException
      */
     public function handle(StatementSearchService $statement_search_service): void
     {
         // Set this in cache, to emergency stop reindexing.
         $stop = Cache::get('stop_reindexing', false);
-
         if (!$stop) {
 
             $difference = $this->max - $this->min;

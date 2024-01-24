@@ -28,7 +28,8 @@ class PageController extends Controller
         $page = preg_replace("/[^a-z-]/", "", $page);
 
         $redirects = [
-            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en'
+            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
+//            'faq' => 'faq'
         ];
 
         if (isset($redirects[$page])) {
@@ -38,38 +39,49 @@ class PageController extends Controller
 
         $page_title = ucwords(str_replace("-", " ", $page));
 
+        $show_feedback_link = $this->getShow_feedback_link($page_title);
+
         $page_title_mods = [
             'Faq' => 'DSA Transparency Database FAQ',
-            'Api Documentation' => 'API Documentation'
+            'Api Documentation' => 'API Documentation',
+            'Documentation' => 'Global Documentation'
         ];
+
+
 
         if (isset($page_title_mods[$page_title])) {
             $page_title = $page_title_mods[$page_title];
         }
-
 
         $breadcrumb = ucwords(str_replace("-", " ", $page));
 
         $breadcrumb_mods = [
             'Home' => '',
             'Faq' => 'DSA Transparency Database FAQ',
-            'Api Documentation' => 'API Documentation'
+            'Api Documentation' => 'API Documentation',
+            'Documentation' => 'Global Documentation',
+
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
             $breadcrumb = $breadcrumb_mods[$breadcrumb];
         }
 
+
+
         $page_content = '';
         $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
         $view_data = [
             'profile' => $profile,
+            'show_feedback_link' => $show_feedback_link,
             'page_title' => $page_title,
             'breadcrumb' => $breadcrumb,
             'baseurl' => route('home'),
             'ecl_init' => true,
         ];
+
+
 
         if (file_exists($page)) {
             $page_content = $this->convertMdFile($page);
@@ -103,5 +115,19 @@ class PageController extends Controller
             }
             return $matches[0];
         }, $parsedown->text(file_get_contents($file)));
+    }
+
+    /**
+     * @param string $page_title
+     * @return bool
+     */
+    public function getShow_feedback_link(string $page_title): bool
+    {
+        $show_feeback_pages = [
+            'Faq'
+        ];
+
+        $show_feedback_link = in_array($page_title, $show_feeback_pages);
+        return $show_feedback_link;
     }
 }

@@ -36,10 +36,6 @@ class StatementsVerifyIndex extends Command
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
 
         Log::info('Index verification started for ids: ' . $max . ' :: ' . $min);
-        Cache::forever('verify_jobs', 1);
-        Cache::forever('verify_jobs_run', 1);
-        Cache::forever('verify_jobs_diff', 0);
-        Cache::forever('verify_verified', 0);
         VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
     }
 }

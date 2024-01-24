@@ -37,7 +37,7 @@ class StatementCsvExport implements ShouldQueue
     {
         $platforms = Platform::all()->pluck('name', 'id')->toArray();
 
-        $exports = $day_archive_service->buildBasicArray();
+        $exports = $day_archive_service->buildBasicExportsArray();
 
         foreach ($exports as $index => $export) {
             $export['file']          = 'sor-' . $export['slug'] . '-' . $this->date . '-full-' . $this->part . '.csv';

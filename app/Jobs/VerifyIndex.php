@@ -8,7 +8,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -35,16 +34,6 @@ class VerifyIndex implements ShouldQueue
     }
 
     /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-//    public function middleware(): array
-//    {
-//        return [new RateLimited('reindexing')];
-//    }
-
-    /**
      * Execute the job.
      * @throws Exception
      */
@@ -52,12 +41,12 @@ class VerifyIndex implements ShouldQueue
     {
         $stop = Cache::get('stop_reindexing', false);
         if (!$stop) {
-            //Log::debug($this->max . " :: " . $this->min . ' :: ' . $this->max - $this->min);
             // The ID spread
             $id_difference = $this->max - $this->min;
 
             // Is the spread small enough to do a decent query on?
             if ($id_difference <= $this->query_chunk) {
+
                 try {
                     $db_count       = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->count();
                     $opensearch_sql = "SELECT count(id) FROM statement_index WHERE id >= " . $this->min . " AND id <= " . $this->max;
@@ -69,22 +58,12 @@ class VerifyIndex implements ShouldQueue
                     // How much were we off?
                     $off = $db_count - $opensearch_count;
 
-
                     // Did we have a difference?
                     if ($off > 0) {
-                        //Log::debug('Diff: ' . $off);
-                        // Is the mega chunk we are working within the searchable call limit?
-                        if ($id_difference <= $this->searchable_chunk) {
-                            $total_diff = (int)Cache::get('verify_jobs_diff');
-                            $total_diff += $off;
-                            Cache::forever('verify_jobs_diff', $total_diff);
-                            // Make it searchable/indexed
-                            StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
-                        } else {
-                            // break it into 2
-                            $this->breakItIntoTwo($id_difference);
-                        }
+                        // reindex it.
+                        StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
                     }
+
                 } catch (Exception $exception) {
                     Log::error($exception->getMessage());
                 }
@@ -93,19 +72,6 @@ class VerifyIndex implements ShouldQueue
                 // Break into 2
                 $this->breakItIntoTwo($id_difference);
             }
-
-            Cache::decrement('verify_jobs');
-            Cache::increment('verify_verified', $id_difference);
-
-        }
-
-        $jobs = (int)Cache::get('verify_jobs', -1);
-        //Log::info('Verify Jobs: ' . $jobs);
-        if ($jobs === 0) {
-            Log::info('Verify Jobs Done');
-            Log::info('Verify Jobs Difference: ' . (int)Cache::get('verify_jobs_diff', 0));
-            Log::info('Verify Jobs Run: ' . (int)Cache::get('verify_jobs_run', 0));
-            Log::info('Verify Verified: ' . (int)Cache::get('verify_verified', 0));
         }
     }
 
@@ -117,11 +83,7 @@ class VerifyIndex implements ShouldQueue
     private function breakItIntoTwo(int $id_difference): void
     {
         $break = floor($id_difference / 2);
-        Cache::increment('verify_jobs');
-        Cache::increment('verify_jobs_run');
         self::dispatch($this->max, ($this->max - $break), $this->query_chunk, $this->searchable_chunk);
-        Cache::increment('verify_jobs');
-        Cache::increment('verify_jobs_run');
         self::dispatch(($this->max - $break - 1), $this->min, $this->query_chunk, $this->searchable_chunk);
     }
 }
