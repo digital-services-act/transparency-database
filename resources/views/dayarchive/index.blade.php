@@ -44,14 +44,9 @@
                 selected platform.<br/>
                 <br/>
 
-
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in
-                    the FAQ</a><br/><br/>
-
-
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the
-                    FAQ</a>
-
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br />
+                <br />
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the FAQ</a>
             </p>
 
         </div>
