@@ -396,7 +396,7 @@ class StatementSearchService
 
     private function startCountQuery(): string
     {
-        return "SELECT count(*) FROM " . $this->index_name;
+        return "SELECT CAST(count(*) AS BIGINT) as count FROM " . $this->index_name;
     }
 
     private function extractCountQueryResult($result): int
