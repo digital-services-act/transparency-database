@@ -7,6 +7,7 @@ use App\Models\Statement;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use JsonException;
 use Laravel\Scout\Builder;
@@ -469,7 +470,6 @@ class StatementSearchService
 
     /**
      * @return array
-     * @throws RandomException
      */
     public function topCategories(): array
     {
@@ -491,24 +491,29 @@ class StatementSearchService
             });
         }
 
-        return [
-            [
-                'value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
-                'total' => random_int(100, 200)
-            ],
-            [
-                'value' => 'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS',
-                'total' => random_int(100, 200)
-            ],[
-                'value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH',
-                'total' => random_int(100, 200)
-            ]
-        ];
+        try {
+            return [
+                [
+                    'value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH',
+                    'total' => random_int(100, 200)
+                ]
+            ];
+        } catch (RandomException $re) {
+            Log::error($re->getMessage());
+            return [];
+        }
     }
 
     /**
      * @return array
-     * @throws RandomException
      */
     public function topDecisionVisibilities(): array
     {
@@ -530,26 +535,29 @@ class StatementSearchService
             });
         }
 
-        return [
-            [
-                'value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED',
-                'total' => random_int(100, 200)
-            ],
-            [
-                'value' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
-                'total' => random_int(100, 200)
-            ],
-            [
-                'value' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
-                'total' => random_int(100, 200)
-            ]
-        ];
-
+        try {
+            return [
+                [
+                    'value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
+                    'total' => random_int(100, 200)
+                ]
+            ];
+        } catch (RandomException $re) {
+            Log::error($re->getMessage());
+            return [];
+        }
     }
 
     /**
      * @return int
-     * @throws RandomException
      */
     public function fullyAutomatedDecisionPercentage(): int
     {
@@ -566,7 +574,12 @@ class StatementSearchService
             });
         }
 
-        return random_int(0, 100);
+        try {
+            return random_int(0, 100);
+        } catch (RandomException $re) {
+            Log::error($re->getMessage());
+            return 5;
+        }
     }
 
     /**
