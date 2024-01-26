@@ -423,8 +423,10 @@ class StatementSearchService
 
     public function grandTotal(): int
     {
-        $sql = $this->startCountQuery();
-        return $this->extractCountQueryResult($this->runSql($sql));
+        return Cache::remember('grand_total', self::ONE_DAY, function() {
+            $sql = $this->startCountQuery();
+            return $this->extractCountQueryResult($this->runSql($sql));
+        });
     }
 
     public function totalForDate(Carbon $date): int
