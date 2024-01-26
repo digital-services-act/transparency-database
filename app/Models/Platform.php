@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -84,19 +85,12 @@ class Platform extends Model
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','FORM');
     }
-    public function api_statements()
+    public function api_statements(): HasMany
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','API');
     }
-    public function api_multi_statements()
+    public function api_multi_statements(): HasMany
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','API_MULTI');
-    }
-
-
-
-    public function dayTotals()
-    {
-        return $this->hasMany(PlatformDayTotal::class, 'platform_id', 'id');
     }
 }
