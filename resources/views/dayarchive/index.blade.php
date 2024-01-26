@@ -22,8 +22,11 @@
     @endif
 
     <x-ecl.message type="warning" icon="warning" title="Work in progress"
-                   message="The Transparency Database infrastructure is still in development mode. We are constantly adapting the backend and the data processing pipelines to optimize performance and user experience. That is why, during the development phase only, the file format, name pattern and organization of the daily dumps are subject to change without notice."
-                   close="true"/>
+                   message="The Transparency Database infrastructure is still in development mode. We are constantly
+                   adapting the backend and the data processing pipelines to optimize performance and user
+                   experience. That is why, during the development phase only, the file format, name pattern
+                   and organization of the daily dumps are subject to change without notice."
+                   :close="true"/>
 
     <div class="ecl-row ecl-u-mt-l">
         <div class="ecl-col-l-8">
