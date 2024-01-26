@@ -476,7 +476,7 @@ class StatementSearchService
         if (config('scout.driver') === 'opensearch') {
             return Cache::remember('top_categories', self::ONE_DAY, function() {
                 $ten_days_ago = Carbon::now()->subDays(10);
-                $sql          = "SELECT category, count(*) AS count FROM statement_index WHERE GROUP BY category ORDER BY count DESC";
+                $sql          = "SELECT category, count(*) AS count FROM statement_index GROUP BY category ORDER BY count DESC";
                 $result       = $this->runSql($sql);
                 $datarows     = $result['datarows'];
                 $out          = [];
@@ -566,9 +566,9 @@ class StatementSearchService
                 $ten_days_ago                 = Carbon::now()->subDays(10);
                 $now                          = Carbon::now();
                 $automated_decision_count_sql = $this->startCountQuery() .
-                                                " WHERE automated_decision = 'AUTOMATED_DECISION_FULLY' AND created_at >= '" . $ten_days_ago->format('Y-m-d') . " 00:00:00' AND created_at <= '" . $now->format('Y-m-d') . " 23:59:59'";
+                                                " WHERE automated_decision = 'AUTOMATED_DECISION_FULLY'";
                 $automated_decision_count     = $this->extractCountQueryResult($this->runSql($automated_decision_count_sql));
-                $total                        = $this->totalForDateRange($ten_days_ago, $now);
+                $total                        = $this->grandTotal();
 
                 return (int)(($automated_decision_count / max(1, $total)) * 100);
             });
