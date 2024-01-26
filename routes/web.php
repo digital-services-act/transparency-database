@@ -79,14 +79,4 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
 Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
-Route::get('/analytics/platforms', [AnalyticsController::class, 'platforms'])->name('analytics.platforms');
-Route::get('/analytics/platform/{uuid?}', [AnalyticsController::class, 'forPlatform'])->name('analytics.platform');
-Route::get('/analytics/restrictions', [AnalyticsController::class, 'restrictions'])->name('analytics.restrictions');
-Route::get('/analytics/categories', [AnalyticsController::class, 'categories'])->name('analytics.categories');
-Route::get('/analytics/category/{category?}', [AnalyticsController::class, 'forCategory'])->name('analytics.category');
-Route::get('/analytics/grounds', [AnalyticsController::class, 'grounds'])->name('analytics.grounds');
-Route::get('/analytics/keywords', [AnalyticsController::class, 'keywords'])->name('analytics.keywords');
-Route::get('/analytics/keyword/{keyword?}', [AnalyticsController::class, 'forKeyword'])->name('analytics.keyword');
-
 });
