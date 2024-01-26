@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use JsonException;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
+use Random\RandomException;
 use RuntimeException;
 use stdClass;
 
@@ -63,6 +64,8 @@ class StatementSearchService
         'received_date',
         'source_type',
     ];
+
+    public const ONE_DAY = 24 * 60 * 60;
 
     public function __construct(Client $client)
     {
@@ -462,6 +465,108 @@ class StatementSearchService
                 'total' => $total
             ];
         }, array_keys($prepare), array_values($prepare));
+    }
+
+    /**
+     * @return array
+     * @throws RandomException
+     */
+    public function topCategories(): array
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return Cache::remember('top_categories', self::ONE_DAY, function() {
+                $ten_days_ago = Carbon::now()->subDays(10);
+                $sql          = "SELECT category, count(*) AS count FROM statement_index WHERE created_at >= '" . $ten_days_ago->format('Y-m-d') . " 00:00:00' GROUP BY category ORDER BY count DESC";
+                $result       = $this->runSql($sql);
+                $datarows     = $result['datarows'];
+                $out          = [];
+                foreach ($datarows as $index => $row) {
+                    $out[] = [
+                        'value' => $row[0],
+                        'total' => $row[1]
+                    ];
+                }
+
+                return $out;
+            });
+        }
+
+        return [
+            [
+                'value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+                'total' => random_int(100, 200)
+            ],
+            [
+                'value' => 'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS',
+                'total' => random_int(100, 200)
+            ],[
+                'value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH',
+                'total' => random_int(100, 200)
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     * @throws RandomException
+     */
+    public function topDecisionVisibilities(): array
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return Cache::remember('top_decisions_visibility', self::ONE_DAY, function() {
+                $ten_days_ago = Carbon::now()->subDays(10);
+                $sql          = "SELECT decision_visibility_single, count(*) AS count FROM statement_index WHERE decision_visibility_single NOT LIKE '%\_\_%' AND created_at >= '" . $ten_days_ago->format('Y-m-d') . " 00:00:00' GROUP BY decision_visibility_single ORDER BY count DESC";
+                $result       = $this->runSql($sql);
+                $datarows     = $result['datarows'];
+                $out          = [];
+                foreach ($datarows as $index => $row) {
+                    $out[] = [
+                        'value' => $row[0],
+                        'total' => $row[1]
+                    ];
+                }
+
+                return $out;
+            });
+        }
+
+        return [
+            [
+                'value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED',
+                'total' => random_int(100, 200)
+            ],
+            [
+                'value' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
+                'total' => random_int(100, 200)
+            ],
+            [
+                'value' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
+                'total' => random_int(100, 200)
+            ]
+        ];
+
+    }
+
+    /**
+     * @return int
+     * @throws RandomException
+     */
+    public function fullyAutomatedDecisionPercentage(): int
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return Cache::remember('automated_decisions_percentage', self::ONE_DAY, function() {
+                $ten_days_ago                 = Carbon::now()->subDays(10);
+                $now                          = Carbon::now();
+                $automated_decision_count_sql = $this->startCountQuery() .
+                                                " WHERE automated_decision = 'AUTOMATED_DECISION_FULLY' AND created_at >= '" . $ten_days_ago->format('Y-m-d') . " 00:00:00' AND created_at <= '" . $now->format('Y-m-d') . " 23:59:59'";
+                $automated_decision_count     = $this->extractCountQueryResult($this->runSql($automated_decision_count_sql));
+                $total                        = $this->totalForDateRange($ten_days_ago, $now);
+
+                return (int)(($automated_decision_count / max(1, $total)) * 100);
+            });
+        }
+
+        return random_int(0, 100);
     }
 
     /**
