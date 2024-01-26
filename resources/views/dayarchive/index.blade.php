@@ -57,19 +57,12 @@
             <div class="ecl-media-container">
                 <figure class="ecl-media-container__figure">
                     <div class="ecl-media-container__caption">
-
                         <picture class="ecl-picture ecl-media-container__picture"><img
                                 class="ecl-media-container__media"
                                 src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg"
                                 alt="Digital Services Act Logo"/></picture>
-
-
                     </div>
-
-
                 </figure>
-
-
             </div>
         </div>
 
@@ -92,16 +85,23 @@
                 />
 
             </div>
-            <div class="ecl-col-l-2 ecl-u-flex-l-row">
-                <button class="ecl-button ecl-button--primary" style="margin-top:36px" type="submit"><span
-                        class="ecl-button__container"><span
-                            class="ecl-button__label" data-ecl-label="true">Search</span><svg
-                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
-                            focusable="false" aria-hidden="true" data-ecl-icon="">
-                            <x-ecl.icon icon="corner-arrow"/>
-                            </svg></span>
-                </button>
-
+            <div class="ecl-col-l-2">
+                <div class="ecl-form-group ecl-u-mb-l" style="margin-top: 36px;">
+                    <button class="ecl-button ecl-button--primary" type="submit">
+                        <span class="ecl-button__container">
+                            <span class="ecl-button__label"
+                                  data-ecl-label="true">
+                                Search
+                            </span>
+                            <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
+                                 focusable="false"
+                                 aria-hidden="true"
+                                 data-ecl-icon="">
+                                <x-ecl.icon icon="corner-arrow"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
             </div>
 
         </div>
