@@ -7,7 +7,7 @@
         <th class="ecl-table__header">Platform</th>
         <th class="ecl-table__header">Roles</th>
         <th class="ecl-table__header"></th>
-        <th class="ecl-table__header" width="25%">Actions</th>
+        <th class="ecl-table__header" width="10%">Actions</th>
     </tr>
     </thead>
     <tbody class="ecl-table__body">
