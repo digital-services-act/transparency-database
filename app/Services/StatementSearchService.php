@@ -394,17 +394,17 @@ class StatementSearchService
         }
     }
 
-    private function startCountQuery(): string
+    public function startCountQuery(): string
     {
         return "SELECT CAST(count(*) AS BIGINT) as count FROM " . $this->index_name;
     }
 
-    private function extractCountQueryResult($result): int
+    public function extractCountQueryResult($result): int
     {
         return (int)($result['datarows'][0][0] ?? 0);
     }
 
-    private function runSql(string $sql): array
+    public function runSql(string $sql): array
     {
         if (config('scout.driver') === 'opensearch') {
             return $this->client->sql()->query([
