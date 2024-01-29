@@ -20,22 +20,39 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
+     *
      * @return Application|Factory|View
      */
     public function index(Request $request): View|Factory|Application
     {
         $users = User::query();
         $s = $request->get('s');
+        $uuid = $request->get('uuid');
         if ($s) {
             $users->where('name', 'like', '%' . $s . '%')->orWhere('email', 'like', '%' . $s . '%')->orWhereHas('platform', function($inner_query) use ($s){
                 $inner_query->where('name', 'like', '%' . $s . '%');
             });
         }
+        if ($uuid) {
+            $users->whereHas('platform', function($inner_query) use ($uuid) {
+               $inner_query->where('uuid', $uuid);
+            });
+        }
+
         $users->orderBy('name');
         $users = $users->paginate(50)->withQueryString();
 
+        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(function($name, $uuid){
+            return [
+                'value' => $uuid,
+                'label' => $name
+            ];
+        })->toArray();
+
         return view('user.index', [
-            'users' => $users
+            'users' => $users,
+            'platforms' => $platforms
         ]);
     }
 

@@ -20,6 +20,10 @@
         <x-ecl.button label="Save platform" />
     </form>
 
+    @if($platform->users->count())
+        <h2 class="ecl-u-type-heading-2">Users in this Platform</h2>
+        <x-users.table :users="$platform->users" />
+    @endif
 
 @endsection
 
