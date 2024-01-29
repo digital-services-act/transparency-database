@@ -448,7 +448,10 @@ class StatementSearchService
 
     public function totalForPlatformDate(Platform $platform, Carbon $date): int
     {
-        $sql = $this->startCountQuery() . $this->buildWheres(["platform_id = " . $platform->id, $this->receivedDateCondition($date)]);
+        $sql = $this->startCountQuery() . $this->buildWheres([
+            "platform_id = " . $platform->id,
+            $this->receivedDateCondition($date)
+        ]);
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 

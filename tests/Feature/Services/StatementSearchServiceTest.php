@@ -347,6 +347,19 @@ class StatementSearchServiceTest extends TestCase
      * @test
      * @return void
      */
+    public function it_can_make_received_date_range_condition(): void
+    {
+        $start = Carbon::create(2024, 1, 1);
+        $end = Carbon::create(2024, 1, 2);
+        $result = $this->statement_search_service->receivedDateRangeCondition($start, $end);
+        $should_be = "received_date BETWEEN '2024-01-01 00:00:00' AND '2024-01-02 00:00:00'";
+        $this->assertEquals($should_be, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
     public function it_builds_wheres(): void
     {
         $conditions = [
