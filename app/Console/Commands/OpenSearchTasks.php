@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use OpenSearch\Client;
+use Symfony\Component\VarDumper\VarDumper;
 
 class OpenSearchTasks extends Command
 {
@@ -19,7 +20,7 @@ class OpenSearchTasks extends Command
      *
      * @var string
      */
-    protected $description = 'Get some info about the open search tasks.';
+    protected $description = 'Get some info about the open search tasks if they can be cancelled.';
 
     /**
      * Execute the console command.
@@ -38,6 +39,6 @@ class OpenSearchTasks extends Command
                 }
             }
         }
-        dd($cancellable);
+        VarDumper::dump($cancellable);
     }
 }

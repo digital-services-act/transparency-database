@@ -2,12 +2,23 @@ id: 49448
 name: dsa-acc
 environments:
   production:
+    firewall:
+      rate-limit: 10000
+      bot-control:
+        - CategoryAdvertising
+        - CategoryArchiver
+        - CategoryContentFetcher
+        - CategoryLinkChecker
+        - CategoryMiscellaneous
+        - CategoryScrapingFramework
+        - SignalAutomatedBrowser
     queue-database-session-persist: true
     cache: redis-acc-small
     database: acc-serverless-db-eu
     domain: acc.sor.dsa.ec.europa.eu
     network: vapor-network-1686047238
-    memory: 2048
+    timeout: 180
+    memory: 512
     cli-memory: 512
     runtime: 'php-8.2:al2-arm'
     storage: sor-dsa-m2-acceptance

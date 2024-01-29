@@ -828,16 +828,29 @@ However, the errors will be indexed to the Statement of Reason that you are tryi
 ex,
 ```javascript
 {
-    "message": "The selected 35.decision_visibility is invalid.",
     "errors": {
-        "35.decision_visibility": [
-            "The selected 35.decision_visibility is invalid."
-        ]
+        "statement_0": {
+            "decision_monetary": [
+                "The selected decision monetary is invalid."
+            ],
+                "decision_ground": [
+                "The selected decision ground is invalid."
+            ],
+                "automated_detection": [
+                "The automated detection field is required."
+            ]
+        },
+        "statement_2": {
+            "decision_provision": [
+                "The selected decision provision is invalid."
+            ]
+        }
     }
 }
 ```
 
-This means that the decision visibility in the statement of reason at position 35 in the array was invalid.
+This means that the decision monetary, the decision ground and the automated detection fields were invalid in the statement of reason at position 0 in the array.
+This means that the decision provision is invalid in the statement of reason at position 2 in the array.
 
 In this case, **NONE** of the statements where created, the request needs to be fixed and resent.
 

@@ -9,13 +9,11 @@ use App\Models\Statement;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
-use App\Services\PlatformDayTotalsService;
 use App\Services\StatementSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,7 +33,6 @@ class StatementController extends Controller
     protected EuropeanCountriesService $european_countries_service;
     protected EuropeanLanguagesService $european_languages_service;
     protected DriveInService $drive_in_service;
-    protected PlatformDayTotalsService $platform_day_total_service;
 
     use Sanitizer;
 
@@ -45,7 +42,6 @@ class StatementController extends Controller
         EuropeanCountriesService $european_countries_service,
         EuropeanLanguagesService $european_languages_service,
         DriveInService $drive_in_service,
-        PlatformDayTotalsService $platform_day_totals_service
     )
     {
         $this->statement_query_service = $statement_query_service;
@@ -53,7 +49,6 @@ class StatementController extends Controller
         $this->european_countries_service = $european_countries_service;
         $this->european_languages_service = $european_languages_service;
         $this->drive_in_service = $drive_in_service;
-        $this->platform_day_total_service = $platform_day_totals_service;
     }
 
     /**

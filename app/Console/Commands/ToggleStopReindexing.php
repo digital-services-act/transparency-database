@@ -2,19 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use Spatie\Permission\Models\Role;
 
 class ToggleStopReindexing extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'toggle-stop-reindexing {state=true}';
+    protected $signature = 'toggle-stop-reindexing {state}';
 
     /**
      * The console command description.
@@ -28,6 +27,7 @@ class ToggleStopReindexing extends Command
      */
     public function handle(): void
     {
-        Cache::forever('stop_reindexing', $this->argument('state') === 'true');
+        $state = $this->boolifyArgument('state');
+        Cache::forever('stop_reindexing', $state);
     }
 }

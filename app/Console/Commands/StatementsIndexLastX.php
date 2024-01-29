@@ -6,16 +6,16 @@ use App\Jobs\StatementIndexBag;
 use App\Models\Statement;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class StatementsIndexLastX extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:index-last-x {seconds=90}';
+    protected $signature = 'statements:index-last-x {seconds=90} {chunk=500}';
 
     /**
      * The console command description.
@@ -30,10 +30,12 @@ class StatementsIndexLastX extends Command
     public function handle(): void
     {
         $start = Carbon::now();
-        $start->subSeconds((int)$this->argument('seconds'));
+        $seconds = $this->intifyArgument('seconds');
+        $chunk = $this->intifyArgument('chunk');
+        $start->subSeconds($seconds);
         $statement_ids = Statement::query()->select(['id'])->where('created_at', '>=', $start)->pluck('id');
 
-        $statement_ids->chunk(600)->each(function($bag){
+        $statement_ids->chunk($chunk)->each(function($bag){
             StatementIndexBag::dispatch($bag->toArray());
         });
     }

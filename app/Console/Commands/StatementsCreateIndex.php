@@ -8,12 +8,13 @@ use OpenSearch\Client;
 
 class StatementsCreateIndex extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:create-index {index} {shards} {replicas}';
+    protected $signature = 'statements:create-index {index} {shards} {replicas=2}';
 
     /**
      * The console command description.
@@ -30,6 +31,8 @@ class StatementsCreateIndex extends Command
         /** @var Client $client */
         $client     = app(Client::class);
         $index = $this->argument('index');
+        $shards = $this->intifyArgument('shards');
+        $replicas = $this->intifyArgument('replicas');
 
         if ($client->indices()->exists(['index' => $index])) {
            $this->warn('Index with that name already exists!');
@@ -41,8 +44,8 @@ class StatementsCreateIndex extends Command
         $body = [
             'mappings' => $properties,
             'settings' => [
-                'number_of_shards' => $this->argument('shards'),
-                'number_of_replicas' => $this->argument('replicas')
+                'number_of_shards' => $shards,
+                'number_of_replicas' => $replicas
             ]
         ];
 

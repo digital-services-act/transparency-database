@@ -27,3 +27,5 @@ environments:
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
       - 'php artisan event:cache'
+    deploy:
+      - 'php artisan cache:clear'

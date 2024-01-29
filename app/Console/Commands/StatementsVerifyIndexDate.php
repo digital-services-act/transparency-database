@@ -6,18 +6,18 @@ use App\Jobs\VerifyIndex;
 use App\Models\Statement;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class StatementsVerifyIndexDate extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'statements:verify-index-date {date=default} {query_chunk=default} {searchable_chunk=default}';
+    protected $signature = 'statements:verify-index-date {date=yesterday} {query_chunk=50000} {searchable_chunk=500}';
 
     /**
      * The console command description.
@@ -31,9 +31,9 @@ class StatementsVerifyIndexDate extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        $query_chunk      = $this->argument('query_chunk') === 'default' ? 50000 : (int)$this->argument('query_chunk');
-        $searchable_chunk = $this->argument('searchable_chunk') === 'default' ? 500 : (int)$this->argument('searchable_chunk');
-        $date             = $this->argument('date') === 'default' ? Carbon::yesterday() : Carbon::createFromFormat('Y-m-d', $this->argument('date'));
+        $query_chunk      = $this->intifyArgument('query_chunk');
+        $searchable_chunk = $this->intifyArgument('searchable_chunk');
+        $date             = $this->sanitizeDateArgument();
 
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
