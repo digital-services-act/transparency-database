@@ -45,13 +45,7 @@ DSA Transparency Database, in accordance with Article 24(5) of the DSA. In case 
 of the statements of reasons, the Commission can be notified using the ‘Report an issue’ button.<br />
 <br />
 Redress options are also not included in the DSA Transparency Database as those are relevant only for the addressee
-of the statement of reasons. In any event would be identical in all cases:<br />
-<br />
-<ul>
-  <li>internal complaint mechanism under Article 20 of the DSA,</li>
-  <li>out-of-court dispute settlement under Article 21 of the DSA,</li>
-  <li>judicial review under the relevant national laws.</li>
-</ul>
+of the statement of reasons.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="Why was the DSA Transparency Database created?">
