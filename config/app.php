@@ -228,7 +228,6 @@ return [
         App\Providers\EuropeanLanguagesServiceProvider::class,
         App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
-        App\Providers\StatementStatsServiceProvider::class,
         App\Providers\DayArchiveQueryServiceProvider::class,
 
         MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class,
