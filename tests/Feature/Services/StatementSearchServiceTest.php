@@ -7,6 +7,7 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 
@@ -328,6 +329,33 @@ class StatementSearchServiceTest extends TestCase
 
         $test = $this->statement_search_service->extractCountQueryResult($fake_result);
         $this->assertEquals(666, $test);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_make_received_date_condition(): void
+    {
+        $now = Carbon::create(2024, 1, 29);
+        $result = $this->statement_search_service->receivedDateCondition($now);
+        $should_be = "received_date = '2024-01-29 00:00:00'";
+        $this->assertEquals($should_be, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_builds_wheres(): void
+    {
+        $conditions = [
+            "platform_id = " . 666,
+            $this->statement_search_service->receivedDateCondition(Carbon::create(2024, 1, 29))
+        ];
+        $result = $this->statement_search_service->buildWheres($conditions);
+        $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29 00:00:00'";
+        $this->assertEquals($should_be, $result);
     }
 
 

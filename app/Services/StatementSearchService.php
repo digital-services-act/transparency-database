@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Platform;
 use App\Models\Statement;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -156,7 +157,7 @@ class StatementSearchService
 
                 return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Most likely the date supplied for the start or the end was bad.
             return '';
         }
@@ -425,29 +426,40 @@ class StatementSearchService
     {
         return Cache::remember('grand_total', self::ONE_DAY, function () {
             $sql = $this->startCountQuery();
-
             return $this->extractCountQueryResult($this->runSql($sql));
         });
     }
 
+    public function buildWheres(array $conditions): string
+    {
+        return " WHERE " . implode(" AND ", $conditions);
+    }
+
+    public function receivedDateCondition(Carbon $date): string
+    {
+        return "received_date = '" . $date->format('Y-m-d') . " 00:00:00'";
+    }
+
     public function totalForDate(Carbon $date): int
     {
-        $sql = $this->startCountQuery() . " WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00'";
-
+        $sql = $this->startCountQuery() . $this->buildWheres([$this->receivedDateCondition($date)]);
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 
     public function totalForPlatformDate(Platform $platform, Carbon $date): int
     {
-        $sql = $this->startCountQuery() . " WHERE platform_id = " . $platform->id . " AND received_date = '" . $date->format('Y-m-d') . " 00:00:00'";
-
+        $sql = $this->startCountQuery() . $this->buildWheres(["platform_id = " . $platform->id, $this->receivedDateCondition($date)]);
         return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
+    {
+        return "received_date BETWEEN '" . $start->format('Y-m-d') . " 00:00:00' AND '" . $end->format('Y-m-d') . " 00:00:00'";
     }
 
     public function totalForDateRange(Carbon $start, Carbon $end): int
     {
-        $sql = $this->startCountQuery() . " WHERE received_date BETWEEN '" . $start->format('Y-m-d') . " 00:00:00' AND '" . $end->format('Y-m-d') . " 00:00:00'";
-
+        $sql = $this->startCountQuery() . $this->buildWheres([$this->receivedDateRangeCondition($start, $end)]);
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 
@@ -466,7 +478,7 @@ class StatementSearchService
             $prepare[$aggregate['received_date']] = $aggregate['total'];
         }
 
-        return array_map(function ($date, $total) {
+        return array_map(static function ($date, $total) {
             return [
                 'date'  => $date,
                 'total' => $total
@@ -683,7 +695,7 @@ class StatementSearchService
             return $days;
         });
 
-        $total = array_sum(array_map(function ($day) {
+        $total = array_sum(array_map(static function ($day) {
             return $day['total'];
         }, $days));
 
@@ -929,7 +941,7 @@ JSON;
             }
 
             // build a permutation string
-            $item['permutation'] = implode(',', array_map(function ($key, $value) {
+            $item['permutation'] = implode(',', array_map(static function ($key, $value) {
                 return $key . ":" . $value;
             }, array_keys($attributes), array_values($attributes)));
 
