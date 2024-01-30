@@ -143,7 +143,9 @@ class OpenSearchAPIController extends Controller
             header('Content-Type: text/csv; charset=utf-8');
 
             $out = fopen('php://output', 'wb');
-            fputcsv($out, $headers);
+            if (request('headers', true)) {
+                fputcsv($out, $headers);
+            }
             foreach($rows as $row)
             {
                 fputcsv($out, $row);
