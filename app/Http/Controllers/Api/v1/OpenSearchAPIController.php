@@ -129,16 +129,17 @@ class OpenSearchAPIController extends Controller
             );
 
             $headers = $this->statement_search_service->getAllowedAggregateAttributes(false);
+            $headers[] = 'platform_name';
+            $headers[] = 'total';
             $rows = [];
             foreach ($results['aggregates'] as $result) {
                 $row = [];
                 foreach ($headers as $header) {
                     $row[] = $result[$header];
                 }
-                $row[] = $result['total'];
                 $rows[] = $row;
             }
-            $headers[] = 'total';
+
 
             header('Content-Type: text/csv; charset=utf-8');
 
