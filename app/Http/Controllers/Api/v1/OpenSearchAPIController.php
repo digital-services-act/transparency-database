@@ -120,7 +120,7 @@ class OpenSearchAPIController extends Controller
                 throw new RuntimeException('Aggregate date must be in the past.');
             }
 
-            $attributes = $this->sanitizeAttributes('all', true);
+            $attributes = $this->sanitizeAttributes('all', false);
 
             $results = $this->statement_search_service->processDateAggregate(
                 $date,
@@ -128,7 +128,7 @@ class OpenSearchAPIController extends Controller
                 $this->booleanizeQueryParam('cache')
             );
 
-            $headers = $this->statement_search_service->getAllowedAggregateAttributes(true);
+            $headers = $this->statement_search_service->getAllowedAggregateAttributes(false);
             $rows = [];
             foreach ($results['aggregates'] as $result) {
                 $row = [];
