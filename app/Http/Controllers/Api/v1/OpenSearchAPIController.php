@@ -131,6 +131,8 @@ class OpenSearchAPIController extends Controller
             $headers = $this->statement_search_service->getAllowedAggregateAttributes(false);
             $headers[] = 'platform_name';
             $headers[] = 'total';
+            $headers = array_diff($headers, ['platform_id']);
+            
             $rows = [];
             foreach ($results['aggregates'] as $result) {
                 $row = [];
