@@ -3,8 +3,8 @@
 <x-ecl.accordion label="What is the DSA Transparency Database?">
 Article 17 of the Digital Services Act (DSA) requires all providers of hosting services to provide clear
 and specific information, called statements of reasons, to users whenever they remove or otherwise restrict
-access to their content.<br />
-<br />
+access to their content.<br>
+<br>
 Additionally, Article 24 (5) of the DSA requires providers of online platforms, which are a type of hosting
 service, to send all their statements of reasons to the Commission’s
 <a href="https://transparency.dsa.ec.europa.eu/">DSA Transparency Database</a> for collection.
@@ -13,8 +13,8 @@ The database is publicly accessible and machine-readable.
 
 <x-ecl.accordion label="What is a hosting service? What is an online platform?">
 Hosting services include a broad range of online intermediaries, for example cloud and webhosting services.
-These services store information provided by, and at the request of, users.<br />
-<br />
+These services store information provided by, and at the request of, users.<br>
+<br>
 The DSA Transparency Database only collects statements of reasons from online platforms, a subset of hosting
 services. Online platforms, such as online marketplaces, app stores, or social networks, not only store
 information provided by users but also disseminate it publicly. That is, they make it available to potentially
@@ -23,17 +23,17 @@ all users of an online platform.
 
 <x-ecl.accordion label="What is a statement of reasons?">
 A statement of reasons is an important tool to empower users to understand and potentially challenge content
-moderation decisions taken by providers of hosting services.<br />
-<br />
+moderation decisions taken by providers of hosting services.<br>
+<br>
 As specified in Article 17 of the DSA, a statement of reasons is the information that providers of hosting
 services, including online platforms, are required to share with a user whenever they remove or otherwise
 restrict access to their content. Restrictions can be imposed on the grounds that the content is illegal or
-incompatible with the terms and conditions of the provider.<br />
-<br />
+incompatible with the terms and conditions of the provider.<br>
+<br>
 Information contained in a statement of reasons includes, amongst other things, the type of restriction put in
 place, the grounds relied upon and the facts and circumstances around which the content moderation decision
-was taken.<br />
-<br />
+was taken.<br>
+<br>
 The statements of reasons that providers of online platforms are required to submit to the DSA Transparency
 Database must contain this information.
 </x-ecl.accordion>
@@ -42,8 +42,8 @@ Database must contain this information.
 Database?">
 Providers of online platforms are obliged to remove any personal data from the information they publish in the
 DSA Transparency Database, in accordance with Article 24(5) of the DSA. In case personal data is included in any
-of the statements of reasons, the Commission can be notified using the ‘Report an issue’ button.<br />
-<br />
+of the statements of reasons, the Commission can be notified using the ‘Report an issue’ button.<br>
+<br>
 Redress options are also not included in the DSA Transparency Database as those are relevant only for the addressee
 of the statement of reasons.
 </x-ecl.accordion>
@@ -144,8 +144,8 @@ _decision_facts_). Light archive files also do not contain the _territorial_scop
 
 <x-ecl.accordion label="I would like to sample data from the DSA Transparency Database. How do I do that?">
 To obtain a sample of submissions to the DSA Transparency Database, you can use the .csv file download link available
-above the table displaying the results of a search for statements of reasons.<br />
-<br />
+above the table displaying the results of a search for statements of reasons.<br>
+<br>
 By default, the latest 1000 results will be available for download. To adapt the content of the sample, you can specify
 search parameters in the advanced search page. The first 1000 results from your advanced search will then be available
 for .csv file download.
@@ -177,11 +177,11 @@ How do I do that?">
 The DSA Transparency Database only records statement of reasons. These contain information on the content moderation
 decision itself as well as the information accompanying such decisions, with the exception of personal data, which
 providers of online platforms are required to remove before submission. The DSA Transparency Database does not contain
-the content that was subject to moderation.<br />
-<br />
+the content that was subject to moderation.<br>
+<br>
 For researchers interested in gaining access to the content underlying certain statements of reasons, the data access
-mechanism specified in Article 40 of the DSA can provide a way to obtain such access in the future.<br />
-<br />
+mechanism specified in Article 40 of the DSA can provide a way to obtain such access in the future.<br>
+<br>
 Once the Digital Service Coordinators are established by 17 February 2024, data access requests can be submitted either
 to the Digital Service Coordinator of a researcher’s Member State or to the Digital Service Coordinator(s) where the
 provider of the online platform(s) in question is established. The Commission is currently drafting a Delegated Act that
@@ -195,12 +195,12 @@ platform. What steps do I have to go through?">
 
 To set up your statement of reasons submission process, please contact the Digital Service Coordinator of your Member
 State. This is the first step required to be onboarded as an online platform with obligations under Article 24(5) of the
-DSA.<br />
-<br />
+DSA.<br>
+<br>
 Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your
 submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface (
-API) or a webform, according to the volume of your data and technical needs.<br />
-<br />
+API) or a webform, according to the volume of your data and technical needs.<br>
+<br>
 Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency
 Database, where you can start submitting your statement of reasons via an API or a webform.
 </x-ecl.accordion>
@@ -223,8 +223,8 @@ web form is the same as the data schema of the API.
 recommend for sending statements of reasons at a very high volume?">
 The DSA Transparency database has two API endpoints, one which allows to submit one statement of reasons per call and
 one which allows to submit from 1 to 100 statements of reasons per call. For more information on the API endpoints,
-please read the <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">API documentation</a>.<br />
-<br />
+please read the <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">API documentation</a>.<br>
+<br>
 For high-volume submissions of multiple statements of reasons per minute, we recommend using the batch API endpoint.
 </x-ecl.accordion>
 
