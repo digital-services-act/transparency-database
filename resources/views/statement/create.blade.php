@@ -16,7 +16,7 @@
     <h1 class="ecl-u-type-heading-1">Submit a Statement of Reason</h1>
 
     <p class="ecl-u-type-paragraph">
-        For more information on the fiels, please have a look to the <a href="{{route('profile.page.show', ['documentation'])}}">global documentation</a>
+        For more information on the fields, please have a look at the <a href="{{route('profile.page.show', ['documentation'])}}">global documentation</a>
     </p>
 
     <form method="post" action="{{route('statement.store')}}" id="create-statement-form">
