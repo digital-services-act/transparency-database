@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::dropIfExists('application_date_aggregates');
         Schema::dropIfExists('content_date_aggregates');
         Schema::dropIfExists('sql_aggregates');
-        Schema::dropIfExists('platform_day_totals');
+//        Schema::dropIfExists('platform_day_totals');
     }
 
     /**
