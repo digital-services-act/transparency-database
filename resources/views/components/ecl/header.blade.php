@@ -7,7 +7,7 @@
                     <img alt="European Commission logo"
                          title="European Commission"
                          class="ecl-site-header__logo-image ecl-site-header__logo-image-desktop"
-                         src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"/>
+                         src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}">
                 </a>
 
                 <div class="ecl-site-header__action">
@@ -27,7 +27,6 @@
                                 @endguest
                                 @auth
                                     <div class="ecl-site-header__login-container">
-
                                         <a class="ecl-button ecl-button--ghost ecl-site-header__login-toggle" href="#"
                                            data-ecl-login-toggle="true"
                                            aria-controls="login-box-id" aria-expanded="false">
@@ -36,34 +35,21 @@
                                                 <x-ecl.icon icon="logged-in"/>
                                             </svg>
                                             Logged in
-                                            <svg
-                                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-0 ecl-site-header__login-arrow"
-                                                    focusable="false" aria-hidden="true">
+                                            <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-0 ecl-site-header__login-arrow"
+                                                 focusable="false" aria-hidden="true">
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </a>
 
                                         <div id="login-box-id" class="ecl-site-header__login-box"
                                              data-ecl-login-box="true">
-
-
-                                            <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
-                                                             title="Your Profile"/>
-
+                                            <x-ecl.menu-item icon="log-in" :link="route('profile.start')" title="Your Profile" />
                                             @can('create statements')
-
-                                                <x-ecl.menu-item icon="gear" :link="route('profile.api.index')"
-                                                                 title="API Token Management"/>
-
+                                                <x-ecl.menu-item icon="gear" :link="route('profile.api.index')" title="API Token Management" />
                                             @endcan
-
-                                            <hr class="ecl-site-header__login-separator"/>
-                                            <x-ecl.menu-item link="/logout" title="Logout"/>
-
-
-                                            <br/>
+                                            <hr class="ecl-site-header__login-separator">
+                                            <x-ecl.menu-item link="/logout" title="Logout" />
                                         </div>
-
                                     </div>
                                 @endauth
                             </div>
@@ -92,8 +78,8 @@
                 Menu
             </a>
 
-            <section class="ecl-menu__inner" data-ecl-menu-inner="">
-                <header class="ecl-menu__inner-header">
+            <div class="ecl-menu__inner" data-ecl-menu-inner="">
+                <div class="ecl-menu__inner-header">
                     <button class="ecl-menu__close ecl-button ecl-button--text" type="submit" data-ecl-menu-close="">
                             <span class="ecl-menu__close-container ecl-button__container">
                                 <svg class="ecl-icon ecl-icon--s ecl-button__icon ecl-button__icon--before"
@@ -115,7 +101,7 @@
                                     <span class="ecl-button__label" data-ecl-label="">Back</span>
                                 </span>
                     </button>
-                </header>
+                </div>
 
                 <div class="ecl-u-d-flex ecl-u-justify-content-between">
                     <div>
@@ -133,7 +119,6 @@
                                     Database</a>
                                 <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                         data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
-                                        aria-describedby="ecl-menu-item-demo-2-link"
                                         aria-expanded="false">
                                     <span class="ecl-button__container">
                                         <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
@@ -166,7 +151,6 @@
                                         class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-faq-link">FAQ</a>
                                 <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                         data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
-                                        aria-describedby="ecl-menu-item-demo-2-link"
                                         aria-expanded="false">
                                     <span class="ecl-button__container">
                                         <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
@@ -200,7 +184,6 @@
                                         class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-platforms-link">Platforms</a>
                                 <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                         data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
-                                        aria-describedby="ecl-menu-item-demo-2-link"
                                         aria-expanded="false">
                             <span class="ecl-button__container">
                                 <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
@@ -217,12 +200,17 @@
                                         @can('create statements')
                                             <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                                 <a href="{{ route('statement.create') }}"
-                                                   class="ecl-menu__sublink">Submit statements of reasons</a>
+                                                   class="ecl-menu__sublink">
+                                                    Submit statements of reasons
+                                                </a>
                                             </li>
                                         @endcan
+
                                         <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                             <a href="{{  route('profile.page.show', ['documentation']) }}"
-                                               class="ecl-menu__sublink">Global Documentation</a>
+                                               class="ecl-menu__sublink">
+                                                Global Documentation
+                                            </a>
                                         </li>
                                         <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                             <a href="{{  route('profile.page.show', ['api-documentation']) }}"
@@ -234,7 +222,7 @@
                         </ul>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </nav>
 </header>

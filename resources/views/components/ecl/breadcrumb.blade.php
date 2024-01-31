@@ -8,4 +8,3 @@
     @else
     <li class="ecl-breadcrumb__segment ecl-breadcrumb__current-page" data-ecl-breadcrumb-item="static" aria-current="page">{{ $label }}</li>
     @endif
-</li>

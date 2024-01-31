@@ -6,38 +6,38 @@
 
     <title>@yield('title', 'Home') - DSA Transparency Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link
             rel="stylesheet"
             href="{{ asset('static/ecl/styles/optional/ecl-ec-default.css') }}"
             crossorigin="anonymous"
             media="screen"
-    />
+    >
     <link
             rel="stylesheet"
             href="{{ asset('static/ecl/styles/optional/ecl-reset.css') }}"
             crossorigin="anonymous"
             media="screen"
-    />
+    >
     <link
             rel="stylesheet"
             href="{{ asset('static/ecl/styles/ecl-ec.css') }}"
             crossorigin="anonymous"
             media="screen"
-    />
+    >
     <link
             rel="stylesheet"
             href="{{ asset('static/ecl/styles/optional/ecl-ec-default-print.css') }}"
             crossorigin="anonymous"
             media="print"
-    />
+    >
     <link
             rel="stylesheet"
             href="{{ asset('static/ecl/styles/ecl-ec-print.css') }}"
             crossorigin="anonymous"
             media="print"
-    />
+    >
     <style>
         .scroll-to-top {
             position: fixed;
@@ -60,7 +60,7 @@
             background-color: #0056b3; /* Change the background color on hover */
         }
     </style>
-    <script defer src="https://europa.eu/webtools/load.js?theme=ec" type="text/javascript"></script>
+    <script defer src="https://europa.eu/webtools/load.js?theme=ec"></script>
 
     @section('extra-head')
     @show
@@ -68,7 +68,7 @@
 <body class="ecl">
 <div id="root" style="padding-top: 0 !important;">
 
-    <x-ecl.header/>
+    <x-ecl.header />
 
     <div class="ecl-container ecl-u-mb-xl">
         <div class="ecl-row">

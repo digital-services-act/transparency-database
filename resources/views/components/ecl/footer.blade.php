@@ -2,12 +2,14 @@
     <div class="ecl-container ecl-site-footer__container">
         <div class="ecl-site-footer__row">
             <div class="ecl-site-footer__column">
-                <div class="ecl-site-footer__section"><a href="https://ec.europa.eu"
-                                                         class="ecl-link ecl-link--standalone ecl-site-footer__logo-link" aria-label="European Commission"><img
-                            alt="European Commission logo" title="European Commission" class="ecl-site-footer__logo-image-desktop"
-                            src="{{asset('static/ecl/images/logo/negative/logo-ec--en.svg')}}" /></a>
-                    <div class="ecl-site-footer__description">This site is managed by the Directorate-General for &quot;Communications Networks, Content and Technology&quot;
-
+                <div class="ecl-site-footer__section">
+                    <a href="https://ec.europa.eu"
+                       class="ecl-link ecl-link--standalone ecl-site-footer__logo-link" aria-label="European Commission">
+                        <img alt="European Commission logo" title="European Commission" class="ecl-site-footer__logo-image-desktop"
+                            src="{{asset('static/ecl/images/logo/negative/logo-ec--en.svg')}}">
+                    </a>
+                    <div class="ecl-site-footer__description">
+                        This site is managed by the Directorate-General for &quot;Communications Networks, Content and Technology&quot;
                     </div>
                 </div>
 
