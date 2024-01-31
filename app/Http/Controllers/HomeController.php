@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Random\RandomException;
 
 class HomeController extends Controller
@@ -32,7 +33,9 @@ class HomeController extends Controller
         $last_days = 30;
 
         $total = $this->statement_search_service->grandTotal();
-        $platforms_total = max(1, Platform::nonDsa()->count());
+        $platforms_total = Cache::remember('platforms_total', 60*60*24, function() {
+            return max(1, Platform::nonDsa()->count());
+        });
 
         $top_x = 3;
 
