@@ -103,7 +103,7 @@ class PlatformAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_give_platform_data()
+    public function it_should_give_platform_data(): void
     {
         $this->withoutExceptionHandling();
         $this->setUpFullySeededDatabase();

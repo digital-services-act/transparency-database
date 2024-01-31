@@ -108,6 +108,60 @@ class OpenSearchAPIController extends Controller
 
     /**
      * @param string $date_in
+     *
+     * @return JsonResponse|void
+     */
+    public function aggregatesCsvForDate(string $date_in)
+    {
+        try {
+            $date = $this->sanitizeDateString($date_in);
+
+            if ($date >= Carbon::today()) {
+                throw new RuntimeException('Aggregate date must be in the past.');
+            }
+
+            $attributes = $this->sanitizeAttributes('all', false);
+
+            $results = $this->statement_search_service->processDateAggregate(
+                $date,
+                $attributes,
+                $this->booleanizeQueryParam('cache')
+            );
+
+            $headers = $this->statement_search_service->getAllowedAggregateAttributes(false);
+            $headers[] = 'platform_name';
+            $headers[] = 'total';
+            $headers = array_diff($headers, ['platform_id']);
+            
+            $rows = [];
+            foreach ($results['aggregates'] as $result) {
+                $row = [];
+                foreach ($headers as $header) {
+                    $row[] = $result[$header];
+                }
+                $rows[] = $row;
+            }
+
+
+            header('Content-Type: text/csv; charset=utf-8');
+
+            $out = fopen('php://output', 'wb');
+            if (request('headers', true)) {
+                fputcsv($out, $headers);
+            }
+            foreach($rows as $row)
+            {
+                fputcsv($out, $row);
+            }
+            fclose($out);
+
+        } catch (Exception $e) {
+            return response()->json(['error' => 'invalid aggregates csv date attempt: ' . $e->getMessage()], $this->error_code);
+        }
+    }
+
+    /**
+     * @param string $date_in
      * @param string $attributes_in
      *
      * @return JsonResponse|array

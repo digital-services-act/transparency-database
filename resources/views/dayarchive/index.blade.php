@@ -22,8 +22,11 @@
     @endif
 
     <x-ecl.message type="warning" icon="warning" title="Work in progress"
-                   message="The Transparency Database infrastructure is still in development mode. We are constantly adapting the backend and the data processing pipelines to optimize performance and user experience. That is why, during the development phase only, the file format, name pattern and organization of the daily dumps are subject to change without notice."
-                   close="true"/>
+                   message="The Transparency Database infrastructure is still in development mode. We are constantly
+                   adapting the backend and the data processing pipelines to optimize performance and user
+                   experience. That is why, during the development phase only, the file format, name pattern
+                   and organization of the daily dumps are subject to change without notice."
+                   :close="true"/>
 
     <div class="ecl-row ecl-u-mt-l">
         <div class="ecl-col-l-8">
@@ -41,14 +44,9 @@
                 selected platform.<br/>
                 <br/>
 
-
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in
-                    the FAQ</a><br/><br/>
-
-
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the
-                    FAQ</a>
-
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br />
+                <br />
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the FAQ</a>
             </p>
 
         </div>
@@ -57,19 +55,12 @@
             <div class="ecl-media-container">
                 <figure class="ecl-media-container__figure">
                     <div class="ecl-media-container__caption">
-
                         <picture class="ecl-picture ecl-media-container__picture"><img
                                 class="ecl-media-container__media"
                                 src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg"
                                 alt="Digital Services Act Logo"/></picture>
-
-
                     </div>
-
-
                 </figure>
-
-
             </div>
         </div>
 
@@ -92,16 +83,23 @@
                 />
 
             </div>
-            <div class="ecl-col-l-2 ecl-u-flex-l-row">
-                <button class="ecl-button ecl-button--primary" style="margin-top:36px" type="submit"><span
-                        class="ecl-button__container"><span
-                            class="ecl-button__label" data-ecl-label="true">Search</span><svg
-                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
-                            focusable="false" aria-hidden="true" data-ecl-icon="">
-                            <x-ecl.icon icon="corner-arrow"/>
-                            </svg></span>
-                </button>
-
+            <div class="ecl-col-l-2">
+                <div class="ecl-form-group ecl-u-mb-l" style="margin-top: 36px;">
+                    <button class="ecl-button ecl-button--primary" type="submit">
+                        <span class="ecl-button__container">
+                            <span class="ecl-button__label"
+                                  data-ecl-label="true">
+                                Search
+                            </span>
+                            <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
+                                 focusable="false"
+                                 aria-hidden="true"
+                                 data-ecl-icon="">
+                                <x-ecl.icon icon="corner-arrow"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
             </div>
 
         </div>

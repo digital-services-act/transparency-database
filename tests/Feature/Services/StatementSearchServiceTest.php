@@ -7,6 +7,7 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 
@@ -30,7 +31,7 @@ class StatementSearchServiceTest extends TestCase
     public function it_can_do_a_basic_query()
     {
         $filters = [];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('*', $query);
@@ -44,7 +45,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'automated_detection' => [Statement::AUTOMATED_DETECTION_YES]
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(automated_detection:true)', $query);
@@ -52,7 +53,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'automated_detection' => [Statement::AUTOMATED_DETECTION_YES, Statement::AUTOMATED_DETECTION_NO]
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(automated_detection:true OR automated_detection:false)', $query);
@@ -66,11 +67,10 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'automated_decision' => array_keys(Statement::AUTOMATED_DECISIONS),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(automated_decision:AUTOMATED_DECISION_FULLY OR automated_decision:AUTOMATED_DECISION_PARTIALLY OR automated_decision:AUTOMATED_DECISION_NOT_AUTOMATED)', $query);
-
     }
 
     /**
@@ -81,7 +81,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'source_type' => array_keys(Statement::SOURCE_TYPES),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(source_type:SOURCE_ARTICLE_16 OR source_type:SOURCE_TRUSTED_FLAGGER OR source_type:SOURCE_TYPE_OTHER_NOTIFICATION OR source_type:SOURCE_VOLUNTARY)', $query);
@@ -95,10 +95,11 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             's' => 'example'
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example")', $query);
+        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example")',
+            $query);
     }
 
     /**
@@ -109,10 +110,11 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'decision_visibility' => array_keys(Statement::DECISION_VISIBILITIES),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(decision_visibility:DECISION_VISIBILITY_CONTENT_REMOVED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DISABLED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DEMOTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_LABELLED OR decision_visibility:DECISION_VISIBILITY_OTHER)', $query);
+        $this->assertEquals('(decision_visibility:DECISION_VISIBILITY_CONTENT_REMOVED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DISABLED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DEMOTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_LABELLED OR decision_visibility:DECISION_VISIBILITY_OTHER)',
+            $query);
     }
 
     /**
@@ -123,7 +125,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'category_specification' => array_keys(Statement::KEYWORDS),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('category_specification:KEYWORD_ANIMAL_HARM OR category_specification:', $query);
@@ -137,7 +139,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'decision_monetary' => array_keys(Statement::DECISION_MONETARIES),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(decision_monetary:DECISION_MONETARY_SUSPENSION OR decision_monetary:DECISION_MONETARY_TERMINATION OR decision_monetary:DECISION_MONETARY_OTHER)', $query);
@@ -151,10 +153,11 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'decision_provision' => array_keys(Statement::DECISION_PROVISIONS),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(decision_provision:DECISION_PROVISION_PARTIAL_SUSPENSION OR decision_provision:DECISION_PROVISION_TOTAL_SUSPENSION OR decision_provision:DECISION_PROVISION_PARTIAL_TERMINATION OR decision_provision:DECISION_PROVISION_TOTAL_TERMINATION)', $query);
+        $this->assertEquals('(decision_provision:DECISION_PROVISION_PARTIAL_SUSPENSION OR decision_provision:DECISION_PROVISION_TOTAL_SUSPENSION OR decision_provision:DECISION_PROVISION_PARTIAL_TERMINATION OR decision_provision:DECISION_PROVISION_TOTAL_TERMINATION)',
+            $query);
     }
 
     /**
@@ -165,7 +168,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'decision_account' => array_keys(Statement::DECISION_ACCOUNTS),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(decision_account:DECISION_ACCOUNT_SUSPENDED OR decision_account:DECISION_ACCOUNT_TERMINATED)', $query);
@@ -179,7 +182,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'account_type' => array_keys(Statement::ACCOUNT_TYPES),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(account_type:ACCOUNT_TYPE_BUSINESS OR account_type:ACCOUNT_TYPE_PRIVATE)', $query);
@@ -193,7 +196,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'decision_ground' => array_keys(Statement::DECISION_GROUNDS),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(decision_ground:DECISION_GROUND_ILLEGAL_CONTENT OR decision_ground:DECISION_GROUND_INCOMPATIBLE_CONTENT)', $query);
@@ -207,7 +210,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'category' => array_keys(Statement::STATEMENT_CATEGORIES),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('category:STATEMENT_CATEGORY_ANIMAL_WELFARE OR', $query);
@@ -221,7 +224,7 @@ class StatementSearchServiceTest extends TestCase
         $filters = [
             'content_type' => array_keys(Statement::CONTENT_TYPES),
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('content_type:CONTENT_TYPE_TEXT OR ', $query);
@@ -233,9 +236,9 @@ class StatementSearchServiceTest extends TestCase
     public function it_filters_only_real_platform_ids()
     {
         $filters = [
-            'platform_id' => [99,100],
+            'platform_id' => [99, 100],
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertNotEquals('(platform_id:99 OR platform_id:100)', $query);
@@ -248,7 +251,7 @@ class StatementSearchServiceTest extends TestCase
     {
         $this->setUpFullySeededDatabase();
         $platform_id_one = Platform::first()->id;
-        $platform_id_two = Platform::nonDsa()->whereNotIn('id',  [$platform_id_one])->inRandomOrder()->first()->id;
+        $platform_id_two = Platform::nonDsa()->whereNotIn('id', [$platform_id_one])->inRandomOrder()->first()->id;
 
         $filters = [
             'platform_id' => [$platform_id_one, $platform_id_two],
@@ -258,7 +261,7 @@ class StatementSearchServiceTest extends TestCase
         $search = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(platform_id:'.$platform_id_one.' OR platform_id:'.$platform_id_two.')', $query);
+        $this->assertEquals('(platform_id:' . $platform_id_one . ' OR platform_id:' . $platform_id_two . ')', $query);
     }
 
     /**
@@ -267,9 +270,9 @@ class StatementSearchServiceTest extends TestCase
     public function it_filters_on_territorial_scope()
     {
         $filters = [
-            'territorial_scope' => ['BG','NL'],
+            'territorial_scope' => ['BG', 'NL'],
         ];
-        $search = $this->statement_search_service->query($filters);
+        $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertEquals('(territorial_scope:BG OR territorial_scope:NL)', $query);
@@ -281,25 +284,92 @@ class StatementSearchServiceTest extends TestCase
     public function if_filters_on_created_at()
     {
         $filters['created_at_start'] = '15-12-2020';
-        $search = $this->statement_search_service->query($filters);
+        $search                      = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('created_at:[2020-12-15T00:00:00 TO', $query);
 
         $filters['created_at_end'] = '15-12-2020';
-        $search = $this->statement_search_service->query($filters);
+        $search                    = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('TO 2020-12-15T23:59:59]', $query);
 
         $filters['created_at_start'] = '20-12-2020';
-        $filters['created_at_end'] = '21-12-2020';
-        $search = $this->statement_search_service->query($filters);
+        $filters['created_at_end']   = '21-12-2020';
+        $search                      = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('2020-12-20T00:00:00 TO 2020-12-21T23:59:59]', $query);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function it_starts_a_count_query(): void
+    {
+        $result = $this->statement_search_service->startCountQuery();
+        $this->assertEquals("SELECT CAST(count(*) AS BIGINT) as count FROM statement_index", $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_extracts_a_count_query_result(): void
+    {
+        $fake_result = [
+            'datarows' => [
+                [
+                    0 => 666
+                ]
+            ]
+        ];
+
+        $test = $this->statement_search_service->extractCountQueryResult($fake_result);
+        $this->assertEquals(666, $test);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_make_received_date_condition(): void
+    {
+        $now = Carbon::create(2024, 1, 29);
+        $result = $this->statement_search_service->receivedDateCondition($now);
+        $should_be = "received_date = '2024-01-29 00:00:00'";
+        $this->assertEquals($should_be, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_make_received_date_range_condition(): void
+    {
+        $start = Carbon::create(2024, 1, 1);
+        $end = Carbon::create(2024, 1, 2);
+        $result = $this->statement_search_service->receivedDateRangeCondition($start, $end);
+        $should_be = "received_date BETWEEN '2024-01-01 00:00:00' AND '2024-01-02 00:00:00'";
+        $this->assertEquals($should_be, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_builds_wheres(): void
+    {
+        $conditions = [
+            "platform_id = " . 666,
+            $this->statement_search_service->receivedDateCondition(Carbon::create(2024, 1, 29))
+        ];
+        $result = $this->statement_search_service->buildWheres($conditions);
+        $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29 00:00:00'";
+        $this->assertEquals($should_be, $result);
+    }
 
 
 }

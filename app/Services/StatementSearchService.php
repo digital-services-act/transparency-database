@@ -4,13 +4,16 @@ namespace App\Services;
 
 use App\Models\Platform;
 use App\Models\Statement;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use JsonException;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
+use Random\RandomException;
 use RuntimeException;
 use stdClass;
 
@@ -64,6 +67,8 @@ class StatementSearchService
         'source_type',
     ];
 
+    public const ONE_DAY = 24 * 60 * 60;
+
     public function __construct(Client $client)
     {
         $this->client     = $client;
@@ -79,6 +84,7 @@ class StatementSearchService
     public function query(array $filters, array $options = []): Builder
     {
         $query = $this->buildQuery($filters);
+
         return $this->basicQuery($query, $options);
     }
 
@@ -151,7 +157,7 @@ class StatementSearchService
 
                 return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Most likely the date supplied for the start or the end was bad.
             return '';
         }
@@ -360,7 +366,7 @@ class StatementSearchService
     private function applySourceTypeFilter(array $filter_values): string
     {
         $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
-        $ors = [];
+        $ors           = [];
         foreach ($filter_values as $filter_value) {
             $ors[] = 'source_type:' . $filter_value;
         }
@@ -369,8 +375,7 @@ class StatementSearchService
     }
 
 
-
-    public function bulkIndexStatements(Collection $statements)
+    public function bulkIndexStatements(Collection $statements): void
     {
         if ($statements->count()) {
             $bulk = [];
@@ -390,17 +395,17 @@ class StatementSearchService
         }
     }
 
-    private function startCountQuery(): string
+    public function startCountQuery(): string
     {
-        return "SELECT count(*) FROM " . $this->index_name;
+        return "SELECT CAST(count(*) AS BIGINT) as count FROM " . $this->index_name;
     }
 
-    private function extractCountQueryResult($result): int
+    public function extractCountQueryResult($result): int
     {
         return (int)($result['datarows'][0][0] ?? 0);
     }
 
-    private function runSql(string $sql): array
+    public function runSql(string $sql): array
     {
         if (config('scout.driver') === 'opensearch') {
             return $this->client->sql()->query([
@@ -419,25 +424,45 @@ class StatementSearchService
 
     public function grandTotal(): int
     {
-        $sql = $this->startCountQuery();
-        return $this->extractCountQueryResult($this->runSql($sql));
+        return Cache::remember('grand_total', self::ONE_DAY, function () {
+            $sql = $this->startCountQuery();
+            return $this->extractCountQueryResult($this->runSql($sql));
+        });
+    }
+
+    public function buildWheres(array $conditions): string
+    {
+        return " WHERE " . implode(" AND ", $conditions);
+    }
+
+    public function receivedDateCondition(Carbon $date): string
+    {
+        return "received_date = '" . $date->format('Y-m-d') . " 00:00:00'";
     }
 
     public function totalForDate(Carbon $date): int
     {
-        $sql = $this->startCountQuery() . " WHERE received_date = '".$date->format('Y-m-d')." 00:00:00'";
+        $sql = $this->startCountQuery() . $this->buildWheres([$this->receivedDateCondition($date)]);
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 
     public function totalForPlatformDate(Platform $platform, Carbon $date): int
     {
-        $sql = $this->startCountQuery() . " WHERE platform_id = ".$platform->id." AND received_date = '".$date->format('Y-m-d')." 00:00:00'";
+        $sql = $this->startCountQuery() . $this->buildWheres([
+            "platform_id = " . $platform->id,
+            $this->receivedDateCondition($date)
+        ]);
         return $this->extractCountQueryResult($this->runSql($sql));
+    }
+
+    public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
+    {
+        return "received_date BETWEEN '" . $start->format('Y-m-d') . " 00:00:00' AND '" . $end->format('Y-m-d') . " 00:00:00'";
     }
 
     public function totalForDateRange(Carbon $start, Carbon $end): int
     {
-        $sql = $this->startCountQuery() . " WHERE received_date BETWEEN '".$start->format('Y-m-d')." 00:00:00' AND '".$end->format('Y-m-d')." 00:00:00'";
+        $sql = $this->startCountQuery() . $this->buildWheres([$this->receivedDateRangeCondition($start, $end)]);
         return $this->extractCountQueryResult($this->runSql($sql));
     }
 
@@ -445,7 +470,7 @@ class StatementSearchService
     {
         $prepare = [];
         $current = $start->clone();
-        while($current <= $end) {
+        while ($current <= $end) {
             $prepare[$current->format('Y-m-d')] = 0;
             $current->addDay();
         }
@@ -456,12 +481,129 @@ class StatementSearchService
             $prepare[$aggregate['received_date']] = $aggregate['total'];
         }
 
-        return array_map(function($date, $total){
+        return array_map(static function ($date, $total) {
             return [
-                'date' => $date,
+                'date'  => $date,
                 'total' => $total
             ];
         }, array_keys($prepare), array_values($prepare));
+    }
+
+    /**
+     * @return array
+     */
+    public function topCategories(): array
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return Cache::remember('top_categories', self::ONE_DAY, function () {
+                $ten_days_ago = Carbon::now()->subDays(10);
+                $sql          = "SELECT category, count(*) AS count FROM statement_index GROUP BY category ORDER BY count DESC";
+                $result       = $this->runSql($sql);
+                $datarows     = $result['datarows'];
+                $out          = [];
+                foreach ($datarows as $index => $row) {
+                    $out[] = [
+                        'value' => $row[0],
+                        'total' => $row[1]
+                    ];
+                }
+
+                return $out;
+            });
+        }
+
+        try {
+            return [
+                [
+                    'value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH',
+                    'total' => random_int(100, 200)
+                ]
+            ];
+        } catch (RandomException $re) {
+            Log::error($re->getMessage());
+
+            return [];
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function topDecisionVisibilities(): array
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return Cache::remember('top_decisions_visibility', self::ONE_DAY, function () {
+                $ten_days_ago = Carbon::now()->subDays(10);
+                $sql          = "SELECT decision_visibility_single, count(*) AS count FROM statement_index WHERE decision_visibility_single != '' AND decision_visibility_single NOT LIKE '%\_\_%' GROUP BY decision_visibility_single ORDER BY count DESC";
+                $result       = $this->runSql($sql);
+                $datarows     = $result['datarows'];
+                $out          = [];
+                foreach ($datarows as $index => $row) {
+                    $out[] = [
+                        'value' => $row[0],
+                        'total' => $row[1]
+                    ];
+                }
+
+                return $out;
+            });
+        }
+
+        try {
+            return [
+                [
+                    'value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
+                    'total' => random_int(100, 200)
+                ],
+                [
+                    'value' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
+                    'total' => random_int(100, 200)
+                ]
+            ];
+        } catch (RandomException $re) {
+            Log::error($re->getMessage());
+
+            return [];
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function fullyAutomatedDecisionPercentage(): int
+    {
+        if (config('scout.driver') === 'opensearch') {
+            return Cache::remember('automated_decisions_percentage', self::ONE_DAY, function () {
+                $ten_days_ago                 = Carbon::now()->subDays(10);
+                $now                          = Carbon::now();
+                $automated_decision_count_sql = $this->startCountQuery() .
+                                                " WHERE automated_decision = 'AUTOMATED_DECISION_FULLY'";
+                $automated_decision_count     = $this->extractCountQueryResult($this->runSql($automated_decision_count_sql));
+                $total                        = $this->grandTotal();
+
+                return (int)(($automated_decision_count / max(1, $total)) * 100);
+            });
+        }
+
+        try {
+            return random_int(0, 100);
+        } catch (RandomException $re) {
+            Log::error($re->getMessage());
+
+            return 5;
+        }
     }
 
     /**
@@ -556,7 +698,7 @@ class StatementSearchService
             return $days;
         });
 
-        $total = array_sum(array_map(function ($day) {
+        $total = array_sum(array_map(static function ($day) {
             return $day['total'];
         }, $days));
 
@@ -802,7 +944,7 @@ JSON;
             }
 
             // build a permutation string
-            $item['permutation'] = implode(',', array_map(function ($key, $value) {
+            $item['permutation'] = implode(',', array_map(static function ($key, $value) {
                 return $key . ":" . $value;
             }, array_keys($attributes), array_values($attributes)));
 
@@ -857,7 +999,7 @@ JSON;
                         [
                             'type' => 'text'
                         ],
-                    'content_type_single'                     =>
+                    'content_type_single'              =>
                         [
                             'type' => 'keyword'
                         ],
@@ -913,7 +1055,7 @@ JSON;
                         [
                             'type' => 'text'
                         ],
-                    'decision_visibility_single'              =>
+                    'decision_visibility_single'       =>
                         [
                             'type' => 'keyword'
                         ],
@@ -981,7 +1123,7 @@ JSON;
                         [
                             'type' => 'text'
                         ],
-                    'method'                =>
+                    'method'                           =>
                         [
                             'type' => 'keyword'
                         ],
