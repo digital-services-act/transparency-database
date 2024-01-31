@@ -10,11 +10,7 @@
     <x-ecl.breadcrumb label="{{ $breadcrumb }}"/>
 @endsection
 
-
-@section('content')
-
-    {{--    <h1 class="ecl-page-header__title ecl-u-type-heading-1">{{ $page_title }}</h1>--}}
-
+@section('extra-head')
     <style>
 
         code {
@@ -24,6 +20,13 @@
         }
 
     </style>
+@endsection
+
+@section('content')
+
+    {{--    <h1 class="ecl-page-header__title ecl-u-type-heading-1">{{ $page_title }}</h1>--}}
+
+
 
 
 
@@ -42,8 +45,7 @@
         <div class="ecl-col-l-3 ecl-u-d-none" id="toc-wrapper">
             <nav class="ecl-inpage-navigation"
                  data-ecl-auto-init="InpageNavigation"
-                 data-ecl-inpage-navigation="true"
-                 aria-labelledby="ecl-inpage-navigation-default">
+                 data-ecl-inpage-navigation="true">
                 <div class="ecl-inpage-navigation__title">Page contents</div>
 
                 <div class="ecl-inpage-navigation__body">
@@ -60,7 +62,7 @@
             </nav>
         </div>
         <div class="ecl-col-l-12" id="content-wrapper">
-            <div id="content-area" v-html="content">
+            <div id="content-area">
                 {!! $page_content !!}
             </div>
         </div>
@@ -82,7 +84,9 @@
                 var t = dis.text()
                 var id = slugify(t)
                 dis.attr('id', id)
-                dis.addClass('ecl-u-type-heading-1')
+                if (!dis.hasClass('ecl-u-type-heading-1')) {
+                  dis.addClass('ecl-u-type-heading-1')
+                }
 
                 $('#toc-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
                     '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
@@ -95,7 +99,9 @@
                 var t = dis.text()
                 var id = slugify(t)
                 dis.attr('id', id)
-                dis.addClass('ecl-u-type-heading-2')
+                if (!dis.hasClass('ecl-u-type-heading-2')) {
+                  dis.addClass('ecl-u-type-heading-2');
+                }
 
                 $('#toc-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
                     '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
@@ -113,7 +119,9 @@
                 var t = dis.text()
                 var id = slugify(t)
                 dis.attr('id', id)
-                dis.addClass('ecl-u-type-heading-3')
+                if (!dis.hasClass('ecl-u-type-heading-3')) {
+                  dis.addClass('ecl-u-type-heading-3')
+                }
             })
         })
 
@@ -124,7 +132,9 @@
                 var t = dis.text()
                 var id = slugify(t)
                 dis.attr('id', id)
-                dis.addClass('ecl-u-type-heading-4')
+                if (!dis.hasClass('ecl-u-type-heading-4')) {
+                    dis.addClass('ecl-u-type-heading-4')
+                }
             })
         })
 
@@ -135,7 +145,9 @@
                 var t = dis.text()
                 var id = slugify(t)
                 dis.attr('id', id)
-                dis.addClass('ecl-u-type-heading-5')
+                if (!dis.hasClass('ecl-u-type-heading-5')) {
+                    dis.addClass('ecl-u-type-heading-5')
+                }
             })
         })
 

@@ -1,4 +1,4 @@
-<h2 class="ecl-u-type-heading-2">General FAQ</h2>
+<h2>General FAQ</h2>
 
 <x-ecl.accordion label="What is the DSA Transparency Database?">
 Article 17 of the Digital Services Act (DSA) requires all providers of hosting services to provide clear
@@ -65,7 +65,7 @@ visit the Analytics of the DSA Transparency Database.
 The DSA Transparency Database dashboard offers a user-friendly way to quickly access summarised information on
 statements of reasons submitted by providers of online platforms. You can navigate across various sections of the
 dashboard with different visualisations to obtain a comprehensive overview of the data.
-<br/><br/>
+<br><br>
 Each visualisation can be customised by several filters to find the information you are looking for. For example, you
 can look at specific online platforms, search for a specific time frame or find a specific type of restriction. The
 dashboard is designed to streamline the process of extracting meaningful insights from the DSA Transparency Database.
@@ -101,7 +101,7 @@ the <a href="{{route('dashboard')}}">dashboard</a>.
 <x-ecl.accordion label="How can I search for specific statements of reasons? ">
 The <a href="{{route('statement.index')}}">“Search for statements of reasons”</a> page offers you the option to search
 the free text fields of the statements of
-reasons in the database for keywords of your choice.<br/><br/>
+reasons in the database for keywords of your choice.<br><br>
 
 When you click on the “Advanced Search” button, you are redirected to the <a href="{{route('statement.search')}}">“Advanced Search”</a> page where you can look for
 statements of reasons from specific platforms or timeframes. You can also filter the statements of reasons according to
@@ -111,7 +111,7 @@ any other data field (e.g. a specific type of restriction or keyword) that you a
 <x-ecl.accordion label="What is a free text field? Which free text fields are there in each statement of reason? ">
 In a free text field, providers of online platforms can provide information in their own words, for example to explain
 why the moderated content is illegal or to explain the facts and circumstances that led to the moderation decision(s).
-<br/><br/>
+<br><br>
 For a full overview of the free text fields contained in the DSA Transparency Database schema, please consider
 the <a href="{{  route('profile.page.show', ['api-documentation']) }}">API documentation</a>.
 </x-ecl.accordion>
@@ -127,7 +127,7 @@ Please use the feedback form. To use the <a href="https://transparency.dsa.ec.eu
 you need to create an EU Login account.
 </x-ecl.accordion>
 
-<h2 class="ecl-u-type-heading-2">Technical FAQ</h2>
+<h2>Technical FAQ</h2>
 
 <x-ecl.accordion label="I would like to extract a large number of statements of reasons from the DSA Transparency
 Database. How do I do that?">
@@ -188,7 +188,7 @@ provider of the online platform(s) in question is established. The Commission is
 will lay down technical and procedural requirements of the Article 40 data access mechanism.
 </x-ecl.accordion>
 
-<h2 class="ecl-u-type-heading-2">Platform FAQ</h2>
+<h2>Platform FAQ</h2>
 
 <x-ecl.accordion label="I am responsible for implementing Article 24(5) of the DSA as a provider of an online
 platform. What steps do I have to go through?">
