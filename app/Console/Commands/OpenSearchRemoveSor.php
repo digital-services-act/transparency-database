@@ -8,6 +8,7 @@ use OpenSearch\Client;
 
 class OpenSearchRemoveSor extends Command
 {
+    use CommandTrait;
     /**
      * The name and signature of the console command.
      *
@@ -27,7 +28,7 @@ class OpenSearchRemoveSor extends Command
      */
     public function handle(Client $client): void
     {
-        $id = (int)$this->argument('id');
+        $id = $this->intifyArgument('id');
         $index = $this->argument('index');
 
         if (!$client->indices()->exists(['index' => $index])) {

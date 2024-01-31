@@ -307,7 +307,7 @@
 
 <hr>
 
-<script type="text/javascript">
+<script>
 
     let form = ge("create-statement-form");
 

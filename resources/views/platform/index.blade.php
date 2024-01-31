@@ -38,17 +38,11 @@
         <tbody class="ecl-table__body">
         @foreach($platforms as $platform)
             <tr class="ecl-table__row">
-                <td class="ecl-table__cell">
-
+                <td class="ecl-table__cell" data-ecl-table-header="Name">
                     <x-ecl.external-link href="{{ $platform->url }}" label="{{ $platform->name }}"/>
-
                 </td>
-
-
-
-                <td class="ecl-table__cell">
+                <td class="ecl-table__cell" data-ecl-table-header="Actions">
                     <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('platform.edit', [$platform]) }}'">edit</button>
-
                     <form action="{{ route('platform.destroy', [$platform]) }}" method="POST">
                         @csrf
                         @method('DELETE')
