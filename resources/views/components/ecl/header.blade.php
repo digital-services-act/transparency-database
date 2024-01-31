@@ -37,8 +37,8 @@
                                             </svg>
                                             Logged in
                                             <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-0 ecl-site-header__login-arrow"
-                                                focusable="false" aria-hidden="true">
+                                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-0 ecl-site-header__login-arrow"
+                                                    focusable="false" aria-hidden="true">
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </a>
@@ -108,8 +108,8 @@
                     <button data-ecl-menu-back="" type="submit" class="ecl-menu__back ecl-button ecl-button--text">
                                 <span class="ecl-button__container">
                                     <svg
-                                        class="ecl-icon ecl-icon--s ecl-icon--rotate-270 ecl-button__icon ecl-button__icon--before"
-                                        focusable="false" aria-hidden="true" data-ecl-icon="">
+                                            class="ecl-icon ecl-icon--s ecl-icon--rotate-270 ecl-button__icon ecl-button__icon--before"
+                                            focusable="false" aria-hidden="true" data-ecl-icon="">
                                         <x-ecl.icon icon="corner-arrow"/>
                                     </svg>
                                     <span class="ecl-button__label" data-ecl-label="">Back</span>
@@ -117,129 +117,123 @@
                     </button>
                 </header>
 
+                <div class="ecl-u-d-flex ecl-u-justify-content-between">
+                    <div>
+                        <ul class="ecl-menu__list">
 
-                <ul class="ecl-menu__list">
-
-                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
-                        <a href="{{route('home')}}" class="ecl-menu__link"
-                           data-ecl-menu-link="{{route('home')}}">Home</a>
-                    </li>
-
-                    <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                        data-ecl-has-children=""
-                        aria-expanded="false" id="ecl-menu-item-database"><a
-                            href="#"
-                            class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-database-link">The
-                            Database</a>
-                        <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
-                                data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
-                                aria-describedby="ecl-menu-item-demo-2-link"
-                                aria-expanded="false"><span class="ecl-button__container"><svg
-                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                    focusable="false" aria-hidden="true" data-ecl-icon="">
+                            <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">
+                                <a href="{{route('home')}}" class="ecl-menu__link"
+                                   data-ecl-menu-link="{{route('home')}}">Home</a>
+                            </li>
+                            <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
+                                data-ecl-has-children=""
+                                aria-expanded="false" id="ecl-menu-item-database"><a
+                                        href="#"
+                                        class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-database-link">The
+                                    Database</a>
+                                <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
+                                        data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
+                                        aria-describedby="ecl-menu-item-demo-2-link"
+                                        aria-expanded="false">
+                                    <span class="ecl-button__container">
+                                        <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                             focusable="false" aria-hidden="true" data-ecl-icon="">
+                                            <x-ecl.icon icon="corner-arrow"/>
+                                        </svg>
+                                    </span>
+                                </button>
+                                <div class="ecl-menu__mega" data-ecl-menu-mega="">
+                                    <ul class="ecl-menu__sublist">
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                            <a href="{{route('dashboard')}}"
+                                               class="ecl-menu__sublink">Dashboard</a>
+                                        </li>
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                            <a href="{{route('dayarchive.index')}}"
+                                               class="ecl-menu__sublink">Data Download</a>
+                                        </li>
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                            <a href="{{route('statement.index')}}"
+                                               class="ecl-menu__sublink">Search for Statements of Reasons</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
+                                data-ecl-has-children=""
+                                aria-expanded="false" id="ecl-menu-item-faq"><a
+                                        href="#"
+                                        class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-faq-link">FAQ</a>
+                                <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
+                                        data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
+                                        aria-describedby="ecl-menu-item-demo-2-link"
+                                        aria-expanded="false">
+                                    <span class="ecl-button__container">
+                                        <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                             focusable="false" aria-hidden="true" data-ecl-icon="">
+                                            <x-ecl.icon icon="corner-arrow"/>
+                                        </svg>
+                                    </span>
+                                </button>
+                                <div class="ecl-menu__mega" data-ecl-menu-mega="">
+                                    <ul class="ecl-menu__sublist">
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
+                                                    href="{{ route('page.show', ['faq#general-faq']) }}"
+                                                    class="ecl-menu__sublink">General</a></li>
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
+                                                    href="{{ route('page.show', ['faq#technical-faq']) }}"
+                                                    class="ecl-menu__sublink">Technical</a></li>
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
+                                                    href="{{ route('page.show', ['faq#platform-faq']) }}"
+                                                    class="ecl-menu__sublink">Platforms</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="ecl-menu__list">
+                            <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
+                                data-ecl-has-children=""
+                                aria-expanded="false" id="ecl-menu-item-platforms"><a
+                                        href="#"
+                                        class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-platforms-link">Platforms</a>
+                                <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
+                                        data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
+                                        aria-describedby="ecl-menu-item-demo-2-link"
+                                        aria-expanded="false">
+                            <span class="ecl-button__container">
+                                <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                     focusable="false"
+                                     aria-hidden="true"
+                                     data-ecl-icon="">
                                     <x-ecl.icon icon="corner-arrow"/>
+                                </svg>
+                            </span>
+                                </button>
 
-
-              </svg></span></button>
-                        <div class="ecl-menu__mega" data-ecl-menu-mega="">
-                            <ul class="ecl-menu__sublist">
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{route('dashboard')}}"
-                                        class="ecl-menu__sublink">Dashboard</a></li>
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{route('dayarchive.index')}}"
-                                        class="ecl-menu__sublink">Data Download</a></li>
-{{--                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a--}}
-{{--                                        href="{{route('analytics.index')}}"--}}
-{{--                                        class="ecl-menu__sublink">Analytics</a></li>--}}
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{route('statement.index')}}"
-                                        class="ecl-menu__sublink">Search for Statements of Reasons</a></li>
-                            </ul>
-                        </div>
-                    </li>
-
-
-                    {{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-                    {{--                        <a href="{{route('analytics.index')}}" class="ecl-menu__link"--}}
-                    {{--                           data-ecl-menu-link="{{route('analytics.index')}}">Analytics</a>--}}
-                    {{--                    </li>--}}
-
-                    {{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-                    {{--                        <a href="{{route('dayarchive.index')}}" class="ecl-menu__link"--}}
-                    {{--                           data-ecl-menu-link="{{route('dayarchive.index')}}">Data Download</a>--}}
-                    {{--                    </li>--}}
-
-                    {{--                    <li class="ecl-menu__item" data-ecl-menu-item="" aria-expanded="false">--}}
-                    {{--                        <a href="{{ route('page.show', ['faq']) }}" class="ecl-menu__link"--}}
-                    {{--                           data-ecl-menu-link="{{ route('page.show', ['faq']) }}">FAQ</a>--}}
-                    {{--                    </li>--}}
-
-                    <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                        data-ecl-has-children=""
-                        aria-expanded="false" id="ecl-menu-item-faq"><a
-                            href="#"
-                            class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-faq-link">FAQ</a>
-                        <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
-                                data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
-                                aria-describedby="ecl-menu-item-demo-2-link"
-                                aria-expanded="false"><span class="ecl-button__container"><svg
-                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                    focusable="false" aria-hidden="true" data-ecl-icon="">
-                                    <x-ecl.icon icon="corner-arrow"/>
-
-              </svg></span></button>
-                        <div class="ecl-menu__mega" data-ecl-menu-mega="">
-                            <ul class="ecl-menu__sublist">
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('page.show', ['faq#general-faq']) }}"
-                                        class="ecl-menu__sublink">General</a></li>
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('page.show', ['faq#technical-faq']) }}"
-                                        class="ecl-menu__sublink">Technical</a></li>
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('page.show', ['faq#platform-faq']) }}"
-                                        class="ecl-menu__sublink">Platforms</a></li>
-                            </ul>
-                        </div>
-                    </li>
-
-                </ul>
-
-                <ul class="ecl-menu__list ecl-u-f-r" style="margin-top:-52px">
-
-                    <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                        data-ecl-has-children=""
-                        aria-expanded="false" id="ecl-menu-item-platforms"><a
-                            href="#"
-                            class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-platforms-link">Platforms</a>
-                        <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
-                                data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
-                                aria-describedby="ecl-menu-item-demo-2-link"
-                                aria-expanded="false"><span class="ecl-button__container"><svg
-                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                    focusable="false" aria-hidden="true" data-ecl-icon="">
-                                    <x-ecl.icon icon="corner-arrow"/>
-
-              </svg></span></button>
-                        <div class="ecl-menu__mega" data-ecl-menu-mega="">
-                            <ul class="ecl-menu__sublist">
-                                @can('create statements')
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{ route('statement.create') }}"
-                                        class="ecl-menu__sublink">Submit statements of reasons</a></li>
-                                @endcan
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{  route('profile.page.show', ['documentation']) }}"
-                                        class="ecl-menu__sublink">Global Documentation</a></li>
-                                <li class="ecl-menu__subitem" data-ecl-menu-subitem=""><a
-                                        href="{{  route('profile.page.show', ['api-documentation']) }}"
-                                        class="ecl-menu__sublink">API Documentation</a></li>
-                            </ul>
-                        </div>
-                    </li>
-
-                </ul>
+                                <div class="ecl-menu__mega" data-ecl-menu-mega="">
+                                    <ul class="ecl-menu__sublist">
+                                        @can('create statements')
+                                            <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                                <a href="{{ route('statement.create') }}"
+                                                   class="ecl-menu__sublink">Submit statements of reasons</a>
+                                            </li>
+                                        @endcan
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                            <a href="{{  route('profile.page.show', ['documentation']) }}"
+                                               class="ecl-menu__sublink">Global Documentation</a>
+                                        </li>
+                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                            <a href="{{  route('profile.page.show', ['api-documentation']) }}"
+                                               class="ecl-menu__sublink">API Documentation</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </section>
         </div>
     </nav>
