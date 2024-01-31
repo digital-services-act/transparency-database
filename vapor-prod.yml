@@ -3,7 +3,7 @@ name: dsa-prod
 environments:
   production:
     firewall:
-      rate-limit: 10000
+      rate-limit: 12500
       bot-control:
         - CategoryAdvertising
         - CategoryArchiver
@@ -13,11 +13,11 @@ environments:
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
     warm: 10
-    timeout: 180
+    timeout: 120
     cache: redis-prod
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
-    memory: 512
+    memory: 1024
     cli-memory: 512
     queue-memory: 2048
     runtime: 'php-8.2:al2-arm'
