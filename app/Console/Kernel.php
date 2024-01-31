@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     {
         // The main indexer
         $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+        $schedule->command('enrich-home-page-cache')->hourly();
     }
 
 
