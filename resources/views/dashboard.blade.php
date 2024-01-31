@@ -38,7 +38,7 @@
     </p>
 
     <div class="responsive-iframe-container">
-        <iframe src="https://app.powerbi.com/reportEmbed?reportId=55eee05f-64ba-4f38-9437-5f8c7a004a13&autoAuth=true&ctid=b24c8b06-522c-46fe-9080-70926f8dddb1" allowfullscreen></iframe>
+        <iframe src="https://app.powerbi.com/view?r=eyJrIjoiN2VkNzI3OGEtMTM5My00NjEyLTljODMtYTVlMWI4MDYzNDhmIiwidCI6ImIyNGM4YjA2LTUyMmMtNDZmZS05MDgwLTcwOTI2ZjhkZGRiMSIsImMiOjh9" allowfullscreen></iframe>
     </div>
 
 @endsection
