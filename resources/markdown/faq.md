@@ -192,17 +192,9 @@ will lay down technical and procedural requirements of the Article 40 data acces
 
 <x-ecl.accordion label="I am responsible for implementing Article 24(5) of the DSA as a provider of an online
 platform. What steps do I have to go through?">
-
-To set up your statement of reasons submission process, please contact the Digital Service Coordinator of your Member
-State. This is the first step required to be onboarded as an online platform with obligations under Article 24(5) of the
-DSA.<br>
-<br>
-Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your
-submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface (
-API) or a webform, according to the volume of your data and technical needs.<br>
-<br>
-Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency
-Database, where you can start submitting your statement of reasons via an API or a webform.
+To set up your statement of reasons submission process, please register <a href='https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons'>here</a> regarding your obligations under article 24(5) of the DSA. At a later stage the Digital Service Coordinator of your Member State will contact with details on how to onboard your online platform.<br><br>
+Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface ( API) or a webform, according to the volume of your data and technical needs.<br><br>
+Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency Database, where you can start submitting your statement of reasons via an API or a webform.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="What are the technical options for sending statements of reasons to the DSA
