@@ -497,18 +497,19 @@ class StatementSearchService
         if (config('scout.driver') === 'opensearch') {
             return Cache::remember('top_categories', self::ONE_DAY, function () {
                 $ten_days_ago = Carbon::now()->subDays(10);
-                $sql          = "SELECT category, count(*) AS count FROM statement_index GROUP BY category ORDER BY count DESC";
-                $result       = $this->runSql($sql);
-                $datarows     = $result['datarows'];
-                $out          = [];
-                foreach ($datarows as $index => $row) {
-                    $out[] = [
-                        'value' => $row[0],
-                        'total' => $row[1]
+                $results = [];
+                $categories = array_keys(Statement::STATEMENT_CATEGORIES);
+                foreach ($categories as $category) {
+                    $results[] = [
+                        'value' => $category,
+                        'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE category = '".$category."'"))
                     ];
                 }
-
-                return $out;
+                uasort($results, function($a, $b){
+                    return ($a['total'] <=> $b['total']) * -1;
+                });
+                
+                return $results;
             });
         }
 
