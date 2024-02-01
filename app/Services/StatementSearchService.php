@@ -547,7 +547,7 @@ class StatementSearchService
                 $datarows     = $result['datarows'];
                 $out          = [];
                 foreach ($datarows as $index => $row) {
-                    if ($row[0] && !str_contains('__', $row[1])) {
+                    if ($row[0] && !str_contains('__', $row[0])) {
                         $out[] = [
                             'value' => $row[0],
                             'total' => $row[1]
