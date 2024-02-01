@@ -6,8 +6,12 @@ efficiency and allows for automation.
 
 ## Requesting API access
 
-If you are an online platform, please contact CNECT DIGITAL SERVICES at [CNECT-DIGITAL-SERVICES@ec.europa.eu](mailto:CNECT-DIGITAL-SERVICES@ec.europa.eu) to register your interest for onboarding. Currently, only designated VLOPs (Verified List of Platforms) have access to the API (both sandbox/test and production) for submissions of statements of reasons under the DSA (Digital Services Act). Other platforms that have notified the Commission will be contacted for onboarding in early 2024.
+To set up your statement of reasons submission process, please register [here](https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons) regarding your obligations under article 24(5) of the DSA. 
+At a later stage the Digital Service Coordinator of your Member State will contact with details on how to onboard your online platform.
 
+Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface ( API) or a webform, according to the volume of your data and technical needs.
+
+Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency Database, where you can start submitting your statement of reasons via an API or a webform.
 
 ## Your API Token
 
