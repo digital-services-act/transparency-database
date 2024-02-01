@@ -542,15 +542,17 @@ class StatementSearchService
         if (config('scout.driver') === 'opensearch') {
             return Cache::remember('top_decisions_visibility', self::ONE_DAY, function () {
                 $ten_days_ago = Carbon::now()->subDays(10);
-                $sql          = "SELECT decision_visibility_single, count(*) AS count FROM statement_index WHERE decision_visibility_single != '' AND decision_visibility_single NOT LIKE '%\_\_%' GROUP BY decision_visibility_single ORDER BY count DESC";
+                $sql          = "SELECT decision_visibility_single, count(*) AS count FROM statement_index GROUP BY decision_visibility_single ORDER BY count DESC";
                 $result       = $this->runSql($sql);
                 $datarows     = $result['datarows'];
                 $out          = [];
                 foreach ($datarows as $index => $row) {
-                    $out[] = [
-                        'value' => $row[0],
-                        'total' => $row[1]
-                    ];
+                    if ($row[0] && str_contains('__', $row[1])) {
+                        $out[] = [
+                            'value' => $row[0],
+                            'total' => $row[1]
+                        ];
+                    }
                 }
 
                 return $out;
