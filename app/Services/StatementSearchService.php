@@ -542,20 +542,20 @@ class StatementSearchService
         if (config('scout.driver') === 'opensearch') {
             return Cache::remember('top_decisions_visibility', self::ONE_DAY, function () {
                 $ten_days_ago = Carbon::now()->subDays(10);
-                $sql          = "SELECT decision_visibility_single, count(*) AS count FROM statement_index GROUP BY decision_visibility_single ORDER BY count DESC";
-                $result       = $this->runSql($sql);
-                $datarows     = $result['datarows'];
-                $out          = [];
-                foreach ($datarows as $index => $row) {
-                    if ($row[0] && !str_contains('__', $row[0])) {
-                        $out[] = [
-                            'value' => $row[0],
-                            'total' => $row[1]
-                        ];
-                    }
-                }
 
-                return $out;
+                $results = [];
+                $decision_visibilities = array_keys(Statement::DECISION_VISIBILITIES);
+                foreach ($decision_visibilities as $decision_visibility) {
+                    $results[] = [
+                        'value' => $decision_visibility,
+                        'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE decision_visibility_single = '".$decision_visibility."'"))
+                    ];
+                }
+                uasort($results, function($a, $b){
+                    return ($a['total'] <=> $b['total']) * -1;
+                });
+
+                return $results;
             });
         }
 
