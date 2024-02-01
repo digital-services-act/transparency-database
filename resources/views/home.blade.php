@@ -4,7 +4,7 @@
 @section('title', 'Home')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home"/>
+    <x-ecl.breadcrumb label="Home" />
 @endsection
 
 

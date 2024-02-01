@@ -41,7 +41,7 @@
                         <picture class="ecl-picture ecl-media-container__picture"><img
                                 class="ecl-media-container__media"
                                 src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-1.jpeg"
-                                alt="Digital Services Act Logo"/></picture>
+                                alt="Digital Services Act Logo"></picture>
 
 
                     </div>

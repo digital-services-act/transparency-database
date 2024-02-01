@@ -36,9 +36,10 @@ class DayArchiveController extends Controller
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
 
         $platform = false;
-        if ($request->get('uuid')) {
+        $uuid = trim($request->get('uuid'));
+        if ($uuid) {
             /** @var Platform $platform */
-            $platform = Platform::query()->where('uuid', $request->get('uuid'))->first();
+            $platform = Platform::query()->where('uuid', $uuid)->first();
         }
 
         $options = $this->prepareOptions();
@@ -60,7 +61,7 @@ class DayArchiveController extends Controller
         })->toArray();
 
         array_unshift($platforms, [
-            'value' => '',
+            'value' => ' ',
             'label' => 'All Platforms'
         ]);
 

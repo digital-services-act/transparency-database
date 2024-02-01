@@ -6,12 +6,12 @@
     <div class="ecl-select__container ecl-select__container--{{ $size }}">
         <select name="{{ $name }}" id="{{ $id }}" class="ecl-select" @if($required)required=""@endif>
             @if ($allow_null)
-                <option selected value="">-- Choose here --</option>
+                <option @if(old($name, $default) === '')selected @endif value="">-- Choose here --</option>
             @else
-                <option disabled selected value="">-- Choose here --</option>
+                <option disabled @if(old($name, $default) === '')selected @endif value="">-- Choose here --</option>
             @endif
             @foreach($options as $option)
-                <option @if(old($name, $default) == $option['value'])selected="" @endif value="{{ $option['value'] }}">@if($grouped && !str_contains($option['label'], '--'))&nbsp;&nbsp;&nbsp;&nbsp;@endif {{ ucfirst($option['label']) }}</option>
+                <option @if(old($name, $default) == $option['value'])selected @endif value="{{ $option['value'] }}">@if($grouped && !str_contains($option['label'], '--'))&nbsp;&nbsp;&nbsp;&nbsp;@endif {{ ucfirst($option['label']) }}</option>
             @endforeach
         </select>
         <div class="ecl-select__icon">

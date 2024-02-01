@@ -6,7 +6,7 @@
                 <picture class="ecl-picture ecl-media-container__picture">
                     <img class="ecl-media-container__media"
                          src="{{ $image }}"
-                         @if($label) alt="{{ $label }}" @endif />
+                         @if($label) alt="{{ $label }}" @endif>
                 </picture>
             </a>
             @if($label)

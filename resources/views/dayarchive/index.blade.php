@@ -34,18 +34,18 @@
                 On this page, you can download zipped .csv files containing the daily submissions of statements of
                 reasons,
                 either for all platforms collectively or for each platform individually. The files are provided in
-                full and light versions.<br/>
-                <br/>
+                full and light versions.<br>
+                <br>
                 Full archive files contain all the public data points of each individual statement of reasons
-                submitted on a given day. That is, each file contains the entire attribute schema of the database.<br/>
-                <br/>
+                submitted on a given day. That is, each file contains the entire attribute schema of the database.<br>
+                <br>
                 The daily dumps are currently provided in a chunked csv format. Specifically, each .zip file contains
                 several zipped csv files containing all the statement of reasons received on a given day from the
-                selected platform.<br/>
-                <br/>
+                selected platform.<br>
+                <br>
 
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br />
-                <br />
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br>
+                <br>
                 <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the FAQ</a>
             </p>
 
@@ -58,7 +58,7 @@
                         <picture class="ecl-picture ecl-media-container__picture"><img
                                 class="ecl-media-container__media"
                                 src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg"
-                                alt="Digital Services Act Logo"/></picture>
+                                alt="Digital Services Act Logo"></picture>
                     </div>
                 </figure>
             </div>

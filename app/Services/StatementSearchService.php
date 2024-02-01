@@ -437,7 +437,7 @@ class StatementSearchService
 
     public function receivedDateCondition(Carbon $date): string
     {
-        return "received_date = '" . $date->format('Y-m-d') . " 00:00:00'";
+        return "received_date = '" . $date->format('Y-m-d') . "'";
     }
 
     public function totalForDate(Carbon $date): int
@@ -457,7 +457,7 @@ class StatementSearchService
 
     public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
     {
-        return "received_date BETWEEN '" . $start->format('Y-m-d') . " 00:00:00' AND '" . $end->format('Y-m-d') . " 00:00:00'";
+        return "received_date BETWEEN '" . $start->format('Y-m-d') . "' AND '" . $end->format('Y-m-d') . "'";
     }
 
     public function totalForDateRange(Carbon $start, Carbon $end): int

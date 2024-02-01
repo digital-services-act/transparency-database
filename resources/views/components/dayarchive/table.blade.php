@@ -61,7 +61,7 @@
                 </a>
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Size">
-                csv:&nbsp;{{human_filesize($dayarchive->sizelight)}}<br />
+                csv:&nbsp;{{human_filesize($dayarchive->sizelight)}}<br>
                 zip:&nbsp;{{human_filesize($dayarchive->ziplightsize)}}
             </td>
         </tr>
