@@ -19,21 +19,19 @@ class DayArchiveController extends Controller
     public function __construct(
         DayArchiveService $day_archive_service,
         DayArchiveQueryService $day_archive_query_service
-    )
-    {
-        $this->day_archive_service = $day_archive_service;
+    ) {
+        $this->day_archive_service       = $day_archive_service;
         $this->day_archive_query_service = $day_archive_query_service;
     }
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-
         $dayarchives = $this->day_archive_query_service->query($request->query());
 
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
         $platform = false;
-        $uuid = trim($request->get('uuid'));
+        $uuid     = trim($request->get('uuid'));
         if ($uuid) {
             /** @var Platform $platform */
             $platform = Platform::query()->where('uuid', $uuid)->first();
