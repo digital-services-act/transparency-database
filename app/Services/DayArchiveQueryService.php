@@ -42,9 +42,7 @@ class DayArchiveQueryService
             } else {
                 $method = sprintf('applyMissing%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
-                    Log::info($method);
                     if (method_exists($this, $method)) {
-                        Log::info('existing one: ' . $method);
                         $this->$method($dayarchives);
                     }
                 } catch (\TypeError|\Exception $e) {
