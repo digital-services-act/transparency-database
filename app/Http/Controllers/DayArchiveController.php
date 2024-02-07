@@ -9,9 +9,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class DayArchiveController extends Controller
 {
@@ -33,7 +30,7 @@ class DayArchiveController extends Controller
 
         $dayarchives = $this->day_archive_query_service->query($request->query());
 
-        $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query', null);
+        $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
         $platform = false;
         $uuid = trim($request->get('uuid'));
