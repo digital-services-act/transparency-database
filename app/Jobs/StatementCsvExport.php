@@ -68,6 +68,7 @@ class StatementCsvExport implements ShouldQueue
                     fputcsv($exports[$statement->platform_id]['csv_filelight'], $rowlight);
                 }
             }
+
             // Flush
             foreach ($exports as $export) {
                 fflush($export['csv_file']);

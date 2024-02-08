@@ -64,9 +64,9 @@ class AppServiceProvider extends ServiceProvider
         view()->share('ecl_init', true);
 
         // Analytics Float Format
-        Blade::directive('aff', static fn(string $expression) => sprintf('<?php echo number_format(floatval(%s), 2, \'.\', \'&nbsp;\'); ?>', $expression));
+        Blade::directive('aff', static fn(string $expression) => sprintf("<?php echo number_format(floatval(%s), 2, '.', '&nbsp;'); ?>", $expression));
         // Analytics Int Format
-        Blade::directive('aif', static fn(string $expression) => sprintf('<?php echo number_format(intval(%s), 0, \'\', \'&nbsp;\'); ?>', $expression));
+        Blade::directive('aif', static fn(string $expression) => sprintf("<?php echo number_format(intval(%s), 0, '', '&nbsp;'); ?>", $expression));
         RateLimiter::for('reindexing', static fn(object $job) => Limit::perMinute(400));
     }
 }
