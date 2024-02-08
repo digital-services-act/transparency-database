@@ -20,6 +20,7 @@ use Throwable;
 class StatementsDayArchive extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -101,7 +102,15 @@ class StatementsDayArchive extends Command
             $archive_jobs[] = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
         }
 
-        $luggage = ['date_string' => $date_string, 'archive_jobs' => $archive_jobs, 'csv_export_jobs' => $csv_export_jobs, 'sha1_jobs' => $sha1_jobs, 'copys3_jobs' => $copys3_jobs, 'zip_jobs' => $zip_jobs, 'reduce_jobs' => $reduce_jobs];
+        $luggage = [
+            'date_string'     => $date_string,
+            'archive_jobs'    => $archive_jobs,
+            'csv_export_jobs' => $csv_export_jobs,
+            'sha1_jobs'       => $sha1_jobs,
+            'copys3_jobs'     => $copys3_jobs,
+            'zip_jobs'        => $zip_jobs,
+            'reduce_jobs'     => $reduce_jobs
+        ];
 
         Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
         File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
