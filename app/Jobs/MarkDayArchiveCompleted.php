@@ -10,11 +10,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class MarkDayArchiveCompleted implements ShouldQueue
 {
     use Queueable;
-    public int $archive_id;
 
-    public function __construct(int $archive_id)
+    public function __construct(public int $archive_id)
     {
-        $this->archive_id = $archive_id;
     }
 
     public function handle(): void

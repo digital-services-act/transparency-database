@@ -29,15 +29,14 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      * @param string $token
      * @return static|null
      */
+    #[\Override]
     public static function findToken($token): ?static
     {
         $id = explode('|', $token)[0];
         $token = Cache::remember(
             "personal-access-token:$id",
             config('sanctum.cache.ttl') ?? self::$ttl,
-            static function () use ($token) {
-                return parent::findToken($token) ?? '_null_';
-            }
+            static fn() => parent::findToken($token) ?? '_null_'
         );
         if ($token === '_null_') {
             return null;
@@ -55,15 +54,14 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      *
      * @phpstan-ignore-next-line
      */
+    #[\Override]
     public function tokenable(): Attribute
     {
         return Attribute::make(
             get: fn ($value, $attributes) => Cache::remember(
                 "personal-access-token:{$attributes['id']}:tokenable",
                 config('sanctum.cache.ttl') ?? self::$ttl,
-                function () {
-                    return parent::tokenable()->first();
-                }
+                fn() => parent::tokenable()->first()
             )
         );
     }
@@ -75,6 +73,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      *
      * @return void
      */
+    #[\Override]
     public static function boot(): void
     {
         parent::boot();

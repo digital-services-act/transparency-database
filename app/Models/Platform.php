@@ -58,6 +58,7 @@ class Platform extends Model
         return Str::slug($this->name);
     }
 
+    #[\Override]
     protected static function boot()
     {
         parent::boot();

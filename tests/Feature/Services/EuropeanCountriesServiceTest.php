@@ -13,6 +13,7 @@ class EuropeanCountriesServiceTest extends TestCase
 
     protected EuropeanCountriesService $european_countries_service;
 
+    #[\Override]
     public function setUp(): void
     {
         $this->european_countries_service = app(EuropeanCountriesService::class);

@@ -14,15 +14,8 @@ class StatementCsvExportZipParts implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
 
-    public string $date;
-    public string $platform;
-    public string $version;
-
-    public function __construct(string $date, string $platform, string $version)
+    public function __construct(public string $date, public string $platform, public string $version)
     {
-        $this->date = $date;
-        $this->platform = $platform;
-        $this->version = $version;
     }
 
     public function handle(): void

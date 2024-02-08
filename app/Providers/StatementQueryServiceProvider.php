@@ -12,6 +12,7 @@ class StatementQueryServiceProvider extends ServiceProvider implements Deferrabl
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(StatementQueryService::class, fn(Application $app) => new StatementQueryService());
@@ -22,6 +23,7 @@ class StatementQueryServiceProvider extends ServiceProvider implements Deferrabl
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [StatementQueryService::class];

@@ -17,18 +17,11 @@ class StatementIndexRange implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $min;
-    public int $max;
-    public int $chunk;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(int $max, int $min, int $chunk)
+    public function __construct(public int $max, public int $min, public int $chunk)
     {
-        $this->min = $min;
-        $this->max = $max;
-        $this->chunk = $chunk;
     }
 
     /**

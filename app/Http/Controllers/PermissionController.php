@@ -44,7 +44,6 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param PermissionStoreRequest $request
      *
      * @return RedirectResponse
      */
@@ -60,7 +59,6 @@ class PermissionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Permission $permission
      *
      * @return RedirectResponse
      */
@@ -72,7 +70,6 @@ class PermissionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Permission $permission
      *
      * @return Application|Factory|View
      */
@@ -89,8 +86,6 @@ class PermissionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param PermissionUpdateRequest $request
-     * @param Permission $permission
      *
      * @return RedirectResponse
      */
@@ -107,7 +102,6 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Permission  $permission
      *
      * @return RedirectResponse
      */

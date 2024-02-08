@@ -22,9 +22,7 @@ class Controller extends BaseController
      */
     protected function mapForSelectWithoutKeys($array): array
     {
-        return array_map(function ($value) {
-            return ['value' => $value, 'label' => $value];
-        }, $array);
+        return array_map(fn($value) => ['value' => $value, 'label' => $value], $array);
     }
 
     protected function sanitizeDate($date): ?string
@@ -39,8 +37,6 @@ class Controller extends BaseController
      */
     protected function mapForSelectWithKeys($array): array
     {
-        return array_map(function ($key, $value) {
-            return ['value' => $key, 'label' => $value];
-        }, array_keys($array), array_values($array));
+        return array_map(fn($key, $value) => ['value' => $key, 'label' => $value], array_keys($array), array_values($array));
     }
 }

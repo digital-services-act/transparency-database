@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\LevelSetList;
+use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use RectorLaravel\Set\LaravelLevelSetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -20,6 +22,9 @@ return RectorConfig::configure()
     // uncomment to reach your current PHP version
     // ->withPhpSets()
     ->withRules([
-        AddVoidReturnTypeWhereNoReturnRector::class,
-        //LevelSetList::UP_TO_PHP_82
+        AddVoidReturnTypeWhereNoReturnRector::class
+    ])->withSets([
+        LaravelLevelSetList::UP_TO_LARAVEL_100,
+        SetList::CODE_QUALITY,
+        LevelSetList::UP_TO_PHP_83
     ]);

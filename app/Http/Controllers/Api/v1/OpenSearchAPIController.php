@@ -16,24 +16,17 @@ use RuntimeException;
 
 class OpenSearchAPIController extends Controller
 {
-    private Client $client;
-    private StatementSearchService $statement_search_service;
-    private string $index_name;
+    private string $index_name = 'statement_index';
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
     private int $response_size_limit = 5242880;
 
-    public function __construct(Client $client, StatementSearchService $statement_search_service)
+    public function __construct(private readonly Client $client, private readonly StatementSearchService $statement_search_service)
     {
-        $this->client                   = $client;
-        $this->statement_search_service = $statement_search_service;
-        $this->index_name               = 'statement_index';
     }
 
     /**
-     * @param Request $request
-     *
      * @return callable|array|JsonResponse
      */
     public function search(Request $request): callable|array|JsonResponse
@@ -49,8 +42,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return callable|array|JsonResponse
      */
     public function count(Request $request): callable|array|JsonResponse
@@ -66,8 +57,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return array|JsonResponse
      */
     public function sql(Request $request): array|JsonResponse
@@ -80,8 +69,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return array|JsonResponse
      */
     public function explain(Request $request): array|JsonResponse
@@ -89,7 +76,7 @@ class OpenSearchAPIController extends Controller
         try {
             $results          = $this->client->sql()->explain($request->toArray());
             $query            = $results['root']['children'][0]['description']['request'] ?? false;
-            $query            = '{' . ltrim(strstr($query, '{'), '{');
+            $query            = '{' . ltrim(strstr((string) $query, '{'), '{');
             $query            = substr($query, 0, strrpos($query, '}')) . '}';
             $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
 
@@ -107,8 +94,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param string $date_in
-     *
      * @return JsonResponse|void
      */
     public function aggregatesCsvForDate(string $date_in)
@@ -161,8 +146,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param string $date_in
-     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
@@ -198,9 +181,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param string $start_in
-     * @param string $end_in
-     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
@@ -235,9 +215,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param string $start_in
-     * @param string $end_in
-     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
@@ -280,9 +257,7 @@ class OpenSearchAPIController extends Controller
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
-            $out       = array_map(static function ($id, $name) {
-                return ['id' => $id, 'name' => $name];
-            }, array_keys($platforms), array_values($platforms));
+            $out       = array_map(static fn($id, $name) => ['id' => $id, 'name' => $name], array_keys($platforms), array_values($platforms));
 
             return response()->json(['platforms' => $out]);
         } catch (Exception $e) {
@@ -389,7 +364,7 @@ class OpenSearchAPIController extends Controller
 
             return $date;
         } catch (Exception $e) {
-            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $e->getMessage());
+            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -399,7 +374,7 @@ class OpenSearchAPIController extends Controller
             $start = $this->sanitizeDateString($start_in);
             $end   = $this->sanitizeDateString($end_in);
         } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage());
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
         $end->subSeconds($end->secondsSinceMidnight());

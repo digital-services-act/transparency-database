@@ -47,8 +47,6 @@ class StatementQueryService
     ];
 
     /**
-     * @param array $filters
-     *
      * @return Builder
      */
     public function query(array $filters): Builder
@@ -72,8 +70,6 @@ class StatementQueryService
 
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -94,8 +90,6 @@ class StatementQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
@@ -108,71 +102,61 @@ class StatementQueryService
 
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applySourceTypeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOURCE_TYPES));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('source_type', $filter_values_validated);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyAutomatedDetectionFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DETECTIONS);
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('automated_detection', $filter_values_validated);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyAutomatedDecisionFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::AUTOMATED_DECISIONS));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('automated_decision', $filter_values_validated);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyDecisionGroundFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_GROUNDS));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('decision_ground', $filter_value);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyDecisionVisibilityFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             foreach ($filter_values_validated as $decision_visibility) {
                 $query->where('decision_visibility', 'LIKE', '%"' . $decision_visibility . '"%');
             }
@@ -180,43 +164,37 @@ class StatementQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyDecisionMonetaryFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_MONETARIES));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('decision_monetary', $filter_value);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyDecisionProvisionFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_PROVISIONS));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('decision_provision', $filter_value);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyDecisionAccountFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_ACCOUNTS));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('decision_account', $filter_value);
         }
     }
@@ -224,7 +202,7 @@ class StatementQueryService
     private function applyAccountTypeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::ACCOUNT_TYPES));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('account_type', $filter_value);
         }
     }
@@ -232,7 +210,7 @@ class StatementQueryService
     private function applyCategorySpecificationFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::KEYWORDS));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             foreach ($filter_values_validated as $category_specification) {
                 $query->where('category_specification', 'LIKE', '%"' . $category_specification . '"%');
             }
@@ -241,15 +219,13 @@ class StatementQueryService
 
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyContentTypeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             foreach ($filter_values_validated as $content_type) {
                 $query->where('content_type', 'LIKE', '%"' . $content_type . '"%');
             }
@@ -257,8 +233,6 @@ class StatementQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
@@ -268,22 +242,18 @@ class StatementQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyCategoryFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::STATEMENT_CATEGORIES));
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             $query->whereIn('category', $filter_values_validated);
         }
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -294,8 +264,6 @@ class StatementQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -306,15 +274,13 @@ class StatementQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param array $filter_value
      *
      * @return void
      */
     private function applyTerritorialScopeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
-        if ($filter_values_validated) {
+        if ($filter_values_validated !== []) {
             foreach ($filter_values_validated as $country) {
                 $query->where('territorial_scope', 'LIKE', '%"' . $country . '"%');
             }

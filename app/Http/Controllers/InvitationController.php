@@ -18,7 +18,7 @@ class InvitationController extends Controller
     {
         $invitations = Invitation::paginate(50);
 
-        return view('invitation.index', compact('invitations'));
+        return view('invitation.index', ['invitations' => $invitations]);
     }
 
     public function create(Request $request): View
@@ -44,7 +44,7 @@ class InvitationController extends Controller
 
     public function show(Request $request, Invitation $invitation): View
     {
-        return view('invitation.show', compact('invitation'));
+        return view('invitation.show', ['invitation' => $invitation]);
     }
 
     public function edit(Request $request, Invitation $invitation): View
@@ -75,15 +75,13 @@ class InvitationController extends Controller
 
     private function prepareOptions()
     {
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
-            return [
-                'value' => $platform->id,
-                'label' => $platform->name
-            ];
-        })->toArray();
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(fn($platform) => [
+            'value' => $platform->id,
+            'label' => $platform->name
+        ])->toArray();
         array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
 
 
-        return compact('platforms');
+        return ['platforms' => $platforms];
     }
 }

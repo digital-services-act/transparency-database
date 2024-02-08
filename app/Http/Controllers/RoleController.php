@@ -46,7 +46,6 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param RoleStoreRequest $request
      *
      * @return RedirectResponse
      */
@@ -67,7 +66,6 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Role $role
      *
      * @return RedirectResponse
      */
@@ -79,7 +77,6 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Role $role
      *
      * @return Application|Factory|View
      */
@@ -98,8 +95,6 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param RoleUpdateRequest $request
-     * @param Role $role
      *
      * @return RedirectResponse
      */
@@ -120,7 +115,6 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Role  $role
      *
      * @return RedirectResponse
      */

@@ -18,6 +18,7 @@ class StatementSearchServiceTest extends TestCase
 
     protected StatementSearchService $statement_search_service;
 
+    #[\Override]
     public function setUp(): void
     {
         parent::setUp();

@@ -33,8 +33,8 @@ Route::middleware(['force.auth'])->group(function () {
 
     Route::middleware(['auth'])->group(function () {
 
-        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
-        Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
+        Route::get('feedback', fn(\Illuminate\Http\Request $request) => (new \App\Http\Controllers\FeedbackController())->index($request))->name('feedback.index');
+        Route::post('feedback', fn(\App\Http\Requests\FeedbackSendRequest $request) => (new \App\Http\Controllers\FeedbackController())->send($request))->name('feedback.send');
 
         Route::group(['middleware' => ['can:create statements']], function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
@@ -52,15 +52,15 @@ Route::middleware(['force.auth'])->group(function () {
             });
         });
 
-        Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
-        Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
+        Route::get('/profile/start', fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => (new \App\Http\Controllers\ProfileController())->profile($request))->name('profile.start');
+        Route::get('/profile/page/{page}', fn(string $page): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application => (new \App\Http\Controllers\PageController())->profileShow($page))->name('profile.page.show');
 
-        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index');
-        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token');
+        Route::get('/profile/api', fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => (new \App\Http\Controllers\ProfileController())->apiIndex($request))->name('profile.api.index');
+        Route::post('/profile/api/new-token', fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector => (new \App\Http\Controllers\ProfileController())->newToken($request))->name('profile.api.new-token');
 
         // Register the Platform
-        Route::get('/platform-register', [PlatformController::class, 'platformRegister'])->name('platform.register');
-        Route::post('/platform-register', [PlatformController::class, 'platformRegisterStore'])->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
+        Route::get('/platform-register', fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse => (new \App\Http\Controllers\PlatformController())->platformRegister($request))->name('platform.register');
+        Route::post('/platform-register', fn(\App\Http\Requests\PlatformRegisterStoreRequest $request): \Illuminate\Http\RedirectResponse => (new \App\Http\Controllers\PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
 
     });
 
@@ -71,12 +71,10 @@ Route::get('/statement-search', [StatementController::class, 'search'])->name('s
 Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');
 
 Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
-Route::get('/daily-archives', function(){
-    return Redirect::to('/data-download', 301);
-});
+Route::get('/daily-archives', fn() => Redirect::to('/data-download', 301));
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
+Route::get('/page/{page}', fn(string $page, bool $profile = false): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector => (new \App\Http\Controllers\PageController())->show($page, $profile))->name('page.show');
 Route::view('/dashboard', 'dashboard')->name('dashboard');
 
 });

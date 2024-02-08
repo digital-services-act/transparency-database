@@ -12,6 +12,7 @@ class EuropeanLanguagesServiceProvider extends ServiceProvider implements Deferr
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(EuropeanLanguagesService::class, fn(Application $app) => new EuropeanLanguagesService());
@@ -22,6 +23,7 @@ class EuropeanLanguagesServiceProvider extends ServiceProvider implements Deferr
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [EuropeanLanguagesService::class];

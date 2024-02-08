@@ -210,7 +210,6 @@ class PlatformUserAPIControllerTest extends TestCase
     }
 
     /**
-     * @param mixed $user
      * @param $platform
      * @return void
      */

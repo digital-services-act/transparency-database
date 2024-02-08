@@ -27,6 +27,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function boot(): void
     {
         $this->configureRateLimiting();
@@ -50,20 +51,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
-        RateLimiter::for('api', function (Request $request) {
+        RateLimiter::for('api', fn(Request $request) => $request->user() ? Limit::perMinute(2500)->by($request->user()->id) : Limit::perMinute(50)->by($request->ip())
+            ->response(fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
 
-            return $request->user() ? Limit::perMinute(2500)->by($request->user()->id) : Limit::perMinute(50)->by($request->ip())
-                ->response(function (Request $request, array $headers) {
-                    return response('Limit Reached. Please do not overload the API', 429, $headers);
-                });
-        });
-
-        RateLimiter::for('web', function (Request $request) {
-            return $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
-                ->response(function (Request $request, array $headers) {
-                    return response('Limit Reached. Please do not overload the application', 429, $headers);
-                });
-        });
+        RateLimiter::for('web', fn(Request $request) => $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
+            ->response(fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the application', 429, $headers)));
     }
 
     /**

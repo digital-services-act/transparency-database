@@ -25,35 +25,22 @@ use App\Http\Controllers\Traits\Sanitizer;
 
 class StatementController extends Controller
 {
-    // This service should only be as a back up to the search service
-    // in a local development scenario
-    // Even then see .env.example and get a play-around opensearch account to use.
-    protected StatementQueryService $statement_query_service;
-    protected StatementSearchService $statement_search_service;
     protected EuropeanCountriesService $european_countries_service;
-    protected EuropeanLanguagesService $european_languages_service;
-    protected DriveInService $drive_in_service;
 
     use Sanitizer;
 
     public function __construct(
-        StatementQueryService $statement_query_service,
-        StatementSearchService $statement_search_service,
+        protected StatementQueryService $statement_query_service,
+        protected StatementSearchService $statement_search_service,
         EuropeanCountriesService $european_countries_service,
-        EuropeanLanguagesService $european_languages_service,
-        DriveInService $drive_in_service,
+        protected EuropeanLanguagesService $european_languages_service,
+        protected DriveInService $drive_in_service,
     )
     {
-        $this->statement_query_service = $statement_query_service;
-        $this->statement_search_service = $statement_search_service;
         $this->european_countries_service = $european_countries_service;
-        $this->european_languages_service = $european_languages_service;
-        $this->drive_in_service = $drive_in_service;
     }
 
     /**
-     * @param Request $request
-     *
      * @return View|Factory|Application
      */
     public function index(Request $request): View|Factory|Application
@@ -81,13 +68,7 @@ class StatementController extends Controller
 
         $reindexing = Cache::get('reindexing', false);
 
-        return view('statement.index', compact(
-            'statements',
-            'options',
-            'total',
-            'similarity_results',
-            'reindexing'
-        ));
+        return view('statement.index', ['statements' => $statements, 'options' => $options, 'total' => $total, 'similarity_results' => $similarity_results, 'reindexing' => $reindexing]);
     }
 
     public function exportCsv(Request $request)
@@ -128,19 +109,15 @@ class StatementController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return View|Factory|Application
      */
     public function search(Request $request): View|Factory|Application
     {
         $options = $this->prepareOptions();
-        return view('statement.search', compact('options'));
+        return view('statement.search', ['options' => $options]);
     }
 
     /**
-     * @param Request $request
-     *
      * @return Factory|View|Application|RedirectResponse
      */
     public function create(Request $request): Factory|View|Application|RedirectResponse
@@ -166,8 +143,6 @@ class StatementController extends Controller
     }
 
     /**
-     * @param Statement $statement
-     *
      * @return Factory|View|Application
      */
     public function show(Statement $statement): Factory|View|Application
@@ -183,22 +158,12 @@ class StatementController extends Controller
 
         sort($statement_territorial_scope_country_names);
 
-        return view('statement.show', compact([
-            'statement',
-            'statement_territorial_scope_country_names',
-            'statement_content_types',
-            'statement_content_language',
-            'statement_additional_categories',
-            'statement_visibility_decisions',
-            'category_specifications'
-        ]));
+        return view('statement.show', ['statement' => $statement, 'statement_territorial_scope_country_names' => $statement_territorial_scope_country_names, 'statement_content_types' => $statement_content_types, 'statement_content_language' => $statement_content_language, 'statement_additional_categories' => $statement_additional_categories, 'statement_visibility_decisions' => $statement_visibility_decisions, 'category_specifications' => $category_specifications]);
 
     }
 
 
     /**
-     * @param StatementStoreRequest $request
-     *
      * @return RedirectResponse
      */
     public function store(StatementStoreRequest $request): RedirectResponse
@@ -251,12 +216,10 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
-        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(function($platform){
-            return [
-                'value' => $platform->id,
-                'label' => $platform->name
-            ];
-        })->toArray();
+        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(fn($platform) => [
+            'value' => $platform->id,
+            'label' => $platform->name
+        ])->toArray();
         $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES);
         $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES);
         $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS);
@@ -273,29 +236,6 @@ class StatementController extends Controller
 
         $source_types = $this->mapForSelectWithKeys(Statement::SOURCE_TYPES);
 
-        return compact(
-            'countries',
-            'languages',
-            'languages_grouped',
-            'eea_countries',
-            'eu_countries',
-            'automated_detections',
-            'automated_decisions',
-            'incompatible_content_illegals',
-            'decision_visibilities',
-            'decision_monetaries',
-            'decision_provisions',
-            'decision_accounts',
-            'account_types',
-            'decision_grounds',
-            'categories',
-            'categories_addition',
-            'illegal_content_fields',
-            'incompatible_content_fields',
-            'source_types',
-            'content_types',
-            'platforms',
-            'category_specifications'
-        );
+        return ['countries' => $countries, 'languages' => $languages, 'languages_grouped' => $languages_grouped, 'eea_countries' => $eea_countries, 'eu_countries' => $eu_countries, 'automated_detections' => $automated_detections, 'automated_decisions' => $automated_decisions, 'incompatible_content_illegals' => $incompatible_content_illegals, 'decision_visibilities' => $decision_visibilities, 'decision_monetaries' => $decision_monetaries, 'decision_provisions' => $decision_provisions, 'decision_accounts' => $decision_accounts, 'account_types' => $account_types, 'decision_grounds' => $decision_grounds, 'categories' => $categories, 'categories_addition' => $categories_addition, 'illegal_content_fields' => $illegal_content_fields, 'incompatible_content_fields' => $incompatible_content_fields, 'source_types' => $source_types, 'content_types' => $content_types, 'platforms' => $platforms, 'category_specifications' => $category_specifications];
     }
 }

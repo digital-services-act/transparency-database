@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class UniquePlatformAndUser implements Rule
 {
+    #[\Override]
     public function passes($attribute, $value)
     {
 
@@ -27,6 +28,7 @@ class UniquePlatformAndUser implements Rule
 
     }
 
+    #[\Override]
     public function message()
     {
         return 'The combination of platform and user already exists.';

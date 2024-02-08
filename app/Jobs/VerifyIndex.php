@@ -17,20 +17,11 @@ class VerifyIndex implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $max;
-    public int $min;
-    public int $query_chunk;
-    public int $searchable_chunk;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(int $max, int $min, int $query_chunk, int $searchable_chunk)
+    public function __construct(public int $max, public int $min, public int $query_chunk, public int $searchable_chunk)
     {
-        $this->max = $max;
-        $this->min = $min;
-        $this->query_chunk = $query_chunk;
-        $this->searchable_chunk = $searchable_chunk;
     }
 
     /**
@@ -76,8 +67,6 @@ class VerifyIndex implements ShouldQueue
     }
 
     /**
-     * @param int $id_difference
-     *
      * @return void
      */
     private function breakItIntoTwo(int $id_difference): void

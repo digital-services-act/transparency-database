@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 trait Sanitizer
 {
     /**
-     * @param array $validated
      * @return array
      */
     public function sanitizeData(array $validated): array
@@ -34,9 +33,7 @@ trait Sanitizer
             $valueToRemove = $validated['category'];
 
             $collection = collect($validated['category_addition']);
-            $filteredCollection = $collection->filter(function ($item) use ($valueToRemove) {
-                return $item !== $valueToRemove;
-            });
+            $filteredCollection = $collection->filter(fn($item) => $item !== $valueToRemove);
 
             $filteredArray = $filteredCollection->toArray();
 

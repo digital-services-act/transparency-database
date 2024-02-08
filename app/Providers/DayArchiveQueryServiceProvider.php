@@ -13,6 +13,7 @@ class DayArchiveQueryServiceProvider extends ServiceProvider implements Deferrab
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(DayArchiveQueryService::class, fn(Application $app) => new DayArchiveQueryService());
@@ -23,6 +24,7 @@ class DayArchiveQueryServiceProvider extends ServiceProvider implements Deferrab
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [DayArchiveQueryService::class];

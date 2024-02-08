@@ -15,6 +15,7 @@ class InvitationControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

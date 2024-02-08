@@ -13,17 +13,11 @@ use Random\RandomException;
 
 class HomeController extends Controller
 {
-    protected StatementSearchService $statement_search_service;
-
-    public function __construct(
-        StatementSearchService $statement_search_service
-    )
+    public function __construct(protected StatementSearchService $statement_search_service)
     {
-        $this->statement_search_service = $statement_search_service;
     }
 
     /**
-     * @param Request $request
      *
      * @return View|Application|Factory|\Illuminate\Contracts\Foundation\Application
      * @throws RandomException
@@ -33,9 +27,7 @@ class HomeController extends Controller
         $last_days = 30;
 
         $total = $this->statement_search_service->grandTotal();
-        $platforms_total = Cache::remember('platforms_total', 60*60*24, function() {
-            return max(1, Platform::nonDsa()->count());
-        });
+        $platforms_total = Cache::remember('platforms_total', 60*60*24, fn() => max(1, Platform::nonDsa()->count()));
 
         $top_x = 3;
 
@@ -47,12 +39,6 @@ class HomeController extends Controller
 
         $automated_decision_percentage = $this->statement_search_service->fullyAutomatedDecisionPercentage();
 
-        return view('home', compact(
-            'total',
-            'platforms_total',
-            'top_categories',
-            'top_decisions_visibility',
-            'automated_decision_percentage'
-        ));
+        return view('home', ['total' => $total, 'platforms_total' => $platforms_total, 'top_categories' => $top_categories, 'top_decisions_visibility' => $top_decisions_visibility, 'automated_decision_percentage' => $automated_decision_percentage]);
     }
 }

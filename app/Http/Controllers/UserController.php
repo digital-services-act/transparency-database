@@ -20,7 +20,6 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      *
      * @return Application|Factory|View
      */
@@ -43,12 +42,10 @@ class UserController extends Controller
         $users->orderBy('name');
         $users = $users->paginate(50)->withQueryString();
 
-        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(function($name, $uuid){
-            return [
-                'value' => $uuid,
-                'label' => $name
-            ];
-        })->toArray();
+        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(fn($name, $uuid) => [
+            'value' => $uuid,
+            'label' => $name
+        ])->toArray();
 
         return view('user.index', [
             'users' => $users,
@@ -75,7 +72,6 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param UserStoreRequest $request
      *
      * @return RedirectResponse
      */
@@ -101,7 +97,6 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param User $user
      *
      * @return RedirectResponse
      */
@@ -113,7 +108,6 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param User $user
      *
      * @return Application|Factory|View
      */
@@ -130,8 +124,6 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UserUpdateRequest $request
-     * @param User $user
      *
      * @return RedirectResponse
      */
@@ -155,7 +147,6 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  User  $user
      *
      * @return RedirectResponse
      */
@@ -169,15 +160,13 @@ class UserController extends Controller
 
     private function prepareOptions()
     {
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(function($platform){
-            return [
-                'value' => $platform->id,
-                'label' => $platform->name
-            ];
-        })->toArray();
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(fn($platform) => [
+            'value' => $platform->id,
+            'label' => $platform->name
+        ])->toArray();
         array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
         $roles = Role::orderBy('name')->get();
 
-        return compact('platforms', 'roles');
+        return ['platforms' => $platforms, 'roles' => $roles];
     }
 }

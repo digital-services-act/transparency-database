@@ -18,7 +18,6 @@ class PlatformController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      *
      * @return Application|Factory|View
      */
@@ -54,7 +53,6 @@ class PlatformController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param PlatformStoreRequest $request
      *
      * @return RedirectResponse
      */
@@ -81,7 +79,6 @@ class PlatformController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Platform $platform
      *
      * @return RedirectResponse
      */
@@ -93,7 +90,6 @@ class PlatformController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Platform $platform
      *
      * @return Application|Factory|View
      */
@@ -110,8 +106,6 @@ class PlatformController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param PlatformUpdateRequest $request
-     * @param Platform $platform
      *
      * @return RedirectResponse
      */
@@ -136,7 +130,6 @@ class PlatformController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Platform  $platform
      *
      * @return RedirectResponse
      */
@@ -161,8 +154,6 @@ class PlatformController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
      */
     public function platformRegister(Request $request)
@@ -172,9 +163,7 @@ class PlatformController extends Controller
         }
 
         $options = $this->prepareOptions();
-        return view('platform.register', compact(
-            'options'
-        ));
+        return view('platform.register', ['options' => $options]);
     }
 
     public function platformRegisterStore(PlatformRegisterStoreRequest $request): RedirectResponse
@@ -198,7 +187,7 @@ class PlatformController extends Controller
                 'value' => 0
             ]
         ];
-        return compact('vlops');
+        return ['vlops' => $vlops];
     }
 
 

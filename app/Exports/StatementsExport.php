@@ -24,6 +24,7 @@ class StatementsExport implements FromCollection, WithHeadings, WithMapping
     /**
     * @return \Illuminate\Support\Collection
     */
+    #[\Override]
     public function collection()
     {
         return $this->collection;

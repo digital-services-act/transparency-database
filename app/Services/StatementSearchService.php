@@ -21,9 +21,7 @@ use stdClass;
 class StatementSearchService
 {
 
-    private Client $client;
-
-    private string $index_name;
+    private string $index_name = 'statement_index';
 
     // This service builds and does queries with elastic.
     // The elastic has to be setup and there needs to be a 'statements' index.
@@ -69,15 +67,11 @@ class StatementSearchService
 
     public const ONE_DAY = 24 * 60 * 60;
 
-    public function __construct(Client $client)
+    public function __construct(private readonly Client $client)
     {
-        $this->client     = $client;
-        $this->index_name = 'statement_index';
     }
 
     /**
-     * @param array $filters
-     * @param array $options
      *
      * @return Builder
      */
@@ -114,12 +108,12 @@ class StatementSearchService
 
         // handle the date filters as needed.
         $created_at_filter = $this->applyCreatedAtFilter($filters);
-        if ($created_at_filter) {
+        if ($created_at_filter !== '' && $created_at_filter !== '0') {
             $queryAndParts[] = $created_at_filter;
         }
 
         // if we have parts, then glue them together with AND
-        if (count($queryAndParts)) {
+        if ($queryAndParts !== []) {
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
@@ -157,7 +151,7 @@ class StatementSearchService
 
                 return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             // Most likely the date supplied for the start or the end was bad.
             return '';
         }
@@ -167,8 +161,6 @@ class StatementSearchService
     }
 
     /**
-     * @param string $filter_value
-     *
      * @return string
      */
     private function applySFilter(string $filter_value): string
@@ -347,8 +339,6 @@ class StatementSearchService
     }
 
     /**
-     * @param array $filter_values
-     *
      * @return string
      */
     private function applyPlatformIdFilter(array $filter_values): string
@@ -377,7 +367,7 @@ class StatementSearchService
 
     public function bulkIndexStatements(Collection $statements): void
     {
-        if ($statements->count()) {
+        if ($statements->count() !== 0) {
             $bulk = [];
             /** @var Statement $statement */
             foreach ($statements as $statement) {
@@ -481,12 +471,10 @@ class StatementSearchService
             $prepare[$aggregate['received_date']] = $aggregate['total'];
         }
 
-        return array_map(static function ($date, $total) {
-            return [
-                'date'  => $date,
-                'total' => $total
-            ];
-        }, array_keys($prepare), array_values($prepare));
+        return array_map(static fn($date, $total) => [
+            'date'  => $date,
+            'total' => $total
+        ], array_keys($prepare), array_values($prepare));
     }
 
     /**
@@ -505,9 +493,7 @@ class StatementSearchService
                         'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE category = '".$category."'"))
                     ];
                 }
-                uasort($results, function($a, $b){
-                    return ($a['total'] <=> $b['total']) * -1;
-                });
+                uasort($results, fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
                 
                 return $results;
             });
@@ -552,9 +538,7 @@ class StatementSearchService
                         'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE decision_visibility_single = '".$decision_visibility."'"))
                     ];
                 }
-                uasort($results, function($a, $b){
-                    return ($a['total'] <=> $b['total']) * -1;
-                });
+                uasort($results, fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
 
                 return $results;
             });
@@ -634,10 +618,6 @@ class StatementSearchService
     }
 
     /**
-     * @param Carbon $start
-     * @param Carbon $end
-     * @param array $attributes
-     * @param bool $caching
      *
      * @return array
      */
@@ -701,9 +681,7 @@ class StatementSearchService
             return $days;
         });
 
-        $total = array_sum(array_map(static function ($day) {
-            return $day['total'];
-        }, $days));
+        $total = array_sum(array_map(static fn($day) => $day['total'], $days));
 
         $timeend  = microtime(true);
         $timediff = $timeend - $timestart;
@@ -827,7 +805,7 @@ JSON;
             $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
-        if (count($sources) === 0) {
+        if ($sources === []) {
             $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
@@ -884,7 +862,7 @@ JSON;
             $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
-        if (count($sources) === 0) {
+        if ($sources === []) {
             $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
@@ -907,8 +885,6 @@ JSON;
     }
 
     /**
-     * @param stdClass $query
-     *
      * @return array
      */
     public function processAggregateQuery(stdClass $query): array
@@ -947,9 +923,7 @@ JSON;
             }
 
             // build a permutation string
-            $item['permutation'] = implode(',', array_map(static function ($key, $value) {
-                return $key . ":" . $value;
-            }, array_keys($attributes), array_values($attributes)));
+            $item['permutation'] = implode(',', array_map(static fn($key, $value) => $key . ":" . $value, array_keys($attributes), array_values($attributes)));
 
             // add the platform name on at the end if we need to.
             if (isset($item['platform_id'])) {
@@ -972,7 +946,7 @@ JSON;
         sort($attributes);
         $attributes = array_intersect($attributes, $this->allowed_aggregate_attributes);
         $attributes = array_unique($attributes);
-        if (count($attributes) === 0) {
+        if ($attributes === []) {
             $attributes[] = 'received_date';
         }
     }

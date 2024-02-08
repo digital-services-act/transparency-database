@@ -15,6 +15,7 @@ class PlatformAPIControllerTest extends TestCase
     private array $requiredFields;
     private Platform $platform;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -114,9 +115,7 @@ class PlatformAPIControllerTest extends TestCase
             'dsa_common_id' => 'foobar',
         ]);
 
-        $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields, [
-            'Accept' => 'application/json',
-        ]);
+        $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields);
 
 
         $response->assertStatus(Response::HTTP_OK);

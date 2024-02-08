@@ -30,7 +30,9 @@ trait ExceptionHandlingTrait
         $duplicatePUID = $this->extractPUIDFromMessage($e->getMessage());
 
         //Fallback if no PUID is found. Means we have another error than a duplicate PUID. It should not happen but it is better to be safe than sorry.
-        if (is_null($duplicatePUID)) return $this->handleQueryException($e, $subject);
+        if (is_null($duplicatePUID)) {
+            return $this->handleQueryException($e, $subject);
+        }
 
 //        Log::error("$subject Integrity Constraint Exception Thrown: " . $e->getMessage());
         $errors = [
@@ -50,10 +52,12 @@ trait ExceptionHandlingTrait
     private function extractPUIDFromMessage($message){
         $pattern = "/Duplicate entry '(\d+)-(\d+)'/";
 
-        preg_match($pattern, $message, $matches);
+        preg_match($pattern, (string) $message, $matches);
 
         if (isset($matches[2])) {
             return $matches[2];
-        } else return "Unknown Exception";
+        } else {
+            return "Unknown Exception";
+        }
     }
 }

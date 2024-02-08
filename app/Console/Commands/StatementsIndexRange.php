@@ -43,7 +43,7 @@ class StatementsIndexRange extends Command
             try {
                 Log::info('Indexing: ' . $current . " :: " .  $current + ($chunk - 1));
                 $statement_search_service->bulkIndexStatements($statements);
-            } catch (Exception $e) {
+            } catch (Exception) {
             }
             $current += $chunk;
         }

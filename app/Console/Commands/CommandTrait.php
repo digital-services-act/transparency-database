@@ -20,7 +20,7 @@ trait CommandTrait
         } else {
             try {
                 $date = Carbon::createFromFormat('Y-m-d', $date);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
                 throwException(new RuntimeException('Issue with the date provided, checked the format yyyy-mm-dd'));
             }

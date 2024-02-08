@@ -30,9 +30,7 @@ class DriveInService
 
     private function parseSimilarityResults(array $results): array
     {
-        return array_map(function($item){
-            return str_replace("_", " ", $item);
-        }, $results);
+        return array_map(fn($item) => str_replace("_", " ", (string) $item), $results);
     }
     private function buildSimilarityPayload($word): string
     {
@@ -47,11 +45,7 @@ class DriveInService
 
     private function buildHeaders(): array
     {
-        $headers = [];
-        $headers['x-api-key'] = config('services.drivein.key');
-        $headers['Accept'] = 'application/json';
-
-        return $headers;
+        return ['x-api-key' => config('services.drivein.key'), 'Accept' => 'application/json'];
     }
 
     private function makeRequest($payload, $headers): PromiseInterface|Response

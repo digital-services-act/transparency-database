@@ -13,9 +13,7 @@ use Parsedown;
 class PageController extends Controller
 {
     /**
-     * @param string $page
      * @param string $view
-     *
      * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse|Redirector
      */
     public function show(string $page, bool $profile = false): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
@@ -37,7 +35,7 @@ class PageController extends Controller
         }
 
 
-        $page_title = ucwords(str_replace("-", " ", $page));
+        $page_title = ucwords(str_replace("-", " ", (string) $page));
 
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
@@ -53,7 +51,7 @@ class PageController extends Controller
             $page_title = $page_title_mods[$page_title];
         }
 
-        $breadcrumb = ucwords(str_replace("-", " ", $page));
+        $breadcrumb = ucwords(str_replace("-", " ", (string) $page));
 
         $breadcrumb_mods = [
             'Home' => '',
@@ -114,11 +112,10 @@ class PageController extends Controller
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
             return $matches[0];
-        }, $parsedown->text(file_get_contents($file)));
+        }, (string) $parsedown->text(file_get_contents($file)));
     }
 
     /**
-     * @param string $page_title
      * @return bool
      */
     public function getShow_feedback_link(string $page_title): bool
@@ -126,8 +123,6 @@ class PageController extends Controller
         $show_feeback_pages = [
             'Faq'
         ];
-
-        $show_feedback_link = in_array($page_title, $show_feeback_pages);
-        return $show_feedback_link;
+        return in_array($page_title, $show_feeback_pages);
     }
 }

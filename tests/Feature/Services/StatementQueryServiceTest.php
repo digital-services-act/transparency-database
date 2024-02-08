@@ -15,6 +15,7 @@ class StatementQueryServiceTest extends TestCase
 
     protected StatementQueryService $statement_query_service;
 
+    #[\Override]
     public function setUp(): void
     {
         $this->statement_query_service = app(StatementQueryService::class);

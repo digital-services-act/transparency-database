@@ -19,7 +19,7 @@ class PlatformAPIController extends Controller
     {
 
         // Check if the application is in dev, acc or sandbox
-        if (strtolower(config('app.env_real')) !== 'production') {
+        if (strtolower((string) config('app.env_real')) !== 'production') {
             $platform = Platform::withCount(['form_statements', 'api_statements', 'api_multi_statements'])->find($platform->id);
         }
 

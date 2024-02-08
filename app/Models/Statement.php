@@ -397,6 +397,7 @@ class Statement extends Model
         'self'
     ];
 
+    #[\Override]
     protected static function boot(): void
     {
         parent::boot();
@@ -603,7 +604,7 @@ class Statement extends Model
 
         // Catch potential bad json here.
         try {
-            $out = json_decode($this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
+            $out = json_decode((string) $this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $e) {
             Log::error('Statement::getRawKeys: ' . $e->getMessage());
             return [];

@@ -7,9 +7,10 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    private const DAILY_AFTER_MIDNIGHT = '00:10';
-    private const DAILY_SEVEN_AM = '07:00';
+    private const string DAILY_AFTER_MIDNIGHT = '00:10';
+    private const string DAILY_SEVEN_AM = '07:00';
 
+    #[\Override]
     protected function schedule(Schedule $schedule): void
     {
         // The main indexer
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
 
 
     // Existing `commands` method remains unchanged.
+    #[\Override]
     protected function commands(): void
     {
         $this->load(__DIR__ . '/Commands');

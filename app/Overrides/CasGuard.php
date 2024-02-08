@@ -27,9 +27,9 @@ final class CasGuard implements AuthGuard
     private ?Authenticatable $user = null;
 
     public function __construct(
-        private ?UserProvider $provider,
-        private Request $request,
-        private Session $session
+        private readonly ?UserProvider $provider,
+        private readonly Request $request,
+        private readonly Session $session
     ) {
     }
 
@@ -48,6 +48,7 @@ final class CasGuard implements AuthGuard
         return $user;
     }
 
+    #[\Override]
     public function check()
     {
         return null !== $this->user();
@@ -63,16 +64,19 @@ final class CasGuard implements AuthGuard
         return sprintf('login_%s_%s', $this->name, sha1(self::class));
     }
 
+    #[\Override]
     public function guest()
     {
         return !$this->check();
     }
 
+    #[\Override]
     public function hasUser()
     {
-        return (null !== $this->user()) ? true : false;
+        return null !== $this->user();
     }
 
+    #[\Override]
     public function id()
     {
         if ($this->loggedOut) {
@@ -90,6 +94,7 @@ final class CasGuard implements AuthGuard
         $this->session->migrate(true);
     }
 
+    #[\Override]
     public function setUser(Authenticatable $user): void
     {
 
@@ -99,6 +104,7 @@ final class CasGuard implements AuthGuard
         $this->session->migrate(true);
     }
 
+    #[\Override]
     public function user()
     {
         if ($this->loggedOut) {
@@ -109,12 +115,9 @@ final class CasGuard implements AuthGuard
 //        return $this->provider->retrieveCasUser();
     }
 
+    #[\Override]
     public function validate(array $credentials = [])
     {
-        if ([] === $credentials) {
-            return false;
-        }
-
-        return true;
+        return [] !== $credentials;
     }
 }

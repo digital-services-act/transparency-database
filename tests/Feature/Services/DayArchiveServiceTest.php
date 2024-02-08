@@ -17,6 +17,7 @@ class DayArchiveServiceTest extends TestCase
     protected DayArchiveService $day_archive_service;
     private array $required_fields;
 
+    #[\Override]
     public function setUp(): void
     {
         parent::setUp();
