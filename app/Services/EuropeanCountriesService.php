@@ -130,7 +130,7 @@ class EuropeanCountriesService
 
     public function getCountryNames(array $countries, bool $condense = true): array
     {
-        if (count($countries) === 0) {
+        if ($countries === []) {
             return [];
         }
 

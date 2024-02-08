@@ -13,7 +13,7 @@ class EuropeanLanguagesServiceTest extends TestCase
 
     protected EuropeanLanguagesService $european_languages_service;
 
-    public function setUp(): void
+    #[\Override]protected function setUp(): void
     {
         $this->european_languages_service = app(EuropeanLanguagesService::class);
         $this->assertNotNull($this->european_languages_service);
@@ -25,7 +25,7 @@ class EuropeanLanguagesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_gives_back_european_languages()
+    public function it_gives_back_european_languages(): void
     {
         $result = $this->european_languages_service->getEuropeanLanguages();
         $this->assertNotNull($result);
@@ -37,7 +37,7 @@ class EuropeanLanguagesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_gives_back_all_languages_codes()
+    public function it_gives_back_all_languages_codes(): void
     {
         $result = $this->european_languages_service->getAllLanguages();
         $this->assertIsArray($result);
@@ -48,7 +48,7 @@ class EuropeanLanguagesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_gives_back_all_languages_codes_euro_first()
+    public function it_gives_back_all_languages_codes_euro_first(): void
     {
         $result = $this->european_languages_service->getAllLanguages(true);
         $this->assertIsArray($result);

@@ -39,7 +39,7 @@ class GenerateStatements extends Command
             $date->addSeconds($date->secondsUntilEndOfDay());
         }
 
-        for ($cpt = 0; $cpt < $amount; $cpt++) {
+        for ($cpt = 0; $cpt < $amount; ++$cpt) {
             StatementCreation::dispatch($date);
         }
     }

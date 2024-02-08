@@ -12,17 +12,13 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportReduce implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
-    public string $date;
-    public string $platform;
-    public string $version;
-
-    public function __construct(string $date, string $platform, string $version)
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
+    public function __construct(public string $date, public string $platform, public string $version)
     {
-        $this->date = $date;
-        $this->platform = $platform;
-        $this->version = $version;
     }
 
     public function handle(): void
@@ -43,7 +39,8 @@ class StatementCsvExportReduce implements ShouldQueue
             if ($part_left !== $new_name) {
                 shell_exec('mv '. $part_left . ' ' . $new_name);
             }
-            $count++;
+
+            ++$count;
         }
 
     }

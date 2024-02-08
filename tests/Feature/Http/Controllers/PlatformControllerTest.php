@@ -11,12 +11,13 @@ use Tests\TestCase;
 
 class PlatformControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase;
+    use AdditionalAssertions;
+    use RefreshDatabase;
     /**
      * @return void
      * @test
      */
-    public function deleting_platform_deletes_the_rest()
+    public function deleting_platform_deletes_the_rest(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -51,7 +52,7 @@ class PlatformControllerTest extends TestCase
     /**
      * @test
      */
-    public function register_store_uses_form_request_validation()
+    public function register_store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\PlatformController::class,

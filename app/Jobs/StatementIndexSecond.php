@@ -15,23 +15,19 @@ use Illuminate\Support\Facades\Log;
 
 class StatementIndexSecond implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public int $timestamp;
-
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * Create a new job instance.
      */
-    public function __construct($timestamp)
+    public function __construct(public int $timestamp)
     {
-        $this->timestamp = $timestamp;
     }
 
     /**
      * Execute the job.
-     *
-     * @param StatementSearchService $statement_search_service
      */
     public function handle(StatementSearchService $statement_search_service): void
     {

@@ -60,6 +60,7 @@ class StatementsAggregatesCsv extends Command
             $first = 0;
             $start->addDay();
         }
+
         fclose($out);
     }
 }

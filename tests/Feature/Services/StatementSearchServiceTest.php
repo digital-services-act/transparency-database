@@ -18,7 +18,7 @@ class StatementSearchServiceTest extends TestCase
 
     protected StatementSearchService $statement_search_service;
 
-    public function setUp(): void
+    #[\Override]protected function setUp(): void
     {
         parent::setUp();
         $this->statement_search_service = app(StatementSearchService::class);
@@ -28,7 +28,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_can_do_a_basic_query()
+    public function it_can_do_a_basic_query(): void
     {
         $filters = [];
         $search  = $this->statement_search_service->query($filters);
@@ -40,7 +40,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_automatic_detection()
+    public function it_filters_on_automatic_detection(): void
     {
         $filters = [
             'automated_detection' => [Statement::AUTOMATED_DETECTION_YES]
@@ -62,7 +62,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_automatic_decision()
+    public function it_filters_on_automatic_decision(): void
     {
         $filters = [
             'automated_decision' => array_keys(Statement::AUTOMATED_DECISIONS),
@@ -76,7 +76,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_source_type()
+    public function it_filters_on_source_type(): void
     {
         $filters = [
             'source_type' => array_keys(Statement::SOURCE_TYPES),
@@ -90,7 +90,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_s()
+    public function it_filters_on_s(): void
     {
         $filters = [
             's' => 'example'
@@ -105,7 +105,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_decision_visibility()
+    public function it_filters_on_decision_visibility(): void
     {
         $filters = [
             'decision_visibility' => array_keys(Statement::DECISION_VISIBILITIES),
@@ -120,7 +120,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_category_specification()
+    public function it_filters_on_category_specification(): void
     {
         $filters = [
             'category_specification' => array_keys(Statement::KEYWORDS),
@@ -134,7 +134,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_decision_monetary()
+    public function it_filters_on_decision_monetary(): void
     {
         $filters = [
             'decision_monetary' => array_keys(Statement::DECISION_MONETARIES),
@@ -148,7 +148,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_decision_provision()
+    public function it_filters_on_decision_provision(): void
     {
         $filters = [
             'decision_provision' => array_keys(Statement::DECISION_PROVISIONS),
@@ -163,7 +163,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_decision_account()
+    public function it_filters_on_decision_account(): void
     {
         $filters = [
             'decision_account' => array_keys(Statement::DECISION_ACCOUNTS),
@@ -177,7 +177,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_account_type()
+    public function it_filters_on_account_type(): void
     {
         $filters = [
             'account_type' => array_keys(Statement::ACCOUNT_TYPES),
@@ -191,7 +191,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_decision_grounds()
+    public function it_filters_on_decision_grounds(): void
     {
         $filters = [
             'decision_ground' => array_keys(Statement::DECISION_GROUNDS),
@@ -205,7 +205,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_category()
+    public function it_filters_on_category(): void
     {
         $filters = [
             'category' => array_keys(Statement::STATEMENT_CATEGORIES),
@@ -219,7 +219,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_content_type()
+    public function it_filters_on_content_type(): void
     {
         $filters = [
             'content_type' => array_keys(Statement::CONTENT_TYPES),
@@ -233,7 +233,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_only_real_platform_ids()
+    public function it_filters_only_real_platform_ids(): void
     {
         $filters = [
             'platform_id' => [99, 100],
@@ -247,7 +247,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_platform_id()
+    public function it_filters_on_platform_id(): void
     {
         $this->setUpFullySeededDatabase();
         $platform_id_one = Platform::first()->id;
@@ -267,7 +267,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_territorial_scope()
+    public function it_filters_on_territorial_scope(): void
     {
         $filters = [
             'territorial_scope' => ['BG', 'NL'],
@@ -281,7 +281,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function if_filters_on_created_at()
+    public function if_filters_on_created_at(): void
     {
         $filters['created_at_start'] = '15-12-2020';
         $search                      = $this->statement_search_service->query($filters);
@@ -339,7 +339,7 @@ class StatementSearchServiceTest extends TestCase
     {
         $now = Carbon::create(2024, 1, 29);
         $result = $this->statement_search_service->receivedDateCondition($now);
-        $should_be = "received_date = '2024-01-29 00:00:00'";
+        $should_be = "received_date = '2024-01-29'";
         $this->assertEquals($should_be, $result);
     }
 
@@ -352,7 +352,7 @@ class StatementSearchServiceTest extends TestCase
         $start = Carbon::create(2024, 1, 1);
         $end = Carbon::create(2024, 1, 2);
         $result = $this->statement_search_service->receivedDateRangeCondition($start, $end);
-        $should_be = "received_date BETWEEN '2024-01-01 00:00:00' AND '2024-01-02 00:00:00'";
+        $should_be = "received_date BETWEEN '2024-01-01' AND '2024-01-02'";
         $this->assertEquals($should_be, $result);
     }
 
@@ -367,7 +367,7 @@ class StatementSearchServiceTest extends TestCase
             $this->statement_search_service->receivedDateCondition(Carbon::create(2024, 1, 29))
         ];
         $result = $this->statement_search_service->buildWheres($conditions);
-        $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29 00:00:00'";
+        $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29'";
         $this->assertEquals($should_be, $result);
     }
 

@@ -12,16 +12,13 @@ use Illuminate\Queue\SerializesModels;
 
 class FeedbackMail extends Mailable
 {
-    use Queueable, SerializesModels;
-
-    public $feedback;
-
+    use Queueable;
+    use SerializesModels;
     /**
      * Create a new message instance.
      */
-    public function __construct($feedback)
+    public function __construct(public $feedback)
     {
-        $this->feedback = $feedback;
     }
 
     /**

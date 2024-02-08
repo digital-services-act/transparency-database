@@ -17,9 +17,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
-
-
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
+    use SoftDeletes;
     public const API_TOKEN_KEY = 'api-token';
 
     /**
@@ -65,23 +67,26 @@ class User extends Authenticatable
 
         $attributes['password'] = Str::random(16);
         if (isset ($attributes['domainUsername']) || isset($attributes['eu_login_username'])) {
-            if (isset($attributes['domainUsername'])) $username = $attributes['domainUsername'];
-            if (isset($attributes['eu_login_username'])) $username = $attributes['eu_login_username'];
+            if (isset($attributes['domainUsername'])) {
+                $username = $attributes['domainUsername'];
+            }
+
+            if (isset($attributes['eu_login_username'])) {
+                $username = $attributes['eu_login_username'];
+            }
+
             $attributes['name'] = isset($attributes['firstName']) && isset($attributes['lastName'])
                 ? $attributes['firstName'] . ' ' . $attributes['lastName']
-                : (isset($attributes['name'])
-                    ? $attributes['name']
-                    : '');
+                : ($attributes['name'] ?? '');
 
         }
-        $user = User::firstOrCreate(
+
+        return User::firstOrCreate(
             [
                 'eu_login_username' => $username ?? session()->get('cas_user'),
             ],
             $attributes
         );
-
-        return $user;
     }
 
     //We do not use the laravel eloquent relationship as EU Login emails are mix of uppercase and lowercase
@@ -89,7 +94,7 @@ class User extends Authenticatable
 
     public function getInvitation() : ?Invitation{
         return  Invitation::firstWhere([
-            'email' => strtolower($this->email)
+            'email' => strtolower((string) $this->email)
         ]);
     }
 
@@ -97,9 +102,13 @@ class User extends Authenticatable
     {
         $invitation = $this->getInvitation();
 
-        if (is_null($invitation)) return false;
+        if (is_null($invitation)) {
+            return false;
+        }
 
-        if (strtolower($this->email) !== strtolower($invitation->email)) return false;
+        if (strtolower((string) $this->email) !== strtolower((string) $invitation->email)) {
+            return false;
+        }
 
 
         // Link user to the platform
@@ -117,12 +126,12 @@ class User extends Authenticatable
 
     }
 
-    public function setImpersonating($id)
+    public function setImpersonating($id): void
     {
         session()->put('impersonate', $id);
     }
 
-    public function stopImpersonating()
+    public function stopImpersonating(): void
     {
         session()->forget('impersonate');
     }

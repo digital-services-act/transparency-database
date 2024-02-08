@@ -11,8 +11,8 @@ use Illuminate\Support\Str;
 
 class Platform extends Model
 {
-    use HasFactory, SoftDeletes;
-
+    use HasFactory;
+    use SoftDeletes;
     public const LABEL_DSA_TEAM = 'DSA Team';
 
     protected $hidden = [
@@ -58,10 +58,11 @@ class Platform extends Model
         return Str::slug($this->name);
     }
 
+    #[\Override]
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($statement) {
+        static::creating(static function ($statement) {
             $statement->uuid = Str::uuid();
         });
     }
@@ -85,10 +86,12 @@ class Platform extends Model
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','FORM');
     }
+
     public function api_statements(): HasMany
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','API');
     }
+
     public function api_multi_statements(): HasMany
     {
         return $this->hasMany(Statement::class, 'platform_id', 'id')->where('method','API_MULTI');

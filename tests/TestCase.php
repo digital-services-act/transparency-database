@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
     protected function signInAsAdmin($user = null) {
         $user = $this->signIn($user);
         $user->assignRole('Admin');
+
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
         return $user;
@@ -27,6 +28,7 @@ abstract class TestCase extends BaseTestCase
         $this->seed(OnboardingPermissionsSeeder::class);
         $user = $this->signIn($user);
         $user->assignRole('Onboarding');
+
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
         return $user;
@@ -35,6 +37,7 @@ abstract class TestCase extends BaseTestCase
     protected function signInAsContributor($user = null) {
         $user = $this->signIn($user);
         $user->assignRole('Contributor');
+
         $non_dsa_platform = Platform::nonDsa()->first();
         $this->assignPlatform($user, $non_dsa_platform);
         return $user;

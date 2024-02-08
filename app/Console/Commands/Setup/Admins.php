@@ -26,7 +26,7 @@ class Admins extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         self::generatePrivilegedUsers();
         Artisan::call('db:seed', [
@@ -50,9 +50,10 @@ class Admins extends Command
 
         // Create an admin user for each email in the .env ADMIN_EMAILS
         $admin_emails = config('dsa.ADMIN_EMAILS');
-        $admin_emails = explode(",", $admin_emails);
+        $admin_emails = explode(",", (string) $admin_emails);
+
         $admin_usernames = config('dsa.ADMIN_USERNAMES');
-        $admin_usernames = explode(",", $admin_usernames);
+        $admin_usernames = explode(",", (string) $admin_usernames);
         foreach ($admin_emails as $index => $admin_email) {
             if (filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
                 $parts = explode("@", $admin_email);
@@ -61,7 +62,7 @@ class Admins extends Command
                     [
                         'eu_login_username' => $admin_usernames[$index],
                         'name' => $parts[0],
-                        'password' => bcrypt(rand()),
+                        'password' => bcrypt(random_int(0, mt_getrandmax())),
                         'platform_id' => $dsa_platform->id
                     ]);
             }

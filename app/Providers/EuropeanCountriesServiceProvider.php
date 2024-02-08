@@ -12,9 +12,10 @@ class EuropeanCountriesServiceProvider extends ServiceProvider implements Deferr
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
-        $this->app->singleton(EuropeanCountriesService::class, fn(Application $app) => new EuropeanCountriesService());
+        $this->app->singleton(EuropeanCountriesService::class, static fn(Application $app) => new EuropeanCountriesService());
     }
 
     /**
@@ -22,6 +23,7 @@ class EuropeanCountriesServiceProvider extends ServiceProvider implements Deferr
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [EuropeanCountriesService::class];

@@ -230,6 +230,7 @@ class EuropeanLanguagesService
         foreach (self::EUROPEAN_LANGUAGE_CODES as $iso) {
             $out[$iso] = $this->getName($iso);
         }
+
         return $out;
     }
 
@@ -242,6 +243,7 @@ class EuropeanLanguagesService
                 $out[$iso] = $name;
             }
         }
+
         return $out;
     }
 
@@ -258,10 +260,12 @@ class EuropeanLanguagesService
                     //['      ' => ' ' ] +
                     $this->getNonEuropeanLanguages();
         }
+
         if ($euro_centric)
         {
             return $this->getEuropeanLanguages() + $this->getNonEuropeanLanguages();
         }
+
         return self::ALL_LANGUAGES;
     }
 }

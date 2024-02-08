@@ -36,7 +36,7 @@ class OpenSearchRemoveSor extends Command
             return;
         }
 
-        if ($id) {
+        if ($id !== 0) {
             try {
                 $client->delete([
                     'index' => $index,

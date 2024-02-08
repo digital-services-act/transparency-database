@@ -14,20 +14,15 @@ use Illuminate\Support\Facades\Log;
 
 class StatementSearchableChunk implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public int $start;
-    public int $chunk;
-    public int $min;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * Create a new job instance.
      */
-    public function __construct(int $start, int $chunk, int $min)
+    public function __construct(public int $start, public int $chunk, public int $min)
     {
-        $this->start = $start;
-        $this->min = $min;
-        $this->chunk = $chunk;
     }
 
     /**

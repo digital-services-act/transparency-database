@@ -32,6 +32,7 @@ class OpenSearchIndexInfo extends Command
             $this->error('index argument required');
             return;
         }
+
         /** @var Client $client */
         $client  = app(Client::class);
 
@@ -67,6 +68,7 @@ class OpenSearchIndexInfo extends Command
         {
             $fields[] = [$field,$field_info['type']];
         }
+
         $this->table(['Field', 'Type'], $fields);
 
         $shards = $client->cat()->shards(['index' => $index]);
@@ -93,6 +95,7 @@ class OpenSearchIndexInfo extends Command
                 'alias' => $alias
             ];
         }
+
         $this->newLine();
         $this->info('Aliases:');
         $this->table(['Alias'], $out);
@@ -106,12 +109,18 @@ class OpenSearchIndexInfo extends Command
     }
 
     private function humanFileSize($size,$unit="") {
-        if( (!$unit && $size >= 1<<30) || $unit == "GB")
+        if ((!$unit && $size >= 1<<30) || $unit == "GB") {
             return number_format($size/(1<<30),2)."GB";
-        if( (!$unit && $size >= 1<<20) || $unit == "MB")
+        }
+
+        if ((!$unit && $size >= 1<<20) || $unit == "MB") {
             return number_format($size/(1<<20),2)."MB";
-        if( (!$unit && $size >= 1<<10) || $unit == "KB")
+        }
+
+        if ((!$unit && $size >= 1<<10) || $unit == "KB") {
             return number_format($size/(1<<10),2)."KB";
+        }
+
         return number_format($size)." bytes";
     }
 }

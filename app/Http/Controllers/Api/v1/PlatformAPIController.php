@@ -19,7 +19,7 @@ class PlatformAPIController extends Controller
     {
 
         // Check if the application is in dev, acc or sandbox
-        if (strtolower(config('app.env_real')) !== 'production') {
+        if (strtolower((string) config('app.env_real')) !== 'production') {
             $platform = Platform::withCount(['form_statements', 'api_statements', 'api_multi_statements'])->find($platform->id);
         }
 
@@ -36,15 +36,16 @@ class PlatformAPIController extends Controller
 
         try {
             $platform = Platform::create($validated);
-        } catch (QueryException $e) {
+        } catch (QueryException $queryException) {
 
-            return $this->handleQueryException($e, 'Platform');
+            return $this->handleQueryException($queryException, 'Platform');
 
         }
 
 
         return response()->json($platform, Response::HTTP_CREATED);
     }
+
     public function update(Platform $platform, PlatformUpdateRequest $request): JsonResponse
     {
 

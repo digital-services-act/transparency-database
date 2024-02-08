@@ -22,8 +22,6 @@ class DayArchiveQueryService
     ];
 
     /**
-     * @param array $filters
-     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(array $filters): Builder
@@ -50,13 +48,12 @@ class DayArchiveQueryService
                 }
             }
         }
+
         return $dayarchives;
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param array $filter_value
-     *
      * @return void
      */
     private function applyUuidFilter(Builder $query, string $filter_value): void
@@ -77,8 +74,6 @@ class DayArchiveQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -89,8 +84,6 @@ class DayArchiveQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */

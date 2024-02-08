@@ -31,6 +31,7 @@ class StatementsIndexDateBySeconds extends Command
         $date = $this->sanitizeDateArgument();
         $start = $date->clone();
         $start->subSeconds($start->secondsSinceMidnight());
+
         $end = $date->clone();
         $end->addSeconds($end->secondsUntilEndOfDay());
 

@@ -12,15 +12,13 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportCopyS3 implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
-    public string $zip;
-    public string $sha1;
-
-    public function __construct(string $zip, string $sha1)
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
+    public function __construct(public string $zip, public string $sha1)
     {
-        $this->zip = $zip;
-        $this->sha1 = $sha1;
     }
 
     public function handle(): void

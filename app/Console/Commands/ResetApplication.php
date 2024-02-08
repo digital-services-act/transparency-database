@@ -54,6 +54,7 @@ class ResetApplication extends Command
                     $this->call('statements:day-archive', ['date' => $date->format('Y-m-d')]);
                     $date->addDay();
                 }
+
                 $this->info('Day Archives created.');
             }
         } else {

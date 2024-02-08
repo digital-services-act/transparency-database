@@ -43,9 +43,7 @@ class EnrichHomePageCache extends Command
             $this->info('Building home page cache');
             // Now run and reset them if needed.
             $statement_search_service->grandTotal();
-            Cache::remember('platforms_total', $day, function () {
-                return max(1, Platform::nonDsa()->count());
-            });
+            Cache::remember('platforms_total', $day, static fn() => max(1, Platform::nonDsa()->count()));
             $statement_search_service->topCategories();
             $statement_search_service->topDecisionVisibilities();
             $statement_search_service->fullyAutomatedDecisionPercentage();
