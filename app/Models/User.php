@@ -117,12 +117,12 @@ class User extends Authenticatable
 
     }
 
-    public function setImpersonating($id)
+    public function setImpersonating($id): void
     {
         session()->put('impersonate', $id);
     }
 
-    public function stopImpersonating()
+    public function stopImpersonating(): void
     {
         session()->forget('impersonate');
     }

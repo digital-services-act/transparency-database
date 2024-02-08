@@ -16,7 +16,7 @@ class StatementsExport implements FromCollection, WithHeadings, WithMapping
 
     private Collection $collection;
 
-    public function setCollection(Collection $collection)
+    public function setCollection(Collection $collection): void
     {
         $this->collection = $collection;
     }

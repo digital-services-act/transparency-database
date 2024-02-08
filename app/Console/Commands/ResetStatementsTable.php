@@ -11,7 +11,7 @@ class ResetStatementsTable extends Command
     protected $signature = 'statements:reset {--force} {--reallyforce}';
     protected $description = 'Drop and recreate the Statements table';
 
-    public function handle()
+    public function handle(): void
     {
         if (config('app.env') !== 'production' || ($this->option('force') && $this->option('reallyforce'))) {
             $tableName = 'statements';

@@ -69,7 +69,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statements_store_requires_auth()
+    public function api_statements_store_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         // Not signing in.
@@ -84,7 +84,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statements_store_works()
+    public function api_statements_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -113,7 +113,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statements_store_validates()
+    public function api_statements_store_validates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
@@ -146,7 +146,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statements_store_detect_non_unique_in_call()
+    public function api_statements_store_detect_non_unique_in_call(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -177,7 +177,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statements_store_detects_previous_puid()
+    public function api_statements_store_detects_previous_puid(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -215,7 +215,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_store_multiple_submissions_created_by_factory()
+    public function it_should_store_multiple_submissions_created_by_factory(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
@@ -236,7 +236,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_require_decision_visibility_other_field_when_sending_multiple_statements()
+    public function it_should_require_decision_visibility_other_field_when_sending_multiple_statements(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -271,7 +271,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_require_descriptions_when_other_fields_are_sent_via_multiple_statements()
+    public function it_should_require_descriptions_when_other_fields_are_sent_via_multiple_statements(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -306,7 +306,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_should_not_save_source_identity()
+    public function store_multiple_should_not_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
@@ -337,7 +337,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_different_content_types()
+    public function store_multiple_with_different_content_types(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -367,7 +367,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_different_source_type()
+    public function store_multiple_with_different_source_type(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -405,7 +405,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_different_decision_monetary()
+    public function store_multiple_with_different_decision_monetary(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -447,7 +447,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_different_category_specifications()
+    public function store_multiple_with_different_category_specifications(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -487,7 +487,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_different_decision_grounds()
+    public function store_multiple_with_different_decision_grounds(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -535,7 +535,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_with_different_decision_visibility()
+    public function store_multiple_with_different_decision_visibility(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
@@ -572,7 +572,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_multiple_statements_with_different_attributes_should_be_persisted_and_visible()
+    public function store_multiple_statements_with_different_attributes_should_be_persisted_and_visible(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsContributor();

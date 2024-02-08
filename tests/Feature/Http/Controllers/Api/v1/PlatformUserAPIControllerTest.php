@@ -21,7 +21,7 @@ class PlatformUserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_platform_user_store_requires_auth()
+    public function api_platform_user_store_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         // Not signing in.
@@ -37,7 +37,7 @@ class PlatformUserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_platform_user_store_creates_the_invitations()
+    public function api_platform_user_store_creates_the_invitations(): void
     {
         $this->setUpFullySeededDatabase();
 
@@ -83,7 +83,7 @@ class PlatformUserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_not_create_duplicates()
+    public function it_should_not_create_duplicates(): void
     {
         // If the user already logged in with EU Login and belongs to a platform, we don't need to add the user again.
 
@@ -173,7 +173,7 @@ class PlatformUserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_onboard_the_user()
+    public function it_should_onboard_the_user(): void
     {
 
         $this->setUpFullySeededDatabase();

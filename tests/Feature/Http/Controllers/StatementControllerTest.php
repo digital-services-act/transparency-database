@@ -50,7 +50,7 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_displays_view_if_logged_with_rights()
+    public function index_displays_view_if_logged_with_rights(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -79,7 +79,7 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function export_downloads_a_file()
+    public function export_downloads_a_file(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -92,7 +92,7 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function create_displays_view()
+    public function create_displays_view(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -105,7 +105,7 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function create_must_be_authenticated()
+    public function create_must_be_authenticated(): void
     {
         $this->setUpFullySeededDatabase();
         // The cas is set to masquerade in testing mode.
@@ -123,7 +123,7 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_displays_view()
+    public function show_displays_view(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -140,7 +140,7 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\StatementController::class,
@@ -153,7 +153,7 @@ class StatementControllerTest extends TestCase
      * @test
      * @see StatementAPIControllerTest
      */
-    public function store_saves_and_redirects()
+    public function store_saves_and_redirects(): void
     {
         $this->setUpFullySeededDatabase();
         // This is a basic test that the normal controller is working.

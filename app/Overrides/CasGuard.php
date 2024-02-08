@@ -82,7 +82,7 @@ final class CasGuard implements AuthGuard
         return $this->user->user;
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->user = null;
         $this->loggedOut = true;
@@ -90,7 +90,7 @@ final class CasGuard implements AuthGuard
         $this->session->migrate(true);
     }
 
-    public function setUser(Authenticatable $user)
+    public function setUser(Authenticatable $user): void
     {
 
         $this->user = $user;

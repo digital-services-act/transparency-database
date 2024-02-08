@@ -17,7 +17,7 @@ class MarkDayArchiveCompleted implements ShouldQueue
         $this->archive_id = $archive_id;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $day_archive = DayArchive::find($this->archive_id);
         $day_archive->completed_at = Carbon::now();

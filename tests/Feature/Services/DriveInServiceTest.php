@@ -25,7 +25,7 @@ class DriveInServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_calls_out_for_similar_words()
+    public function it_calls_out_for_similar_words(): void
     {
         $mock_result_array = ["alex","http_fake","laravel","is","awesome"];
         $mock_similar_result_array = ["alex","http fake","laravel","is","awesome"]; // http_fake -> http fake

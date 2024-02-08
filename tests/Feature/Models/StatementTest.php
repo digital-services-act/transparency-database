@@ -15,7 +15,7 @@ class StatementTest extends TestCase
      * @return void
      * @test
      */
-    public function territorial_scope_is_always_an_array()
+    public function territorial_scope_is_always_an_array(): void
     {
         $this->setUpFullySeededDatabase();
         $statement = Statement::all()->random()->first();
@@ -51,7 +51,7 @@ class StatementTest extends TestCase
      * @return void
      * @test
      */
-    public function territorial_scope_is_always_sorted()
+    public function territorial_scope_is_always_sorted(): void
     {
         $this->setUpFullySeededDatabase();
         $statement = Statement::all()->random()->first();

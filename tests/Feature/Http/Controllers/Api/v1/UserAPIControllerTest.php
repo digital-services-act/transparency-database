@@ -17,7 +17,7 @@ class UserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_not_find_the_route_for_unknown_user()
+    public function it_should_not_find_the_route_for_unknown_user(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsOnboarding();
@@ -35,7 +35,7 @@ class UserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_return_invited_users_as_inactive()
+    public function it_should_return_invited_users_as_inactive(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsOnboarding();
@@ -60,7 +60,7 @@ class UserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_say_email_is_not_active()
+    public function it_should_say_email_is_not_active(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsOnboarding();
@@ -84,7 +84,7 @@ class UserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_should_say_user_is_active_when_he_created_a_token()
+    public function it_should_say_user_is_active_when_he_created_a_token(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsOnboarding();

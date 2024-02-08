@@ -24,7 +24,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_gets_all_the_options()
+    public function it_gets_all_the_options(): void
     {
         $options = $this->european_countries_service->getOptionsArray();
         $this->assertNotNull($options);
@@ -35,7 +35,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_condenses_european_union_countries()
+    public function it_condenses_european_union_countries(): void
     {
         $country_codes = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $names = $this->european_countries_service->getCountryNames($country_codes);
@@ -46,7 +46,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_condenses_european_economic_area_countries()
+    public function it_condenses_european_economic_area_countries(): void
     {
         $country_codes = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
         $names = $this->european_countries_service->getCountryNames($country_codes);
@@ -57,7 +57,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_does_not_condense_european_union_countries()
+    public function it_does_not_condense_european_union_countries(): void
     {
         $country_codes = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $names = $this->european_countries_service->getCountryNames($country_codes, false);
@@ -69,7 +69,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_filters_out_non_european_countries()
+    public function it_filters_out_non_european_countries(): void
     {
         $country_codes = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $country_codes[] = 'US';
@@ -90,7 +90,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function it_does_not_break_on_empty()
+    public function it_does_not_break_on_empty(): void
     {
         $country_codes = [];
         $result = $this->european_countries_service->filterSortEuropeanCountries($country_codes);
@@ -101,7 +101,7 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function ensure_that_country_codes_arrays_are_in_alphabetical_order()
+    public function ensure_that_country_codes_arrays_are_in_alphabetical_order(): void
     {
         $codes = EuropeanCountriesService::EUROPEAN_COUNTRY_CODES;
         $result = $codes;

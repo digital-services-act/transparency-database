@@ -25,7 +25,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_can_do_a_basic_query()
+    public function it_can_do_a_basic_query(): void
     {
         $this->setUpFullySeededDatabase(); // 10 statements
         $total = $this->statement_query_service->query([])->count();
@@ -35,7 +35,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_automated_detection()
+    public function it_filters_on_automated_detection(): void
     {
         $this->setUpFullySeededDatabase(); // 10 statements
         $automated_count = $this->statement_query_service->query(['automated_detection' => ['Yes']])->count();
@@ -49,7 +49,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_automated_decision()
+    public function it_filters_on_automated_decision(): void
     {
         $this->setUpFullySeededDatabase(); // 10 statements
         $fully_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_FULLY']])->count();
@@ -64,7 +64,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_territorial_scope()
+    public function it_filters_on_territorial_scope(): void
     {
         $filters = [
             'territorial_scope' => ["FR", "DE", "NL", "XX"]
@@ -77,7 +77,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_created_at_start()
+    public function it_filters_on_created_at_start(): void
     {
         $filters = [
             'created_at_start' => "20-5-2021"
@@ -89,7 +89,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_created_at_end()
+    public function it_filters_on_created_at_end(): void
     {
         $filters = [
             'created_at_end' => "20-5-2021"
@@ -101,7 +101,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_platform_id()
+    public function it_filters_on_platform_id(): void
     {
         $filters = [
             'platform_id' => [1]
@@ -113,7 +113,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_decision_ground()
+    public function it_filters_on_decision_ground(): void
     {
         $filters = [
             'decision_ground' => array_keys(Statement::DECISION_GROUNDS)
@@ -125,7 +125,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_source_type()
+    public function it_filters_on_source_type(): void
     {
         $filters = [
             'source_type' => array_keys(Statement::SOURCE_TYPES)
@@ -137,7 +137,7 @@ class StatementQueryServiceTest extends TestCase
     /**
      * @test
      */
-    public function it_filters_on_category()
+    public function it_filters_on_category(): void
     {
         $filters = [
             'category' => array_keys(Statement::STATEMENT_CATEGORIES)

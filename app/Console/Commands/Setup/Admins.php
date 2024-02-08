@@ -26,7 +26,7 @@ class Admins extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         self::generatePrivilegedUsers();
         Artisan::call('db:seed', [

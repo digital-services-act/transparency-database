@@ -69,7 +69,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_show_works()
+    public function api_statement_show_works(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -90,7 +90,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_existing_puid_works()
+    public function api_statement_existing_puid_works(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -111,7 +111,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_existing_puid_gives_404()
+    public function api_statement_existing_puid_gives_404(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -129,7 +129,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_show_requires_auth()
+    public function api_statement_show_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         $attributes = $this->required_fields;
@@ -145,7 +145,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_store_requires_auth()
+    public function api_statement_store_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         // Not signing in.
@@ -160,7 +160,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_store_works()
+    public function api_statement_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -189,7 +189,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function api_statement_content_language_is_stored()
+    public function api_statement_content_language_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -220,7 +220,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function api_statement_content_language_can_be_non_european()
+    public function api_statement_content_language_can_be_non_european(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -251,7 +251,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function api_statement_content_language_must_be_valid()
+    public function api_statement_content_language_must_be_valid(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -274,7 +274,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function api_statement_content_language_must_be_uppercase()
+    public function api_statement_content_language_must_be_uppercase(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -297,7 +297,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function api_statement_account_type_is_stored()
+    public function api_statement_account_type_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -327,7 +327,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function api_statement_account_type_is_validated()
+    public function api_statement_account_type_is_validated(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -348,7 +348,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_json_store_works()
+    public function api_statement_json_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -393,7 +393,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function application_date_must_be_correct_format()
+    public function application_date_must_be_correct_format(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -445,7 +445,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function request_rejects_bad_dates()
+    public function request_rejects_bad_dates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -466,7 +466,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_store_rejects_bad_decision_ground_urls()
+    public function api_statement_store_rejects_bad_decision_ground_urls(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -485,7 +485,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statement_store_accepts_google_decision_ground_urls()
+    public function api_statement_store_accepts_google_decision_ground_urls(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -504,7 +504,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function request_rejects_bad_countries()
+    public function request_rejects_bad_countries(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -522,7 +522,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_does_not_save_optional_fields_non_related_to_illegal_content()
+    public function store_does_not_save_optional_fields_non_related_to_illegal_content(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -545,7 +545,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_does_not_save_optional_fields_non_related_to_incompatible_content()
+    public function store_does_not_save_optional_fields_non_related_to_incompatible_content(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -569,7 +569,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_enforces_puid_uniqueness()
+    public function store_enforces_puid_uniqueness(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -618,7 +618,7 @@ class StatementAPIControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function on_store_puid_is_shown_but_not_on_show()
+    public function on_store_puid_is_shown_but_not_on_show(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -660,7 +660,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_content_type_other()
+    public function store_should_save_content_type_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -683,7 +683,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_not_save_content_type_other()
+    public function store_should_not_save_content_type_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -707,7 +707,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_source_identity()
+    public function store_should_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -730,7 +730,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_not_save_source_identity()
+    public function store_should_not_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -755,7 +755,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_end_dates()
+    public function store_should_save_end_dates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -786,7 +786,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_keywords_with_other()
+    public function store_should_save_keywords_with_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -810,7 +810,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_not_duplicate_categories()
+    public function store_should_save_not_duplicate_categories(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -835,7 +835,7 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_not_empty_additional_categories()
+    public function store_should_save_not_empty_additional_categories(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();

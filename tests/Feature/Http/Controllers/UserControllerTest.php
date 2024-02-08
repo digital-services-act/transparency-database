@@ -15,7 +15,7 @@ class UserControllerTest extends TestCase
      * @return void
      * @test
      */
-    public function deleting_user_deletes_the_rest()
+    public function deleting_user_deletes_the_rest(): void
     {
         $this->setUpFullySeededDatabase();
         /** @var User $user */
