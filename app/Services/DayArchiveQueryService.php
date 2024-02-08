@@ -48,6 +48,7 @@ class DayArchiveQueryService
                 }
             }
         }
+
         return $dayarchives;
     }
 

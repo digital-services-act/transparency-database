@@ -29,20 +29,21 @@ class UserController extends Controller
         $s = $request->get('s');
         $uuid = $request->get('uuid');
         if ($s) {
-            $users->where('name', 'like', '%' . $s . '%')->orWhere('email', 'like', '%' . $s . '%')->orWhereHas('platform', function($inner_query) use ($s){
+            $users->where('name', 'like', '%' . $s . '%')->orWhere('email', 'like', '%' . $s . '%')->orWhereHas('platform', static function ($inner_query) use ($s) {
                 $inner_query->where('name', 'like', '%' . $s . '%');
             });
         }
+
         if ($uuid) {
-            $users->whereHas('platform', function($inner_query) use ($uuid) {
-               $inner_query->where('uuid', $uuid);
+            $users->whereHas('platform', static function ($inner_query) use ($uuid) {
+                $inner_query->where('uuid', $uuid);
             });
         }
 
         $users->orderBy('name');
         $users = $users->paginate(50)->withQueryString();
 
-        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(fn($name, $uuid) => [
+        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(static fn($name, $uuid) => [
             'value' => $uuid,
             'label' => $name
         ])->toArray();
@@ -91,6 +92,7 @@ class UserController extends Controller
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
         }
+
         return redirect()->route('user.index')->with('success', 'The user has been created');
     }
 
@@ -141,6 +143,7 @@ class UserController extends Controller
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
         }
+
         return redirect()->route('user.index')->with('success', 'The user has been saved');
     }
 
@@ -160,7 +163,7 @@ class UserController extends Controller
 
     private function prepareOptions()
     {
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(fn($platform) => [
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(static fn($platform) => [
             'value' => $platform->id,
             'label' => $platform->name
         ])->toArray();

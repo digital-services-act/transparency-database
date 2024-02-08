@@ -45,6 +45,7 @@ class StatementsIndexRange extends Command
                 $statement_search_service->bulkIndexStatements($statements);
             } catch (Exception) {
             }
+
             $current += $chunk;
         }
     }

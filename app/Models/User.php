@@ -17,9 +17,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
-
-
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
+    use SoftDeletes;
     public const API_TOKEN_KEY = 'api-token';
 
     /**
@@ -68,9 +70,11 @@ class User extends Authenticatable
             if (isset($attributes['domainUsername'])) {
                 $username = $attributes['domainUsername'];
             }
+
             if (isset($attributes['eu_login_username'])) {
                 $username = $attributes['eu_login_username'];
             }
+
             $attributes['name'] = isset($attributes['firstName']) && isset($attributes['lastName'])
                 ? $attributes['firstName'] . ' ' . $attributes['lastName']
                 : ($attributes['name'] ?? '');

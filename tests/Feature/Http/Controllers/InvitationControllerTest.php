@@ -13,8 +13,9 @@ use Tests\TestCase;
  */
 class InvitationControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase, WithFaker;
-
+    use AdditionalAssertions;
+    use RefreshDatabase;
+    use WithFaker;
     #[\Override]
     protected function setUp(): void
     {

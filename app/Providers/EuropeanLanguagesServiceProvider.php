@@ -15,7 +15,7 @@ class EuropeanLanguagesServiceProvider extends ServiceProvider implements Deferr
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(EuropeanLanguagesService::class, fn(Application $app) => new EuropeanLanguagesService());
+        $this->app->singleton(EuropeanLanguagesService::class, static fn(Application $app) => new EuropeanLanguagesService());
     }
 
     /**

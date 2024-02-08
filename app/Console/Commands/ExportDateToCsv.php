@@ -46,7 +46,7 @@ class ExportDateToCsv extends Command
         while ($current <= $last_id) {
             $till = ($current + $chunk - 1);
             StatementCsvExport::dispatch($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
-            $part++;
+            ++$part;
             $current += $chunk;
         }
     }

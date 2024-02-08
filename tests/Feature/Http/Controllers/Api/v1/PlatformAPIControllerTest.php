@@ -10,9 +10,10 @@ use Tests\TestCase;
 
 class PlatformAPIControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
-
+    use RefreshDatabase;
+    use WithFaker;
     private array $requiredFields;
+
     private Platform $platform;
 
     #[\Override]

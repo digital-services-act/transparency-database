@@ -30,8 +30,9 @@ class DriveInService
 
     private function parseSimilarityResults(array $results): array
     {
-        return array_map(fn($item) => str_replace("_", " ", (string) $item), $results);
+        return array_map(static fn($item) => str_replace("_", " ", (string) $item), $results);
     }
+
     private function buildSimilarityPayload($word): string
     {
         $payload = new stdClass();

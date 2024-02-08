@@ -51,6 +51,7 @@ class Admins extends Command
         // Create an admin user for each email in the .env ADMIN_EMAILS
         $admin_emails = config('dsa.ADMIN_EMAILS');
         $admin_emails = explode(",", (string) $admin_emails);
+
         $admin_usernames = config('dsa.ADMIN_USERNAMES');
         $admin_usernames = explode(",", (string) $admin_usernames);
         foreach ($admin_emails as $index => $admin_email) {

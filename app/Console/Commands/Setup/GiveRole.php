@@ -33,6 +33,7 @@ class GiveRole extends Command
             $this->error('The role was not found.');
             return;
         }
+
         /** @var User $user */
         $user = User::where('email', $this->argument('email'))->first();
 

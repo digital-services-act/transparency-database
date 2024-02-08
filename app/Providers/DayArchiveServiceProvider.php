@@ -16,7 +16,7 @@ class DayArchiveServiceProvider extends ServiceProvider implements DeferrablePro
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(DayArchiveService::class, fn(Application $app) => new DayArchiveService(app(StatementSearchService::class)));
+        $this->app->singleton(DayArchiveService::class, static fn(Application $app) => new DayArchiveService(app(StatementSearchService::class)));
     }
 
     /**

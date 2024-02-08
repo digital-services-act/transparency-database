@@ -25,6 +25,7 @@ trait CommandTrait
                 throwException(new RuntimeException('Issue with the date provided, checked the format yyyy-mm-dd'));
             }
         }
+
         return $date;
     }
 

@@ -13,8 +13,7 @@ class EuropeanLanguagesServiceTest extends TestCase
 
     protected EuropeanLanguagesService $european_languages_service;
 
-    #[\Override]
-    public function setUp(): void
+    #[\Override]protected function setUp(): void
     {
         $this->european_languages_service = app(EuropeanLanguagesService::class);
         $this->assertNotNull($this->european_languages_service);

@@ -17,8 +17,11 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportArchive implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
     public function __construct(public string $date, public string $platform_slug, public mixed $platform_id = null)
     {
     }

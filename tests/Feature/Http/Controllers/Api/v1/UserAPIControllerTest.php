@@ -11,9 +11,8 @@ use Tests\TestCase;
 
 class UserAPIControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
-
-
+    use RefreshDatabase;
+    use WithFaker;
     /**
      * @test
      */

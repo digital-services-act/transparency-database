@@ -35,6 +35,7 @@ class OpenSearchIndexList extends Command
         {
             $rows[] = [$index];
         }
+
         $this->table(['Indexes'], $rows);
     }
 }

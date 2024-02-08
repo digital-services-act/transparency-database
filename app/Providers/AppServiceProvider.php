@@ -28,15 +28,12 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             ClientInterface::class,
-            fn(Application $app): ClientInterface =>
-                //or whatever client you want
-                new Client()
+            static fn(Application $app): ClientInterface => new Client()
         );
         $this->app->bind(
             Psr17Interface::class,
-            function(Application $app): Psr17Interface {
+            static function (Application $app) : Psr17Interface {
                 $psr17Factory = new Psr17Factory();
-
                 //or whatever psr17 you want
                 return new Psr17(
                     $psr17Factory,
@@ -67,9 +64,9 @@ class AppServiceProvider extends ServiceProvider
         view()->share('ecl_init', true);
 
         // Analytics Float Format
-        Blade::directive('aff', static fn(string $expression) => "<?php echo number_format(floatval($expression), 2, '.', '&nbsp;'); ?>");
+        Blade::directive('aff', static fn(string $expression) => sprintf('<?php echo number_format(floatval(%s), 2, \'.\', \'&nbsp;\'); ?>', $expression));
         // Analytics Int Format
-        Blade::directive('aif', static fn(string $expression) => "<?php echo number_format(intval($expression), 0, '', '&nbsp;'); ?>");
+        Blade::directive('aif', static fn(string $expression) => sprintf('<?php echo number_format(intval(%s), 0, \'\', \'&nbsp;\'); ?>', $expression));
         RateLimiter::for('reindexing', static fn(object $job) => Limit::perMinute(400));
     }
 }

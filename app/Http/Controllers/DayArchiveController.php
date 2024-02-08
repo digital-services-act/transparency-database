@@ -36,7 +36,7 @@ class DayArchiveController extends Controller
 
     private function prepareOptions(): array
     {
-        $platforms = Platform::Vlops()->orderBy('name')->get()->map(fn($platform) => [
+        $platforms = Platform::Vlops()->orderBy('name')->get()->map(static fn($platform) => [
             'value' => $platform->uuid,
             'label' => $platform->name
         ])->toArray();

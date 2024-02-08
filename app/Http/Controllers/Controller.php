@@ -13,8 +13,9 @@ use Symfony\Component\Intl\Countries;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
     /**
      * @param $array
      *
@@ -22,7 +23,7 @@ class Controller extends BaseController
      */
     protected function mapForSelectWithoutKeys($array): array
     {
-        return array_map(fn($value) => ['value' => $value, 'label' => $value], $array);
+        return array_map(static fn($value) => ['value' => $value, 'label' => $value], $array);
     }
 
     protected function sanitizeDate($date): ?string
@@ -37,6 +38,6 @@ class Controller extends BaseController
      */
     protected function mapForSelectWithKeys($array): array
     {
-        return array_map(fn($key, $value) => ['value' => $key, 'label' => $value], array_keys($array), array_values($array));
+        return array_map(static fn($key, $value) => ['value' => $key, 'label' => $value], array_keys($array), array_values($array));
     }
 }

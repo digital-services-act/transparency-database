@@ -33,6 +33,7 @@ class StatementsDayExport implements FromQuery, ShouldQueue, WithHeadings, WithM
         }
 
     }
+
     #[\Override]
     public function query(): \Illuminate\Database\Eloquent\Relations\Relation|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
     {

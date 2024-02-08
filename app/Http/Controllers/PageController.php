@@ -106,11 +106,12 @@ class PageController extends Controller
     private function convertMdFile(string $file): string
     {
         $parsedown = new Parsedown();
-        return preg_replace_callback( '/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', function( $matches ) {
-            if ( ! stripos( $matches[0], 'id=' ) ) {
-                $id = strtolower(str_replace(" ", "-", $matches[3]));
+        return preg_replace_callback( '/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', static function ($matches) {
+            if ( ! stripos( (string) $matches[0], 'id=' ) ) {
+                $id = strtolower(str_replace(" ", "-", (string) $matches[3]));
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
+            
             return $matches[0];
         }, (string) $parsedown->text(file_get_contents($file)));
     }

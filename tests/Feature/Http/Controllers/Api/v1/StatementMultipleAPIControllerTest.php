@@ -16,9 +16,11 @@ use Tests\TestCase;
 
 class StatementMultipleAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase, WithFaker;
-
+    use AdditionalAssertions;
+    use RefreshDatabase;
+    use WithFaker;
     private array $required_fields;
+
     private Statement $statement;
 
     /**
@@ -35,6 +37,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             unset($statement['platform_name']);
             unset($statement['self']);
         }
+
         return $statements;
     }
 
@@ -330,6 +333,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
         $this->assertNotNull($statement->source_type);
         $this->assertNull($statement->source_identity);

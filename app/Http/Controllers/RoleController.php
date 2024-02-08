@@ -60,6 +60,7 @@ class RoleController extends Controller
         foreach ($validated['permissions'] as $id) {
             $role->permissions()->attach($id);
         }
+
         return redirect()->route('role.index')->with('success', 'The role has been created');
     }
 
@@ -109,6 +110,7 @@ class RoleController extends Controller
         foreach ($validated['permissions'] as $id) {
             $role->permissions()->attach($id);
         }
+
         return redirect()->route('role.index')->with('success', 'The role has been saved');
     }
 

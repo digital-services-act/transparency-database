@@ -16,7 +16,7 @@ class StatementSearchServiceProvider extends ServiceProvider implements Deferrab
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(StatementSearchService::class, fn(Application $app) => new StatementSearchService(app(Client::class)));
+        $this->app->singleton(StatementSearchService::class, static fn(Application $app) => new StatementSearchService(app(Client::class)));
     }
 
     /**

@@ -11,7 +11,8 @@ use Tests\TestCase;
 
 class PlatformControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase;
+    use AdditionalAssertions;
+    use RefreshDatabase;
     /**
      * @return void
      * @test

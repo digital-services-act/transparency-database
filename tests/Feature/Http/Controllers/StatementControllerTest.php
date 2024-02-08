@@ -15,8 +15,9 @@ use Tests\TestCase;
  */
 class StatementControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase, WithFaker;
-
+    use AdditionalAssertions;
+    use RefreshDatabase;
+    use WithFaker;
     protected $dummy_attributes = [
         'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
         'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 class ResetStatementsTable extends Command
 {
     protected $signature = 'statements:reset {--force} {--reallyforce}';
+
     protected $description = 'Drop and recreate the Statements table';
 
     public function handle(): void

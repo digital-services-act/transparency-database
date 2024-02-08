@@ -16,8 +16,11 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExport implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
     public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false)
     {
     }
@@ -51,7 +54,7 @@ class StatementCsvExport implements ShouldQueue
                  ->where('statements.id', '<=', $this->end_id)
                  ->orderBy('statements.id');
 
-        $raw->chunk(100000, function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
+        $raw->chunk(100000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row      = $day_archive_service->mapRaw($statement, $platforms);
@@ -65,7 +68,6 @@ class StatementCsvExport implements ShouldQueue
                     fputcsv($exports[$statement->platform_id]['csv_filelight'], $rowlight);
                 }
             }
-
             // Flush
             foreach ($exports as $export) {
                 fflush($export['csv_file']);

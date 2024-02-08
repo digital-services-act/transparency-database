@@ -8,23 +8,23 @@ use Illuminate\Support\Facades\Log;
 
 trait ExceptionHandlingTrait
 {
-    function handleQueryException(QueryException $e, string $subject)
+    public function handleQueryException(QueryException $e, string $subject)
     {
 
-        Log::error("$subject Creation Query Exception Thrown: " . $e->getMessage());
+        Log::error($subject . ' Creation Query Exception Thrown: ' . $e->getMessage());
 
         $errors = [
             'uncaught_exception' => [
-                "$subject Creation Query Exception Thrown: " . $e->getMessage()
+                $subject . ' Creation Query Exception Thrown: ' . $e->getMessage()
             ]
         ];
 
-        $message = "$subject Creation Query Exception Thrown: " . $e->getMessage();
+        $message = $subject . ' Creation Query Exception Thrown: ' . $e->getMessage();
 
         return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    function handleIntegrityConstraintException(QueryException $e, string $subject)
+    public function handleIntegrityConstraintException(QueryException $e, string $subject)
     {
 
         $duplicatePUID = $this->extractPUIDFromMessage($e->getMessage());

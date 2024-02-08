@@ -15,10 +15,10 @@ class DayArchiveServiceTest extends TestCase
     use RefreshDatabase;
 
     protected DayArchiveService $day_archive_service;
+
     private array $required_fields;
 
-    #[\Override]
-    public function setUp(): void
+    #[\Override]protected function setUp(): void
     {
         parent::setUp();
         $this->day_archive_service = app(DayArchiveService::class);

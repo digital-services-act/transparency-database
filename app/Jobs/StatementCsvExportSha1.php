@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportSha1 implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
     public function __construct(public string $date, public string $platform, public string $version)
     {
     }

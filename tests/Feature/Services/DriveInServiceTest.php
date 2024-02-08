@@ -14,8 +14,7 @@ class DriveInServiceTest extends TestCase
 
     protected DriveInService $drive_in_service;
 
-    #[\Override]
-    public function setUp(): void
+    #[\Override]protected function setUp(): void
     {
         $this->drive_in_service = app(DriveInService::class);
         $this->assertNotNull($this->drive_in_service);

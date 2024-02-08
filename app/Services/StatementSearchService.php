@@ -100,6 +100,7 @@ class StatementSearchService
                 if (method_exists($this, $method)) {
                     $part = $this->$method($filters[$filter_key]);
                 }
+
                 if ($part) {
                     $queryAndParts[] = $part;
                 }
@@ -380,6 +381,7 @@ class StatementSearchService
                 ], JSON_THROW_ON_ERROR);
                 $bulk[] = json_encode($doc, JSON_THROW_ON_ERROR);
             }
+
             // Call the bulk and make them searchable.
             $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
         }
@@ -493,8 +495,9 @@ class StatementSearchService
                         'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE category = '".$category."'"))
                     ];
                 }
-                uasort($results, fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
-                
+
+                uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
+
                 return $results;
             });
         }
@@ -514,8 +517,8 @@ class StatementSearchService
                     'total' => random_int(100, 200)
                 ]
             ];
-        } catch (RandomException $re) {
-            Log::error($re->getMessage());
+        } catch (RandomException $randomException) {
+            Log::error($randomException->getMessage());
 
             return [];
         }
@@ -538,7 +541,8 @@ class StatementSearchService
                         'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE decision_visibility_single = '".$decision_visibility."'"))
                     ];
                 }
-                uasort($results, fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
+
+                uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
 
                 return $results;
             });
@@ -559,8 +563,8 @@ class StatementSearchService
                     'total' => random_int(100, 200)
                 ]
             ];
-        } catch (RandomException $re) {
-            Log::error($re->getMessage());
+        } catch (RandomException $randomException) {
+            Log::error($randomException->getMessage());
 
             return [];
         }
@@ -586,8 +590,8 @@ class StatementSearchService
 
         try {
             return random_int(0, 100);
-        } catch (RandomException $re) {
-            Log::error($re->getMessage());
+        } catch (RandomException $randomException) {
+            Log::error($randomException->getMessage());
 
             return 5;
         }
@@ -614,6 +618,7 @@ class StatementSearchService
         foreach ($keys as $key) {
             Cache::delete($key);
         }
+
         Cache::delete('osa_cache');
     }
 
@@ -707,9 +712,11 @@ class StatementSearchService
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
         }
+
         if ( ! $caching) {
             Cache::delete($key);
         }
+
         $cache   = 'hit';
         $results = Cache::rememberForever($key, function () use ($date, $attributes, $key, &$cache) {
             $query = $this->aggregateQuerySingleDate($date, $attributes);
@@ -934,7 +941,7 @@ JSON;
 
             $item['total'] = $bucket['doc_count'];
             $total         += $bucket['doc_count'];
-            $total_aggregates++;
+            ++$total_aggregates;
             $out[] = $item;
         }
 

@@ -27,7 +27,7 @@ class HomeController extends Controller
         $last_days = 30;
 
         $total = $this->statement_search_service->grandTotal();
-        $platforms_total = Cache::remember('platforms_total', 60*60*24, fn() => max(1, Platform::nonDsa()->count()));
+        $platforms_total = Cache::remember('platforms_total', 60*60*24, static fn() => max(1, Platform::nonDsa()->count()));
 
         $top_x = 3;
 

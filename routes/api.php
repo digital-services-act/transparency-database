@@ -21,8 +21,7 @@ use Illuminate\Support\Facades\Route;
 //    Route::post('statement', [StatementAPIController::class,'store'])->name('api.statement.store')->can('create statements');
 //});
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('ping', fn() => response()->json(["you_say" => "ping", "i_say" => "pong"]));
-
-    Route::get('user', fn() => auth()->user())->can('create statements');
+Route::middleware('auth:sanctum')->group(static function () {
+    Route::get('ping', static fn() => response()->json(["you_say" => "ping", "i_say" => "pong"]));
+    Route::get('user', static fn() => auth()->user())->can('create statements');
 });

@@ -43,6 +43,7 @@ class DayArchiveService
             ];
             $exports[$vlop->id] = $export;
         }
+
         return $exports;
     }
 
@@ -72,6 +73,7 @@ class DayArchiveService
             $in[] = $date->format('Y-m-d H:i:s');
             $date->addSecond();
         }
+
         return $in;
     }
 
@@ -102,6 +104,7 @@ class DayArchiveService
             $in[] = $date->format('Y-m-d H:i:s');
             $date->subSecond();
         }
+
         return $in;
     }
 

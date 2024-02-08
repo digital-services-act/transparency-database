@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportReduce implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
     public function __construct(public string $date, public string $platform, public string $version)
     {
     }
@@ -36,7 +39,8 @@ class StatementCsvExportReduce implements ShouldQueue
             if ($part_left !== $new_name) {
                 shell_exec('mv '. $part_left . ' ' . $new_name);
             }
-            $count++;
+
+            ++$count;
         }
 
     }

@@ -16,9 +16,11 @@ use Tests\TestCase;
 
 class StatementAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase, WithFaker;
-
+    use AdditionalAssertions;
+    use RefreshDatabase;
+    use WithFaker;
     private array $required_fields;
+
     private Statement $statement;
 
     /**
@@ -35,6 +37,7 @@ class StatementAPIControllerTest extends TestCase
             unset($statement['platform_name']);
             unset($statement['self']);
         }
+
         return $statements;
     }
 
@@ -363,6 +366,7 @@ class StatementAPIControllerTest extends TestCase
         foreach ($fields as $key => $value) {
             $object->$key = $value;
         }
+
         $json = json_encode($object);
         $response = $this->call(
             'POST',
@@ -414,6 +418,7 @@ class StatementAPIControllerTest extends TestCase
         foreach ($fields as $key => $value) {
             $object->$key = $value;
         }
+
         $json = json_encode($object);
         $response = $this->call(
             'POST',
@@ -537,6 +542,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNull($statement->incompatible_content_ground);
         $this->assertNull($statement->incompatible_content_explanation);
@@ -562,6 +568,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNull($statement->illegal_content_legal_ground);
         $this->assertNull($statement->illegal_content_explanation);
@@ -583,6 +590,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
         $json = $response->json();
         $this->assertNotNull($json['errors']);
         $this->assertNotNull($json['errors']['puid']);
@@ -628,6 +636,7 @@ class StatementAPIControllerTest extends TestCase
         foreach ($this->required_fields as $key => $value) {
             $object->$key = $value;
         }
+
         $json = json_encode($object);
         $response = $this->call(
             'POST',
@@ -676,6 +685,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->content_type);
         $this->assertNotNull($statement->content_type_other);
@@ -699,6 +709,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->content_type);
         $this->assertNull($statement->content_type_other);
@@ -723,6 +734,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->source_type);
         $this->assertNotNull($statement->source_identity);
@@ -746,6 +758,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->source_type);
         $this->assertNull($statement->source_identity);
@@ -773,6 +786,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertInstanceOf(Carbon::class, $statement->end_date_visibility_restriction);
         $this->assertEquals('2023-08-10 00:00:00', (string)$statement->end_date_visibility_restriction);
@@ -802,6 +816,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->category_specification);
         $this->assertNotNull($statement->category_specification_other);
@@ -826,6 +841,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->category);
         $this->assertNotNull($statement->category_addition);
@@ -851,6 +867,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->category);
         $this->assertNotNull($statement->category_addition);

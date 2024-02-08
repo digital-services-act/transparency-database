@@ -75,7 +75,7 @@ class InvitationController extends Controller
 
     private function prepareOptions()
     {
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(fn($platform) => [
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(static fn($platform) => [
             'value' => $platform->id,
             'label' => $platform->name
         ])->toArray();

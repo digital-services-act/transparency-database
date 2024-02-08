@@ -95,7 +95,7 @@ class StatementQueryService
      */
     private function applyPlatformIdFilter(Builder $query, array $filter_value): void
     {
-        $query->whereHas('platform', function($inner_query) use($filter_value) {
+        $query->whereHas('platform', static function ($inner_query) use ($filter_value) {
             $inner_query->whereIn('platforms.id', $filter_value);
         });
     }

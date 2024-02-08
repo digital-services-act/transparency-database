@@ -180,9 +180,9 @@ class StatementController extends Controller
 
         try {
             Statement::create($validated);
-        } catch (QueryException $e) {
+        } catch (QueryException $queryException) {
             if (
-                str_contains($e->getMessage(), "statements_platform_id_puid_unique")
+                str_contains($queryException->getMessage(), "statements_platform_id_puid_unique")
             ) {
                 return back()->withInput()->withErrors([
                     'puid' => [
@@ -190,7 +190,7 @@ class StatementController extends Controller
                     ]
                 ]);
             } else {
-                Log::error('Statement Creation Query Exception Thrown: ' . $e->getMessage());
+                Log::error('Statement Creation Query Exception Thrown: ' . $queryException->getMessage());
                 back()->withInput()->withErrors(['exception' => 'An uncaught exception was thrown, support has been notified.']);
             }
         }
@@ -216,7 +216,7 @@ class StatementController extends Controller
         $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS);
         $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
-        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(fn($platform) => [
+        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(static fn($platform) => [
             'value' => $platform->id,
             'label' => $platform->name
         ])->toArray();

@@ -27,6 +27,7 @@ class PlatformController extends Controller
         if ($request->get('s')) {
             $platforms = Platform::where('name', 'like', '%' . $request->get('s') . '%');
         }
+
         $platforms->orderBy('name');
         $platforms = $platforms->paginate(50)->withQueryString();
 
@@ -140,6 +141,7 @@ class PlatformController extends Controller
         if ($platform->id == $dsaPlatform->id) {
             return redirect()->route('platform.index')->with('error', 'You may never delete/change the DSA Platform');
         }
+
         // Change all statements to DSA
         $platform->statements()->update(['platform_id' => $dsaPlatform->id]);
 

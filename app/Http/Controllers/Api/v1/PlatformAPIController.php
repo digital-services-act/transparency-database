@@ -36,15 +36,16 @@ class PlatformAPIController extends Controller
 
         try {
             $platform = Platform::create($validated);
-        } catch (QueryException $e) {
+        } catch (QueryException $queryException) {
 
-            return $this->handleQueryException($e, 'Platform');
+            return $this->handleQueryException($queryException, 'Platform');
 
         }
 
 
         return response()->json($platform, Response::HTTP_CREATED);
     }
+
     public function update(Platform $platform, PlatformUpdateRequest $request): JsonResponse
     {
 

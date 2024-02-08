@@ -34,7 +34,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
     {
         $id = explode('|', $token)[0];
         $token = Cache::remember(
-            "personal-access-token:$id",
+            'personal-access-token:' . $id,
             config('sanctum.cache.ttl') ?? self::$ttl,
             static fn() => parent::findToken($token) ?? '_null_'
         );
@@ -59,7 +59,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
     {
         return Attribute::make(
             get: fn ($value, $attributes) => Cache::remember(
-                "personal-access-token:{$attributes['id']}:tokenable",
+                sprintf('personal-access-token:%s:tokenable', $attributes['id']),
                 config('sanctum.cache.ttl') ?? self::$ttl,
                 fn() => parent::tokenable()->first()
             )
@@ -73,8 +73,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      *
      * @return void
      */
-    #[\Override]
-    public static function boot(): void
+    #[\Override]protected static function boot(): void
     {
         parent::boot();
 
@@ -83,7 +82,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
 
             try {
                 Cache::remember(
-                    "personal-access-token:{$personalAccessToken->id}:last_used_at",
+                    sprintf('personal-access-token:%s:last_used_at', $personalAccessToken->id),
                     $interval,
                     static function () use ($personalAccessToken) {
                         DB::table($personalAccessToken->getTable())
@@ -93,17 +92,17 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
                         return now();
                     }
                 );
-            } catch (\Exception $e) {
-                Log::critical($e->getMessage());
+            } catch (\Exception $exception) {
+                Log::critical($exception->getMessage());
             }
 
             return false;
         });
 
         static::deleting(static function (self $personalAccessToken) {
-            Cache::forget("personal-access-token:{$personalAccessToken->id}");
-            Cache::forget("personal-access-token:{$personalAccessToken->id}:last_used_at");
-            Cache::forget("personal-access-token:{$personalAccessToken->id}:tokenable");
+            Cache::forget('personal-access-token:' . $personalAccessToken->id);
+            Cache::forget(sprintf('personal-access-token:%s:last_used_at', $personalAccessToken->id));
+            Cache::forget(sprintf('personal-access-token:%s:tokenable', $personalAccessToken->id));
         });
     }
 

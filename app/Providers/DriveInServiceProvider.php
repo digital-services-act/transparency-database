@@ -15,7 +15,7 @@ class DriveInServiceProvider extends ServiceProvider implements DeferrableProvid
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(DriveInService::class, fn(Application $app) => new DriveInService());
+        $this->app->singleton(DriveInService::class, static fn(Application $app) => new DriveInService());
     }
 
     /**

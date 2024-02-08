@@ -13,9 +13,11 @@ use Tests\TestCase;
 
 class PlatformUserAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions, RefreshDatabase, WithFaker;
-
+    use AdditionalAssertions;
+    use RefreshDatabase;
+    use WithFaker;
     private array $emails;
+
     private Platform $platform;
 
     /**
