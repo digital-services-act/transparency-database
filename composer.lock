@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fcbeb9f625ebeecaa2b6e6cd4b5ebf3e",
+    "content-hash": "09e1c76ea11b580023399aef5647ba5d",
     "packages": [
         {
             "name": "abe/cache-for-laravel-sanctum",
@@ -12834,7 +12834,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-zip": "*"
     },
     "platform-dev": [],
