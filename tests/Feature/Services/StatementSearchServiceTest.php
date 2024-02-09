@@ -339,7 +339,7 @@ class StatementSearchServiceTest extends TestCase
     {
         $now = Carbon::create(2024, 1, 29);
         $result = $this->statement_search_service->receivedDateCondition($now);
-        $should_be = "received_date = '2024-01-29 00:00:00'";
+        $should_be = "received_date = '2024-01-29'";
         $this->assertEquals($should_be, $result);
     }
 
@@ -352,7 +352,7 @@ class StatementSearchServiceTest extends TestCase
         $start = Carbon::create(2024, 1, 1);
         $end = Carbon::create(2024, 1, 2);
         $result = $this->statement_search_service->receivedDateRangeCondition($start, $end);
-        $should_be = "received_date BETWEEN '2024-01-01 00:00:00' AND '2024-01-02 00:00:00'";
+        $should_be = "received_date BETWEEN '2024-01-01' AND '2024-01-02'";
         $this->assertEquals($should_be, $result);
     }
 
@@ -367,7 +367,7 @@ class StatementSearchServiceTest extends TestCase
             $this->statement_search_service->receivedDateCondition(Carbon::create(2024, 1, 29))
         ];
         $result = $this->statement_search_service->buildWheres($conditions);
-        $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29 00:00:00'";
+        $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29'";
         $this->assertEquals($should_be, $result);
     }
 
