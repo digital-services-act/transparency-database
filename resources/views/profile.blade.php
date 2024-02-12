@@ -39,25 +39,38 @@
 
 
     <h2 class="ecl-u-type-heading-2">Assistance</h2>
-
-    <p class="ecl-u-type-paragraph">
-        For technical issues:
-    <pre>
+    <div class="ecl-row ecl-u-mb-l">
+        <div class="ecl-col-12">
+            <p class="ecl-u-type-paragraph">
+                For technical issues please contact:
+            <pre>
             CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
         </pre>
-    </p>
+            </p>
 
-    <p class="ecl-u-type-paragraph">
+            <p class="ecl-u-type-paragraph" style="max-width:none !important">
+                <strong>If you are an online platform</strong> and wish to set up your statement of reasons submission
+                process:<br/><br/>
 
-        If you are an online platform, please contact CNECT DIGITAL SERVICES at <a
-            href="mailto:CNECT-DIGITAL-SERVICES@ec.europa.eu">CNECT-DIGITAL-SERVICES@ec.europa.eu</a> to register your
-        interest for onboarding. Currently, only designated VLOPs (Verified List of Platforms) have access to
-        the API (both sandbox/test and production) for submissions of statements of reasons under the DSA (Digital
-        Services Act). Other platforms that have notified the Commission will be contacted for onboarding in early 2024.
+                Please register your intent to comply <a
+                    href="https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons">https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons</a><br/><br/>
 
-    <pre>
-            CNECT-DIGITAL-SERVICES&#64;ec.europa.eu
-        </pre>
-    </p>
+                Later on you will be contacted by the DSC of the country of establishment of the online platform (you
+                will find the already appointed DSCs here <a
+                    href="https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation">https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation</a>).
+                This is the first step required to be onboarded as an online platform with obligations under Article
+                24(5) of the DSA. Please note that Digital Services Coordinators should be appointed by 17th February
+                2024 at the latest.<br/><br/>
+
+                Currently, only designated VLOPs (Verified List of Platforms) have access to the API (both sandbox/test
+                and production) for submissions of statements of reasons under the DSA (Digital Services Act). Other
+                platforms that have notified the Commission will be contacted by their Digital Service Coordinator for
+                onboarding.<br/><br/>
+
+                Thank you
+
+            </p>
+        </div>
+    </div>
 
 @endsection
