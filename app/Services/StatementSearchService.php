@@ -65,6 +65,8 @@ class StatementSearchService
         'source_type',
     ];
 
+    private $mockCountQueryAnswer = 888;
+
     // When caching, go for 25 hours. Just so that there is a overlap.
     public const ONE_DAY = 25 * 60 * 60;
 
@@ -415,13 +417,23 @@ class StatementSearchService
             ]);
         }
 
+        return $this->mockCountQueryResult();
+    }
+
+    public function mockCountQueryResult(): array
+    {
         return [
             'datarows' => [
                 [
-                    0
+                    $this->mockCountQueryAnswer
                 ]
             ]
         ];
+    }
+
+    public function setMockCountQueryAnswer(int $answer): void
+    {
+        $this->mockCountQueryAnswer = $answer;
     }
 
     public function getCountQueryResult(array $conditions = []): int
@@ -493,35 +505,7 @@ class StatementSearchService
      */
     public function topCategories(): array
     {
-        if (config('scout.driver') === 'opensearch') {
-            return Cache::remember('top_categories', self::ONE_DAY, fn() => $this->topCategoriesNoCache());
-        }
-
-        return $this->mockTopCategories();
-    }
-
-    private function mockTopCategories(): array
-    {
-        try {
-            return [
-                [
-                    'value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
-                    'total' => random_int(100, 200)
-                ],
-                [
-                    'value' => 'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS',
-                    'total' => random_int(100, 200)
-                ],
-                [
-                    'value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH',
-                    'total' => random_int(100, 200)
-                ]
-            ];
-        } catch (RandomException $randomException) {
-            Log::error($randomException->getMessage());
-
-            return [];
-        }
+        return Cache::remember('top_categories', self::ONE_DAY, fn() => $this->topCategoriesNoCache());
     }
 
     public function topCategoriesNoCache(): array
@@ -545,11 +529,7 @@ class StatementSearchService
      */
     public function topDecisionVisibilities(): array
     {
-        if (config('scout.driver') === 'opensearch') {
-            return Cache::remember('top_decisions_visibility', self::ONE_DAY, fn() => $this->topDecisionVisibilitiesNoCache());
-        }
-
-        return $this->mockTopDecisionVisibilities();
+        return Cache::remember('top_decisions_visibility', self::ONE_DAY, fn() => $this->topDecisionVisibilitiesNoCache());
     }
 
     public function topDecisionVisibilitiesNoCache(): array
@@ -568,53 +548,20 @@ class StatementSearchService
         return $results;
     }
 
-    private function mockTopDecisionVisibilities(): array
-    {
-        try {
-            return [
-                [
-                    'value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED',
-                    'total' => random_int(100, 200)
-                ],
-                [
-                    'value' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
-                    'total' => random_int(100, 200)
-                ],
-                [
-                    'value' => 'DECISION_VISIBILITY_CONTENT_DISABLED',
-                    'total' => random_int(100, 200)
-                ]
-            ];
-        } catch (RandomException $randomException) {
-            Log::error($randomException->getMessage());
-
-            return [];
-        }
-    }
-
     /**
      * @return int
      */
     public function fullyAutomatedDecisionPercentage(): int
     {
-        if (config('scout.driver') === 'opensearch') {
-            return Cache::remember('automated_decisions_percentage', self::ONE_DAY, fn() => $this->fullyAutomatedDecisionPercentageNoCache());
-        }
-
-        try {
-            return random_int(0, 100);
-        } catch (RandomException $randomException) {
-            Log::error($randomException->getMessage());
-
-            return 5;
-        }
+        return Cache::remember('automated_decisions_percentage', self::ONE_DAY, fn() => $this->fullyAutomatedDecisionPercentageNoCache());
     }
 
     public function fullyAutomatedDecisionPercentageNoCache(): int
     {
-        $automated_decision_count     = $this->getCountQueryResult(["automated_decision = 'AUTOMATED_DECISION_FULLY'"]);
-        $total                        = $this->grandTotal();
-        return (int)(($automated_decision_count / max(1, $total)) * 100);
+        $automated_decision_count = $this->getCountQueryResult(["automated_decision = 'AUTOMATED_DECISION_FULLY'"]);
+        $total                    = $this->grandTotal();
+
+        return round((($automated_decision_count / max(1, $total)) * 100));
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Models\Statement;
 use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 
@@ -375,5 +376,113 @@ class StatementSearchServiceTest extends TestCase
         $result = $this->statement_search_service->buildWheres($conditions);
         $should_be = '';
         $this->assertEquals($should_be, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_get_the_grand_total(): void
+    {
+        $cache = Cache::get('grand_total');
+        $this->assertNull($cache);
+        $result = $this->statement_search_service->grandTotal();
+        $this->assertEquals(888, $result);
+        $cache = Cache::get('grand_total');
+        $this->assertNotNull($cache);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_extracts_count_query_results(): void
+    {
+        $this->statement_search_service->setMockCountQueryAnswer(777);
+        $result = $this->statement_search_service->extractCountQueryResult($this->statement_search_service->mockCountQueryResult());
+        $this->assertEquals(777, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_handles_bad_count_query_results(): void
+    {
+        $result = $this->statement_search_service->extractCountQueryResult([['fruits' => ['bananas', 'oranges']]]);
+        $this->assertEquals(0, $result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_get_the_top_categories(): void
+    {
+        $result = $this->statement_search_service->topCategories();
+        $this->assertEquals(888, $result[4]['total']);
+
+        $this->statement_search_service->setMockCountQueryAnswer(777);
+
+        // This answer should be cached and not 777
+        $result = $this->statement_search_service->topCategories();
+        $this->assertNotEquals(777, $result[6]['total']);
+
+        // run the no cache version
+        $result = $this->statement_search_service->topCategoriesNoCache();
+        $this->assertEquals(777, $result[6]['total']);
+
+        // Forget it
+        Cache::forget('top_categories');
+        $result = $this->statement_search_service->topCategories();
+        // Now it should be 777
+        $this->assertEquals(777, $result[6]['total']);
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_get_the_top_decisions_visibility(): void
+    {
+        $result = $this->statement_search_service->topDecisionVisibilities();
+        $this->assertEquals(888, $result[2]['total']);
+
+        $this->statement_search_service->setMockCountQueryAnswer(777);
+
+        // This answer should be cached and not 777
+        $result = $this->statement_search_service->topDecisionVisibilities();
+        $this->assertNotEquals(777, $result[3]['total']);
+
+        // run the no cache version
+        $result = $this->statement_search_service->topDecisionVisibilitiesNoCache();
+        $this->assertEquals(777, $result[3]['total']);
+
+        // Forget it
+        Cache::forget('top_decisions_visibility');
+        $result = $this->statement_search_service->topDecisionVisibilities();
+        // Now it should be 777
+        $this->assertEquals(777, $result[3]['total']);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_the_automated_decision_percentage(): void
+    {
+        $this->statement_search_service->setMockCountQueryAnswer(1000);
+        $this->statement_search_service->grandTotal();
+
+        $this->statement_search_service->setMockCountQueryAnswer(777);
+         // this will round up to 78.
+        $result = $this->statement_search_service->fullyAutomatedDecisionPercentage();
+        $this->assertEquals(78, $result);
+
+        Cache::forget('automated_decisions_percentage');
+        $this->statement_search_service->setMockCountQueryAnswer(773); // This will round down to 77.
+        $result = $this->statement_search_service->fullyAutomatedDecisionPercentage();
+        $this->assertEquals(77, $result);
     }
 }
