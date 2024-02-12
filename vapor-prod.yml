@@ -22,5 +22,5 @@ environments:
     queue-memory: 2048
     runtime: 'php-8.3:al2-arm'
     build:
-      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
       - 'php artisan event:cache'
