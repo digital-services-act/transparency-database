@@ -27,9 +27,9 @@ final class CasGuard implements AuthGuard
     private ?Authenticatable $user = null;
 
     public function __construct(
-        private ?UserProvider $provider,
-        private Request $request,
-        private Session $session
+        private readonly ?UserProvider $provider,
+        private readonly Request $request,
+        private readonly Session $session
     ) {
     }
 
@@ -41,6 +41,7 @@ final class CasGuard implements AuthGuard
         if (null === $user) {
             return null;
         }
+
         $user->acceptInvitation();
 
         $this->setUser($user);
@@ -48,6 +49,7 @@ final class CasGuard implements AuthGuard
         return $user;
     }
 
+    #[\Override]
     public function check()
     {
         return null !== $this->user();
@@ -63,16 +65,19 @@ final class CasGuard implements AuthGuard
         return sprintf('login_%s_%s', $this->name, sha1(self::class));
     }
 
+    #[\Override]
     public function guest()
     {
         return !$this->check();
     }
 
+    #[\Override]
     public function hasUser()
     {
-        return (null !== $this->user()) ? true : false;
+        return null !== $this->user();
     }
 
+    #[\Override]
     public function id()
     {
         if ($this->loggedOut) {
@@ -82,7 +87,7 @@ final class CasGuard implements AuthGuard
         return $this->user->user;
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->user = null;
         $this->loggedOut = true;
@@ -90,7 +95,8 @@ final class CasGuard implements AuthGuard
         $this->session->migrate(true);
     }
 
-    public function setUser(Authenticatable $user)
+    #[\Override]
+    public function setUser(Authenticatable $user): void
     {
 
         $this->user = $user;
@@ -99,6 +105,7 @@ final class CasGuard implements AuthGuard
         $this->session->migrate(true);
     }
 
+    #[\Override]
     public function user()
     {
         if ($this->loggedOut) {
@@ -109,12 +116,9 @@ final class CasGuard implements AuthGuard
 //        return $this->provider->retrieveCasUser();
     }
 
+    #[\Override]
     public function validate(array $credentials = [])
     {
-        if ([] === $credentials) {
-            return false;
-        }
-
-        return true;
+        return [] !== $credentials;
     }
 }

@@ -13,10 +13,9 @@ class InvitationService
 {
     public function getPendingInvitation($email): ?Invitation
     {
-        $invitation =  Invitation::firstWhere([
+        return Invitation::firstWhere([
             'email' => $email
         ]);
-        return $invitation;
     }
 
 

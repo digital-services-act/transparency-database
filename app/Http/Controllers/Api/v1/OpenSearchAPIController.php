@@ -16,24 +16,17 @@ use RuntimeException;
 
 class OpenSearchAPIController extends Controller
 {
-    private Client $client;
-    private StatementSearchService $statement_search_service;
-    private string $index_name;
+    private string $index_name = 'statement_index';
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
     private int $response_size_limit = 5242880;
 
-    public function __construct(Client $client, StatementSearchService $statement_search_service)
+    public function __construct(private readonly Client $client, private readonly StatementSearchService $statement_search_service)
     {
-        $this->client                   = $client;
-        $this->statement_search_service = $statement_search_service;
-        $this->index_name               = 'statement_index';
     }
 
     /**
-     * @param Request $request
-     *
      * @return callable|array|JsonResponse
      */
     public function search(Request $request): callable|array|JsonResponse
@@ -43,14 +36,12 @@ class OpenSearchAPIController extends Controller
                 'index' => $this->index_name,
                 'body'  => $request->toArray(),
             ]);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
-     *
      * @return callable|array|JsonResponse
      */
     public function count(Request $request): callable|array|JsonResponse
@@ -60,28 +51,24 @@ class OpenSearchAPIController extends Controller
                 'index' => $this->index_name,
                 'body'  => $request->toArray(),
             ]);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid count attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid count attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
-     *
      * @return array|JsonResponse
      */
     public function sql(Request $request): array|JsonResponse
     {
         try {
             return $this->client->sql()->query($request->toArray());
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid sql attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param Request $request
-     *
      * @return array|JsonResponse
      */
     public function explain(Request $request): array|JsonResponse
@@ -89,13 +76,13 @@ class OpenSearchAPIController extends Controller
         try {
             $results          = $this->client->sql()->explain($request->toArray());
             $query            = $results['root']['children'][0]['description']['request'] ?? false;
-            $query            = '{' . ltrim(strstr($query, '{'), '{');
+            $query            = '{' . ltrim(strstr((string) $query, '{'), '{');
             $query            = substr($query, 0, strrpos($query, '}')) . '}';
             $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
 
             return $results;
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid query attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -107,8 +94,6 @@ class OpenSearchAPIController extends Controller
     }
 
     /**
-     * @param string $date_in
-     *
      * @return JsonResponse|void
      */
     public function aggregatesCsvForDate(string $date_in)
@@ -132,13 +117,14 @@ class OpenSearchAPIController extends Controller
             $headers[] = 'platform_name';
             $headers[] = 'total';
             $headers = array_diff($headers, ['platform_id']);
-            
+
             $rows = [];
             foreach ($results['aggregates'] as $result) {
                 $row = [];
                 foreach ($headers as $header) {
                     $row[] = $result[$header];
                 }
+
                 $rows[] = $row;
             }
 
@@ -149,20 +135,20 @@ class OpenSearchAPIController extends Controller
             if (request('headers', true)) {
                 fputcsv($out, $headers);
             }
+
             foreach($rows as $row)
             {
                 fputcsv($out, $row);
             }
+
             fclose($out);
 
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates csv date attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid aggregates csv date attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param string $date_in
-     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
@@ -192,15 +178,12 @@ class OpenSearchAPIController extends Controller
             }
 
             return response()->json($results);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates date attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid aggregates date attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param string $start_in
-     * @param string $end_in
-     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
@@ -229,15 +212,12 @@ class OpenSearchAPIController extends Controller
             }
 
             return response()->json($results);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates range attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid aggregates range attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
     /**
-     * @param string $start_in
-     * @param string $end_in
-     * @param string $attributes_in
      *
      * @return JsonResponse|array
      */
@@ -267,8 +247,8 @@ class OpenSearchAPIController extends Controller
             }
 
             return response()->json($results);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -280,13 +260,11 @@ class OpenSearchAPIController extends Controller
     {
         try {
             $platforms = Platform::all()->pluck('name', 'id')->toArray();
-            $out       = array_map(static function ($id, $name) {
-                return ['id' => $id, 'name' => $name];
-            }, array_keys($platforms), array_values($platforms));
+            $out       = array_map(static fn($id, $name) => ['id' => $id, 'name' => $name], array_keys($platforms), array_values($platforms));
 
             return response()->json(['platforms' => $out]);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid platforms attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid platforms attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -309,8 +287,8 @@ class OpenSearchAPIController extends Controller
                 'content_types'         => Statement::CONTENT_TYPES,
                 'source_types'          => Statement::SOURCE_TYPES
             ];
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid labels attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid labels attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -325,8 +303,8 @@ class OpenSearchAPIController extends Controller
             $date = $this->sanitizeDateString($date_in);
 
             return response()->json($this->statement_search_service->totalForDate($date));
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid date total attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -342,8 +320,8 @@ class OpenSearchAPIController extends Controller
             }
 
             return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total platform attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid date total platform attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -353,8 +331,8 @@ class OpenSearchAPIController extends Controller
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
             return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date total range attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid date total range attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -364,8 +342,8 @@ class OpenSearchAPIController extends Controller
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
             return response()->json($this->statement_search_service->datesTotalsForRange($dates['start'], $dates['end']));
-        } catch (Exception $e) {
-            return response()->json(['error' => 'invalid date totals range attempt: ' . $e->getMessage()], $this->error_code);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'invalid date totals range attempt: ' . $exception->getMessage()], $this->error_code);
         }
     }
 
@@ -388,8 +366,8 @@ class OpenSearchAPIController extends Controller
             $date->subSeconds($date->secondsSinceMidnight());
 
             return $date;
-        } catch (Exception $e) {
-            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $e->getMessage());
+        } catch (Exception $exception) {
+            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -398,8 +376,8 @@ class OpenSearchAPIController extends Controller
         try {
             $start = $this->sanitizeDateString($start_in);
             $end   = $this->sanitizeDateString($end_in);
-        } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage());
+        } catch (Exception $exception) {
+            throw new RuntimeException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $end->subSeconds($end->secondsSinceMidnight());

@@ -15,8 +15,6 @@ class APIVersion
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
      * @param $guard
      *
      * @return mixed

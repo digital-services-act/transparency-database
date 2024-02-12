@@ -39,6 +39,7 @@ class OpenSearchTasks extends Command
                 }
             }
         }
+
         VarDumper::dump($cancellable);
     }
 }

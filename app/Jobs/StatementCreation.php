@@ -12,15 +12,15 @@ use Illuminate\Support\Carbon;
 
 class StatementCreation implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public int $when;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * Create a new job instance.
      */
-    public function __construct(int $when = 0)
+    public function __construct(public int $when = 0)
     {
-        $this->when = $when;
     }
 
     /**
@@ -28,7 +28,7 @@ class StatementCreation implements ShouldQueue
      */
     public function handle(): void
     {
-        if ($this->when) {
+        if ($this->when !== 0) {
             Statement::factory()->create([
                 'created_at' => Carbon::createFromTimestamp($this->when),
                 'updated_at' => Carbon::createFromTimestamp($this->when),

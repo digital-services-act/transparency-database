@@ -22,8 +22,6 @@ class DayArchiveQueryService
     ];
 
     /**
-     * @param array $filters
-     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(array $filters): Builder
@@ -42,9 +40,7 @@ class DayArchiveQueryService
             } else {
                 $method = sprintf('applyMissing%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
-                    Log::info($method);
                     if (method_exists($this, $method)) {
-                        Log::info('existing one: ' . $method);
                         $this->$method($dayarchives);
                     }
                 } catch (\TypeError|\Exception $e) {
@@ -52,13 +48,12 @@ class DayArchiveQueryService
                 }
             }
         }
+
         return $dayarchives;
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param array $filter_value
-     *
      * @return void
      */
     private function applyUuidFilter(Builder $query, string $filter_value): void
@@ -79,8 +74,6 @@ class DayArchiveQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -91,8 +84,6 @@ class DayArchiveQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */

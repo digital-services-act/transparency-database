@@ -33,6 +33,8 @@ class StatementsDayExport implements FromQuery, ShouldQueue, WithHeadings, WithM
         }
 
     }
+
+    #[\Override]
     public function query(): \Illuminate\Database\Eloquent\Relations\Relation|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
     {
         return Statement::query()->where('created_at', '>=', $this->date . ' 00:00:00')->where('created_at', '<=', $this->date . ' 23:59:59');

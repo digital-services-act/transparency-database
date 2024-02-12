@@ -10,14 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class MarkDayArchiveCompleted implements ShouldQueue
 {
     use Queueable;
-    public int $archive_id;
 
-    public function __construct(int $archive_id)
+    public function __construct(public int $archive_id)
     {
-        $this->archive_id = $archive_id;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $day_archive = DayArchive::find($this->archive_id);
         $day_archive->completed_at = Carbon::now();

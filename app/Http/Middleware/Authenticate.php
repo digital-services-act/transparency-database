@@ -13,6 +13,7 @@ class Authenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
+    #[\Override]
     protected function redirectTo(Request $request): ?string
     {
         return $request->expectsJson() ? null : route('laravel-cas-login');

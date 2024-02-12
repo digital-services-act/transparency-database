@@ -43,6 +43,7 @@ class StatementsVerifyIndexDate extends Command
         } else {
             Log::error('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
+
         VerifyIndex::dispatch($max, $min, $query_chunk, $searchable_chunk);
     }
 }

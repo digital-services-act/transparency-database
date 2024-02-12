@@ -14,8 +14,6 @@ use Laravel\Sanctum\PersonalAccessToken;
 class ProfileController extends Controller
 {
     /**
-     * @param Request $request
-     *
      * @return Factory|View|Application
      */
     public function profile(Request $request): Factory|View|Application
@@ -27,8 +25,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return Factory|View|Application
      */
     public function apiIndex(Request $request): Factory|View|Application
@@ -48,8 +44,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return Redirector|Application|RedirectResponse
      */
     public function newToken(Request $request): Redirector|Application|RedirectResponse

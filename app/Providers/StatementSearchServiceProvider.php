@@ -13,9 +13,10 @@ class StatementSearchServiceProvider extends ServiceProvider implements Deferrab
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
-        $this->app->singleton(StatementSearchService::class, fn(Application $app) => new StatementSearchService(app(Client::class)));
+        $this->app->singleton(StatementSearchService::class, static fn(Application $app) => new StatementSearchService(app(Client::class)));
     }
 
     /**
@@ -23,6 +24,7 @@ class StatementSearchServiceProvider extends ServiceProvider implements Deferrab
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [StatementSearchService::class];

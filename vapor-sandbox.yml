@@ -23,9 +23,9 @@ environments:
     cli-memory: 1024
     queue-memory: 1024
     storage: sor-dsa-m2-sandbox
-    runtime: 'php-8.2:al2-arm'
+    runtime: 'php-8.3:al2-arm'
     build:
-      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
       - 'php artisan event:cache'
     deploy:
       - 'php artisan cache:clear'

@@ -29,10 +29,11 @@ class GiveRole extends Command
     {
         try {
             $role = Role::findByName($this->argument('role'));
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->error('The role was not found.');
             return;
         }
+
         /** @var User $user */
         $user = User::where('email', $this->argument('email'))->first();
 

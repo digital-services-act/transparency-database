@@ -20,11 +20,8 @@ class DayArchiveService
 {
     use StatementExportTrait;
 
-    protected StatementSearchService $statement_search_service;
-
-    public function __construct(StatementSearchService $statement_search_service)
+    public function __construct(protected StatementSearchService $statement_search_service)
     {
-        $this->statement_search_service = $statement_search_service;
     }
 
     public function buildBasicExportsArray(): array
@@ -46,6 +43,7 @@ class DayArchiveService
             ];
             $exports[$vlop->id] = $export;
         }
+
         return $exports;
     }
 
@@ -75,6 +73,7 @@ class DayArchiveService
             $in[] = $date->format('Y-m-d H:i:s');
             $date->addSecond();
         }
+
         return $in;
     }
 
@@ -105,6 +104,7 @@ class DayArchiveService
             $in[] = $date->format('Y-m-d H:i:s');
             $date->subSecond();
         }
+
         return $in;
     }
 
@@ -120,8 +120,6 @@ class DayArchiveService
     }
 
     /**
-     * @param Carbon $date
-     *
      * @return DayArchive|Model|Builder|null
      */
     public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
@@ -130,8 +128,6 @@ class DayArchiveService
     }
 
     /**
-     * @param Platform $platform
-     * @param Carbon $date
      *
      * @return DayArchive|Model|Builder|null
      */
@@ -141,8 +137,6 @@ class DayArchiveService
     }
 
     /**
-     * @param Carbon $date
-     *
      * @return Builder
      */
     public function getDayArchivesByDate(Carbon $date): Builder

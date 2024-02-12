@@ -14,12 +14,15 @@ use Laravel\Scout\Searchable;
 
 class Statement extends Model
 {
-    use HasFactory, Searchable, SoftDeletes;
-
-
+    use HasFactory;
+    use Searchable;
+    use SoftDeletes;
     public const METHOD_FORM = 'FORM';
+
     public const METHOD_API = 'API';
+
     public const METHOD_API_MULTI = 'API_MULTI';
+
     public const METHODS = [
         'METHOD_FORM' => self::METHOD_FORM,
         'METHOD_API' => self::METHOD_API,
@@ -27,8 +30,11 @@ class Statement extends Model
     ];
 
     public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
+
     public const ACCOUNT_TYPE_BUSINESS = "Business";
+
     public const ACCOUNT_TYPE_PRIVATE = "Private";
+
     public const ACCOUNT_TYPES = [
         'ACCOUNT_TYPE_BUSINESS' => self::ACCOUNT_TYPE_BUSINESS,
         'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE
@@ -36,11 +42,17 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_SOURCE_TYPE = 'Information source';
+
     public const LABEL_STATEMENT_SOURCE_IDENTITY = 'Source identity';
+
     public const SOURCE_ARTICLE_16 = 'Notice submitted in accordance with Article 16 DSA';
+
     public const SOURCE_TRUSTED_FLAGGER = 'Notice submitted by a trusted flagger';
+
     public const SOURCE_VOLUNTARY = 'Own voluntary initiative';
+
     public const SOURCE_TYPE_OTHER_NOTIFICATION = 'Other type of notification';
+
     public const SOURCE_TYPES = [
         'SOURCE_ARTICLE_16' => self::SOURCE_ARTICLE_16,
         'SOURCE_TRUSTED_FLAGGER' => self::SOURCE_TRUSTED_FLAGGER,
@@ -50,14 +62,23 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_CONTENT_TYPE = 'Content Type';
+
     public const CONTENT_TYPE_APP = 'App';
+
     public const CONTENT_TYPE_AUDIO = 'Audio';
+
     public const CONTENT_TYPE_PRODUCT = 'Product';
+
     public const CONTENT_TYPE_SYNTHETIC_MEDIA = 'Synthetic Media';
+
     public const CONTENT_TYPE_TEXT = 'Text';
+
     public const CONTENT_TYPE_VIDEO = 'Video';
+
     public const CONTENT_TYPE_IMAGE = 'Image';
+
     public const CONTENT_TYPE_OTHER = 'Other';
+
     public const CONTENT_TYPES = [
         'CONTENT_TYPE_APP' => self::CONTENT_TYPE_APP,
         'CONTENT_TYPE_AUDIO' => self::CONTENT_TYPE_AUDIO,
@@ -70,8 +91,11 @@ class Statement extends Model
     ];
 
     public const LABEL_STATEMENT_AUTOMATED_DETECTION = 'Was the content detected/identified using automated means?';
+
     public const AUTOMATED_DETECTION_YES = 'Yes';
+
     public const AUTOMATED_DETECTION_NO = 'No';
+
     public const AUTOMATED_DETECTIONS = [
         self::AUTOMATED_DETECTION_YES,
         self::AUTOMATED_DETECTION_NO,
@@ -79,9 +103,13 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using other automated means?';
+
     public const AUTOMATED_DECISION_FULLY = 'Fully automated';
+
     public const AUTOMATED_DECISION_PARTIALLY = 'Partially automated';
+
     public const AUTOMATED_DECISION_NOT_AUTOMATED = 'Not Automated';
+
     public const AUTOMATED_DECISIONS = [
         'AUTOMATED_DECISION_FULLY' => self::AUTOMATED_DECISION_FULLY,
         'AUTOMATED_DECISION_PARTIALLY' => self::AUTOMATED_DECISION_PARTIALLY,
@@ -90,9 +118,13 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
+
     public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
+
     public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
+
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
+
     public const DECISION_GROUNDS = [
         'DECISION_GROUND_ILLEGAL_CONTENT' => self::DECISION_GROUND_ILLEGAL_CONTENT,
         'DECISION_GROUND_INCOMPATIBLE_CONTENT' => self::DECISION_GROUND_INCOMPATIBLE_CONTENT
@@ -100,12 +132,19 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND = 'Legal ground relied on';
+
     public const LABEL_STATEMENT_ILLEGAL_CONTENT_EXPLANATION = 'Explanation of why the content is considered to be illegal on that ground';
+
     public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_GROUND = 'Reference to contractual ground';
+
     public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION = 'Explanation of why the content is considered as incompatible on that ground';
+
     public const LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL = 'Is the content considered as illegal?';
+
     public const INCOMPATIBLE_CONTENT_ILLEGAL_YES = 'Yes';
+
     public const INCOMPATIBLE_CONTENT_ILLEGAL_NO = 'No';
+
     public const INCOMPATIBLE_CONTENT_ILLEGALS = [
         self::INCOMPATIBLE_CONTENT_ILLEGAL_YES,
         self::INCOMPATIBLE_CONTENT_ILLEGAL_NO,
@@ -123,13 +162,21 @@ class Statement extends Model
     ];
 
     public const LABEL_STATEMENT_DECISION_VISIBILITY = 'Visibility restriction of specific items of information provided by the recipient of the service';
+
     public const DECISION_VISIBILITY_CONTENT_REMOVED = 'Removal of content';
+
     public const DECISION_VISIBILITY_CONTENT_DISABLED = 'Disabling access to content';
+
     public const DECISION_VISIBILITY_CONTENT_DEMOTED = 'Demotion of content';
+
     public const DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED = 'Age restricted content';
+
     public const DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED = 'Restricting interaction with content';
+
     public const DECISION_VISIBILITY_CONTENT_LABELLED = 'Labelled content';
+
     public const DECISION_VISIBILITY_OTHER = 'Other restriction (please specify)';
+
     public const DECISION_VISIBILITIES = [
         'DECISION_VISIBILITY_CONTENT_REMOVED' => self::DECISION_VISIBILITY_CONTENT_REMOVED,
         'DECISION_VISIBILITY_CONTENT_DISABLED' => self::DECISION_VISIBILITY_CONTENT_DISABLED,
@@ -141,8 +188,11 @@ class Statement extends Model
     ];
 
     public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary payments suspension, termination or other restriction';
+
     public const DECISION_MONETARY_SUSPENSION = 'Suspension of monetary payments';
+
     public const DECISION_MONETARY_TERMINATION = 'Termination of monetary payments';
+
     public const DECISION_MONETARY_OTHER = 'Other restriction (please specify)';
 
     public const DECISION_MONETARIES = [
@@ -152,10 +202,15 @@ class Statement extends Model
     ];
 
     public const LABEL_STATEMENT_DECISION_PROVISION = 'Suspension or termination of the provision of the service';
+
     public const DECISION_PROVISION_PARTIAL_SUSPENSION = 'Partial suspension of the provision of the service';
+
     public const DECISION_PROVISION_TOTAL_SUSPENSION = 'Total suspension of the provision of the service';
+
     public const DECISION_PROVISION_PARTIAL_TERMINATION = 'Partial termination of the provision of the service';
+
     public const DECISION_PROVISION_TOTAL_TERMINATION = 'Total termination of the provision of the service';
+
     public const DECISION_PROVISIONS = [
         'DECISION_PROVISION_PARTIAL_SUSPENSION' => self::DECISION_PROVISION_PARTIAL_SUSPENSION,
         'DECISION_PROVISION_TOTAL_SUSPENSION' => self::DECISION_PROVISION_TOTAL_SUSPENSION,
@@ -163,8 +218,10 @@ class Statement extends Model
         'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
-    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Suspension or termination of the recipient of the service\'s account';
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = "Suspension or termination of the recipient of the service's account";
+
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
+
     public const DECISION_ACCOUNT_TERMINATED = 'Termination of the account';
 
     public const DECISION_ACCOUNTS = [
@@ -176,21 +233,35 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
+
     public const LABEL_STATEMENT_CATEGORY_ADDITION = 'Additional Categories';
 
     public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
+
     public const STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS = 'Data protection and privacy violations';
+
     public const STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH = 'Illegal or harmful speech';
+
     public const STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS = 'Intellectual property infringements';
+
     public const STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS = 'Negative effects on civic discourse or elections';
+
     public const STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR = 'Non-consensual behaviour';
+
     public const STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT = 'Pornography or sexualized content';
+
     public const STATEMENT_CATEGORY_PROTECTION_OF_MINORS = 'Protection of minors';
+
     public const STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY = 'Risk for public security';
+
     public const STATEMENT_CATEGORY_SCAMS_AND_FRAUD = 'Scams and/or fraud';
+
     public const STATEMENT_CATEGORY_SELF_HARM = 'Self-harm';
+
     public const STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE = 'Scope of platform service';
+
     public const STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS = 'Unsafe and/or illegal products';
+
     public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
 
 
@@ -212,62 +283,117 @@ class Statement extends Model
     ];
 
     public const KEYWORD_ANIMAL_HARM = 'Animal Harm';
+
     public const KEYWORD_ADULT_SEXUAL_MATERIAL = 'Adult Sexual Material';
+
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-Specific Restrictions Concerning Minors';
+
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-Specific Restrictions';
+
     public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric Data Breach';
+
     public const KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL = 'Child Sexual Abuse Material';
+
     public const KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS = 'Content Promoting Eating Disorders';
+
     public const KEYWORD_COORDINATED_HARM = 'Coordinated Harm';
+
     public const KEYWORD_COPYRIGHT_INFRINGEMENT = 'Copyright Infringement';
+
     public const KEYWORD_DANGEROUS_TOYS = 'Dangerous Toys';
+
     public const KEYWORD_DATA_FALSIFICATION = 'Data Falsification';
+
     public const KEYWORD_DEFAMATION = 'Defamation';
+
     public const KEYWORD_DESIGN_INFRINGEMENT = 'Design Infringement';
+
     public const KEYWORD_DISCRIMINATION = 'Discrimination';
+
     public const KEYWORD_DISINFORMATION = 'Disinformation';
+
     public const KEYWORD_FOREIGN_INFORMATION_MANIPULATION = 'Foreign Information Manipulation and Interference';
+
     public const KEYWORD_GENDER_BASED_VIOLENCE = 'Gender-Based Violence';
+
     public const KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT = 'Geographic Indications Infringements';
+
     public const KEYWORD_GEOGRAPHICAL_REQUIREMENTS = 'Geographical Requirements';
+
     public const KEYWORD_GOODS_SERVICES_NOT_PERMITTED = 'Goods/Services Not Permitted to Be Offered on the Platform';
+
     public const KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS = 'Grooming/Sexual Enticement of Minors';
+
     public const KEYWORD_HATE_SPEECH = 'Hate Speech';
+
     public const KEYWORD_HUMAN_EXPLOITATION = 'Human Exploitation';
+
     public const KEYWORD_HUMAN_TRAFFICKING = 'Human Trafficking';
+
     public const KEYWORD_ILLEGAL_ORGANIZATIONS = 'Illegal Organizations';
+
     public const KEYWORD_IMAGE_BASED_SEXUAL_ABUSE = 'Image-Based Sexual Abuse (excluding content depicting minors)';
+
     public const KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING = 'Impersonation or Account Hijacking';
+
     public const KEYWORD_INAUTHENTIC_ACCOUNTS = 'Inauthentic Accounts';
+
     public const KEYWORD_INAUTHENTIC_LISTINGS = 'Inauthentic Listings';
+
     public const KEYWORD_INAUTHENTIC_USER_REVIEWS = 'Inauthentic User Reviews';
+
     public const KEYWORD_INCITEMENT_VIOLENCE_HATRED = 'Incitement to Violence and/or Hatred';
+
     public const KEYWORD_INSUFFICIENT_INFORMATION_TRADERS = 'Insufficient Information on Traders';
+
     public const KEYWORD_LANGUAGE_REQUIREMENTS = 'Language Requirements';
+
     public const KEYWORD_MISINFORMATION = 'Misinformation';
+
     public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing Processing Ground for Data';
+
     public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-Consensual Image Sharing';
+
     public const KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE = 'Non-Consensual Items Containing Deepfake or Similar Technology Using a Third Party’s Features';
+
     public const KEYWORD_NUDITY = 'Nudity';
+
     public const KEYWORD_ONLINE_BULLYING_INTIMIDATION = 'Online Bullying/Intimidation';
+
     public const KEYWORD_PATENT_INFRINGEMENT = 'Patent Infringement';
+
     public const KEYWORD_PHISHING = 'Phishing';
+
     public const KEYWORD_PYRAMID_SCHEMES = 'Pyramid Schemes';
+
     public const KEYWORD_REGULATED_GOODS_SERVICES = 'Regulated Goods and Services';
+
     public const KEYWORD_RIGHT_TO_BE_FORGOTTEN = 'Right to Be Forgotten';
+
     public const KEYWORD_RISK_ENVIRONMENTAL_DAMAGE = 'Risk for Environmental Damage';
+
     public const KEYWORD_RISK_PUBLIC_HEALTH = 'Risk for Public Health';
+
     public const KEYWORD_SELF_MUTILATION = 'Self-Mutilation';
+
     public const KEYWORD_STALKING = 'Stalking';
+
     public const KEYWORD_SUICIDE = 'Suicide';
+
     public const KEYWORD_TERRORIST_CONTENT = 'Terrorist Content';
+
     public const KEYWORD_TRADE_SECRET_INFRINGEMENT = 'Trade Secret Infringement';
+
     public const KEYWORD_TRADEMARK_INFRINGEMENT = 'Trademark Infringement';
+
     public const KEYWORD_UNLAWFUL_SALE_ANIMALS = 'Unlawful Sale of Animals';
+
     public const KEYWORD_UNSAFE_CHALLENGES = 'Unsafe Challenges';
+
     public const KEYWORD_OTHER = 'Other';
 
     public const LABEL_KEYWORDS = 'Keywords';
+
     public const LABEL_KEYWORDS_OTHER = 'Other Keyword';
 
     public const KEYWORDS = [
@@ -334,16 +460,23 @@ class Statement extends Model
 
 
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
+
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
+
     public const LABEL_STATEMENT_CONTENT_DATE = 'When the content was posted or uploaded';
+
     public const LABEL_STATEMENT_APPLICATION_DATE = 'Application date of the decision';
 
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
+
     public const LABEL_STATEMENT_CONTENT_LANGUAGE = "The language of the content";
 
     public const LABEL_STATEMENT_END_DATE_ACCOUNT_RESTRICTION = 'End date of the account restriction';
+
     public const LABEL_STATEMENT_END_DATE_MONETARY_RESTRICTION = 'End date of the monetary restriction';
+
     public const LABEL_STATEMENT_END_DATE_SERVICE_RESTRICTION = 'End date of the service restriction decision';
+
     public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
     /**
@@ -397,6 +530,7 @@ class Statement extends Model
         'self'
     ];
 
+    #[\Override]
     protected static function boot(): void
     {
         parent::boot();
@@ -557,12 +691,15 @@ class Statement extends Model
         if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
         }
+
         if ($this->decision_monetary) {
             $decisions[] = 'Monetary';
         }
+
         if ($this->decision_provision) {
             $decisions[] = 'Provision';
         }
+
         if ($this->decision_account) {
             $decisions[] = 'Account';
         }
@@ -578,7 +715,7 @@ class Statement extends Model
         foreach ($keys as $key) {
 
             // Use constant() to get the value of the constant by its name
-            $value = constant('App\Models\Statement::' . $key);
+            $value = constant(\App\Models\Statement::class . '::' . $key);
 
             if ($value !== null) {
                 $enumValues[] = $value;
@@ -603,9 +740,9 @@ class Statement extends Model
 
         // Catch potential bad json here.
         try {
-            $out = json_decode($this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            Log::error('Statement::getRawKeys: ' . $e->getMessage());
+            $out = json_decode((string) $this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $exception) {
+            Log::error('Statement::getRawKeys: ' . $exception->getMessage());
             return [];
         }
 

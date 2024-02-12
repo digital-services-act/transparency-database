@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Guard;
 class EULoginAuth
 {
     protected $auth;
+
     protected $cas;
 
     public function __construct(Guard $auth)
@@ -22,7 +23,6 @@ class EULoginAuth
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @param $email
      * @return mixed
      */
@@ -64,6 +64,7 @@ class EULoginAuth
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             }
+
             $this->cas->authenticate();
 
         }

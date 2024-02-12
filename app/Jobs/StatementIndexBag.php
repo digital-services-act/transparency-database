@@ -15,23 +15,19 @@ use Illuminate\Support\Facades\Log;
 
 class StatementIndexBag implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public array $statement_ids;
-
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * Create a new job instance.
      */
-    public function __construct($statement_ids)
+    public function __construct(public array $statement_ids)
     {
-        $this->statement_ids = $statement_ids;
     }
 
     /**
      * Execute the job.
-     *
-     * @param StatementSearchService $statement_search_service
      */
     public function handle(StatementSearchService $statement_search_service): void
     {

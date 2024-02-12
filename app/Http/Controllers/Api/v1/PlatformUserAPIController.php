@@ -30,9 +30,9 @@ class PlatformUserAPIController extends Controller
                 ]);
             }
 
-        } catch (QueryException $e) {
+        } catch (QueryException $queryException) {
 
-            return $this->handleQueryException($e, 'User');
+            return $this->handleQueryException($queryException, 'User');
 
         }
 

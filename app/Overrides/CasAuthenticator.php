@@ -17,7 +17,7 @@ use EcPhp\CasLib\Contract\Response\Type\ServiceValidate;
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class CasAuthenticator
+final readonly class CasAuthenticator
 {
     public function __construct(
         private CasInterface $cas,

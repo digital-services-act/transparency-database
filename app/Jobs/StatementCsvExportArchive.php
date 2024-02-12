@@ -17,17 +17,13 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportArchive implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
-    public string $date;
-    public string $platform_slug;
-    public mixed $platform_id;
-
-    public function __construct(string $date, string $platform_slug, $platform_id = null)
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
+    public function __construct(public string $date, public string $platform_slug, public mixed $platform_id = null)
     {
-        $this->date = $date;
-        $this->platform_slug = $platform_slug;
-        $this->platform_id = $platform_id;
     }
 
     public function handle(StatementSearchService $statement_search_service, DayArchiveService $day_archive_service): void

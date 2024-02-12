@@ -10,11 +10,13 @@ use Tests\TestCase;
 
 class PlatformAPIControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
-
+    use RefreshDatabase;
+    use WithFaker;
     private array $requiredFields;
+
     private Platform $platform;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,7 +30,7 @@ class PlatformAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_platform_store_requires_auth()
+    public function api_platform_store_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
 
@@ -45,7 +47,7 @@ class PlatformAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_platform_store_works()
+    public function api_platform_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsOnboarding();
@@ -70,7 +72,7 @@ class PlatformAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_platform_update_works()
+    public function api_platform_update_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsOnboarding();
@@ -114,9 +116,7 @@ class PlatformAPIControllerTest extends TestCase
             'dsa_common_id' => 'foobar',
         ]);
 
-        $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields, [
-            'Accept' => 'application/json',
-        ]);
+        $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields);
 
 
         $response->assertStatus(Response::HTTP_OK);

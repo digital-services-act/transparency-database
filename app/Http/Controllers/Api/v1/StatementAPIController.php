@@ -20,8 +20,8 @@ use Illuminate\Validation\Rule;
 
 class StatementAPIController extends Controller
 {
-    use Sanitizer, ExceptionHandlingTrait;
-
+    use Sanitizer;
+    use ExceptionHandlingTrait;
     protected EuropeanCountriesService $european_countries_service;
 
     public function __construct(
@@ -62,10 +62,10 @@ class StatementAPIController extends Controller
 
         try {
             $statement = Statement::create($validated);
-        } catch (QueryException $e) {
+        } catch (QueryException $queryException) {
             if (
-                str_contains($e->getMessage(), "statements_platform_id_puid_unique") || // mysql
-                str_contains($e->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
+                str_contains($queryException->getMessage(), "statements_platform_id_puid_unique") || // mysql
+                str_contains($queryException->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
             ) {
                 $errors = [
                     'puid' => [
@@ -83,7 +83,7 @@ class StatementAPIController extends Controller
                 return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            return $this->handleQueryException($e, 'Statement');
+            return $this->handleQueryException($queryException, 'Statement');
         }
 
 
@@ -117,18 +117,16 @@ class StatementAPIController extends Controller
 
             // Check if validation fails and collect errors
             if ($validator->fails()) {
-                $errors["statement_{$index}"] = $validator->errors()->toArray();
+                $errors['statement_' . $index] = $validator->errors()->toArray();
             }
         }
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             // Return validation errors as a JSON response
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $puids_to_check = array_map(static function ($potential_statement) {
-            return $potential_statement['puid'];
-        }, $payload['statements']);
+        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'], $payload['statements']);
 
         // Are all the puids unique with in the call?
         $unique_puids_to_check = array_unique($puids_to_check);
@@ -175,6 +173,7 @@ class StatementAPIController extends Controller
 
             $this->sanitizePayloadStatement($payload_statement);
         }
+
         unset($payload_statement);
 
         try {
@@ -195,12 +194,12 @@ class StatementAPIController extends Controller
             }
 
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
-        } catch (QueryException $e) {
-            switch ($e->getCode()) {
+        } catch (QueryException $queryException) {
+            switch ($queryException->getCode()) {
                 case 23000:
-                    return $this->handleIntegrityConstraintException($e, 'Statement');
+                    return $this->handleIntegrityConstraintException($queryException, 'Statement');
                 default:
-                    return $this->handleQueryException($e, 'Statement');
+                    return $this->handleQueryException($queryException, 'Statement');
             }
         }
     }
@@ -233,10 +232,8 @@ class StatementAPIController extends Controller
     }
 
     /**
-     * @param array $payload_statement
      * @param $field
      * @param $needle
-     *
      * @return void
      */
     private function handleOtherFieldWithinArray(array &$payload_statement, $field, $needle): void
@@ -246,19 +243,18 @@ class StatementAPIController extends Controller
         if (is_null($payload_statement[$field])) {
             return;
         }
+
         if (in_array($needle, $payload_statement[$field], true)) {
-            $payload_statement[$field_other] = $payload_statement[$field_other] ?? null;
+            $payload_statement[$field_other] ??= null;
         } else {
             $payload_statement[$field_other] = null;
         }
     }
 
     /**
-     * @param array $payload_statement
      * @param $field
      * @param $field_other
      * @param $needle
-     *
      * @return void
      */
     private function handleOtherFieldWhenEqual(array &$payload_statement, $field, $field_other, $needle): void
@@ -267,16 +263,14 @@ class StatementAPIController extends Controller
         if ($needle === $payload_statement[$field]) {
             $payload_statement[$field_other] = null;
         } else {
-            $payload_statement[$field_other] = $payload_statement[$field_other] ?? null;
+            $payload_statement[$field_other] ??= null;
         }
     }
 
     /**
-     * @param array $payload_statement
      * @param $field
      * @param $field_other
      * @param $needle
-     *
      * @return void
      */
     private function handleOtherFieldWhenNotEqual(array &$payload_statement, $field, $field_other, $needle): void
@@ -285,15 +279,13 @@ class StatementAPIController extends Controller
         if ($payload_statement[$field] !== $needle) {
             $payload_statement[$field_other] = null;
         } else {
-            $payload_statement[$field_other] = $payload_statement[$field_other] ?? null;
+            $payload_statement[$field_other] ??= null;
         }
     }
 
     /**
-     * @param array $payload_statement
      * @param $field
      * @param $field_other
-     *
      * @return void
      */
     private function initFieldIfNotPresent(array &$payload_statement, $field, $field_other): void
@@ -339,7 +331,7 @@ class StatementAPIController extends Controller
         ];
 
         foreach ($optional_fields as $optional_field) {
-            $payload_statement[$optional_field] = $payload_statement[$optional_field] ?? null;
+            $payload_statement[$optional_field] ??= null;
         }
     }
 

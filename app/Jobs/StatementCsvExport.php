@@ -16,21 +16,13 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExport implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
-    public string $date;
-    public string $part;
-    public int $start_id;
-    public int $end_id;
-    public bool $headers;
-
-    public function __construct(string $date, string $part, int $start_id, int $end_id, bool $headers = false)
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
+    public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false)
     {
-        $this->date     = $date;
-        $this->part     = $part;
-        $this->start_id = $start_id;
-        $this->end_id   = $end_id;
-        $this->headers  = $headers;
     }
 
     public function handle(DayArchiveService $day_archive_service): void
@@ -62,7 +54,7 @@ class StatementCsvExport implements ShouldQueue
                  ->where('statements.id', '<=', $this->end_id)
                  ->orderBy('statements.id');
 
-        $raw->chunk(100000, function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
+        $raw->chunk(100000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row      = $day_archive_service->mapRaw($statement, $platforms);

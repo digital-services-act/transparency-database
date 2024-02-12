@@ -12,17 +12,13 @@ use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportZipParts implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
-
-    public string $date;
-    public string $platform;
-    public string $version;
-
-    public function __construct(string $date, string $platform, string $version)
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Batchable;
+    public function __construct(public string $date, public string $platform, public string $version)
     {
-        $this->date = $date;
-        $this->platform = $platform;
-        $this->version = $version;
     }
 
     public function handle(): void
@@ -37,6 +33,7 @@ class StatementCsvExportZipParts implements ShouldQueue
         foreach ($parts as $part) {
             $zip->addFile($part, basename($part));
         }
+
         $zip->close();
     }
 }

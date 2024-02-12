@@ -20,6 +20,7 @@ use Throwable;
 class StatementsDayArchive extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -62,7 +63,7 @@ class StatementsDayArchive extends Command
         while ($current <= $last_id) {
             $till              = ($current + $chunk - 1);
             $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
-            $part++;
+            ++$part;
             $current += $chunk;
         }
 
@@ -101,16 +102,24 @@ class StatementsDayArchive extends Command
             $archive_jobs[] = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
         }
 
-        $luggage = compact('date_string', 'archive_jobs', 'csv_export_jobs', 'sha1_jobs', 'copys3_jobs', 'zip_jobs', 'reduce_jobs');
+        $luggage = [
+            'date_string'     => $date_string,
+            'archive_jobs'    => $archive_jobs,
+            'csv_export_jobs' => $csv_export_jobs,
+            'sha1_jobs'       => $sha1_jobs,
+            'copys3_jobs'     => $copys3_jobs,
+            'zip_jobs'        => $zip_jobs,
+            'reduce_jobs'     => $reduce_jobs
+        ];
 
         Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
         File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
-        Bus::batch($luggage['csv_export_jobs'])->finally(function () use ($luggage) {
-            Bus::batch($luggage['reduce_jobs'])->finally(function () use ($luggage) {
-                Bus::batch($luggage['zip_jobs'])->finally(function () use ($luggage) {
-                    Bus::batch($luggage['sha1_jobs'])->finally(function () use ($luggage) {
-                        Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(function () use ($luggage) {
-                            Bus::batch($luggage['archive_jobs'])->finally(function () use ($luggage) {
+        Bus::batch($luggage['csv_export_jobs'])->finally(static function () use ($luggage) {
+            Bus::batch($luggage['reduce_jobs'])->finally(static function () use ($luggage) {
+                Bus::batch($luggage['zip_jobs'])->finally(static function () use ($luggage) {
+                    Bus::batch($luggage['sha1_jobs'])->finally(static function () use ($luggage) {
+                        Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
+                            Bus::batch($luggage['archive_jobs'])->finally(static function () use ($luggage) {
                                 File::delete(File::glob(storage_path('app') . '/*' . $luggage['date_string'] . '*'));
                                 Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                             })->dispatch();

@@ -37,6 +37,7 @@ class PlatformUsersStoreRequest extends FormRequest
         ];
     }
 
+    #[\Override]
     public function messages()
     {
         return [

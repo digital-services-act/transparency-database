@@ -41,9 +41,10 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    #[\Override]
+    public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
+        $this->reportable(static function (Throwable $e) {
             //
         });
     }
