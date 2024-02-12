@@ -65,7 +65,8 @@ class StatementSearchService
         'source_type',
     ];
 
-    public const ONE_DAY = 24 * 60 * 60;
+    // When caching, go for 25 hours. Just so that there is a overlap.
+    public const ONE_DAY = 25 * 60 * 60;
 
     public function __construct(private readonly Client $client)
     {
@@ -392,6 +393,15 @@ class StatementSearchService
         return "SELECT CAST(count(*) AS BIGINT) as count FROM " . $this->index_name;
     }
 
+    public function buildWheres(array $conditions): string
+    {
+        if ($conditions !== []) {
+            return " WHERE " . implode(" AND ", $conditions);
+        }
+
+        return '';
+    }
+
     public function extractCountQueryResult($result): int
     {
         return (int)($result['datarows'][0][0] ?? 0);
@@ -414,17 +424,19 @@ class StatementSearchService
         ];
     }
 
-    public function grandTotal(): int
+    public function getCountQueryResult(array $conditions = []): int
     {
-        return Cache::remember('grand_total', self::ONE_DAY, function () {
-            $sql = $this->startCountQuery();
-            return $this->extractCountQueryResult($this->runSql($sql));
-        });
+        return $this->extractCountQueryResult($this->runSql($this->startCountQuery() . $this->buildWheres($conditions)));
     }
 
-    public function buildWheres(array $conditions): string
+    public function grandTotal(): int
     {
-        return " WHERE " . implode(" AND ", $conditions);
+        return Cache::remember('grand_total', self::ONE_DAY, fn() => $this->grandTotalNoCache());
+    }
+
+    public function grandTotalNoCache(): int
+    {
+        return $this->getCountQueryResult();
     }
 
     public function receivedDateCondition(Carbon $date): string
@@ -434,17 +446,15 @@ class StatementSearchService
 
     public function totalForDate(Carbon $date): int
     {
-        $sql = $this->startCountQuery() . $this->buildWheres([$this->receivedDateCondition($date)]);
-        return $this->extractCountQueryResult($this->runSql($sql));
+        return $this->getCountQueryResult([$this->receivedDateCondition($date)]);
     }
 
     public function totalForPlatformDate(Platform $platform, Carbon $date): int
     {
-        $sql = $this->startCountQuery() . $this->buildWheres([
+        return $this->getCountQueryResult([
             "platform_id = " . $platform->id,
             $this->receivedDateCondition($date)
         ]);
-        return $this->extractCountQueryResult($this->runSql($sql));
     }
 
     public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
@@ -454,8 +464,7 @@ class StatementSearchService
 
     public function totalForDateRange(Carbon $start, Carbon $end): int
     {
-        $sql = $this->startCountQuery() . $this->buildWheres([$this->receivedDateRangeCondition($start, $end)]);
-        return $this->extractCountQueryResult($this->runSql($sql));
+        return $this->getCountQueryResult([$this->receivedDateRangeCondition($start, $end)]);
     }
 
     public function datesTotalsForRange(Carbon $start, Carbon $end): array
@@ -485,23 +494,14 @@ class StatementSearchService
     public function topCategories(): array
     {
         if (config('scout.driver') === 'opensearch') {
-            return Cache::remember('top_categories', self::ONE_DAY, function () {
-                $ten_days_ago = Carbon::now()->subDays(10);
-                $results = [];
-                $categories = array_keys(Statement::STATEMENT_CATEGORIES);
-                foreach ($categories as $category) {
-                    $results[] = [
-                        'value' => $category,
-                        'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE category = '".$category."'"))
-                    ];
-                }
-
-                uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
-
-                return $results;
-            });
+            return Cache::remember('top_categories', self::ONE_DAY, fn() => $this->topCategoriesNoCache());
         }
 
+        return $this->mockTopCategories();
+    }
+
+    private function mockTopCategories(): array
+    {
         try {
             return [
                 [
@@ -524,30 +524,52 @@ class StatementSearchService
         }
     }
 
+    public function topCategoriesNoCache(): array
+    {
+        $results    = [];
+        $categories = array_keys(Statement::STATEMENT_CATEGORIES);
+        foreach ($categories as $category) {
+            $results[] = [
+                'value' => $category,
+                'total' => $this->getCountQueryResult(["category = '" . $category . "'"])
+            ];
+        }
+
+        uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
+
+        return $results;
+    }
+
     /**
      * @return array
      */
     public function topDecisionVisibilities(): array
     {
         if (config('scout.driver') === 'opensearch') {
-            return Cache::remember('top_decisions_visibility', self::ONE_DAY, function () {
-                $ten_days_ago = Carbon::now()->subDays(10);
-
-                $results = [];
-                $decision_visibilities = array_keys(Statement::DECISION_VISIBILITIES);
-                foreach ($decision_visibilities as $decision_visibility) {
-                    $results[] = [
-                        'value' => $decision_visibility,
-                        'total' => $this->extractCountQueryResult($this->runSql($this->startCountQuery() . " WHERE decision_visibility_single = '".$decision_visibility."'"))
-                    ];
-                }
-
-                uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
-
-                return $results;
-            });
+            return Cache::remember('top_decisions_visibility', self::ONE_DAY, fn() => $this->topDecisionVisibilitiesNoCache());
         }
 
+        return $this->mockTopDecisionVisibilities();
+    }
+
+    public function topDecisionVisibilitiesNoCache(): array
+    {
+        $results               = [];
+        $decision_visibilities = array_keys(Statement::DECISION_VISIBILITIES);
+        foreach ($decision_visibilities as $decision_visibility) {
+            $results[] = [
+                'value' => $decision_visibility,
+                'total' => $this->getCountQueryResult(["decision_visibility_single = '" . $decision_visibility . "'"])
+            ];
+        }
+
+        uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
+
+        return $results;
+    }
+
+    private function mockTopDecisionVisibilities(): array
+    {
         try {
             return [
                 [
@@ -576,16 +598,7 @@ class StatementSearchService
     public function fullyAutomatedDecisionPercentage(): int
     {
         if (config('scout.driver') === 'opensearch') {
-            return Cache::remember('automated_decisions_percentage', self::ONE_DAY, function () {
-                $ten_days_ago                 = Carbon::now()->subDays(10);
-                $now                          = Carbon::now();
-                $automated_decision_count_sql = $this->startCountQuery() .
-                                                " WHERE automated_decision = 'AUTOMATED_DECISION_FULLY'";
-                $automated_decision_count     = $this->extractCountQueryResult($this->runSql($automated_decision_count_sql));
-                $total                        = $this->grandTotal();
-
-                return (int)(($automated_decision_count / max(1, $total)) * 100);
-            });
+            return Cache::remember('automated_decisions_percentage', self::ONE_DAY, fn() => $this->fullyAutomatedDecisionPercentageNoCache());
         }
 
         try {
@@ -595,6 +608,13 @@ class StatementSearchService
 
             return 5;
         }
+    }
+
+    public function fullyAutomatedDecisionPercentageNoCache(): int
+    {
+        $automated_decision_count     = $this->getCountQueryResult(["automated_decision = 'AUTOMATED_DECISION_FULLY'"]);
+        $total                        = $this->grandTotal();
+        return (int)(($automated_decision_count / max(1, $total)) * 100);
     }
 
     /**

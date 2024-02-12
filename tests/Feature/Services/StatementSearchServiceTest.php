@@ -369,7 +369,11 @@ class StatementSearchServiceTest extends TestCase
         $result = $this->statement_search_service->buildWheres($conditions);
         $should_be = " WHERE platform_id = 666 AND received_date = '2024-01-29'";
         $this->assertEquals($should_be, $result);
+
+        $conditions = [
+        ];
+        $result = $this->statement_search_service->buildWheres($conditions);
+        $should_be = '';
+        $this->assertEquals($should_be, $result);
     }
-
-
 }
