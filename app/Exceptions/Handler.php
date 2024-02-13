@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,11 +43,18 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    #[\Override]
-    public function register(): void
+    public function register()
     {
-        $this->reportable(static function (Throwable $e) {
+        $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function convertValidationExceptionToResponse(ValidationException $e, $request)
+    {
+        // logging here (i'm using a trait to have custom logger but you can use default logger too)
+        Log::info($request, $e->errors());
+
+        return parent::convertValidationExceptionToResponse($e, $request);
     }
 }
