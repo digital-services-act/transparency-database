@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09e1c76ea11b580023399aef5647ba5d",
+    "content-hash": "2ca08407f6534fcd32cc9667256ef256",
     "packages": [
         {
             "name": "abe/cache-for-laravel-sanctum",
@@ -9378,6 +9378,69 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "yoeriboven/laravel-log-db",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yoeriboven/laravel-log-db.git",
+                "reference": "0cfe64b03254eb441865af90109372a9c1485448"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yoeriboven/laravel-log-db/zipball/0cfe64b03254eb441865af90109372a9c1485448",
+                "reference": "0cfe64b03254eb441865af90109372a9c1485448",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.39",
+                "nunomaduro/collision": "^6.0",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Yoeriboven\\LaravelLogDb\\DatabaseLoggerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yoeriboven\\LaravelLogDb\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yoeri Boven",
+                    "email": "yoeriboven@msn.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A database driver for logging with Laravel",
+            "homepage": "https://github.com/yoeriboven/laravel-log-db",
+            "keywords": [
+                "laravel",
+                "laravel-log-db",
+                "yoeriboven"
+            ],
+            "support": {
+                "issues": "https://github.com/yoeriboven/laravel-log-db/issues",
+                "source": "https://github.com/yoeriboven/laravel-log-db/tree/1.2"
+            },
+            "time": "2024-01-13T13:33:00+00:00"
         },
         {
             "name": "zing/laravel-scout-opensearch",
