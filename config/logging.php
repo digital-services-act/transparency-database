@@ -3,8 +3,7 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
-
-
+use Yoeriboven\LaravelLogDb\DatabaseLogger;
 
 return [
 
@@ -52,7 +51,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => env('APP_ENV') != 'local' && env('APP_ENV') != 'testing' ? ['stderr', 'single', 'teams'] : ['stderr', 'single'],
+            'channels' => env('APP_ENV') !== 'local' && env('APP_ENV') !== 'testing' ? ['stderr', 'single', 'db', 'teams'] : ['stderr', 'db', 'single'],
             'ignore_exceptions' => false,
         ],
 
@@ -116,6 +115,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'db' => [
+            'driver' => 'custom',
+            'via'    => DatabaseLogger::class,
+        ],
+
         'teams' => [
             'driver'    => 'custom',
             'via'       => \MargaTampu\LaravelTeamsLogging\LoggerChannel::class,

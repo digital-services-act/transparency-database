@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,7 +47,15 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(static function (Throwable $e) {
-            //
+
         });
+    }
+
+    #[\Override]
+    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
+    {
+        Log::info($request, ['errors' => $e->errors(), 'user' => auth()->user()->id ?? -1, 'platform' => auth()->user()->platform->name ?? 'no platform']);
+
+        return parent::convertValidationExceptionToResponse($e, $request);
     }
 }

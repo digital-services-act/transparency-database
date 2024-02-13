@@ -35,6 +35,7 @@
         "symfony/psr-http-message-bridge": "^2.3",
         "tightenco/ziggy": "^1.6",
         "timwassenburg/laravel-pivot-table-generator": "^1.0",
+        "yoeriboven/laravel-log-db": "^1.2",
         "zing/laravel-scout-opensearch": "^3.2"
     },
     "require-dev": {
