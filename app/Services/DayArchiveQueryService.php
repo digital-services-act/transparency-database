@@ -58,7 +58,6 @@ class DayArchiveQueryService
      */
     private function applyUuidFilter(Builder $query, string $filter_value): void
     {
-        Log::info('uuid: '. $filter_value);
         $platform = Platform::query()->where('uuid', $filter_value)->first();
         if ($platform){
             $query->where('platform_id', $platform->id);
