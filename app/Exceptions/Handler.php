@@ -43,14 +43,16 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    #[\Override]
+    public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
+        $this->reportable(static function (Throwable $e) {
             //
         });
     }
 
-    public function convertValidationExceptionToResponse(ValidationException $e, $request)
+    #[\Override]
+    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
     {
         // logging here (i'm using a trait to have custom logger but you can use default logger too)
         Log::info($request, $e->errors());
