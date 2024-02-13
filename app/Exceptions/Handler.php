@@ -47,15 +47,14 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(static function (Throwable $e) {
-            //
+
         });
     }
 
     #[\Override]
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)
     {
-        // logging here (i'm using a trait to have custom logger but you can use default logger too)
-        Log::info($request, $e->errors());
+        Log::info($request, ['errors' => $e->errors(), 'user' => auth()->user()->id ?? -1, 'platform' => auth()->user()->platform->name ?? 'no platform']);
 
         return parent::convertValidationExceptionToResponse($e, $request);
     }

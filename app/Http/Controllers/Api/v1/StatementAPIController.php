@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -123,6 +124,7 @@ class StatementAPIController extends Controller
 
         if ($errors !== []) {
             // Return validation errors as a JSON response
+            Log::info($request, ['errors' => $errors, 'user' => auth()->user()->id ?? -1, 'platform' => auth()->user()->platform->name ?? 'no platform']);
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
