@@ -132,6 +132,7 @@ class StatementAPIController extends Controller
                 'request' => $request->all(),
                 'errors' => $errors,
                 'user' => auth()->user()->id ?? -1,
+                'user_email' =>  auth()->user()->email ?? 'n/a',
                 'platform' => auth()->user()->platform->name ?? 'no platform'
             ]);
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
