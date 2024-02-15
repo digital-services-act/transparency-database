@@ -33,6 +33,7 @@
         <tr class="ecl-table__row">
             <th class="ecl-table__header">Id</th>
             <th class="ecl-table__header">Date</th>
+            <th class="ecl-table__header">Level</th>
             <th class="ecl-table__header">Message</th>
             <th class="ecl-table__header">Context</th>
         </tr>
@@ -42,6 +43,7 @@
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Id">{{ $log_message->id }}</td>
                 <td class="ecl-table__cell" data-ecl-table-header="Date">{{ $log_message->logged_at }}</td>
+                <td class="ecl-table__cell" data-ecl-table-header="Date">{{ $log_message->level_name }}</td>
                 <td class="ecl-table__cell" data-ecl-table-header="Message">
                     {{ $log_message->message }}
                 </td>
