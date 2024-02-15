@@ -125,7 +125,7 @@ class StatementAPIController extends Controller
             try {
                 $payload['statements'][$index] = $validator->validated();
             } catch (ValidationException $exception) {
-                
+
             }
         }
 
