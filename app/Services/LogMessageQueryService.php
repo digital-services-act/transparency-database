@@ -2,29 +2,23 @@
 
 namespace App\Services;
 
-use App\Models\DayArchive;
-use App\Models\Platform;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use TypeError;
 use Yoeriboven\LaravelLogDb\Models\LogMessage;
 
-
 class LogMessageQueryService
 {
 
-
-
     private array $allowed_filters = [
-        'user',
-        'platform',
         's'
     ];
 
     /**
+     * @param array $filters
+     *
      * @return Builder
      */
     public function query(array $filters): Builder
@@ -48,23 +42,8 @@ class LogMessageQueryService
 
     /**
      *
-     * @return void
-     */
-    private function applyUserFilter(Builder $query, string $filter_value): void
-    {
-            $query->where('context', '%"user": ' . $filter_value . ',%');
-    }
-
-    /**
-     *
-     * @return void
-     */
-    private function applyPlatformFilter(Builder $query, string $filter_value): void
-    {
-        $query->where('context', '%"platform": ' . $filter_value . '%"');
-    }
-
-    /**
+     * @param Builder $query
+     * @param string $filter_value
      *
      * @return void
      */
