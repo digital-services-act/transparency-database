@@ -120,6 +120,8 @@ class StatementAPIController extends Controller
             if ($validator->fails()) {
                 $errors['statement_' . $index] = $validator->errors()->toArray();
             }
+
+            $payload['statements'][$index] = $validator->validated();
         }
 
         if ($errors !== []) {

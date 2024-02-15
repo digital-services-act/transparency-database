@@ -16,11 +16,11 @@ trait ExceptionHandlingTrait
 
         $errors = [
             'uncaught_exception' => [
-                $subject . ' Creation Query Exception Occurred, information has been passed on the development team.'
+                $subject . ' Creation Query Exception Occurred, information has been passed on to the development team.'
             ]
         ];
 
-        $message = $subject . ' Creation Query Exception Occurred, information has been passed on the development team.';
+        $message = $subject . ' Creation Query Exception Occurred, information has been passed on to the development team.';
 
         return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_INTERNAL_SERVER_ERROR);
     }

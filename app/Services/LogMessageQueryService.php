@@ -11,7 +11,6 @@ use Yoeriboven\LaravelLogDb\Models\LogMessage;
 
 class LogMessageQueryService
 {
-
     private array $allowed_filters = [
         's'
     ];
