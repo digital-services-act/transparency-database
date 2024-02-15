@@ -7,13 +7,10 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
 use Yoeriboven\LaravelLogDb\Models\LogMessage;
 
-class LogMessageController extends Controller
+class LogMessagesController extends Controller
 {
     public function __construct(protected LogMessageQueryService $log_message_query_service)
     {
