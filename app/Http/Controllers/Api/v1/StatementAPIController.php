@@ -122,7 +122,11 @@ class StatementAPIController extends Controller
                 $errors['statement_' . $index] = $validator->errors()->toArray();
             }
 
-            $payload['statements'][$index] = $validator->valid();
+            try {
+                $payload['statements'][$index] = $validator->validated();
+            } catch (ValidationException $exception) {
+                
+            }
         }
 
 
@@ -245,6 +249,7 @@ class StatementAPIController extends Controller
     }
 
     /**
+     * @param array $payload_statement
      * @param $field
      * @param $needle
      *
