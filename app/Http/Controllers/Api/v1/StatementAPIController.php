@@ -24,12 +24,12 @@ class StatementAPIController extends Controller
 {
     use Sanitizer;
     use ExceptionHandlingTrait;
+
     protected EuropeanCountriesService $european_countries_service;
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
-    )
-    {
+    ) {
         $this->european_countries_service = $european_countries_service;
     }
 
@@ -55,8 +55,8 @@ class StatementAPIController extends Controller
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $this->getRequestUserPlatformId($request),
-                'user_id' => $request->user()->id,
-                'method' => Statement::METHOD_API,
+                'user_id'     => $request->user()->id,
+                'method'      => Statement::METHOD_API,
             ]
         )->toArray();
 
@@ -69,14 +69,14 @@ class StatementAPIController extends Controller
                 str_contains($queryException->getMessage(), "statements_platform_id_puid_unique") || // mysql
                 str_contains($queryException->getMessage(), "UNIQUE constraint failed: statements.platform_id, statements.puid") // sqlite
             ) {
-                $errors = [
+                $errors  = [
                     'puid' => [
                         'The identifier given is not unique within this platform.'
                     ]
                 ];
                 $message = 'The identifier given is not unique within this platform.';
 
-                $out = ['message' => $message, 'errors' => $errors];
+                $out      = ['message' => $message, 'errors' => $errors];
                 $existing = Statement::query()->where('puid', $validated['puid'])->where('platform_id', $validated['platform_id'])->first();
                 if ($existing) {
                     $out['existing'] = $existing;
@@ -89,7 +89,7 @@ class StatementAPIController extends Controller
         }
 
 
-        $out = $statement->toArray();
+        $out         = $statement->toArray();
         $out['puid'] = $statement->puid; // Show the puid on a store.
 
         return response()->json($out, Response::HTTP_CREATED);
@@ -97,13 +97,13 @@ class StatementAPIController extends Controller
 
     public function storeMultiple(Request $request): JsonResponse
     {
-        if (!$request->user()->platform || !$request->user()->can('create statements')) {
+        if ( ! $request->user()->platform || ! $request->user()->can('create statements')) {
             return response()->json(['message' => 'Unauthorized'], Response::HTTP_FORBIDDEN);
         }
 
         $platform_id = $this->getRequestUserPlatformId($request);
-        $user_id = $request->user()->id;
-        $method = Statement::METHOD_API_MULTI;
+        $user_id     = $request->user()->id;
+        $method      = Statement::METHOD_API_MULTI;
 
         $payload = $request->validate([
             'statements' => 'required|array|between:1,100',
@@ -112,7 +112,7 @@ class StatementAPIController extends Controller
         $errors = [];
         foreach ($payload['statements'] as $index => $statement) {
             $decision_visibility_other_required = in_array('DECISION_VISIBILITY_OTHER', $statement['decision_visibility'] ?? [], true);
-            $content_type_other_required = in_array('CONTENT_TYPE_OTHER', $statement['content_type'], true);
+            $content_type_other_required        = in_array('CONTENT_TYPE_OTHER', $statement['content_type'], true);
 
             // Create a new validator instance for each statement
             $validator = Validator::make($statement, $this->multi_rules($decision_visibility_other_required, $content_type_other_required), $this->multi_messages());
@@ -129,12 +129,13 @@ class StatementAPIController extends Controller
         if ($errors !== []) {
             // Return validation errors as a JSON response
             Log::info('Statement Multiple Store Request Validation Failure', [
-                'request' => $request->all(),
-                'errors' => $errors,
-                'user' => auth()->user()->id ?? -1,
-                'user_email' =>  auth()->user()->email ?? 'n/a',
-                'platform' => auth()->user()->platform->name ?? 'no platform'
+                'request'    => $request->all(),
+                'errors'     => $errors,
+                'user'       => auth()->user()->id ?? -1,
+                'user_email' => auth()->user()->email ?? 'n/a',
+                'platform'   => auth()->user()->platform->name ?? 'no platform'
             ]);
+
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -143,13 +144,13 @@ class StatementAPIController extends Controller
         // Are all the puids unique with in the call?
         $unique_puids_to_check = array_unique($puids_to_check);
         if (count($unique_puids_to_check) !== count($puids_to_check)) {
-            $errors = [
+            $errors  = [
                 'puid' => [
                     'The platform identifier(s) are not all unique within this call.'
                 ],
             ];
             $message = 'The platform identifier(s) are not all unique within this call.';
-            $out = ['message' => $message, 'errors' => $errors];
+            $out     = ['message' => $message, 'errors' => $errors];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -171,17 +172,17 @@ class StatementAPIController extends Controller
 
 
         // enrich the payload for bulk insert.
-        $now = Carbon::now();
+        $now   = Carbon::now();
         $uuids = [];
         foreach ($payload['statements'] as &$payload_statement) {
-            $uuid = Str::uuid();
-            $uuids[] = $uuid;
+            $uuid                             = Str::uuid();
+            $uuids[]                          = $uuid;
             $payload_statement['platform_id'] = $platform_id;
-            $payload_statement['user_id'] = $user_id;
-            $payload_statement['method'] = $method;
-            $payload_statement['uuid'] = $uuid;
-            $payload_statement['created_at'] = $now;
-            $payload_statement['updated_at'] = $now;
+            $payload_statement['user_id']     = $user_id;
+            $payload_statement['method']      = $method;
+            $payload_statement['uuid']        = $uuid;
+            $payload_statement['created_at']  = $now;
+            $payload_statement['updated_at']  = $now;
 
             $this->sanitizePayloadStatement($payload_statement);
         }
@@ -199,10 +200,10 @@ class StatementAPIController extends Controller
             // Build an output.
             $out = [];
             foreach ($created_statements as $created_statement) {
-                $puid = $created_statement->puid;
-                $created_statement = $created_statement->toArray();
+                $puid                      = $created_statement->puid;
+                $created_statement         = $created_statement->toArray();
                 $created_statement['puid'] = $puid;
-                $out[] = $created_statement;
+                $out[]                     = $created_statement;
             }
 
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
@@ -246,6 +247,7 @@ class StatementAPIController extends Controller
     /**
      * @param $field
      * @param $needle
+     *
      * @return void
      */
     private function handleOtherFieldWithinArray(array &$payload_statement, $field, $needle): void
@@ -267,6 +269,7 @@ class StatementAPIController extends Controller
      * @param $field
      * @param $field_other
      * @param $needle
+     *
      * @return void
      */
     private function handleOtherFieldWhenEqual(array &$payload_statement, $field, $field_other, $needle): void
@@ -283,6 +286,7 @@ class StatementAPIController extends Controller
      * @param $field
      * @param $field_other
      * @param $needle
+     *
      * @return void
      */
     private function handleOtherFieldWhenNotEqual(array &$payload_statement, $field, $field_other, $needle): void
@@ -298,12 +302,13 @@ class StatementAPIController extends Controller
     /**
      * @param $field
      * @param $field_other
+     *
      * @return void
      */
     private function initFieldIfNotPresent(array &$payload_statement, $field, $field_other): void
     {
-        if (!isset($payload_statement[$field])) {
-            $payload_statement[$field] = null;
+        if ( ! isset($payload_statement[$field])) {
+            $payload_statement[$field]       = null;
             $payload_statement[$field_other] = null;
         }
     }
@@ -350,57 +355,57 @@ class StatementAPIController extends Controller
     private function multi_rules(bool $decision_visibility_other_required, bool $content_type_other_required): array
     {
         return [
-            'decision_visibility' => ['array', $this->rule_in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
+            'decision_visibility'       => ['array', $this->rule_in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
             'decision_visibility_other' => [
                 'max:500',
                 Rule::requiredIf($decision_visibility_other_required),
-                Rule::excludeIf(!$decision_visibility_other_required)
+                Rule::excludeIf(! $decision_visibility_other_required)
             ],
-            'decision_monetary' => [$this->rule_in(array_keys(Statement::DECISION_MONETARIES), true), 'required_without_all:decision_visibility,decision_provision,decision_account', 'nullable'],
-            'decision_monetary_other' => ['required_if:decision_monetary,DECISION_MONETARY_OTHER', 'exclude_unless:decision_monetary,DECISION_MONETARY_OTHER', 'max:500'],
+            'decision_monetary'         => [$this->rule_in(array_keys(Statement::DECISION_MONETARIES), true), 'required_without_all:decision_visibility,decision_provision,decision_account', 'nullable'],
+            'decision_monetary_other'   => ['required_if:decision_monetary,DECISION_MONETARY_OTHER', 'exclude_unless:decision_monetary,DECISION_MONETARY_OTHER', 'max:500'],
 
-            'decision_provision' => [$this->rule_in(array_keys(Statement::DECISION_PROVISIONS), true), 'required_without_all:decision_visibility,decision_monetary,decision_account', 'nullable'],
-            'decision_account' => [$this->rule_in(array_keys(Statement::DECISION_ACCOUNTS), true), 'required_without_all:decision_visibility,decision_monetary,decision_provision', 'nullable'],
-            'account_type' => [$this->rule_in(array_keys(Statement::ACCOUNT_TYPES), true), 'nullable'],
-            'category_specification' => ['array', $this->rule_in(array_keys(Statement::KEYWORDS), true), 'nullable'],
+            'decision_provision'           => [$this->rule_in(array_keys(Statement::DECISION_PROVISIONS), true), 'required_without_all:decision_visibility,decision_monetary,decision_account', 'nullable'],
+            'decision_account'             => [$this->rule_in(array_keys(Statement::DECISION_ACCOUNTS), true), 'required_without_all:decision_visibility,decision_monetary,decision_provision', 'nullable'],
+            'account_type'                 => [$this->rule_in(array_keys(Statement::ACCOUNT_TYPES), true), 'nullable'],
+            'category_specification'       => ['array', $this->rule_in(array_keys(Statement::KEYWORDS), true), 'nullable'],
             'category_specification_other' => ['max:500'],
 
-            'decision_ground' => ['required', $this->rule_in(array_keys(Statement::DECISION_GROUNDS))],
-            'decision_ground_reference_url' => ['url', 'nullable', 'max:500'],
-            'illegal_content_legal_ground' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:500'],
-            'illegal_content_explanation' => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:2000'],
-            'incompatible_content_ground' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'max:500'],
+            'decision_ground'                  => ['required', $this->rule_in(array_keys(Statement::DECISION_GROUNDS))],
+            'decision_ground_reference_url'    => ['url', 'nullable', 'max:500'],
+            'illegal_content_legal_ground'     => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:500'],
+            'illegal_content_explanation'      => ['required_if:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_ILLEGAL_CONTENT', 'max:2000'],
+            'incompatible_content_ground'      => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'max:500'],
             'incompatible_content_explanation' => ['required_if:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT', 'max:2000'],
-            'incompatible_content_illegal' => [$this->rule_in(Statement::INCOMPATIBLE_CONTENT_ILLEGALS), 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
+            'incompatible_content_illegal'     => [$this->rule_in(Statement::INCOMPATIBLE_CONTENT_ILLEGALS), 'exclude_unless:decision_ground,DECISION_GROUND_INCOMPATIBLE_CONTENT'],
 
             'content_type' => ['array', 'required', $this->rule_in(array_keys(Statement::CONTENT_TYPES))],
 
             'content_type_other' => [
                 'max:500',
                 Rule::requiredIf($content_type_other_required),
-                Rule::excludeIf(!$content_type_other_required)
+                Rule::excludeIf(! $content_type_other_required)
             ],
 
-            'category' => ['required', $this->rule_in(array_keys(Statement::STATEMENT_CATEGORIES))],
+            'category'          => ['required', $this->rule_in(array_keys(Statement::STATEMENT_CATEGORIES))],
             'category_addition' => ['array', $this->rule_in(array_keys(Statement::STATEMENT_CATEGORIES))],
 
             'territorial_scope' => ['array', 'nullable', $this->rule_in(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES)],
 
             'content_language' => [$this->rule_in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
-            'content_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01', 'before_or_equal:2038-01-01'],
-            'application_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2020-01-01', 'before_or_equal:2038-01-01'],
-            'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
-            'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
-            'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
+            'content_date'                    => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01', 'before_or_equal:2038-01-01'],
+            'application_date'                => ['required', 'date_format:Y-m-d', 'after_or_equal:2020-01-01', 'before_or_equal:2038-01-01'],
+            'end_date_account_restriction'    => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
+            'end_date_monetary_restriction'   => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
+            'end_date_service_restriction'    => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
             'end_date_visibility_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
 
-            'decision_facts' => ['required', 'max:5000'],
-            'source_type' => ['required', $this->rule_in(array_keys(Statement::SOURCE_TYPES))],
-            'source_identity' => ['max:500', 'nullable'],
+            'decision_facts'      => ['required', 'max:5000'],
+            'source_type'         => ['required', $this->rule_in(array_keys(Statement::SOURCE_TYPES))],
+            'source_identity'     => ['max:500', 'nullable'],
             'automated_detection' => ['required', $this->rule_in(Statement::AUTOMATED_DETECTIONS)],
-            'automated_decision' => ['required', $this->rule_in(array_keys(Statement::AUTOMATED_DECISIONS))],
-            'puid' => ['required', 'max:500'],
+            'automated_decision'  => ['required', $this->rule_in(array_keys(Statement::AUTOMATED_DECISIONS))],
+            'puid'                => ['required', 'max:500'],
         ];
     }
 
@@ -412,19 +417,19 @@ class StatementAPIController extends Controller
     private function multi_messages(): array
     {
         return [
-            'decision_visibility_other.required_if' => 'The decision visibility other field is required when decision visibility is other.',
-            'decision_monetary_other.required_if' => 'The decision monetary other field is required when decision monetary is other.',
-            'content_type_other.required_if' => 'The content type other field is required when content is other.',
-            'illegal_content_legal_ground.required_if' => 'The illegal content legal ground field is required when decision ground is illegal content.',
-            'illegal_content_explanation.required_if' => 'The illegal content explanation field is required when decision ground is illegal content.',
-            'incompatible_content_ground.required_if' => 'The incompatible content ground field is required when decision ground is incompatible content.',
+            'decision_visibility_other.required_if'        => 'The decision visibility other field is required when decision visibility is other.',
+            'decision_monetary_other.required_if'          => 'The decision monetary other field is required when decision monetary is other.',
+            'content_type_other.required_if'               => 'The content type other field is required when content is other.',
+            'illegal_content_legal_ground.required_if'     => 'The illegal content legal ground field is required when decision ground is illegal content.',
+            'illegal_content_explanation.required_if'      => 'The illegal content explanation field is required when decision ground is illegal content.',
+            'incompatible_content_ground.required_if'      => 'The incompatible content ground field is required when decision ground is incompatible content.',
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
-            'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',
-            'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD.',
-            'end_date_account_restriction.date_format' => 'The end date of account restriction does not match the format YYYY-MM-DD.',
-            'end_date_monetary_restriction.date_format' => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
-            'end_date_service_restriction.date_format' => 'The end date of service restriction does not match the format YYYY-MM-DD.',
-            'end_date_visibility_restriction.date_format' => 'The end date of visibility restriction does not match the format YYYY-MM-DD.',
+            'content_date.date_format'                     => 'The content date does not match the format YYYY-MM-DD.',
+            'application_date.date_format'                 => 'The application date does not match the format YYYY-MM-DD.',
+            'end_date_account_restriction.date_format'     => 'The end date of account restriction does not match the format YYYY-MM-DD.',
+            'end_date_monetary_restriction.date_format'    => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
+            'end_date_service_restriction.date_format'     => 'The end date of service restriction does not match the format YYYY-MM-DD.',
+            'end_date_visibility_restriction.date_format'  => 'The end date of visibility restriction does not match the format YYYY-MM-DD.',
         ];
     }
 }
