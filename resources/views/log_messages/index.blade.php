@@ -25,7 +25,7 @@
     <form action="{{ route('log-messages.destroy') }}" method="POST">
         @csrf
         @method('DELETE')
-        <input type="submit" class="ecl-u-d-inline ecl-u-f-l ecl-button ecl-button--secondary" value="truncate log messages" />
+        <input type="submit" class="ecl-u-d-inline ecl-u-f-l ecl-button ecl-button--secondary" value="truncate" />
     </form>
 
     <table class="ecl-table ecl-table--zebra">
