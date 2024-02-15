@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StatementAPIController extends Controller
 {
@@ -121,8 +122,9 @@ class StatementAPIController extends Controller
                 $errors['statement_' . $index] = $validator->errors()->toArray();
             }
 
-            $payload['statements'][$index] = $validator->validated();
+            $payload['statements'][$index] = $validator->valid();
         }
+
 
         if ($errors !== []) {
             // Return validation errors as a JSON response
