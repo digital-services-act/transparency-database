@@ -27,7 +27,7 @@ class PlatformStoreRequest extends FormRequest
         return [
             'name' => ['string', 'required', 'max:255'],
             'vlop' => ['int', 'required'],
-            'dsa_common_id' => ['string', 'required', 'unique:platforms,dsa_common_id']
+            'dsa_common_id' => ['nullable','string', 'unique:platforms,dsa_common_id']
         ];
     }
 
