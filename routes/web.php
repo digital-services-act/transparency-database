@@ -54,20 +54,26 @@ Route::middleware(['force.auth'])->group(static function () {
                 Route::resource('user', UserController::class);
                 Route::resource('platform', PlatformController::class);
                 Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index');
+                Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
         });
         Route::get('/profile/start', static fn(
-            Request $request): Application|Factory|View => (new ProfileController())->profile($request))->name('profile.start');
+            Request $request
+        ): Application|Factory|View => (new ProfileController())->profile($request))->name('profile.start');
         Route::get('/profile/page/{page}', static fn(string $page): Factory|View|Application => (new PageController())->profileShow($page))->name('profile.page.show');
         Route::get('/profile/api', static fn(
-            Request $request): Application|Factory|View => (new ProfileController())->apiIndex($request))->name('profile.api.index');
+            Request $request
+        ): Application|Factory|View => (new ProfileController())->apiIndex($request))->name('profile.api.index');
         Route::post('/profile/api/new-token', static fn(
-            Request $request): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token');
+            Request $request
+        ): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token');
         // Register the Platform
         Route::get('/platform-register', static fn(
-            Request $request): Application|Factory|View|RedirectResponse => (new PlatformController())->platformRegister($request))->name('platform.register');
+            Request $request
+        ): Application|Factory|View|RedirectResponse => (new PlatformController())->platformRegister($request))->name('platform.register');
         Route::post('/platform-register', static fn(
-            PlatformRegisterStoreRequest $request): RedirectResponse => (new PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
+            PlatformRegisterStoreRequest $request
+        ): RedirectResponse => (new PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
     });
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');

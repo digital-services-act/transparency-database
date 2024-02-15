@@ -41,9 +41,9 @@ class LogMessagesController extends Controller
      *
      * @return RedirectResponse
      */
-    public function clear(): RedirectResponse
+    public function destroy(): RedirectResponse
     {
         LogMessage::truncate();
-        return redirect()->route('log_messages.index')->with('success', 'The log messages have been truncated');
+        return redirect()->route('log-messages.index')->with('success', 'The log messages have been truncated');
     }
 }

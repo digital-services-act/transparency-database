@@ -13,11 +13,20 @@
 @section('content')
 
 
+    <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
+        <form method="get">
+            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('log-messages.index') }}'>reset</a>" placeholder="freetext search" justlabel="true" value="{{ request()->get('s', '') }}" />
+        </form>
+    </div>
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Log Messages</h1>
 
 
-
+    <form action="{{ route('log-messages.destroy') }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <input type="submit" class="ecl-u-d-inline ecl-u-f-l ecl-button ecl-button--secondary" value="truncate log messages" />
+    </form>
 
     <table class="ecl-table ecl-table--zebra">
         <thead class="ecl-table__head">
