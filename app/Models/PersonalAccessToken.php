@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -92,8 +93,8 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
                         return now();
                     }
                 );
-            } catch (\Exception $exception) {
-                Log::critical($exception->getMessage());
+            } catch (Exception $exception) {
+                Log::critical('Critical Personal Access Token Error', ['exception' => $exception]);
             }
 
             return false;

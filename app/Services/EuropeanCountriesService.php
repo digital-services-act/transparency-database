@@ -110,7 +110,7 @@ class EuropeanCountriesService
             try {
                 return Countries::getName($iso);
             } catch (Exception $e) {
-                Log::error('European country code problem, could not convert "' . $iso .'", ' . $e->getMessage());
+                Log::error('European country code problem, could not convert "' . $iso .'"', ['exception' => $e]);
                 return false; // should never happen but ...
             }
         }

@@ -742,7 +742,7 @@ class Statement extends Model
         try {
             $out = json_decode((string) $this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $exception) {
-            Log::error('Statement::getRawKeys: ' . $exception->getMessage());
+            Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];
         }
 

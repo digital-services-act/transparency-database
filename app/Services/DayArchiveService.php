@@ -34,14 +34,14 @@ class DayArchiveService
         ];
         $exports[] = $global;
 
-        $vlops = Platform::Vlops()->get();
+        $platforms = Platform::nonDsa()->get();
 
-        foreach ($vlops as $vlop) {
+        foreach ($platforms as $platform) {
             $export             = [
-                'slug' => $vlop->slugifyName(),
-                'id'   => $vlop->id
+                'slug' => $platform->slugifyName(),
+                'id'   => $platform->id
             ];
-            $exports[$vlop->id] = $export;
+            $exports[$platform->id] = $export;
         }
 
         return $exports;

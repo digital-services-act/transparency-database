@@ -190,7 +190,7 @@ class StatementController extends Controller
                     ]
                 ]);
             } else {
-                Log::error('Statement Creation Query Exception Thrown: ' . $queryException->getMessage());
+                Log::error('Statement Creation Query Exception Thrown', ['exception' => $queryException]);
                 back()->withInput()->withErrors(['exception' => 'An uncaught exception was thrown, support has been notified.']);
             }
         }

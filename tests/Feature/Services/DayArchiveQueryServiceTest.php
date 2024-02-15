@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
-class DayArchiveServiceTest extends TestCase
+class DayArchiveQueryServiceTest extends TestCase
 {
 
     use RefreshDatabase;

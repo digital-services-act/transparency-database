@@ -44,8 +44,7 @@ class StatementIndexRange implements ShouldQueue
                     $statement_search_service->bulkIndexStatements($statements);
                 } catch (Exception $e) {
                     // Do it again
-                    Log::error('Indexing Error: ' . $e->getMessage());
-                    Log::error('Trying again!');
+                    Log::error('Indexing Error', ['exception' => $e]);
                     self::dispatch($this->max, $this->min, $this->chunk);
                 }
             } else {

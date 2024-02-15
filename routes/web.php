@@ -1,17 +1,26 @@
 <?php
 
-use App\Http\Controllers\AnalyticsController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DayArchiveController;
+
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LogMessagesController;
+use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlatformController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
+use App\Http\Requests\FeedbackSendRequest;
+use App\Http\Requests\PlatformRegisterStoreRequest;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -31,8 +40,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
-        Route::get('feedback', static fn(\Illuminate\Http\Request $request) => (new \App\Http\Controllers\FeedbackController())->index($request))->name('feedback.index');
-        Route::post('feedback', static fn(\App\Http\Requests\FeedbackSendRequest $request) => (new \App\Http\Controllers\FeedbackController())->send($request))->name('feedback.send');
+        Route::get('feedback', static fn(Request $request) => (new FeedbackController())->index($request))->name('feedback.index');
+        Route::post('feedback', static fn(FeedbackSendRequest $request) => (new FeedbackController())->send($request))->name('feedback.send');
         Route::group(['middleware' => ['can:create statements']], static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
             Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
@@ -44,15 +53,27 @@ Route::middleware(['force.auth'])->group(static function () {
                 Route::resource('invitation', InvitationController::class);
                 Route::resource('user', UserController::class);
                 Route::resource('platform', PlatformController::class);
+                Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index');
+                Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
         });
-        Route::get('/profile/start', static fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => (new \App\Http\Controllers\ProfileController())->profile($request))->name('profile.start');
-        Route::get('/profile/page/{page}', static fn(string $page): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application => (new \App\Http\Controllers\PageController())->profileShow($page))->name('profile.page.show');
-        Route::get('/profile/api', static fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => (new \App\Http\Controllers\ProfileController())->apiIndex($request))->name('profile.api.index');
-        Route::post('/profile/api/new-token', static fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector => (new \App\Http\Controllers\ProfileController())->newToken($request))->name('profile.api.new-token');
+        Route::get('/profile/start', static fn(
+            Request $request
+        ): Application|Factory|View => (new ProfileController())->profile($request))->name('profile.start');
+        Route::get('/profile/page/{page}', static fn(string $page): Factory|View|Application => (new PageController())->profileShow($page))->name('profile.page.show');
+        Route::get('/profile/api', static fn(
+            Request $request
+        ): Application|Factory|View => (new ProfileController())->apiIndex($request))->name('profile.api.index');
+        Route::post('/profile/api/new-token', static fn(
+            Request $request
+        ): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token');
         // Register the Platform
-        Route::get('/platform-register', static fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse => (new \App\Http\Controllers\PlatformController())->platformRegister($request))->name('platform.register');
-        Route::post('/platform-register', static fn(\App\Http\Requests\PlatformRegisterStoreRequest $request): \Illuminate\Http\RedirectResponse => (new \App\Http\Controllers\PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
+        Route::get('/platform-register', static fn(
+            Request $request
+        ): Application|Factory|View|RedirectResponse => (new PlatformController())->platformRegister($request))->name('platform.register');
+        Route::post('/platform-register', static fn(
+            PlatformRegisterStoreRequest $request
+        ): RedirectResponse => (new PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
     });
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
@@ -61,6 +82,6 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
     Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/page/{page}', static fn(string $page, bool $profile = false): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector => (new \App\Http\Controllers\PageController())->show($page, $profile))->name('page.show');
+    Route::get('/page/{page}', static fn(string $page, bool $profile = false): Application|Factory|View|RedirectResponse|Redirector => (new PageController())->show($page, $profile))->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 });
