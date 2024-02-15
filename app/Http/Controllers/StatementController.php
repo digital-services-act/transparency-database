@@ -41,6 +41,8 @@ class StatementController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
      * @return View|Factory|Application
      */
     public function index(Request $request): View|Factory|Application

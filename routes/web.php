@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LogMessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\FeedbackController;
@@ -44,6 +45,7 @@ Route::middleware(['force.auth'])->group(static function () {
                 Route::resource('invitation', InvitationController::class);
                 Route::resource('user', UserController::class);
                 Route::resource('platform', PlatformController::class);
+                Route::resource('log-message', LogMessageController::class);
             });
         });
         Route::get('/profile/start', static fn(\Illuminate\Http\Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => (new \App\Http\Controllers\ProfileController())->profile($request))->name('profile.start');

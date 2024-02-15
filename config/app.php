@@ -223,6 +223,7 @@ return [
 
 
         App\Providers\StatementQueryServiceProvider::class,
+        App\Providers\LogMessageQueryServiceProvider::class,
         App\Providers\StatementSearchServiceProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,
         App\Providers\EuropeanLanguagesServiceProvider::class,

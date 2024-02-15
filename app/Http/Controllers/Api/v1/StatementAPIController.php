@@ -124,7 +124,12 @@ class StatementAPIController extends Controller
 
         if ($errors !== []) {
             // Return validation errors as a JSON response
-            Log::info($request, ['errors' => $errors, 'user' => auth()->user()->id ?? -1, 'platform' => auth()->user()->platform->name ?? 'no platform']);
+            Log::info('Statement Multiple Store Request Validation Failure', [
+                'request' => $request->all(),
+                'errors' => $errors,
+                'user' => auth()->user()->id ?? -1,
+                'platform' => auth()->user()->platform->name ?? 'no platform'
+            ]);
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

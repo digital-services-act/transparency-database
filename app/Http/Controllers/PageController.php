@@ -12,10 +12,6 @@ use Parsedown;
 
 class PageController extends Controller
 {
-    /**
-     * @param string $view
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse|Redirector
-     */
     public function show(string $page, bool $profile = false): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
@@ -92,10 +88,6 @@ class PageController extends Controller
         return view('page', $view_data);
     }
 
-    public function showHome()
-    {
-        return $this->show('home');
-    }
 
     public function profileShow(string $page): Factory|View|Application
     {
@@ -117,13 +109,15 @@ class PageController extends Controller
     }
 
     /**
+     * @param string $page_title
+     *
      * @return bool
      */
     public function getShow_feedback_link(string $page_title): bool
     {
-        $show_feeback_pages = [
+        $show_feedback_pages = [
             'Faq'
         ];
-        return in_array($page_title, $show_feeback_pages);
+        return in_array($page_title, $show_feedback_pages);
     }
 }

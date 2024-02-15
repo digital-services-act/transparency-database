@@ -35,11 +35,11 @@
         <tbody class="ecl-table__body">
         @foreach($roles as $role)
             <tr class="ecl-table__row">
-                <td class="ecl-table__cell">{{ $role->name }}</td>
+                <td class="ecl-table__cell" data-ecl-table-header="Role">{{ $role->name }}</td>
                 <td class="ecl-table__cell"></td>
                 <td class="ecl-table__cell"></td>
                 <td class="ecl-table__cell"></td>
-                <td class="ecl-table__cell">
+                <td class="ecl-table__cell" data-ecl-table-header="Actions">
                     <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('role.edit', [$role]) }}'">edit</button>
 
                     <form action="{{ route('role.destroy', [$role]) }}" method="POST">
