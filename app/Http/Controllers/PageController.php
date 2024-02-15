@@ -109,8 +109,6 @@ class PageController extends Controller
     }
 
     /**
-     * @param string $page_title
-     *
      * @return bool
      */
     public function getShow_feedback_link(string $page_title): bool

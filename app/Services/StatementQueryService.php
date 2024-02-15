@@ -60,7 +60,7 @@ class StatementQueryService
                         $this->$method($statements, $filters[$filter_key]);
                     }
                 } catch (\TypeError|\Exception $e) {
-                    Log::error("Statement Query Service Error: " . $e->getMessage());
+                    Log::error("Statement Query Service Error", ['exception' => $e]);
                 }
             }
         }

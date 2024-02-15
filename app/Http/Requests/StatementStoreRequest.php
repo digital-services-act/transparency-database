@@ -137,7 +137,8 @@ class StatementStoreRequest extends FormRequest
         return in_array('SOURCE_VOLUNTARY', $check, true);
     }
 
-    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    #[\Override]
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
     {
         Log::info('Statement Store Request Validation Failure', [
             'request' => $this->request->all(),

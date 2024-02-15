@@ -57,8 +57,8 @@ class VerifyIndex implements ShouldQueue
                         StatementIndexRange::dispatch($this->max, $this->min, $this->searchable_chunk);
                     }
 
-                } catch (Exception $exception) {
-                    Log::error($exception->getMessage());
+                } catch (Exception $e) {
+                    Log::error('Indexing Error', ['exception' => $e]);
                 }
 
             } else {

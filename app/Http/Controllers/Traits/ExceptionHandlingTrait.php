@@ -55,10 +55,6 @@ trait ExceptionHandlingTrait
 
         preg_match($pattern, (string) $message, $matches);
 
-        if (isset($matches[2])) {
-            return $matches[2];
-        }
-
-        return "Unknown Exception";
+        return $matches[2] ?? "Unknown Exception";
     }
 }

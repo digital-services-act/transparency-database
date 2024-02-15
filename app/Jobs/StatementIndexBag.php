@@ -39,8 +39,7 @@ class StatementIndexBag implements ShouldQueue
             try {
                 $statement_search_service->bulkIndexStatements($statements);
             } catch (Exception $e) {
-                Log::error('Indexing Error: ' . $e->getMessage());
-                Log::error('Trying again!');
+                Log::error('Indexing Error', ['exception' => $e]);
                 self::dispatch($this->statement_ids);
             }
         }

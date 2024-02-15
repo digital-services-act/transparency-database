@@ -25,8 +25,6 @@ class LogMessageQueryService
     ];
 
     /**
-     * @param array $filters
-     *
      * @return Builder
      */
     public function query(array $filters): Builder
@@ -40,7 +38,7 @@ class LogMessageQueryService
                         $this->$method($query, $filters[$filter_key]);
                     }
                 } catch (TypeError|Exception $e) {
-                    Log::error("Log Message Query Service Error: " . $e->getMessage());
+                    Log::error("Log Message Query Service Error", ['exception' => $e]);
                 }
             }
         }
@@ -49,8 +47,6 @@ class LogMessageQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -60,8 +56,6 @@ class LogMessageQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -71,8 +65,6 @@ class LogMessageQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */

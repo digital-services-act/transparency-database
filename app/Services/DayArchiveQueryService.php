@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\DayArchive;
 use App\Models\Platform;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use TypeError;
 
 
 class DayArchiveQueryService
@@ -34,8 +36,8 @@ class DayArchiveQueryService
                     if (method_exists($this, $method)) {
                         $this->$method($dayarchives, $filters[$filter_key]);
                     }
-                } catch (\TypeError|\Exception $e) {
-                    Log::error("Day Archive Query Service Error: " . $e->getMessage());
+                } catch (TypeError|Exception $e) {
+                    Log::error("Day Archive Query Service Error", ['exception' => $e]);
                 }
             } else {
                 $method = sprintf('applyMissing%sFilter', ucfirst(Str::camel($filter_key)));
@@ -43,8 +45,8 @@ class DayArchiveQueryService
                     if (method_exists($this, $method)) {
                         $this->$method($dayarchives);
                     }
-                } catch (\TypeError|\Exception $e) {
-                    Log::error("Day Archive Query Service Error: " . $e->getMessage());
+                } catch (TypeError|Exception $e) {
+                    Log::error("Day Archive Query Service Error", ['exception' => $e]);
                 }
             }
         }

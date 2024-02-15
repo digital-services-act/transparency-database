@@ -1,7 +1,7 @@
 @php use Symfony\Component\VarDumper\VarDumper; @endphp
 @extends('layouts/ecl')
 
-@section('title', 'Manage Log Messages')
+@section('title', 'Log Messages')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
@@ -35,7 +35,6 @@
             <th class="ecl-table__header">Date</th>
             <th class="ecl-table__header">Message</th>
             <th class="ecl-table__header">Context</th>
-
         </tr>
         </thead>
         <tbody class="ecl-table__body">
@@ -44,7 +43,7 @@
                 <td class="ecl-table__cell" data-ecl-table-header="Id">{{ $log_message->id }}</td>
                 <td class="ecl-table__cell" data-ecl-table-header="Date">{{ $log_message->logged_at }}</td>
                 <td class="ecl-table__cell" data-ecl-table-header="Message">
-                    <x-ecl.expandable :label="substr($log_message->message, 0, 20)">{{ $log_message->message }}</x-ecl.expandable>
+                    {{ $log_message->message }}
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Context">
                     {{ VarDumper::dump($log_message->context->collect()) }}
