@@ -34,6 +34,7 @@ class StatementsDayArchiveOldest extends Command
     {
         $oldest = DayArchive::query()->orderBy('created_at', 'asc')->first();
         if ($oldest) {
+            DayArchive::query()->whereDate('date', $oldest->date)->delete();
             $date = $oldest->date->format('Y-m-d');
             $this->call('statements:day-archive', ['date' => $date]);
         }
