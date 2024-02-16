@@ -31,9 +31,10 @@
             <div class="ecl-col-3">
                 <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Platforms</a>
             </div>
-            <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('invitation.index') }}">Invitations</a>
-            </div>
+{{--            <div class="ecl-col-3">--}}
+{{--                <a class="ecl-button ecl-button--primary" href="{{ route('invitation.index') }}">Invitations</a>--}}
+{{--            </div>--}}
+
             <div class="ecl-col-3">
                 <a class="ecl-button ecl-button--primary" href="{{ route('log-messages.index') }}">Log Messages</a>
             </div>

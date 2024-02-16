@@ -2,10 +2,10 @@
 <table class="ecl-table ecl-table--zebra">
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
-        <th class="ecl-table__header">User</th>
         <th class="ecl-table__header">Email</th>
         <th class="ecl-table__header">Platform</th>
         <th class="ecl-table__header">Roles</th>
+        <th class="ecl-table__header">Has Token ?</th>
 
         <th class="ecl-table__header" width="10%">Actions</th>
     </tr>
@@ -13,10 +13,10 @@
     <tbody class="ecl-table__body">
     @foreach($users as $user)
         <tr class="ecl-table__row">
-            <td class="ecl-table__cell" data-ecl-table-header="User">{{ $user->name }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Email">{{ $user->email }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Platform">{{ $user->platform->name ?? '' }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Roles">{{ implode(", ", $user->roles->pluck('name')->toArray()) }}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Has Token ?">{{ $user->tokens->count() ? 'Yes' : 'No'  }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Actions">
                 <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('user.edit', [$user]) }}'">edit</button>
 

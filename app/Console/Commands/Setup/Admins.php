@@ -60,7 +60,6 @@ class Admins extends Command
                 User::firstOrCreate(
                     ['email' => $admin_email],
                     [
-                        'eu_login_username' => $admin_usernames[$index],
                         'name' => $parts[0],
                         'password' => bcrypt(random_int(0, mt_getrandmax())),
                         'platform_id' => $dsa_platform->id
