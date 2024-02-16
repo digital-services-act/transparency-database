@@ -32,8 +32,7 @@ class ProfileController extends Controller
 
         $token_plain_text = null;
         /** @var PersonalAccessToken $token */
-        $token = $request->user()->tokens()->where('name', User::API_TOKEN_KEY)->get()->last();
-        if (!$token) {
+        if (!$request->user()->hasValidApiToken()) {
             /** @var PersonalAccessToken $token */
             $token_plain_text = $request->user()->createToken(User::API_TOKEN_KEY)->plainTextToken;
         }
