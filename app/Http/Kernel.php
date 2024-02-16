@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\EULoginAuth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

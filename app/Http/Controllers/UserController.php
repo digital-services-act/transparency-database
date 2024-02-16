@@ -29,9 +29,7 @@ class UserController extends Controller
         $s = $request->get('s');
         $uuid = $request->get('uuid');
         if ($s) {
-            $users->where('name', 'like', '%' . $s . '%')->orWhere('email', 'like', '%' . $s . '%')->orWhereHas('platform', static function ($inner_query) use ($s) {
-                $inner_query->where('name', 'like', '%' . $s . '%');
-            });
+            $users->where('email', 'like', '%' . $s . '%');
         }
 
         if ($uuid) {
@@ -40,7 +38,7 @@ class UserController extends Controller
             });
         }
 
-        $users->orderBy('name');
+        $users->orderBy('email');
         $users = $users->paginate(50)->withQueryString();
 
         $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(static fn($name, $uuid) => [
@@ -84,16 +82,15 @@ class UserController extends Controller
 
         /** @var User $user */
         $user = User::create([
-            'name' => $validated['name'],
             'email' => $validated['email'],
-            'platform_id' => $validated['platform_id'],
-            'eu_login_username' => $validated['email']
+            'password' => bcrypt(random_int(0, mt_getrandmax())),
+            'platform_id' => $validated['platform_id']
         ]);
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
         }
 
-        return redirect()->route('user.index')->with('success', 'The user has been created');
+        return redirect()->back()->with('success', 'The user has been created');
     }
 
     /**
@@ -134,9 +131,6 @@ class UserController extends Controller
         $validated = $request->safe()->merge([
 
         ])->toArray();
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-//        $user->eu_login_username = $user->eu_login_username;
         $user->platform_id = $validated['platform_id'];
         $user->save();
         $user->roles()->detach();
@@ -144,7 +138,7 @@ class UserController extends Controller
             $user->roles()->attach($id);
         }
 
-        return redirect()->route('user.index')->with('success', 'The user has been saved');
+        return redirect()->back()->with('success', 'The user has been updated');
     }
 
     /**

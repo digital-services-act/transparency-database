@@ -39,7 +39,6 @@ class UserSeeder extends Seeder
             if (filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
                 $parts = explode("@", $admin_email);
                 User::factory()->create([
-                    'eu_login_username'=> $admin_usernames[$index],
                     'email' => $admin_email,
                     'name' => $parts[0],
                     'platform_id' => $dsa_platform->id
