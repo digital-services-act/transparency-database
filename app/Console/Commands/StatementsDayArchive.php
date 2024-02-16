@@ -62,7 +62,9 @@ class StatementsDayArchive extends Command
         $csv_export_jobs = [];
         while ($current <= $last_id) {
             $till              = ($current + $chunk - 1);
-            $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
+            //$csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
+            // Always headers
+            $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, true);
             ++$part;
             $current += $chunk;
         }
