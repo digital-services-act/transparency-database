@@ -16,7 +16,7 @@
     <form method="post" action="{{ route('user.update', [$user]) }}">
         @method('PUT')
         @csrf
-        <x-user-form :user=$user :options=$options />
+        <x-user-form :user=$user :options=$options action="edit"/>
         <x-ecl.button label="Update User" />
     </form>
 
