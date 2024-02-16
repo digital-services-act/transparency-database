@@ -1,6 +1,8 @@
-@props(['user' => null, 'options' => null, 'roles' => []])
+@props(['user' => null, 'options' => null, 'roles' => [], 'action' => 'edit'])
 
+@if($action === 'create')
 <x-ecl.textfield label="Email" type="email" name="email" id="email" required=true value="{{ $user->email }}" />
+@endif
 
 <h3 class="ecl-u-type-heading-3 ecl-u-mb-l">Platform</h3>
 
