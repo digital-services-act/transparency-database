@@ -31,9 +31,9 @@
         Manage the users of the application below.
     </p>
 
-{{--    <p class="ecl-u-type-paragraph">--}}
-{{--        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>--}}
-{{--    </p>--}}
+    <p class="ecl-u-type-paragraph">
+        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>
+    </p>
 
     <x-users.table :users="$users" />
 
