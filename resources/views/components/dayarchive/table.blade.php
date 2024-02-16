@@ -38,11 +38,14 @@
             <td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>
             <td class="ecl-table__cell" data-ecl-table-header="File">
                 <a href="{{ $dayarchive->url }}"
+                   title="{{ $dayarchive->url }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
                 &nbsp;&nbsp;&nbsp;
-                <a download href="{{ $dayarchive->sha1url }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+                <a download href="{{ $dayarchive->sha1url }}"
+                   title="{{ $dayarchive->sha1url }}"
+                   class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
             </td>
@@ -52,11 +55,14 @@
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="File">
                 <a download href="{{ $dayarchive->urllight }}"
+                   title="{{ $dayarchive->urllight }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
                 &nbsp;&nbsp;&nbsp;
-                <a download href="{{ $dayarchive->sha1urllight }}" class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
+                <a download href="{{ $dayarchive->sha1urllight }}"
+                   title="{{ $dayarchive->sha1urllight }}"
+                   class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
             </td>
