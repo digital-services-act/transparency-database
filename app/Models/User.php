@@ -79,6 +79,10 @@ class User extends Authenticatable
         );
     }
 
+    public function hasToken(){
+        return $this->tokens->count() ? 'Yes' : 'No';
+    }
+
     //We do not use the laravel eloquent relationship as EU Login emails are mix of uppercase and lowercase
     //Mysql is case-insensitive but not sqlite.
 
