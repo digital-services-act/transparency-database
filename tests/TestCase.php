@@ -54,7 +54,6 @@ abstract class TestCase extends BaseTestCase
         $user = $user ?: User::create([
             'name' => "Test User",
             'email' => "testuser@testing.org",
-            'eu_login_username' => "testuser",
             'password' => 'testpassword'
         ]);
         $this->actingAs($user);
