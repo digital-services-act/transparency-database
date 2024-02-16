@@ -44,7 +44,12 @@ class LogMessageQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        $query->orWhere('message', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('context', 'LIKE', '%' . $filter_value . '%');
+        if (preg_match('/[0-9]+/', $filter_value)) {
+            $filter_value = (int)$filter_value;
+            $query->where('id', $filter_value);
+        } else {
+            $query->orWhere('message', 'LIKE', '%' . $filter_value . '%');
+            $query->orWhere('context', 'LIKE', '%' . $filter_value . '%');
+        }
     }
 }
