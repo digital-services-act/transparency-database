@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
 use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlatformController;
@@ -57,6 +58,8 @@ Route::middleware(['force.auth'])->group(static function () {
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
         });
+        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view dashboard');
+
         Route::get('/profile/start', static fn(
             Request $request
         ): Application|Factory|View => (new ProfileController())->profile($request))->name('profile.start');
@@ -75,7 +78,10 @@ Route::middleware(['force.auth'])->group(static function () {
             PlatformRegisterStoreRequest $request
         ): RedirectResponse => (new PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
     });
+
+
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
+
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
     Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
     Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])->name('statement.show');

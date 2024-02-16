@@ -90,7 +90,7 @@ class UserController extends Controller
             $user->roles()->attach($id);
         }
 
-        return redirect()->route('user.index')->with('success', 'The user has been created');
+        return redirect()->back()->with('success', 'The user has been created');
     }
 
     /**
@@ -139,7 +139,7 @@ class UserController extends Controller
             $user->roles()->attach($id);
         }
 
-        return redirect()->route('user.index')->with('success', 'The user has been saved');
+        return redirect()->back()->with('success', 'The user has been updated');
     }
 
     /**
