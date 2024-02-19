@@ -26,7 +26,7 @@ class LogMessagesController extends Controller
      */
     public function index(Request $request): Factory|View|Application
     {
-        $log_messages = $this->log_message_query_service->query($request->query())->orderBy('logged_at', 'desc')->paginate(10);
+        $log_messages = $this->log_message_query_service->query($request->query())->orderBy('id', 'desc')->paginate(10);
 
         return view('log_messages.index', [
             'log_messages' => $log_messages
