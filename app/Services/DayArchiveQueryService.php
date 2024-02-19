@@ -11,12 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use TypeError;
 
-
 class DayArchiveQueryService
 {
-
-    protected $builder;
-
     private array $allowed_filters = [
         'uuid',
         'from_date',
@@ -24,26 +20,21 @@ class DayArchiveQueryService
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param array $filters
+     *
+     * @return Builder
      */
     public function query(array $filters): Builder
     {
-        $dayarchives = DayArchive::query()->whereNotNull('completed_at');
+        // Only completed archives.
+        $query = DayArchive::query()->whereNotNull('completed_at');
+
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
                     if (method_exists($this, $method)) {
-                        $this->$method($dayarchives, $filters[$filter_key]);
-                    }
-                } catch (TypeError|Exception $e) {
-                    Log::error("Day Archive Query Service Error", ['exception' => $e]);
-                }
-            } else {
-                $method = sprintf('applyMissing%sFilter', ucfirst(Str::camel($filter_key)));
-                try {
-                    if (method_exists($this, $method)) {
-                        $this->$method($dayarchives);
+                        $this->$method($query, $filters[$filter_key]);
                     }
                 } catch (TypeError|Exception $e) {
                     Log::error("Day Archive Query Service Error", ['exception' => $e]);
@@ -51,11 +42,18 @@ class DayArchiveQueryService
             }
         }
 
-        return $dayarchives;
+        // if there was no uuid filter then lock it into the global archives
+        if (!isset($filters['uuid']) || !$filters['uuid']) {
+            $query->whereNull('platform_id');
+        }
+
+        return $query;
     }
 
     /**
-     * @param array $filter_value
+     * @param Builder $query
+     * @param string $filter_value
+     *
      * @return void
      */
     private function applyUuidFilter(Builder $query, string $filter_value): void
@@ -63,18 +61,13 @@ class DayArchiveQueryService
         $platform = Platform::query()->where('uuid', $filter_value)->first();
         if ($platform){
             $query->where('platform_id', $platform->id);
-        } else {
-            $this->applyMissingUuidFilter($query);
         }
-
-    }
-
-    private function applyMissingUuidFilter(Builder $query): void
-    {
-        $query->whereNull('platform_id');
     }
 
     /**
+     *
+     * @param Builder $query
+     * @param string $filter_value
      *
      * @return void
      */
@@ -86,6 +79,9 @@ class DayArchiveQueryService
 
     /**
      *
+     * @param Builder $query
+     * @param string $filter_value
+     *
      * @return void
      */
     private function applyToDateFilter(Builder $query, string $filter_value): void
@@ -93,6 +89,4 @@ class DayArchiveQueryService
         $date = Carbon::createFromFormat('d-m-Y', $filter_value);
         $query->whereDate('date', '<=', $date);
     }
-
-
 }

@@ -131,7 +131,6 @@ class UserController extends Controller
         $validated = $request->safe()->merge([
 
         ])->toArray();
-        $user->email = $validated['email'];
         $user->platform_id = $validated['platform_id'];
         $user->save();
         $user->roles()->detach();

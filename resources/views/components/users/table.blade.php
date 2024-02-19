@@ -16,7 +16,7 @@
             <td class="ecl-table__cell" data-ecl-table-header="Email">{{ $user->email }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Platform">{{ $user->platform->name ?? '' }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Roles">{{ implode(", ", $user->roles->pluck('name')->toArray()) }}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="Has Token ?">{{ $user->hasToken()  }}</td>
+            <td class="ecl-table__cell" data-ecl-table-header="Has Token ?">{{ $user->hasValidApiTokenHuman()  }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Actions">
 
                 <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('user.edit', [$user]) }}'">edit</button>

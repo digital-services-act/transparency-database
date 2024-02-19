@@ -34,7 +34,7 @@ class DayArchiveService
         ];
         $exports[] = $global;
 
-        $platforms = Platform::nonDsa()->get();
+        $platforms = Platform::NonDsa()->get();
 
         foreach ($platforms as $platform) {
             $export             = [

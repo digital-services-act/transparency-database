@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\InvitationService;
+use Carbon\PHPStan\AbstractMacro;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
@@ -79,8 +81,20 @@ class User extends Authenticatable
         );
     }
 
-    public function hasToken(){
-        return $this->tokens->count() ? 'Yes' : 'No';
+    public function hasValidApiToken(): bool
+    {
+        return $this->tokens()
+            ->where('name', 'api-token')
+            ->where(function ($inner) {
+                $inner->orWhereNull('expires_at');
+                $inner->orWhere('expires_at', '>=', Carbon::now());
+            })
+            ->count() > 0;
+    }
+
+    public function hasValidApiTokenHuman(): string
+    {
+        return $this->hasValidApiToken() ? 'Yes' : 'No';
     }
 
     //We do not use the laravel eloquent relationship as EU Login emails are mix of uppercase and lowercase

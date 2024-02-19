@@ -19,7 +19,6 @@ class DayArchiveController extends Controller
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $dayarchives = $this->day_archive_query_service->query($request->query());
-
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
         $platform = false;
@@ -36,7 +35,7 @@ class DayArchiveController extends Controller
 
     private function prepareOptions(): array
     {
-        $platforms = Platform::Vlops()->orderBy('name')->get()->map(static fn($platform) => [
+        $platforms = Platform::NonDsa()->orderBy('name')->get()->map(static fn($platform) => [
             'value' => $platform->uuid,
             'label' => $platform->name
         ])->toArray();
