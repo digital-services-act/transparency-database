@@ -21,29 +21,37 @@
         @endcan
     </div>
 
-    @can('administrate')
+    @canany(['create users','create platforms','view logs','view platforms',])
+
         <h2 class="ecl-u-type-heading-2">Administration</h2>
 
         <div class="ecl-row ecl-u-mb-l">
+            @can('create users')
             <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('user.index') }}">Users</a>
+                <a class="ecl-button ecl-button--primary" href="{{ route('user.index') }}">Manage Users</a>
             </div>
-            <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Platforms</a>
-            </div>
-{{--            <div class="ecl-col-3">--}}
-{{--                <a class="ecl-button ecl-button--primary" href="{{ route('invitation.index') }}">Invitations</a>--}}
-{{--            </div>--}}
+            @endcan
 
+            @can('create platforms')
             <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('log-messages.index') }}">Log Messages</a>
+                <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Manage Platforms</a>
             </div>
+            @endcan
 
+            @can('view logs')
+                <div class="ecl-col-3">
+                    <a class="ecl-button ecl-button--primary" href="{{ route('log-messages.index') }}">Log Messages</a>
+                </div>
+            @endcan
+
+            @can('view platforms')
             <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('onboarding.index') }}">Onboarding Dashboard</a>
+                <a class="ecl-button ecl-button--primary" href="{{ route('onboarding.index') }}">Onboarding
+                    Dashboard</a>
             </div>
+                @endcan
         </div>
-    @endcan
+    @endcanany
 
 
     <h2 class="ecl-u-type-heading-2">Assistance</h2>

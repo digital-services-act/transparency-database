@@ -41,7 +41,7 @@ class StatementControllerTest extends TestCase
 //     */
 //    public function index_displays_error_if_not_logged()
 //    {
-//        $this->setUpFullySeededDatabase();
+//
 //        $response = $this->get(route('statement.index'));
 //        $response->assertOk();
 //        $response->assertViewIs('statement.index');
@@ -53,7 +53,7 @@ class StatementControllerTest extends TestCase
      */
     public function index_displays_view_if_logged_with_rights(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsAdmin();
         $response = $this->get(route('statement.index'));
         $response->assertOk();
@@ -82,7 +82,7 @@ class StatementControllerTest extends TestCase
      */
     public function export_downloads_a_file(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsAdmin();
         $response = $this->get(route('statement.export'));
         $response->assertOk();
@@ -95,7 +95,7 @@ class StatementControllerTest extends TestCase
      */
     public function create_displays_view(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $user = $this->signInAsAdmin();
 
         $response = $this->get(route('statement.create'));
@@ -108,7 +108,7 @@ class StatementControllerTest extends TestCase
      */
     public function create_must_be_authenticated(): void
     {
-        $this->setUpFullySeededDatabase();
+
         // The cas is set to masquerade in testing mode.
         // So when we make a call to a cas middleware route we get logged in.
         // Thus before we make this call we are nobody
@@ -126,7 +126,7 @@ class StatementControllerTest extends TestCase
      */
     public function show_displays_view(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsAdmin();
 
         $statement = Statement::factory()->create();
@@ -156,7 +156,7 @@ class StatementControllerTest extends TestCase
      */
     public function store_saves_and_redirects(): void
     {
-        $this->setUpFullySeededDatabase();
+
         // This is a basic test that the normal controller is working.
         // For more advanced testing on the request and such, see the API testing.
         $user = $this->signInAsAdmin();

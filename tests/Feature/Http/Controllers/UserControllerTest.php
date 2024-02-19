@@ -17,7 +17,7 @@ class UserControllerTest extends TestCase
      */
     public function deleting_user_deletes_the_rest(): void
     {
-        $this->setUpFullySeededDatabase();
+
         /** @var User $user */
         $user = $this->signInAsAdmin();
 
