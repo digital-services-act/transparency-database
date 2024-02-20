@@ -250,7 +250,7 @@ class StatementSearchServiceTest extends TestCase
      */
     public function it_filters_on_platform_id(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $platform_id_one = Platform::first()->id;
         $platform_id_two = Platform::nonDsa()->whereNotIn('id', [$platform_id_one])->inRandomOrder()->first()->id;
 

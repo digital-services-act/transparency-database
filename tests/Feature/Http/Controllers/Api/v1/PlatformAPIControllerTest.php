@@ -32,7 +32,7 @@ class PlatformAPIControllerTest extends TestCase
      */
     public function api_platform_store_requires_auth(): void
     {
-        $this->setUpFullySeededDatabase();
+
 
         // Not signing in.
         $this->assertCount(20, Platform::all());
@@ -49,7 +49,7 @@ class PlatformAPIControllerTest extends TestCase
      */
     public function api_platform_store_works(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $user = $this->signInAsOnboarding();
         $this->withoutExceptionHandling();
 
@@ -74,7 +74,7 @@ class PlatformAPIControllerTest extends TestCase
      */
     public function api_platform_update_works(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $user = $this->signInAsOnboarding();
         $this->withoutExceptionHandling();
 
@@ -108,7 +108,7 @@ class PlatformAPIControllerTest extends TestCase
     public function it_should_give_platform_data(): void
     {
         $this->withoutExceptionHandling();
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsOnboarding();
 
         $platform = Platform::factory()->create([

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Platform;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PlatformUpdateRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class PlatformUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->canAny(['administrate','create platforms','view platforms']);
+        return $this->user()->canAny(['create platforms', 'view platforms']);
     }
 
     /**
@@ -24,10 +25,16 @@ class PlatformUpdateRequest extends FormRequest
      */
     public function rules()
     {
+        $platform = $this->route('platform');
+
         return [
             'name' => ['string', 'required', 'max:255'],
             'vlop' => ['int', 'required'],
-            'dsa_common_id' => ['string', 'nullable', 'unique:platforms,dsa_common_id']
+            'dsa_common_id' => [
+                'string',
+                'nullable',
+                Rule::unique('platforms')->ignore($platform->id),
+            ]
         ];
     }
 

@@ -25,7 +25,7 @@ class PlatformUserAPIControllerTest extends TestCase
      */
     public function api_platform_user_store_requires_auth(): void
     {
-        $this->setUpFullySeededDatabase();
+
         // Not signing in.
 
         $platform = Platform::first();
@@ -41,7 +41,7 @@ class PlatformUserAPIControllerTest extends TestCase
      */
     public function api_platform_user_store_creates_the_invitations(): void
     {
-        $this->setUpFullySeededDatabase();
+
 
         $this->signInAsOnboarding();
 
@@ -89,7 +89,7 @@ class PlatformUserAPIControllerTest extends TestCase
     {
         // If the user already logged in with EU Login and belongs to a platform, we don't need to add the user again.
 
-        $this->setUpFullySeededDatabase();
+
 
         $this->signInAsOnboarding();
 
@@ -135,7 +135,7 @@ class PlatformUserAPIControllerTest extends TestCase
         // If the user already logged in with EU Login, he will have no rights.
         // Once the invitation has been created, he will get linked to the platform once he visits the website.
 
-        $this->setUpFullySeededDatabase();
+
 
         $this->signInAsOnboarding();
 
@@ -178,7 +178,7 @@ class PlatformUserAPIControllerTest extends TestCase
     public function it_should_onboard_the_user(): void
     {
 
-        $this->setUpFullySeededDatabase();
+
         $this->withoutExceptionHandling();
 
         $this->signInAsOnboarding();

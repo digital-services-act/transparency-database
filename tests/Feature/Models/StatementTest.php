@@ -17,7 +17,7 @@ class StatementTest extends TestCase
      */
     public function territorial_scope_is_always_an_array(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $statement = Statement::all()->random()->first();
         $this->assertIsArray($statement->territorial_scope);
         $this->assertNotCount(0, $statement->territorial_scope);
@@ -53,7 +53,7 @@ class StatementTest extends TestCase
      */
     public function territorial_scope_is_always_sorted(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $statement = Statement::all()->random()->first();
 
         // Store in non alpha order

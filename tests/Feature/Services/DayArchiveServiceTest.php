@@ -126,7 +126,7 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_gets_the_first_id_from_date(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $admin      = $this->signInAsAdmin();
         $fields_one = $this->required_fields;
         $fields_two = $this->required_fields;
@@ -156,7 +156,7 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_gets_zero_on_first(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsAdmin();
 
         $first_id = $this->day_archive_service->getFirstIdOfDate(Carbon::createFromDate(2030, 1, 1));
@@ -196,7 +196,7 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_builds_a_starting_array(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $result = $this->day_archive_service->buildBasicExportsArray();
         $this->assertNotNull($result);
         $this->assertCount(20, $result);
@@ -209,7 +209,7 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_gets_the_last_id_from_date(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $admin      = $this->signInAsAdmin();
         $fields_one = $this->required_fields;
         $fields_two = $this->required_fields;
@@ -239,7 +239,7 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_gets_zero_on_last(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsAdmin();
 
         $last_id = $this->day_archive_service->getLastIdOfDate(Carbon::createFromDate(2030, 1, 1));

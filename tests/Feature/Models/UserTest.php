@@ -17,7 +17,7 @@ class UserTest extends TestCase
      */
     public function user_should_have_pending_invitation(): void
     {
-        $this->setUpFullySeededDatabase();
+
 
         $user = User::factory()->create([
             'email' => "invited@testing.org",
