@@ -75,9 +75,7 @@
     <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center ecl-u-f-r">
 
         <div class="ecl-u-type-paragraph ecl-u-mr-s">
-            Statements of Reasons @if(!$reindexing)
-                Found: {{ $total }}
-            @endif
+            Statements of Reasons @if(!$reindexing)Found: {{ $total }} @endif
         </div>
 
 

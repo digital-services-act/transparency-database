@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
-class ToggleStopReindexing extends Command
+class ToggleReindexing extends Command
 {
     use CommandTrait;
     /**
@@ -13,7 +13,7 @@ class ToggleStopReindexing extends Command
      *
      * @var string
      */
-    protected $signature = 'toggle-stop-reindexing {state}';
+    protected $signature = 'toggle-reindexing {state}';
 
     /**
      * The console command description.
@@ -28,6 +28,6 @@ class ToggleStopReindexing extends Command
     public function handle(): void
     {
         $state = $this->boolifyArgument('state');
-        Cache::forever('stop_reindexing', $state);
+        Cache::forever('reindexing', $state);
     }
 }
