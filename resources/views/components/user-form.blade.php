@@ -1,4 +1,4 @@
-@props(['user' => null, 'options' => null, 'roles' => [], 'action' => 'edit'])
+@props(['user' => null, 'options' => null, 'roles' => [], 'action' => 'create'])
 
 @if($action === 'create')
 <x-ecl.textfield label="Email" type="email" name="email" id="email" required=true value="{{ $user->email }}" />

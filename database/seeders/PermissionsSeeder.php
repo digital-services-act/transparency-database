@@ -24,12 +24,6 @@ class PermissionsSeeder extends Seeder
 
     public static function resetRolesAndPermissions()
     {
-//        $users = User::all();
-//        /** @var User $user */
-//        foreach ($users as $user)
-//        {
-//            $user->roles()->detach();
-//        }
 
         Role::query()->delete();
         Permission::query()->delete();
@@ -58,8 +52,7 @@ class PermissionsSeeder extends Seeder
 
         foreach ($permissions as $permission_name)
         {
-            $permission = Permission::create(['name' => $permission_name]);
-            $admin->givePermissionTo($permission);
+            Permission::create(['name' => $permission_name]);
         }
 
         $user->givePermissionTo('view statements');

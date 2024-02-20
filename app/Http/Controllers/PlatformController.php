@@ -122,7 +122,9 @@ class PlatformController extends Controller
 
         ])->toArray();
         $platform->name = $validated['name'];
+
         $platform->dsa_common_id = $validated['dsa_common_id'];
+
         $platform->vlop = $validated['vlop'];
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');

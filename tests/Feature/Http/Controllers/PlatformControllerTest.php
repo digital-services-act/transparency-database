@@ -19,7 +19,7 @@ class PlatformControllerTest extends TestCase
      */
     public function deleting_platform_deletes_the_rest(): void
     {
-        $this->setUpFullySeededDatabase();
+
         $this->signInAsAdmin();
 
         $this->assertCount(10, Statement::all());
