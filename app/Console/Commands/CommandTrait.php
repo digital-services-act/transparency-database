@@ -36,6 +36,6 @@ trait CommandTrait
 
     public function boolifyArgument(string $argument): bool
     {
-        return $argument === 'true';
+        return $this->argument($argument) === 'true';
     }
 }
