@@ -4,8 +4,8 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}" />
-    <x-ecl.breadcrumb label="Platforms" />
+    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}"/>
+    <x-ecl.breadcrumb label="Platforms"/>
 @endsection
 
 
@@ -13,7 +13,8 @@
 
     <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
         <form method="get">
-            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('platform.index') }}'>reset</a>" placeholder="search by name" justlabel="true" value="{{ request()->get('s', '') }}" />
+            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('platform.index') }}'>reset</a>"
+                             placeholder="search by name" justlabel="true" value="{{ request()->get('s', '') }}"/>
         </form>
     </div>
 
@@ -39,16 +40,24 @@
         @foreach($platforms as $platform)
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Name">
-                    <x-ecl.external-link href="{{ route('platform.edit', [$platform]) }}" label="{{ $platform->name }}"/>
+                    <x-ecl.external-link href="{{ route('platform.edit', [$platform]) }}"
+                                         label="{{ $platform->name }}"/>
                 </td>
+
                 <td class="ecl-table__cell" data-ecl-table-header="Actions">
-                    <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('platform.edit', [$platform]) }}'">edit</button>
-                    <form action="{{ route('platform.destroy', [$platform]) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <input type="submit" class="ecl-u-d-inline ecl-u-f-l ecl-button ecl-button--secondary" value="delete" />
-                    </form>
+                    <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary"
+                            onclick="document.location.href = '{{ route('platform.edit', [$platform]) }}'">edit
+                    </button>
+                    @can('administrate')
+                        <form action="{{ route('platform.destroy', [$platform]) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <input type="submit" class="ecl-u-d-inline ecl-u-f-l ecl-button ecl-button--secondary"
+                                   value="delete"/>
+                        </form>
+                    @endcan
                 </td>
+
             </tr>
         @endforeach
         </tbody>
@@ -56,6 +65,5 @@
 
 
     {{ $platforms->links('paginator') }}
-
 
 @endsection

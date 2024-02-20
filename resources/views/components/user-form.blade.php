@@ -21,7 +21,7 @@
             <x-ecl.checkbox id="permission-{{ $role->id }}"
                             name="roles[]"
                             value="{{ $role->id }}"
-                            checked="{{ $user->roles()->pluck('id')->contains($role->id) }}"
+                            checked="{{ ($action=='edit' && $user->roles()->pluck('id')->contains($role->id)) || ($action=='create' && $role->name == 'Contributor') }}"
                             label="{{ $role->name }}"
             />
         </li>

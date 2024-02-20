@@ -77,6 +77,8 @@ class RouteProtectionTest extends TestCase
         $this->check_route_for_text('profile.start', $allowed, $rejected,'Manage Users');
     }
 
+
+
     /**
      * @return void
      * @test

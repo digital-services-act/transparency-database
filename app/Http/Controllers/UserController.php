@@ -12,6 +12,9 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use LaravelIdea\Helper\Spatie\Permission\Models\_IH_Role_C;
 use Spatie\Permission\Models\Role;
 
 
@@ -117,7 +120,6 @@ class UserController extends Controller
             'user' => $user,
             'options' => $options,
         ]);
-
     }
 
     /**
@@ -162,8 +164,27 @@ class UserController extends Controller
             'label' => $platform->name
         ])->toArray();
         array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
-        $roles = Role::orderBy('name')->get();
+
+        $roles = $this->getAvailableRolesToDisplay();
+
 
         return ['platforms' => $platforms, 'roles' => $roles];
+    }
+
+    public function getAvailableRolesToDisplay()
+    {
+        return $this->filterRoles(Role::orderBy('name')->get());
+    }
+
+    public function filterRoles(Collection $roles
+    ) {
+        if (auth()->user()->can('administrate')) {
+            return $roles;
+        }
+
+        return $roles->reject(function ($role) {
+            $names_to_remove = ['Admin', 'Onboarding', 'User'];
+            return in_array($role->name, $names_to_remove);
+        });
     }
 }
