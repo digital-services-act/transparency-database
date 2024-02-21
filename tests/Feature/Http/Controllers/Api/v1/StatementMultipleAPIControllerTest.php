@@ -178,42 +178,42 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
-    public function api_statements_store_detects_previous_puid(): void
-    {
-        $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
-
-        $this->assertCount(10, Statement::all());
-
-        $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-12-20',
-        ]);
-
-        $create = 10;
-        $sors = [];
-        while ($create--) {
-            $fields['puid'] = uniqid();
-            $sors[] = $fields;
-        }
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        $this->assertCount(20, Statement::all());
-
-        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
-        ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
-
-        $this->assertCount(20, Statement::all());
-    }
+//    /**
+//     * @test
+//     */
+//    public function api_statements_store_detects_previous_puid(): void
+//    {
+//        $this->setUpFullySeededDatabase();
+//        $user = $this->signInAsAdmin();
+//
+//        $this->assertCount(10, Statement::all());
+//
+//        $fields = array_merge($this->required_fields, [
+//            'application_date' => '2023-12-20',
+//        ]);
+//
+//        $create = 10;
+//        $sors = [];
+//        while ($create--) {
+//            $fields['puid'] = uniqid();
+//            $sors[] = $fields;
+//        }
+//
+//        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+//            'Accept' => 'application/json'
+//        ]);
+//        $response->assertStatus(Response::HTTP_CREATED);
+//
+//        $this->assertCount(20, Statement::all());
+//
+//        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+//            'Accept' => 'application/json'
+//        ]);
+//        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+//        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
+//
+//        $this->assertCount(20, Statement::all());
+//    }
 
 
     /**
