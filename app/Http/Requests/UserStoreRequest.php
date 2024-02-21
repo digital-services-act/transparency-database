@@ -13,7 +13,7 @@ class UserStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('administrate');
+        return $this->user()->can('create users');
     }
 
     /**
