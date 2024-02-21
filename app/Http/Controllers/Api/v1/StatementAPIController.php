@@ -143,7 +143,7 @@ class StatementAPIController extends Controller
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-//        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'], $payload['statements']);
+        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'], $payload['statements']);
 
         // Are all the puids unique with in the call?
         $unique_puids_to_check = array_unique($puids_to_check);
