@@ -73,7 +73,7 @@ Route::middleware(['force.auth'])->group(static function () {
             Request $request
         ): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token')->can('create statements');
 
-    });
+});
 
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');

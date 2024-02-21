@@ -14,7 +14,7 @@ class PlatformStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->canAny(['administrate','create platforms','view platforms']);
+        return $this->user()->canAny(['create platforms']);
     }
 
     /**
