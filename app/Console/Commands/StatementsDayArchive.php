@@ -5,8 +5,10 @@ namespace App\Console\Commands;
 use App\Jobs\StatementCsvExport;
 use App\Jobs\StatementCsvExportArchive;
 use App\Jobs\StatementCsvExportCopyS3;
+use App\Jobs\StatementCsvExportGroupParts;
 use App\Jobs\StatementCsvExportReduce;
 use App\Jobs\StatementCsvExportSha1;
+use App\Jobs\StatementCsvExportZipPart;
 use App\Jobs\StatementCsvExportZipParts;
 use App\Services\DayArchiveService;
 use Exception;
@@ -59,6 +61,7 @@ class StatementsDayArchive extends Command
         $current     = $first_id;
         $part        = 0;
 
+        // Get the SOR from the DB into csv chunks
         $csv_export_jobs = [];
         while ($current <= $last_id) {
             $till              = ($current + $chunk - 1);
@@ -69,6 +72,7 @@ class StatementsDayArchive extends Command
             $current += $chunk;
         }
 
+        // Get rid of any blank parts
         $reduce_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
@@ -76,6 +80,30 @@ class StatementsDayArchive extends Command
             }
         }
 
+        // Method B:
+        // This will the zip the individual csvs to separate zips.
+        $zip_part_jobs = [];
+        $total_parts = count($csv_export_jobs);
+        $part = 0;
+        while($part <= $total_parts) {
+            foreach ($exports as $export) {
+                foreach ($versions as $version) {
+                    $zip_part_jobs[] = new StatementCsvExportZipPart($date_string, $export['slug'], $version, sprintf('%05d', $part));
+                }
+            }
+            ++$part;
+        }
+
+        // This will store with no compression the zips into one zip.
+        $group_zip_jobs = [];
+        foreach ($exports as $export) {
+            foreach ($versions as $version) {
+                $group_zip_jobs[] = new StatementCsvExportGroupParts($date_string, $export['slug'], $version);
+            }
+        }
+
+        // Method A:
+        // This will zip the csv into one zip.
         $zip_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
@@ -83,6 +111,7 @@ class StatementsDayArchive extends Command
             }
         }
 
+        // Generate sha1s for the main zip.
         $sha1_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
@@ -90,6 +119,7 @@ class StatementsDayArchive extends Command
             }
         }
 
+        // Copy what we need to s3
         $copys3_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
@@ -99,14 +129,18 @@ class StatementsDayArchive extends Command
             }
         }
 
+        // Create DB Entries to show on the data download page.
         $archive_jobs = [];
         foreach ($exports as $export) {
             $archive_jobs[] = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
         }
 
+        // Hold and carry all the possible jobs.
         $luggage = [
             'date_string'     => $date_string,
             'archive_jobs'    => $archive_jobs,
+            'zip_part_jobs'   => $zip_part_jobs,
+            'group_zip_jobs'  => $group_zip_jobs,
             'csv_export_jobs' => $csv_export_jobs,
             'sha1_jobs'       => $sha1_jobs,
             'copys3_jobs'     => $copys3_jobs,
