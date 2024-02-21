@@ -12,6 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('statements', function (Blueprint $table) {
+            if (Schema::hasIndex('statements', 'statements_platform_id_puid_unique')) {
+                $table->dropIndex('statements_platform_id_puid_unique');
+            }
+
             if (Schema::hasIndex('statements', 'statements_decision_visibility_index')) {
                 $table->dropIndex('statements_decision_visibility_index');
             }

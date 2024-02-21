@@ -80,9 +80,6 @@ class CreateStatementsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['platform_id', 'puid']);
-            $table->index('created_at');
-
 
         });
     }
