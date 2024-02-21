@@ -143,7 +143,7 @@ class StatementAPIController extends Controller
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'], $payload['statements']);
+//        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'], $payload['statements']);
 
         // Are all the puids unique with in the call?
         $unique_puids_to_check = array_unique($puids_to_check);
@@ -160,19 +160,19 @@ class StatementAPIController extends Controller
         }
 
         // Do any of the puids already exists in the DB?
-        $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
-        if (count($existing)) {
-            $errors  = [
-                'puid'           => [
-                    'the platform identifier(s) are not all unique within this platform.'
-                ],
-                'existing_puids' => $existing
-            ];
-            $message = 'the platform identifier(s) given are not all unique within this platform.';
-            $out     = ['message' => $message, 'errors' => $errors];
-
-            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+//        $existing = Statement::query()->where('platform_id', $platform_id)->whereIn('puid', $puids_to_check)->pluck('puid')->toArray();
+//        if (count($existing)) {
+//            $errors  = [
+//                'puid'           => [
+//                    'the platform identifier(s) are not all unique within this platform.'
+//                ],
+//                'existing_puids' => $existing
+//            ];
+//            $message = 'the platform identifier(s) given are not all unique within this platform.';
+//            $out     = ['message' => $message, 'errors' => $errors];
+//
+//            return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+//        }
 
 
         // enrich the payload for bulk insert.
