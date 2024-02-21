@@ -26,9 +26,15 @@ class StatementCsvExportReduce implements ShouldQueue
         $path = Storage::path('');
         $glob = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv';
         $parts = glob($glob);
+
         foreach ($parts as $part) {
             if (filesize($part) === 0) {
                 shell_exec('rm ' . $part);
+            } elseif (!str_contains($part, "00000")) {
+                $totalLines = (int)(exec("wc -l $part"));
+                if ($totalLines === 1) {
+                    shell_exec('rm ' . $part);
+                }
             }
         }
 

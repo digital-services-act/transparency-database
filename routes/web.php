@@ -49,16 +49,18 @@ Route::middleware(['force.auth'])->group(static function () {
         });
         Route::group(['middleware' => ['can:administrate']], static function () {
             Route::prefix('/admin/')->group(static function () {
-                Route::resource('role', RoleController::class);
-                Route::resource('permission', PermissionController::class);
-                Route::resource('invitation', InvitationController::class);
-                Route::resource('user', UserController::class);
-                Route::resource('platform', PlatformController::class);
-                Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index');
+//                Route::resource('role', RoleController::class);
+//                Route::resource('permission', PermissionController::class);
+//                Route::resource('invitation', InvitationController::class);
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
         });
-        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view dashboard');
+
+        Route::resource('user', UserController::class, ['middleware' => ['can:create users']]);
+        Route::resource('platform', PlatformController::class, ['middleware' => ['can:create platforms']]);
+
+        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
+        Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
         Route::get('/profile/start', static fn(
             Request $request
@@ -66,18 +68,12 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::get('/profile/page/{page}', static fn(string $page): Factory|View|Application => (new PageController())->profileShow($page))->name('profile.page.show');
         Route::get('/profile/api', static fn(
             Request $request
-        ): Application|Factory|View => (new ProfileController())->apiIndex($request))->name('profile.api.index');
+        ): Application|Factory|View => (new ProfileController())->apiIndex($request))->name('profile.api.index')->can('create statements');
         Route::post('/profile/api/new-token', static fn(
             Request $request
-        ): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token');
-        // Register the Platform
-        Route::get('/platform-register', static fn(
-            Request $request
-        ): Application|Factory|View|RedirectResponse => (new PlatformController())->platformRegister($request))->name('platform.register');
-        Route::post('/platform-register', static fn(
-            PlatformRegisterStoreRequest $request
-        ): RedirectResponse => (new PlatformController())->platformRegisterStore($request))->name('platform.register.store')->middleware(ProtectAgainstSpam::class);
-    });
+        ): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token')->can('create statements');
+
+});
 
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');

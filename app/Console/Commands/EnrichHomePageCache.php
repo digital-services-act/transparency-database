@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Platform;
 use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class EnrichHomePageCache extends Command
@@ -53,7 +54,15 @@ class EnrichHomePageCache extends Command
 
     public function doGrandTotal(StatementSearchService $statement_search_service): void
     {
-        Cache::put('grand_total', $statement_search_service->grandTotalNoCache(), $this->one_day);
+        $reindexing = Cache::get('reindexing', false);
+        if (!$reindexing) {
+            Cache::put('grand_total', $statement_search_service->grandTotalNoCache(), $this->one_day);
+        } else {
+            $old = (int)Cache::get('grand_total');
+            $yesterday = $statement_search_service->totalForDate(Carbon::yesterday());
+            $new = $old + $yesterday;
+            Cache::put('grand_total', $new, $this->one_day);
+        }
     }
 
     public function doPlatformsTotal(): void

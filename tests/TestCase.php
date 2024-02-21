@@ -8,12 +8,20 @@ use Database\Seeders\OnboardingPermissionsSeeder;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\StatementSeeder;
+use Database\Seeders\SupportPermissionsSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpFullySeededDatabase();
+    }
+
     use CreatesApplication;
+
 
     protected function signInAsAdmin($user = null) {
         $user = $this->signIn($user);
@@ -25,9 +33,17 @@ abstract class TestCase extends BaseTestCase
     }
 
     protected function signInAsOnboarding($user = null) {
-        $this->seed(OnboardingPermissionsSeeder::class);
         $user = $this->signIn($user);
         $user->assignRole('Onboarding');
+
+        $dsa_platform = Platform::getDsaPlatform();
+        $this->assignPlatform($user, $dsa_platform);
+        return $user;
+    }
+
+    protected function signInAsSupport($user = null) {
+        $user = $this->signIn($user);
+        $user->assignRole('Support');
 
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
@@ -66,6 +82,8 @@ abstract class TestCase extends BaseTestCase
         PlatformSeeder::resetPlatforms();
         UserSeeder::resetUsers();
         PermissionsSeeder::resetRolesAndPermissions();
+        $this->seed(OnboardingPermissionsSeeder::class);
+        $this->seed(SupportPermissionsSeeder::class);
         StatementSeeder::resetStatements($statement_count);
     }
 

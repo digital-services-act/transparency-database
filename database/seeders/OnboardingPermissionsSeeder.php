@@ -26,7 +26,7 @@ class OnboardingPermissionsSeeder extends Seeder
 
 
         // Assign permissions to role
-        $onboardingRole->syncPermissions([$viewPlatformPermission, $createUserPermission, $viewUserPermission, $createPlatformPermission]);
-        $onboardingRole->givePermissionTo('view dashboard');
+        $onboardingRole->syncPermissions(['view dashboard', 'create statements', $viewPlatformPermission, $createUserPermission, $viewUserPermission, $createPlatformPermission]);
+
     }
 }

@@ -22,9 +22,9 @@
         <p> Count is not available in production</p>
         @else
         <p>
-            <span class="ecl-label ecl-label--medium">API Statements: {{$platform->api_statements->count()}}</span>
-            <span class="ecl-label ecl-label--medium">API Multi Statements: {{$platform->api_multi_statements->count()}}</span>
-            <span class="ecl-label ecl-label--medium">FORM Statements: {{$platform->form_statements->count()}}</span>
+            <x-onboarding.label :count="$platform->api_statements->count()" label="API Statements"/>
+            <x-onboarding.label :count="$platform->api_multi_statements->count()" label="API Multi Statements"/>
+            <x-onboarding.label :count="$platform->form_statements->count()" label="FORM Statements"/>
         </p>
         @endif
 

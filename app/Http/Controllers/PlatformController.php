@@ -71,7 +71,7 @@ class PlatformController extends Controller
         /** @var Platform $platform */
         $platform = Platform::create([
             'name' => $validated['name'],
-            'dsa_common_id' => $validated['dsa_common_id'],
+            'dsa_common_id' => $validated['dsa_common_id'] ?? null,
             'vlop' => $validated['vlop']
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
@@ -122,7 +122,9 @@ class PlatformController extends Controller
 
         ])->toArray();
         $platform->name = $validated['name'];
+
         $platform->dsa_common_id = $validated['dsa_common_id'];
+
         $platform->vlop = $validated['vlop'];
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');
@@ -136,6 +138,10 @@ class PlatformController extends Controller
      */
     public function destroy(Platform $platform): RedirectResponse
     {
+        if (auth()->user()->cannot('administrate')) {
+            return redirect()->route('platform.index')->with('error', 'You don\'t have enough rights to delete a platform');
+        }
+
         $dsaPlatform = Platform::getDsaPlatform();
 
         if ($platform->id == $dsaPlatform->id) {
