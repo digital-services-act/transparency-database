@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
         // Inside the Parent TestCase there is not functionality wrap up and
         // create a test bed scenario.
         $this->call([
-            PlatformSeeder::class,
-            UserSeeder::class,
-            PermissionsSeeder::class,
-            StatementSeeder::class,
-            OnboardingPermissionsSeeder::class
+//            PlatformSeeder::class,
+//            UserSeeder::class,
+//            PermissionsSeeder::class,
+//            StatementSeeder::class,
+//            OnboardingPermissionsSeeder::class
         ]);
     }
 }
