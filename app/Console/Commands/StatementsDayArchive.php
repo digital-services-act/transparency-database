@@ -46,13 +46,18 @@ class StatementsDayArchive extends Command
     {
         if ( ! config('filesystems.disks.s3ds.bucket')) {
             $this->error('In order to make day archives, you need to define the "s3ds" bucket.');
-
             return;
         }
 
         $date = $this->sanitizeDateArgument();
-
         $date_string = $date->format('Y-m-d');
+
+        $test = glob('storage/app/sor*');
+        if(count($test)) {
+            $this->error($date_string . ' archiving can not run, day archive already in progress');
+            return;
+        }
+
         $exports     = $day_archive_service->buildBasicExportsArray();
         $versions    = ['full', 'light'];
         $chunk       = 500000;

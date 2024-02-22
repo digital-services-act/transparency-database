@@ -32,6 +32,12 @@ class StatementsDayArchiveOldest extends Command
      */
     public function handle(): void
     {
+        $test = glob('storage/app/sor*');
+        if(count($test)) {
+            $this->error('Oldest archiving can not run, day archive already in progress');
+            return;
+        }
+
         $oldest = DayArchive::query()->orderBy('created_at', 'asc')->first();
         if ($oldest) {
             DayArchive::query()->whereDate('date', $oldest->date)->delete();
