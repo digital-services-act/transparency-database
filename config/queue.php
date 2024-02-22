@@ -34,6 +34,15 @@ return [
             'driver' => 'sync',
         ],
 
+        'databasesqlite' => [
+            'driver' => 'database',
+            'connection' => 'sqlite',
+            'table' => 'jobs',
+            'queue' => 'default',
+            'retry_after' => 7200,
+            'after_commit' => false,
+        ],
+
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
@@ -88,6 +97,10 @@ return [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
+    ],
+
+    'batching' => [
+        'database' => 'sqlite',
     ],
 
 ];

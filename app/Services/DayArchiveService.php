@@ -119,26 +119,16 @@ class DayArchiveService
         return DayArchive::query()->where('platform_id', $platform->id)->whereNotNull('completed_at')->orderBy('date', 'DESC');
     }
 
-    /**
-     * @return DayArchive|Model|Builder|null
-     */
     public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
     {
         return DayArchive::query()->whereDate('date', $date)->whereNull('platform_id')->first();
     }
 
-    /**
-     *
-     * @return DayArchive|Model|Builder|null
-     */
     public function getDayArchiveByPlatformDate(Platform $platform, Carbon $date): DayArchive|Model|Builder|null
     {
         return DayArchive::query()->whereDate('date', $date)->where('platform_id', $platform->id)->first();
     }
 
-    /**
-     * @return Builder
-     */
     public function getDayArchivesByDate(Carbon $date): Builder
     {
         return DayArchive::query()->whereDate('date', $date);
