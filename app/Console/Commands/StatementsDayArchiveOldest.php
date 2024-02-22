@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\DayArchive;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class StatementsDayArchiveOldest extends Command
@@ -34,7 +35,7 @@ class StatementsDayArchiveOldest extends Command
     {
         $test = glob('storage/app/sor*');
         if(count($test)) {
-            $this->error('Oldest archiving can not run, day archive already in progress');
+            Log::error('Oldest archiving can not run, day archive already in progress');
             return;
         }
 

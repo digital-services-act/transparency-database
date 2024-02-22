@@ -45,7 +45,7 @@ class StatementsDayArchive extends Command
     public function handle(DayArchiveService $day_archive_service): void
     {
         if ( ! config('filesystems.disks.s3ds.bucket')) {
-            $this->error('In order to make day archives, you need to define the "s3ds" bucket.');
+            Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
             return;
         }
 
@@ -54,7 +54,7 @@ class StatementsDayArchive extends Command
 
         $test = glob('storage/app/sor*');
         if(count($test)) {
-            $this->error($date_string . ' archiving can not run, day archive already in progress');
+            Log::error($date_string . ' archiving can not run, day archive already in progress');
             return;
         }
 
