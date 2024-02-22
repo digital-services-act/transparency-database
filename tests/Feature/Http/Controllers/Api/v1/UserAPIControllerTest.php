@@ -40,7 +40,7 @@ class UserAPIControllerTest extends TestCase
         $this->signInAsOnboarding();
 
 
-        Invitation::factory()
+        User::factory()
             ->create(
                 ['email' => 'foo@bar.com']
             );

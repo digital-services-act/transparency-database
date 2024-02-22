@@ -39,7 +39,7 @@ class PlatformUserAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_platform_user_store_creates_the_invitations(): void
+    public function api_platform_user_store_creates_the_user(): void
     {
 
 
@@ -59,7 +59,6 @@ class PlatformUserAPIControllerTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(2, $platform->fresh()->invitations);
 
         //If we retry with the same users, we get an error as the emails can't be duplicates
         $retry = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
@@ -117,8 +116,6 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertCount(0, $platform->fresh()->invitations);
-
 
         $this->signIn($platform_user);
 
@@ -127,50 +124,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
-    public function creates_the_invitations_when_user_not_linked_to_the_platform(): void
-    {
-        // If the user already logged in with EU Login, he will have no rights.
-        // Once the invitation has been created, he will get linked to the platform once he visits the website.
 
-
-
-        $this->signInAsOnboarding();
-
-        $platform = Platform::factory()->create([
-            'dsa_common_id' => "foobarID"
-        ]);
-
-
-        $this->emails = [
-            'emails' => [
-                'email_new@platform.com'
-            ]
-        ];
-
-        //Create a user with the same email
-        $platform_user = User::factory()
-            ->create(
-                [
-                    'email' => 'email_new@platform.com',
-                    'platform_id' => null
-                ]
-            );
-
-
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => 'foobarID']), $this->emails, [
-            'Accept' => 'application/json'
-        ]);
-
-        $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(1, $platform->fresh()->invitations);
-
-        $this->checkOnboarding($platform_user, $platform);
-
-
-    }
 
     /**
      * @test
@@ -205,9 +159,8 @@ class PlatformUserAPIControllerTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(1, $platform->fresh()->invitations);
 
-        $this->checkOnboarding($platform_user, $platform);
+        $this->checkOnboarding($platform_user->fresh(), $platform);
 
     }
 
@@ -218,12 +171,10 @@ class PlatformUserAPIControllerTest extends TestCase
     public function checkOnboarding(mixed $user, $platform): void
     {
         $this->signIn($user);
-        //The accept of the invitation is done automatically on the CasGuard.php
-        $user->acceptInvitation();
 
         $response = $this->get(route('statement.create'));
         $response->assertOk();
-        $this->assertCount(0, $platform->fresh()->invitations);
+
     }
 
 

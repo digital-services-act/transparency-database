@@ -5,7 +5,6 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
 use App\Http\Controllers\DayArchiveController;
-use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PermissionController;
@@ -51,7 +50,6 @@ Route::middleware(['force.auth'])->group(static function () {
             Route::prefix('/admin/')->group(static function () {
 //                Route::resource('role', RoleController::class);
 //                Route::resource('permission', PermissionController::class);
-//                Route::resource('invitation', InvitationController::class);
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
         });
