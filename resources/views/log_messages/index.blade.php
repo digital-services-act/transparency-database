@@ -45,7 +45,7 @@
                 <td class="ecl-table__cell" data-ecl-table-header="Date">{{ $log_message->logged_at }}</td>
                 <td class="ecl-table__cell" data-ecl-table-header="Date">{{ $log_message->level_name }}</td>
                 <td class="ecl-table__cell" data-ecl-table-header="Message">
-                    {{ $log_message->message }}
+                    {{ substr($log_message->message, 0, 100) }}
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Context">
                     {{ VarDumper::dump($log_message->context->collect()->toArray()) }}
