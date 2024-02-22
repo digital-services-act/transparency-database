@@ -30,12 +30,13 @@ class StatementCsvExportReduce implements ShouldQueue
         foreach ($parts as $part) {
             if (filesize($part) === 0) {
                 shell_exec('rm ' . $part);
-            } elseif (!str_contains($part, "00000")) {
-                $totalLines = (int)(exec("wc -l $part"));
-                if ($totalLines === 1) {
-                    shell_exec('rm ' . $part);
-                }
             }
+//            elseif (!str_contains($part, "00000")) {
+//                $totalLines = (int)(exec("wc -l $part"));
+//                if ($totalLines === 1) {
+//                    shell_exec('rm ' . $part);
+//                }
+//            }
         }
 
         $parts_left = glob($glob);
