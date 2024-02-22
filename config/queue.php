@@ -98,9 +98,4 @@ return [
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
     ],
-
-    'batching' => [
-        'database' => 'sqlite',
-    ],
-
 ];
