@@ -45,14 +45,19 @@ class StatementsDayArchive extends Command
     public function handle(DayArchiveService $day_archive_service): void
     {
         if ( ! config('filesystems.disks.s3ds.bucket')) {
-            $this->error('In order to make day archives, you need to define the "s3ds" bucket.');
-
+            Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
             return;
         }
 
         $date = $this->sanitizeDateArgument();
-
         $date_string = $date->format('Y-m-d');
+
+        $test = glob('storage/app/sor*');
+        if(count($test)) {
+            Log::error($date_string . ' archiving can not run, day archive already in progress');
+            return;
+        }
+
         $exports     = $day_archive_service->buildBasicExportsArray();
         $versions    = ['full', 'light'];
         $chunk       = 500000;
@@ -148,21 +153,21 @@ class StatementsDayArchive extends Command
             'reduce_jobs'     => $reduce_jobs
         ];
 
-        //Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+        Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
         File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
         Bus::batch($luggage['csv_export_jobs'])->finally(static function () use ($luggage) {
-            Bus::batch($luggage['reduce_jobs'])->finally(static function () use ($luggage) {
+            //Bus::batch($luggage['reduce_jobs'])->finally(static function () use ($luggage) {
                 Bus::batch($luggage['zip_jobs'])->finally(static function () use ($luggage) {
                     Bus::batch($luggage['sha1_jobs'])->finally(static function () use ($luggage) {
                         Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
                             Bus::batch($luggage['archive_jobs'])->finally(static function () use ($luggage) {
                                 File::delete(File::glob(storage_path('app') . '/*' . $luggage['date_string'] . '*'));
-                                //Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                                Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                             })->dispatch();
                         })->dispatch();
                     })->dispatch();
                 })->dispatch();
-            })->dispatch();
+            //})->dispatch();
         })->dispatch();
     }
 }

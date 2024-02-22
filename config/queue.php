@@ -39,7 +39,7 @@ return [
             'connection' => 'sqlite',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 7200,
+            'retry_after' => 1800,
             'after_commit' => false,
         ],
 
@@ -47,7 +47,7 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 7200,
+            'retry_after' => 1800,
             'after_commit' => false,
         ],
 
@@ -98,9 +98,4 @@ return [
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
     ],
-
-    'batching' => [
-        'database' => 'sqlite',
-    ],
-
 ];

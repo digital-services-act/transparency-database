@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\DayArchive;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class StatementsDayArchiveOldest extends Command
@@ -32,6 +33,12 @@ class StatementsDayArchiveOldest extends Command
      */
     public function handle(): void
     {
+        $test = glob('storage/app/sor*');
+        if(count($test)) {
+            Log::error('Oldest archiving can not run, day archive already in progress');
+            return;
+        }
+
         $oldest = DayArchive::query()->orderBy('created_at', 'asc')->first();
         if ($oldest) {
             DayArchive::query()->whereDate('date', $oldest->date)->delete();
