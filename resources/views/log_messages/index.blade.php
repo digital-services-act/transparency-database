@@ -48,7 +48,7 @@
                     {{ $log_message->message }}
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Context">
-                    {{ VarDumper::dump($log_message->context->collect()) }}
+                    {{ VarDumper::dump($log_message->context->collect()->toArray()) }}
                 </td>
 
             </tr>
