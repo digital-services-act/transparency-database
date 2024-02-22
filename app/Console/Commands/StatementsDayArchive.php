@@ -148,7 +148,7 @@ class StatementsDayArchive extends Command
             'reduce_jobs'     => $reduce_jobs
         ];
 
-        //Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+        Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
         File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
         Bus::batch($luggage['csv_export_jobs'])->finally(static function () use ($luggage) {
             Bus::batch($luggage['reduce_jobs'])->finally(static function () use ($luggage) {
@@ -157,7 +157,7 @@ class StatementsDayArchive extends Command
                         Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
                             Bus::batch($luggage['archive_jobs'])->finally(static function () use ($luggage) {
                                 File::delete(File::glob(storage_path('app') . '/*' . $luggage['date_string'] . '*'));
-                                //Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                                Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                             })->dispatch();
                         })->dispatch();
                     })->dispatch();
