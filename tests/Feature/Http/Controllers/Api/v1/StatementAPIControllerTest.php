@@ -660,7 +660,7 @@ class StatementAPIControllerTest extends TestCase
 
 
         // In the show call it should be not there or null
-        $response = $this->call('GET', route('api.v1.statement.show', ['statement' => $response->json('uuid')]));
+        $response = $this->call('GET', route('api.v1.statement.show', ['statement' => $response->json('id')]));
         $this->assertNull($response->json('puid'));
         $content = $response->content();
         $this->assertStringNotContainsString('"puid":', $content);

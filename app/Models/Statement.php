@@ -516,7 +516,6 @@ class Statement extends Model
         'updated_at',
         'method',
         'user_id',
-        'id',
         'platform',
         'platform_id',
         'puid'
@@ -632,6 +631,7 @@ class Statement extends Model
     {
         return route('statement.show', [$this]);
     }
+
 
     /**
      * @return string
