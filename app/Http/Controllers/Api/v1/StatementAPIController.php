@@ -93,6 +93,7 @@ class StatementAPIController extends Controller
         $out['puid'] = $statement->puid; // Show the puid on a store.
 
 
+
         return response()->json($out, Response::HTTP_CREATED);
     }
 
@@ -192,7 +193,7 @@ class StatementAPIController extends Controller
             $this->sanitizePayloadStatement($payload_statement);
         }
 
-        unset($payload_statement);
+//        unset($payload_statement);
 
         try {
             // Bulk Insert
@@ -200,16 +201,18 @@ class StatementAPIController extends Controller
 
             // Get them back, we have to return the statements as they are made in the DB.
             // So yes get them back and not use the input given.
-            $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
+//            $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
 
             // Build an output.
-            $out = [];
-            foreach ($created_statements as $created_statement) {
-                $puid                      = $created_statement->puid;
-                $created_statement         = $created_statement->toArray();
-                $created_statement['puid'] = $puid;
-                $out[]                     = $created_statement;
-            }
+            $out = $payload['statements'];
+
+//            $created_statements = collect($payload['statements']);
+//            foreach ($created_statements as $created_statement) {
+//                $puid                      = $created_statement['puid'];
+//                //$created_statement         = $created_statement;
+//                $created_statement['puid'] = $puid;
+//                $out[]                     = $created_statement;
+//            }
 
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
         } catch (QueryException $queryException) {

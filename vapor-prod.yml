@@ -3,7 +3,7 @@ name: dsa-prod
 environments:
   production:
     firewall:
-      rate-limit: 17000
+      rate-limit: 20000
       bot-control:
         - CategoryAdvertising
         - CategoryArchiver
@@ -12,8 +12,8 @@ environments:
         - CategoryMiscellaneous
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
-    warm: 10
-    timeout: 180
+    warm: 100
+    timeout: 240
     cache: redis-prod
     database: prod-serverless-db
     domain: transparency.dsa.ec.europa.eu
