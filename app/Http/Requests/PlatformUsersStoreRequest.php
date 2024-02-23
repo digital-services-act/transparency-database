@@ -17,7 +17,7 @@ class PlatformUsersStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->canAny(['administrate','create users','view users']);
+        return $this->user()->canAny(['create users','view users']);
     }
 
     /**
@@ -31,7 +31,6 @@ class PlatformUsersStoreRequest extends FormRequest
             'emails' => ['required', 'array'],
             'emails.*' => [
                 'email',
-                Rule::unique('invitations', 'email'),
                 new UniquePlatformAndUser()
             ],
         ];

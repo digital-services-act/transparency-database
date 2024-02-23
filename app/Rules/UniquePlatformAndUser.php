@@ -11,7 +11,6 @@ class UniquePlatformAndUser implements Rule
     #[\Override]
     public function passes($attribute, $value)
     {
-
         $platform = request('platform');
         $emails = request('emails');
 
@@ -24,13 +23,11 @@ class UniquePlatformAndUser implements Rule
         }
 
         return true;
-
-
     }
 
     #[\Override]
     public function message()
     {
-        return 'The combination of platform and user already exists.';
+        return 'The email :input is already known in the system.';
     }
 }
