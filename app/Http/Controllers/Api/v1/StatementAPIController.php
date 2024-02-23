@@ -92,6 +92,7 @@ class StatementAPIController extends Controller
         $out         = $statement->toArray();
         $out['puid'] = $statement->puid; // Show the puid on a store.
 
+
         return response()->json($out, Response::HTTP_CREATED);
     }
 
