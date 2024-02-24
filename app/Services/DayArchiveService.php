@@ -65,7 +65,7 @@ class DayArchiveService
         $date->minute = 0;
         $date->second = 0;
 
-        $attempts_allowed = 10;
+        $attempts_allowed = 2;
 
         $in = [];
         while($attempts_allowed-- > 0)
@@ -96,7 +96,7 @@ class DayArchiveService
         $date->minute = 59;
         $date->second = 59;
 
-        $attempts_allowed = 10;
+        $attempts_allowed = 2;
 
         $in = [];
         while($attempts_allowed-- > 0)
