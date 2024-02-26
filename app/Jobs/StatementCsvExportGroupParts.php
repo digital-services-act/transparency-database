@@ -28,6 +28,6 @@ class StatementCsvExportGroupParts implements ShouldQueue
         $zip_file = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
 
         // exec zip command to just store the zip parts in a zip file.
-        shell_exec('zip -0 ' . $path . $zip_file . ' ' . $zip_parts_pattern);
+        shell_exec('zip -0 -j ' . $path . $zip_file . ' ' . $zip_parts_pattern);
     }
 }
