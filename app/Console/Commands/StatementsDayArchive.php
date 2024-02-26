@@ -46,30 +46,32 @@ class StatementsDayArchive extends Command
     {
         if ( ! config('filesystems.disks.s3ds.bucket')) {
             Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
+
             return;
         }
 
-        $date = $this->sanitizeDateArgument();
+        $date        = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
 
         $test = glob('storage/app/sor*');
-        if(count($test)) {
+        if (count($test)) {
             Log::error($date_string . ' archiving can not run, day archive already in progress');
+
             return;
         }
 
-        $exports     = $day_archive_service->buildBasicExportsArray();
-        $versions    = ['full', 'light'];
-        $chunk       = 500000;
-        $first_id    = $day_archive_service->getFirstIdOfDate($date);
-        $last_id     = $day_archive_service->getLastIdOfDate($date);
-        $current     = $first_id;
-        $part        = 0;
+        $exports  = $day_archive_service->buildBasicExportsArray();
+        $versions = ['full', 'light'];
+        $chunk    = 500000;
+        $first_id = $day_archive_service->getFirstIdOfDate($date);
+        $last_id  = $day_archive_service->getLastIdOfDate($date);
+        $current  = $first_id;
+        $part     = 0;
 
         // Get the SOR from the DB into csv chunks
         $csv_export_jobs = [];
         while ($current <= $last_id) {
-            $till              = ($current + $chunk - 1);
+            $till = ($current + $chunk - 1);
             //$csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
             // Always headers
             $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, true);
@@ -88,9 +90,9 @@ class StatementsDayArchive extends Command
         // Method B:
         // This will the zip the individual csvs to separate zips.
         $zip_part_jobs = [];
-        $total_parts = count($csv_export_jobs);
-        $part = 0;
-        while($part <= $total_parts) {
+        $total_parts   = count($csv_export_jobs);
+        $part          = 0;
+        while ($part <= $total_parts) {
             foreach ($exports as $export) {
                 foreach ($versions as $version) {
                     $zip_part_jobs[] = new StatementCsvExportZipPart($date_string, $export['slug'], $version, sprintf('%05d', $part));
@@ -156,8 +158,8 @@ class StatementsDayArchive extends Command
         Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
         File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
         Bus::batch($luggage['csv_export_jobs'])->finally(static function () use ($luggage) {
-            //Bus::batch($luggage['reduce_jobs'])->finally(static function () use ($luggage) {
-                Bus::batch($luggage['zip_jobs'])->finally(static function () use ($luggage) {
+            Bus::batch($luggage['zip_part_jobs'])->finally(static function () use ($luggage) {
+                Bus::batch($luggage['group_zip_jobs'])->finally(static function () use ($luggage) {
                     Bus::batch($luggage['sha1_jobs'])->finally(static function () use ($luggage) {
                         Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
                             Bus::batch($luggage['archive_jobs'])->finally(static function () use ($luggage) {
@@ -167,7 +169,7 @@ class StatementsDayArchive extends Command
                         })->dispatch();
                     })->dispatch();
                 })->dispatch();
-            //})->dispatch();
+            })->dispatch();
         })->dispatch();
     }
 }
