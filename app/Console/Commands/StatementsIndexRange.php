@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\StatementIndexRange;
 use App\Models\Statement;
 use App\Services\StatementSearchService;
 use Exception;
@@ -17,7 +18,7 @@ class StatementsIndexRange extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-range {min=default} {max=default} {chunk=2000}';
+    protected $signature = 'statements:index-range {min=default} {max=default} {chunk=500∂}';
 
     /**
      * The console command description.
@@ -36,17 +37,6 @@ class StatementsIndexRange extends Command
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
 
-        $current = $min;
-        while ($current < $max) {
-            $range = range($current, $current + ($chunk - 1));
-            $statements = Statement::query()->whereIn('id', $range)->get();
-            try {
-                Log::info('Indexing: ' . $current . " :: " .  $current + ($chunk - 1));
-                $statement_search_service->bulkIndexStatements($statements);
-            } catch (Exception) {
-            }
-
-            $current += $chunk;
-        }
+        StatementIndexRange::dispatch($max, $min, $chunk);
     }
 }

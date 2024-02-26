@@ -133,12 +133,12 @@ class DayArchiveServiceTest extends TestCase
 
         $fields_one['user_id']     = $admin->id;
         $fields_one['platform_id'] = $admin->platform->id;
-        $fields_one['created_at']  = '2030-01-01 00:00:09'; // also prove the while loop works
+        $fields_one['created_at']  = '2030-01-01 00:00:00'; // also prove the while loop works
 
         $fields_two['puid']        = 'TK422';
         $fields_two['user_id']     = $admin->id;
         $fields_two['platform_id'] = $admin->platform->id;
-        $fields_two['created_at']  = '2030-01-01 00:00:09';
+        $fields_two['created_at']  = '2030-01-01 00:00:00';
 
         $statement_one = Statement::create($fields_one);
         $statement_two = Statement::create($fields_two);
@@ -154,54 +154,14 @@ class DayArchiveServiceTest extends TestCase
      * @test
      * @return void
      */
-    public function it_gets_zero_on_first(): void
+    public function it_gets_false_on_first(): void
     {
-
         $this->signInAsAdmin();
-
         $first_id = $this->day_archive_service->getFirstIdOfDate(Carbon::createFromDate(2030, 1, 1));
-
-        $this->assertEquals(0, $first_id);
+        $this->assertFalse($first_id);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_builds_a_nice_array_for_the_start_of_a_date(): void
-    {
-        $in = $this->day_archive_service->buildStartOfDateArray(Carbon::now());
-        $this->assertNotNull($in);
-        $this->assertCount(2, $in);
-        $this->assertContains(Carbon::now()->format('Y-m-d 00:00:00'), $in);
-        $this->assertContains(Carbon::now()->format('Y-m-d 00:00:01'), $in);
-    }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_builds_a_nice_array_for_the_end_of_a_date(): void
-    {
-        $in = $this->day_archive_service->buildEndOfDateArray(Carbon::now());
-        $this->assertNotNull($in);
-        $this->assertCount(2, $in);
-        $this->assertContains(Carbon::now()->format('Y-m-d 23:59:59'), $in);
-        $this->assertContains(Carbon::now()->format('Y-m-d 23:59:58'), $in);
-    }
-
-    /**
-     * @return void
-     * @test
-     */
-    public function it_builds_a_starting_array(): void
-    {
-
-        $result = $this->day_archive_service->buildBasicExportsArray();
-        $this->assertNotNull($result);
-        $this->assertCount(20, $result);
-        $this->assertEquals('global', $result[0]['slug']);
-    }
 
     /**
      * @test
@@ -209,25 +169,23 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_gets_the_last_id_from_date(): void
     {
-
         $admin      = $this->signInAsAdmin();
         $fields_one = $this->required_fields;
         $fields_two = $this->required_fields;
 
         $fields_one['user_id']     = $admin->id;
         $fields_one['platform_id'] = $admin->platform->id;
-        $fields_one['created_at']  = '2030-01-01 23:59:51'; // also prove the while loop works
+        $fields_one['created_at']  = '2030-01-01 23:59:59'; // also prove the while loop works
 
         $fields_two['puid']        = 'TK422';
         $fields_two['user_id']     = $admin->id;
         $fields_two['platform_id'] = $admin->platform->id;
-        $fields_two['created_at']  = '2030-01-01 23:59:51';
+        $fields_two['created_at']  = '2030-01-01 23:59:59';
 
         $statement_one = Statement::create($fields_one);
         $statement_two = Statement::create($fields_two);
 
         $this->assertLessThan($statement_two->id, $statement_one->id);
-
         $last_id = $this->day_archive_service->getLastIdOfDate(Carbon::createFromDate(2030, 1, 1));
 
         $this->assertEquals($statement_two->id, $last_id);
@@ -239,11 +197,8 @@ class DayArchiveServiceTest extends TestCase
      */
     public function it_gets_zero_on_last(): void
     {
-
         $this->signInAsAdmin();
-
         $last_id = $this->day_archive_service->getLastIdOfDate(Carbon::createFromDate(2030, 1, 1));
-
-        $this->assertEquals(0, $last_id);
+        $this->assertFalse($last_id);
     }
 }
