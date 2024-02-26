@@ -3,12 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Jobs\StatementIndexRange;
-use App\Models\Statement;
 use App\Services\StatementSearchService;
-use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class StatementsIndexRange extends Command
 {
@@ -18,7 +15,7 @@ class StatementsIndexRange extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-range {min=default} {max=default} {chunk=500∂}';
+    protected $signature = 'statements:index-range {min=default} {max=default} {chunk=500}';
 
     /**
      * The console command description.
