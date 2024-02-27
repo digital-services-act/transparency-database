@@ -64,6 +64,7 @@ class StatementsDayArchive extends Command
         $chunk    = 10000000;
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
+
         $current  = $first_id;
         $part     = 0;
 
@@ -71,6 +72,7 @@ class StatementsDayArchive extends Command
         $csv_export_jobs = [];
         while ($current <= $last_id) {
             $till = ($current + $chunk - 1);
+            $till = min($till, $last_id);
             //$csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
             // Always headers
             $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, true);
