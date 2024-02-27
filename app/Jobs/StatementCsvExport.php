@@ -48,13 +48,13 @@ class StatementCsvExport implements ShouldQueue
 
         $select_raw = $day_archive_service->getSelectRawString();
 
-        $raw = DB::table('statements')
+        $raw = DB::connection('mysql::read')->table('statements')
                  ->selectRaw($select_raw)
                  ->where('statements.id', '>=', $this->start_id)
                  ->where('statements.id', '<=', $this->end_id)
                  ->orderBy('statements.id');
 
-        $raw->chunk(100000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
+        $raw->chunk(1000000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row      = $day_archive_service->mapRaw($statement, $platforms);

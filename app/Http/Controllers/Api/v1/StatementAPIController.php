@@ -9,6 +9,7 @@ use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use App\Services\StatementSearchService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,11 +27,14 @@ class StatementAPIController extends Controller
     use ExceptionHandlingTrait;
 
     protected EuropeanCountriesService $european_countries_service;
+    protected StatementSearchService $statement_search_service;
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
+        StatementSearchService $statement_search_service
     ) {
         $this->european_countries_service = $european_countries_service;
+        $this->statement_search_service = $statement_search_service;
     }
 
     public function show(Statement $statement): Statement

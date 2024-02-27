@@ -56,13 +56,12 @@ class StatementsDayArchive extends Command
         $test = glob('storage/app/sor*');
         if (count($test)) {
             Log::error($date_string . ' archiving can not run, day archive already in progress');
-
             return;
         }
 
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
-        $chunk    = 500000;
+        $chunk    = 10000000;
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
         $current  = $first_id;
