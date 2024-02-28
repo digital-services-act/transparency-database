@@ -39,7 +39,7 @@ class StatementsDateTotal extends Command
         $last_id  = $day_archive_service->getLastIdOfDate($date);
 
         $this->info('Date: ' . $date_string);
-        $this->info('First ID: ' . $last_id);
+        $this->info('First ID: ' . $first_id);
         $this->info('Last ID: ' . $last_id);
         $this->info('Difference in IDs: ' . $last_id - $first_id);
     }
