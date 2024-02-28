@@ -15,7 +15,7 @@ class StatementsIndexDate extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-date {date=yesterday} {chunk=500}';
+    protected $signature = 'statements:index-date {date=yesterday} {chunk=500} {queue=default}';
 
     /**
      * The console command description.
@@ -31,12 +31,13 @@ class StatementsIndexDate extends Command
     {
         $chunk = $this->intifyArgument('chunk');
         $date = $this->sanitizeDateArgument();
+        $queue = $this->argument('queue');
 
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            StatementIndexRange::dispatch($max, $min, $chunk);
+            StatementIndexRange::dispatch($max, $min, $chunk, $queue)->onQueue($queue);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }

@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DayArchiveController extends Controller
 {
@@ -21,6 +22,7 @@ class DayArchiveController extends Controller
         $dayarchives = $this->day_archive_query_service->query($request->query());
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
+        $reindexing = Cache::get('reindexing', false);
         $platform = false;
         $uuid     = trim((string) $request->get('uuid'));
         if ($uuid !== '' && $uuid !== '0') {
@@ -30,7 +32,12 @@ class DayArchiveController extends Controller
 
         $options = $this->prepareOptions();
 
-        return view('dayarchive.index', ['dayarchives' => $dayarchives, 'options' => $options, 'platform' => $platform]);
+        return view('dayarchive.index', [
+            'dayarchives' => $dayarchives,
+            'options' => $options,
+            'platform' => $platform,
+            'reindexing' => $reindexing
+        ]);
     }
 
     private function prepareOptions(): array

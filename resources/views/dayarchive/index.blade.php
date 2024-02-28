@@ -125,6 +125,6 @@
 
     </script>
 
-    <x-dayarchive.table :dayarchives="$dayarchives"/>
+    <x-dayarchive.table :dayarchives="$dayarchives" :reindexing="$reindexing"/>
 
 @endsection

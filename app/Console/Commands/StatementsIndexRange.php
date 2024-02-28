@@ -27,7 +27,7 @@ class StatementsIndexRange extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(): void
     {
 
         $chunk = $this->intifyArgument('chunk');

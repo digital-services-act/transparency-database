@@ -53,12 +53,6 @@ class StatementsDayArchive extends Command
         $date        = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
 
-        $test = glob('storage/app/sor*');
-        if (count($test)) {
-            Log::error($date_string . ' archiving can not run, day archive already in progress');
-            return;
-        }
-
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
         $chunk    = 10000000;

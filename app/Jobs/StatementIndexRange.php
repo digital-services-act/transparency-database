@@ -22,7 +22,7 @@ class StatementIndexRange implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $max, public int $min, public int $chunk)
+    public function __construct(public int $max, public int $min, public int $chunk, public string $q = 'default')
     {
     }
 
@@ -45,13 +45,13 @@ class StatementIndexRange implements ShouldQueue
                 } catch (Exception $e) {
                     // Do it again
                     Log::error('Indexing Error', ['exception' => $e]);
-                    self::dispatch($this->max, $this->min, $this->chunk);
+                    self::dispatch($this->max, $this->min, $this->chunk)->onQueue($this->q);
                 }
             } else {
                 // The difference was too big, split it in half and dispatch those jobs.
                 $break = ceil($difference / 2);
-                self::dispatch($this->max, ($this->max - $break), $this->chunk); // first half
-                self::dispatch(($this->max - $break - 1), $this->min, $this->chunk); // second half
+                self::dispatch($this->max, ($this->max - $break), $this->chunk)->onQueue($this->q); // first half
+                self::dispatch(($this->max - $break - 1), $this->min, $this->chunk)->onQueue($this->q); // second half
             }
         }
     }
