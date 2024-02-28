@@ -159,8 +159,8 @@ class StatementsDayArchive extends Command
         Log::info('Day Archiving Started for: ' . $date_string . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
         File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
         Bus::batch($luggage['csv_export_jobs'])->finally(static function () use ($luggage) {
-            Bus::batch($luggage['zip_part_jobs'])->onQueue('zipping')->finally(static function () use ($luggage) {
-                Bus::batch($luggage['group_zip_jobs'])->onQueue('zipping')->finally(static function () use ($luggage) {
+            Bus::batch($luggage['zip_part_jobs'])->finally(static function () use ($luggage) {
+                Bus::batch($luggage['group_zip_jobs'])->finally(static function () use ($luggage) {
                     Bus::batch($luggage['sha1_jobs'])->finally(static function () use ($luggage) {
                         Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
                             Bus::batch($luggage['archive_jobs'])->finally(static function () use ($luggage) {
