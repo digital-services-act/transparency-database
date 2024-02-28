@@ -54,7 +54,7 @@ class StatementCsvExport implements ShouldQueue
                  ->where('statements.id', '<=', $this->end_id)
                  ->orderBy('statements.id');
 
-        $raw->chunk(100000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
+        $raw->chunk(50000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row      = $day_archive_service->mapRaw($statement, $platforms);
