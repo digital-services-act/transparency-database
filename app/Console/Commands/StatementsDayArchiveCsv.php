@@ -3,13 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Jobs\StatementCsvExport;
-use App\Jobs\StatementCsvExportArchive;
-use App\Jobs\StatementCsvExportCopyS3;
-use App\Jobs\StatementCsvExportGroupParts;
-use App\Jobs\StatementCsvExportReduce;
-use App\Jobs\StatementCsvExportSha1;
-use App\Jobs\StatementCsvExportZipPart;
-use App\Jobs\StatementCsvExportZipParts;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;
@@ -57,7 +50,7 @@ class StatementsDayArchiveCsv extends Command
 
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
-        $chunk    = 500000;
+        $chunk    = 100000;
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
 
