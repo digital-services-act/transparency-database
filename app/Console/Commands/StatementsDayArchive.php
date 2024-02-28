@@ -52,7 +52,7 @@ class StatementsDayArchive extends Command
 
         $test = glob('storage/app/sor*');
         if(count($test)) {
-            Log::error('Oldest archiving can not run, day archive already in progress');
+            Log::error('Archiving can not run, day archive already in progress');
             return;
         }
 
