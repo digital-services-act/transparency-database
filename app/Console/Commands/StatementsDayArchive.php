@@ -50,6 +50,12 @@ class StatementsDayArchive extends Command
             return;
         }
 
+        $test = glob('storage/app/sor*');
+        if(count($test)) {
+            Log::error('Oldest archiving can not run, day archive already in progress');
+            return;
+        }
+
         $date        = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
 
