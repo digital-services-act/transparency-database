@@ -50,7 +50,7 @@ class StatementsDayArchiveCsv extends Command
 
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
-        $chunk    = 500000;
+        $chunk    = 10000000;
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
 
