@@ -36,7 +36,7 @@ class StatementsIndexDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            StatementIndexRange::dispatch($max, $min, $chunk, $queue);
+            StatementIndexRange::dispatch($max, $min, $chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
