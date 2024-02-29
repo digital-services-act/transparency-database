@@ -183,7 +183,6 @@ class StatementAPIController extends Controller
 
         // enrich the payload for bulk insert.
         $now   = Carbon::now();
-        $uuids = [];
         $out = [];
 
         foreach ($payload['statements'] as &$payload_statement) {
@@ -194,9 +193,14 @@ class StatementAPIController extends Controller
             $payload_statement['uuid']        = $uuid;
             $payload_statement['created_at']  = $now;
             $payload_statement['updated_at']  = $now;
-            $out[] = $payload_statement;
+
+            $original = $payload_statement;
+            $this->initArrayFields($original);
+            $this->initOptionalFields($original);
 
             $this->sanitizePayloadStatement($payload_statement);
+
+            $out[] = $original;
         }
 
         unset($payload_statement);
@@ -204,8 +208,6 @@ class StatementAPIController extends Controller
         try {
             // Bulk Insert
             Statement::insert($payload['statements']);
-
-
 
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
         } catch (QueryException $queryException) {
@@ -312,6 +314,58 @@ class StatementAPIController extends Controller
         if ( ! isset($payload_statement[$field])) {
             $payload_statement[$field]       = null;
             $payload_statement[$field_other] = null;
+        }
+    }
+
+    private function initArrayFields(&$statement): void
+    {
+        $array_fields = [
+            "decision_visibility",
+            "category_addition",
+            "category_specification",
+            "content_type",
+            "territorial_scope"
+        ];
+
+        foreach ($array_fields as $array_field) {
+            $statement[$array_field] ??= [];
+        }
+    }
+
+    private function initOptionalFields(&$statement): void
+    {
+        $array_fields = [
+            "decision_visibility_other",
+            "decision_monetary",
+            "decision_monetary_other",
+            "decision_provision",
+            "decision_account",
+            "account_type",
+            "decision_ground_reference_url",
+            "content_type_other",
+            "category_specification_other",
+            "incompatible_content_ground",
+            "incompatible_content_explanation",
+            "incompatible_content_illegal",
+            "content_language",
+            "end_date_account_restriction",
+            "end_date_monetary_restriction",
+            "end_date_service_restriction",
+            "end_date_visibility_restriction",
+            "source_type",
+            "source_identity",
+            "content_date",
+            "end_date_account_restriction",
+            "end_date_monetary_restriction",
+            "end_date_service_restriction",
+            "end_date_visibility_restriction",
+            "decision_ground_reference_url",
+            "illegal_content_explanation",
+            "incompatible_content_illegal"
+        ];
+
+        foreach ($array_fields as $array_field) {
+            $statement[$array_field] ??= null;
         }
     }
 
