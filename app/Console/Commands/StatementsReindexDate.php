@@ -51,6 +51,10 @@ class StatementsReindexDate extends Command
             return;
         }
 
+        if ($first && $last) {
+
+
+
         $result = $client->reindex([
             'wait_for_completion' => false,
             'body'                => [
@@ -83,5 +87,9 @@ class StatementsReindexDate extends Command
                 ]
             ]
         ]);
+
+        } else {
+            $this->info('Could not find the first or last ids: ' . $first . ' :: ' . $last);
+        }
     }
 }
