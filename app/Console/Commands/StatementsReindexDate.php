@@ -16,7 +16,7 @@ class StatementsReindexDate extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:reindex-date {date=yesterday} {index} {target}';
+    protected $signature = 'statements:reindex-date {index} {target} {date=yesterday}';
 
     /**
      * The console command description.
