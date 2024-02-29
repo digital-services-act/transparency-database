@@ -206,6 +206,7 @@ class StatementAPIController extends Controller
             $this->initOptionalFields($original);
             $this->removeHiddenFields($original);
             $original['platform_name'] = auth()->user()->platform->name;
+            $original['created_at'] = $now->format('Y-m-d H:i:s');
 
             $out[] = $original;
 
