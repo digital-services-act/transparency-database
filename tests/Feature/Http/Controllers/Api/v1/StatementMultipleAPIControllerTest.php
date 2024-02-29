@@ -337,7 +337,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
 
         $statement = Statement::where('puid', $response->json('statements.0.puid'))->first();
-//        dd($statement);
+
         $this->assertNotNull($statement->source_type);
         $this->assertNull($statement->source_identity);
     }
