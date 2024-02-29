@@ -184,39 +184,28 @@ class StatementAPIController extends Controller
         // enrich the payload for bulk insert.
         $now   = Carbon::now();
         $uuids = [];
+        $out = [];
+
         foreach ($payload['statements'] as &$payload_statement) {
             $uuid                             = Str::uuid();
-            $uuids[]                          = $uuid;
             $payload_statement['platform_id'] = $platform_id;
             $payload_statement['user_id']     = $user_id;
             $payload_statement['method']      = $method;
             $payload_statement['uuid']        = $uuid;
             $payload_statement['created_at']  = $now;
             $payload_statement['updated_at']  = $now;
+            $out[] = $payload_statement;
 
             $this->sanitizePayloadStatement($payload_statement);
         }
 
-//        unset($payload_statement);
+        unset($payload_statement);
 
         try {
             // Bulk Insert
             Statement::insert($payload['statements']);
 
-            // Get them back, we have to return the statements as they are made in the DB.
-            // So yes get them back and not use the input given.
-//            $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
 
-            // Build an output.
-            $out = $payload['statements'];
-
-//            $created_statements = collect($payload['statements']);
-//            foreach ($created_statements as $created_statement) {
-//                $puid                      = $created_statement['puid'];
-//                //$created_statement         = $created_statement;
-//                $created_statement['puid'] = $puid;
-//                $out[]                     = $created_statement;
-//            }
 
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
         } catch (QueryException $queryException) {
