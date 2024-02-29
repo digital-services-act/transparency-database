@@ -15,7 +15,7 @@ class OpenSearchIndexReindexRange extends Command
      *
      * @var string
      */
-    protected $signature = 'opensearch:index-reindex {index} {target} {first} {last}';
+    protected $signature = 'opensearch:index-reindex-range {index} {target} {first} {last}';
 
     /**
      * The console command description.
