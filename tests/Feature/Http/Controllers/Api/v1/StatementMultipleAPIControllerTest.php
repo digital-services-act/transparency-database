@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
@@ -113,6 +114,7 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         $this->assertCount(20, Statement::all());
     }
+
 
     /**
      * @test
@@ -325,7 +327,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $create = 1;
         $sors = [];
         while ($create--) {
-            $fields['puid'] = uniqid();
+            $fields['puid'] = rand();
             $sors[] = $fields;
         }
 
@@ -334,7 +336,8 @@ class StatementMultipleAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $statement = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
+        $statement = Statement::where('puid', $response->json('statements.0.puid'))->first();
+//        dd($statement);
         $this->assertNotNull($statement->source_type);
         $this->assertNull($statement->source_identity);
     }
