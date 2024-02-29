@@ -220,12 +220,7 @@ class StatementAPIController extends Controller
 
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
         } catch (QueryException $queryException) {
-            switch ($queryException->getCode()) {
-                case 23000:
-                    return $this->handleIntegrityConstraintException($queryException, 'Statement');
-                default:
-                    return $this->handleQueryException($queryException, 'Statement');
-            }
+            return $this->handleQueryException($queryException, 'Statement');
         }
     }
 
