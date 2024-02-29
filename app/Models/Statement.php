@@ -686,7 +686,6 @@ class Statement extends Model
     {
         $decisions = [];
 
-//        dd($this->decision_visibility);
 
         if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
