@@ -40,6 +40,6 @@ class StatementCsvExportGroupParts implements ShouldQueue
             'comp_method' => ZipArchive::CM_STORE
         ]);
         $zip->close();
-        
+
     }
 }
