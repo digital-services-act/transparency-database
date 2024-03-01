@@ -38,9 +38,13 @@ class StatementsDateTotal extends Command
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
 
-        $this->info('Date: ' . $date_string);
-        $this->info('First ID: ' . $first_id);
-        $this->info('Last ID: ' . $last_id);
-        $this->info('Difference in IDs: ' . $last_id - $first_id);
+        if ($first_id && $last_id) {
+            $this->info('Date: ' . $date_string);
+            $this->info('First ID: ' . $first_id);
+            $this->info('Last ID: ' . $last_id);
+            $this->info('Difference in IDs: ' . $last_id - $first_id);
+        } else {
+            $this->info('Could not find the first or last ids: ' . $first_id . ' :: ' . $last_id);
+        }
     }
 }

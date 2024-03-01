@@ -132,13 +132,20 @@ class StatementAPIController extends Controller
             try {
                 $payload['statements'][$index] = $validator->validated();
             } catch (ValidationException $exception) {
+
             }
         }
 
 
         if ($errors !== []) {
             // Return validation errors as a JSON response
-
+            Log::info('Statement Multiple Store Request Validation Failure', [
+                'request' => $request->all(),
+                'errors' => $errors,
+                'user' => auth()->user()->id ?? -1,
+                'user_email' => auth()->user()->email ?? 'n/a',
+                'platform' => auth()->user()->platform->name ?? 'no platform'
+            ]);
 
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -178,7 +185,9 @@ class StatementAPIController extends Controller
 
         // enrich the payload for bulk insert.
         $now = Carbon::now();
+        $out = [];
         $uuids = [];
+
         foreach ($payload['statements'] as &$payload_statement) {
             $uuid = Str::uuid();
             $uuids[] = $uuid;
@@ -189,38 +198,28 @@ class StatementAPIController extends Controller
             $payload_statement['created_at'] = $now;
             $payload_statement['updated_at'] = $now;
 
+            $original = $payload_statement;
+
+            $this->initArrayFields($original);
+            $this->initOptionalFields($original);
+            $this->removeHiddenFields($original);
+            $original['platform_name'] = auth()->user()->platform->name;
+            $original['created_at'] = $now->format('Y-m-d H:i:s');
+
+            $out[] = $original;
+
             $this->sanitizePayloadStatement($payload_statement);
         }
 
-//        unset($payload_statement);
+        unset($payload_statement);
 
         try {
             // Bulk Insert
             Statement::insert($payload['statements']);
 
-            // Get them back, we have to return the statements as they are made in the DB.
-            // So yes get them back and not use the input given.
-//            $created_statements = Statement::query()->whereIn('uuid', $uuids)->get();
-
-            // Build an output.
-            $out = $payload['statements'];
-
-//            $created_statements = collect($payload['statements']);
-//            foreach ($created_statements as $created_statement) {
-//                $puid                      = $created_statement['puid'];
-//                //$created_statement         = $created_statement;
-//                $created_statement['puid'] = $puid;
-//                $out[]                     = $created_statement;
-//            }
-
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
         } catch (QueryException $queryException) {
-            switch ($queryException->getCode()) {
-                case 23000:
-                    return $this->handleIntegrityConstraintException($queryException, 'Statement');
-                default:
-                    return $this->handleQueryException($queryException, 'Statement');
-            }
+            return $this->handleQueryException($queryException, 'Statement');
         }
     }
 
@@ -324,6 +323,78 @@ class StatementAPIController extends Controller
         if (!isset($payload_statement[$field])) {
             $payload_statement[$field] = null;
             $payload_statement[$field_other] = null;
+        }
+    }
+
+    private function initArrayFields(&$statement): void
+    {
+        $array_fields = [
+            "decision_visibility",
+            "category_addition",
+            "category_specification",
+            "content_type",
+            "territorial_scope"
+        ];
+
+        foreach ($array_fields as $array_field) {
+            $statement[$array_field] = $statement[$array_field] ?? [];
+        }
+    }
+
+    private function removeHiddenFields(&$statement): void
+    {
+        $hidden_fields = [
+            'id',
+            'deleted_at',
+            'updated_at',
+            'method',
+            'user_id',
+            'platform',
+            'platform_id'
+        ];
+
+        foreach ($hidden_fields as $hidden) {
+            unset($statement[$hidden]);
+        }
+    }
+
+
+    private function initOptionalFields(&$statement): void
+    {
+        $optional_fields = [
+            "decision_visibility_other",
+            "decision_monetary",
+            "decision_monetary_other",
+            "decision_provision",
+            "decision_account",
+            "account_type",
+            "decision_ground_reference_url",
+            "content_type_other",
+            "category_specification_other",
+            "incompatible_content_ground",
+            "incompatible_content_explanation",
+            "incompatible_content_illegal",
+            "content_language",
+            "end_date_account_restriction",
+            "end_date_monetary_restriction",
+            "end_date_service_restriction",
+            "end_date_visibility_restriction",
+            "source_type",
+            "source_identity",
+            "content_date",
+            "end_date_account_restriction",
+            "end_date_monetary_restriction",
+            "end_date_service_restriction",
+            "end_date_visibility_restriction",
+            "decision_ground_reference_url",
+            "illegal_content_explanation",
+            "incompatible_content_illegal",
+            "illegal_content_legal_ground"
+        ];
+
+
+        foreach ($optional_fields as $optional_field) {
+            $statement[$optional_field] = $statement[$optional_field] ?? null;
         }
     }
 
