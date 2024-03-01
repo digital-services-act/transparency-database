@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
+use App\Models\ArchivedStatement;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
@@ -68,11 +69,14 @@ class StatementAPIController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
+        //TODO: move to service
+        $cache_valid_days = 7;
+        $key = 'puid-' . $validated['platform_id'] . '-'. $validated['puid'];
+        $added = Cache::add($key, 0, now()->addDays($cache_valid_days));
 
-        $added = Cache::add('puid-' . $validated['puid'], 0, now()->addDays(2));
-
+        //Cache Protection
         if (!$added) {
-            Cache::increment('puid-' . $validated['puid']);
+            Cache::increment($key);
             $errors = [
                 'puid' => [
                     'The identifier given is not unique within this platform.'
@@ -83,6 +87,35 @@ class StatementAPIController extends Controller
             $out = ['message' => $message, 'errors' => $errors, 'existing' => (object)['puid' => $validated['puid']]];
 
             return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        //Database Protection
+        //TODO: move to service
+        try {
+            $archivedStatement = ArchivedStatement::create([
+                'puid' => $validated['puid'],
+                'date_received' => Carbon::now(),
+                'platform_id' => $validated['platform_id']
+            ]);
+        } catch (QueryException $e) {
+            if (
+
+                str_contains($e->getMessage(), "platform_puid_unique") || // mysql
+                str_contains($e->getMessage(), "UNIQUE constraint failed: archived_statements.platform_id, archived_statements.puid") // sqlite
+            ) {
+                $errors = [
+                    'puid' => [
+                        'The identifier given is not unique within this platform.'
+                    ]
+                ];
+                $message = 'The identifier given is not unique within this platform.';
+
+                $out = ['message' => $message, 'errors' => $errors];
+
+                return response()->json($out, Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            return $this->handleQueryException($e, 'Statement');
         }
 
         try {

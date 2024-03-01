@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Models\ArchivedStatement;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
@@ -579,8 +580,11 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_enforces_puid_uniqueness(): void
     {
+
+//        $this->withoutExceptionHandling();
+
         $this->setUpFullySeededDatabase();
-        $user = $this->signInAsAdmin();
+        $this->signInAsAdmin();
 
         $fields = array_merge($this->required_fields, [
             'puid' => ''
@@ -596,12 +600,15 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($json['errors']['puid']);
         $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
 
+        $this->assertDatabaseCount(ArchivedStatement::class,0);
 
         // Now let's create one
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseCount(ArchivedStatement::class,1);
 
         $count_before = Statement::all()->count();
 
@@ -613,6 +620,8 @@ class StatementAPIControllerTest extends TestCase
         $response->assertUnprocessable();
 
         $response->assertJsonValidationErrors('puid');
+
+        $this->assertDatabaseCount(ArchivedStatement::class,1);
 
         $this->assertArrayHasKey('existing', $response->json());
 
