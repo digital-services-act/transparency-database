@@ -48,7 +48,7 @@ class StatementCsvExport implements ShouldQueue
 
         $select_raw = $day_archive_service->getSelectRawString();
 
-        $chunk = 1000000;
+        $chunk = 50000;
         $current_start = $this->start_id;
 
 
