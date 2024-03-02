@@ -61,9 +61,11 @@ class StatementsDayArchive extends Command
 
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
-        $chunk    = 10000000;
+        $workers = 64;
+
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
+        $chunk    = ceil((($last_id - $first_id) / $workers));
 
         $current  = $first_id;
         $part     = 0;
@@ -71,13 +73,13 @@ class StatementsDayArchive extends Command
         // Get the SOR from the DB into csv chunks
         $csv_export_jobs = [];
         while ($current <= $last_id) {
-            $till = ($current + $chunk - 1);
+            $till = ($current + $chunk);
             $till = min($till, $last_id);
             //$csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
             // Always headers
             $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, true);
             ++$part;
-            $current += $chunk;
+            $current += $chunk + 1;
         }
 
         // Get rid of any blank parts
