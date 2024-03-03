@@ -48,13 +48,13 @@ class StatementsDateTotal extends Command
             $this->info('Opensearch Total: ' . $statement_search_service->totalForDate($date));
 
             $this->info('Calculating the DB total....');
-            
+
             $chunk = 100000;
             $total = 0;
             while ($first_id <= $last_id) {
                 $till = min($last_id, $first_id + $chunk);
-                $total += DB::connection('mysql::read')->table('statements')->selectRaw('count(*) as total')->where('id', '>=' , $first_id)->where('id', '<', $till)->first()->total;
-                $first_id += $chunk;
+                $total += DB::connection('mysql::read')->table('statements')->selectRaw('count(*) as total')->where('id', '>=' , $first_id)->where('id', '<=', $till)->first()->total;
+                $first_id += $chunk + 1;
             }
 
             $this->info('Total from DB: ' . $total);
