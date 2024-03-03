@@ -61,11 +61,14 @@ class StatementsDayArchive extends Command
 
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
-        $parts_desired = 200;
+        // $parts_desired = 96;
 
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id  = $day_archive_service->getLastIdOfDate($date);
-        $chunk    = ceil((($last_id - $first_id) / $parts_desired));
+        //$chunk    = ceil((($last_id - $first_id) / $parts_desired));
+
+        // Ten Mill
+        $chunk = 10000000;
 
         $current  = $first_id;
         $part     = 0;

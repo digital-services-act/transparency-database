@@ -45,6 +45,7 @@ class StatementsDateTotal extends Command
             $this->info('First ID: ' . $first_id);
             $this->info('Last ID: ' . $last_id);
             $this->info('Difference in IDs: ' . $last_id - $first_id);
+            $os_total = $statement_search_service->totalForDate($date);
             $this->info('Opensearch Total: ' . $statement_search_service->totalForDate($date));
 
             $this->info('Calculating the DB total....');
@@ -58,6 +59,13 @@ class StatementsDateTotal extends Command
             }
 
             $this->info('Total from DB: ' . $total);
+            $spaceship = $total <=> $os_total;
+            $options = [
+                -1 => 'LESS',
+                0 => 'SAME',
+                1 => 'MORE'
+            ];
+            $this->warn($options[$spaceship]);
 
         } else {
             $this->info('Could not find the first or last ids: ' . $first_id . ' :: ' . $last_id);
