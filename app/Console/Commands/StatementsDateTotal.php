@@ -44,28 +44,17 @@ class StatementsDateTotal extends Command
             $this->info('Date: ' . $date_string);
             $this->info('First ID: ' . $first_id);
             $this->info('Last ID: ' . $last_id);
-            $this->info('Difference in IDs: ' . $last_id - $first_id);
+            $db_diff = $last_id - $first_id;
+            $this->info('Difference in IDs: ' . $db_diff);
             $os_total = $statement_search_service->totalForDate($date);
             $this->info('Opensearch Total: ' . $statement_search_service->totalForDate($date));
+            $source_diff = $db_diff - $os_total;
+            $this->info('Source Difference: ' . $source_diff);
+            $source_percentage = floor(($os_total / $db_diff) * 100);
+            $this->info('Source Percentage: ' . $source_percentage . '%');
+            $this->info('Source Difference DB Percentage: ' . floor(($source_diff / $db_diff) * 100) . '%');
+            $this->info('Source Difference OS Percentage: ' . floor(($source_diff / $os_total) * 100) . '%');
 
-            $this->info('Calculating the DB total....');
-
-            $chunk = 100000;
-            $total = 0;
-            while ($first_id <= $last_id) {
-                $till = min($last_id, $first_id + $chunk);
-                $total += DB::connection('mysql::read')->table('statements')->selectRaw('count(*) as total')->where('id', '>=' , $first_id)->where('id', '<=', $till)->first()->total;
-                $first_id += $chunk + 1;
-            }
-
-            $this->info('Total from DB: ' . $total);
-            $spaceship = $total <=> $os_total;
-            $options = [
-                -1 => 'LESS',
-                0 => 'SAME',
-                1 => 'MORE'
-            ];
-            $this->warn($options[$spaceship]);
 
         } else {
             $this->info('Could not find the first or last ids: ' . $first_id . ' :: ' . $last_id);
