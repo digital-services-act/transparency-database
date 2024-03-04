@@ -84,7 +84,7 @@ class User extends Authenticatable
     {
         return $this->tokens()
             ->where('name', 'api-token')
-            ->where(function ($inner) {
+            ->where(static function ($inner) {
                 $inner->orWhereNull('expires_at');
                 $inner->orWhere('expires_at', '>=', Carbon::now());
             })

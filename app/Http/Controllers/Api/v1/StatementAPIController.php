@@ -27,14 +27,13 @@ class StatementAPIController extends Controller
     use ExceptionHandlingTrait;
 
     protected EuropeanCountriesService $european_countries_service;
-    protected StatementSearchService $statement_search_service;
+
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
-        StatementSearchService $statement_search_service
+        protected StatementSearchService $statement_search_service
     ) {
         $this->european_countries_service = $european_countries_service;
-        $this->statement_search_service = $statement_search_service;
     }
 
     public function show(Statement $statement): Statement
@@ -134,7 +133,7 @@ class StatementAPIController extends Controller
 
             try {
                 $payload['statements'][$index] = $validator->validated();
-            } catch (ValidationException $exception) {
+            } catch (ValidationException) {
             }
         }
 
@@ -259,10 +258,8 @@ class StatementAPIController extends Controller
     }
 
     /**
-     * @param array $payload_statement
      * @param $field
      * @param $needle
-     *
      * @return void
      */
     private function handleOtherFieldWithinArray(array &$payload_statement, $field, $needle): void
@@ -339,7 +336,7 @@ class StatementAPIController extends Controller
         ];
 
         foreach ($array_fields as $array_field) {
-            $statement[$array_field] = $statement[$array_field] ?? [];
+            $statement[$array_field] ??= [];
         }
     }
 
@@ -396,7 +393,7 @@ class StatementAPIController extends Controller
 
 
         foreach ($optional_fields as $optional_field) {
-            $statement[$optional_field] = $statement[$optional_field] ?? null;
+            $statement[$optional_field] ??= null;
         }
     }
 

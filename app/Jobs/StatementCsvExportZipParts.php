@@ -33,6 +33,7 @@ class StatementCsvExportZipParts implements ShouldQueue
         foreach ($parts as $part) {
             $zip->addFile($part, basename($part));
         }
+
         $zip->close();
     }
 }

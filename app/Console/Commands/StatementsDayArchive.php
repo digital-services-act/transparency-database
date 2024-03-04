@@ -51,7 +51,7 @@ class StatementsDayArchive extends Command
         }
 
         $test = glob('storage/app/sor*');
-        if(count($test)) {
+        if(count($test) > 0) {
             Log::error('Archiving can not run, day archive already in progress');
             return;
         }
@@ -104,6 +104,7 @@ class StatementsDayArchive extends Command
                     $zip_part_jobs[] = new StatementCsvExportZipPart($date_string, $export['slug'], $version, sprintf('%05d', $part));
                 }
             }
+
             ++$part;
         }
 

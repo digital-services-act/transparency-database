@@ -31,9 +31,10 @@ class StatementCsvExportArchiveZ implements ShouldQueue
     {
         $zip = new ZipArchive();
         $zip->open($zip_file);
+
         $totalSize = 0;
 
-        for ($i = 0; $i < $zip->numFiles; $i++) {
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
             $fileStats = $zip->statIndex($i);
             $totalSize += $fileStats['size'];
         }

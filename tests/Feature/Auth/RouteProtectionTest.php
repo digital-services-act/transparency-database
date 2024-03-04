@@ -13,11 +13,15 @@ class RouteProtectionTest extends TestCase
     use RefreshDatabase;
 
     private $visitor;
+
     private $contributor;
+
     private $onboarding;
+
     private $support;
 
-    public function setup(): void
+    #[\Override]
+    protected function setup(): void
     {
         parent::setUp();
 
@@ -113,7 +117,7 @@ class RouteProtectionTest extends TestCase
 
     }
 
-    private function check_route($route, $allowed, $restricted)
+    private function check_route($route, $allowed, $restricted): void
     {
         foreach ($restricted as $restricted_user) {
             $this->signIn($restricted_user);
@@ -126,7 +130,7 @@ class RouteProtectionTest extends TestCase
         }
     }
 
-    private function check_route_for_text($route, $allowed, $restricted, $text)
+    private function check_route_for_text($route, $allowed, $restricted, $text): void
     {
         foreach ($restricted as $restricted_user) {
             $this->signIn($restricted_user);

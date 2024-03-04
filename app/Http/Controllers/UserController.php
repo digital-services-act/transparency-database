@@ -182,7 +182,7 @@ class UserController extends Controller
             return $roles;
         }
 
-        return $roles->reject(function ($role) {
+        return $roles->reject(static function ($role) {
             $names_to_remove = ['Admin', 'Onboarding', 'User'];
             return in_array($role->name, $names_to_remove);
         });

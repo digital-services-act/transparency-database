@@ -139,7 +139,7 @@ class PlatformController extends Controller
     public function destroy(Platform $platform): RedirectResponse
     {
         if (auth()->user()->cannot('administrate')) {
-            return redirect()->route('platform.index')->with('error', 'You don\'t have enough rights to delete a platform');
+            return redirect()->route('platform.index')->with('error', "You don't have enough rights to delete a platform");
         }
 
         $dsaPlatform = Platform::getDsaPlatform();

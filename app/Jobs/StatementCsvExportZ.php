@@ -31,6 +31,7 @@ class StatementCsvExportZ implements ShouldQueue
         if (fputcsv($f, $fields) === false) {
             return false;
         }
+
         rewind($f);
         $csv_line = stream_get_contents($f);
         return rtrim($csv_line);
@@ -51,7 +52,7 @@ class StatementCsvExportZ implements ShouldQueue
         $headings['full'] = $this->csvstr($day_archive_service->headings());
         $headings['light'] = $this->csvstr($day_archive_service->headingsLight());
 
-        foreach ($exports as $index => $export) {
+        foreach (array_keys($exports) as $index) {
             $exports[$index]['subparts']['full'] = [];
             $exports[$index]['subparts']['light'] = [];
         }
@@ -59,14 +60,14 @@ class StatementCsvExportZ implements ShouldQueue
         $subpart = 0;
         while ($current_start <= $this->end_id) {
 
-            foreach ($exports as $index => $export) {
+            foreach (array_keys($exports) as $index) {
                 $exports[$index]['subparts']['full'][$subpart] = [];
                 $exports[$index]['subparts']['light'][$subpart] = [];
             }
 
 
             $current_end = min( ($current_start + $chunk), $this->end_id );
-            $statements = DB::connection('mysql::read')->table('statements')
+            $statements = DB::connection('mysql::read')->table('statements', null)
                             ->selectRaw($select_raw)
                             ->where('statements.id', '>=', $current_start)
                             ->where('statements.id', '<=', $current_end)
@@ -94,7 +95,7 @@ class StatementCsvExportZ implements ShouldQueue
                 }
             }
 
-            $subpart++;
+            ++$subpart;
             $current_start += $chunk + 1;
         }
 
@@ -110,6 +111,7 @@ class StatementCsvExportZ implements ShouldQueue
                         $zip->addFromString($csv_file, $headings[$version] . "\n" . implode("\n", $rows));
                     }
                 }
+
                 $zip->close();
             }
         }

@@ -34,7 +34,7 @@ class StatementsDayArchiveOldest extends Command
     public function handle(): void
     {
         $test = glob('storage/app/sor*');
-        if(count($test)) {
+        if(count($test) > 0) {
             Log::info('Oldest archiving can not run, day archive already in progress');
             return;
         }
