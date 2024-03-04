@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Models\ArchivedStatement;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
@@ -20,6 +21,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
+
     private array $required_fields;
 
     private Statement $statement;
@@ -49,7 +51,10 @@ class StatementMultipleAPIControllerTest extends TestCase
         parent::setUp();
 
         $this->required_fields = [
-            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED', 'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
+            'decision_visibility' => [
+                'DECISION_VISIBILITY_CONTENT_DISABLED',
+                'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'
+            ],
             'decision_monetary' => null,
             'decision_provision' => null,
             'decision_account' => null,
@@ -76,7 +81,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function api_statements_store_requires_auth(): void
     {
-        $this->setUpFullySeededDatabase();
         // Not signing in.
         $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statements.store'), [$this->required_fields], [
@@ -91,7 +95,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function api_statements_store_works(): void
     {
-        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
         $this->assertCount(10, Statement::all());
@@ -121,7 +124,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function api_statements_store_validates(): void
     {
-        $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
 
         $this->assertCount(10, Statement::all());
@@ -144,7 +146,8 @@ class StatementMultipleAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertEquals('The selected content language is invalid.', $response->json('errors.statement_3.content_language.0'));
+        $this->assertEquals('The selected content language is invalid.',
+            $response->json('errors.statement_3.content_language.0'));
 
         $this->assertCount(10, Statement::all());
     }
@@ -154,7 +157,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function api_statements_store_detect_non_unique_in_call(): void
     {
-        $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
         $this->assertCount(10, Statement::all());
@@ -180,42 +182,117 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-//    /**
-//     * @test
-//     */
-//    public function api_statements_store_detects_previous_puid(): void
-//    {
-//        $this->setUpFullySeededDatabase();
-//        $user = $this->signInAsAdmin();
-//
-//        $this->assertCount(10, Statement::all());
-//
-//        $fields = array_merge($this->required_fields, [
-//            'application_date' => '2023-12-20',
-//        ]);
-//
-//        $create = 10;
-//        $sors = [];
-//        while ($create--) {
-//            $fields['puid'] = uniqid();
-//            $sors[] = $fields;
-//        }
-//
-//        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-//            'Accept' => 'application/json'
-//        ]);
-//        $response->assertStatus(Response::HTTP_CREATED);
-//
-//        $this->assertCount(20, Statement::all());
-//
-//        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-//            'Accept' => 'application/json'
-//        ]);
-//        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-//        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
-//
-//        $this->assertCount(20, Statement::all());
-//    }
+    /**
+     * @test
+     */
+    public function api_statements_store_detect_non_unique_in_cache(): void
+    {
+        $user = $this->signInAsAdmin();
+
+        $this->assertCount(10, Statement::all());
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+        $create = 1;
+        $sors = [];
+        while ($create--) {
+            $fields['puid'] = 'foo-bar-123';
+            $sors[] = $fields;
+        }
+
+        $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+
+        $this->assertCount(11, Statement::all());
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @test
+     */
+    public function api_statements_store_detects_previous_puid(): void
+    {
+        $user = $this->signInAsAdmin();
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+        $create = 10;
+        $sors = [];
+        while ($create--) {
+            $fields['puid'] = uniqid();
+            $sors[] = $fields;
+        }
+
+        $this->assertDatabaseCount(Statement::class, 10);
+        $this->assertDatabaseCount(ArchivedStatement::class, 0);
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseCount(ArchivedStatement::class, 10);
+        $this->assertDatabaseCount(Statement::class, 20);
+
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
+
+        $this->assertCount(20, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function api_statements_store_detects_previous_puid_from_database(): void
+    {
+        $user = $this->signInAsAdmin();
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+
+
+        $sors = [];
+        $fields['puid'] = 'foo-bar-sor-in-database';
+        $sors[] = $fields;
+
+        $create = 10;
+        while ($create--) {
+            $fields['puid'] = uniqid();
+            $sors[] = $fields;
+        }
+
+        ArchivedStatement::factory([
+            'puid' => 'foo-bar-sor-in-database',
+            'platform_id' => $user->platform->id
+        ])->create();
+
+
+        $this->assertDatabaseCount(Statement::class, 10);
+        $this->assertDatabaseCount(ArchivedStatement::class, 1);
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertArrayHasKey('existing_puids', $response->json('errors'));
+
+        $this->assertDatabaseCount(ArchivedStatement::class, 1);
+        $this->assertCount(10, Statement::all());
+    }
 
 
     /**
@@ -223,7 +300,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function it_should_store_multiple_submissions_created_by_factory(): void
     {
-        $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
 
         $statements = $this->createFullStatements(5);
@@ -236,7 +312,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(15, Statement::all());
-
     }
 
     /**
@@ -244,7 +319,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function it_should_require_decision_visibility_other_field_when_sending_multiple_statements(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(5);
@@ -267,11 +341,13 @@ class StatementMultipleAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(3, $response->json('errors'));
-        $this->assertEquals('The decision visibility other field is required.', $response->json('errors.statement_1.decision_visibility_other.0'));
-        $this->assertEquals('The decision visibility other field is required.', $response->json('errors.statement_2.decision_visibility_other.0'));
-        $this->assertEquals('The decision visibility other field is required.', $response->json('errors.statement_4.decision_visibility_other.0'));
+        $this->assertEquals('The decision visibility other field is required.',
+            $response->json('errors.statement_1.decision_visibility_other.0'));
+        $this->assertEquals('The decision visibility other field is required.',
+            $response->json('errors.statement_2.decision_visibility_other.0'));
+        $this->assertEquals('The decision visibility other field is required.',
+            $response->json('errors.statement_4.decision_visibility_other.0'));
         $this->assertCount(10, Statement::all());
-
     }
 
     /**
@@ -279,7 +355,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function it_should_require_descriptions_when_other_fields_are_sent_via_multiple_statements(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(5);
@@ -302,11 +377,13 @@ class StatementMultipleAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(3, $response->json('errors'));
-        $this->assertEquals('The content type other field is required.', $response->json('errors.statement_1.content_type_other.0'));
-        $this->assertEquals('The content type other field is required.', $response->json('errors.statement_2.content_type_other.0'));
-        $this->assertEquals('The content type other field is required.', $response->json('errors.statement_4.content_type_other.0'));
+        $this->assertEquals('The content type other field is required.',
+            $response->json('errors.statement_1.content_type_other.0'));
+        $this->assertEquals('The content type other field is required.',
+            $response->json('errors.statement_2.content_type_other.0'));
+        $this->assertEquals('The content type other field is required.',
+            $response->json('errors.statement_4.content_type_other.0'));
         $this->assertCount(10, Statement::all());
-
     }
 
     /**
@@ -314,7 +391,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_should_not_save_source_identity(): void
     {
-        $this->setUpFullySeededDatabase();
         $user = $this->signInAsContributor();
 
         $this->assertCount(10, Statement::all());
@@ -347,7 +423,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_with_different_content_types(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(2);
@@ -369,7 +444,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statement = Statement::where('puid', 'testA')->first()->fresh();
         $this->assertNotNull($statement->content_type);
         $this->assertEquals('content type other required field', $statement->content_type_other);
-
     }
 
     /**
@@ -377,7 +451,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_with_different_source_type(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(3);
@@ -415,7 +488,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_with_different_decision_monetary(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(3);
@@ -457,7 +529,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_with_different_category_specifications(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(3);
@@ -489,7 +560,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('category specification other field value', $statementA->category_specification_other);
         $this->assertNull($statementB->category_specification_other);
         $this->assertNull($statementC->category_specification_other);
-
     }
 
     /**
@@ -497,7 +567,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_with_different_decision_grounds(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(2);
@@ -530,14 +599,17 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statementB = Statement::where('puid', 'testDecisionGroundB')->first()->fresh();
 
         $this->assertNotNull($statementA->decision_ground);
-        $this->assertEquals('illegal_content_legal_ground should be persisted', $statementA->illegal_content_legal_ground);
-        $this->assertEquals('illegal_content_explanation should be persisted', $statementA->illegal_content_explanation);
+        $this->assertEquals('illegal_content_legal_ground should be persisted',
+            $statementA->illegal_content_legal_ground);
+        $this->assertEquals('illegal_content_explanation should be persisted',
+            $statementA->illegal_content_explanation);
 
         $this->assertNotNull($statementB->decision_ground);
-        $this->assertEquals('incompatible_content_ground should be persisted', $statementB->incompatible_content_ground);
-        $this->assertEquals('incompatible_content_explanation should be persisted', $statementB->incompatible_content_explanation);
+        $this->assertEquals('incompatible_content_ground should be persisted',
+            $statementB->incompatible_content_ground);
+        $this->assertEquals('incompatible_content_explanation should be persisted',
+            $statementB->incompatible_content_explanation);
         $this->assertEquals('Yes', $statementB->incompatible_content_illegal);
-
     }
 
     /**
@@ -545,7 +617,6 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_with_different_decision_visibility(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
 
         $statements = $this->createFullStatements(2);
@@ -574,7 +645,6 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         $this->assertNotNull($statementB->decision_visibility);
         $this->assertNull($statementB->decision_visibility_other);
-
     }
 
     /**
@@ -582,8 +652,9 @@ class StatementMultipleAPIControllerTest extends TestCase
      */
     public function store_multiple_statements_with_different_attributes_should_be_persisted_and_visible(): void
     {
-        $this->setUpFullySeededDatabase();
         $this->signInAsContributor();
+
+        //$this->withoutExceptionHandling();
 
         $sors = [];
 
@@ -606,13 +677,20 @@ class StatementMultipleAPIControllerTest extends TestCase
             'puid' => 'sorLight',
         ];
 
-        $full = Statement::factory()->create()->toArray();
-        $full['puid'] = "sorFull";
-        unset($full['permalink']);
-        unset($full['platform_name']);
-        unset($full['self']);
-        $sors[] = $full;
+//        $full = Statement::factory()->create()->toArray();
+//        $full['puid'] = "sorFull";
+//        unset($full['permalink']);
+//        unset($full['platform_name']);
+//        unset($full['self']);
+//        $sors[] = $full;
+//        $full = $this->createFullStatements(1);
+//        $sors[] = $full;
 
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+        $fields['puid'] = "sorFull";
+        $sors[] = $fields;
 
 
         $response = $this->post(route('api.v1.statements.store'), [
@@ -621,7 +699,9 @@ class StatementMultipleAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertCount(13, Statement::all());
+        $this->assertCount(12, Statement::all());
+
+
 
         $statementA = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
         $statementB = Statement::where('puid', $response->json('statements.1.puid'))->first()->fresh();
@@ -634,7 +714,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->get(route('api.v1.statement.show', [$statementB]), [
             'Accept' => 'application/json'
         ])->assertStatus(Response::HTTP_OK);
-
     }
 
 
