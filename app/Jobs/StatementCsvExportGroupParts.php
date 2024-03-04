@@ -26,7 +26,7 @@ class StatementCsvExportGroupParts implements ShouldQueue
     {
         $path = Storage::path('');
         $zip_parts_pattern = $path . 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '-*.csv.zip';
-        $zip_file = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
+        $zip_file = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.zip';
 
         // Shell execs detach from the laravel job so let's do this in PHP.
         // exec zip command to just store the zip parts in a zip file.

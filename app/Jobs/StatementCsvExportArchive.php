@@ -49,11 +49,11 @@ class StatementCsvExportArchive implements ShouldQueue
             $sizelight += filesize($part);
         }
 
-        $zipfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv.zip';
-        $zipfilelight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv.zip';
+        $zipfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.zip';
+        $zipfilelight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.zip';
 
-        $zipfilesha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv.zip.sha1';
-        $zipfilelightsha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv.zip.sha1';
+        $zipfilesha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.zip.sha1';
+        $zipfilelightsha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.zip.sha1';
 
         $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
         $existing?->delete();

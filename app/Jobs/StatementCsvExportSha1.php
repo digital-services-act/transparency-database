@@ -24,8 +24,8 @@ class StatementCsvExportSha1 implements ShouldQueue
     public function handle(): void
     {
         $path = Storage::path('');
-        $zipfile = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip';
-        $sha1 = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.csv.zip.sha1';
+        $zipfile = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.zip';
+        $sha1 = 'sor-' . $this->platform . '-' . $this->date . '-' . $this->version . '.zip.sha1';
         Storage::put($sha1, sha1_file($path . $zipfile) . "  " . basename($zipfile));
     }
 }
