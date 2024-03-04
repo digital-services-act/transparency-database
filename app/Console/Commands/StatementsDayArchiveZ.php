@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatementCsvExport;
 use App\Jobs\StatementCsvExportArchive;
+use App\Jobs\StatementCsvExportArchiveZ;
 use App\Jobs\StatementCsvExportCopyS3;
 use App\Jobs\StatementCsvExportGroupParts;
 use App\Jobs\StatementCsvExportReduce;
@@ -117,7 +118,7 @@ class StatementsDayArchiveZ extends Command
         // Create DB Entries to show on the data download page.
         $archive_jobs = [];
         foreach ($exports as $export) {
-            $archive_jobs[] = new StatementCsvExportArchive($date_string, $export['slug'], $export['id']);
+            $archive_jobs[] = new StatementCsvExportArchiveZ($date_string, $export['slug'], $export['id']);
         }
 
         // Hold and carry all the possible jobs.
