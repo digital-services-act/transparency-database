@@ -49,7 +49,7 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         $date = Carbon::createFromFormat('Y-m-d', $this->date);
         $platform = Platform::find($this->platform_id);
 
-        $csvfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv';
+        
         $csvfiles = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full-*.csv.zip';
         $csvfilesglob = glob($csvfiles);
         $size = 0;
@@ -57,8 +57,8 @@ class StatementCsvExportArchiveZ implements ShouldQueue
             $size += $this->innerZipSize($part);
         }
 
-        $csvfilelight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv';
-        $csvfileslight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light-*.csv';
+
+        $csvfileslight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light-*.csv.zip';
         $csvfileslightglob = glob($csvfileslight);
         $sizelight = 0;
         foreach ($csvfileslightglob as $part) {
