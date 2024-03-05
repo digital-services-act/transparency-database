@@ -576,9 +576,35 @@ class StatementSearchService
         Cache::forever('osa_cache', array_unique($keys));
     }
 
-    /**
-     * @return void
-     */
+    public function uuidToId(string $uuid): int
+    {
+        $query = [
+                "size" => 1,
+                "query"   => [
+                    "bool" => [
+                        "must" => [
+                            "match" => [
+                                "uuid" => $uuid
+                            ]
+                        ]
+                    ]
+                ],
+                "_source" => [
+                    "includes" => [
+                        "id"
+                    ],
+                    "excludes" => []
+                ]
+        ];
+
+        $result = $this->client->search([
+            'index' => $this->index_name,
+            'body'  => $query,
+        ]);
+        return $result['hits']['hits'][0]['_id'] ?? 0;
+    }
+
+
     public function clearOSACache(): void
     {
         $keys = Cache::get('osa_cache', []);
@@ -589,10 +615,6 @@ class StatementSearchService
         Cache::delete('osa_cache');
     }
 
-    /**
-     *
-     * @return array
-     */
     public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true): array
     {
         $timestart = microtime(true);
