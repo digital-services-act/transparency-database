@@ -20,8 +20,6 @@ class DayArchiveQueryService
     ];
 
     /**
-     * @param array $filters
-     *
      * @return Builder
      */
     public function query(array $filters): Builder
@@ -51,8 +49,6 @@ class DayArchiveQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -66,8 +62,6 @@ class DayArchiveQueryService
 
     /**
      *
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */
@@ -79,8 +73,6 @@ class DayArchiveQueryService
 
     /**
      *
-     * @param Builder $query
-     * @param string $filter_value
      *
      * @return void
      */

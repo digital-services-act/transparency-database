@@ -54,7 +54,7 @@ class StatementCsvExport implements ShouldQueue
 
         while ($current_start <= $this->end_id) {
             $current_end = min( ($current_start + $chunk), $this->end_id );
-            $statements = DB::connection('mysql::read')->table('statements')
+            $statements = DB::connection('mysql::read')->table('statements', null)
                      ->selectRaw($select_raw)
                      ->where('statements.id', '>=', $current_start)
                      ->where('statements.id', '<=', $current_end)

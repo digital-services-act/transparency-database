@@ -9,15 +9,15 @@ class Kernel extends ConsoleKernel
 {
     private const string DAILY_AFTER_MIDNIGHT = '00:10';
 
-    private const string DAILY_SIX_AM = '13:00';
+    private const string DAILY_SIX_AM = '06:00';
 
-    private const string DAILY_SIX_O_ONE_AM = '13:01';
+    private const string DAILY_SIX_O_ONE_AM = '06:01';
 
-    private const string DAILY_SIX_O_TWO_AM = '13:02';
+    private const string DAILY_SIX_O_TWO_AM = '06:02';
 
-    private const string DAILY_SIX_O_THREE_AM = '13:03';
+    private const string DAILY_SIX_O_THREE_AM = '06:03';
 
-    private const string DAILY_SIX_O_FOUR_AM = '13:04';
+    private const string DAILY_SIX_O_FOUR_AM = '06:04';
 
     #[\Override]
     protected function schedule(Schedule $schedule): void
