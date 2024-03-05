@@ -130,9 +130,8 @@
     }
 </script>
 @if(config('dsa.SITEID', false) && config('dsa.SITEPATH', false))
-    <script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}
-        ","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}
-    </script>
+{{ // DO NOT SPLIT THIS LINE }}
+<script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
 @endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}
 </script>
