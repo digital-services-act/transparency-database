@@ -25,7 +25,7 @@ class StatementCsvExportCopyS3 implements ShouldQueue
     {
         $path = Storage::path('');
         $disk = Storage::disk('s3ds');
-        $disk->put($this->zip, fopen($path . $this->zip, 'r+'));
-        $disk->put($this->sha1, fopen($path . $this->sha1, 'r+'));
+        $disk->put($this->zip, fopen($path . $this->zip, 'rb+'));
+        $disk->put($this->sha1, fopen($path . $this->sha1, 'rb+'));
     }
 }

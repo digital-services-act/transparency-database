@@ -378,11 +378,30 @@ class StatementSearchService
                 $doc    = $statement->toSearchableArray();
                 $bulk[] = json_encode([
                     'index' => [
-                        '_index' => 'statement_index',
+                        '_index' => $this->index_name,
                         '_id'    => $statement->id
                     ]
                 ], JSON_THROW_ON_ERROR);
                 $bulk[] = json_encode($doc, JSON_THROW_ON_ERROR);
+            }
+
+            // Call the bulk and make them searchable.
+            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
+        }
+    }
+
+    public function bulkDeleteStatements(\Illuminate\Support\Collection $statements): void
+    {
+        if ($statements->count() !== 0) {
+            $bulk = [];
+            /** @var Statement $statement */
+            foreach ($statements as $statement) {
+                $bulk[] = json_encode([
+                    'delete' => [
+                        '_index' => $this->index_name,
+                        '_id'    => $statement->id
+                    ]
+                ], JSON_THROW_ON_ERROR);
             }
 
             // Call the bulk and make them searchable.
