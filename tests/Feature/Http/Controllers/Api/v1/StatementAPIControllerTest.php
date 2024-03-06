@@ -136,6 +136,10 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
+        $this->mock(StatementSearchService::class, static function (MockInterface $mock) {
+            $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
+        });
+
         $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
             'Accept' => 'application/json'
         ]);
