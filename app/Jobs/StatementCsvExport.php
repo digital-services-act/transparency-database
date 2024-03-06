@@ -48,13 +48,19 @@ class StatementCsvExport implements ShouldQueue
 
         $select_raw = $day_archive_service->getSelectRawString();
 
-        $raw = DB::connection('mysql::read')->table('statements')
-                 ->selectRaw($select_raw)
-                 ->where('statements.id', '>=', $this->start_id)
-                 ->where('statements.id', '<=', $this->end_id)
-                 ->orderBy('statements.id');
+        $chunk = 500000;
+        $current_start = $this->start_id;
 
-        $raw->chunk(1000000, static function (Collection $statements) use ($exports, $platforms, $day_archive_service) {
+
+        while ($current_start <= $this->end_id) {
+            $current_end = min( ($current_start + $chunk), $this->end_id );
+            $statements = DB::connection('mysql::read')->table('statements', null)
+                     ->selectRaw($select_raw)
+                     ->where('statements.id', '>=', $current_start)
+                     ->where('statements.id', '<=', $current_end)
+                     ->orderBy('statements.id')
+                     ->get();
+
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
                 $row      = $day_archive_service->mapRaw($statement, $platforms);
@@ -69,12 +75,9 @@ class StatementCsvExport implements ShouldQueue
                 }
             }
 
-            // Flush
-            foreach ($exports as $export) {
-                fflush($export['csv_file']);
-                fflush($export['csv_filelight']);
-            }
-        });
+            $current_start += $chunk + 1;
+        }
+
 
         foreach ($exports as $export) {
             fclose($export['csv_file']);

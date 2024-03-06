@@ -9,15 +9,15 @@ class Kernel extends ConsoleKernel
 {
     private const string DAILY_AFTER_MIDNIGHT = '00:10';
 
-    private const string DAILY_ONE_PM = '13:00';
+    private const string DAILY_SIX_AM = '06:00';
 
-    private const string DAILY_ONE_O_ONE_PM = '13:01';
+    private const string DAILY_SIX_O_ONE_AM = '06:01';
 
-    private const string DAILY_ONE_O_TWO_PM = '13:02';
+    private const string DAILY_SIX_O_TWO_AM = '06:02';
 
-    private const string DAILY_ONE_O_THREE_PM = '13:03';
+    private const string DAILY_SIX_O_THREE_AM = '06:03';
 
-    private const string DAILY_ONE_O_FOUR_PM = '13:04';
+    private const string DAILY_SIX_O_FOUR_AM = '06:04';
 
     #[\Override]
     protected function schedule(Schedule $schedule): void
@@ -26,11 +26,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
 
         // Home page caching
-        $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_ONE_PM);
-        $schedule->command('enrich-home-page-cache --automateddecisionspercentage')->dailyAt(self::DAILY_ONE_O_ONE_PM);
-        $schedule->command('enrich-home-page-cache --topcategories')->dailyAt(self::DAILY_ONE_O_TWO_PM);
-        $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_ONE_O_THREE_PM);
-        $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_ONE_O_FOUR_PM);
+        $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_SIX_AM);
+        $schedule->command('enrich-home-page-cache --automateddecisionspercentage')->dailyAt(self::DAILY_SIX_O_ONE_AM);
+        $schedule->command('enrich-home-page-cache --topcategories')->dailyAt(self::DAILY_SIX_O_TWO_AM);
+        $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_SIX_O_THREE_AM);
+        $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_SIX_O_FOUR_AM);
     }
 
     // Existing `commands` method remains unchanged.

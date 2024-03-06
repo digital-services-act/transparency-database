@@ -94,6 +94,7 @@ class DayArchiveService
     public function getSelectRawString(): string
     {
         $selects   = [];
+        $selects[] = "id";
         $selects[] = "uuid";
         $selects[] = "decision_visibility";
         $selects[] = "REPLACE(decision_visibility_other, '\n', ' ') AS decision_visibility_other";

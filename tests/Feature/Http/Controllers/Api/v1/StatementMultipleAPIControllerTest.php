@@ -403,7 +403,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $create = 1;
         $sors = [];
         while ($create--) {
-            $fields['puid'] = rand();
+            $fields['puid'] = random_int(0, mt_getrandmax());
             $sors[] = $fields;
         }
 

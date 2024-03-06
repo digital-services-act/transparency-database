@@ -14,8 +14,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
-class StatementCsvExportArchive implements ShouldQueue
+class StatementCsvExportArchiveZ implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -26,6 +27,22 @@ class StatementCsvExportArchive implements ShouldQueue
     {
     }
 
+    private function innerZipSize($zip_file): int
+    {
+        $zip = new ZipArchive();
+        $zip->open($zip_file);
+
+        $totalSize = 0;
+
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            $fileStats = $zip->statIndex($i);
+            $totalSize += $fileStats['size'];
+        }
+
+        $zip->close();
+        return $totalSize;
+    }
+
     public function handle(StatementSearchService $statement_search_service, DayArchiveService $day_archive_service): void
     {
         $path = Storage::path('');
@@ -33,20 +50,20 @@ class StatementCsvExportArchive implements ShouldQueue
         $date = Carbon::createFromFormat('Y-m-d', $this->date);
         $platform = Platform::find($this->platform_id);
 
-        $csvfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.csv';
-        $csvfiles = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full-*.csv';
+
+        $csvfiles = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full-*.csv.zip';
         $csvfilesglob = glob($csvfiles);
         $size = 0;
         foreach ($csvfilesglob as $part) {
-            $size += filesize($part);
+            $size += $this->innerZipSize($part);
         }
 
-        $csvfilelight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.csv';
-        $csvfileslight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light-*.csv';
+
+        $csvfileslight = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light-*.csv.zip';
         $csvfileslightglob = glob($csvfileslight);
         $sizelight = 0;
         foreach ($csvfileslightglob as $part) {
-            $sizelight += filesize($part);
+            $sizelight += $this->innerZipSize($part);
         }
 
         $zipfile = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.zip';

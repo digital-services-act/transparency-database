@@ -14,9 +14,12 @@ use App\Services\GroupedSubmissionsService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementSearchService;
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -47,16 +50,27 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function existingPuid(Request $request, string $puid): JsonResponse
+    public function showUuid(string $uuid): \Illuminate\Contracts\Foundation\Application|Application|RedirectResponse|Redirector|JsonResponse
     {
-        //TODO: query from opensearch or index
+        $id = $this->statement_search_service->uuidToId($uuid);
+        if ($id === 0) {
+            return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
+        }
+        return redirect(route('api.v1.statement.show', [$id]));
+    }
+
+    public function existingPuid(Request $request, string $puid): Statement|JsonResponse
+    {
         $platform_id = $this->getRequestUserPlatformId($request);
 
-        $statement = Statement::query()->where('puid', $puid)->where('platform_id', $platform_id)->first();
+        $id = $this->statement_search_service->PlatformIdPuidToId($platform_id, $puid);
+        if ($id === 0) {
+            return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
+        }
+        $statement = Statement::find($id);
         if ($statement) {
             return response()->json($statement, Response::HTTP_FOUND);
         }
-
         return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
     }
 
