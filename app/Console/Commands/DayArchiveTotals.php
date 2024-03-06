@@ -2,9 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExportArchive;
 use App\Models\DayArchive;
-use App\Services\DayArchiveService;
 use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 

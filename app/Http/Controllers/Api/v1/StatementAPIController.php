@@ -50,6 +50,7 @@ class StatementAPIController extends Controller
         if ($id === 0) {
             return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
         }
+
         return redirect(route('api.v1.statement.show', [$id]));
     }
 
@@ -61,10 +62,12 @@ class StatementAPIController extends Controller
         if ($id === 0) {
             return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
         }
+
         $statement = Statement::find($id);
         if ($statement) {
             return response()->json($statement, Response::HTTP_FOUND);
         }
+
         return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
     }
 

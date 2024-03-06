@@ -2,16 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementCsvExport;
-use App\Jobs\StatementCsvExportArchive;
 use App\Jobs\StatementCsvExportArchiveZ;
 use App\Jobs\StatementCsvExportCopyS3;
 use App\Jobs\StatementCsvExportGroupParts;
-use App\Jobs\StatementCsvExportReduce;
 use App\Jobs\StatementCsvExportSha1;
 use App\Jobs\StatementCsvExportZ;
-use App\Jobs\StatementCsvExportZipPart;
-use App\Jobs\StatementCsvExportZipParts;
 use App\Services\DayArchiveService;
 use Exception;
 use Illuminate\Console\Command;

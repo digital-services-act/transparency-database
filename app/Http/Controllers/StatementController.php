@@ -166,6 +166,7 @@ class StatementController extends Controller
         if ($id === 0) {
             abort(404);
         }
+
         return redirect(route('statement.show', [$id]));
     }
 
