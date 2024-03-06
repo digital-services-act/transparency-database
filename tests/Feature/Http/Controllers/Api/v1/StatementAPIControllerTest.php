@@ -5,12 +5,16 @@ namespace Tests\Feature\Http\Controllers\Api\v1;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
+use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
+use Mockery;
+use Mockery\Mock;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 
@@ -103,9 +107,16 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
+        $statement = $this->statement;
+
+        $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
+            $mock->shouldReceive('PlatformIdPuidToId')->andReturn($statement->id);
+        });
+
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
             'Accept' => 'application/json'
         ]);
+
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
         $this->assertEquals($this->statement->uuid, $response->json('uuid'));

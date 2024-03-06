@@ -17,6 +17,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Excel;
@@ -142,9 +143,6 @@ class StatementController extends Controller
         ]);
     }
 
-    /**
-     * @return Factory|View|Application
-     */
     public function show(Statement $statement): Factory|View|Application
     {
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
@@ -162,10 +160,15 @@ class StatementController extends Controller
 
     }
 
+    public function showUuid(string $uuid): Redirector|RedirectResponse|Application
+    {
+        $id = $this->statement_search_service->uuidToId($uuid);
+        if ($id === 0) {
+            abort(404);
+        }
+        return redirect(route('statement.show', [$id]));
+    }
 
-    /**
-     * @return RedirectResponse
-     */
     public function store(StatementStoreRequest $request): RedirectResponse
     {
 
