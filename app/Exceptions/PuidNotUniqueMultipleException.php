@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class PlatformUniqueIdentifierNotUnique extends Exception
+class PuidNotUniqueMultipleException extends Exception
 {
 
     protected $duplicates;
@@ -18,19 +18,7 @@ class PlatformUniqueIdentifierNotUnique extends Exception
         $this->duplicates = $duplicates;
     }
 
-    public function render(Request $request): JsonResponse
-    {
-        $errors = [
-            'puid' => [
-                'The platform identifier(s) are not all unique within this call.',
-            ],
-            'existing_puids' => $this->duplicates
-        ];
 
-        $message = 'The platform identifier(s) are not all unique within this call.';
-        $response = ['message' => $message, 'errors' => $errors];
-        return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
 
     public function getJsonResponse(): JsonResponse
     {
@@ -44,6 +32,10 @@ class PlatformUniqueIdentifierNotUnique extends Exception
         $response = ['message' => $this->getMessage(), 'errors' => $errors];
 
         return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function getDuplicates(){
+        return $this->duplicates;
     }
 
 }

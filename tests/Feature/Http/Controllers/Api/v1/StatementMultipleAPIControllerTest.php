@@ -3,14 +3,11 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\ArchivedStatement;
-use App\Models\Platform;
 use App\Models\Statement;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
@@ -202,15 +199,21 @@ class StatementMultipleAPIControllerTest extends TestCase
             $sors[] = $fields;
         }
 
+        $key = "puid-{$user->platform->id}-foo-bar-123";
+        $this->assertFalse(Cache::has($key));
+
         $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
+
+        $this->assertTrue(Cache::has($key));
 
         $this->assertCount(11, Statement::all());
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
+
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
@@ -243,7 +246,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertDatabaseCount(ArchivedStatement::class, 10);
         $this->assertDatabaseCount(Statement::class, 20);
 
-
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
@@ -256,7 +258,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function api_statements_store_detects_previous_puid_from_database(): void
+    public function api_statements_store_detects_previous_puid_from_database_and_refresh_cache(): void
     {
         $user = $this->signInAsAdmin();
 
@@ -275,6 +277,9 @@ class StatementMultipleAPIControllerTest extends TestCase
             $sors[] = $fields;
         }
 
+        $key = "puid-{$user->platform->id}-foo-bar-sor-in-database";
+        $this->assertFalse(Cache::has($key));
+
         ArchivedStatement::factory([
             'puid' => 'foo-bar-sor-in-database',
             'platform_id' => $user->platform->id
@@ -292,6 +297,7 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         $this->assertDatabaseCount(ArchivedStatement::class, 1);
         $this->assertCount(10, Statement::all());
+        $this->assertTrue(Cache::has($key));
     }
 
 
@@ -676,15 +682,6 @@ class StatementMultipleAPIControllerTest extends TestCase
             'content_date' => '2023-05-18',
             'puid' => 'sorLight',
         ];
-
-//        $full = Statement::factory()->create()->toArray();
-//        $full['puid'] = "sorFull";
-//        unset($full['permalink']);
-//        unset($full['platform_name']);
-//        unset($full['self']);
-//        $sors[] = $full;
-//        $full = $this->createFullStatements(1);
-//        $sors[] = $full;
 
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',

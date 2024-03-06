@@ -617,8 +617,13 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertDatabaseCount(ArchivedStatement::class,0);
 
+        $fields = array_merge($this->required_fields, [
+            'puid' => 'new-puid-123'
+        ]);
+
+
         // Now let's create one
-        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
@@ -628,7 +633,7 @@ class StatementAPIControllerTest extends TestCase
         $count_before = Statement::all()->count();
 
         // Let's do it again
-        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
             'Accept' => 'application/json'
         ]);
 

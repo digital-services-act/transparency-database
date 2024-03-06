@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Exceptions\PlatformUniqueIdentifierNotUnique;
+use App\Exceptions\PuidNotUniqueMultipleException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
@@ -39,7 +39,7 @@ class StatementMultipleAPIController extends Controller
 
 
     /**
-     * @throws PlatformUniqueIdentifierNotUnique
+     * @throws PuidNotUniqueMultipleException
      */
     public function store(Request $request): JsonResponse
     {
@@ -75,10 +75,12 @@ class StatementMultipleAPIController extends Controller
             $payload['statements']);
 
         try {
-            $this->platform_unique_id_service->getDuplicatesFromRequest($puids_to_check);
-            $this->platform_unique_id_service->getDuplicatesFromCache($puids_to_check, $platform_id);
-            $this->platform_unique_id_service->getDuplicatesFromArchivedStatement($puids_to_check, $platform_id);
-        } catch (PlatformUniqueIdentifierNotUnique $e) {
+            $this->platform_unique_id_service->checkDuplicatesInRequest($puids_to_check);
+            $this->platform_unique_id_service->checkDuplicatesInCache($puids_to_check, $platform_id);
+            $this->platform_unique_id_service->checkDuplicatesInArchivedStatement($puids_to_check, $platform_id);
+        } catch (PuidNotUniqueMultipleException $e) {
+            // If the cache expired, and we got a new duplicate, we add it again to the cache
+            $this->platform_unique_id_service->refreshPuidsInCache($e->getDuplicates(), $platform_id);
             return $e->getJsonResponse();
         }
 
