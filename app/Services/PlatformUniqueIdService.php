@@ -42,7 +42,6 @@ class PlatformUniqueIdService
     {
         $key = $this->getCacheKey($platform_id, $puid);
         if (Cache::has($key)) throw new PuidNotUniqueSingleException($puid);
-        Log::info("add to cache: " . $key);
         Cache::put($key, 0, now()->addDays($this->cache_valid_days));
     }
 
