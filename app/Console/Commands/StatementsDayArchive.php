@@ -137,8 +137,8 @@ class StatementsDayArchive extends Command
         $copys3_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip           = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip';
-                $sha1          = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.csv.zip.sha1';
+                $zip           = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.zip';
+                $sha1          = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.zip.sha1';
                 $copys3_jobs[] = new StatementCsvExportCopyS3($zip, $sha1);
             }
         }
