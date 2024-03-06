@@ -221,6 +221,8 @@ class StatementAPIController extends Controller
             $this->removeHiddenFields($original);
             $original['platform_name'] = auth()->user()->platform->name;
             $original['created_at'] = $now->format('Y-m-d H:i:s');
+            $original['self'] = route('api.v1.statement.show.uuid', [$uuid]);
+            $original['permalink'] = route('statement.show.uuid', [$uuid]);
 
             $out[] = $original;
 
