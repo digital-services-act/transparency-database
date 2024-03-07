@@ -3,14 +3,12 @@
 namespace App\Jobs;
 
 use App\Models\Statement;
-use App\Services\StatementSearchService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -30,7 +28,7 @@ class StatementDeDupulicateRange implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(): void
     {
         $difference = $this->max - $this->min;
         // If the difference is small enough then do the searchable.

@@ -390,7 +390,7 @@ class StatementSearchService
         }
     }
 
-    
+
 
     public function startCountQuery(): string
     {
