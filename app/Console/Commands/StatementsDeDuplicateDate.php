@@ -15,7 +15,7 @@ class StatementsDeDuplicateDate extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:deduplicate-date {date=yesterday} {chunk=100000}';
+    protected $signature = 'statements:deduplicate-date {date=yesterday} {chunk=1000}';
 
     /**
      * The console command description.
