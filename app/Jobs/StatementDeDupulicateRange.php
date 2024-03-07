@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Statement;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,7 +9,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class StatementDeDupulicateRange implements ShouldQueue
 {
@@ -34,7 +35,11 @@ class StatementDeDupulicateRange implements ShouldQueue
         // If the difference is small enough then do the searchable.
         if ($difference <= $this->chunk) {
             try {
-                $statements = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->get();
+                $statements = DB::table('statements')
+                                ->select('id', 'uuid', 'platform_id', 'puid', 'created_at')
+                                ->where('id', '>=', $this->min)
+                                ->where('id', '<=', $this->max)
+                                ->get();
                 $duplicated_statements = [];
                 foreach ($statements as $statement) {
                     $key = 'puid-' . $statement->platform_id . "-" . trim($statement->puid);
@@ -51,19 +56,19 @@ class StatementDeDupulicateRange implements ShouldQueue
                 }
 
                 if (count($duplicated_statements)) {
-                    Log::warning('DuplicatedIdsFound', $duplicated_statements);
+                    Storage::put('duplicated-' . $this->min . '-' . $this->max . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
                 }
 
             } catch (Exception $e) {
                 // Do it again
                 Log::error('Indexing Error', ['exception' => $e]);
-                self::dispatch($this->max, $this->min, $this->chunk);
+                self::dispatch($this->max, $this->min, $this->chunk)->onQueue('dedupe');
             }
         } else {
             // The difference was too big, split it in half and dispatch those jobs.
             $break = ceil($difference / 2);
-            self::dispatch($this->max, ($this->max - $break), $this->chunk); // first half
-            self::dispatch(($this->max - $break - 1), $this->min, $this->chunk); // second half
+            self::dispatch($this->max, ($this->max - $break), $this->chunk)->onQueue('dedupe'); // first half
+            self::dispatch(($this->max - $break - 1), $this->min, $this->chunk)->onQueue('dedupe'); // second half
         }
 
     }

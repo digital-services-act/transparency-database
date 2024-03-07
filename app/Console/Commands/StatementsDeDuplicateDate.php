@@ -15,7 +15,7 @@ class StatementsDeDuplicateDate extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:deduplicate-date {date=yesterday} {chunk=500}';
+    protected $signature = 'statements:deduplicate-date {date=yesterday} {chunk=10000}';
 
     /**
      * The console command description.
@@ -36,7 +36,7 @@ class StatementsDeDuplicateDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            StatementDeDupulicateRange::dispatch($max, $min, $chunk);
+            StatementDeDupulicateRange::dispatch($max, $min, $chunk)->onQueue('dedupe');
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
