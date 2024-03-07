@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('date_received')->nullable();
             $table->timestamps();
 
-            $table->unique(['platform_id', 'puid'], 'platform_puid_unique');
+        //    $table->index(['platform_id', 'puid'], 'platform_puid_index');
         });
     }
 

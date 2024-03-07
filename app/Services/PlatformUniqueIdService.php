@@ -40,9 +40,10 @@ class PlatformUniqueIdService
      */
     public function addPuidToCache($platform_id, $puid): void
     {
-        $key = $this->getCacheKey($platform_id, $puid);
-        if (Cache::has($key)) throw new PuidNotUniqueSingleException($puid);
-        Cache::put($key, 0, now()->addDays($this->cache_valid_days));
+        if($this->isPuidInCache($platform_id, $puid)){
+            throw new PuidNotUniqueSingleException($puid);
+        }
+        Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));
     }
 
     /**
@@ -53,24 +54,14 @@ class PlatformUniqueIdService
      */
     public function addPuidToDatabase($platform_id, $puid): void
     {
-        try {
-            ArchivedStatement::create([
-                'puid' => $puid,
-                'date_received' => Carbon::now(),
-                'platform_id' => $platform_id
-            ]);
-        } catch (QueryException $e) {
-            if (
-                str_contains($e->getMessage(), "platform_puid_unique") || // mysql
-                str_contains($e->getMessage(),
-                    "UNIQUE constraint failed: archived_statements.platform_id, archived_statements.puid") // sqlite
-            ) {
-                throw new PuidNotUniqueSingleException($puid);
-            }
-
-            throw $e;
+        if (ArchivedStatement::where('platform_id', $platform_id)->where('puid', $puid)->exists()) {
+            throw new PuidNotUniqueSingleException($puid);
         }
-
+        ArchivedStatement::create([
+            'puid' => $puid,
+            'date_received' => Carbon::now(),
+            'platform_id' => $platform_id
+        ]);
     }
 
     /**
@@ -106,10 +97,7 @@ class PlatformUniqueIdService
         ?int $platform_id,
         mixed $puid
     ): bool {
-        if (Cache::has($this->getCacheKey($platform_id, $puid))) {
-            return true;
-        }
-        return false;
+        return Cache::get($this->getCacheKey($platform_id, $puid), false);
     }
 
     /**
@@ -129,7 +117,7 @@ class PlatformUniqueIdService
     {
         $duplicates = [];
         foreach ($puids as $puid) {
-            if ($this->isPuidInCache($platform_id, $puid, $this)) {
+            if ($this->isPuidInCache($platform_id, $puid)) {
                 // If the value is not valid, return early
                 $duplicates[] = $puid;
             }
@@ -146,10 +134,8 @@ class PlatformUniqueIdService
 
     public function refreshPuidsInCache(array $puids, $platform_id)
     {
-        foreach($puids as $puid){
-            $key = $this->getCacheKey($platform_id, $puid);
-            Cache::put($key, 0, now()->addDays($this->cache_valid_days));
+        foreach ($puids as $puid) {
+            Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));
         }
-
     }
 }
