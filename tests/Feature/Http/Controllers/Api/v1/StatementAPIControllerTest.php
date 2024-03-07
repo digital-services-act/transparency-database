@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Exceptions\PuidNotUniqueSingleException;
 use App\Models\ArchivedStatement;
 use App\Models\Platform;
 use App\Models\Statement;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Mockery;
@@ -650,6 +652,48 @@ class StatementAPIControllerTest extends TestCase
         $count_after = Statement::all()->count();
 
         $this->assertEquals($count_after, $count_before);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
+    {
+
+        $user = $this->signInAsAdmin();
+
+        $this->assertDatabaseCount(ArchivedStatement::class,0);
+
+        $this->withoutExceptionHandling();
+
+        $puid = 'new-puid-456';
+
+        ArchivedStatement::create([
+            'puid' => $puid,
+            'date_received' => Carbon::now(),
+            'platform_id' => $user->platform->id
+        ]);
+
+        $this->assertDatabaseCount(ArchivedStatement::class,1);
+
+        $fields = array_merge($this->required_fields, [
+            'puid' => $puid
+        ]);
+
+        $key = "puid-{$user->platform->id}-{$puid}";
+        $this->assertFalse(Cache::has($key));
+
+
+        // Now let's create one
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+
+
+        $this->assertDatabaseCount(ArchivedStatement::class,1);
+        $this->assertTrue(Cache::has($key));
+
+
     }
 
 
