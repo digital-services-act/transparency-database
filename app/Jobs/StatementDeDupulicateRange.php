@@ -42,8 +42,8 @@ class StatementDeDupulicateRange implements ShouldQueue
                                 ->get();
                 $duplicated_statements = [];
                 foreach ($statements as $statement) {
-                    $key = 'puid-' . $statement->platform_id . "-" . trim($statement->puid);
-                    if (Cache::store('redis')->get($key) === null) {
+                    $key = 'puid-' . $statement->platform_id . "-" . $statement->puid;
+                    if (!Cache::store('redis')->has($key)) {
                         // Duplicate found
                         $duplicated_statements[] = [
                             'id' => $statement->id,
