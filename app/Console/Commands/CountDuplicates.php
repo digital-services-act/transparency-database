@@ -30,7 +30,7 @@ class CountDuplicates extends Command
     public function handle(StatementSearchService $statement_search_service): void
     {
         $count = 0;
-        $json_files = glob('storage/app/duplicates*.json');
+        $json_files = glob('storage/app/duplicated*.json');
         foreach ($json_files as $json_file) {
             $json = file_get_contents($json_file);
             $data = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
