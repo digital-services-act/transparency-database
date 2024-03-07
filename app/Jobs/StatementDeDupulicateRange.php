@@ -55,8 +55,9 @@ class StatementDeDupulicateRange implements ShouldQueue
                     }
                 }
 
-                if (count($duplicated_statements)) {
-                    Storage::put('duplicated-' . $this->min . '-' . $this->max . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
+                $count = count($duplicated_statements);
+                if ($count) {
+                    Storage::put('duplicated-' . $count . '-' . $this->min . '-' . $this->max . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
                 }
 
             } catch (Exception $e) {
