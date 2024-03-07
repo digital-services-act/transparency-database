@@ -600,9 +600,14 @@ class StatementSearchService
 
     public function PlatformIdPuidToId(int $platform_id, string $puid): int
     {
+        return $this->PlatformIdPuidToIds($platform_id, $puid)[0] ?? 0;
+    }
 
+    public function PlatformIdPuidToIds(int $platform_id, string $puid): array
+    {
+        $puid = str_replace("=", ".", $puid);
         $query = [
-            "size"    => 1,
+            "size"    => 1000,
             "query"   => [
                 "bool" => [
                     "must" => [
@@ -632,7 +637,10 @@ class StatementSearchService
             'body'  => $query,
         ]);
 
-        return $result['hits']['hits'][0]['_id'] ?? 0;
+        return array_map(function($hit){
+            return $hit['_id'];
+        }, $result['hits']['hits'] ?? []);
+
     }
 
 

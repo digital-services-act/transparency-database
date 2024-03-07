@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Services\StatementSearchService;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
+use Symfony\Component\VarDumper\VarDumper;
+
+class PidPuid2Ids extends Command
+{
+    use CommandTrait;
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'pidpuid2ids {platform_id} {puid}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Get the id for an uuid';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(StatementSearchService $statement_search_service): void
+    {
+        $platform_id = $this->intifyArgument('platform_id');
+        $puid = $this->argument('puid');
+        VarDumper::dump($statement_search_service->PlatformIdPuidToIds($platform_id, $puid));
+    }
+}
