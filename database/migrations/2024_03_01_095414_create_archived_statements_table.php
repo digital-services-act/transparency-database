@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,7 +18,7 @@ return new class extends Migration
             $table->timestamp('date_received')->nullable();
             $table->timestamps();
 
-        //    $table->index(['platform_id', 'puid'], 'platform_puid_index');
+            $table->index(['platform_id', 'puid'], 'platform_puid_index');
         });
     }
 
