@@ -25,16 +25,13 @@ class StatementMultipleAPIController extends Controller
     use StatementAPITrait;
 
     protected EuropeanCountriesService $european_countries_service;
-    protected PlatformUniqueIdService $platform_unique_id_service;
-    protected StatementSearchService $statement_search_service;
-    protected GroupedSubmissionsService $grouped_submissions_service;
 
-    public function __construct(
-        PlatformUniqueIdService $platform_unique_id_service,
-        GroupedSubmissionsService $grouped_submissions_service
-    ) {
-        $this->platform_unique_id_service = $platform_unique_id_service;
-        $this->grouped_submissions_service = $grouped_submissions_service;
+
+    protected StatementSearchService $statement_search_service;
+
+
+    public function __construct(protected PlatformUniqueIdService $platform_unique_id_service, protected GroupedSubmissionsService $grouped_submissions_service)
+    {
     }
 
 
@@ -56,7 +53,7 @@ class StatementMultipleAPIController extends Controller
         ]);
 
         $errors = [];
-        list($errors, $payload) = $this->grouped_submissions_service->sanitizePayload($payload, $errors);
+        [$errors, $payload] = $this->grouped_submissions_service->sanitizePayload($payload, $errors);
         if ($errors !== []) {
             // Return validation errors as a JSON response
             Log::info('Statement Multiple Store Request Validation Failure', [
@@ -78,10 +75,10 @@ class StatementMultipleAPIController extends Controller
             $this->platform_unique_id_service->checkDuplicatesInRequest($puids_to_check);
             $this->platform_unique_id_service->checkDuplicatesInCache($puids_to_check, $platform_id);
             $this->platform_unique_id_service->checkDuplicatesInArchivedStatement($puids_to_check, $platform_id);
-        } catch (PuidNotUniqueMultipleException $e) {
+        } catch (PuidNotUniqueMultipleException $puidNotUniqueMultipleException) {
             // If the cache expired, and we got a new duplicate, we add it again to the cache
-            $this->platform_unique_id_service->refreshPuidsInCache($e->getDuplicates(), $platform_id);
-            return $e->getJsonResponse();
+            $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(), $platform_id);
+            return $puidNotUniqueMultipleException->getJsonResponse();
         }
 
         $out = $this->grouped_submissions_service->enrichThePayloadForBulkInsert($payload['statements'], $platform_id,

@@ -28,17 +28,15 @@ class StatementAPIController extends Controller
     use StatementAPITrait;
 
     protected EuropeanCountriesService $european_countries_service;
-    protected PlatformUniqueIdService $platform_unique_id_service;
-    protected StatementSearchService $statement_search_service;
+
+
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
-        StatementSearchService $statement_search_service,
-        PlatformUniqueIdService $platform_unique_id_service
+        protected StatementSearchService $statement_search_service,
+        protected PlatformUniqueIdService $platform_unique_id_service
     ) {
         $this->european_countries_service = $european_countries_service;
-        $this->statement_search_service = $statement_search_service;
-        $this->platform_unique_id_service = $platform_unique_id_service;
     }
 
     public function show(Statement $statement): Statement
@@ -52,6 +50,7 @@ class StatementAPIController extends Controller
         if ($id === 0) {
             return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
         }
+
         return redirect(route('api.v1.statement.show', [$id]));
     }
 
@@ -63,10 +62,12 @@ class StatementAPIController extends Controller
         if ($id === 0) {
             return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
         }
+
         $statement = Statement::find($id);
         if ($statement) {
             return response()->json($statement, Response::HTTP_FOUND);
         }
+
         return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
     }
 

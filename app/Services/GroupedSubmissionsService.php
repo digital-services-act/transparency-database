@@ -45,10 +45,8 @@ class GroupedSubmissionsService
     }
 
     /**
-     * @param array $payload_statement
      * @param $field
      * @param $needle
-     *
      * @return void
      */
     private function handleOtherFieldWithinArray(array &$payload_statement, $field, $needle): void
@@ -115,8 +113,6 @@ class GroupedSubmissionsService
     }
 
     /**
-     * @param array $payload
-     * @param array $errors
      * @return array
      */
     public function sanitizePayload(
@@ -140,10 +136,11 @@ class GroupedSubmissionsService
 
             try {
                 $payload['statements'][$index] = $validator->validated();
-            } catch (ValidationException $exception) {
+            } catch (ValidationException) {
             }
         }
-        return array($errors, $payload);
+
+        return [$errors, $payload];
     }
 
     private function initArrayFields(&$statement): void
@@ -157,7 +154,7 @@ class GroupedSubmissionsService
         ];
 
         foreach ($array_fields as $array_field) {
-            $statement[$array_field] = $statement[$array_field] ?? [];
+            $statement[$array_field] ??= [];
         }
     }
 
@@ -214,7 +211,7 @@ class GroupedSubmissionsService
 
 
         foreach ($optional_fields as $optional_field) {
-            $statement[$optional_field] = $statement[$optional_field] ?? null;
+            $statement[$optional_field] ??= null;
         }
     }
 
@@ -393,9 +390,6 @@ class GroupedSubmissionsService
     }
 
     /**
-     * @param mixed $payload_statement
-     * @param Carbon $now
-     * @param array $out
      * @return array
      */
     public function buildOutputJsonResponse(
@@ -420,8 +414,6 @@ class GroupedSubmissionsService
      * @param $statements
      * @param int|null $platform_id
      * @param $user_id
-     * @param string $method
-     * @param StatementMultipleAPIController $statementMultipleAPIController
      * @return array
      */
     public function enrichThePayloadForBulkInsert(

@@ -11,11 +11,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class PuidNotUniqueMultipleException extends Exception
 {
 
-    protected $duplicates;
-    public function __construct($duplicates)
+
+    public function __construct(protected $duplicates)
     {
         parent::__construct('The platform identifier(s) are not all unique within this call.');
-        $this->duplicates = $duplicates;
     }
 
 

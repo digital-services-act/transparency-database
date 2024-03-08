@@ -199,7 +199,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             $sors[] = $fields;
         }
 
-        $key = "puid-{$user->platform->id}-foo-bar-123";
+        $key = sprintf('puid-%s-foo-bar-123', $user->platform->id);
         $this->assertFalse(Cache::has($key));
 
         $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
@@ -277,7 +277,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             $sors[] = $fields;
         }
 
-        $key = "puid-{$user->platform->id}-foo-bar-sor-in-database";
+        $key = sprintf('puid-%s-foo-bar-sor-in-database', $user->platform->id);
         $this->assertFalse(Cache::has($key));
 
         ArchivedStatement::factory([

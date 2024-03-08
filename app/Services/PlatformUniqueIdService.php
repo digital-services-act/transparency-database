@@ -17,14 +17,8 @@ use Symfony\Component\Intl\Countries;
 
 class PlatformUniqueIdService
 {
-    protected int $cache_valid_days;
-
-    /**
-     * @param int $cache_valid_days
-     */
-    public function __construct(int $cache_valid_days = 2)
+    public function __construct(protected int $cache_valid_days = 2)
     {
-        $this->cache_valid_days = $cache_valid_days;
     }
 
     public function getCacheKey($platform_id, $puid)
@@ -43,6 +37,7 @@ class PlatformUniqueIdService
         if($this->isPuidInCache($platform_id, $puid)){
             throw new PuidNotUniqueSingleException($puid);
         }
+
         Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));
     }
 
@@ -57,6 +52,7 @@ class PlatformUniqueIdService
         if (ArchivedStatement::where('platform_id', $platform_id)->where('puid', $puid)->exists()) {
             throw new PuidNotUniqueSingleException($puid);
         }
+
         ArchivedStatement::create([
             'puid' => $puid,
             'date_received' => Carbon::now(),
@@ -67,7 +63,6 @@ class PlatformUniqueIdService
     /**
      * Check if the platform identifiers are all unique.
      *
-     * @param array $puids
      * @return boolean
      * @throws PuidNotUniqueMultipleException
      */
@@ -77,9 +72,7 @@ class PlatformUniqueIdService
 
         if (count($uniquePuids) !== count($puids)) {
             $counts = array_count_values($puids);
-            $duplicates = array_filter($counts, function ($count) {
-                return $count > 1;
-            });
+            $duplicates = array_filter($counts, static fn($count) => $count > 1);
             $duplicates = array_keys($duplicates);
 
             throw new PuidNotUniqueMultipleException($duplicates);
@@ -90,7 +83,6 @@ class PlatformUniqueIdService
 
     /**
      * @param int|null $platform_id
-     * @param mixed $puid
      * @return bool
      */
     public function isPuidInCache(
@@ -103,7 +95,7 @@ class PlatformUniqueIdService
     /**
      * @throws PuidNotUniqueMultipleException
      */
-    public function checkDuplicatesInArchivedStatement(array $puids_to_check, ?int $platform_id)
+    public function checkDuplicatesInArchivedStatement(array $puids_to_check, ?int $platform_id): void
     {
         $duplicates = ArchivedStatement::query()->where('platform_id', $platform_id)->whereIn('puid',
             $puids_to_check)->pluck('puid')->toArray();
@@ -113,7 +105,7 @@ class PlatformUniqueIdService
     /**
      * @throws PuidNotUniqueMultipleException
      */
-    public function checkDuplicatesInCache(array $puids, $platform_id)
+    public function checkDuplicatesInCache(array $puids, $platform_id): void
     {
         $duplicates = [];
         foreach ($puids as $puid) {
@@ -122,17 +114,18 @@ class PlatformUniqueIdService
                 $duplicates[] = $puid;
             }
         }
+
         $this->doWeHaveDuplicates($duplicates);
     }
 
-    private function doWeHaveDuplicates($duplicates)
+    private function doWeHaveDuplicates($duplicates): void
     {
         if (!empty($duplicates)) {
             throw new PuidNotUniqueMultipleException($duplicates);
         }
     }
 
-    public function refreshPuidsInCache(array $puids, $platform_id)
+    public function refreshPuidsInCache(array $puids, $platform_id): void
     {
         foreach ($puids as $puid) {
             Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));

@@ -680,7 +680,7 @@ class StatementAPIControllerTest extends TestCase
             'puid' => $puid
         ]);
 
-        $key = "puid-{$user->platform->id}-{$puid}";
+        $key = sprintf('puid-%s-%s', $user->platform->id, $puid);
         $this->assertFalse(Cache::has($key));
 
 
