@@ -35,7 +35,7 @@ class StatementDeDupulicateRange implements ShouldQueue
         // If the difference is small enough then do the searchable.
         if ($difference <= $this->chunk) {
             try {
-                $statements = DB::table('statements')
+                $statements = DB::connection('mysql::read')->table('statements')
                                 ->select('id', 'uuid', 'platform_id', 'puid', 'created_at')
                                 ->where('id', '>=', $this->min)
                                 ->where('id', '<=', $this->max)
