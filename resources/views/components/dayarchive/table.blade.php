@@ -36,7 +36,7 @@
         <tr class="ecl-table__row dayarchive-row">
             <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date->format('Y-m-d')}}</td>
             @if(!$reindexing)<td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>@endif
-            <td class="ecl-table__cell" data-ecl-table-header="File">
+            <td class="ecl-table__cell" data-ecl-table-header="Full">
                 <a href="{{ $dayarchive->url }}"
                    title="{{ $dayarchive->url }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
@@ -53,7 +53,7 @@
                 csv:&nbsp;{{human_filesize($dayarchive->size)}}<br/>
                 zip:&nbsp;{{human_filesize($dayarchive->zipsize)}}&nbsp
             </td>
-            <td class="ecl-table__cell" data-ecl-table-header="File">
+            <td class="ecl-table__cell" data-ecl-table-header="Light">
                 <a download href="{{ $dayarchive->urllight }}"
                    title="{{ $dayarchive->urllight }}"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
