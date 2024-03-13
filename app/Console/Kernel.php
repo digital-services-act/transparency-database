@@ -22,8 +22,10 @@ class Kernel extends ConsoleKernel
     #[\Override]
     protected function schedule(Schedule $schedule): void
     {
-        // The main indexer run daily after midnight.
-        $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+        // The main indexer run daily after midnight. Only on prod
+        if (strtolower((string)config('app.env_real')) === 'production') {
+            $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+        }
 
         // Home page caching
         $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_SIX_AM);
