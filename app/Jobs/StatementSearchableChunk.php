@@ -45,7 +45,7 @@ class StatementSearchableChunk implements ShouldQueue
         }
 
         // Bulk indexing.
-        $statements = Statement::query()->whereIn('id', $range)->get();
+        $statements = Statement::on('mysql::read')->query()->whereIn('id', $range)->get();
         $statement_search_service->bulkIndexStatements($statements);
     }
 }
