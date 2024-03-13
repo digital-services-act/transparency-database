@@ -14,7 +14,7 @@ class StatementsIndexRangeSeq extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-range {min=default} {max=default} {chunk=500}';
+    protected $signature = 'statements:index-range-seq {min=default} {max=default} {chunk=500}';
 
     /**
      * The console command description.
