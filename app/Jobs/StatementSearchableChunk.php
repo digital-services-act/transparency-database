@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use JsonException;
 
-class StatementSearchableChunk implements ShouldQueue
+class   StatementSearchableChunk implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
