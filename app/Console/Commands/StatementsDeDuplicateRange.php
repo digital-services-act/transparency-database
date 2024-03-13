@@ -15,7 +15,7 @@ class StatementsDeDuplicateRange extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:deduplicate-range {min=default} {max=default} {chunk=500}';
+    protected $signature = 'statements:deduplicate-range {min=default} {max=default} {chunk=3000}';
 
     /**
      * The console command description.

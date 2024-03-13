@@ -79,7 +79,7 @@ class StatementDeDuplicateRange implements ShouldQueue
 
         $count = count($duplicated_statements);
         if ($count) {
-            Storage::put('duplicated-' . $count . '-' . $this->min . '-' . $this->max . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
+            Storage::put('duplicated-' . $count . '-' . $this->min . '-' . $end . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
 //                    try {
 //                        // Delete the ids from the opensearch
 //                        $client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
