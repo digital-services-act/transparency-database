@@ -41,9 +41,9 @@ class StatementDeDuplicateRange implements ShouldQueue
 
         // Dispatch the next one
         if ($end < $this->max) {
-            $next_start = $this->min + $this->chunk + 1;
+            $next_min = $this->min + $this->chunk + 1;
             // Start the next one.
-            self::dispatch($next_start, $this->chunk, $this->max)->onQueue('dedupe');
+            self::dispatch($next_min, $this->max, $this->chunk)->onQueue('dedupe');
         }
 
         $range = range($this->min, $end);
