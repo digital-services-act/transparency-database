@@ -36,7 +36,7 @@ class StatementsDeDuplicateDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            StatementDeDuplicateRange::dispatch($max, $min, $chunk)->onQueue('dedupe');
+            StatementDeDuplicateRange::dispatch($min, $max, $chunk)->onQueue('dedupe');
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
