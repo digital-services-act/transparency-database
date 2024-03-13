@@ -20,7 +20,7 @@ class ToggleCacheVar extends Command
      *
      * @var string
      */
-    protected $description = 'Toggle the reindexing cache value on or off.';
+    protected $description = 'Toggle the bool state of a cache key.';
 
     /**
      * Execute the console command.
