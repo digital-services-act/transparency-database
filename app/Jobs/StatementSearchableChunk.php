@@ -35,7 +35,7 @@ class StatementSearchableChunk implements ShouldQueue
         if ($end > $this->max ) {
             $end = $this->max;
         }
-        
+
         if ($this->next) {
             // Dispatch the next one
             if ($end < $this->max) {
@@ -48,7 +48,7 @@ class StatementSearchableChunk implements ShouldQueue
         } else {
             $range = range($this->start, $end);
             // Bulk indexing.
-            $statements = Statement::on('mysql::read')->query()->whereIn('id', $range)->get();
+            $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
             $statement_search_service->bulkIndexStatements($statements);
         }
     }
