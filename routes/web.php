@@ -57,7 +57,7 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::resource('user', UserController::class, ['middleware' => ['can:create users']]);
         Route::resource('platform', PlatformController::class, ['middleware' => ['can:create platforms']]);
 
-        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
+        Route::get('/admin/onboarding', static fn(\Illuminate\Http\Request $request) => (new \App\Http\Controllers\OnboardingController())->index($request))->name('onboarding.index')->can('view platforms');
         Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
         Route::get('/profile/start', static fn(
