@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Exceptions\PuidNotUniqueMultipleException;
+use App\Exceptions\PuidNotUniqueSingleException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
@@ -16,6 +17,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class StatementMultipleAPIController extends Controller
@@ -36,7 +38,7 @@ class StatementMultipleAPIController extends Controller
 
 
     /**
-     * @throws PuidNotUniqueMultipleException
+     * @throws PuidNotUniqueMultipleException|PuidNotUniqueSingleException
      */
     public function store(Request $request): JsonResponse
     {
@@ -55,15 +57,17 @@ class StatementMultipleAPIController extends Controller
         $errors = [];
         [$errors, $payload] = $this->grouped_submissions_service->sanitizePayload($payload, $errors);
         if ($errors !== []) {
-            // Return validation errors as a JSON response
-            Log::info('Statement Multiple Store Request Validation Failure', [
-                'request' => $request->all(),
-                'errors' => $errors,
-                'user' => auth()->user()->id ?? -1,
-                'user_email' => auth()->user()->email ?? 'n/a',
-                'platform' => auth()->user()->platform->name ?? 'no platform'
-            ]);
 
+            if (Cache::get('validation_failure_logging', true)) {
+                // Return validation errors as a JSON response
+                Log::info('Statement Multiple Store Request Validation Failure', [
+                    'request'    => $request->all(),
+                    'errors'     => $errors,
+                    'user'       => auth()->user()->id ?? -1,
+                    'user_email' => auth()->user()->email ?? 'n/a',
+                    'platform'   => auth()->user()->platform->name ?? 'no platform'
+                ]);
+            }
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
