@@ -41,7 +41,7 @@ class StatementSearchableChunk implements ShouldQueue
         if ($end < $this->max) {
             $next_start = $this->start + $this->chunk + 1;
             // Start the next one.
-            self::dispatch($next_start, $this->chunk, $this->max, true);
+            self::dispatch($next_start, $this->chunk, $this->max);
         }
 
         $range = range($this->start, $end);
