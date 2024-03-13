@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use OpenSearch\Client;
 
-class StatementDeDupulicateRange implements ShouldQueue
+class StatementDeDuplicateRange implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -29,7 +30,7 @@ class StatementDeDupulicateRange implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(Client $client): void
     {
         $difference = $this->max - $this->min;
         // If the difference is small enough then do the searchable.
@@ -41,6 +42,8 @@ class StatementDeDupulicateRange implements ShouldQueue
                                 ->where('id', '<=', $this->max)
                                 ->get();
                 $duplicated_statements = [];
+                $ids_to_delete = [];
+                $opensearch_bulk_delete = [];
                 foreach ($statements as $statement) {
                     $key = 'puid-' . $statement->platform_id . "-" . $statement->puid;
                     if (Cache::store('redis')->has($key)) {
@@ -50,6 +53,13 @@ class StatementDeDupulicateRange implements ShouldQueue
                             'platform_id' => $statement->platform_id,
                             'puid' => $statement->puid
                         ];
+                        $ids_to_delete[] = $statement->id;
+                        $opensearch_bulk_delete[] = json_encode([
+                            'delete' => [
+                                '_index' => 'statement_index',
+                                '_id'    => $statement->id
+                            ]
+                        ], JSON_THROW_ON_ERROR);
                     } else {
                         Cache::store('redis')->forever($key, 1);
                     }
@@ -58,11 +68,19 @@ class StatementDeDupulicateRange implements ShouldQueue
                 $count = count($duplicated_statements);
                 if ($count) {
                     Storage::put('duplicated-' . $count . '-' . $this->min . '-' . $this->max . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
+//                    try {
+//                        // Delete the ids from the opensearch
+//                        $client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
+//
+//                        // Delete From the DB
+//                        DB::table('statements')->whereIn('id', $ids_to_delete)->delete();
+//                    } catch (Exception $e) {
+//                        Log::error('DD Error: ' . $e->getMessage(), $e->getTrace());
+//                    }
                 }
-
             } catch (Exception $e) {
                 // Do it again
-                Log::error('Indexing Error', ['exception' => $e]);
+                Log::error('Deduplication Error', ['exception' => $e]);
                 self::dispatch($this->max, $this->min, $this->chunk)->onQueue('dedupe');
             }
         } else {
@@ -71,8 +89,5 @@ class StatementDeDupulicateRange implements ShouldQueue
             self::dispatch($this->max, ($this->max - $break), $this->chunk)->onQueue('dedupe'); // first half
             self::dispatch(($this->max - $break - 1), $this->min, $this->chunk)->onQueue('dedupe'); // second half
         }
-
     }
-
-
 }

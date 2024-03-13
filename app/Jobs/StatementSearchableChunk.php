@@ -3,14 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\Statement;
+use App\Services\StatementSearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
+use JsonException;
 
 class StatementSearchableChunk implements ShouldQueue
 {
@@ -21,39 +20,32 @@ class StatementSearchableChunk implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $start, public int $chunk, public int $min)
+    public function __construct(public int $start, public int $chunk, public int $max)
     {
     }
 
     /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-//    public function middleware(): array
-//    {
-//        return [new RateLimited('reindexing')];
-//    }
-
-    /**
      * Execute the job.
+     * @throws JsonException
      */
-    public function handle(): void
+    public function handle(StatementSearchService $statement_search_service): void
     {
-        $end = $this->start - $this->chunk;
+        $end = $this->start + $this->chunk;
 
-        if ($end < $this->min ) {
-            $end = $this->min;
+        if ($end > $this->max ) {
+            $end = $this->max;
         }
 
         $range = range($this->start, $end);
 
-        if ($end > $this->min) {
-            $next_start = $this->start - $this->chunk - 1;
-            self::dispatch($next_start, $this->chunk, $this->min);
+        // Dispatch the next one
+        if ($end < $this->max) {
+            $next_start = $this->start + $this->chunk + 1;
+            self::dispatch($next_start, $this->chunk, $this->max);
         }
 
-        //echo "searchable call\n";
-        Statement::query()->whereIn('id', $range)->searchable();
+        // Bulk indexing.
+        $statements = Statement::query()->whereIn('id', $range)->get();
+        $statement_search_service->bulkIndexStatements($statements);
     }
 }
