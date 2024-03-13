@@ -40,7 +40,8 @@ class StatementIndexRange implements ShouldQueue
             if ($difference <= $this->chunk) {
 
                 try {
-                    $statements = Statement::query()->where('id', '>=', $this->min)->where('id', '<=', $this->max)->get();
+                    $range = range($this->min, $this->max);
+                    $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
                     $statement_search_service->bulkIndexStatements($statements);
                 } catch (Exception $e) {
                     // Do it again
