@@ -39,7 +39,7 @@ class StatementsIndexDateSeq extends Command
 
         if ($min && $max) {
             Log::info('Indexing started for date: ' . $date->format('Y-m-d') . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-            StatementSearchableChunk::dispatch($max, $min, $chunk);
+            StatementSearchableChunk::dispatch($min, $max, $chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
