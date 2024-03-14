@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Platform;
 use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use JsonException;
@@ -38,13 +39,15 @@ class CountDuplicates extends Command
             $data = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
             $count += count($data);
             foreach ($data as $item) {
-                if (!isset($platforms[$item['platform_id']])) {
-                    $platforms[$item['platform_id']] = 0;
+                if (!isset($platforms[$item->platform_id])) {
+                    $platforms[$item->platform_id] = 0;
                 }
-                $platforms[$item['platform_id']]++;
+                $platforms[$item->platform_id]++;
             }
         }
-        $this->info('Duplicates: ' . $count);
-        VarDumper::dump($platforms);
+        $this->info('Total Duplicates: ' . $count);
+        foreach ($platforms as $id => $total) {
+            $this->info(Platform::find($id)->name . ': ' . $total);
+        }
     }
 }
