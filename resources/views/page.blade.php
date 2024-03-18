@@ -19,6 +19,12 @@
             padding: .1em;
         }
 
+        hr {
+            border: none;
+            border-top: 2px solid;
+            color: rgb(205, 213, 239);
+        }
+
     </style>
 @endsection
 
