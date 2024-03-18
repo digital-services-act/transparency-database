@@ -15,10 +15,14 @@ return new class extends Migration {
             $table->integer('platform_id');
             $table->string('puid', 500);
             $table->string('uuid', 36)->nullable();
+            $table->bigInteger('original_id')->nullable();
             $table->timestamp('date_received')->nullable();
             $table->timestamps();
 
             $table->index(['platform_id', 'puid'], 'platform_puid_index');
+            $table->index('original_id', 'original_id_index');
+            $table->index('uuid', 'uuid_index');
+
         });
     }
 

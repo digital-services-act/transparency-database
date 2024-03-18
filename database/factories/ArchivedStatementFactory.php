@@ -27,6 +27,7 @@ class ArchivedStatementFactory extends Factory
             'platform_id' => $platform_id,
             'puid' => $this->faker->regexify('[A-Za-z0-9]{500}'),
             'uuid' => $this->faker->uuid(),
+            'original_id' => $this->faker->numberBetween(1000000000,10000000000),
             'date_received' => $this->faker->dateTime(),
         ];
     }
