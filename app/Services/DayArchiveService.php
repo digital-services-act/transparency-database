@@ -149,18 +149,24 @@ class DayArchiveService
         return implode(", ", $selects);
     }
 
-    public function archiveStatement(Statement $statement): ArchivedStatement
+    public function archiveStatement(Statement $statement): ?ArchivedStatement
     {
-        ArchivedStatement::query()->where('original_id', $statement->id)->delete();
-        $archived_statement = ArchivedStatement::create([
-            'original_id' => $statement->id,
-            'puid' => $statement->puid,
-            'platform_id' => $statement->platform_id,
-            'uuid' => $statement->uuid,
-            'date_received' => $statement->created_at
-        ]);
-
-        $statement->forceDelete(); // hard delete
+        DB::beginTransaction();
+        try {
+            ArchivedStatement::query()->where('original_id', $statement->id)->delete();
+            $archived_statement = ArchivedStatement::create([
+                'original_id'   => $statement->id,
+                'puid'          => $statement->puid,
+                'platform_id'   => $statement->platform_id,
+                'uuid'          => $statement->uuid,
+                'date_received' => $statement->created_at
+            ]);
+            $statement->forceDelete(); // hard delete
+        } catch (Exception $e) {
+            DB::rollBack();
+            return null;
+        }
+        DB::commit();
         return $archived_statement;
     }
 
