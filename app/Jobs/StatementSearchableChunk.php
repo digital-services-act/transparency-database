@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
-class StatementSearchableChunk implements ShouldQueue
+class   StatementSearchableChunk implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

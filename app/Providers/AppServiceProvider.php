@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Platform;
 use App\Models\Statement;
 use GuzzleHttp\Client;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -54,7 +55,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Statement::disableSearchSyncing();
+        if (strtolower((string) config('app.env_real')) === 'production') {
+            Statement::disableSearchSyncing();
+        }
 
         Sanctum::usePersonalAccessTokenModel(
             PersonalAccessToken::class
