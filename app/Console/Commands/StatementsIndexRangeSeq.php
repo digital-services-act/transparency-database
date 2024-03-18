@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatementSearchableChunk;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StatementsIndexRangeSeq extends Command
 {
@@ -14,7 +16,7 @@ class StatementsIndexRangeSeq extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-range {min=default} {max=default} {chunk=500}';
+    protected $signature = 'statements:index-range-seq {min=default} {max=default} {chunk=500}';
 
     /**
      * The console command description.
@@ -33,6 +35,8 @@ class StatementsIndexRangeSeq extends Command
         $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
 
-        StatementSearchableChunk::dispatch($min, $chunk, $max);
+        Log::info('Indexing started for range: ' . $min . ' :: ' . $max . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+
+        StatementSearchableChunk::dispatch($min, $max, $chunk);
     }
 }

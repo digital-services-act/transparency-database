@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementDeDuplicateRange;
+use App\Jobs\StatementIndexRange;
+use App\Jobs\StatementSearchableChunk;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class StatementsDeDuplicateDate extends Command
+class StatementsIndexDateSeq extends Command
 {
     use CommandTrait;
     /**
@@ -15,14 +17,14 @@ class StatementsDeDuplicateDate extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:deduplicate-date {date=yesterday} {chunk=3000}';
+    protected $signature = 'statements:index-date-seq {date=yesterday} {chunk=500}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Deduplicate statements for a day';
+    protected $description = 'Index statements for a day';
 
     /**
      * Execute the console command.
@@ -36,7 +38,8 @@ class StatementsDeDuplicateDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            StatementDeDuplicateRange::dispatch($min, $max, $chunk)->onQueue('dedupe');
+            Log::info('Indexing started for date: ' . $date->format('Y-m-d') . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+            StatementSearchableChunk::dispatch($min, $max, $chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }
