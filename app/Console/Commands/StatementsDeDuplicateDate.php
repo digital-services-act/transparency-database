@@ -22,7 +22,7 @@ class StatementsDeDuplicateDate extends Command
      *
      * @var string
      */
-    protected $description = 'Index statements for a day';
+    protected $description = 'Deduplicate statements for a day';
 
     /**
      * Execute the console command.

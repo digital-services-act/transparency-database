@@ -32,7 +32,6 @@
         <thead class="ecl-table__head">
         <tr class="ecl-table__row">
             <th class="ecl-table__header">Name</th>
-
             <th class="ecl-table__header" width="25%">Actions</th>
         </tr>
         </thead>
@@ -40,8 +39,7 @@
         @foreach($platforms as $platform)
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Name">
-                    <x-ecl.external-link href="{{ route('platform.edit', [$platform]) }}"
-                                         label="{{ $platform->name }}"/>
+                    {{ $platform->name }}
                 </td>
 
                 <td class="ecl-table__cell" data-ecl-table-header="Actions">
