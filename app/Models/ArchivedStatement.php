@@ -21,6 +21,7 @@ class ArchivedStatement extends Model
         'puid',
         'uuid',
         'date_received',
+        'original_id'
     ];
 
     /**
@@ -33,13 +34,13 @@ class ArchivedStatement extends Model
         'date_received' => 'timestamp',
     ];
 
-    public function platforms(): HasMany
+    public function platform(): HasOne
     {
-        return $this->hasMany(Platform::class);
+        return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
 
     public function statement(): HasOne
     {
-        return $this->hasOne(Statement::class,'uuid','uuid');
+        return $this->hasOne(Statement::class, 'id', 'original_id');
     }
 }
