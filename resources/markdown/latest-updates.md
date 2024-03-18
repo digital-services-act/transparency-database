@@ -1,3 +1,19 @@
+STATEMENTS | _26 March 2024_
+
+### Data Retention and Pruning
+
+Starting March 26th 2024, Statements of Reason that are older than 6 months / 180 days will be stored in the 
+daily CSV Archives only. We will begin taking Statements of Reason out of the searching indexes and database
+on a daily basis and keeping these older statements only CSV format in our data download section. 
+
+Statements of reason younger than 6 months / 180 days will continue to be searchable and viewable in full 
+on the application.
+
+Users will be able to search a ID Number, UUID or PUID to locate and know which daily archive that a 
+particular Statement of reason is located in.
+
+---
+
 DATA DOWNLOAD | _18 March 2024_
 
 ### CSV Export Structure
