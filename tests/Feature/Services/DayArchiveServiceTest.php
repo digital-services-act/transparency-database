@@ -347,7 +347,7 @@ class DayArchiveServiceTest extends TestCase
         $archived_statement_one = ArchivedStatement::first();
         $this->assertEquals(1, $archived_statement_one->id);
 
-        $this->day_archive_service->archiveStatementsFromIds([$statement_one->id, $statement_two->id]);
+        $this->day_archive_service->archiveStatementsFromIds([$statement_one->id, $statement_two->id, 'chewbacca']);
 
         $this->assertDatabaseCount(Statement::class, 10);
         $this->assertDatabaseCount(ArchivedStatement::class, 3); // This doesn't go to 4
