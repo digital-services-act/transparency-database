@@ -66,6 +66,7 @@ class StatementMultipleAPIController extends Controller
                     'platform'   => auth()->user()->platform->name ?? 'no platform'
                 ]);
             }
+
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

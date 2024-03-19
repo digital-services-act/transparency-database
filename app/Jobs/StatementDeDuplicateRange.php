@@ -47,7 +47,7 @@ class StatementDeDuplicateRange implements ShouldQueue
         }
 
         $range = range($this->min, $end);
-        $statements = DB::connection('mysql::read')->table('statements')
+        $statements = DB::connection('mysql::read')->table('statements', null)
                         ->select('id', 'uuid', 'platform_id', 'puid', 'created_at')
                         ->whereIn('id', $range)
                         ->get();
@@ -78,7 +78,7 @@ class StatementDeDuplicateRange implements ShouldQueue
         }
 
         $count = count($duplicated_statements);
-        if ($count) {
+        if ($count !== 0) {
             Storage::put('duplicated-' . $count . '-' . $this->min . '-' . $end . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
 //                    try {
 //                        // Delete the ids from the opensearch

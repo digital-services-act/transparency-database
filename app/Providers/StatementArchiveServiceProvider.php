@@ -13,6 +13,7 @@ class StatementArchiveServiceProvider extends ServiceProvider implements Deferra
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(StatementArchiveService::class, static fn(Application $app) => new StatementArchiveService());
@@ -23,6 +24,7 @@ class StatementArchiveServiceProvider extends ServiceProvider implements Deferra
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [StatementArchiveService::class];

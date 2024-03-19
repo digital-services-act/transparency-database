@@ -54,7 +54,6 @@ class PlatformUniqueIdService
     /**
      * Check if the platform identifiers are all unique.
      *
-     * @param array $puids
      *
      * @return boolean
      * @throws PuidNotUniqueMultipleException
@@ -75,8 +74,6 @@ class PlatformUniqueIdService
     }
 
     /**
-     * @param int $platform_id
-     * @param mixed $puid
      *
      * @return bool
      */

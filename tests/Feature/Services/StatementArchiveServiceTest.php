@@ -17,6 +17,7 @@ class StatementArchiveServiceTest extends TestCase
 
     private array $required_fields;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -24,10 +24,11 @@ class StatementArchiveService
                 'date_received' => $statement->created_at
             ]);
             $statement->forceDelete(); // hard delete
-        } catch (Exception $e) {
+        } catch (Exception) {
             DB::rollBack();
             return null;
         }
+
         DB::commit();
         return $archived_statement;
     }
@@ -38,6 +39,7 @@ class StatementArchiveService
         foreach ($statements as $statement) {
             $archived_statements->push($this->archiveStatement($statement));
         }
+
         return $archived_statements;
     }
 
@@ -57,11 +59,12 @@ class StatementArchiveService
         try {
             DB::statement($convert_sql);
             DB::statement($delete_sql);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             DB::rollBack();
-            Log::error('Statement Archive Failure', [$e->getMessage()]);
+            Log::error('Statement Archive Failure', [$exception->getMessage()]);
             return false;
         }
+
         DB::commit();
         return true;
     }
