@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Exports\StatementExportTrait;
+use App\Models\ArchivedStatement;
 use App\Models\DayArchive;
 use App\Models\Platform;
+use App\Models\Statement;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

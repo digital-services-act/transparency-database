@@ -42,9 +42,11 @@ class CountDuplicates extends Command
                 if (!isset($platforms[$item->platform_id])) {
                     $platforms[$item->platform_id] = 0;
                 }
-                $platforms[$item->platform_id]++;
+
+                ++$platforms[$item->platform_id];
             }
         }
+
         $this->info('Total Duplicates: ' . $count);
         foreach ($platforms as $id => $total) {
             $this->info(Platform::find($id)->name . ': ' . $total);

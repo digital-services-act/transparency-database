@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Services;
 
+use App\Models\ArchivedStatement;
 use App\Models\DayArchive;
 use App\Models\Statement;
 use App\Services\DayArchiveService;

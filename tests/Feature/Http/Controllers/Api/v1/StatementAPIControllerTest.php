@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Platform;
+use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\StatementSearchService;
@@ -10,13 +11,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
-use Mockery;
-use Mockery\Mock;
 use Mockery\MockInterface;
 use Tests\TestCase;
-
 
 class StatementAPIControllerTest extends TestCase
 {
@@ -589,54 +588,97 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->illegal_content_explanation);
     }
 
-//    /**
-//     * @test
-//     */
-//    public function store_enforces_puid_uniqueness(): void
-//    {
-//        $this->setUpFullySeededDatabase();
-//        $user = $this->signInAsAdmin();
-//
-//        $fields = array_merge($this->required_fields, [
-//            'puid' => ''
-//        ]);
-//
-//        $response = $this->post(route('api.v1.statement.store'), $fields, [
-//            'Accept' => 'application/json'
-//        ]);
-//        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-//
-//        $json = $response->json();
-//        $this->assertNotNull($json['errors']);
-//        $this->assertNotNull($json['errors']['puid']);
-//        $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
-//
-//
-//        // Now let's create one
-//        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
-//            'Accept' => 'application/json'
-//        ]);
-//        $response->assertStatus(Response::HTTP_CREATED);
-//
-//        $count_before = Statement::all()->count();
-//
-//        // Let's do it again
-//        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
-//            'Accept' => 'application/json'
-//        ]);
-//
-//        $response->assertUnprocessable();
-//
-//        $response->assertJsonValidationErrors('puid');
-//
-//        $this->assertArrayHasKey('existing', $response->json());
-//
-//        $this->assertArrayHasKey('uuid', $response->json('existing'));
-//
-//        $count_after = Statement::all()->count();
-//
-//        $this->assertEquals($count_after, $count_before);
-//    }
+    /**
+     * @test
+     */
+    public function store_enforces_puid_uniqueness(): void
+    {
+
+        $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
+        $fields = array_merge($this->required_fields, [
+            'puid' => ''
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $json = $response->json();
+        $this->assertNotNull($json['errors']);
+        $this->assertNotNull($json['errors']['puid']);
+        $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
+        $this->assertDatabaseCount(PlatformPuid::class,0);
+
+        $fields = array_merge($this->required_fields, [
+            'puid' => 'new-puid-123'
+        ]);
+
+
+        // Now let's create one
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $count_before = Statement::all()->count();
+
+        // Let's do it again
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors('puid');
+        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $this->assertArrayHasKey('existing', $response->json());
+        $this->assertArrayHasKey('puid', $response->json('existing'));
+
+        $count_after = Statement::all()->count();
+
+        $this->assertEquals($count_after, $count_before);
+    }
+
+    /**
+     * @test
+     */
+    public function store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
+    {
+
+        $user = $this->signInAsAdmin();
+        $this->assertDatabaseCount(PlatformPuid::class,0);
+        $this->withoutExceptionHandling();
+
+        $puid = 'new-puid-456';
+
+        PlatformPuid::create([
+            'puid' => $puid,
+            'platform_id' => $user->platform->id
+        ]);
+
+        $this->assertDatabaseCount(PlatformPuid::class,1);
+
+        $fields = array_merge($this->required_fields, [
+            'puid' => $puid
+        ]);
+
+        $key = sprintf('puid-%s-%s', $user->platform->id, $puid);
+        $this->assertFalse(Cache::has($key));
+
+
+        // Now let's create one
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+
+
+        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $this->assertTrue(Cache::has($key));
+    }
+
+
 
     /**
      * @return void

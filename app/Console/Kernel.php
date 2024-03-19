@@ -22,15 +22,22 @@ class Kernel extends ConsoleKernel
     #[\Override]
     protected function schedule(Schedule $schedule): void
     {
-        // The main indexer run daily after midnight.
-        $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+        // The main indexer run daily after midnight. Only on prod
+        if (strtolower((string)config('app.env_real')) === 'production') {
+            $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+            // Home page caching
+            $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_SIX_AM);
+        } else {
+            // Home page caching
+            $schedule->command('enrich-home-page-cache --grandtotal')->everyMinute();
+        }
 
-        // Home page caching
-        $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_SIX_AM);
         $schedule->command('enrich-home-page-cache --automateddecisionspercentage')->dailyAt(self::DAILY_SIX_O_ONE_AM);
         $schedule->command('enrich-home-page-cache --topcategories')->dailyAt(self::DAILY_SIX_O_TWO_AM);
         $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_SIX_O_THREE_AM);
         $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_SIX_O_FOUR_AM);
+
+
     }
 
     // Existing `commands` method remains unchanged.

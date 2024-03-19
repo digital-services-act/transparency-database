@@ -646,9 +646,7 @@ class StatementSearchService
             'body'  => $query,
         ]);
 
-        return array_map(function($hit){
-            return $hit['_id'];
-        }, $result['hits']['hits'] ?? []);
+        return array_map(static fn($hit) => $hit['_id'], $result['hits']['hits'] ?? []);
 
     }
 

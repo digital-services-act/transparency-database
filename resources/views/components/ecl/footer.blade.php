@@ -41,6 +41,10 @@
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Learn more about the DSA">Learn more about the DSA</a></li>
 
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'latest-updates']) }}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Learn more about the DSA">Latest Updates</a></li>
+
                     </ul>
                 </div>
                 <div class="ecl-site-footer__section">

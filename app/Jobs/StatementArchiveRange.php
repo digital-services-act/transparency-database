@@ -2,18 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Models\Statement;
-use App\Services\StatementSearchService;
+use App\Services\StatementArchiveService;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use JsonException;
 
-class   StatementSearchableChunk implements ShouldQueue
+class StatementArchiveRange implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -28,16 +26,15 @@ class   StatementSearchableChunk implements ShouldQueue
 
     /**
      * Execute the job.
-     * @throws JsonException
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementArchiveService $statement_archive_service): void
     {
+
         $end = $this->min + $this->chunk;
 
         if ($end > $this->max ) {
             $end = $this->max;
         }
-
 
         // Dispatch the next one
         if ($end < $this->max) {
@@ -47,12 +44,11 @@ class   StatementSearchableChunk implements ShouldQueue
         }
 
         $range = range($this->min, $end);
-        // Bulk indexing.
-        $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
-        $statement_search_service->bulkIndexStatements($statements);
+
+        $statement_archive_service->archiveStatementsFromIds($range);
 
         if ($end >= $this->max) {
-            Log::info('StatementSearchableChunk Max Reached at ' . Carbon::now()->format('Y-m-d H:i:s'));
+            Log::info('Statement Archiving End', ['at' => Carbon::now()->format('Y-m-d H:i:s')]);
         }
     }
 }

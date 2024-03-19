@@ -17,6 +17,9 @@ trait CommandTrait
             $date = Carbon::yesterday();
         } elseif ($date === 'today') {
             $date = Carbon::today();
+        } elseif (is_int($this->argument('date'))) {
+            $date = Carbon::now();
+            $date->subDays((int)$this->argument('date'));
         } else {
             try {
                 $date = Carbon::createFromFormat('Y-m-d', $date);
