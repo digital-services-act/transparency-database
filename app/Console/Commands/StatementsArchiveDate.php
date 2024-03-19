@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatementArchiveRange;
 use App\Services\DayArchiveService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -15,7 +16,7 @@ class StatementsArchiveDate extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:archive-date {date=yesterday} {chunk=3000}';
+    protected $signature = 'statements:archive-date {date=180} {chunk=3000}';
 
     /**
      * The console command description.
@@ -36,6 +37,7 @@ class StatementsArchiveDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
+            Log::info('Statement Archiving Started', ['date' => $date->format('Y-m-d'), 'at' => Carbon::now()->format('Y-m-d H:i:s')]);
             StatementArchiveRange::dispatch($min, $max, $chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));

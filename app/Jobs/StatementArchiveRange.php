@@ -3,11 +3,13 @@
 namespace App\Jobs;
 
 use App\Services\StatementArchiveService;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class StatementArchiveRange implements ShouldQueue
 {
@@ -45,5 +47,8 @@ class StatementArchiveRange implements ShouldQueue
 
         $statement_archive_service->archiveStatementsFromIds($range);
 
+        if ($end >= $this->max) {
+            Log::info('Statement Archiving End', ['at' => Carbon::now()->format('Y-m-d H:i:s')]);
+        }
     }
 }
