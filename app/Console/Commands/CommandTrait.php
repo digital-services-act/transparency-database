@@ -29,6 +29,7 @@ trait CommandTrait
             }
         }
 
+        $date->subSeconds($date->secondsSinceMidnight());
         return $date;
     }
 
