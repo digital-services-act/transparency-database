@@ -10,16 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('archived_statements', function (Blueprint $table) {
+        Schema::create('archived_statements', static function (Blueprint $table) {
             $table->id();
             $table->integer('platform_id');
             $table->string('puid', 500);
-            $table->string('uuid', 36)->nullable();
-            $table->bigInteger('original_id')->nullable();
-            $table->timestamp('date_received')->nullable();
+            $table->string('uuid', 36);
+            $table->bigInteger('original_id');
+            $table->timestamp('date_received');
             $table->timestamps();
 
-            $table->index(['platform_id', 'puid'], 'platform_puid_index');
+            $table->index(['platform_id', 'puid'], 'archived_platform_puid_index');
             $table->index('original_id', 'original_id_index');
             $table->index('uuid', 'uuid_index');
 

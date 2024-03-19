@@ -28,9 +28,7 @@ class StatementMultipleAPIController extends Controller
 
     protected EuropeanCountriesService $european_countries_service;
 
-
     protected StatementSearchService $statement_search_service;
-
 
     public function __construct(protected PlatformUniqueIdService $platform_unique_id_service, protected GroupedSubmissionsService $grouped_submissions_service)
     {
@@ -78,7 +76,7 @@ class StatementMultipleAPIController extends Controller
         try {
             $this->platform_unique_id_service->checkDuplicatesInRequest($puids_to_check);
             $this->platform_unique_id_service->checkDuplicatesInCache($puids_to_check, $platform_id);
-            $this->platform_unique_id_service->checkDuplicatesInArchivedStatement($puids_to_check, $platform_id);
+            $this->platform_unique_id_service->checkDuplicatesInPlatformPuids($puids_to_check, $platform_id);
         } catch (PuidNotUniqueMultipleException $puidNotUniqueMultipleException) {
             // If the cache expired, and we got a new duplicate, we add it again to the cache
             $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(), $platform_id);

@@ -2,9 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
-use App\Exceptions\PuidNotUniqueSingleException;
-use App\Models\ArchivedStatement;
 use App\Models\Platform;
+use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\StatementSearchService;
@@ -15,11 +14,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JMac\Testing\Traits\AdditionalAssertions;
-use Mockery;
-use Mockery\Mock;
 use Mockery\MockInterface;
 use Tests\TestCase;
-
 
 class StatementAPIControllerTest extends TestCase
 {
@@ -598,8 +594,6 @@ class StatementAPIControllerTest extends TestCase
     public function store_enforces_puid_uniqueness(): void
     {
 
-//        $this->withoutExceptionHandling();
-
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
 
@@ -616,8 +610,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($json['errors']);
         $this->assertNotNull($json['errors']['puid']);
         $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
-
-        $this->assertDatabaseCount(ArchivedStatement::class,0);
+        $this->assertDatabaseCount(PlatformPuid::class,0);
 
         $fields = array_merge($this->required_fields, [
             'puid' => 'new-puid-123'
@@ -629,9 +622,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-
-        $this->assertDatabaseCount(ArchivedStatement::class,1);
-
+        $this->assertDatabaseCount(PlatformPuid::class,1);
         $count_before = Statement::all()->count();
 
         // Let's do it again
@@ -640,13 +631,9 @@ class StatementAPIControllerTest extends TestCase
         ]);
 
         $response->assertUnprocessable();
-
         $response->assertJsonValidationErrors('puid');
-
-        $this->assertDatabaseCount(ArchivedStatement::class,1);
-
+        $this->assertDatabaseCount(PlatformPuid::class,1);
         $this->assertArrayHasKey('existing', $response->json());
-
         $this->assertArrayHasKey('puid', $response->json('existing'));
 
         $count_after = Statement::all()->count();
@@ -661,20 +648,17 @@ class StatementAPIControllerTest extends TestCase
     {
 
         $user = $this->signInAsAdmin();
-
-        $this->assertDatabaseCount(ArchivedStatement::class,0);
-
+        $this->assertDatabaseCount(PlatformPuid::class,0);
         $this->withoutExceptionHandling();
 
         $puid = 'new-puid-456';
 
-        ArchivedStatement::create([
+        PlatformPuid::create([
             'puid' => $puid,
-            'date_received' => Carbon::now(),
             'platform_id' => $user->platform->id
         ]);
 
-        $this->assertDatabaseCount(ArchivedStatement::class,1);
+        $this->assertDatabaseCount(PlatformPuid::class,1);
 
         $fields = array_merge($this->required_fields, [
             'puid' => $puid
@@ -690,10 +674,8 @@ class StatementAPIControllerTest extends TestCase
         ]);
 
 
-        $this->assertDatabaseCount(ArchivedStatement::class,1);
+        $this->assertDatabaseCount(PlatformPuid::class,1);
         $this->assertTrue(Cache::has($key));
-
-
     }
 
 

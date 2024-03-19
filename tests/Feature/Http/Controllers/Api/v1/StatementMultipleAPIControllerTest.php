@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
-use App\Models\ArchivedStatement;
+use App\Models\PlatformPuid;
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -236,14 +236,14 @@ class StatementMultipleAPIControllerTest extends TestCase
         }
 
         $this->assertDatabaseCount(Statement::class, 10);
-        $this->assertDatabaseCount(ArchivedStatement::class, 0);
+        $this->assertDatabaseCount(PlatformPuid::class, 0);
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->assertDatabaseCount(ArchivedStatement::class, 10);
+        $this->assertDatabaseCount(PlatformPuid::class, 10);
         $this->assertDatabaseCount(Statement::class, 20);
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
@@ -280,14 +280,14 @@ class StatementMultipleAPIControllerTest extends TestCase
         $key = sprintf('puid-%s-foo-bar-sor-in-database', $user->platform->id);
         $this->assertFalse(Cache::has($key));
 
-        ArchivedStatement::factory([
+        PlatformPuid::factory([
             'puid' => 'foo-bar-sor-in-database',
             'platform_id' => $user->platform->id
         ])->create();
 
 
         $this->assertDatabaseCount(Statement::class, 10);
-        $this->assertDatabaseCount(ArchivedStatement::class, 1);
+        $this->assertDatabaseCount(PlatformPuid::class, 1);
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
             'Accept' => 'application/json'
@@ -295,7 +295,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertArrayHasKey('existing_puids', $response->json('errors'));
 
-        $this->assertDatabaseCount(ArchivedStatement::class, 1);
+        $this->assertDatabaseCount(PlatformPuid::class, 1);
         $this->assertCount(10, Statement::all());
         $this->assertTrue(Cache::has($key));
     }
