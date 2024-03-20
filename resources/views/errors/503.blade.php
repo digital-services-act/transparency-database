@@ -126,13 +126,13 @@
         </div>
     </div>
     <div class="ecl-site-header-harmonised__banner">
-        <div class="ecl-container">Server inaccessibility</div>
+        <div class="ecl-container" style="padding:20px;">Server inaccessibility</div>
     </div>
 </header>
 
 <main class="ecl-container ecl-u-mv-xl ecl-u-mv-md-3xl">
     <div class="ecl-row">
-        <div class="ecl-col-md-6">
+        <div class="ecl-col-6">
             <div class="ecl-u-d-inline-flex ecl-u-pt-m ecl-u-width-100">
                 <x-ecl.language lang="bg" />
                 <div class="ecl-u-ml-m ecl-u-width-100">
@@ -352,7 +352,7 @@
             </div>
         </div>
 
-        <div class="ecl-col-md-6">
+        <div class="ecl-col-6">
             <div
                 class="ecl-u-d-inline-flex ecl-u-pt-m ecl-u-mt-l ecl-u-mt-md-none ecl-u-width-100"
             >
