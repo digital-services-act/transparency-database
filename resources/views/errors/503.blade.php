@@ -42,8 +42,7 @@
         }
     </style>
 
-    @section('extra-head')
-    @show
+
 </head>
 <body class="ecl">
 <div id="root" style="padding-top: 0 !important;">
@@ -52,13 +51,12 @@
         <div class="ecl-site-header__header">
             <div class="ecl-site-header__container ecl-container">
                 <div class="ecl-site-header__top">
-                    <a href="{{ route('home') }}" class="ecl-link ecl-link--standalone ecl-site-header__logo-link"
-                       aria-label="European Commission">
+
                         <img alt="European Commission logo"
                              title="European Commission"
                              class="ecl-site-header__logo-image ecl-site-header__logo-image-desktop"
                              src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}">
-                    </a>
+
 
                 </div>
             </div>
