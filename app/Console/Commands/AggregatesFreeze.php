@@ -15,7 +15,7 @@ class AggregatesFreeze extends Command
      *
      * @var string
      */
-    protected $signature = 'aggregates-freeze {date=181}';
+    protected $signature = 'aggregates-freeze {date=160}';
 
     /**
      * The console command description.

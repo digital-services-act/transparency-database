@@ -13,13 +13,13 @@ trait CommandTrait
     public function sanitizeDateArgument(): Carbon
     {
         $date = $this->argument('date');
+
         if ($date === 'yesterday') {
             $date = Carbon::yesterday();
         } elseif ($date === 'today') {
             $date = Carbon::today();
-        } elseif (is_int($this->argument('date'))) {
-            $date = Carbon::now();
-            $date->subDays((int)$this->argument('date'));
+        } elseif (preg_match('/^\d+$/', $date)) {
+            $date = Carbon::now()->subDays((int)$date);
         } else {
             try {
                 $date = Carbon::createFromFormat('Y-m-d', $date);
