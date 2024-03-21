@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Blade;
 use Parsedown;
 
 class PageController extends Controller
 {
-    public function show(string $page, bool $profile = false): Factory|View|\Illuminate\Foundation\Application|Redirector|Application|RedirectResponse
+    public function show(string $page, bool $profile = false): \Illuminate\Foundation\Application|View|Factory|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
         $page = mb_strtolower($page);
@@ -67,6 +69,8 @@ class PageController extends Controller
         $page_content = '';
         $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
+
+
         $view_data = [
             'profile' => $profile,
             'show_feedback_link' => $show_feedback_link,
@@ -82,6 +86,8 @@ class PageController extends Controller
             $page_content = $this->convertMdFile($page);
             // This way blade stuff in the markdown also works.
             $page_content = Blade::render($page_content, $view_data);
+        } else {
+            abort(404);
         }
 
         $view_data['page_content'] = $page_content;
