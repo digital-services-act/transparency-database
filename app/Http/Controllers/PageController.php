@@ -23,6 +23,7 @@ class PageController extends Controller
 
         $redirects = [
             'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
+            'latest-updates' => '/',
 //            'faq' => 'faq'
         ];
 
