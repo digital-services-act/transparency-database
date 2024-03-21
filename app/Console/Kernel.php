@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
     {
         // The main indexer run daily after midnight. Only on prod
         if (strtolower((string)config('app.env_real')) === 'production') {
-            $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+            // $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+            // We can do this on the big machine now.
             // Home page caching
             $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_SIX_AM);
         } else {
