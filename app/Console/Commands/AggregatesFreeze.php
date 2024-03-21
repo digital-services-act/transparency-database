@@ -62,6 +62,7 @@ class AggregatesFreeze extends Command
         }
         fclose($out);
         $disk->put($csv_file, fopen($path . $csv_file, 'rb+'));
+        unlink($path . $csv_file);
 
         // Now do the JSON
         $disk->put($json_file, json_encode($results, JSON_THROW_ON_ERROR));
