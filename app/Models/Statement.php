@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
@@ -550,6 +551,20 @@ class Statement extends Model
         return 'statement_index';
     }
 
+    public function platformNameCached(): string
+    {
+        return Cache::remember('platform-' . $this->platform_id . '-name', 3600, function(){
+            return $this->platform->name;
+        });
+    }
+
+    public function platformUuidCached(): string
+    {
+        return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, function(){
+            return $this->platform->uuid;
+        });
+    }
+
     public function toSearchableArray(): array
     {
         $received_date = $this->created_at->clone();
@@ -585,8 +600,8 @@ class Statement extends Model
             'category' => $this->category,
             'category_addition' => $this->category_addition,
             'platform_id' => $this->platform_id,
-            'platform_name' => $this->platform->name,
-            'platform_uuid' => $this->platform->uuid,
+            'platform_name' => $this->platformNameCached(),
+            'platform_uuid' => $this->platformUuidCached(),
             'content_date' => $this->content_date,
             'application_date' => $this->application_date,
             'created_at' => $this->created_at,
