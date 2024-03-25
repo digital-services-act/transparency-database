@@ -59,10 +59,6 @@ class AppServiceProvider extends ServiceProvider
             Statement::disableSearchSyncing();
         }
 
-        Sanctum::usePersonalAccessTokenModel(
-            PersonalAccessToken::class
-        );
-
         Blade::withoutDoubleEncoding();
         view()->share('ecl_init', true);
 
