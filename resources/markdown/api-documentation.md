@@ -683,7 +683,8 @@ This is a required attribute and it must be one of the following:
 This is a string that uniquely identifies this statement within the platform.
 This attribute is required and it must be unique within your platform.
 
-Limited to 500 characters.
+Limited to 500 characters and must consist of the characters 
+a thru z, A thru Z, 0 thru 9, hyphens "-" and underscores "_" only.
 
 ## Existing PUID
 

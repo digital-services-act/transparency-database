@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Cache;
 
 
 class StatementAPIController extends Controller
@@ -101,7 +102,6 @@ class StatementAPIController extends Controller
 
         $out = $statement->toArray();
         $out['puid'] = $statement->puid; // Show the puid on a store.
-
 
         return response()->json($out, Response::HTTP_CREATED);
     }

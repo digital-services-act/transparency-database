@@ -591,6 +591,27 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function request_rejects_bad_puids(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $application_puid_in = 'very bad é + pu.id';
+
+        $fields = array_merge($this->required_fields, [
+            'puid' => $application_puid_in,
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The puid format is invalid.', $response->json('message'));
+    }
+
+    /**
+     * @test
+     */
     public function store_enforces_puid_uniqueness(): void
     {
 

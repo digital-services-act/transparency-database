@@ -88,7 +88,7 @@ class StatementStoreRequest extends FormRequest
             ],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision'  => ['required', $this->in(array_keys(Statement::AUTOMATED_DECISIONS))],
-            'puid'                => ['required', 'max:500'],
+            'puid'                => ['required', 'max:500', 'regex:/^[a-zA-Z0-9-_]+$/D'],
         ];
     }
 
