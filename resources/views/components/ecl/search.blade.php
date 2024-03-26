@@ -12,7 +12,7 @@
 </div>
 <button class="ecl-button ecl-button--search ecl-search-form__button" type="submit" aria-label="{{ $label }}">
     <span class="ecl-button__container">
-        <span class="ecl-button__label" data-ecl-label="true">{{ $label }}</span>
+        <span class="ecl-button__label" data-ecl-label="true">{{ $label }}</span>&nbsp;
         <svg class="ecl-icon ecl-icon--xs ecl-button__icon ecl-button__icon--after"
              focusable="false"
              aria-hidden="true"

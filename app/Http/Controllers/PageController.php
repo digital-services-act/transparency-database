@@ -77,7 +77,6 @@ class PageController extends Controller
             'page_title' => $page_title,
             'breadcrumb' => $breadcrumb,
             'baseurl' => route('home'),
-            'ecl_init' => true,
         ];
 
 

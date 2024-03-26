@@ -49,6 +49,7 @@
 
 
     <script defer src="https://europa.eu/webtools/load.js?theme=ec"></script>
+    <script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
 
     @section('extra-head')
     @show
@@ -98,10 +99,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
-<script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
+
 <script>
     @if($ecl_init)
-        ECL.autoInit()
+        ECL.autoInit();
     @endif
 </script>
 @if(config('dsa.SITEID', false) && config('dsa.SITEPATH', false))
