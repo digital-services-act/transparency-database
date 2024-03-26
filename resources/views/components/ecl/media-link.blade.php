@@ -10,7 +10,7 @@
                 </picture>
             </a>
             @if($label)
-                <x-ecl.cta-button label="{{ $label }}" url="{{ $url }}" priority="ghost" :icon="false"/>
+                <x-ecl.cta-button :fullwidth="true" label="{!! $label !!}" url="{{ $url }}" priority="ghost" :icon="false"/>
             @endif
         </div>
     </figure>
