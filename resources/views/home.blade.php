@@ -38,7 +38,7 @@
         </div>
         <div class="ecl-col-l-4">
             <x-ecl.media-link url="https://digital-strategy.ec.europa.eu/en/policies/digital-services-act-package"
-                              label="Discover more about the Digital Services Act"
+                              label="Discover more about the <br />Digital Services Act"
                               image="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-text-logo.jpg" />
         </div>
     </div>

@@ -30,8 +30,10 @@ class StatementMultipleAPIController extends Controller
 
     protected StatementSearchService $statement_search_service;
 
-    public function __construct(protected PlatformUniqueIdService $platform_unique_id_service, protected GroupedSubmissionsService $grouped_submissions_service)
-    {
+    public function __construct(
+        protected PlatformUniqueIdService $platform_unique_id_service,
+        protected GroupedSubmissionsService $grouped_submissions_service
+    ) {
     }
 
 
@@ -55,15 +57,14 @@ class StatementMultipleAPIController extends Controller
         $errors = [];
         [$errors, $payload] = $this->grouped_submissions_service->sanitizePayload($payload, $errors);
         if ($errors !== []) {
-
             if (Cache::get('validation_failure_logging', true)) {
                 // Return validation errors as a JSON response
                 Log::info('Statement Multiple Store Request Validation Failure', [
-                    'request'    => $request->all(),
-                    'errors'     => $errors,
-                    'user'       => auth()->user()->id ?? -1,
+                    'request' => $request->all(),
+                    'errors' => $errors,
+                    'user' => auth()->user()->id ?? -1,
                     'user_email' => auth()->user()->email ?? 'n/a',
-                    'platform'   => auth()->user()->platform->name ?? 'no platform'
+                    'platform' => auth()->user()->platform->name ?? 'no platform'
                 ]);
             }
 
@@ -80,7 +81,8 @@ class StatementMultipleAPIController extends Controller
             $this->platform_unique_id_service->checkDuplicatesInPlatformPuids($puids_to_check, $platform_id);
         } catch (PuidNotUniqueMultipleException $puidNotUniqueMultipleException) {
             // If the cache expired, and we got a new duplicate, we add it again to the cache
-            $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(), $platform_id);
+            $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(),
+                $platform_id);
             return $puidNotUniqueMultipleException->getJsonResponse();
         }
 
@@ -93,12 +95,27 @@ class StatementMultipleAPIController extends Controller
 
             //No error, add the platform unique ids into the cache and database
             foreach ($payload['statements'] as $statement) {
-                $this->platform_unique_id_service->addPuidToCache($statement['platform_id'], $statement['puid']);
-                $this->platform_unique_id_service->addPuidToDatabase($statement['platform_id'], $statement['puid']);
-            }
+                try {
+                    $this->platform_unique_id_service->addPuidToCache($statement['platform_id'], $statement['puid']);
+                } catch (PuidNotUniqueSingleException $puidNotUniqueSingleException) {
+                    Log::info('PUID Not Unique in Cache Exception thrown in Multiple Statements', [
+                        'platform_id' => $statement['platform_id'],
+                        'puid' => $statement['puid']
+                    ]);
+                }
 
+                try {
+                    $this->platform_unique_id_service->addPuidToDatabase($statement['platform_id'], $statement['puid']);
+                } catch (PuidNotUniqueSingleException $puidNotUniqueSingleException) {
+                    Log::info('PUID Not Unique in Database Exception thrown in Multiple Statements', [
+                        'platform_id' => $statement['platform_id'],
+                        'puid' => $statement['puid']
+                    ]);
+                }
+            }
             return response()->json(['statements' => $out], Response::HTTP_CREATED);
-        } catch (QueryException $queryException) {
+        } catch
+        (QueryException $queryException) {
             return $this->handleQueryException($queryException, 'Statement');
         }
     }

@@ -30,13 +30,6 @@
 
 @section('content')
 
-    {{--    <h1 class="ecl-page-header__title ecl-u-type-heading-1">{{ $page_title }}</h1>--}}
-
-
-
-
-
-
     <h1 class="ecl-u-type-heading-1">{{$page_title}}</h1>
 
     @if($show_feedback_link)
@@ -47,20 +40,38 @@
     @endif
 
 
-    <div class="ecl-row">
+    <div class="ecl-row data-ecl-inpage-navigation-container">
         <div class="ecl-col-l-3 ecl-u-d-none" id="toc-wrapper">
+
+
             <nav class="ecl-inpage-navigation"
                  data-ecl-auto-init="InpageNavigation"
-                 data-ecl-inpage-navigation="true">
-                <div class="ecl-inpage-navigation__title">Page contents</div>
+                 data-ecl-inpage-navigation="true"
+                 aria-labelledby="ecl-inpage-navigation-default">
+                <div class="ecl-inpage-navigation__title" id="ecl-inpage-navigation-default">Page contents</div>
 
                 <div class="ecl-inpage-navigation__body">
-                    <div id="toc-area">
-                        <ul id="toc-list"
-                            class="ecl-inpage-navigation__list"
-                            data-ecl-inpage-navigation-list="true"
-                        >
 
+                    <div id="toc-area">
+                        <div class="ecl-inpage-navigation__trigger-wrapper">
+                            <button type="button" class="ecl-inpage-navigation__trigger"
+                                    id="ecl-inpage-navigation-default-trigger"
+                                    data-ecl-inpage-navigation-trigger="true"
+                                    aria-controls="ecl-inpage-navigation-list" aria-expanded="false"
+                                    aria-label="inpage-navigation trigger">
+                                <span class="ecl-inpage-navigation__trigger-current"
+                                      data-ecl-inpage-navigation-trigger-current="true">
+                                </span>
+                                <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-inpage-navigation__trigger-icon"
+                                     focusable="false" aria-hidden="true">
+                                    <x-ecl.icon icon="corner-arrow"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <ul class="ecl-inpage-navigation__list"
+                            data-ecl-inpage-navigation-list="true"
+                            id="ecl-inpage-navigation-default-list"
+                        >
                         </ul>
                     </div>
                 </div>
@@ -94,7 +105,7 @@
                   dis.addClass('ecl-u-type-heading-1')
                 }
 
-                $('#toc-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
+                $('#ecl-inpage-navigation-default-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
                     '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
             })
         })
@@ -109,7 +120,7 @@
                   dis.addClass('ecl-u-type-heading-2');
                 }
 
-                $('#toc-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
+                $('#ecl-inpage-navigation-default-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
                     '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
                 $('#toc-wrapper').removeClass('ecl-u-d-none');
                 $('#content-wrapper').removeClass('ecl-col-l-12');
@@ -185,7 +196,7 @@
             })
         })
 
-        hljs.highlightAll()
+        hljs.highlightAll();
     </script>
 
 @endsection
