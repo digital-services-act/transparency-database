@@ -8,11 +8,17 @@ current_date="$start_date"
 while [[ "$current_date" != "$end_date" ]]; do
     echo "downloading date: $current_date"
 
-    json_url="https://dsa-sor-data-dumps.s3.eu-central-1.amazonaws.com/aggregates-$current_date.json"
-    csv_url="https://dsa-sor-data-dumps.s3.eu-central-1.amazonaws.com/aggregates-$current_date.csv"
+    base_json="aggregates-$current_date.json"
+    base_csv="aggregates-$current_date.csv"
+    json_url="https://dsa-sor-data-dumps.s3.eu-central-1.amazonaws.com/$base_json"
+    csv_url="https://dsa-sor-data-dumps.s3.eu-central-1.amazonaws.com/$base_csv"
 
-    wget -q $json_url
-    wget -q $csv_url
+    if [ ! -f $base_json ]; then
+     wget -q $json_url
+    fi
+    if [ ! -f $base_csv ]; then
+      wget -q $csv_url
+    fi
  
     # Increment current date by 1 day
     current_date=$(date -j -v +1d -f "%Y-%m-%d" "$current_date" "+%Y-%m-%d")
