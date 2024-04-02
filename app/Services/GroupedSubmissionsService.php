@@ -39,7 +39,12 @@ class GroupedSubmissionsService
         // stringify the arrays
         foreach ($payload_statement as $key => $value) {
             if (is_array($value)) {
-                $payload_statement[$key] = '["' . implode('","', $value) . '"]';
+                if (!empty($value)){
+                    $payload_statement[$key] = '["' . implode('","', $value) . '"]';
+                } else {
+                    $payload_statement[$key] = '[]';
+                }
+
             }
         }
     }
@@ -405,7 +410,6 @@ class GroupedSubmissionsService
         $this->removeHiddenFields($original);
         $original['platform_name'] = auth()->user()->platform->name;
         $original['created_at'] = $now->format('Y-m-d H:i:s');
-
         $out[] = $original;
         return $out;
     }
@@ -442,6 +446,7 @@ class GroupedSubmissionsService
                 $now, $out);
 
             $this->sanitizePayloadStatement($payload_statement);
+
         }
 
         unset($payload_statement);
