@@ -713,6 +713,35 @@ class StatementMultipleAPIControllerTest extends TestCase
         ])->assertStatus(Response::HTTP_OK);
     }
 
+    /**
+     * @test
+     */
+    public function store_multiple_with_category_addition(): void
+    {
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(2);
+
+        $statements[0]['puid'] = 'testCategoryAdditionA';
+        $statements[0]['category_addition'] = [];
+        $statements[1]['puid'] = 'testCategoryAdditionB';
+        unset($statements[1]['category_addition']);
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(12, Statement::all());
+
+        $statementA = Statement::where('puid', 'testCategoryAdditionA')->first()->fresh();
+        $statementB = Statement::where('puid', 'testCategoryAdditionB')->first()->fresh();
+
+        $this->assertEquals([], $statementA->category_addition);
+        $this->assertEquals([], $statementB->category_addition);
+    }
+
 
 }
 
