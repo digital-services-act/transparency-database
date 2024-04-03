@@ -4,10 +4,10 @@
 
         <ul class="ecl-pagination__list">
             @if (!$paginator->onFirstPage())
-                <li class="ecl-pagination__item ecl-pagination__item--previous"><a
-                        href="{{ $paginator->previousPageUrl() }}"
-                        class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-before ecl-pagination__link"
-                        aria-label="Go to previous page">
+                <li class="ecl-pagination__item ecl-pagination__item--previous">
+                    <a href="{{ $paginator->previousPageUrl() }}"
+                       class="ecl-link ecl-link--standalone ecl-link--icon ecl-pagination__link ecl-link--icon-only"
+                       aria-label="Go to previous page">
                         <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-link__icon"
                              focusable="false" aria-hidden="true">
                             <x-ecl.icon icon="corner-arrow" />
@@ -46,9 +46,10 @@
             @endforeach
 
             @if ($paginator->hasMorePages())
-                <li class="ecl-pagination__item ecl-pagination__item--next"><a href="{{ $paginator->nextPageUrl() }}"
-                                                                               class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after ecl-pagination__link"
-                                                                               aria-label="Go to next page"><span
+                <li class="ecl-pagination__item ecl-pagination__item--next">
+                    <a href="{{ $paginator->nextPageUrl() }}"
+                       class="ecl-link ecl-link--standalone ecl-link--icon ecl-pagination__link ecl-link--icon-only"
+                       aria-label="Go to next page"><span
                             class="ecl-link__label">Next</span>
                         <svg
                             class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-link__icon" focusable="false"

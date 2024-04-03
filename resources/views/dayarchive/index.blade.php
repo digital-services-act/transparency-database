@@ -1,6 +1,5 @@
 @extends('layouts/ecl')
 
-
 @if($platform)
     @section('title', 'Data Download for ' . $platform->name)
 @else
@@ -44,9 +43,9 @@
                 selected platform.<br>
                 <br>
 
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br>
+                <a class="ecl-link" href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br>
                 <br>
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the FAQ</a>
+                <a class="ecl-link" href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the FAQ</a>
             </p>
 
         </div>
@@ -68,11 +67,11 @@
     <form method="get" id="platform">
         <div class="ecl-row ecl-u-mt-l" style="border-width: 50px">
 
-            <div class="ecl-col-l-2">
+            <div class="ecl-col-l-3">
                 <x-ecl.datepicker label="From" id="from_date" justlabel="true"
                                   name="from_date" :value="request()->get('from_date', '')"/>
             </div>
-            <div class="ecl-col-l-2">
+            <div class="ecl-col-l-3">
                 <x-ecl.datepicker label="To" id="to_date" justlabel="true"
                                   name="to_date" :value="request()->get('to_date', '')"/>
             </div>
