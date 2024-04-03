@@ -41,9 +41,9 @@
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Learn more about the DSA">Learn more about the DSA</a></li>
 
-{{--                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'latest-updates']) }}"--}}
-{{--                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"--}}
-{{--                                                                  aria-label="Learn more about the DSA">Latest Updates</a></li>--}}
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'announcements']) }}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Announcements">Announcements</a></li>
 
                     </ul>
                 </div>
@@ -57,6 +57,9 @@
                         <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'legal-information']) }}"
                                                                   class="ecl-link ecl-link--standalone ecl-site-footer__link"
                                                                   aria-label="Cookie Policy">Legal Notice</a></li>
+                        <li class="ecl-site-footer__list-item"><a href="{{ route('page.show', ['page' => 'data-retention-policy']) }}"
+                                                                  class="ecl-link ecl-link--standalone ecl-site-footer__link"
+                                                                  aria-label="Announcements">Data Retention Policy</a></li>
 
                     </ul>
                 </div>
