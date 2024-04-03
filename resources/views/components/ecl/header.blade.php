@@ -15,7 +15,7 @@
                         </picture>
                     </a>
                     <div class="ecl-site-header__action">
-                        {{--                        <x-ecl.language-menu/>--}}
+                        <x-ecl.language-menu/>
                         {{--                        <x-ecl.search-site/>--}}
                         <x-ecl.login-menu/>
                     </div>
@@ -27,7 +27,7 @@
 
         <div class="ecl-site-header__banner">
             <div class="ecl-container">
-                <div class="ecl-site-header__site-name">DSA Transparency Database</div>
+                <div class="ecl-site-header__site-name">{{__('app.title')}}</div>
             </div>
         </div>
 
@@ -62,8 +62,8 @@
                         <button data-ecl-menu-back="" type="submit" class="ecl-menu__back ecl-button ecl-button--text">
                                 <span class="ecl-button__container">
                                     <svg
-                                        class="ecl-icon ecl-icon--s ecl-icon--rotate-270 ecl-button__icon ecl-button__icon--before"
-                                        focusable="false" aria-hidden="true" data-ecl-icon="">
+                                            class="ecl-icon ecl-icon--s ecl-icon--rotate-270 ecl-button__icon ecl-button__icon--before"
+                                            focusable="false" aria-hidden="true" data-ecl-icon="">
                                         <x-ecl.icon icon="corner-arrow"/>
                                     </svg>
                                     <span class="ecl-button__label" data-ecl-label="">Back</span>
@@ -82,15 +82,16 @@
                                 <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
                                     data-ecl-has-children=""
                                     aria-expanded="false" id="ecl-menu-item-database">
-                                    <a href="#" class="ecl-link ecl-link--standalone ecl-menu__link" data-ecl-menu-link=""
+                                    <a href="#" class="ecl-link ecl-link--standalone ecl-menu__link"
+                                       data-ecl-menu-link=""
                                        id="ecl-menu-item-database-link">The Database</a>
                                     <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                             data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
                                             aria-expanded="false">
                                     <span class="ecl-button__container">
                                         <svg
-                                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                            focusable="false" aria-hidden="true" data-ecl-icon="">
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                focusable="false" aria-hidden="true" data-ecl-icon="">
                                             <x-ecl.icon icon="corner-arrow"/>
                                         </svg>
                                     </span>
@@ -103,11 +104,13 @@
                                             </li>
                                             <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                                 <a href="{{route('dayarchive.index')}}"
-                                                   class="ecl-link ecl-link--standalone ecl-menu__sublink">Data Download</a>
+                                                   class="ecl-link ecl-link--standalone ecl-menu__sublink">Data
+                                                    Download</a>
                                             </li>
                                             <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                                 <a href="{{route('statement.index')}}"
-                                                   class="ecl-link ecl-link--standalone ecl-menu__sublink">Search for Statements of Reasons</a>
+                                                   class="ecl-link ecl-link--standalone ecl-menu__sublink">Search for
+                                                    Statements of Reasons</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -116,15 +119,16 @@
                                     data-ecl-has-children=""
                                     aria-expanded="false" id="ecl-menu-item-faq">
                                     <a
-                                        href="#" class="ecl-link ecl-link--standalone ecl-menu__link" data-ecl-menu-link=""
-                                        id="ecl-menu-item-faq-link">FAQ</a>
+                                            href="#" class="ecl-link ecl-link--standalone ecl-menu__link"
+                                            data-ecl-menu-link=""
+                                            id="ecl-menu-item-faq-link">FAQ</a>
                                     <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                             data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
                                             aria-expanded="false">
                                     <span class="ecl-button__container">
                                         <svg
-                                            class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                            focusable="false" aria-hidden="true" data-ecl-icon="">
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                focusable="false" aria-hidden="true" data-ecl-icon="">
                                             <x-ecl.icon icon="corner-arrow"/>
                                         </svg>
                                     </span>
@@ -153,17 +157,18 @@
                                 <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
                                     data-ecl-has-children=""
                                     aria-expanded="false" id="ecl-menu-item-platforms">
-                                    <a href="#" class="ecl-link ecl-link--standalone ecl-menu__link" data-ecl-menu-link=""
+                                    <a href="#" class="ecl-link ecl-link--standalone ecl-menu__link"
+                                       data-ecl-menu-link=""
                                        id="ecl-menu-item-platforms-link">Platforms</a>
                                     <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                             data-ecl-menu-caret="" aria-label="Access item&#x27;s children"
                                             aria-expanded="false">
                             <span class="ecl-button__container">
                                 <svg
-                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                    focusable="false"
-                                    aria-hidden="true"
-                                    data-ecl-icon="">
+                                        class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                        focusable="false"
+                                        aria-hidden="true"
+                                        data-ecl-icon="">
                                     <x-ecl.icon icon="corner-arrow"/>
                                 </svg>
                             </span>

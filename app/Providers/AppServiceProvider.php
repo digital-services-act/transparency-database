@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
@@ -65,6 +66,14 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::withoutDoubleEncoding();
         view()->share('ecl_init', true);
+
+        view()->composer('*', function ($view) {
+
+            $view->with('languages', [
+                'en' => 'english',
+                'fr' => 'français'
+            ]);
+        });
 
         // Analytics Float Format
         Blade::directive('aff', static fn(string $expression) => sprintf("<?php echo number_format(floatval(%s), 2, '.', '&nbsp;'); ?>", $expression));

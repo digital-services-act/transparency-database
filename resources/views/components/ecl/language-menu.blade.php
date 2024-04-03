@@ -6,11 +6,11 @@
         <span class="ecl-site-header__language-icon">
             <svg class="ecl-icon ecl-icon--s ecl-site-header__icon" focusable="false"
                  aria-hidden="false" role="img">
-                <title>EN</title>
+                <title>{{app()->getLocale()}}</title>
                 <x-ecl.icon incon="global"/>
             </svg>
         </span>
-        EN
+        {{app()->getLocale()}}
     </a>
     <div class="ecl-site-header__language-container" id="language-list-overlay" hidden
          data-ecl-language-list-overlay aria-labelledby="ecl-site-header__language-title"
@@ -34,14 +34,13 @@
             <div class="ecl-site-header__language-category" data-ecl-language-list-eu>
                 <div class="ecl-site-header__language-category-title">Official EU languages:</div>
                 <ul class="ecl-site-header__language-list">
-                    <li class="ecl-site-header__language-item">
-                        <a href="{{ route('home') }}"
-                           class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
-                           lang="bg" hreflang="bg">
-                            <span class="ecl-site-header__language-link-code">bg</span>
-                            <span class="ecl-site-header__language-link-label">български</span>
-                        </a>
-                    </li>
+
+                    @foreach($languages as $lang => $label)
+                        <x-ecl.language-menu-item lang="{{$lang}}" label="{{$label}}"></x-ecl.language-menu-item>
+                    @endforeach
+
+
+
                     <li class="ecl-site-header__language-item">
                         <a href="{{ route('home') }}"
                            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
@@ -90,22 +89,7 @@
                             <span class="ecl-site-header__language-link-label">ελληνικά</span>
                         </a>
                     </li>
-                    <li class="ecl-site-header__language-item">
-                        <a href="{{ route('home') }}"
-                           class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link ecl-site-header__language-link--active"
-                           lang="en" hreflang="en">
-                            <span class="ecl-site-header__language-link-code">en</span>
-                            <span class="ecl-site-header__language-link-label">English</span>
-                        </a>
-                    </li>
-                    <li class="ecl-site-header__language-item">
-                        <a href="{{ route('home') }}"
-                           class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
-                           lang="fr" hreflang="fr">
-                            <span class="ecl-site-header__language-link-code">fr</span>
-                            <span class="ecl-site-header__language-link-label">français</span>
-                        </a>
-                    </li>
+
                     <li class="ecl-site-header__language-item">
                         <a href="{{ route('home') }}"
                            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
