@@ -24,50 +24,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      */
     public static int $interval = 3600;
 
-    /**
-     * Find the token instance matching the given token.
-     *
-     * @param string $token
-     * @return static|null
-     */
-    #[\Override]
-    public static function findToken($token): ?static
-    {
-        $id = explode('|', $token)[0];
-        $token = Cache::remember(
-            'personal-access-token:' . $id,
-            config('sanctum.cache.ttl') ?? self::$ttl,
-            static fn() => parent::findToken($token) ?? '_null_'
-        );
-        if ($token === '_null_') {
-            return null;
-        }
-
-        return $token;
-    }
-
-    /**
-     * Get the tokenable model that the access token belongs to.
-     *
-     * @return Attribute
-     *
-     * help wanted: return type ain't compatible with base class
-     *
-     * @phpstan-ignore-next-line
-     */
-    #[\Override]
-    public function tokenable(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value, $attributes) => Cache::remember(
-                sprintf('personal-access-token:%s:tokenable', $attributes['id']),
-                config('sanctum.cache.ttl') ?? self::$ttl,
-                fn() => parent::tokenable()->first()
-            )
-        );
-    }
-
-    /**
+      /**
      * Bootstrap the model and its traits.
      *
      * todo update cache
@@ -89,7 +46,6 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
                         DB::table($personalAccessToken->getTable())
                           ->where('id', $personalAccessToken->id)
                           ->update($personalAccessToken->getDirty());
-
                         return now();
                     }
                 );
