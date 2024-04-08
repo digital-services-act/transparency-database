@@ -147,7 +147,7 @@
                             <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
                                 data-ecl-has-children=""
                                 aria-expanded="false" id="ecl-menu-item-faq"><a
-                                        href="#"
+                                        href="{{ route('page.show', ['faq#general-faq']) }}"
                                         class="ecl-menu__link" data-ecl-menu-link="" id="ecl-menu-item-faq-link">FAQ</a>
                                 <button class="ecl-button ecl-button--primary ecl-menu__button-caret" type="button"
                                         data-ecl-menu-caret="" aria-label="Access item&#x27;s children"

@@ -39,14 +39,16 @@
                 Full archive files contain all the public data points of each individual statement of reasons
                 submitted on a given day. That is, each file contains the entire attribute schema of the database.<br>
                 <br>
-                The daily dumps are currently provided in a chunked csv format. Specifically, each .zip file contains
-                several zipped csv files containing all the statement of reasons received on a given day from the
-                selected platform.<br>
+                The daily dumps are currently provided in a nested zip archive containing the csv chunks. Specifically, each .zip file contains several zip files. Each of the latter contains the
+                csv files storing all the statements of reasons received on a given day from the selected platform(s).
+                <br>
                 <br>
 
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in the FAQ</a><br>
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the Full and light version of the archive in
+                    the FAQ</a><br>
                 <br>
-                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the FAQ</a>
+                <a href="{{ route('page.show', ['faq']) }}">Read more about the archive format and the SHA1 in the
+                    FAQ</a>
             </p>
 
         </div>
@@ -91,10 +93,11 @@
                                   data-ecl-label="true">
                                 Search
                             </span>
-                            <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
-                                 focusable="false"
-                                 aria-hidden="true"
-                                 data-ecl-icon="">
+                            <svg
+                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-90 ecl-button__icon ecl-button__icon--after"
+                                focusable="false"
+                                aria-hidden="true"
+                                data-ecl-icon="">
                                 <x-ecl.icon icon="corner-arrow"/>
                             </svg>
                         </span>
