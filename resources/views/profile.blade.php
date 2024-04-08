@@ -10,7 +10,9 @@
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1">User Profile</h1>
+    <h1 class="ecl-u-type-heading-1">User Profile </h1>
+    <p class="ecl-u-type-paragraph" style="font-size:16pc; margin-top:-26px; font-style: italic !important">{{auth()->user()->email}}</p>
+
 
     <div class="ecl-row ecl-u-mb-l">
         @can('create statements')
