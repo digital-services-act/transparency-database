@@ -19,6 +19,9 @@
                     Management</a>
             </div>
         @endcan
+        <div class="ecl-col-3">
+            <a class="ecl-button ecl-button--primary" href="/logout">Logout</a>
+        </div>
     </div>
 
     @canany(['create users','create platforms','view logs','view platforms',])
