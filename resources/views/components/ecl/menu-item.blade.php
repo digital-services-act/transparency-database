@@ -1,6 +1,6 @@
 @props(['color' => 'ecl-u-type-color-blue-75', 'icon' => '', 'link' => '#', 'title' => ''])
 <div>
-    <a class="ecl-button ecl-button--ghost ecl-u-type-color-blue-120 ecl-site-header__login-toggle"
+    <a class="ecl-button ecl-button--ghost ecl-u-type-color-blue-120 ecl-site-header__login"
        data-ecl-login-toggle="true"
        aria-controls="login-box-id" aria-expanded="false"
        href="{{$link}}">
