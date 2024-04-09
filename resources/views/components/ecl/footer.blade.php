@@ -48,6 +48,13 @@
                             <a href="https://digital-strategy.ec.europa.eu/en/policies/safer-online"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Learn more about the DSA">Learn more about the DSA</a></li>
+
+                        <li class="ecl-site-footer__list-item">
+                            <a href="https://digital-strategy.ec.europa.eu/en/policies/safer-online"
+                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
+                               aria-label="Learn more about the DSA">Announcements</a></li>
+
+
                     </ul>
                 </div>
                 <div class="ecl-site-footer__section">
@@ -63,8 +70,14 @@
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Cookie Policy">Legal Notice</a></li>
 
+                        <li class="ecl-site-footer__list-item">
+                            <a href="{{ route('page.show', ['page' => 'data-retention-policy']) }}"
+                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
+                               aria-label="Cookie Policy">Data Retention Policy</a></li>
+
                     </ul>
                 </div>
+
             </div>
         </div>
     </div>
