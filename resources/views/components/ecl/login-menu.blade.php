@@ -8,7 +8,7 @@
                  aria-hidden="false"
                  role="img"
             >
-                <title>Log in</title>
+                <title>{{__('menu.Log In')}}</title>
                 <x-ecl.icon icon="log-in"/>
             </svg>
             Log In</a>
@@ -23,7 +23,7 @@
                      focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="logged-in"/>
                 </svg>
-                Logged in
+                {{__('menu.Logged In')}}
                 &nbsp;
                 <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180"
                      focusable="false" aria-hidden="false">
@@ -34,13 +34,13 @@
             <div id="login-box-id" class="ecl-site-header__login-box"
                  data-ecl-login-box="true">
                 <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
-                                 title="Your Profile"/>
+                                 title="{{__('menu.Your Profile')}}"/>
                 @can('create statements')
-                    <x-ecl.menu-item icon="gear" :link="route('profile.api.index')"
-                                     title="API Token Management"/>
+                    <x-ecl.menu-item icon="settings" :link="route('profile.api.index')"
+                                     title="{{__('menu.API Token Management')}}"/>
                 @endcan
                 <hr class="ecl-site-header__login-separator">
-                <x-ecl.menu-item link="/logout" title="Logout"/>
+                <x-ecl.menu-item link="/logout" title="{{__('menu.Logout')}}"/>
             </div>
 
     @endauth
