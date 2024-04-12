@@ -3,7 +3,7 @@
 @section('title', $page_title)
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
     @if ($profile)
         <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}"/>
     @endif

@@ -8,7 +8,7 @@
 @endif
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Data Download"/>
 @endsection
 

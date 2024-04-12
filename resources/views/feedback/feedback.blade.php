@@ -3,7 +3,7 @@
 @section('title', 'Feedback Form')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Feedback Form" />
 @endsection
 

@@ -3,8 +3,8 @@
 @section('title', 'User Profile')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile"/>
+    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="{{__('profile.User Profile')}}"/>
 @endsection
 
 
