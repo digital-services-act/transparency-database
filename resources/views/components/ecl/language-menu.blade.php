@@ -109,14 +109,6 @@
                     <li class="ecl-site-header__language-item">
                         <a href="{{ route('home') }}"
                            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
-                           lang="it" hreflang="it">
-                            <span class="ecl-site-header__language-link-code">it</span>
-                            <span class="ecl-site-header__language-link-label">italiano</span>
-                        </a>
-                    </li>
-                    <li class="ecl-site-header__language-item">
-                        <a href="{{ route('home') }}"
-                           class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
                            lang="lv" hreflang="lv">
                             <span class="ecl-site-header__language-link-code">lv</span>
                             <span class="ecl-site-header__language-link-label">latviešu</span>

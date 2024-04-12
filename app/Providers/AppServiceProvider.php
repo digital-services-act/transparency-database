@@ -71,7 +71,8 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with('languages', [
                 'en' => 'english',
-                'fr' => 'français'
+                'fr' => 'français',
+                'it' => 'italiano'
             ]);
         });
 
