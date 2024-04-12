@@ -36,7 +36,13 @@
 
 
     <p class="ecl-u-type-paragraph" style="max-width:none !important">
-        {{__('dashboard.The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard: 1) Overview, 2) Timelines, 3) Violations, 4) Restrictions, 5) Other analysis. For additional guidance on making the best use of the tool, please refer to page 6 - Instructions.')}}
+        {{__('dashboard.The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard:')}}<br/><br/>
+        1. {{__('dashboard.Overview')}}<br/>
+        2. {{__('dashboard.Timelines')}}<br/>
+        3. {{__('dashboard.Violations')}}<br/>
+        4. {{__('dashboard.Restrictions')}}<br/>
+        5. {{__('dashboard.Other analysis')}}<br/><br/>
+        {{__('dashboard.For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.')}}<br/>
     </p>
 
     <div class="responsive-iframe-container">

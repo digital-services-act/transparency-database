@@ -1,12 +1,17 @@
 <?php
 
 return [
-    "Dashboard" => "Dashboard",
-    "The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard: 1) Overview, 2) Timelines, 3) Violations, 4) Restrictions, 5) Other analysis. For additional guidance on making the best use of the tool, please refer to page 6 - Instructions." => "Le tableau de bord ci-dessous offre une interface conviviale et interactive pour explorer les données résumées, offrant un aperçu complet. Commencez à explorer les données en cliquant sur différents éléments. Vous pouvez naviguer entre les pages suivantes, de gauche à droite en bas du tableau de bord : 1) Aperçu, 2) Chronologies, 3) Violations, 4) Restrictions, 5) Autres analyses. Pour des conseils supplémentaires sur la meilleure utilisation de l'outil, veuillez vous référer à la page 6 - Instructions.",
+    "Dashboard" => "Tableau de Bord",
+    "The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard:" => "Le tableau de bord ci-dessous offre une interface conviviale et interactive pour explorer des données résumées, offrant un aperçu complet. Commencez à explorer les données en cliquant sur différents éléments. Vous pouvez naviguer à travers les pages suivantes, de gauche à droite en bas du tableau de bord",
+    "Overview" => "Aperçu",
+    "Timelines" => "Chronologies",
+    "Violations" => "Violations",
+    "Restrictions" => "Restrictions",
+    "Other analysis" => "Autres analyses",
+    "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard." => "Pour des conseils supplémentaires sur l'utilisation optimale de l'outil, veuillez vous référer aux instructions en-dessous du tableau de bord.",
     "Instructions" => "Instructions",
     "Introduction" => "Introduction",
     "The purpose of this dashboard is to help users without programming skills explore aggregated data in the DSA Transparency Database. These instructions are to assist you in making the best use of all the available features." => "Le but de ce tableau de bord est d'aider les utilisateurs sans compétences en programmation à explorer les données agrégées de la base de données de transparence de la DSA. Ces instructions ont pour but de vous aider à tirer le meilleur parti de toutes les fonctionnalités disponibles.",
-    "Overview" => "Aperçu",
     "This dashboard comprises 5 pages, in addition to these instructions. Each page contains 2-3 visualizations, typically grouped by theme, such as timelines, violations, or restrictions. In addition, the “5-Other analyses” page shows a breakdown of statements of reasons by content type. It also shows how the grounds for the restrictions imposed and the information source used relate to one another as well as the relationship between automatic content moderation decisions and automatic detection of content for moderation." => "Ce tableau de bord comprend 5 pages, en plus de ces instructions. Chaque page contient 2-3 visualisations, généralement regroupées par thème, telles que des chronologies, des violations ou des restrictions. De plus, la page « 5- Autres analyses » montre une répartition des motifs de décision par type de contenu. Elle montre également comment les motifs des restrictions imposées et la source d'information utilisée se rapportent les uns aux autres ainsi que la relation entre les décisions de modération automatique du contenu et la détection automatique du contenu à modérer.",
     "Data update" => "Mise à jour des données",
     "The data is updated every day at 06:00 (CET)." => "Les données sont mises à jour chaque jour à 06h00 (CET).",
