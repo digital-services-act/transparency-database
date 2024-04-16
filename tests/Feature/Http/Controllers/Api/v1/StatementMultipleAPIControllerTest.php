@@ -24,6 +24,8 @@ class StatementMultipleAPIControllerTest extends TestCase
     private Statement $statement;
 
     /**
+     * @param int $count
+     *
      * @return array
      */
     public function createFullStatements($count = 5): array
@@ -740,6 +742,53 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         $this->assertEquals([], $statementA->category_addition);
         $this->assertEquals([], $statementB->category_addition);
+    }
+
+
+    /**
+     * @test
+     */
+    public function it_should_reject_bad_puids(): void
+    {
+        $this->signInAsContributor();
+
+        //$this->withoutExceptionHandling();
+
+        $sors = [];
+
+        //Create the light one and add it to the sors array
+        $sors[] = [
+            'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
+            'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
+            'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+            'illegal_content_legal_ground' => 'foo',
+            'illegal_content_explanation' => 'bar',
+            'territorial_scope' => ['BE', 'DE', 'FR'],
+            'source_type' => 'SOURCE_ARTICLE_16',
+            'source_identity' => 'foo',
+            'decision_facts' => 'decision and facts',
+            'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
+            'automated_detection' => 'No',
+            'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
+            'application_date' => '2023-05-18',
+            'content_date' => '2023-05-18',
+            'puid' => 'very bad + â pu+id !',
+        ];
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+        $fields['puid'] = "very bad + â pu+id !";
+        $sors[] = $fields;
+
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $sors
+        ], [
+            'Accept' => 'application/json'
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_0']['puid'][0]);
+        $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_1']['puid'][0]);
     }
 
 
