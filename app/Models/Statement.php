@@ -553,16 +553,12 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        return Cache::remember('platform-' . $this->platform_id . '-name', 3600, function(){
-            return $this->platform->name;
-        });
+        return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
     }
 
     public function platformUuidCached(): string
     {
-        return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, function(){
-            return $this->platform->uuid;
-        });
+        return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
     }
 
     public function toSearchableArray(): array
