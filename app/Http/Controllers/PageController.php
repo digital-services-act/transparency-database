@@ -35,6 +35,8 @@ class PageController extends Controller
 
 
         $page_title = ucwords(str_replace("-", " ", (string) $page));
+        $page_title = __('pages.' . $page_title);
+
 
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
