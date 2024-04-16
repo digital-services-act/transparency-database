@@ -103,9 +103,51 @@ The <a href="{{route('statement.index')}}">“Search for statements of reasons�
 the free text fields of the statements of
 reasons in the database for keywords of your choice.<br><br>
 
-When you click on the “Advanced Search” button, you are redirected to the <a href="{{route('statement.search')}}">“Advanced Search”</a> page where you can look for
+When you click on the “Advanced Search” button, you are redirected to the <a href="{{route('statement.search')}}">
+“Advanced Search”</a> page where you can look for
 statements of reasons from specific platforms or timeframes. You can also filter the statements of reasons according to
-any other data field (e.g. a specific type of restriction or keyword) that you are interested in.
+any other data field (e.g. a specific type of restriction or keyword) that you are interested in.<br/><br/>
+Please note that a <a href="{{  route('page.show', ['data-retention-policy']) }}">data retention policy</a>
+applies.      
+</x-ecl.accordion>
+
+<x-ecl.accordion label="Is there a Data Retention Policy in place? Will the data be available indefinitely?">
+The DSA Transparency Database is subject to a <a href="{{  route('page.show', ['data-retention-policy']) }}">data
+retention policy</a> to lower its
+computational footprint and guarantee a flawless user experience. The data retention policy can be resumed as follows:
+after a Statement of Reasons (SoR) is successfully inserted in the database, it is available from the following day in
+the <a href="{{route('statement.index')}}">“Search for statements of reasons”</a>, on
+the <a href="{{route('dashboard')}}">dashboard</a>, and in the daily dumps posted in
+the <a href="{{route('dayarchive.index')}}">“Data Download”</a>. After six months (180 days), the SoR will be
+removed from the search functionality, but it will be present in the daily dumps, and it will still contribute to the
+Dashboard. After 18 months (540 days), the daily dumps are removed from the data download section and are archived in a
+cold storage. The dashboard will provide long-term access to aggregated statistics for the last 5 years.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="Is there a retention period for the daily statistics dashboard on the Transparency Database
+website?">
+The dashboard will contain the aggregated statistics for the last 5 years of data. Please note that this retention
+policy is subject to change and may be updated as necessary.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="How long will the search data (full text search, all filters, results limited to 10,000
+statements per search request) be retained?">
+Search data will be retained for six months (180 days). Please note that this retention policy is subject to change and
+may be updated as necessary.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="What is the retention period for data download in the form of daily dumps (.csv files) on the
+database website?">
+Daily dumps (.csv files) will be retained for 18 months (540 days). After this date, archived daily dumps will be stored
+in the Commission internal cold storage. Please note that this retention policy is subject to change and may be updated
+as necessary.
+</x-ecl.accordion>
+
+<x-ecl.accordion label="Why did I notice a change/decrease/increase in the SoR statistics on the homepage/Dashboard? ">
+We are constantly monitoring the data quality of the database and running consistency checks. Some of these routines
+might affect the content of the database. We encourage you to check
+the <a href="{{  route('page.show', ['announcements']) }}">Announcements</a> to find out all the past and forthcoming
+measures we take in this regard.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="What is a free text field? Which free text fields are there in each statement of reason? ">
@@ -131,15 +173,25 @@ you need to create an EU Login account.
 
 <x-ecl.accordion label="I would like to extract a large number of statements of reasons from the DSA Transparency
 Database. How do I do that?">
-The <a href="https://transparency.dsa.ec.europa.eu/data-download">Data Download</a> page of the DSA Transparency
-Database contains all submitted statements of reasons organised into daily zip files. It is possible to download
+The <a
+href={{route('dayarchive.index')}}>“Data download”</a> page of the DSA Transparency Database contains all submitted
+statements of reasons organised into daily zip files. It is possible to download
 zip files containing the submissions of all online platforms, or to select the zip files containing the statements of
 reasons of each individual online platform. The files can be filtered through a dropdown menu in the top right corner.
 The files are provided in full and light versions. The full version contains all data fields of each statement of
 reasons (<a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">see the full database schema</a>),
 whereas the light version does not contain free text attributes with a
-character limit higher than 2000 characters (i.e. _illegal_content_explanation_, _incompatible_content_explanation_ or
-_decision_facts_). Light archive files also do not contain the _territorial_scope_ attribute.
+character limit higher than 2000 characters (i.e. <i>illegal_content_explanation</i>, <i>incompatible_content_explanation</i> or
+<i>decision_facts</i>). Light archive files also do not contain the <i>territorial_scope</i> attribute.
+Note that a <a href="{{  route('page.show', ['data-retention-policy']) }}">data retention policy</a>
+applies to the daily dumps file.  
+</x-ecl.accordion>
+
+<x-ecl.accordion label="How are the daily dump files organized? What is their format?">
+The daily dump files contain all the Statement of Reasons submitted by the platforms during a given day. The files are provided in a nested zip archive containing the chunks. Specifically, each .zip file contains several zip files. Each of the latter contains the csv files storing all the statement of reasons received on a given day from the selected platform(s).
+<br>
+<br>
+For instance, the light version global dump for September 25th 2024 -named sor-global-2023-09-25-light.zip-, will contain several zip files named like sor-global-2023-09-25-light-00000.csv.zip. Each of the latter will contain several CSV chunks, with about 100’000 SoR in each, named sor-global-2023-09-25-light-00000-00000.csv.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="I would like to sample data from the DSA Transparency Database. How do I do that?">
@@ -192,9 +244,15 @@ will lay down technical and procedural requirements of the Article 40 data acces
 
 <x-ecl.accordion label="I am responsible for implementing Article 24(5) of the DSA as a provider of an online
 platform. What steps do I have to go through?">
-To set up your statement of reasons submission process, please register <a href='https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons'>here</a> regarding your obligations under article 24(5) of the DSA. At a later stage the Digital Service Coordinator of your Member State will contact with details on how to onboard your online platform.<br><br>
-Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface ( API) or a webform, according to the volume of your data and technical needs.<br><br>
-Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency Database, where you can start submitting your statement of reasons via an API or a webform.
+To set up your statement of reasons submission process, please
+register <a href='https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons'>here</a> regarding your
+obligations under article 24(5) of the DSA. At a later stage the Digital Service Coordinator of your Member State will
+contact with details on how to onboard your online platform.<br><br>
+Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your
+submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface (
+API) or a webform, according to the volume of your data and technical needs.<br><br>
+Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency
+Database, where you can start submitting your statement of reasons via an API or a webform.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="What are the technical options for sending statements of reasons to the DSA

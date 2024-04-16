@@ -49,7 +49,7 @@ class StatementsArchiveDate extends Command
                     ]
                 ]
             ]);
-            StatementArchiveRange::dispatch($min, $max, $chunk);
+            // StatementArchiveRange::dispatch($min, $max, $chunk);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }

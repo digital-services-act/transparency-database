@@ -29,8 +29,7 @@ trait CommandTrait
             }
         }
 
-        $date->subSeconds($date->secondsSinceMidnight());
-        return $date;
+        return $date->startOfDay();
     }
 
     public function intifyArgument(string $argument): int

@@ -7,7 +7,7 @@ efficiency and allows for automation.
 ## Requesting API access
 
 To set up your statement of reasons submission process, please register [here](https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons) regarding your obligations under article 24(5) of the DSA. 
-At a later stage the Digital Service Coordinator of your Member State will contact with details on how to onboard your online platform.
+After receiving your registration form, the Digital Service Coordinator of your Member State will contact you providing the details on how to complete the onboarding of your online platform.
 
 Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface ( API) or a webform, according to the volume of your data and technical needs.
 
@@ -680,11 +680,10 @@ This is a required attribute and it must be one of the following:
 
 ### Platform Unique Identifier (puid)
 
-This is a string that uniquely identifies this statement within the platform.
-This attribute is required and it must be unique within your platform.
+This is a string that uniquely identifies this statement within the platform. This attribute is required and it must be unique within your platform.
 
-Limited to 500 characters and must consist of the characters 
-a thru z, A thru Z, 0 thru 9, hyphens "-" and underscores "_" only.
+Limited to 500 characters and must contain alphanumeric characters (a-z, A-Z, 0-9), hyphens "-" and underscores "_" only. No spaces, new-line or any other special characters are accepted.
+
 
 ## Existing PUID
 

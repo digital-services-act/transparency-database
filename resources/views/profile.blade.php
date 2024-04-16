@@ -10,7 +10,10 @@
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1">User Profile</h1>
+    <h1 class="ecl-u-type-heading-1">User Profile </h1>
+    <p class="ecl-u-type-paragraph"
+       style="font-size:16pc; margin-top:-26px; font-style: italic !important">{{auth()->user()->email}}</p>
+
 
     <div class="ecl-row ecl-u-mb-l">
         @can('create statements')
@@ -27,15 +30,15 @@
 
         <div class="ecl-row ecl-u-mb-l">
             @can('create users')
-            <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('user.index') }}">Manage Users</a>
-            </div>
+                <div class="ecl-col-3">
+                    <a class="ecl-button ecl-button--primary" href="{{ route('user.index') }}">Manage Users</a>
+                </div>
             @endcan
 
             @can('create platforms')
-            <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Manage Platforms</a>
-            </div>
+                <div class="ecl-col-3">
+                    <a class="ecl-button ecl-button--primary" href="{{ route('platform.index') }}">Manage Platforms</a>
+                </div>
             @endcan
 
             @can('view logs')
@@ -45,11 +48,11 @@
             @endcan
 
             @can('view platforms')
-            <div class="ecl-col-3">
-                <a class="ecl-button ecl-button--primary" href="{{ route('onboarding.index') }}">Onboarding
-                    Dashboard</a>
-            </div>
-                @endcan
+                <div class="ecl-col-3">
+                    <a class="ecl-button ecl-button--primary" href="{{ route('onboarding.index') }}">Onboarding
+                        Dashboard</a>
+                </div>
+            @endcan
         </div>
     @endcanany
 
@@ -58,9 +61,9 @@
     <div class="ecl-row ecl-u-mb-l">
         <div class="ecl-col-12">
             <p class="ecl-u-type-paragraph">
-                For technical issues please contact:
+                For any type of issues please contact:
             <pre>
-            CNECT-DIGITAL-SERVICES-TECH&#64;ec.europa.eu
+                CNECT-DSA-HELPDESK&#64;ec.europa.eu
         </pre>
             </p>
 
