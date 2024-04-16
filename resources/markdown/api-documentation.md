@@ -684,6 +684,7 @@ This is a string that uniquely identifies this statement within the platform. Th
 
 Limited to 500 characters and must contain alphanumeric characters (a-z, A-Z, 0-9), hyphens "-" and underscores "_" only. No spaces, new-line or any other special characters are accepted.
 
+
 ## Existing PUID
 
 There is an end point that will allow you to check if a PUID value is already used.

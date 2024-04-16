@@ -4,14 +4,11 @@ namespace App\Services;
 
 use App\Http\Controllers\Api\v1\StatementMultipleAPIController;
 use App\Models\Statement;
-use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\Intl\Countries;
 
 class GroupedSubmissionsService
 {
@@ -366,7 +363,7 @@ class GroupedSubmissionsService
             'source_identity' => ['max:500', 'nullable'],
             'automated_detection' => ['required', $this->rule_in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->rule_in(array_keys(Statement::AUTOMATED_DECISIONS))],
-            'puid' => ['required', 'max:500'],
+            'puid' => ['required', 'max:500', 'regex:/^[a-zA-Z0-9-_]+$/D'],
         ];
     }
 
