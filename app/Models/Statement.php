@@ -725,19 +725,21 @@ class Statement extends Model
     public static function getEnumValues(array $keys): array
     {
         $enumValues = [];
+        $keys = array_filter($keys);
 
         foreach ($keys as $key) {
-
             // Use constant() to get the value of the constant by its name
-            $value = constant(\App\Models\Statement::class . '::' . $key);
+            try {
+                $value = constant(self::class . '::' . $key);
+                if ($value !== null) {
+                    $enumValues[] = $value;
+                }
+            } catch (Exception) {
 
-            if ($value !== null) {
-                $enumValues[] = $value;
             }
         }
 
         sort($enumValues);
-
         return $enumValues;
     }
 
