@@ -67,7 +67,8 @@ class PageController extends Controller
 
 
         $page_content = '';
-        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
+        // Localize the page
+        $page = $this->getPagePath($page);
 
 
 
@@ -109,7 +110,7 @@ class PageController extends Controller
                 $id = strtolower(str_replace(" ", "-", (string) $matches[3]));
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
-            
+
             return $matches[0];
         }, (string) $parsedown->text(file_get_contents($file)));
     }
@@ -123,5 +124,11 @@ class PageController extends Controller
             'Faq'
         ];
         return in_array($page_title, $show_feedback_pages);
+    }
+
+    public function getPagePath($page) {
+        $localePath = __DIR__ . '/../../../resources/markdown/' . app()->getLocale() . '/' . $page . '.md';
+        $fallbackPath = __DIR__ . '/../../../resources/markdown/en/' . $page . '.md';
+        return file_exists($localePath) ? $localePath : $fallbackPath;
     }
 }
