@@ -1,5 +1,7 @@
 <?php
 
 return [
-    "Announcements" => "Announcements"
+    "Announcements" => "Announcements",
+    "Privacy Policy" => "Privacy Policy",
+    "Legal Information" => "Legal Notice"
 ];
