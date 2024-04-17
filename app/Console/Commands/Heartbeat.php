@@ -16,7 +16,7 @@ class Heartbeat extends Command
     {
         try {
             // Attempt to query the users table
-            DB::table('users')->select(DB::raw(1))->take(1)->get();
+            DB::table('statements')->select(DB::raw(1))->take(1)->get();
 
             // If the query is successful, database is up
             $this->info('Database is up.');
