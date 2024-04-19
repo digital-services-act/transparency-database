@@ -7,6 +7,7 @@ use App\Services\StatementSearchService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\VarDumper\VarDumper;
 use Throwable;
 
 class StatementsDateTotal extends Command
@@ -56,6 +57,12 @@ class StatementsDateTotal extends Command
             $this->info('Source Difference OS Percentage: ' . floor(($source_diff / $os_total) * 100) . '%');
             $this->info('statements:index-date ' . $date_string);
             $totals = $statement_search_service->totalsForPlatformsDate($date);
+            $methods = $statement_search_service->methodsByPlatformsDate($date);
+            foreach ($totals as $index => $total) {
+                $totals[$index]['API'] = $methods[$total['platform_id']]['API'] ?? 0;
+                $totals[$index]['API_MULTI'] = $methods[$total['platform_id']]['API_MULTI'] ?? 0;
+                $totals[$index]['FORM'] = $methods[$total['platform_id']]['FORM'] ?? 0;
+            }
             $this->table(array_keys($totals[0]), $totals);
 
         } else {

@@ -477,6 +477,18 @@ class StatementSearchService
         return $aggregates['aggregates'];
     }
 
+    public function methodsByPlatformsDate(Carbon $date): array
+    {
+        $query = "SELECT COUNT(*), method, platform_id FROM statement_index WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
+        $results = $this->runSql($query);
+        $rows = $results['datarows'];
+        $out = [];
+        foreach ($rows as $row) {
+            $out[$row[2]][$row[1]] = $row[0];
+        }
+        return $out;
+    }
+
     public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
     {
         return "received_date BETWEEN '" . $start->format('Y-m-d') . "' AND '" . $end->format('Y-m-d') . "'";
