@@ -62,6 +62,7 @@ class StatementsDateTotal extends Command
                 $totals[$index]['API'] = $methods[$total['platform_id']]['API'] ?? 0;
                 $totals[$index]['API_MULTI'] = $methods[$total['platform_id']]['API_MULTI'] ?? 0;
                 $totals[$index]['FORM'] = $methods[$total['platform_id']]['FORM'] ?? 0;
+                unset($totals[$index]['permutation']);
             }
             $this->table(array_keys($totals[0]), $totals);
 
