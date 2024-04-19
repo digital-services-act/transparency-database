@@ -8,6 +8,8 @@ return [
     "Data Retention Policy" => "Data Retention Policy",
     "Api Documentation" => "Api Documentation",
     "Documentation" => "Documentation",
-    "Faq" => "Frequently Asked Questions"
+    "Faq" => "Frequently Asked Questions",
+    "Search for Statements of Reasons" => "Search for Statements of Reasons",
+    "Create a Statement of Reason" => "Create a Statement of Reason"
 
 ];

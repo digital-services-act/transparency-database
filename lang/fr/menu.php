@@ -15,7 +15,7 @@ return [
     'General' => 'Général',
     'Technical' => 'Technique',
     'Platforms' => 'Plateformes',
-    'Submit statements of reasons' => 'Soumettre des Déclarations de Motifs',
+    'Submit statements of reasons' => 'Soumettre des Déclarations de Raisons',
     'Global Documentation' => 'Documentation Globale',
     'API Documentation' => 'Documentation de l\'API'
 ];

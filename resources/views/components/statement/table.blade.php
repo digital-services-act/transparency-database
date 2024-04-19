@@ -12,10 +12,10 @@
 <table class="ecl-table ecl-table--zebra">
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
-        <th class="ecl-table__header">Platform</th>
-        <th class="ecl-table__header">Restrictions</th>
-        <th class="ecl-table__header">Category</th>
-        <th class="ecl-table__header">Creation Date</th>
+        <th class="ecl-table__header">{{__('statement-table.Platform')}}</th>
+        <th class="ecl-table__header">{{__('statement-table.Restrictions')}}</th>
+        <th class="ecl-table__header">{{__('statement-table.Category')}}</th>
+        <th class="ecl-table__header">{{__('statement-table.Creation Date')}}</th>
     </tr>
     </thead>
     <tbody class="ecl-table__body">

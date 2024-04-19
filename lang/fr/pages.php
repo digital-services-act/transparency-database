@@ -8,5 +8,8 @@ return [
     "Data Retention Policy" => "Politique de conservation des données",
     "Api Documentation" => "Documentation de l'API",
     "Documentation" => "Documentation Globale",
-    "Faq" => "Questions Fréquemment Posées"
+    "Faq" => "Questions Fréquemment Posées",
+    "Search for Statements of Reasons" => "Chercher des déclaration de Raison",
+    "Create a Statement of Reason" => "Créer une déclaration de Raison"
+
 ];
