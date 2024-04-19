@@ -1,284 +1,174 @@
-<h2>General FAQ</h2>
+## FAQ Général
 
-<x-ecl.accordion label="What is the DSA Transparency Database?">
-Article 17 of the Digital Services Act (DSA) requires all providers of hosting services to provide clear
-and specific information, called statements of reasons, to users whenever they remove or otherwise restrict
-access to their content.<br>
-<br>
-Additionally, Article 24 (5) of the DSA requires providers of online platforms, which are a type of hosting
-service, to send all their statements of reasons to the Commission’s
-<a href="https://transparency.dsa.ec.europa.eu/">DSA Transparency Database</a> for collection.
-The database is publicly accessible and machine-readable.
+<x-ecl.accordion label="Qu'est-ce que la base de données de transparence DSA ?">
+L'article 17 de la loi sur les services numériques (DSA) exige que tous les fournisseurs de services d'hébergement fournissent des informations claires et spécifiques, appelées motifs, aux utilisateurs chaque fois qu'ils suppriment ou restreignent autrement l'accès à leur contenu.
+De plus, l'article 24 (5) de la DSA exige des fournisseurs de plateformes en ligne, qui sont un type de service d'hébergement, qu'ils envoient tous leurs motifs à la
+<a href="https://transparency.dsa.ec.europa.eu/">base de données de transparence DSA</a> de la Commission pour collecte. La base de données est publiquement accessible et lisible par machine.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What is a hosting service? What is an online platform?">
-Hosting services include a broad range of online intermediaries, for example cloud and webhosting services.
-These services store information provided by, and at the request of, users.<br>
-<br>
-The DSA Transparency Database only collects statements of reasons from online platforms, a subset of hosting
-services. Online platforms, such as online marketplaces, app stores, or social networks, not only store
-information provided by users but also disseminate it publicly. That is, they make it available to potentially
-all users of an online platform.
+<x-ecl.accordion label="Qu'est-ce qu'un service d'hébergement ? Qu'est-ce qu'une plateforme en ligne ?">
+Les services d'hébergement comprennent une large gamme d'intermédiaires en ligne, par exemple les services d'hébergement cloud et web. Ces services stockent des informations fournies par les utilisateurs et à la demande de ceux-ci.
+La base de données de transparence DSA ne collecte que des motifs de plateformes en ligne, un sous-ensemble des services d'hébergement. Les plateformes en ligne, telles que les places de marché en ligne, les magasins d'applications ou les réseaux sociaux, stockent non seulement des informations fournies par les utilisateurs, mais les diffusent également publiquement. Autrement dit, elles les rendent disponibles potentiellement à tous les utilisateurs d'une plateforme en ligne.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What is a statement of reasons?">
-A statement of reasons is an important tool to empower users to understand and potentially challenge content
-moderation decisions taken by providers of hosting services.<br>
-<br>
-As specified in Article 17 of the DSA, a statement of reasons is the information that providers of hosting
-services, including online platforms, are required to share with a user whenever they remove or otherwise
-restrict access to their content. Restrictions can be imposed on the grounds that the content is illegal or
-incompatible with the terms and conditions of the provider.<br>
-<br>
-Information contained in a statement of reasons includes, amongst other things, the type of restriction put in
-place, the grounds relied upon and the facts and circumstances around which the content moderation decision
-was taken.<br>
-<br>
-The statements of reasons that providers of online platforms are required to submit to the DSA Transparency
-Database must contain this information.
+<x-ecl.accordion label="Qu'est-ce qu'un motif ?">
+Un motif est un outil important pour permettre aux utilisateurs de comprendre et éventuellement contester les décisions de modération de contenu prises par les fournisseurs de services d'hébergement.
+Comme spécifié à l'article 17 de la DSA, un motif est l'information que les fournisseurs de services d'hébergement, y compris les plateformes en ligne, sont tenus de partager avec un utilisateur chaque fois qu'ils suppriment ou restreignent autrement l'accès à leur contenu. Les restrictions peuvent être imposées au motif que le contenu est illégal ou incompatible avec les conditions générales du fournisseur.
+Les informations contenues dans un motif comprennent, entre autres choses, le type de restriction mise en place, les motifs invoqués et les faits et circonstances autour desquels la décision de modération de contenu a été prise.
+Les motifs que les fournisseurs de plateformes en ligne sont tenus de soumettre à la base de données de transparence DSA doivent contenir cette information.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Is there any part of a statement of reasons that is not published in the DSA Transparency
-Database?">
-Providers of online platforms are obliged to remove any personal data from the information they publish in the
-DSA Transparency Database, in accordance with Article 24(5) of the DSA. In case personal data is included in any
-of the statements of reasons, the Commission can be notified using the ‘Report an issue’ button.<br>
-<br>
-Redress options are also not included in the DSA Transparency Database as those are relevant only for the addressee
-of the statement of reasons.
+<x-ecl.accordion label="Y a-t-il une partie d'un motif qui n'est pas publiée dans la base de données de transparence DSA ?">
+Les fournisseurs de plateformes en ligne sont tenus de supprimer toutes les données personnelles des informations qu'ils publient dans la base de données de transparence DSA, conformément à l'article 24 (5) de la DSA. En cas de données personnelles incluses dans l'un des motifs, la Commission peut être informée en utilisant le bouton « Signaler un problème ».
+Les options de recours ne sont pas non plus incluses dans la base de données de transparence DSA car elles ne sont pertinentes que pour le destinataire du motif.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Why was the DSA Transparency Database created?">
-The DSA Transparency Database was created in line with Article 24(5) of the DSA to enable more transparency and
-scrutiny over the content moderation decisions taken by providers of online platforms, and to better monitor the
-spread of illegal and harmful content online.
+<x-ecl.accordion label="Pourquoi la base de données de transparence DSA a-t-elle été créée ?">
+La base de données de transparence DSA a été créée conformément à l'article 24 (5) de la DSA pour permettre une plus grande transparence et un meilleur contrôle sur les décisions de modération de contenu prises par les fournisseurs de plateformes en ligne, et pour mieux surveiller la propagation de contenu illégal et nuisible en ligne.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Who can use the DSA Transparency Database?">
-The DSA Transparency Database is publicly accessible. It allows people to
-<a href="https://transparency.dsa.ec.europa.eu/statement-search">search for</a>, read and download statements of
-reasons. For an interactive overview over the statements of reasons contained in the DSA Transparency Database,
-visit the Analytics of the DSA Transparency Database.
+<x-ecl.accordion label="Qui peut utiliser la base de données de transparence DSA ?">
+La base de données de transparence DSA est publiquement accessible. Elle permet aux personnes de
+<a href="https://transparency.dsa.ec.europa.eu/statement-search">rechercher</a>, lire et télécharger des motifs. Pour obtenir un aperçu interactif des motifs contenus dans la base de données de transparence DSA, visitez l'Analytics de la base de données de transparence DSA.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What key features does the database offer for quickly summarizing information?">
-The DSA Transparency Database dashboard offers a user-friendly way to quickly access summarised information on
-statements of reasons submitted by providers of online platforms. You can navigate across various sections of the
-dashboard with different visualisations to obtain a comprehensive overview of the data.
-<br><br>
-Each visualisation can be customised by several filters to find the information you are looking for. For example, you
-can look at specific online platforms, search for a specific time frame or find a specific type of restriction. The
-dashboard is designed to streamline the process of extracting meaningful insights from the DSA Transparency Database.
+<x-ecl.accordion label="Quelles sont les principales fonctionnalités offertes par la base de données pour résumer rapidement les informations ?">
+Le tableau de bord de la base de données de transparence DSA offre une manière conviviale d'accéder rapidement à des informations résumées sur les motifs soumis par les fournisseurs de plateformes en ligne. Vous pouvez naviguer à travers différentes sections du tableau de bord avec différentes visualisations pour obtenir un aperçu complet des données.
+Chaque visualisation peut être personnalisée par plusieurs filtres pour trouver les informations que vous recherchez. Par exemple, vous pouvez regarder des plateformes en ligne spécifiques, rechercher une plage de temps spécifique ou trouver un type de restriction spécifique. Le tableau de bord est conçu pour rationaliser le processus d'extraction d'informations significatives de la base de données de transparence DSA.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Where can I find information on how to navigate through the dashboard? What data is displayed in
-the dashboard? ">
-To learn more about the navigation and filtering options of the dashboard, you can visit the “Instructions” page of the
-<a href="{{route('dashboard')}}">dashboard</a>.  
+<x-ecl.accordion label="Où puis-je trouver des informations sur la navigation dans le tableau de bord ? Quelles données sont affichées dans le tableau de bord ? ">
+Pour en savoir plus sur les options de navigation et de filtrage du tableau de bord, vous pouvez visiter la page « Instructions » du
+<a href="{{route('dashboard')}}">tableau de bord</a>.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Will the dashboard filters be updated and expanded with additional filtering options, such as a
-breakdown by member state?  ">
-We are always looking to improve the dashboard and its functionalities, including the available filters. In offering
-filtering options, the dashboard seeks to strike a balance between customizability and complexity, within the technical
-constraints of the database. For this reason, filtering options or breakdowns by member states or languages are
-currently not implemented. However, we are actively exploring solutions to incorporate such features in the future to
-enhance the dashboard's capabilities. To access the complete array of categories, you can make use of the <a
-href={{route('dayarchive.index')}}>“Data
-download”</a> page, which provides access to the entire database schema via daily files.
+<x-ecl.accordion label="Les filtres du tableau de bord seront-ils mis à jour et élargis avec des options de filtrage supplémentaires, telles qu'une répartition par État membre ?">
+Nous cherchons toujours à améliorer le tableau de bord et ses fonctionnalités, y compris les filtres disponibles. En proposant des options de filtrage, le tableau de bord cherche à trouver un équilibre entre la personnalisabilité et la complexité, dans les contraintes techniques de la base de données. Pour cette raison, les options de filtrage ou les répartitions par États membres ou langues ne sont actuellement pas mises en œuvre. Cependant, nous explorons activement des solutions pour incorporer de telles fonctionnalités à l'avenir pour améliorer les capacités du tableau de bord. Pour accéder à l'ensemble complet des catégories, vous pouvez utiliser la page de <a
+href={{route('dayarchive.index')}}>« Téléchargement des données »</a>, qui fournit un accès au schéma complet de la base de données via des fichiers quotidiens.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Where can I find information about the data points included in the DSA Transparency Database?">
-For more information about the data included in the DSA Transparency Database, please visit the
-<a href="https://transparency.dsa.ec.europa.eu/page/documentation">Documentation page</a>.
-It explains what type of information is collected, and how the different data fields map onto Article 17 of the DSA,
-which lays down the information required in a statement of reasons. Several attributes included in the DSA Transparency
-database can be used to filter the aggregate visualisations of the DSA Transparency database dashboard. For more
-information on how to navigate the dashboard & the information contained in it, please visit the “Instructions” page of
-the <a href="{{route('dashboard')}}">dashboard</a>.
+<x-ecl.accordion label="Où puis-je trouver des informations sur les points de données inclus dans la base de données de transparence DSA ?">
+Pour plus d'informations sur les données incluses dans la base de données de transparence DSA, veuillez visiter la
+<a href="https://transparency.dsa.ec.europa.eu/page/documentation">page de documentation</a>.
+Elle explique quel type d'informations est collecté, et comment les différents champs de données se rapportent à l'article 17 de la DSA,
+qui établit les informations requises dans un motif. Plusieurs attributs inclus dans la base de données de transparence DSA peuvent être utilisés pour filtrer les visualisations agrégées du tableau de bord de la base de données de transparence DSA. Pour plus
+d'informations sur la navigation dans le tableau de bord et les informations qu'il contient, veuillez visiter la page « Instructions » du <a href="{{route('dashboard')}}">tableau de bord</a>.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="How can I search for specific statements of reasons? ">
-The <a href="{{route('statement.index')}}">“Search for statements of reasons”</a> page offers you the option to search
-the free text fields of the statements of
-reasons in the database for keywords of your choice.<br><br>
+<x-ecl.accordion label="Comment puis-je rechercher des motifs spécifiques ? ">
+La <a href="{{route('statement.index')}}">page « Rechercher des motifs »</a> vous offre la possibilité de rechercher
+les champs de texte libre des motifs dans la base de données pour des mots-clés de votre choix.
 
-When you click on the “Advanced Search” button, you are redirected to the <a href="{{route('statement.search')}}">
-“Advanced Search”</a> page where you can look for
-statements of reasons from specific platforms or timeframes. You can also filter the statements of reasons according to
-any other data field (e.g. a specific type of restriction or keyword) that you are interested in.<br/><br/>
-Please note that a <a href="{{  route('page.show', ['data-retention-policy']) }}">data retention policy</a>
-applies.      
+Lorsque vous cliquez sur le bouton « Recherche avancée », vous êtes redirigé vers la page <a href="{{route('statement.search')}}">
+« Recherche avancée »</a> où vous pouvez rechercher
+des motifs spécifiques à partir de plates-formes ou de plages de temps spécifiques. Vous pouvez également filtrer les motifs en fonction de tout autre champ de données (par exemple, un type spécifique de restriction ou un mot-clé) qui vous intéresse.
+Veuillez noter qu'une <a href="{{  route('page.show', ['data-retention-policy']) }}">politique de rétention des données</a> s'applique.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Is there a Data Retention Policy in place? Will the data be available indefinitely?">
-The DSA Transparency Database is subject to a <a href="{{  route('page.show', ['data-retention-policy']) }}">data
-retention policy</a> to lower its
-computational footprint and guarantee a flawless user experience. The data retention policy can be resumed as follows:
-after a Statement of Reasons (SoR) is successfully inserted in the database, it is available from the following day in
-the <a href="{{route('statement.index')}}">“Search for statements of reasons”</a>, on
-the <a href="{{route('dashboard')}}">dashboard</a>, and in the daily dumps posted in
-the <a href="{{route('dayarchive.index')}}">“Data Download”</a>. After six months (180 days), the SoR will be
-removed from the search functionality, but it will be present in the daily dumps, and it will still contribute to the
-Dashboard. After 18 months (540 days), the daily dumps are removed from the data download section and are archived in a
-cold storage. The dashboard will provide long-term access to aggregated statistics for the last 5 years.
+<x-ecl.accordion label="Y a-t-il une politique de rétention des données en place ? Les données seront-elles disponibles indéfiniment ?">
+La base de données de transparence DSA est soumise à une <a href="{{  route('page.show', ['data-retention-policy']) }}">politique de rétention des données</a> pour réduire son
+empreinte computationnelle et garantir une expérience utilisateur sans faille. La politique de rétention des données peut être résumée comme suit :
+après qu'un Motif (SoR) a été inséré avec succès dans la base de données, il est disponible dès le lendemain dans la page <a href="{{route('statement.index')}}">« Recherche de motifs »</a>, sur le <a href="{{route('dashboard')}}">tableau de bord</a>, et dans les téléchargements quotidiens postés dans la page <a href="{{route('dayarchive.index')}}">« Téléchargement de données »</a>. Après six mois (180 jours), le SoR sera
+supprimé de la fonction de recherche, mais il sera présent dans les téléchargements quotidiens, et il contribuera toujours au
+tableau de bord. Après 18 mois (540 jours), les téléchargements quotidiens sont supprimés de la section de téléchargement de données et archivés dans un stockage à froid. Le tableau de bord fournira un accès à long terme aux statistiques agrégées pour les 5 dernières années.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Is there a retention period for the daily statistics dashboard on the Transparency Database
-website?">
-The dashboard will contain the aggregated statistics for the last 5 years of data. Please note that this retention
-policy is subject to change and may be updated as necessary.
+<x-ecl.accordion label="Y a-t-il une période de conservation pour le tableau de bord des statistiques quotidiennes sur le site de la base de données de transparence ?">
+Le tableau de bord contiendra les statistiques agrégées des 5 dernières années de données. Veuillez noter que cette politique de conservation est sujette à modification et peut être mise à jour si nécessaire.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="How long will the search data (full text search, all filters, results limited to 10,000
-statements per search request) be retained?">
-Search data will be retained for six months (180 days). Please note that this retention policy is subject to change and
-may be updated as necessary.
+<x-ecl.accordion label="Combien de temps les données de recherche (recherche en texte intégral, tous les filtres, résultats limités à 10 000 motifs par demande de recherche) seront-elles conservées ?">
+Les données de recherche seront conservées pendant six mois (180 jours). Veuillez noter que cette politique de conservation est sujette à modification et peut être mise à jour si nécessaire.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What is the retention period for data download in the form of daily dumps (.csv files) on the
-database website?">
-Daily dumps (.csv files) will be retained for 18 months (540 days). After this date, archived daily dumps will be stored
-in the Commission internal cold storage. Please note that this retention policy is subject to change and may be updated
-as necessary.
+<x-ecl.accordion label="Quelle est la période de rétention pour le téléchargement de données sous forme de téléchargements quotidiens (fichiers .csv) sur le site de la base de données ?">
+Les téléchargements quotidiens (fichiers .csv) seront conservés pendant 18 mois (540 jours). Après cette date, les téléchargements quotidiens archivés seront stockés dans un stockage à froid interne à la Commission. Veuillez noter que cette politique de conservation est sujette à modification et peut être mise à jour si nécessaire.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Why did I notice a change/decrease/increase in the SoR statistics on the homepage/Dashboard? ">
-We are constantly monitoring the data quality of the database and running consistency checks. Some of these routines
-might affect the content of the database. We encourage you to check
-the <a href="{{  route('page.show', ['announcements']) }}">Announcements</a> to find out all the past and forthcoming
-measures we take in this regard.
+<x-ecl.accordion label="Pourquoi ai-je remarqué un changement/une diminution/une augmentation dans les statistiques des SoR sur la page d'accueil/le tableau de bord ? ">
+Nous surveillons constamment la qualité des données de la base de données et effectuons des vérifications de cohérence. Certaines de ces routines peuvent affecter le contenu de la base de données. Nous vous encourageons à consulter les <a href="{{  route('page.show', ['announcements']) }}">Annonces</a> pour connaître toutes les mesures passées et à venir que nous prenons à cet égard.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What is a free text field? Which free text fields are there in each statement of reason? ">
-In a free text field, providers of online platforms can provide information in their own words, for example to explain
-why the moderated content is illegal or to explain the facts and circumstances that led to the moderation decision(s).
-<br><br>
-For a full overview of the free text fields contained in the DSA Transparency Database schema, please consider
-the <a href="{{  route('profile.page.show', ['api-documentation']) }}">API documentation</a>.
+<x-ecl.accordion label="Qu'est-ce qu'un champ de texte libre ? Quels sont les champs de texte libre dans chaque motif ? ">
+Dans un champ de texte libre, les fournisseurs de plateformes en ligne peuvent fournir des informations dans leurs propres mots, par exemple pour expliquer pourquoi le contenu modéré est illégal ou pour expliquer les faits et circonstances qui ont conduit à la (aux) décision(s) de modération.
+Pour un aperçu complet des champs de texte libre contenus dans le schéma de la base de données de transparence DSA, veuillez consulter la <a href="{{  route('profile.page.show', ['api-documentation']) }}">documentation de l'API</a>.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Where can I find more information about the DSA?">
-The DSA is a comprehensive set of new rules that regulate the responsibilities of digital services.
-<a href="https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/europe-fit-digital-age/digital-services-act_en">
-Find out more about the DSA</a>.
+<x-ecl.accordion label="Où puis-je trouver plus d'informations sur la DSA ?">
+La DSA est un ensemble complet de nouvelles règles qui réglementent les responsabilités des services numériques.
+<a href="https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/europe-fit-digital-age/digital-services-act_en">Découvrez-en plus sur la DSA</a>.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="I would like to give feedback – how can I do that?">
-Please use the feedback form. To use the <a href="https://transparency.dsa.ec.europa.eu/feedback">feedback form</a>,
-you need to create an EU Login account.
+<x-ecl.accordion label="Je voudrais donner des commentaires - comment puis-je faire ?">
+Veuillez utiliser le formulaire de commentaires. Pour utiliser le <a href="https://transparency.dsa.ec.europa.eu/feedback">formulaire de commentaires</a>, vous devez créer un compte EU Login.
 </x-ecl.accordion>
 
-<h2>Technical FAQ</h2>
+<h2>FAQ technique</h2>
 
-<x-ecl.accordion label="I would like to extract a large number of statements of reasons from the DSA Transparency
-Database. How do I do that?">
-The <a
-href={{route('dayarchive.index')}}>“Data download”</a> page of the DSA Transparency Database contains all submitted
-statements of reasons organised into daily zip files. It is possible to download
-zip files containing the submissions of all online platforms, or to select the zip files containing the statements of
-reasons of each individual online platform. The files can be filtered through a dropdown menu in the top right corner.
-The files are provided in full and light versions. The full version contains all data fields of each statement of
-reasons (<a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">see the full database schema</a>),
-whereas the light version does not contain free text attributes with a
-character limit higher than 2000 characters (i.e. <i>illegal_content_explanation</i>, <i>incompatible_content_explanation</i> or
-<i>decision_facts</i>). Light archive files also do not contain the <i>territorial_scope</i> attribute.
-Note that a <a href="{{  route('page.show', ['data-retention-policy']) }}">data retention policy</a>
-applies to the daily dumps file.  
+<x-ecl.accordion label="Je voudrais extraire un grand nombre de motifs de la base de données de transparence DSA. Comment faire ?">
+La page de <a
+href={{route('dayarchive.index')}}>« Téléchargement de données »</a> de la base de données de transparence DSA contient tous les motifs soumis
+organisés en fichiers zip quotidiens. Il est possible de télécharger
+des fichiers zip contenant les soumissions de toutes les plateformes en ligne, ou de sélectionner les fichiers zip contenant les motifs de
+chacune des plateformes en ligne individuelles. Les fichiers peuvent être filtrés via un menu déroulant en haut à droite.
+Les fichiers sont fournis dans des versions complètes et légères. La version complète contient tous les champs de données de chaque motif (<a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">voir le schéma complet de la base de données</a>),
+alors que la version légère ne contient pas les attributs de texte libre avec un
+limite de caractères supérieure à 2000 caractères (c'est-à-dire <i>explication_contenu_illégal</i>, <i>explication_contenu_incompatible</i> ou
+<i>décision_faits</i>). Les fichiers d'archive légers ne contiennent pas non plus l'attribut <i>portée_territoire</i>.
+Notez qu'une <a href="{{  route('page.show', ['data-retention-policy']) }}">politique de rétention des données</a>
+s'applique au fichier de téléchargements quotidiens.  
 </x-ecl.accordion>
 
-<x-ecl.accordion label="How are the daily dump files organized? What is their format?">
-The daily dump files contain all the Statement of Reasons submitted by the platforms during a given day. The files are provided in a nested zip archive containing the chunks. Specifically, each .zip file contains several zip files. Each of the latter contains the csv files storing all the statement of reasons received on a given day from the selected platform(s).
+<x-ecl.accordion label="Comment les fichiers de téléchargement quotidiens sont-ils organisés ? Quel est leur format ?">
+Les fichiers de téléchargement quotidiens contiennent tous les motifs soumis par les plateformes au cours d'une journée donnée. Les fichiers sont fournis dans une archive zip imbriquée contenant les morceaux. Plus précisément, chaque fichier .zip contient plusieurs fichiers zip. Chacun de ces derniers contient plusieurs fichiers CSV stockant tous les motifs reçus un jour donné à partir des plateformes sélectionnées.
 <br>
 <br>
-For instance, the light version global dump for September 25th 2024 -named sor-global-2023-09-25-light.zip-, will contain several zip files named like sor-global-2023-09-25-light-00000.csv.zip. Each of the latter will contain several CSV chunks, with about 100’000 SoR in each, named sor-global-2023-09-25-light-00000-00000.csv.
+Par exemple, la version légère du téléchargement global pour le 25 septembre 2024 -nommée sor-global-2023-09-25-light.zip-, contiendra plusieurs fichiers zip nommés comme sor-global-2023-09-25-light-00000.csv.zip. Chacun de ces derniers contiendra plusieurs morceaux de CSV, avec environ 100 000 SoR chacun, nommés sor-global-2023-09-25-light-00000-00000.csv.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="I would like to sample data from the DSA Transparency Database. How do I do that?">
-To obtain a sample of submissions to the DSA Transparency Database, you can use the .csv file download link available
-above the table displaying the results of a search for statements of reasons.<br>
+<x-ecl.accordion label="Je voudrais échantillonner des données de la base de données de transparence DSA. Comment faire ?">
+Pour obtenir un échantillon des soumissions à la base de données de transparence DSA, vous pouvez utiliser le lien de téléchargement du fichier .csv disponible
+au-dessus du tableau affichant les résultats d'une recherche de motifs.<br>
 <br>
-By default, the latest 1000 results will be available for download. To adapt the content of the sample, you can specify
-search parameters in the advanced search page. The first 1000 results from your advanced search will then be available
-for .csv file download.
+Par défaut, les 1000 derniers résultats seront disponibles en téléchargement. Pour adapter le contenu de l'échantillon, vous pouvez spécifier
+des paramètres de recherche dans la page de recherche avancée. Les 1000 premiers résultats de votre recherche avancée seront ensuite disponibles
+en téléchargement de fichier .csv.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What are the SHA1 files provided with the daily dumps and how do I use them? ">
-The files are provided in the Comma-Separated Values (CSV) zipped format. Each file is accompanied by an SHA1 checksum
-file containing the original filename and its hash. The SHA1 file allows to verify the downloaded csv.zip file using
-standard tools. For instance, on a bash terminal, having both the csv.zip and the csv.zip.sha1 files in the working
-folder, doing sha1sum -c sor-global-2023-09-25-full.csv.zip.sha1 should show OK if the
-sor-global-2023-09-25-full.csv.zip file has been correctly downloaded.
+<x-ecl.accordion label="Quels sont les fichiers SHA1 fournis avec les téléchargements quotidiens et comment les utiliser?">
+Les fichiers sont fournis au format de valeurs séparées par des virgules (CSV) zippé. Chaque fichier est accompagné d'un fichier de somme de contrôle SHA1 contenant le nom de fichier d'origine et son hachage. Le fichier SHA1 permet de vérifier le fichier .zip csv téléchargé à l'aide d'outils standard. Par exemple, dans un terminal bash, en ayant à la fois les fichiers csv.zip et csv.zip.sha1 dans le dossier de travail, faire sha1sum -c sor-global-2023-09-25-full.csv.zip.sha1 devrait afficher OK si le fichier sor-global-2023-09-25-full.csv.zip a été correctement téléchargé.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="I would like to extract graphs directly from the dashboard. How do I do that? ">
-To extract visualisations directly from the <a href="{{route('dashboard')}}">dashboard</a> in a .jpg format, click on
-the “More options” menu on the top
-right corner of the dashboard visualisation you want to extract. Then, click on “Copy visual as image.” When your visual
-is ready, you can paste your image to your desired destination, using “Ctrl + V” or right-click and select Paste.
+<x-ecl.accordion label="Je voudrais extraire des graphiques directement depuis le tableau de bord. Comment faire?">
+Pour extraire des visualisations directement du <a href="{{route('dashboard')}}">tableau de bord</a> au format .jpg, cliquez sur le menu « Plus d'options » en haut à droite de la visualisation du tableau de bord que vous souhaitez extraire. Ensuite, cliquez sur « Copier la visualisation en tant qu'image ». Lorsque votre visualisation est prête, vous pouvez coller votre image à votre destination souhaitée, en utilisant « Ctrl + V » ou clic droit et sélectionner Coller.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="When I export data from the visualisations of the dashboard, what are the numbers I am looking
-at? ">
-In the dashboard, you can export the underlying data of each visualisation into a .csv or excel file. The data in those
-files are the aggregate statistics based on which specific visual is built.
+<x-ecl.accordion label="Lorsque j'exporte des données à partir des visualisations du tableau de bord, quels sont les chiffres que je regarde?">
+Dans le tableau de bord, vous pouvez exporter les données sous-jacentes de chaque visualisation dans un fichier .csv ou excel. Les données dans ces fichiers sont les statistiques agrégées sur lesquelles la visualisation spécifique est construite.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="I would like to get access to the content for which a statement of reasons was created.
-How do I do that?">
-The DSA Transparency Database only records statement of reasons. These contain information on the content moderation
-decision itself as well as the information accompanying such decisions, with the exception of personal data, which
-providers of online platforms are required to remove before submission. The DSA Transparency Database does not contain
-the content that was subject to moderation.<br>
-<br>
-For researchers interested in gaining access to the content underlying certain statements of reasons, the data access
-mechanism specified in Article 40 of the DSA can provide a way to obtain such access in the future.<br>
-<br>
-Once the Digital Service Coordinators are established by 17 February 2024, data access requests can be submitted either
-to the Digital Service Coordinator of a researcher’s Member State or to the Digital Service Coordinator(s) where the
-provider of the online platform(s) in question is established. The Commission is currently drafting a Delegated Act that
-will lay down technical and procedural requirements of the Article 40 data access mechanism.
+<x-ecl.accordion label="Je voudrais accéder au contenu pour lequel un motif a été créé. Comment faire?">
+La base de données de transparence DSA enregistre uniquement les motifs. Ils contiennent des informations sur la décision de modération du contenu elle-même ainsi que les informations accompagnant de telles décisions, à l'exception des données personnelles, que les fournisseurs de plateformes en ligne sont tenus de supprimer de leurs motifs avant de les soumettre à la base de données. La base de données de transparence DSA ne contient pas le contenu qui a fait l'objet de la modération. <br> <br> Pour les chercheurs intéressés par l'accès au contenu sous-jacent à certaines déclarations de motifs, le mécanisme d'accès aux données spécifié à l'article 40 de la DSA peut fournir un moyen d'obtenir un tel accès à l'avenir. <br> <br> Une fois que les coordinateurs des services numériques sont établis d'ici le 17 février 2024, les demandes d'accès aux données peuvent être soumises soit au coordinateur des services numériques de l'État membre d'un chercheur, soit au(x) coordinateur(s) des services numériques où le fournisseur de la (des) plateforme(s) en ligne concernée(s) est établi. La Commission rédige actuellement un acte délégué qui fixera les exigences techniques et procédurales du mécanisme d'accès aux données prévu à l'article 40.
 </x-ecl.accordion>
 
-<h2>Platform FAQ</h2>
+<h2>FAQ de la plateforme</h2>
 
-<x-ecl.accordion label="I am responsible for implementing Article 24(5) of the DSA as a provider of an online
-platform. What steps do I have to go through?">
-To set up your statement of reasons submission process, please
-register <a href='https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons'>here</a> regarding your
-obligations under article 24(5) of the DSA. At a later stage the Digital Service Coordinator of your Member State will
-contact with details on how to onboard your online platform.<br><br>
-Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your
-submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface (
-API) or a webform, according to the volume of your data and technical needs.<br><br>
-Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency
-Database, where you can start submitting your statement of reasons via an API or a webform.
+<x-ecl.accordion label="Je suis responsable de la mise en œuvre de l'article 24(5) de la DSA en tant que fournisseur d'une plateforme en ligne. Quelles étapes dois-je suivre?">
+Pour mettre en place votre processus de soumission de déclarations de motifs, veuillez vous inscrire <a href='https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons'>ici</a> concernant vos obligations en vertu de l'article 24(5) de la DSA. À un stade ultérieur, le coordinateur des services numériques de votre État membre vous contactera avec des détails sur la façon d'intégrer votre plateforme en ligne. <br> <br> Une fois intégré par le biais de votre coordinateur des services numériques, vous aurez accès à un environnement de test pour tester vos soumissions à la base de données de transparence DSA, que vous pouvez effectuer soit via une interface de programmation d'applications (API) soit via un formulaire web, en fonction du volume de vos données et de vos besoins techniques. <br> <br> Une fois la phase de test terminée, vous pourrez passer à l'environnement de production de la base de données de transparence DSA, où vous pourrez commencer à soumettre vos déclarations de motifs via une API ou un formulaire web.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What are the technical options for sending statements of reasons to the DSA
-Transparency Database?">
-Statements of reasons can be submitted either via an API or a webform. For more information about the API, please
-consider the <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">API documentation</a>. The data
-schema of the web form is the same as the data schema of the API.
+<x-ecl.accordion label="Quelles sont les options techniques pour envoyer des déclarations de motifs à la base de données de transparence DSA?">
+Les déclarations de motifs peuvent être soumises soit via une API, soit via un formulaire web. Pour plus d'informations sur l'API, veuillez consulter la <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">documentation de l'API</a>. Le schéma de données du formulaire web est le même que celui de l'API.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Where can I find the data schema with all statement of reasons attributes used in the DSA
-Transparency Database?">
-All attributes, which are part of a statement of reasons submission to the DSA Transparency Database, are detailed in
-the <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">API documentation</a>. The data schema of the
-web form is the same as the data schema of the API.
+<x-ecl.accordion label="Où puis-je trouver le schéma de données avec tous les attributs de déclaration de motifs utilisés dans la base de données de transparence DSA?">
+Tous les attributs, qui font partie d'une soumission de déclaration de motifs à la base de données de transparence DSA, sont détaillés dans la <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">documentation de l'API</a>. Le schéma de données du formulaire web est le même que celui de l'API.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="What are the API endpoint options for the DSA Transparency Database and which one would you
-recommend for sending statements of reasons at a very high volume?">
-The DSA Transparency database has two API endpoints, one which allows to submit one statement of reasons per call and
-one which allows to submit from 1 to 100 statements of reasons per call. For more information on the API endpoints,
-please read the <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">API documentation</a>.<br>
-<br>
-For high-volume submissions of multiple statements of reasons per minute, we recommend using the batch API endpoint.
+<x-ecl.accordion label="Quelles sont les options de point de terminaison API pour la base de données de transparence DSA et laquelle recommanderiez-vous pour envoyer des déclarations de motifs à un volume très élevé?">
+La base de données de transparence DSA dispose de deux points de terminaison API, l'un qui permet de soumettre une déclaration de motifs par appel et l'autre qui permet de soumettre de 1 à 100 déclarations de motifs par appel. Pour plus d'informations sur les points de terminaison de l'API, veuillez lire la <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">documentation de l'API</a>. <br> <br> Pour des soumissions à haut volume de plusieurs déclarations de motifs par minute, nous recommandons d'utiliser le point de terminaison API par lots.
 </x-ecl.accordion>
 
-<x-ecl.accordion label="Where do I find information on error codes?">
-For detailed information on possible error codes, please read the relevant section in
-the <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">API documentation</a>.
+<x-ecl.accordion label="Où puis-je trouver des informations sur les codes d'erreur?">
+Pour des informations détaillées sur les codes d'erreur possibles, veuillez lire la section pertinente dans la <a href="https://transparency.dsa.ec.europa.eu/page/api-documentation">documentation de l'API</a>.
 </x-ecl.accordion>
