@@ -54,8 +54,9 @@ class StatementsDateTotal extends Command
             $this->info('Source Percentage: ' . $source_percentage . '%');
             $this->info('Source Difference DB Percentage: ' . floor(($source_diff / $db_diff) * 100) . '%');
             $this->info('Source Difference OS Percentage: ' . floor(($source_diff / $os_total) * 100) . '%');
-
             $this->info('statements:index-date ' . $date_string);
+            $totals = $statement_search_service->totalsForPlatformsDate($date);
+            $this->table(array_keys($totals[0]), $totals);
 
         } else {
             $this->info('Could not find the first or last ids: ' . $first_id . ' :: ' . $last_id);

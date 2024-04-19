@@ -471,6 +471,12 @@ class StatementSearchService
         ]);
     }
 
+    public function totalsForPlatformsDate(Carbon $date): array
+    {
+        $aggregates = $this->processDateAggregate($date, ['platform_id']);
+        return $aggregates['aggregates'];
+    }
+
     public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
     {
         return "received_date BETWEEN '" . $start->format('Y-m-d') . "' AND '" . $end->format('Y-m-d') . "'";
