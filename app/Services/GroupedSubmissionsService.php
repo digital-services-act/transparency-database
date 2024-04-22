@@ -12,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class GroupedSubmissionsService
 {
+    public function __construct(protected EuropeanCountriesService $european_countries_service)
+    {
+
+    }
 
     public function sanitizePayloadStatement(&$payload_statement): void
     {
@@ -47,8 +51,10 @@ class GroupedSubmissionsService
     }
 
     /**
+     * @param array $payload_statement
      * @param $field
      * @param $needle
+     *
      * @return void
      */
     private function handleOtherFieldWithinArray(array &$payload_statement, $field, $needle): void
@@ -126,6 +132,8 @@ class GroupedSubmissionsService
                 $statement['decision_visibility'] ?? [], true);
             $content_type_other_required = in_array('CONTENT_TYPE_OTHER', $statement['content_type'] ?? [], true);
 
+
+
             // Create a new validator instance for each statement
             $validator = Validator::make($statement,
                 $this->multi_rules($decision_visibility_other_required, $content_type_other_required),
@@ -135,6 +143,8 @@ class GroupedSubmissionsService
             if ($validator->fails()) {
                 $errors['statement_' . $index] = $validator->errors()->toArray();
             }
+
+            $statement['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($statement['territorial_scope'] ?? []);
 
             try {
                 $payload['statements'][$index] = $validator->validated();
