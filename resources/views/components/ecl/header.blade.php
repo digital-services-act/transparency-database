@@ -145,15 +145,15 @@
                             <div class="ecl-menu__mega" data-ecl-menu-mega="">
                                 <ul class="ecl-menu__sublist">
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{ route('page.show', ['faq#general-faq']) }}"
+                                        <a href="{{ route('page.show', [__('menu.General_link')]) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.General')}}</a>
                                     </li>
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{ route('page.show', ['faq#technical-faq']) }}"
+                                        <a href="{{ route('page.show', [__('menu.Technical_link')]) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Technical')}}</a>
                                     </li>
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{ route('page.show', ['faq#platform-faq']) }}"
+                                        <a href="{{ route('page.show', [__('menu.Platforms_link')]) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Platforms')}}</a>
                                     </li>
                                 </ul>

@@ -8,7 +8,7 @@ Cette sous-catégorie comprend les éléments suivants :
 
 [1. Identifiant Unique de Plateforme (PUID)](#1-identifiant-unique-de-plateforme-puid)
 
-[2. Spécifications sur le contenu affecté par la décision](#2-spécifications-du-contenu-affecté-par-la-décision)
+[2. Spécifications sur le contenu affecté par la décision](#2-spcifications-du-contenu-affect-par-la-dcision)
 
 _Pourquoi ces informations sont-elles incluses ?_
 
@@ -46,11 +46,11 @@ Cet attribut concerne la langue de l'information affectée par la décision.
 
 Cette sous-catégorie comprend les éléments suivants :
 
-[3. Le type de restrictions imposées](#3-le-type-de-restrictions-imposées)
+[3. Le type de restrictions imposées](#3-le-type-de-restrictions-imposes)
 
-[4. La durée de la restriction](#4-la-durée-de-la-décision)
+[4. La durée de la restriction](#4-la-dure-de-la-restriction)
 
-[5. La portée territoriale de la décision](#5-la-portée-territoriale-de-la-décision)
+[5. La portée territoriale de la décision](#5-la-porte-territoriale-de-la-dcision)
 
 _Pourquoi ces informations sont-elles incluses ?_
 
@@ -133,9 +133,9 @@ Cette sous-catégorie comprend les éléments suivants :
 
 [6. Une description des faits et circonstances](#6-description-des-faits-et-circonstances)
 
-[7. Informations sur la source de l'enquête](#7-informations-sur-la-source-de-l'enquête)
+[7. Informations sur la source de l'enquête](#7-informations-sur-la-source-de-lenqute)
 
-[8. Informations sur le compte affecté par la décision](#8-informations-sur-le-compte-affecté-par-la-décision)
+[8. Informations sur le compte affecté par la décision](#8-informations-sur-le-compte-affect-par-la-dcision)
 
 _Pourquoi ces informations sont-elles incluses ?_
 
@@ -173,9 +173,9 @@ Cet attribut concerne la nature du compte lié aux informations traitées par la
 
 Cette sous-catégorie comprend les éléments suivants :
 
-[9. Informations sur l'utilisation des moyens automatisés pour la détection des infractions](#9-détection-automatisée)
+[9. Informations sur l'utilisation des moyens automatisés pour la détection des infractions](#9-dtection-automatise)
 
-[10. Informations sur l'utilisation des moyens automatisés pour prendre des décisions sur les infractions](#10-décision-automatisée)
+[10. Informations sur l'utilisation des moyens automatisés pour prendre des décisions sur les infractions](#10-dcision-automatise)
 
 _Pourquoi ces informations sont-elles incluses ?_
 
@@ -195,17 +195,17 @@ Cet attribut indique si et dans quelle mesure des moyens automatisés ont été 
 
 Cette sous-catégorie comprend les éléments suivants :
 
-[11. Les motifs de la décision](#11-motifs-de-la-décision)
+[11. Les motifs de la décision](#11-motifs-de-la-dcision)
 
-[12. Pour les informations présumées illégales : le fondement juridique sur lequel repose la décision](#12-pour-les-informations-présumées-illégales-le-fondement-juridique-sur-lequel-repose-la-décision)
+[12. Pour les informations présumées illégales : le fondement juridique sur lequel repose la décision](#12-pour-les-informations-prsumes-illgales-le-fondement-juridique-sur-lequel-repose-la-dcision)
 
-[13. Pour les informations présumées en infraction : le fondement contractuel sur lequel repose la décision](#13-pour-les-informations-présumées-en-infraction-le-fondement-contractuel-sur-lequel-repose-la-décision)
+[13. Pour les informations présumées en infraction : le fondement contractuel sur lequel repose la décision](#13-pour-les-informations-prsumes-en-infraction-le-fondement-contractuel-sur-lequel-repose-la-dcision)
 
-[14. Chevauchement entre incompatibilité des conditions générales et illégalité](#14-chevauchement-entre-l'incompatibilité-des-conditions-générales-et-l'illégalité-contenu-incompatible-illégal)
+[14. Chevauchement entre incompatibilité des conditions générales et illégalité](#14-chevauchement-entre-incompatibilit-des-conditions-gnrales-et-illgalit-contenu-incompatible-illgal)
 
-[15. Référence (URL) au fondement juridique ou contractuel](#15-référence-url-au-fondement-juridique-ou-contractuel-motifs-de-la-décision-référence-url)
+[15. Référence (URL) au fondement juridique ou contractuel](#15-rfrence-url-au-fondement-juridique-ou-contractuel-motifs-de-la-dcision-rfrence-url)
 
-[16. Catégorie & Spécification de la catégorie](#16-catégorie-spécification-catégorie-catégorie-addition-spécification-de-la-catégorie)
+[16. Catégorie & Spécification de la catégorie](#16-catgorie-spcification)
 
 _Pourquoi ces informations sont-elles incluses ?_
 

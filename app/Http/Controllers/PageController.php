@@ -58,7 +58,7 @@ class PageController extends Controller
             'Home' => '',
             'Faq' => __('pages.Faq'),
             'Api Documentation' => __('pages.Api Documentation'),
-            'Documentation' => __('pages.Documentation')
+            'Documentation' => __('pages.Documentation'),
 
         ];
 
