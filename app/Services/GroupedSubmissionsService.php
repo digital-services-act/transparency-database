@@ -132,7 +132,7 @@ class GroupedSubmissionsService
                 $statement['decision_visibility'] ?? [], true);
             $content_type_other_required = in_array('CONTENT_TYPE_OTHER', $statement['content_type'] ?? [], true);
 
-
+            $statement['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($statement['territorial_scope'] ?? []);
 
             // Create a new validator instance for each statement
             $validator = Validator::make($statement,
@@ -143,8 +143,6 @@ class GroupedSubmissionsService
             if ($validator->fails()) {
                 $errors['statement_' . $index] = $validator->errors()->toArray();
             }
-
-            $statement['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($statement['territorial_scope'] ?? []);
 
             try {
                 $payload['statements'][$index] = $validator->validated();
