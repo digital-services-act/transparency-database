@@ -119,5 +119,18 @@ class EuropeanCountriesServiceTest extends TestCase
         $this->assertEquals($result, $codes);
     }
 
-
+    /**
+     * @test
+     * @throws \JsonException
+     */
+    public function the_char_length_is_ok(): void
+    {
+        $max = 255;
+        $all = json_encode(EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES, JSON_THROW_ON_ERROR);
+        $this->assertLessThan($max, strlen($all));
+        $all = json_encode(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, JSON_THROW_ON_ERROR);
+        $this->assertLessThan($max, strlen($all));
+        $all = json_encode(EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES, JSON_THROW_ON_ERROR);
+        $this->assertLessThan($max, strlen($all));
+    }
 }
