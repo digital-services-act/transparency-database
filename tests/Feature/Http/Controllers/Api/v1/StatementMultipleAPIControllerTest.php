@@ -325,6 +325,29 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function it_should_deduplicate_territories(): void
+    {
+        $user = $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(5);
+        $statements[4]['territorial_scope'] = ['DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT'];
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(15, Statement::all());
+        $last = Statement::orderBy('id', 'desc')->first();
+        $territorial_scope = $last->territorial_scope;
+        $this->assertEquals(["DE", "ES", "PT"], $territorial_scope);
+    }
+
+    /**
+     * @test
+     */
     public function it_should_require_decision_visibility_other_field_when_sending_multiple_statements(): void
     {
         $this->signInAsContributor();
