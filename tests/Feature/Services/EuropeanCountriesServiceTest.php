@@ -46,6 +46,18 @@ class EuropeanCountriesServiceTest extends TestCase
      * @return void
      * @test
      */
+    public function it_condenses_countries_uniquely(): void
+    {
+        $country_codes = ['SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'AU', 'AU', 'AU'];
+        $result = $this->european_countries_service->filterSortEuropeanCountries($country_codes);
+        $this->assertEquals(["BE", "SK"], $result);
+    }
+
+
+    /**
+     * @return void
+     * @test
+     */
     public function it_condenses_european_economic_area_countries(): void
     {
         $country_codes = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;

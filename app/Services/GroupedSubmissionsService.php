@@ -144,10 +144,9 @@ class GroupedSubmissionsService
                 $errors['statement_' . $index] = $validator->errors()->toArray();
             }
 
-            $statement['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($statement['territorial_scope'] ?? []);
-
             try {
                 $payload['statements'][$index] = $validator->validated();
+                $payload['statements'][$index]['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($payload['statements'][$index]['territorial_scope'] ?? []);
             } catch (ValidationException) {
             }
         }
