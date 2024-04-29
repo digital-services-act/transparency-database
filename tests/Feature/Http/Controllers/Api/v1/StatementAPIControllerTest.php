@@ -591,6 +591,27 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function request_rejects_bad_puids(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $application_puid_in = 'very bad é + pu.id';
+
+        $fields = array_merge($this->required_fields, [
+            'puid' => $application_puid_in,
+        ]);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The puid format is invalid.', $response->json('message'));
+    }
+
+    /**
+     * @test
+     */
     public function store_enforces_puid_uniqueness(): void
     {
 
@@ -909,14 +930,14 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_not_empty_additional_categories(): void
+    public function store_should_save_empty_additional_categories_as_empty_array(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
         $extra_fields = [
             'category' => 'STATEMENT_CATEGORY_VIOLENCE',
-            'category_addition' => ['STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'STATEMENT_CATEGORY_VIOLENCE'],
+            'category_addition' => [],
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
 
@@ -926,11 +947,11 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
 
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
-        $this->assertNotNull($statement->category);
-        $this->assertNotNull($statement->category_addition);
-        $this->assertCount(1, $statement->category_addition);
+        $this->assertEquals([], $statement->category_addition);
 
     }
+
+
 
 
 }

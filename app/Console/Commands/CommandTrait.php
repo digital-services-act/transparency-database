@@ -18,7 +18,7 @@ trait CommandTrait
             $date = Carbon::yesterday();
         } elseif ($date === 'today') {
             $date = Carbon::today();
-        } elseif (preg_match('/^\d+$/', $date)) {
+        } elseif (preg_match('/^\d+$/', (string) $date)) {
             $date = Carbon::now()->subDays((int)$date);
         } else {
             try {
@@ -29,8 +29,7 @@ trait CommandTrait
             }
         }
 
-        $date->subSeconds($date->secondsSinceMidnight());
-        return $date;
+        return $date->startOfDay();
     }
 
     public function intifyArgument(string $argument): int

@@ -58,8 +58,10 @@ class AggregatesFreeze extends Command
             foreach ($headers as $header) {
                 $row[] = $result[$header];
             }
+
             fputcsv($out, $row);
         }
+
         fclose($out);
         $disk->put($csv_file, fopen($path . $csv_file, 'rb+'));
         unlink($path . $csv_file);

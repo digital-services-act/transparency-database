@@ -4,17 +4,18 @@ namespace App\Services;
 
 use App\Http\Controllers\Api\v1\StatementMultipleAPIController;
 use App\Models\Statement;
-use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\Intl\Countries;
 
 class GroupedSubmissionsService
 {
+    public function __construct(protected EuropeanCountriesService $european_countries_service)
+    {
+
+    }
 
     public function sanitizePayloadStatement(&$payload_statement): void
     {
@@ -39,14 +40,21 @@ class GroupedSubmissionsService
         // stringify the arrays
         foreach ($payload_statement as $key => $value) {
             if (is_array($value)) {
-                $payload_statement[$key] = '["' . implode('","', $value) . '"]';
+                if (!empty($value)){
+                    $payload_statement[$key] = '["' . implode('","', $value) . '"]';
+                } else {
+                    $payload_statement[$key] = '[]';
+                }
+
             }
         }
     }
 
     /**
+     * @param array $payload_statement
      * @param $field
      * @param $needle
+     *
      * @return void
      */
     private function handleOtherFieldWithinArray(array &$payload_statement, $field, $needle): void
@@ -124,6 +132,8 @@ class GroupedSubmissionsService
                 $statement['decision_visibility'] ?? [], true);
             $content_type_other_required = in_array('CONTENT_TYPE_OTHER', $statement['content_type'] ?? [], true);
 
+
+
             // Create a new validator instance for each statement
             $validator = Validator::make($statement,
                 $this->multi_rules($decision_visibility_other_required, $content_type_other_required),
@@ -136,6 +146,7 @@ class GroupedSubmissionsService
 
             try {
                 $payload['statements'][$index] = $validator->validated();
+                $payload['statements'][$index]['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($statement['territorial_scope'] ?? []);
             } catch (ValidationException) {
             }
         }
@@ -361,7 +372,7 @@ class GroupedSubmissionsService
             'source_identity' => ['max:500', 'nullable'],
             'automated_detection' => ['required', $this->rule_in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->rule_in(array_keys(Statement::AUTOMATED_DECISIONS))],
-            'puid' => ['required', 'max:500'],
+            'puid' => ['required', 'max:500', 'regex:/^[a-zA-Z0-9-_]+$/D'],
         ];
     }
 
@@ -405,7 +416,6 @@ class GroupedSubmissionsService
         $this->removeHiddenFields($original);
         $original['platform_name'] = auth()->user()->platform->name;
         $original['created_at'] = $now->format('Y-m-d H:i:s');
-
         $out[] = $original;
         return $out;
     }
@@ -442,6 +452,7 @@ class GroupedSubmissionsService
                 $now, $out);
 
             $this->sanitizePayloadStatement($payload_statement);
+
         }
 
         unset($payload_statement);

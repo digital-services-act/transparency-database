@@ -7,6 +7,8 @@ use Illuminate\Support\Arr;
 trait Sanitizer
 {
     /**
+     * @param array $validated
+     *
      * @return array
      */
     public function sanitizeData(array $validated): array
@@ -19,6 +21,7 @@ trait Sanitizer
         $validated['end_date_service_restriction'] = $this->sanitizeDate($validated['end_date_service_restriction'] ?? null);
 
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
+
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
         if (array_key_exists('decision_visibility', $validated)) {

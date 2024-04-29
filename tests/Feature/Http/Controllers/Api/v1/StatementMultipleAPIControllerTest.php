@@ -24,6 +24,8 @@ class StatementMultipleAPIControllerTest extends TestCase
     private Statement $statement;
 
     /**
+     * @param int $count
+     *
      * @return array
      */
     public function createFullStatements($count = 5): array
@@ -318,6 +320,29 @@ class StatementMultipleAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(15, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_deduplicate_territories(): void
+    {
+        $user = $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(5);
+        $statements[4]['territorial_scope'] = ['DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT'];
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(15, Statement::all());
+        $last = Statement::orderBy('id', 'desc')->first();
+        $territorial_scope = $last->territorial_scope;
+        $this->assertEquals(["DE", "ES", "PT"], $territorial_scope);
     }
 
     /**
@@ -711,6 +736,82 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->get(route('api.v1.statement.show', [$statementB]), [
             'Accept' => 'application/json'
         ])->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * @test
+     */
+    public function store_multiple_with_category_addition(): void
+    {
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(2);
+
+        $statements[0]['puid'] = 'testCategoryAdditionA';
+        $statements[0]['category_addition'] = [];
+        $statements[1]['puid'] = 'testCategoryAdditionB';
+        unset($statements[1]['category_addition']);
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(12, Statement::all());
+
+        $statementA = Statement::where('puid', 'testCategoryAdditionA')->first()->fresh();
+        $statementB = Statement::where('puid', 'testCategoryAdditionB')->first()->fresh();
+
+        $this->assertEquals([], $statementA->category_addition);
+        $this->assertEquals([], $statementB->category_addition);
+    }
+
+
+    /**
+     * @test
+     */
+    public function it_should_reject_bad_puids(): void
+    {
+        $this->signInAsContributor();
+
+        //$this->withoutExceptionHandling();
+
+        $sors = [];
+
+        //Create the light one and add it to the sors array
+        $sors[] = [
+            'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
+            'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
+            'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+            'illegal_content_legal_ground' => 'foo',
+            'illegal_content_explanation' => 'bar',
+            'territorial_scope' => ['BE', 'DE', 'FR'],
+            'source_type' => 'SOURCE_ARTICLE_16',
+            'source_identity' => 'foo',
+            'decision_facts' => 'decision and facts',
+            'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
+            'automated_detection' => 'No',
+            'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
+            'application_date' => '2023-05-18',
+            'content_date' => '2023-05-18',
+            'puid' => 'very bad + â pu+id !',
+        ];
+
+        $fields = array_merge($this->required_fields, [
+            'application_date' => '2023-12-20',
+        ]);
+        $fields['puid'] = "very bad + â pu+id !";
+        $sors[] = $fields;
+
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $sors
+        ], [
+            'Accept' => 'application/json'
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_0']['puid'][0]);
+        $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_1']['puid'][0]);
     }
 
 
