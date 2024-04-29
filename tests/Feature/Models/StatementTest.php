@@ -5,6 +5,7 @@ namespace Tests\Feature\Models;
 
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class StatementTest extends TestCase
@@ -60,6 +61,25 @@ class StatementTest extends TestCase
         $statement->territorial_scope = ['SK', 'BE', 'AU'];
         $statement->save();
         $statement->refresh();
+
+        // Get it back in alpha order
+        $territorial_scope = $statement->territorial_scope;
+        $this->assertEquals(["AU", "BE", "SK"], $territorial_scope);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function territorial_scope_is_always_unique(): void
+    {
+        $statement = Statement::all()->random()->first();
+
+        // Store in non alpha order
+        $statement->territorial_scope = ['SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'AU', 'AU', 'AU'];
+        $statement->save();
+        $statement->refresh();
+
 
         // Get it back in alpha order
         $territorial_scope = $statement->territorial_scope;
