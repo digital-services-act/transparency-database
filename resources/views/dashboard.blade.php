@@ -52,5 +52,147 @@
         </iframe>
     </div>
 
+
+
+    <h2 class="ecl-u-type-heading-1">Instructions</h2>
+    <div style="width:110%; !important;
+            margin-left: -40px;
+            max-height:100%">
+
+        <div class="ecl-u-d-flex">
+            <div
+                class="ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s ecl-u-pl-l ecl-u-pr-l">
+                <div class="ecl-u-type-bold ecl-u-mb-s">1. Introduction</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The purpose of this dashboard is to help
+                    users without programming skills explore aggregated data in the DSA Transparency Database. <br/><br/>
+
+                    These instructions are to assist you in making the best use of all the available features.
+                </div>
+
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">2. Overview</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">This dashboard comprises 5 pages, in
+                    addition to these instructions. Each page contains 2-3 visualizations, typically grouped by
+                    theme, such as timelines, violations, or restrictions.<br/><br/>
+
+                    In addition, the “5-Other analyses” page shows a breakdown of statements of reasons by content
+                    type. It also shows how the grounds for the restrictions imposed and the information source used
+                    relate to one another as well as the relationship between automatic content moderation decisions
+                    and automatic detection of content for moderation.
+                </div>
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">3. Data update</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The data is updated every day at 06:00
+                    (CET).
+                </div>
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">4. Definitions</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">For definitions of terms used, please
+                    refer to the <a href="{{ route('page.show', ['faq']) }}">FAQ</a> section and the <a href="{{ route('profile.page.show', ['api-documentation']) }}">API documentation</a> of the DSA Transparency Database. Kindly note
+                    that “violations” refer to the variable “category” of the API documentation.
+                </div>
+
+            </div>
+            <div
+                class="ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s ecl-u-pl-l ecl-u-pr-l">
+                <div class="ecl-u-type-bold ecl-u-mb-s">5. Interactivity</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Each visualization is interactive: 1)
+                    additional information is provided when the mouse hovers over a visualization, and 2) you can
+                    click on any of the elements (e.g. bars, charts, labels) to highlight specific data. The rest of
+                    the visualizations in the page will accordingly highlight the relevant data.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Note that highlights apply only to the
+                    page in which they are triggered. For filters that apply to all the pages, use the ‘filters’
+                    menu on the top left – see below.
+                </div>
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">6. Filters</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The three lines on the top left of the
+                    dashboard open the filters menu.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Select the element you want to focus on
+                    (e.g., specific platform(s), types of violations or restrictions), and the visualizations on all
+                    the pages will update accordingly.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">To close the filters menu, click on the
+                    ‘back’ button on the right of the menu.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">To remove all applied filters, press the
+                    ‘Remove all filters’ button at the bottom of the menu.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Please refer to the <a href="{{ route('page.show', ['faq']) }}">FAQ section</a> about the
+                    filters that are available.
+                </div>
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">7. Selecting multiple elements</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Keep the ‘Ctrl’ button pressed to select
+                    multiple items on any interactive element of the dashboard or filters.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">This way, you can, for example, select all
+                    the social media platforms or all online marketplaces, or different combinations of violations
+                    or restrictions.
+                </div>
+
+
+            </div>
+            <div
+                class="ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s ecl-u-pl-l ecl-u-pr-l">
+                <div class="ecl-u-type-bold ecl-u-mb-s">8. Zooming on the Y-axis</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">In some visualizations, the orders of
+                    magnitude of data vary significantly, from thousands to billions. In these cases, ‘zoom in’ on
+                    the y-axis by scrolling the bar on the left of the graph, where it is available.
+                </div>
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">9. Focus mode</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">You can maximize any visualization by
+                    pressing the 'focus mode' button, on the top right of the visualization.
+                </div>
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">10. Viewing detailed figures</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">You can view the data as a table, by
+                    right-clicking on any visualization and selecting 'Show as a table'.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">It is not possible to download individual
+                    statements of reason from the dashboard. For this, kindly use the <a href="{{route('dayarchive.index')}}">Data Download</a> functionality.
+                </div>
+
+
+                <div class="ecl-u-type-bold ecl-u-mb-s">11. Adjusting the date format</div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">By default, the dashboard considers your
+                    browser’s settings for the format of displaying dates. Therefore, you may see dates as
+                    MM/DD/YYYY, instead of DD/MM/YYYY. To see dates in the latter format, change your browser’s
+                    language preference.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">For example, for Google Chrome, type on
+                    the URL box: chrome://settings/languages and choose “English (United Kingdom, Oxford English
+                    Dictionary spelling)” as the preferred language. For Firefox, go to 'Settings', select
+                    'Languages' and choose 'English (GB)'.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
 @endsection
 
