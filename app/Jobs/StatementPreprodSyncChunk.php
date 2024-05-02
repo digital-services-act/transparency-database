@@ -55,6 +55,7 @@ class   StatementPreprodSyncChunk implements ShouldQueue
             // Bulk sync
 
             $to_insert = DB::table('statements')->whereIn('id', $range)->get()->toArray();
+            $to_insert = json_decode(json_encode($to_insert, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
             Statement::on('mysqlpreprod')->insert($to_insert);
 
             if ($end >= $this->max) {
