@@ -573,7 +573,7 @@ class Statement extends Model
             'decision_visibility' => $this->decision_visibility,
             'decision_visibility_single' => implode("__", $this->decision_visibility),
             'category_specification' => $this->category_specification,
-            'decision_visibility_other' => $this->decision_visibilit_other,
+            'decision_visibility_other' => $this->decision_visibility_other,
             'decision_monetary' => $this->decision_monetary,
             'decision_monetary_other' => $this->decision_monetary_other,
             'decision_provision' => $this->decision_provision,
@@ -606,6 +606,56 @@ class Statement extends Model
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
             'method' => $this->method
+        ];
+    }
+
+    public function toSyncableArray(): array
+    {
+
+        return [
+            'id' => $this->id,
+            'uuid' => $this->uuid,
+            'decision_visibility' => $this->decision_visibility,
+            'decision_visibility_other' => $this->decision_visibility_other,
+            'decision_monetary' => $this->decision_monetary,
+            'decision_monetary_other' => $this->decision_monetary_other,
+            'decision_provision' => $this->decision_provision,
+            'decision_account' => $this->decision_account,
+            'account_type' => $this->account_type,
+            'decision_ground' => $this->decision_ground,
+            'decision_ground_reference_url' => $this->decision_ground_reference_url,
+            'content_type' => $this->content_type,
+            'content_type_other' => $this->content_type_other,
+            'content_language' => $this->content_language,
+            'content_date' => $this->content_date,
+            'application_date' => $this->application_date,
+            'illegal_content_legal_ground' => $this->illegal_content_legal_ground,
+            'illegal_content_explanation' => $this->illegal_content_explanation,
+            'incompatible_content_ground' => $this->incompatible_content_ground,
+            'incompatible_content_explanation' => $this->incompatible_content_explanation,
+            'incompatible_content_illegal' => $this->incompatible_content_illegal,
+            'source_type' => $this->source_type,
+            'source_identity' => $this->source_identity,
+            'decision_facts' => $this->decision_facts,
+            'automated_detection' => $this->automated_detection,
+            'automated_decision' => $this->automated_decision,
+            'category' => $this->category,
+            'category_addition' => $this->category_addition,
+            'category_specification' => $this->category_specification,
+            'category_specification_other' => $this->category_specification_other,
+            'platform_id' => $this->platform_id,
+            'user_id' => $this->user_id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
+            'puid' => $this->puid,
+            'territorial_scope' => $this->territorial_scope,
+            'method' => $this->method,
+            'end_date' => $this->end_date,
+            'end_date_visibility_restriction' => $this->end_date_visibility_restriction,
+            'end_date_monetary_restriction' => $this->end_date_monetary_restriction,
+            'end_date_service_restriction' => $this->end_date_service_restriction,
+            'end_date_account_restriction' => $this->end_date_account_restriction,
         ];
     }
 
