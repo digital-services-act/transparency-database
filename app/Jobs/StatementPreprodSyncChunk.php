@@ -62,6 +62,4 @@ class   StatementPreprodSyncChunk implements ShouldQueue
             }
         }
     }
-
-    public function rawSelect()
 }
