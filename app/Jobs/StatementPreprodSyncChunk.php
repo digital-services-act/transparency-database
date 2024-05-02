@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
@@ -51,15 +52,9 @@ class   StatementPreprodSyncChunk implements ShouldQueue
             }
 
             $range = range($this->min, $end);
-            // Bulk indexing.
-            $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
+            // Bulk sync
 
-            $to_insert = [];
-            /** @var Statement $statement */
-            foreach ($statements as $statement) {
-                $to_insert[] = $statement->toSyncableArray();
-            }
-
+            $to_insert = DB::table('statements')->whereIn('id', $range)->get();
             Statement::on('mysqlpreprod')->insert($to_insert);
 
             if ($end >= $this->max) {
@@ -67,4 +62,6 @@ class   StatementPreprodSyncChunk implements ShouldQueue
             }
         }
     }
+
+    public function rawSelect()
 }
