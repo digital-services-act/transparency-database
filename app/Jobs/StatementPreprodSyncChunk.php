@@ -55,6 +55,7 @@ class   StatementPreprodSyncChunk implements ShouldQueue
             $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
 
             $to_insert = [];
+            /** @var Statement $statement */
             foreach ($statements as $statement) {
                 $to_insert[] = $statement->toSyncableArray();
             }
