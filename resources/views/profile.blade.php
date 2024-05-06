@@ -76,15 +76,8 @@
 
                 Later on you will be contacted by the DSC of the country of establishment of the online platform (you
                 will find the already appointed DSCs here <a
-                    href="https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation">https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation</a>).
-                This is the first step required to be onboarded as an online platform with obligations under Article
-                24(5) of the DSA. Please note that Digital Services Coordinators should be appointed by 17th February
-                2024 at the latest.<br/><br/>
-
-                Currently, only designated VLOPs (Verified List of Platforms) have access to the API (both sandbox/test
-                and production) for submissions of statements of reasons under the DSA (Digital Services Act). Other
-                platforms that have notified the Commission will be contacted by their Digital Service Coordinator for
-                onboarding.<br/><br/>
+                    href="https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation">https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation</a>). This is the first step required to be onboarded as an online platform with obligations under Article 24(5) of the DSA. You will be contacted by their Digital Service Coordinator for onboarding.
+                <br/><br/>
 
                 Thank you
 
