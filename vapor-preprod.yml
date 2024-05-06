@@ -1,0 +1,30 @@
+id: 60974
+name: dsa-preprod
+environments:
+  production:
+    firewall:
+      rate-limit: 12500
+      bot-control:
+        - CategoryAdvertising
+        - CategoryArchiver
+        - CategoryContentFetcher
+        - CategoryLinkChecker
+        - CategoryMiscellaneous
+        - CategoryScrapingFramework
+        - SignalAutomatedBrowser
+    warm: 10
+    timeout: 180
+    cache: redis-preprod-small
+    queue-database-session-persist: true
+    database: preprod-serverless-db
+    network: preprod-network
+    memory: 2048
+    cli-memory: 1024
+    queue-memory: 1024
+    storage: sor-dsa-m2-preprod
+    runtime: 'php-8.3:al2-arm'
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+      - 'php artisan event:cache'
+    deploy:
+      - 'php artisan cache:clear'
