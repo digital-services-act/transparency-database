@@ -72,11 +72,10 @@
                 process:<br/><br/>
 
                 Please register your intent to comply <a
-                    href="https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons">https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons</a><br/><br/>
+                    href="https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons">here</a><br/><br/>
 
-                Later on you will be contacted by the DSC of the country of establishment of the online platform (you
-                will find the already appointed DSCs here <a
-                    href="https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation">https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation</a>). This is the first step required to be onboarded as an online platform with obligations under Article 24(5) of the DSA. You will be contacted by their Digital Service Coordinator for onboarding.
+                This is the first step required to be onboarded as an online platform with obligations under Article 24(5) of the DSA. You will then be contacted by your Digital Service Coordinator (DSC), i.e. the DSC of the country of establishment of your online platform, for onboarding. You can find an overview of already appointed DSCs <a href="https://digital-strategy.ec.europa.eu/en/policies/dsa-dscs">here</a>.
+
                 <br/><br/>
 
                 Thank you
