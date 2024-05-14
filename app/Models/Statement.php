@@ -573,7 +573,7 @@ class Statement extends Model
             'decision_visibility' => $this->decision_visibility,
             'decision_visibility_single' => implode("__", $this->decision_visibility),
             'category_specification' => $this->category_specification,
-            'decision_visibility_other' => $this->decision_visibilit_other,
+            'decision_visibility_other' => $this->decision_visibility_other,
             'decision_monetary' => $this->decision_monetary,
             'decision_monetary_other' => $this->decision_monetary_other,
             'decision_provision' => $this->decision_provision,
@@ -606,6 +606,56 @@ class Statement extends Model
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
             'method' => $this->method
+        ];
+    }
+
+    public function toSyncableArray(): array
+    {
+
+        return [
+            'id' => $this->getRawOriginal('id'),
+            'uuid' => $this->getRawOriginal('uuid'),
+            'decision_visibility' => $this->getRawOriginal('decision_visibility'),
+            'decision_visibility_other' => $this->getRawOriginal('decision_visibility_other'),
+            'decision_monetary' => $this->getRawOriginal('decision_monetary'),
+            'decision_monetary_other' => $this->getRawOriginal('decision_monetary_other'),
+            'decision_provision' => $this->getRawOriginal('decision_provision'),
+            'decision_account' => $this->getRawOriginal('decision_account'),
+            'account_type' => $this->getRawOriginal('account_type'),
+            'decision_ground' => $this->getRawOriginal('decision_ground'),
+            'decision_ground_reference_url' => $this->getRawOriginal('decision_ground_reference_url'),
+            'content_type' => $this->getRawOriginal('content_type'),
+            'content_type_other' => $this->getRawOriginal('content_type_other'),
+            'content_language' => $this->getRawOriginal('content_language'),
+            'content_date' => $this->getRawOriginal('content_date'),
+            'application_date' => $this->getRawOriginal('application_date'),
+            'illegal_content_legal_ground' => $this->getRawOriginal('illegal_content_legal_ground'),
+            'illegal_content_explanation' => $this->getRawOriginal('illegal_content_explanation'),
+            'incompatible_content_ground' => $this->getRawOriginal('incompatible_content_ground'),
+            'incompatible_content_explanation' => $this->getRawOriginal('incompatible_content_explanation'),
+            'incompatible_content_illegal' => $this->getRawOriginal('incompatible_content_illegal'),
+            'source_type' => $this->getRawOriginal('source_type'),
+            'source_identity' => $this->getRawOriginal('source_identity'),
+            'decision_facts' => $this->getRawOriginal('decision_facts'),
+            'automated_detection' => $this->getRawOriginal('automated_detection'),
+            'automated_decision' => $this->getRawOriginal('automated_decision'),
+            'category' => $this->getRawOriginal('category'),
+            'category_addition' => $this->getRawOriginal('category_addition'),
+            'category_specification' => $this->getRawOriginal('category_specification'),
+            'category_specification_other' => $this->getRawOriginal('category_specification_other'),
+            'platform_id' => $this->getRawOriginal('platform_id'),
+            'user_id' => $this->getRawOriginal('user_id'),
+            'created_at' => $this->getRawOriginal('created_at'),
+            'updated_at' => $this->getRawOriginal('updated_at'),
+            'deleted_at' => $this->getRawOriginal('deleted_at'),
+            'puid' => $this->getRawOriginal('puid'),
+            'territorial_scope' => $this->getRawOriginal('territorial_scope'),
+            'method' => $this->getRawOriginal('method'),
+            'end_date' => $this->getRawOriginal('end_date'),
+            'end_date_visibility_restriction' => $this->getRawOriginal('end_date_visibility_restriction'),
+            'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
+            'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
+            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
         ];
     }
 
