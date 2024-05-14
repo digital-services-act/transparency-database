@@ -5,6 +5,8 @@ On Wednesday 22 May 2024, the DSA Transparency Database (TDB) team will perform 
 
 A following announcement will be published to flag that: i) the data consistency check is completed, and, ii) that the daily dumps' files have been recreated to reflect the cleaned content of the TDB.
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement - API] Restoring the 422 error for duplicated platform uid (puid)
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/04/2024</p>
 On 8th of April 2024, the European Commission restored the 422 – Unprocessable Content error. The API endpoint will return the error whenever a platform is submitting a Statement of Reasons (SoR) containing a platform unique identifier (puid) already found in the SoR previously submitted to the database by the same platform.
