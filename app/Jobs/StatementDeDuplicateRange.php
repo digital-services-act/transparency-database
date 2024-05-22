@@ -80,15 +80,15 @@ class StatementDeDuplicateRange implements ShouldQueue
         $count = count($duplicated_statements);
         if ($count !== 0) {
             Storage::put('duplicated-' . $count . '-' . $this->min . '-' . $end . '.json', json_encode($duplicated_statements, JSON_THROW_ON_ERROR));
-//                    try {
-//                        // Delete the ids from the opensearch
-//                        $client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
-//
-//                        // Delete From the DB
-//                        DB::table('statements')->whereIn('id', $ids_to_delete)->delete();
-//                    } catch (Exception $e) {
-//                        Log::error('DD Error: ' . $e->getMessage(), $e->getTrace());
-//                    }
+            try {
+                // Delete the ids from the opensearch
+                $client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
+
+                // Delete From the DB
+                DB::table('statements')->whereIn('id', $ids_to_delete)->delete();
+            } catch (Exception $e) {
+                Log::error('DD Error: ' . $e->getMessage(), $e->getTrace());
+            }
         }
     }
 }
