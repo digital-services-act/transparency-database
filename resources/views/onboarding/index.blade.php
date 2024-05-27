@@ -14,6 +14,11 @@
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Onboarding Dashboard</h1>
 
+    <p class="ecl-u-type-paragraph">
+        Total number of VLOP platforms {{ $vlop_count }}<br />
+        Total number of non-VLOP platforms {{ $platforms->count() }}<br />
+        Total number of platforms that have sent data via API or webform {{ $total_platforms_sending }}
+    </p>
 
     @foreach($platforms as $platform)
 
@@ -21,7 +26,7 @@
         @if(strtolower((string) config('app.env_real')) === 'production')
         <p class="ecl-u-type-paragraph"> Count is not available in production</p>
         @else
-        <p>
+        <p class="ecl-u-type-paragraph">
             <x-onboarding.label :count="$platform->api_statements->count()" label="API Statements"/>
             <x-onboarding.label :count="$platform->api_multi_statements->count()" label="API Multi Statements"/>
             <x-onboarding.label :count="$platform->form_statements->count()" label="FORM Statements"/>

@@ -390,6 +390,12 @@ class StatementSearchService
         }
     }
 
+    public function totalPlatformsSending()
+    {
+        $query = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name;
+        $result = $this->runSql($query);
+        return $this->extractCountQueryResult($result);
+    }
 
 
     public function startCountQuery(): string

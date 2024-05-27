@@ -26,22 +26,21 @@ use App\Http\Controllers\Traits\Sanitizer;
 
 class StatementController extends Controller
 {
-    protected EuropeanCountriesService $european_countries_service;
-
     use Sanitizer;
 
     public function __construct(
         protected StatementQueryService $statement_query_service,
         protected StatementSearchService $statement_search_service,
-        EuropeanCountriesService $european_countries_service,
+        protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
     )
     {
-        $this->european_countries_service = $european_countries_service;
     }
 
     /**
+     * @param Request $request
+     *
      * @return View|Factory|Application
      */
     public function index(Request $request): View|Factory|Application
