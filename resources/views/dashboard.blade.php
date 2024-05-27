@@ -41,7 +41,8 @@
         2. {{__('dashboard.Timelines')}}<br/>
         3. {{__('dashboard.Violations')}}<br/>
         4. {{__('dashboard.Restrictions')}}<br/>
-        5. {{__('dashboard.Other analysis')}}<br/><br/>
+        5. {{__('dashboard.Platforms')}}<br/>
+        6. {{__('dashboard.Other analysis')}}<br/><br/>
         {{__('dashboard.For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.')}}<br/>
         {!! __('dashboard.By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods.')!!}
 
@@ -60,7 +61,7 @@
 
     <h2 class="ecl-u-type-heading-1">{{__('dashboard.Instructions')}}</h2>
     <div style="width:110%; !important;
-            margin-left: -40px;
+            margin-left: -20px;
             max-height:100%">
 
         <div class="ecl-u-d-flex">
