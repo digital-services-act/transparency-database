@@ -21,6 +21,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -85,4 +86,14 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', static fn(string $page, bool $profile = false): Application|Factory|View|RedirectResponse|Redirector => (new PageController())->show($page, $profile))->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    Route::get('setlocale', function (Request $request) {
+        if(!config('dsa.TRANSLATIONS')) return back();
+        $locale = $request->input('locale');
+        if (in_array($locale, config('app.locales'))) {
+            session(['locale' => $locale]);
+            session(['force_lang' => true]);
+        }
+        return back();
+    })->name('setlocale');
 });
