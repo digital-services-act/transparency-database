@@ -69,6 +69,7 @@ class StatementSearchService
 
     // When caching, go for 25 hours. Just so that there is a overlap.
     public const ONE_DAY = 25 * 60 * 60;
+    public const FIVE_MINUTES = 5 * 60 * 60;
 
     public function __construct(private readonly Client $client)
     {
@@ -390,6 +391,14 @@ class StatementSearchService
         }
     }
 
+    public function totalPlatformsSending()
+    {
+        return Cache::remember('total_sending_platforms', self::FIVE_MINUTES, function(){
+            $query = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name;
+            $result = $this->runSql($query);
+            return $this->extractCountQueryResult($result);
+        });
+    }
 
 
     public function startCountQuery(): string
