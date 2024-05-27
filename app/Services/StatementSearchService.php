@@ -392,9 +392,11 @@ class StatementSearchService
 
     public function totalPlatformsSending()
     {
-        $query = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name;
-        $result = $this->runSql($query);
-        return $this->extractCountQueryResult($result);
+        return Cache::remember('total_sending_platforms', self::ONE_DAY, function(){
+            $query = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name;
+            $result = $this->runSql($query);
+            return $this->extractCountQueryResult($result);
+        });
     }
 
 

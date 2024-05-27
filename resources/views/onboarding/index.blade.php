@@ -14,11 +14,43 @@
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Onboarding Dashboard</h1>
 
-    <p class="ecl-u-type-paragraph">
-        Total number of VLOP platforms {{ $vlop_count }}<br />
-        Total number of non-VLOP platforms {{ $platforms->count() }}<br />
-        Total number of platforms that have sent data via API or webform {{ $total_platforms_sending }}
-    </p>
+    <div class="ecl-table-responsive">
+        <table class="ecl-table ecl-table--zebra">
+            <thead class="ecl-table__head">
+            <tr class="ecl-table__row">
+                <th scope="col" class="ecl-table__header">Statistic</th>
+                <th scope="col" class="ecl-table__header">Total</th>
+            </tr>
+            </thead>
+            <tbody class="ecl-table__body">
+                <tr class="ecl-table__row">
+                    <td class="ecl-table__cell" data-ecl-table-header="Statistic">
+                        VLOP platforms
+                    </td>
+                    <td class="ecl-table__cell" data-ecl-table-header="Total">
+                        {{ $vlop_count }}
+                    </td>
+                </tr>
+                <tr class="ecl-table__row">
+                    <td class="ecl-table__cell" data-ecl-table-header="Statistic">
+                        Non-VLOP platforms
+                    </td>
+                    <td class="ecl-table__cell" data-ecl-table-header="Total">
+                        {{ $platforms->count() }}
+                    </td>
+                </tr>
+                <tr class="ecl-table__row">
+                    <td class="ecl-table__cell" data-ecl-table-header="Statistic">
+                        Platforms that have sent data via API or webform
+                    </td>
+                    <td class="ecl-table__cell" data-ecl-table-header="Total">
+                        {{ $total_platforms_sending }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 
     @foreach($platforms as $platform)
 
