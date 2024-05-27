@@ -41,10 +41,10 @@
                 </tr>
                 <tr class="ecl-table__row">
                     <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                        Platforms that have sent data via API or webform
+                        Non-VLOP Platforms that have sent data via API or webform
                     </td>
                     <td class="ecl-table__cell" data-ecl-table-header="Total">
-                        {{ $total_platforms_sending }}
+                        {{ $total_non_vlop_platforms_sending }}
                     </td>
                 </tr>
             </tbody>
