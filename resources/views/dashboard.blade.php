@@ -32,10 +32,10 @@
 
     </style>
 
-    <h1 class="ecl-u-type-heading-1">{{__('dashboard.Dashboard')}}</h1>
+    <h1 class="ecl-u-type-heading-1">{{__('dashboard.Dashboard')}}</h1 class="ecl-u-type-heading-1">
 
 
-    <p class="ecl-u-type-paragraph" style="max-width:none !important">
+    <p class="ecl-u-type-paragraph ecl-u-type-s" style="max-width:none !important">
         {{__('dashboard.The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard:')}}<br/><br/>
         1. {{__('dashboard.Overview')}}<br/>
         2. {{__('dashboard.Timelines')}}<br/>
@@ -59,7 +59,7 @@
 
 
 
-    <h2 class="ecl-u-type-heading-1">{{__('dashboard.Instructions')}}</h2>
+    <h2 class="ecl-u-type-heading-2">{{__('dashboard.Instructions')}}</h2>
     <div style="width:110%; !important;
             margin-left: -20px;
             max-height:100%">
