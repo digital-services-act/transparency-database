@@ -395,7 +395,7 @@ class StatementSearchService
     {
         return Cache::remember('total_sending_platforms', self::FIVE_MINUTES, function(){
             $vlop_platform_ids = implode(',', Platform::Vlops()->pluck('id')->toArray());
-            $query = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE NOT IN (" . $vlop_platform_ids . ")";
+            $query = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE platform_id NOT IN (" . $vlop_platform_ids . ")";
             $result = $this->runSql($query);
             return $this->extractCountQueryResult($result);
         });
