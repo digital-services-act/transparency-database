@@ -7,6 +7,7 @@ return [
     "Timelines" => "Timelines",
     "Violations" => "Violations",
     "Restrictions" => "Restrictions",
+    "Platforms" => "Platforms",
     "Other analysis" => "Other analysis",
     "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard." => "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.",
     "By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods." => "<strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply filters to view data for other time periods.",
