@@ -9,6 +9,7 @@ return [
     "Restrictions" => "Restrictions",
     "Other analysis" => "Autres analyses",
     "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard." => "Pour des conseils supplémentaires sur l'utilisation optimale de l'outil, veuillez vous référer aux instructions en-dessous du tableau de bord.",
+    "By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods." => "<strong>Par défaut</strong>, le tableau de bord affiche les données des <strong>derniers 30 jours</strong> ; vous pouvez appliquer des filtres pour consulter les données d'autres périodes.",
     "Instructions" => "Instructions",
     "Introduction" => "Introduction",
     "The purpose of this dashboard is to help users without programming skills explore aggregated data in the DSA Transparency Database. These instructions are to assist you in making the best use of all the available features." => "Le but de ce tableau de bord est d'aider les utilisateurs sans compétences en programmation à explorer les données agrégées de la base de données de transparence de la DSA. Ces instructions ont pour but de vous aider à tirer le meilleur parti de toutes les fonctionnalités disponibles.",

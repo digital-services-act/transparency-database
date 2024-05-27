@@ -9,6 +9,7 @@ return [
     "Restrictions" => "Restrictions",
     "Other analysis" => "Other analysis",
     "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard." => "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.",
+    "By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods." => "<strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply filters to view data for other time periods.",
     "Instructions" => "Instructions",
     "Introduction" => "Introduction",
     "The purpose of this dashboard is to help users without programming skills explore aggregated data in the DSA Transparency Database. These instructions are to assist you in making the best use of all the available features." => "The purpose of this dashboard is to help users without programming skills explore aggregated data in the DSA Transparency Database. These instructions are to assist you in making the best use of all the available features.",

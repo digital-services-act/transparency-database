@@ -43,6 +43,8 @@
         4. {{__('dashboard.Restrictions')}}<br/>
         5. {{__('dashboard.Other analysis')}}<br/><br/>
         {{__('dashboard.For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.')}}<br/>
+        {!! __('dashboard.By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods.')!!}
+
     </p>
 
     <div class="responsive-iframe-container">

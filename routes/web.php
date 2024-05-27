@@ -88,6 +88,7 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
     Route::get('setlocale', function (Request $request) {
+        if(!config('dsa.TRANSLATIONS')) return back();
         $locale = $request->input('locale');
         if (in_array($locale, config('app.locales'))) {
             session(['locale' => $locale]);
