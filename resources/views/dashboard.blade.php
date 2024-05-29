@@ -44,7 +44,8 @@
         5. {{__('dashboard.Platforms')}}<br/>
         6. {{__('dashboard.Other analysis')}}<br/><br/>
         {{__('dashboard.For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.')}}<br/>
-        {!! __('dashboard.By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods.')!!}
+        {!! __('dashboard.By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods.')!!}<br/><br/>
+        {!! __('dashboard.Please note that a Data Retention Policy applies and that the Dashboard is showing data aggregated from a longer period of time in the past with respect to the data available on the search page. This might result in different numbers of Statements of Reasons being reported by the Dashboard and the search pages even when the same filtering settings are applied.')!!}
 
     </p>
 
