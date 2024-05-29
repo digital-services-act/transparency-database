@@ -16,7 +16,9 @@ return [
                 statements of reasons, please visit the
                 “<a class="ecl-link" href="/data-download">Data download</a>” page.
                 To submit feedback on the content of this page and to propose additional features, please visit the
-                <a class="ecl-link" href="/feedback">feedback form</a>.',
+                <a class="ecl-link" href="/feedback">feedback form</a>.<br/><br/>
+                Please note that a <a href="/page/data-retention-policy">Data Retention Policy</a> applies and search results refer to the Statements of Reasons submitted within a limited amount of time in time past.
+                ',
     "Statements of Reasons" => "Déclarations de motifs",
     'Statements of Reasons Found: ' => 'Statements of Reasons Found: ',
     '.csv' => '.csv',
