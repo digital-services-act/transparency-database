@@ -81,7 +81,7 @@ class StatementsRemoveReddits extends Command
 
         $this->info('Reddits Found: ' . $opensearch_result['hits']['total']['value']);
 
-        if ( $opensearch_result['hits']['total']['value'] > 0) {
+        if ( count($opensearch_result['hits']['hits']) > 0) {
             $ids_to_delete = [];
             $opensearch_bulk_delete = [];
 
