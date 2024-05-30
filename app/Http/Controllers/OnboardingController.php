@@ -17,12 +17,12 @@ class OnboardingController extends Controller
     {
         $vlop_count = Platform::Vlops()->count();
         $platforms = Platform::nonVlops()->with('users')->orderBy('name')->get();
-        $total_platforms_sending = $this->statement_search_service->totalPlatformsSending();
+        $total_non_vlop_platforms_sending = $this->statement_search_service->totalNonVlopPlatformsSending();
 
         return view('onboarding.index', [
             'platforms' => $platforms,
             'vlop_count' => $vlop_count,
-            'total_platforms_sending' => $total_platforms_sending
+            'total_non_vlop_platforms_sending' => $total_non_vlop_platforms_sending
         ]);
 
     }

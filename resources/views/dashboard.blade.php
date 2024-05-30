@@ -32,7 +32,7 @@
 
     </style>
 
-    <h1 class="ecl-u-type-heading-1">{{__('dashboard.Dashboard')}}</h1>
+    <h1 class="ecl-u-type-heading-1">{{__('dashboard.Dashboard')}}</h1 class="ecl-u-type-heading-1">
 
 
     <p class="ecl-u-type-paragraph" style="max-width:none !important">
@@ -60,7 +60,7 @@
 
 
 
-    <h2 class="ecl-u-type-heading-1">{{__('dashboard.Instructions')}}</h2>
+    <h2 class="ecl-u-type-heading-2">{{__('dashboard.Instructions')}}</h2>
     <div style="width:110%; !important;
             margin-left: -20px;
             max-height:100%">
@@ -89,7 +89,7 @@
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">{{__('dashboard.For definitions of terms used, please refer to the')}}
                     <a href="{{ route('page.show', ['faq']) }}">{{__('menu.FAQ')}}</a>
                     {{__('dashboard.section and the')}}
-                    <a href="{{ route('profile.page.show', ['api-documentation']) }}">{{__('menu.API Documentation')}}</a>
+                    <a href="{{ route('profile.page.show', ['api-documentation']) }}">{{__('dashboard.API documentation')}}</a>
                     {{__('dashboard.of the DSA Transparency Database. Kindly note that “violations” refer to the variable “category” of the API documentation.')}}</div>
 
             </div>

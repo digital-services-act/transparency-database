@@ -48,4 +48,5 @@ return [
     "Adjusting the date format" => "Adjusting the date format",
     "By default, the dashboard considers your browser’s settings for the format of displaying dates. Therefore, you may see dates as MM/DD/YYYY, instead of DD/MM/YYYY. To see dates in the latter format, change your browser’s language preference." => "By default, the dashboard considers your browser’s settings for the format of displaying dates. Therefore, you may see dates as MM/DD/YYYY, instead of DD/MM/YYYY. To see dates in the latter format, change your browser’s language preference.",
     "For example, for Google Chrome, type on the URL box: chrome://settings/languages and choose “English (United Kingdom, Oxford English Dictionary spelling)” as the preferred language. For Firefox, go to 'Settings', select 'Languages' and choose 'English (GB)'." => "For example, for Google Chrome, type on the URL box: chrome://settings/languages and choose “English (United Kingdom, Oxford English Dictionary spelling)” as the preferred language. For Firefox, go to 'Settings', select 'Languages' and choose 'English (GB)'.",
+    "API documentation" => "API documentation"
 ];
