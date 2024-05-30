@@ -6,6 +6,7 @@ use App\Jobs\StatementArchiveRange;
 use App\Services\DayArchiveService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
@@ -78,6 +79,27 @@ class StatementsRemoveReddits extends Command
             ],
         ]);
 
-        dd($opensearch_result);
+        if ( $opensearch_result['hits']['total']['value'] > 0) {
+            $ids_to_delete = [];
+            $opensearch_bulk_delete = [];
+
+            foreach ($opensearch_result['hits']['hits'] as $hit) {
+                $ids_to_delete[] = $hit['_source']['id'];
+                $opensearch_bulk_delete[] = json_encode([
+                    'delete' => [
+                        '_index' => 'statement_index',
+                        '_id'    => $hit['_source']['id']
+                    ]
+                ], JSON_THROW_ON_ERROR);
+            }
+
+            // Delete the ids from the opensearch
+            //$client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
+
+            // Delete From the DB
+            //DB::table('statements')->whereIn('id', $ids_to_delete)->delete();
+
+            dd([$ids_to_delete, $opensearch_bulk_delete]);
+        }
     }
 }
