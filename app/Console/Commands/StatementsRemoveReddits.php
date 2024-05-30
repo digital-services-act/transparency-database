@@ -73,11 +73,8 @@ class StatementsRemoveReddits extends Command
                     ]
                 ]
             ],
-            "_source" => [
-                "includes" => [
-                    "id"
-                ],
-                "excludes" => []
+            "_source_includes" => [
+                "id"
             ],
         ]);
 
