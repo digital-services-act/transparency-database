@@ -79,6 +79,8 @@ class StatementsRemoveReddits extends Command
             ],
         ]);
 
+        $this->info('Reddits Found: ' . $opensearch_result['hits']['total']['value']);
+
         if ( $opensearch_result['hits']['total']['value'] > 0) {
             $ids_to_delete = [];
             $opensearch_bulk_delete = [];
@@ -94,12 +96,10 @@ class StatementsRemoveReddits extends Command
             }
 
             // Delete the ids from the opensearch
-            //$client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
+            $client->bulk(['require_alias' => true, 'body' => implode("\n", $opensearch_bulk_delete)]);
 
             // Delete From the DB
-            //DB::table('statements')->whereIn('id', $ids_to_delete)->delete();
-
-            dd([$ids_to_delete, $opensearch_bulk_delete]);
+            DB::table('statements')->whereIn('id', $ids_to_delete)->delete();
         }
     }
 }
