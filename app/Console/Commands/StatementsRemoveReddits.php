@@ -35,7 +35,7 @@ class StatementsRemoveReddits extends Command
         $chunk = $this->intifyArgument('chunk');
 
         $google_shopping = 26;
-        $search = 'reddit';
+        $search = 'www.redditinc.com"';
 
         $opensearch_result = $client->search([
             'index' => 'statement_index',
