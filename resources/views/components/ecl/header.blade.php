@@ -1,4 +1,4 @@
-<header class="ecl-site-header" data-ecl-auto-init="SiteHeader">
+<header class="ecl-site-header ecl-site-header--has-menu" data-ecl-auto-init="SiteHeader">
     <div class="ecl-site-header__background">
         <div class="ecl-site-header__header">
             <div class="ecl-site-header__container ecl-container">
@@ -16,7 +16,7 @@
                     </a>
                     <div class="ecl-site-header__action">
                         @if(config('dsa.TRANSLATIONS'))
-                        <x-ecl.language-menu/>
+                            <x-ecl.language-menu/>
                         @endif
                         {{--                        <x-ecl.search-site/>--}}
                         <x-ecl.login-menu/>
@@ -83,7 +83,7 @@
                             <a href="{{ route('home') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">{{__('menu.Home')}}</a>
+                               id="ecl-menu-home-link">Home</a>
                         </li>
 
 
@@ -93,7 +93,7 @@
                             <a href="{{route('dashboard')}}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
-                               id="ecl-menu-item-database-link">{{__('menu.The Database')}}</a>
+                               id="ecl-menu-item-database-link">The Database</a>
                             <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
                                     type="button"
                                     data-ecl-menu-caret="" aria-label="The Database"
@@ -110,15 +110,18 @@
                                 <ul class="ecl-menu__sublist">
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{route('dashboard')}}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Dashboard')}}</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Dashboard</a>
                                     </li>
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{route('dayarchive.index')}}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Data Download')}}</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Data
+                                            Download</a>
                                     </li>
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{route('statement.index')}}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Search for Statements of Reasons')}}</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Search
+                                            for
+                                            Statements of Reasons</a>
                                     </li>
                                 </ul>
                             </div>
@@ -131,7 +134,7 @@
                             <a href="{{ route('page.show', ['faq']) }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
-                               id="ecl-menu-item-faq-link">{{__('menu.FAQ')}}</a>
+                               id="ecl-menu-item-faq-link">FAQ</a>
                             <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
                                     type="button"
                                     data-ecl-menu-caret="" aria-label="FAQ"
@@ -147,16 +150,16 @@
                             <div class="ecl-menu__mega" data-ecl-menu-mega="">
                                 <ul class="ecl-menu__sublist">
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{ route('page.show', [__('menu.General_link')]) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.General')}}</a>
+                                        <a href="{{ route('page.show', ['faq']) }}#general-faq"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">General</a>
                                     </li>
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{ route('page.show', [__('menu.Technical_link')]) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Technical')}}</a>
+                                        <a href="{{ route('page.show', ['faq']) }}#technical-faq"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Technical</a>
                                     </li>
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{ route('page.show', [__('menu.Platforms_link')]) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Platforms')}}</a>
+                                        <a href="{{ route('page.show', ['faq']) }}#platform-faq"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Platforms</a>
                                     </li>
                                 </ul>
                             </div>
@@ -169,7 +172,7 @@
                             <a href="{{ route('profile.page.show', ['documentation']) }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">{{__('menu.Platforms')}}</a>
+                               id="ecl-menu-item-platforms-link">Platforms</a>
                             <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
                                     type="button"
                                     data-ecl-menu-caret="" aria-label="Platforms"
@@ -191,28 +194,27 @@
                                         <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                             <a href="{{ route('statement.create') }}"
                                                class="ecl-link ecl-link--standalone ecl-menu__sublink">
-                                                {{__('menu.Submit statements of reasons')}}
+                                                Submit statements of reasons
                                             </a>
                                         </li>
                                     @endcan
 
-                                            <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                                <a href="{{  route('profile.page.show', ['documentation']) }}"
-                                                   class="ecl-link ecl-link--standalone ecl-menu__sublink">
-                                                    {{__('menu.Global Documentation')}}
-                                                </a>
-                                            </li>
-                                            <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                                <a href="{{  route('profile.page.show', ['api-documentation']) }}"
-                                                   class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.API Documentation')}}</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{ route('profile.page.show', ['documentation']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">
+                                            Global Documentation
+                                        </a>
+                                    </li>
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('profile.page.show', ['api-documentation']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API
+                                            Documentation</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
             </div>
 
         </nav>
