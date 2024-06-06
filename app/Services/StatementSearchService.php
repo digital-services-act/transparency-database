@@ -77,6 +77,9 @@ class StatementSearchService
 
     /**
      *
+     * @param array $filters
+     * @param array $options
+     *
      * @return Builder
      */
     public function query(array $filters, array $options = []): Builder
@@ -618,14 +621,14 @@ class StatementSearchService
 
     public function uuidToId(string $uuid): int
     {
+        $uuid = str_replace("-", " ", $uuid); // replace the - with ' '
         $query = [
             "size"    => 1,
             "query"   => [
-                "bool" => [
-                    "must" => [
-                        "match" => [
-                            "uuid" => $uuid
-                        ]
+                "match" => [
+                    "uuid" => [
+                        "query" => $uuid,
+                        "operator" => "and"
                     ]
                 ]
             ],
@@ -636,6 +639,14 @@ class StatementSearchService
                 "excludes" => []
             ]
         ];
+
+        $result = $this->client->search([
+            'index' => $this->index_name,
+            'body'  => $query,
+        ]);
+
+        return $result['hits']['hits'][0]['_source']['id'] ?? 0;
+
     }
 
     public function PlatformIdPuidToId(int $platform_id, string $puid): int
