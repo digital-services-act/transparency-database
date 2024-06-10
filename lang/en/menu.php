@@ -14,7 +14,7 @@ return [
     'FAQ' => 'FAQ',
     'General' => 'General',
     'Technical' => 'Technical',
-    'Platforms' => 'Platforms',
+    'Documentations' => 'Documentations',
     'General_link'=>'faq#general-faq',
     'Technical_link'=>'faq#technical-faq',
     'Platforms_link'=>'faq#platforms-faq',
