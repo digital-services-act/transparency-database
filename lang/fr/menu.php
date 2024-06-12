@@ -20,5 +20,6 @@ return [
     'Documentations' => 'Documentations',
     'Submit statements of reasons' => 'Soumettre des Déclarations de Raisons',
     'Global Documentation' => 'Documentation Globale',
-    'API Documentation' => 'Documentation de l\'API'
+    'API Documentation' => 'Documentation de l\'API',
+    'Onboarding' => 'Intégration'
 ];

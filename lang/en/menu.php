@@ -20,5 +20,5 @@ return [
     'Platforms_link'=>'faq#platforms-faq',
     'Submit statements of reasons' => 'Submit statements of reasons',
     'Global Documentation' => 'Global Documentation',
-    'API Documentation' => 'API Documentation',
+    'API Documentation' => 'API Documentation'
  ];

@@ -108,82 +108,6 @@
                         </li>
 
 
-{{--                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""--}}
-{{--                            data-ecl-has-children=""--}}
-{{--                            aria-expanded="false" id="ecl-menu-item-database">--}}
-{{--                            <a href="{{route('dashboard')}}"--}}
-{{--                               class="ecl-link ecl-link--standalone ecl-menu__link"--}}
-{{--                               data-ecl-menu-link=""--}}
-{{--                               id="ecl-menu-item-database-link">{{__('menu.The Database')}}</a>--}}
-{{--                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"--}}
-{{--                                    type="button"--}}
-{{--                                    data-ecl-menu-caret="" aria-label="The Database"--}}
-{{--                                    aria-expanded="false"--}}
-{{--                                    aria-describedby="ecl-menu-item-database-link">--}}
-{{--                                        <span class="ecl-button__container">--}}
-{{--                                            <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"--}}
-{{--                                                 focusable="false" aria-hidden="true" data-ecl-icon="">--}}
-{{--                                                <x-ecl.icon icon="corner-arrow"/>--}}
-{{--                                            </svg>--}}
-{{--                                        </span>--}}
-{{--                            </button>--}}
-{{--                            <div class="ecl-menu__mega" data-ecl-menu-mega="">--}}
-{{--                                <ul class="ecl-menu__sublist">--}}
-{{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                        <a href="{{route('dashboard')}}"--}}
-{{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Dashboard')}}</a>--}}
-{{--                                    </li>--}}
-{{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                        <a href="{{route('dayarchive.index')}}"--}}
-{{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Data Download')}}</a>--}}
-{{--                                    </li>--}}
-{{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                        <a href="{{route('statement.index')}}"--}}
-{{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Search for Statements of Reasons')}}</a>--}}
-{{--                                    </li>--}}
-{{--                                </ul>--}}
-{{--                            </div>--}}
-{{--                        </li>--}}
-
-
-{{--                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""--}}
-{{--                            data-ecl-has-children=""--}}
-{{--                            aria-expanded="false" id="ecl-menu-item-faq">--}}
-{{--                            <a href="{{ route('page.show', ['faq']) }}"--}}
-{{--                               class="ecl-link ecl-link--standalone ecl-menu__link"--}}
-{{--                               data-ecl-menu-link=""--}}
-{{--                               id="ecl-menu-item-faq-link">{{__('menu.FAQ')}}</a>--}}
-{{--                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"--}}
-{{--                                    type="button"--}}
-{{--                                    data-ecl-menu-caret="" aria-label="FAQ"--}}
-{{--                                    aria-expanded="false">--}}
-{{--                                            <span class="ecl-button__container">--}}
-{{--                                                <svg--}}
-{{--                                                        class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"--}}
-{{--                                                        focusable="false" aria-hidden="true" data-ecl-icon="">--}}
-{{--                                                    <x-ecl.icon icon="corner-arrow"/>--}}
-{{--                                                </svg>--}}
-{{--                                            </span>--}}
-{{--                            </button>--}}
-{{--                            <div class="ecl-menu__mega" data-ecl-menu-mega="">--}}
-{{--                                <ul class="ecl-menu__sublist">--}}
-{{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                        <a href="{{ route('page.show', [__('menu.General_link')]) }}"--}}
-{{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.General')}}</a>--}}
-{{--                                    </li>--}}
-{{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                        <a href="{{ route('page.show', [__('menu.Technical_link')]) }}"--}}
-{{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Technical')}}</a>--}}
-{{--                                    </li>--}}
-{{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                        <a href="{{ route('page.show', [__('menu.Platforms_link')]) }}"--}}
-{{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.Platforms')}}</a>--}}
-{{--                                    </li>--}}
-{{--                                </ul>--}}
-{{--                            </div>--}}
-{{--                        </li>--}}
-
-
                         <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
                             data-ecl-has-children=""
                             aria-expanded="false" id="ecl-menu-item-platforms">
@@ -226,6 +150,16 @@
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('profile.page.show', ['api-documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.API Documentation')}}</a>
+                                    </li>
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('profile.page.show', ['onboarding']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Onboarding')}}</a>
+                                    </li>
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('profile.page.show', ['webform-documentation']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Webform Documentation')}}</a>
                                     </li>
                                 </ul>
                             </div>

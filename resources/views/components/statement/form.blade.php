@@ -10,8 +10,8 @@
               select_all="All"
               select_item="{{__('statement-create.Select visibility decision(s)')}}"
               enter_keyword="Enter a visibility decision"
+              info_text="Additional Information AAA"
 />
-
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
                  id="decision_visibility_other" required="true"/>
@@ -112,7 +112,9 @@
               :options="$options['decision_grounds']"
               required="true"/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" name="decision_ground_reference_url" id="decision_ground_reference_url" />
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" name="decision_ground_reference_url" id="decision_ground_reference_url"
+                 hover-text="Some help about the decision_ground_reference_url"
+/>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND" name="illegal_content_legal_ground"
                  id="illegal_content_legal_ground" required="true"/>
