@@ -7,12 +7,12 @@
 
     .hover-text {
         visibility: hidden;
-        width: 200px;
-        background-color: black;
+        width: 300px;
+        background-color: #1b3f7e;
         color: #fff;
         text-align: center;
         border-radius: 6px;
-        padding: 5px 10px;
+        padding: 5px 5px;
         position: absolute;
         z-index: 1;
         opacity: 0;
@@ -29,14 +29,14 @@
     $randomID = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(10/strlen('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')))), 1, 10);
 @endphp
 
-<div class="hover-container" onmousemove="showHoverText(event)">
-    <svg class="ecl-icon ecl-icon--m ecl-link__icon ecl-u-type-color-primary" focusable="false" aria-hidden="true" style="vertical-align: bottom">
+<span class="hover-container" onmousemove="showHoverText(event)">
+    <svg class="ecl-icon ecl-icon--m ecl-link__icon ecl-u-type-color-primary ecl-u-ml-s" focusable="false" aria-hidden="true" style="vertical-align: middle;">
         <x-ecl.icon icon="information"/>
     </svg>
-    <div class="hover-text" id="{{$randomID}}">
+    <span class="hover-text" id="{{$randomID}}">
         {{ $hoverText }}
-    </div>
-</div>
+    </span>
+</span>
 
 <script>
     function showHoverText(event) {

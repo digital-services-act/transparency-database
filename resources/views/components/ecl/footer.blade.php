@@ -51,7 +51,7 @@
                         <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', [__('menu.General_link')]) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="{{__('menu.General')}}">{{__('menu.FAQ')}}</a></li>
+                               aria-label="{{__('menu.General')}}">{{__('pages.Faq')}}</a></li>
 
                         <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', ['page' => 'announcements']) }}"

@@ -1,6 +1,10 @@
 @props(['enter_keyword'=>'Enter keyword','select_item'=>'Select an Item', 'justlabel' => false, 'select_all' => 'Select All', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => [], 'info_text' => null])
 <div class="ecl-form-group ecl-u-mb-l" id="{{ $id }}-multisel">
-    <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel"/>
+    <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" :info_text="$info_text"/>
+    @if($info_text)
+{{--        <x-hover-text :hoverText="$info_text"/>--}}
+{{--        <x-ecl.popover :id="$id" :text="$info_text"/>--}}
+    @endif
     <x-ecl.help :help="$help"/>
     <x-ecl.error-feedback :name="$name"/>
     <div class="ecl-select__container ecl-select__container--{{ $size }}">
@@ -30,9 +34,7 @@
         </div>
     </div>
 
-    @if($info_text)
-        <x-hover-text :hoverText="$info_text"/>
-    @endif
+
 
 
 </div>

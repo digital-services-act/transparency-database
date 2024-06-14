@@ -11,7 +11,7 @@ return [
     "Faq" => "Frequently Asked Questions",
     "Search for Statements of Reasons" => "Search for Statements of Reasons",
     "Create a Statement of Reason" => "Create a Statement of Reason",
-    'Onboarding' => 'Onboarding',
+    'Onboarding' => 'Onboarding - How To',
     'Webform Documentation' => "Webform Documentation"
 
 ];

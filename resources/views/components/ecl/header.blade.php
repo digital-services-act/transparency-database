@@ -147,15 +147,19 @@
                                             {{__('menu.Global Documentation')}}
                                         </a>
                                     </li>
-                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('profile.page.show', ['api-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.API Documentation')}}</a>
-                                    </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('profile.page.show', ['onboarding']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Onboarding')}}</a>
                                     </li>
+
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('profile.page.show', ['api-documentation']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.API Documentation')}}</a>
+                                    </li>
+
+
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('profile.page.show', ['webform-documentation']) }}"
