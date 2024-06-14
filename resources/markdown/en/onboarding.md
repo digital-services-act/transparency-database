@@ -23,7 +23,7 @@ Once you are onboarded via your Digital Service Coordinator, you will gain acces
 Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency Database, where you can start submitting your statement of reasons via a webform.
 </p>
 
-<h4>Detailed steps:</h4>
+<h4>Detailed steps</h4>
 
 <p class="ecl-u-type-paragraph" style="max-width:none !important">
 <strong>1. Creation of EU login accounts</strong><br/>
@@ -32,7 +32,7 @@ Once the testing phase is completed, you will be able to move to the production 
 You will need two separate EU login accounts, one will be used in the test environment and the other in the production environment. You will find an introduction to EU Login <a href="https://webgate.ec.europa.eu/cas/help.html#:~:text=How%20do%20I%20create%20my%20EU%20Login%20account%3F">here</a>.</p>
 
 
-<strong>Please note:</strong>
+<div class="ecl-u-type-m ecl-u-type-underline">Please note</div>
 <div style="margin-left:20px">
 <p class="ecl-u-type-paragraph" style="max-width:none !important;">
 a) You should supply at least 2 emails specifically for submitting statements of reasons (1 for test/sandbox and 1 for production)<br/>
