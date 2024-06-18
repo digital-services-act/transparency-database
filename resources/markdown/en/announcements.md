@@ -1,3 +1,10 @@
+#### [Announcement – DB] Consistency check of the Transparency Database completed
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 18/06/2024</p>
+
+On 18 June 2024, the DSA Transparency Database team completed the data consistency check. After the data cleaning, all the daily dumps files have been regenerated to reflect the cleaned content of the database. The dashboard and the descriptive statistics on the website’s homepage have also been updated accordingly. The DSA Transparency Database team will continue to monitor the consistency and quality of the data submitted to the database.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – DB] Removing duplicated entries from the Transparency Database
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 14/05/2024</p>
 
