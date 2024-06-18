@@ -13,14 +13,14 @@ return [
                 accessing, analysing, and downloading the information that platforms need to make available when
                 they take content moderation decisions, contributing to the monitoring of the dissemination
                 of illegal and harmful content online.',
-        'Below you can find some summary statistics on the statements of reasons submitted by providers
-                of online platforms to the Commission.'
+        'Below you can find some summary statistics on the statements of reasons submitted by providers of online platforms to the Commission in the last six months (180 days, see the <a href="https://transparency.dsa.ec.europa.eu/page/data-retention-policy">Data Retention Policy</a> for details).'
+
     ],
     'More questions? Check our FAQ' => 'More questions? Check our FAQ',
     'Discover more about the Digital Services Act' => 'Discover more about the <br />Digital Services Act',
     'Overview of the Database' => 'Overview of the Database',
     'Visualize the data in the dashboard' => 'Visualize the data in the dashboard',
-    'Total number of statements of reasons submitted' => 'Total number of statements of reasons submitted',
+    'Total number of statements of reasons submitted' => 'Total number of statements of reasons submitted in the last six months',
     'Most Reported Violations' => 'Most Reported Violations',
     'Top Restriction Types' => 'Top Restriction Types',
     'Number of active platforms' => 'Number of active platforms',
