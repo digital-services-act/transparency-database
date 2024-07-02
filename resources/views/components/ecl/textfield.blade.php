@@ -1,6 +1,6 @@
 @props(['label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'size' => 'l', 'placeholder' => '', 'value' => null, 'justlabel' => false, 'readonly' => false, 'info_text'=>null])
 
-<div class="ecl-form-group ecl-u-mb-l" id="div_{{$id}}">
+<div class="ecl-form-group ecl-u-mb-2xl" id="div_{{$id}}">
     <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" :info_text="$info_text"/>
     <x-ecl.help :help="$help" />
     <x-ecl.error-feedback :name="$name" />

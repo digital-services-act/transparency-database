@@ -30,7 +30,7 @@
 @endphp
 
 <span class="hover-container" onmousemove="showHoverText(event)">
-    <svg class="ecl-icon ecl-icon--m ecl-link__icon ecl-u-type-color-primary ecl-u-ml-s" focusable="false" aria-hidden="true" style="vertical-align: middle;">
+    <svg class="ecl-icon ecl-icon--xs ecl-link__icon ecl-u-type-color-primary ecl-u-ml-s" focusable="false" aria-hidden="true" style="vertical-align: middle;">
         <x-ecl.icon icon="information"/>
     </svg>
     <span class="hover-text" id="{{$randomID}}">
