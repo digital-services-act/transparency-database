@@ -19,7 +19,7 @@ return [
                 <a class="ecl-link" href="/feedback">feedback form</a>.<br/><br/>
                 Please note that a <a href="/page/data-retention-policy">Data Retention Policy</a> applies and search results refer to the Statements of Reasons submitted within a limited amount of time in time past.
                 ',
-    "Statements of Reasons" => "Déclarations de motifs",
+    "Statements of Reasons" => "Statements of Reasons",
     'Statements of Reasons Found: ' => 'Statements of Reasons Found: ',
     '.csv' => '.csv',
     'Advanced Search' => 'Advanced Search'
