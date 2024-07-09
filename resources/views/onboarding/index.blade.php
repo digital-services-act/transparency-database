@@ -42,6 +42,15 @@
 
                 <tr class="ecl-table__row">
                     <td class="ecl-table__cell" data-ecl-table-header="Statistic">
+                        VLOP Valid Tokens
+                    </td>
+                    <td class="ecl-table__cell" data-ecl-table-header="Total">
+                        {{ $total_vlop_valid_tokens }}
+                    </td>
+                </tr>
+
+                <tr class="ecl-table__row">
+                    <td class="ecl-table__cell" data-ecl-table-header="Statistic">
                         Non-VLOP platforms
                     </td>
                     <td class="ecl-table__cell" data-ecl-table-header="Total">
@@ -57,12 +66,14 @@
                     </td>
                 </tr>
 
+
+
                 <tr class="ecl-table__row">
                     <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                        Valid Tokens
+                        Non-VLOP Valid Tokens
                     </td>
                     <td class="ecl-table__cell" data-ecl-table-header="Total">
-                        {{ $total_valid_tokens }}
+                        {{ $total_non_vlop_valid_tokens }}
                     </td>
                 </tr>
             </tbody>
