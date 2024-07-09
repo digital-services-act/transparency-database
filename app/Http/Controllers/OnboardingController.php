@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PersonalAccessToken;
 use App\Models\Platform;
-use App\Models\User;
 use App\Services\StatementSearchService;
+use App\Services\TokenService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class OnboardingController extends Controller
 {
+    protected $tokenService;
 
-    public function __construct(protected StatementSearchService $statement_search_service)
+    public function __construct(StatementSearchService $statement_search_service, TokenService $tokenService)
     {
+        $this->statement_search_service = $statement_search_service;
+        $this->tokenService = $tokenService;
     }
 
     public function index(Request $request)
@@ -22,31 +23,16 @@ class OnboardingController extends Controller
         $platforms = Platform::nonVlops()->with('users')->orderBy('name')->get();
         $total_vlop_platforms_sending = $this->statement_search_service->totalVlopPlatformsSending();
         $total_non_vlop_platforms_sending = $this->statement_search_service->totalNonVlopPlatformsSending();
-        //$total_valid_tokens = PersonalAccessToken::query()->orWhereNull('expires_at')->orwhere('expires_at', '>=', Carbon::now())->count();
-        $total_vlop_valid_tokens = User::join('personal_access_tokens', 'personal_access_tokens.tokenable_id', '=', 'users.id')
-            ->join('platforms', 'platforms.id', '=', 'users.platform_id')
-            ->where('platforms.vlop', 1)
-            ->whereNot('platforms.name','DSA Team')
-            ->whereNull('users.deleted_at')
-            ->count('users.id');
-
-        $total_non_vlop_valid_tokens = User::join('personal_access_tokens', 'personal_access_tokens.tokenable_id', '=', 'users.id')
-            ->join('platforms', 'platforms.id', '=', 'users.platform_id')
-            ->where('platforms.vlop', 0)
-
-            ->whereNull('users.deleted_at')
-            ->count('users.id');
+        $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
+        $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
 
         return view('onboarding.index', [
             'platforms' => $platforms,
             'vlop_count' => $vlop_count,
             'total_vlop_platforms_sending' => $total_vlop_platforms_sending,
             'total_non_vlop_platforms_sending' => $total_non_vlop_platforms_sending,
-            'total_vlop_valid_tokens' =>  $total_vlop_valid_tokens,
-            'total_non_vlop_valid_tokens' =>  $total_non_vlop_valid_tokens,
+            'total_vlop_valid_tokens' => $total_vlop_valid_tokens,
+            'total_non_vlop_valid_tokens' => $total_non_vlop_valid_tokens,
         ]);
-
     }
-
-
 }
