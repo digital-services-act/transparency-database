@@ -182,7 +182,7 @@ class StatementController extends Controller
         $validated = $this->sanitizeData($validated);
 
         try {
-            Statement::create($validated);
+            $statement = Statement::create($validated);
         } catch (QueryException $queryException) {
             if (
                 str_contains($queryException->getMessage(), "statements_platform_id_puid_unique")
@@ -198,7 +198,7 @@ class StatementController extends Controller
             }
         }
 
-        return redirect()->route('statement.index')->with('success', 'The statement has been created.');
+        return redirect()->route('statement.index')->with('success', 'The statement has been created. <a href="/statement/'.$statement->id.'">Click here to view it.</a>');
     }
 
     /**

@@ -1,5 +1,5 @@
 @props(['label' => 'label', 'justlabel' => false, 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => null, 'allow_null' => false, 'grouped' => false, 'info_text'=>null])
-<div class="ecl-form-group ecl-u-mb-l" id="div_{{$id}}">
+<div class="ecl-form-group ecl-u-mb-2xl" id="div_{{$id}}">
     <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" :info_text="$info_text"/>
     @if($info_text)
 {{--        <x-hover-text :hoverText="$info_text"/>--}}

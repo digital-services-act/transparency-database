@@ -144,7 +144,7 @@
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('profile.page.show', ['documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">
-                                            {{__('menu.Global Documentation')}}
+                                            {{__('menu.Overview')}}
                                         </a>
                                     </li>
 

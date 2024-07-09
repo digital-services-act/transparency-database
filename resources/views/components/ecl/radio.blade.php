@@ -1,7 +1,7 @@
 @props(['label' => 'label', 'id' => 'id', 'name' => 'name', 'required' => false, 'help' => null, 'options' => [], 'default' => null])
 
-<div class="ecl-form-group ecl-u-mb-l" id="div_{{$id}}">
-<fieldset class="ecl-form-group ecl-u-mb-l" aria-describedby="helper-id-1">
+<div class="ecl-form-group ecl-u-mb-2xl" id="div_{{$id}}">
+<fieldset class="ecl-form-group ecl-u-mb-2xl" aria-describedby="helper-id-1">
 
     <x-ecl.label type="legend" :label=$label :for=$id :name=$name :required=$required />
 
