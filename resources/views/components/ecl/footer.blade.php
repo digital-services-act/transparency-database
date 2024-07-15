@@ -49,6 +49,11 @@
                                aria-label="{{__('footer.Learn more about the DSA')}}">{{__('footer.Learn more about the DSA')}}</a></li>
 
                         <li class="ecl-site-footer__list-item">
+                            <a href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers"
+                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
+                               aria-label="{{__('pages.Faq')}}">{{__('pages.Faq')}}</a></li>
+
+                        <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', ['page' => 'announcements']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="{{__('footer.Announcements')}}">{{__('footer.Announcements')}}</a></li>

@@ -38,6 +38,10 @@
                 @can('create statements')
                     <x-ecl.menu-item icon="settings" :link="route('profile.api.index')"
                                      title="{{__('menu.API Token Management')}}"/>
+
+                    <x-ecl.menu-item icon="edit" :link="route('statement.create')"
+                                     title="{{__('menu.Submit statements of reasons')}}"/>
+
                 @endcan
                 <hr class="ecl-site-header__login-separator">
                 <x-ecl.menu-item link="/logout" title="{{__('menu.Logout')}}"/>

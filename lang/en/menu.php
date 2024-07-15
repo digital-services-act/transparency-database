@@ -14,11 +14,11 @@ return [
     'FAQ' => 'FAQ',
     'General' => 'General',
     'Technical' => 'Technical',
-    'Platforms' => 'Platforms',
+    'Documentations' => 'Documentation',
     'General_link'=>'faq#general-faq',
     'Technical_link'=>'faq#technical-faq',
     'Platforms_link'=>'faq#platforms-faq',
     'Submit statements of reasons' => 'Submit statements of reasons',
-    'Global Documentation' => 'Global Documentation',
-    'API Documentation' => 'API Documentation',
+    'Overview' => 'Overview',
+    'API Documentation' => 'API'
  ];
