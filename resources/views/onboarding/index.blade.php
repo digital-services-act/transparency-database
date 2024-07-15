@@ -25,7 +25,7 @@
             <tbody class="ecl-table__body">
                 <tr class="ecl-table__row">
                     <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                        VLOP platforms
+                        VLOP Platforms
                     </td>
                     <td class="ecl-table__cell" data-ecl-table-header="Total">
                         {{ $vlop_count }}
@@ -67,7 +67,7 @@
 
                 <tr class="ecl-table__row">
                     <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                        Non-VLOP platforms
+                        Non-VLOP Platforms
                     </td>
                     <td class="ecl-table__cell" data-ecl-table-header="Total">
                         {{ $platforms->count() }}
