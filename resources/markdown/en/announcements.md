@@ -1,3 +1,11 @@
+#### [Announcement – DB] Update to the submissions by Google Shopping
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/07/2024</p>
+
+Starting from 28 June 2024, submissions to the DSA Transparency Database from Google Shopping no longer include automated notifications provided to merchants when their offers are not eligible for personalised ads targeting as such notifications seem to be outside the scope of the DSA Transparency Database.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+
 #### [Announcement – DB] Consistency check of the Transparency Database completed
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 18/06/2024</p>
 
