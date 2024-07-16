@@ -79,7 +79,9 @@ Route::middleware(['force.auth'])->group(static function () {
 
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
     Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
-    Route::get('/statement/{statement}', [StatementController::class, 'show'])->name('statement.show');
+    Route::get('/statement/{statement}', [StatementController::class, 'show'])
+        ->where('statement', '[0-9]+')  // Only accept digits for a statement
+        ->name('statement.show');
     Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
     Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
     Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
