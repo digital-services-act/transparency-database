@@ -406,7 +406,7 @@ class StatementSearchService
 
     public function totalNonVlopPlatformsSendingApi(): int
     {
-        return Cache::remember('total_sending_non_vlop_platforms', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_non_vlop_platforms_api', self::FIVE_MINUTES, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' platform_id NOT IN (" . $vlop_platform_ids . ")";
 
@@ -416,7 +416,7 @@ class StatementSearchService
 
     public function totalNonVlopPlatformsSendingWebform(): int
     {
-        return Cache::remember('total_sending_non_vlop_platforms', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_non_vlop_platforms_webform', self::FIVE_MINUTES, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' platform_id NOT IN (" . $vlop_platform_ids . ")";
 
@@ -436,7 +436,7 @@ class StatementSearchService
 
     public function totalVlopPlatformsSendingApi(): int
     {
-        return Cache::remember('total_sending_vlop_platforms', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_vlop_platforms_api', self::FIVE_MINUTES, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' AND platform_id IN (" . $vlop_platform_ids . ")";
 
@@ -446,7 +446,7 @@ class StatementSearchService
 
     public function totalVlopPlatformsSendingWebform(): int
     {
-        return Cache::remember('total_sending_vlop_platforms', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_vlop_platforms_webform', self::FIVE_MINUTES, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' AND platform_id IN (" . $vlop_platform_ids . ")";
 
