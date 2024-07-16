@@ -408,7 +408,7 @@ class StatementSearchService
     {
         return Cache::remember('total_sending_non_vlop_platforms_api', self::FIVE_MINUTES, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' platform_id NOT IN (" . $vlop_platform_ids . ")";
+            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' AND platform_id NOT IN (" . $vlop_platform_ids . ")";
 
             return $this->runAndExtractCountQuerySql($query);
         });
@@ -418,7 +418,7 @@ class StatementSearchService
     {
         return Cache::remember('total_sending_non_vlop_platforms_webform', self::FIVE_MINUTES, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' platform_id NOT IN (" . $vlop_platform_ids . ")";
+            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' AND platform_id NOT IN (" . $vlop_platform_ids . ")";
 
             return $this->runAndExtractCountQuerySql($query);
         });
