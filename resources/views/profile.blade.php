@@ -7,23 +7,25 @@
     <x-ecl.breadcrumb label="{{__('profile.User Profile')}}"/>
 @endsection
 
-
 @section('content')
 
     <h1 class="ecl-u-type-heading-1">{{__('profile.User Profile')}} </h1>
     <p class="ecl-u-type-paragraph"
        style="font-size:16pc; margin-top:-26px; font-style: italic !important">{{auth()->user()->email}}</p>
 
-
-    <div class="ecl-row ecl-u-mb-l">
+    <div class="ecl-row ecl-u-flex ecl-u-flex-wrap ecl-u-mb-l" style="gap: 2rem; margin-left: 0;">
         @can('create statements')
-            <div class="ecl-col-3">
+            <div class="ecl-col ecl-u-flex-item-grow">
                 <a class="ecl-button ecl-button--primary"
                    href="{{ route('profile.api.index') }}">{{__('profile.API Token Management')}}</a>
             </div>
+            <div class="ecl-col ecl-u-flex-item-grow">
+                <a class="ecl-button ecl-button--primary"
+                   href="{{ route('statement.create') }}">{{__('menu.Submit statements of reasons')}}</a>
+            </div>
         @endcan
-        <div class="ecl-col-3">
-            <a class="ecl-button ecl-button--primary" href="/logout">{{__('profile.Logout')}}</a>
+        <div class="ecl-col ecl-u-flex-item-grow">
+            <a class="ecl-button ecl-button--secondary" href="/logout">{{__('profile.Logout')}}</a>
         </div>
     </div>
 
@@ -31,30 +33,30 @@
 
         <h2 class="ecl-u-type-heading-2">{{__('profile.Administration')}}</h2>
 
-        <div class="ecl-row ecl-u-mb-l">
+        <div class="ecl-row ecl-u-flex ecl-u-flex-wrap ecl-u-mb-l" style="gap: 2rem; margin-left: 0;">
             @can('create users')
-                <div class="ecl-col-3">
+                <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
                        href="{{ route('user.index') }}">{{__('profile.Manage Users')}}</a>
                 </div>
             @endcan
 
             @can('create platforms')
-                <div class="ecl-col-3">
+                <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
                        href="{{ route('platform.index') }}">{{__('profile.Manage Platforms')}}</a>
                 </div>
             @endcan
 
             @can('view logs')
-                <div class="ecl-col-3">
+                <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
                        href="{{ route('log-messages.index') }}">{{__('profile.Log Messages')}}</a>
                 </div>
             @endcan
 
             @can('view platforms')
-                <div class="ecl-col-3">
+                <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
                        href="{{ route('onboarding.index') }}">{{__('profile.Onboarding Dashboard')}}</a>
                 </div>
@@ -62,9 +64,8 @@
         </div>
     @endcanany
 
-    <h1 class="ecl-u-type-heading-1">{{__('profile.Assistance')}}</h1>
-    <p class="ecl-u-type-paragraph"
-       style="font-size:16pc; margin-top:-26px;">{{__('profile.For any type of issues please contact:')}} <strong><a href="mailto:CNECT-DSA-HELPDESK&#64;ec.europa.eu">CNECT-DSA-HELPDESK&#64;ec.europa.eu</a></strong></p>
-
+    <x-ecl.message type="info" icon="information" title="{{__('profile.Assistance')}}"
+                   message="{!! __('profile.For any type of issues please contact:') !!}"
+                   :close="true"/>
 
 @endsection
