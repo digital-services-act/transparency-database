@@ -717,7 +717,7 @@ class Statement extends Model
      */
     public function getPlatformNameAttribute(): string
     {
-        return $this->platform->name;
+        return $this->platform->name ?? '';
     }
 
     public function getTerritorialScopeAttribute(): array
