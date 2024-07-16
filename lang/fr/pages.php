@@ -10,6 +10,8 @@ return [
     "Documentation" => "Documentation Globale",
     "Faq" => "Questions Fréquemment Posées",
     "Search for Statements of Reasons" => "Chercher des déclaration de Raison",
-    "Create a Statement of Reason" => "Créer une déclaration de Raison"
+    "Create a Statement of Reason" => "Créer une déclaration de Raison",
+    'Onboarding' => 'Intégration',
+    'Webform Documentation' => "Documentation du formulaire en ligne"
 
 ];

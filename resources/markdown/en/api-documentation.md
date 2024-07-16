@@ -498,7 +498,7 @@ The value provided must be one of the following:
 
 This is an optional attribute, and it tells us which additional categories the statement belongs to.
 
-The value provided must be an array with one of the following:
+The value provided must be an array with one or more of the following:
 
 <ul class='ecl-unordered-list'>
 @php
@@ -515,7 +515,7 @@ The value provided must be an array with one of the following:
 
 This is an optional attribute, and it tells us which additional keywords the statement belongs to.
 
-The value provided must be an array with one of the following:
+The value provided must be an array with one or more of the following:
 
 <ul class='ecl-unordered-list'>
 @php

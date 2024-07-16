@@ -5,7 +5,6 @@ Starting from 28 June 2024, submissions to the DSA Transparency Database from Go
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
-
 #### [Announcement – DB] Consistency check of the Transparency Database completed
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 18/06/2024</p>
 
