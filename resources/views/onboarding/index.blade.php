@@ -70,7 +70,7 @@
                         Non-VLOP Platforms
                     </td>
                     <td class="ecl-table__cell" data-ecl-table-header="Total">
-                        {{ $platforms->count() }}
+                        {{ $non_vlop_count }}
                     </td>
                 </tr>
 {{--                <tr class="ecl-table__row">--}}
@@ -112,6 +112,37 @@
         </table>
     </div>
 
+    <h2 class="ecl-u-type-heading-2">Platforms</h2>
+
+    <form>
+        <div class="ecl-row">
+            <div class="ecl-col-3">
+                <x-ecl.radio label="Platform is VLOP"
+                             name="vlop"
+                             id="vlop"
+                             :options="$options['vlops']"
+                             default="{{ request()->get('vlop', 0) }}"
+                             required="true"
+                />
+            </div>
+            <div class="ecl-col-3">
+                <x-ecl.radio label="Platform is Onboarded"
+                             name="onboarded"
+                             id="onboarded"
+                             :options="$options['onboardeds']"
+                             default="{{ request()->get('onboarded', 0) }}"
+                             required="true"
+                />
+            </div>
+            <div class="ecl-col-3">
+                <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('onboarding.index') }}'>reset</a>"
+                                 placeholder="search by name" justlabel="true" value="{{ request()->get('s', '') }}"/>
+            </div>
+            <div class="ecl-col-3 ecl-u-align-content-center ecl-u-type-align-center">
+                <x-ecl.button label="Filter" />
+            </div>
+        </div>
+    </form>
 
     @foreach($platforms as $platform)
 
