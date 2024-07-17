@@ -10,7 +10,7 @@
         @endif
     @endif
     @if($info_text)
-        <x-hover-text :hoverText="$info_text"/>
+{{--        <x-hover-text :hoverText="$info_text"/>--}}
     @endif
 </{{ $type }}>
 

@@ -16,6 +16,8 @@ class LogMessageQueryService
     ];
 
     /**
+     * @param array $filters
+     *
      * @return Builder
      */
     public function query(array $filters): Builder
@@ -38,7 +40,8 @@ class LogMessageQueryService
     }
 
     /**
-     *
+     * @param Builder $query
+     * @param string $filter_value
      *
      * @return void
      */
