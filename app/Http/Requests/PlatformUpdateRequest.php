@@ -29,7 +29,7 @@ class PlatformUpdateRequest extends FormRequest
         return [
             'name' => ['string', 'required', 'max:255'],
             'vlop' => ['int', 'required'],
-            'onboarded' => ['int', 'required'],
+            'onboarded' => ['int', 'nullable', 'sometimes'],
             'dsa_common_id' => [
                 'string',
                 'nullable',

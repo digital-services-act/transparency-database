@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('platforms', function (Blueprint $table) {
-            $table->boolean('onboarded')->default(1);
+            $table->boolean('onboarded')->nullable()->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
         });
