@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1d40e661822538b822a077fbd5efe5b",
+    "content-hash": "f0b39a43ebb2c3ff974eb9f4e7abca2b",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3468,55 +3468,6 @@
                 }
             ],
             "time": "2023-06-21T14:59:35+00:00"
-        },
-        {
-            "name": "margatampu/laravel-teams-logging",
-            "version": "dev-laravel-10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alainvd/laravel-teams-logging.git",
-                "reference": "4bcb26fefaaea30b821c50d8d4c5ecaf7f268bbd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alainvd/laravel-teams-logging/zipball/4bcb26fefaaea30b821c50d8d4c5ecaf7f268bbd",
-                "reference": "4bcb26fefaaea30b821c50d8d4c5ecaf7f268bbd",
-                "shasum": ""
-            },
-            "require": {
-                "monolog/monolog": "^3.0",
-                "php": "^7.0|^8.0|^8.1"
-            },
-            "require-dev": {
-                "ext-curl": "*"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "MargaTampu\\LaravelTeamsLogging\\LoggerServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "MargaTampu\\LaravelTeamsLogging\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sabar Tampubolon",
-                    "email": "sabartampubolon@gmail.com"
-                }
-            ],
-            "description": "Laravel handler to sending messages to Microsoft Teams using the Incoming Webhook connector",
-            "support": {
-                "source": "https://github.com/alainvd/laravel-teams-logging/tree/laravel-10"
-            },
-            "time": "2023-03-13T15:17:57+00:00"
         },
         {
             "name": "markbaker/complex",
@@ -12552,7 +12503,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "ecphp/laravel-cas": 20,
-        "margatampu/laravel-teams-logging": 20,
         "jasonmccreary/laravel-test-assertions": 20
     },
     "prefer-stable": true,
