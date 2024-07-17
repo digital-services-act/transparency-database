@@ -60,7 +60,4 @@ class PlatformControllerTest extends TestCase
             \App\Http\Requests\PlatformRegisterStoreRequest::class
         );
     }
-
-
-
 }

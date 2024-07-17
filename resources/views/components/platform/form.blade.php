@@ -11,5 +11,13 @@
              required="true"
 />
 
+<x-ecl.radio label="Platform is Onboarded"
+             name="onboarded"
+             id="onboarded"
+             :options="$options['onboardeds']"
+             default="{{ $platform->onboarded }}"
+             required="true"
+/>
+
 
 
