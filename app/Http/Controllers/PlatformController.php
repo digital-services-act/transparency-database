@@ -72,7 +72,8 @@ class PlatformController extends Controller
         $platform = Platform::create([
             'name' => $validated['name'],
             'dsa_common_id' => $validated['dsa_common_id'] ?? null,
-            'vlop' => $validated['vlop']
+            'vlop' => $validated['vlop'],
+            'onboarded' => $validated['onboarded'] ?? 0
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
@@ -126,6 +127,7 @@ class PlatformController extends Controller
         $platform->dsa_common_id = $validated['dsa_common_id'];
 
         $platform->vlop = $validated['vlop'];
+        $platform->onboarded = $validated['onboarded'] ?? $platform->onboarded;
         $platform->save();
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');
     }
@@ -195,7 +197,20 @@ class PlatformController extends Controller
                 'value' => 0
             ]
         ];
-        return ['vlops' => $vlops];
+        $onboardeds = [
+            [
+                'label' => 'Yes',
+                'value' => 1
+            ],
+            [
+                'label' => 'No',
+                'value' => 0
+            ]
+        ];
+        return [
+            'vlops' => $vlops,
+            'onboardeds' => $onboardeds,
+        ];
     }
 
 
