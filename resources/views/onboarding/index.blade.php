@@ -1,6 +1,6 @@
 @extends('layouts/ecl')
 
-@section('title', 'Manage Platforms')
+@section('title', 'Onboarding Dashboard')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
