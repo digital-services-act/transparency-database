@@ -552,7 +552,7 @@ class StatementSearchService
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
-        $query   = "SELECT COUNT(*), method, platform_id FROM statement_index WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
+        $query   = "SELECT COUNT(*), method, platform_id FROM ".$this->index_name." WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
         $results = $this->runSql($query);
         $rows    = $results['datarows'];
         $out     = [];
@@ -561,6 +561,27 @@ class StatementSearchService
         }
 
         return $out;
+    }
+
+    public function methodsByPlatformAll(): array
+    {
+        return Cache::remember('methods_by_platform_all', self::ONE_DAY, function () {
+            $query   = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " GROUP BY platform_id, method";
+            $results = $this->runSql($query);
+            $rows    = $results['datarows'];
+            $out     = [];
+            foreach ($rows as $row) {
+                $out[$row[2]][$row[1]] = $row[0];
+            }
+
+            return $out;
+        });
+    }
+
+    public function totalForPlatformIdAndMethod(int $platform_id, string $method): int
+    {
+        $totals = $this->methodsByPlatformAll();
+        return $totals[$platform_id][$method] ?? 0;
     }
 
     public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
