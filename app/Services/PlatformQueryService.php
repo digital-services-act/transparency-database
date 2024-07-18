@@ -51,12 +51,7 @@ class PlatformQueryService
     private function applySFilter(Builder $query, string $filter_value): void
     {
         if ($filter_value) {
-            if (preg_match('/^\d+$/', $filter_value)) {
-                $filter_value = (int) $filter_value;
-                $query->where('id', $filter_value);
-            } else {
-                $query->where('name', 'LIKE', '%' . $filter_value . '%');
-            }
+            $query->where('name', 'LIKE', '%' . $filter_value . '%');
         }
     }
 
