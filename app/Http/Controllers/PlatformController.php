@@ -100,6 +100,7 @@ class PlatformController extends Controller
     {
         $options = $this->prepareOptions();
         $request = request();
+        Session::remove('returnto');
         if ($request && $request->query('returnto')) {
             Session::put('returnto', $request->query('returnto'));
         }
@@ -135,8 +136,9 @@ class PlatformController extends Controller
         $platform->onboarded = $validated['onboarded'] ?? $platform->onboarded;
         $platform->save();
 
-        if($returnto = Session::get('returnto')) {
-            Session::flash('returnto');
+        $returnto = Session::get('returnto');
+        if($returnto) {
+            Session::remove('returnto');
             return redirect()->to($returnto)->with('success', 'The platform has been saved');
         }
 
