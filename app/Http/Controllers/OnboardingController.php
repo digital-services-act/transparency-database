@@ -48,6 +48,7 @@ class OnboardingController extends Controller
 
         return view('onboarding.index', [
             'platforms' => $platforms,
+            'sss' => $this->statement_search_service,
             'options' => $options,
             'vlop_count' => $vlop_count,
             'non_vlop_count' => $non_vlop_count,

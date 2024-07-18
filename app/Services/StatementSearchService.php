@@ -69,7 +69,8 @@ class StatementSearchService
 
     // When caching, go for 25 hours. Just so that there is a overlap.
     public const ONE_DAY = 25 * 60 * 60;
-    public const FIVE_MINUTES = 5 * 60 * 60;
+    public const ONE_HOUR = 1 * 60 * 60;
+    public const FIVE_MINUTES = 5 * 60;
 
     public function __construct(private readonly Client $client)
     {
@@ -396,7 +397,7 @@ class StatementSearchService
 
     public function totalNonVlopPlatformsSending(): int
     {
-        return Cache::remember('total_sending_non_vlop_platforms', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_non_vlop_platforms', self::ONE_HOUR, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE platform_id NOT IN (" . $vlop_platform_ids . ")";
 
@@ -406,7 +407,7 @@ class StatementSearchService
 
     public function totalNonVlopPlatformsSendingApi(): int
     {
-        return Cache::remember('total_sending_non_vlop_platforms_api', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_non_vlop_platforms_api', self::ONE_HOUR, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' AND platform_id NOT IN (" . $vlop_platform_ids . ")";
 
@@ -416,7 +417,7 @@ class StatementSearchService
 
     public function totalNonVlopPlatformsSendingWebform(): int
     {
-        return Cache::remember('total_sending_non_vlop_platforms_webform', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_non_vlop_platforms_webform', self::ONE_HOUR, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' AND platform_id NOT IN (" . $vlop_platform_ids . ")";
 
@@ -426,7 +427,7 @@ class StatementSearchService
 
     public function totalVlopPlatformsSending(): int
     {
-        return Cache::remember('total_sending_vlop_platforms', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_vlop_platforms', self::ONE_HOUR, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE platform_id IN (" . $vlop_platform_ids . ")";
 
@@ -436,7 +437,7 @@ class StatementSearchService
 
     public function totalVlopPlatformsSendingApi(): int
     {
-        return Cache::remember('total_sending_vlop_platforms_api', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_vlop_platforms_api', self::ONE_HOUR, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' AND platform_id IN (" . $vlop_platform_ids . ")";
 
@@ -446,7 +447,7 @@ class StatementSearchService
 
     public function totalVlopPlatformsSendingWebform(): int
     {
-        return Cache::remember('total_sending_vlop_platforms_webform', self::FIVE_MINUTES, function () {
+        return Cache::remember('total_sending_vlop_platforms_webform', self::ONE_HOUR, function () {
             $vlop_platform_ids = $this->vlopIdsAsString();
             $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' AND platform_id IN (" . $vlop_platform_ids . ")";
 

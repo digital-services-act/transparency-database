@@ -201,9 +201,9 @@
             <p class="ecl-u-type-paragraph"> Count is not available in production</p>
         @else
             <p class="ecl-u-type-paragraph">
-                <x-onboarding.label :count="$platform->api_statements->count()" label="API Statements"/>
-                <x-onboarding.label :count="$platform->api_multi_statements->count()" label="API Multi Statements"/>
-                <x-onboarding.label :count="$platform->form_statements->count()" label="FORM Statements"/>
+                <x-onboarding.label :count="$sss->totalForPlatformIdAndMethod($platform->id, 'API')" label="API Statements"/>
+                <x-onboarding.label :count="$sss->totalForPlatformIdAndMethod($platform->id, 'API_MULTI')" label="API Multi Statements"/>
+                <x-onboarding.label :count="$sss->totalForPlatformIdAndMethod($platform->id, 'FORM')" label="FORM Statements"/>
             </p>
         @endif
 
