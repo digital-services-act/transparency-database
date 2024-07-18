@@ -99,8 +99,9 @@ class PlatformController extends Controller
     public function edit(Platform $platform): View|Factory|Application
     {
         $options = $this->prepareOptions();
-        if (request()->query('returnto')) {
-            Session::put('returnto', request()->query('returnto'));
+        $request = request();
+        if ($request && $request->query('returnto')) {
+            Session::put('returnto', $request->query('returnto'));
         }
         return view('platform.edit', [
             'platform' => $platform,

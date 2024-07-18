@@ -191,7 +191,7 @@
 
         <h2 class="ecl-u-type-heading-2">
             {{ $platform->name }}
-            <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => url()->current()]) }}" class="ecl-link">
+            <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => request()->fullUrl()]) }}" class="ecl-link">
                 <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>
                     <x-ecl.icon icon="edit" />
                 </svg>
