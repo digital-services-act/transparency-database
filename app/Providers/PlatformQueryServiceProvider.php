@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Providers;
+
+use App\Services\PlatformQueryService;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
+
+class PlatformQueryServiceProvider extends ServiceProvider implements DeferrableProvider
+{
+    /**
+     * Register services.
+     */
+    #[\Override]
+    public function register(): void
+    {
+        $this->app->singleton(PlatformQueryService::class, static fn(Application $app) => new PlatformQueryService());
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array<int, string>
+     */
+    #[\Override]
+    public function provides(): array
+    {
+        return [PlatformQueryService::class];
+    }
+}
