@@ -41,7 +41,9 @@ class OnboardingController extends Controller
         $filters['onboarded'] = $request->get('onboarded', 0);
 
         // Get the platforms.
-        $platforms = $this->platform_query_service->query($filters)->with('users')->orderBy('name')->get();
+        $platforms = $this->platform_query_service->query($filters)->with('users');
+        $platforms->orderBy('name');
+        $platforms = $platforms->paginate(10)->withQueryString();
         $options = $this->prepareOptions();
 
         return view('onboarding.index', [
