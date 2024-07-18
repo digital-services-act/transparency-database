@@ -567,7 +567,7 @@ class StatementSearchService
     public function methodsByPlatformAll(): array
     {
         return Cache::remember('methods_by_platform_all', self::ONE_DAY, function () {
-            $query   = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " GROUP BY platform_id, method";
+            $query   = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " GROUP BY platform_id, method";
             $results = $this->runSql($query);
             $rows    = $results['datarows'];
             $out     = [];
