@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 
 class PlatformController extends Controller
@@ -98,6 +99,9 @@ class PlatformController extends Controller
     public function edit(Platform $platform): View|Factory|Application
     {
         $options = $this->prepareOptions();
+        if (request()->query('returnto')) {
+            Session::put('returnto', request()->query('returnto'));
+        }
         return view('platform.edit', [
             'platform' => $platform,
             'options' => $options
@@ -129,6 +133,12 @@ class PlatformController extends Controller
         $platform->vlop = $validated['vlop'];
         $platform->onboarded = $validated['onboarded'] ?? $platform->onboarded;
         $platform->save();
+
+        if($returnto = Session::get('returnto')) {
+            Session::flash('returnto');
+            return redirect()->to($returnto)->with('success', 'The platform has been saved');
+        }
+
         return redirect()->route('platform.index')->with('success', 'The platform has been saved');
     }
 

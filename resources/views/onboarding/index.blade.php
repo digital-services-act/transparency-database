@@ -189,7 +189,14 @@
 
     @foreach($platforms as $platform)
 
-        <h2 class="ecl-u-type-heading-3">{{ $platform->name }}</h2>
+        <h2 class="ecl-u-type-heading-2">
+            {{ $platform->name }}
+            <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => url()->current()]) }}" class="ecl-link">
+                <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>
+                    <x-ecl.icon icon="edit" />
+                </svg>
+            </a>
+        </h2>
         @if(strtolower((string) config('app.env_real')) === 'production')
             <p class="ecl-u-type-paragraph"> Count is not available in production</p>
         @else
