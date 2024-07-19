@@ -13,33 +13,33 @@
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">
         Onboarding Dashboard
-        <a href="/modal" class="ecl-link ecl-link--default" id="statistics-toggle" title="Statistics">
-            <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>
-                <x-ecl.icon icon="infographic" />
-            </svg>
-        </a>
+{{--        <a href="/modal" class="ecl-link ecl-link--default" id="statistics-toggle" title="Statistics">--}}
+{{--            <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>--}}
+{{--                <x-ecl.icon icon="infographic" />--}}
+{{--            </svg>--}}
+{{--        </a>--}}
     </h1>
 
-    <dialog data-ecl-auto-init="Modal" data-ecl-modal-toggle="statistics-toggle"
-            id="modal-statistics" aria-modal="true"
-            class="ecl-modal ecl-modal--l" aria-labelledby="modal-example-header">
-        <div class="ecl-modal__container ecl-container">
-            <div class="ecl-modal__content ecl-col-12 ecl-col-m-10 ecl-col-l-8">
-                <header class="ecl-modal__header">
-                    <div class="ecl-modal__header-content" id="modal-example-header">Statistics</div>
-                    <button class="ecl-button ecl-button--tertiary ecl-modal__close ecl-button--icon-only"
-                            type="button"
-                            data-ecl-modal-close>
-                        <span class="ecl-button__container">
-                            <span class="ecl-button__label" data-ecl-label="true">Close</span>
-                            <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>
-                                <x-ecl.icon icon="close" />
-                            </svg>
-                        </span>
-                    </button>
-                </header>
-                <div class="ecl-modal__body">
-                    <div class="ecl-modal__body-scroll" data-ecl-modal-scroll>
+{{--    <dialog data-ecl-auto-init="Modal" data-ecl-modal-toggle="statistics-toggle"--}}
+{{--            id="modal-statistics" aria-modal="true"--}}
+{{--            class="ecl-modal ecl-modal--l" aria-labelledby="modal-example-header">--}}
+{{--        <div class="ecl-modal__container ecl-container">--}}
+{{--            <div class="ecl-modal__content ecl-col-12 ecl-col-m-10 ecl-col-l-8">--}}
+{{--                <header class="ecl-modal__header">--}}
+{{--                    <div class="ecl-modal__header-content" id="modal-example-header">Statistics</div>--}}
+{{--                    <button class="ecl-button ecl-button--tertiary ecl-modal__close ecl-button--icon-only"--}}
+{{--                            type="button"--}}
+{{--                            data-ecl-modal-close>--}}
+{{--                        <span class="ecl-button__container">--}}
+{{--                            <span class="ecl-button__label" data-ecl-label="true">Close</span>--}}
+{{--                            <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>--}}
+{{--                                <x-ecl.icon icon="close" />--}}
+{{--                            </svg>--}}
+{{--                        </span>--}}
+{{--                    </button>--}}
+{{--                </header>--}}
+{{--                <div class="ecl-modal__body">--}}
+{{--                    <div class="ecl-modal__body-scroll" data-ecl-modal-scroll>--}}
 
 
                         <div class="ecl-table-responsive">
@@ -140,22 +140,22 @@
                         </div>
 
 
-                    </div>
-                    <div class="ecl-modal__body-overflow" aria-hidden="true"></div>
+{{--                    </div>--}}
+{{--                    <div class="ecl-modal__body-overflow" aria-hidden="true"></div>--}}
 
-                </div>
-                <footer class="ecl-modal__footer">
-                    <div class="ecl-modal__footer-content">
-                        <button class="ecl-button ecl-button--secondary ecl-modal__button"
-                                type="button"
-                                data-ecl-modal-close>
-                            Close
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
-    </dialog>
+{{--                </div>--}}
+{{--                <footer class="ecl-modal__footer">--}}
+{{--                    <div class="ecl-modal__footer-content">--}}
+{{--                        <button class="ecl-button ecl-button--secondary ecl-modal__button"--}}
+{{--                                type="button"--}}
+{{--                                data-ecl-modal-close>--}}
+{{--                            Close--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                </footer>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </dialog>--}}
 
     <form class="ecl-container">
         <div class="ecl-row">
