@@ -111,7 +111,7 @@
                         <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
                             data-ecl-has-children=""
                             aria-expanded="false" id="ecl-menu-item-platforms">
-                            <a href="{{  route('profile.page.show', ['documentation']) }}"
+                            <a href="{{  route('page.show', ['documentation']) }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
                                id="ecl-menu-item-platforms-link">{{__('menu.Documentations')}}</a>
@@ -142,27 +142,27 @@
 {{--                                    @endcan--}}
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('profile.page.show', ['documentation']) }}"
+                                        <a href="{{  route('page.show', ['documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">
                                             {{__('menu.Overview')}}
                                         </a>
                                     </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('profile.page.show', ['onboarding']) }}"
+                                        <a href="{{  route('page.show', ['onboarding']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Onboarding')}}</a>
                                     </li>
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('profile.page.show', ['api-documentation']) }}"
+                                        <a href="{{  route('page.show', ['api-documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.API Documentation')}}</a>
                                     </li>
 
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('profile.page.show', ['webform-documentation']) }}"
+                                        <a href="{{  route('page.show', ['webform-documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Webform Documentation')}}</a>
                                     </li>
                                 </ul>

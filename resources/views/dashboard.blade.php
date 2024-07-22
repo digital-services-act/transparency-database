@@ -89,7 +89,7 @@
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">{{__('dashboard.For definitions of terms used, please refer to the')}}
                     <a href="{{ route('page.show', ['faq']) }}">{{__('menu.FAQ')}}</a>
                     {{__('dashboard.section and the')}}
-                    <a href="{{ route('profile.page.show', ['api-documentation']) }}">{{__('dashboard.API documentation')}}</a>
+                    <a href="{{ route('page.show', ['api-documentation']) }}">{{__('dashboard.API documentation')}}</a>
                     {{__('dashboard.of the DSA Transparency Database. Kindly note that “violations” refer to the variable “category” of the API documentation.')}}</div>
 
             </div>
