@@ -91,7 +91,7 @@ Nous surveillons constamment la qualité des données de la base de données et 
 
 <x-ecl.accordion label="Qu'est-ce qu'un champ de texte libre ? Quels sont les champs de texte libre dans chaque motif ? ">
 Dans un champ de texte libre, les fournisseurs de plateformes en ligne peuvent fournir des informations dans leurs propres mots, par exemple pour expliquer pourquoi le contenu modéré est illégal ou pour expliquer les faits et circonstances qui ont conduit à la (aux) décision(s) de modération.
-Pour un aperçu complet des champs de texte libre contenus dans le schéma de la base de données de transparence DSA, veuillez consulter la <a href="{{  route('profile.page.show', ['api-documentation']) }}">documentation de l'API</a>.
+Pour un aperçu complet des champs de texte libre contenus dans le schéma de la base de données de transparence DSA, veuillez consulter la <a href="{{  route('page.show', ['api-documentation']) }}">documentation de l'API</a>.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="Où puis-je trouver plus d'informations sur la DSA ?">

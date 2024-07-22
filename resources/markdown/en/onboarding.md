@@ -16,8 +16,8 @@ environment to test your submissions to the DSA Transparency Database, which you
 either the webform or the API, according to your technical capabilities and/or the volume of your
 statements of reasons submissions.
 
-More information on the webform submission is provided in the [webform documentation](/profile/page/webform-documentation).<br/>
-More information on the API submission is provided in the [API documentation](/profile/page/api-documentation).
+More information on the webform submission is provided in the [webform documentation](/page/webform-documentation).<br/>
+More information on the API submission is provided in the [API documentation](/page/api-documentation).
 
 Once the testing phase is completed, you will be able to move to the production environment of the
 DSA Transparency Database, where you can start submitting your statements of reasons.
