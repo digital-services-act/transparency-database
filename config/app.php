@@ -225,6 +225,7 @@ return [
 
         App\Providers\StatementQueryServiceProvider::class,
         App\Providers\LogMessageQueryServiceProvider::class,
+        App\Providers\PlatformQueryServiceProvider::class,
         App\Providers\StatementSearchServiceProvider::class,
         App\Providers\StatementArchiveServiceProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,
@@ -232,8 +233,6 @@ return [
         App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
         App\Providers\DayArchiveQueryServiceProvider::class,
-
-        MargaTampu\LaravelTeamsLogging\LoggerServiceProvider::class,
         Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 

@@ -51,7 +51,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => env('APP_ENV') !== 'local' && env('APP_ENV') !== 'testing' ? ['stderr', 'single', 'db', 'teams'] : ['stderr', 'db', 'single'],
+            'channels' => ['stderr', 'single', 'db'],
             'ignore_exceptions' => true,
         ],
 
@@ -120,15 +120,5 @@ return [
             'driver' => 'custom',
             'via'    => DatabaseLogger::class,
         ],
-
-        'teams' => [
-            'driver'    => 'custom',
-            'via'       => \MargaTampu\LaravelTeamsLogging\LoggerChannel::class,
-            'level'     => 'debug',
-            'url'       => env('MICROSOFT_TEAMS_WEBHOOK'),
-            'style'     => 'simple',    // Available style is 'simple' and 'card', default is 'simple'
-            'name'      => 'DSA M2 ('.env('APP_URL').')'
-        ],
     ],
-
 ];

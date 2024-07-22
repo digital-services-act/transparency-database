@@ -1,5 +1,5 @@
 @props(['type' => 'info', 'icon' => 'information', 'title' => 'title', 'message' => 'message', 'close' => true])
-<div class="ecl-notification ecl-notification--{{ $type }} ecl-u-mb-l" data-ecl-notification="" role="alert" data-ecl-auto-init="Notification">
+<div class="ecl-notification ecl-notification--{{ $type }} ecl-u-mb-2xl" data-ecl-notification="" role="alert" data-ecl-auto-init="Notification">
     <svg class="ecl-icon ecl-icon--l ecl-notification__icon" focusable="false" aria-hidden="false" role="img">
         <title>{{ $title }}</title>
         <x-ecl.icon icon="{{ $icon }}" />
@@ -29,4 +29,3 @@
         </div>
     </div>
 </div>
-

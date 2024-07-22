@@ -951,6 +951,34 @@ class StatementAPIControllerTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function store_should_save_null_decisions_when_account_is_suspended(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $extra_fields = [
+            'decision_visibility' => null,
+            'decision_monetary' => null,
+            'decision_provision' => null,
+            'decision_account' => 'DECISION_ACCOUNT_SUSPENDED',
+        ];
+        $fields = array_merge($this->required_fields, $extra_fields);
+
+        $response = $this->post(route('api.v1.statement.store'), $fields, [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertEquals([], $statement->decision_visibility);
+        $this->assertNull($statement->decision_monetary);
+        $this->assertNull($statement->decision_provision);
+
+    }
+
 
 
 
