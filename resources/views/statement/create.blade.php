@@ -15,7 +15,7 @@
 
     <p class="ecl-u-type-paragraph">
         The webform is made available as a submission method for the providers of online platforms that expect to submit a low volume of statements of reasons to the DSA Transparency Database.<br/>
-        For more information on the webform submission, please have a look at the <a href="/profile/page/webform-documentation">webform documentation</a>
+        For more information on the webform submission, please have a look at the <a href="/page/webform-documentation">webform documentation</a>
     </p>
 
     <form method="post" action="{{route('statement.store')}}" id="create-statement-form">

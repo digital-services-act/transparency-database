@@ -50,7 +50,7 @@
             {{__('api.Would you like to create statements of reasons using the API?')}}
         </p>
         <p class="ecl-u-type-paragraph">
-            <a href="{{ route('profile.page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">{{__('api.API Documentation')}}</a>
+            <a href="{{ route('page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">{{__('api.API Documentation')}}</a>
         </p>
 
     </div>

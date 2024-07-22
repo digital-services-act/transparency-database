@@ -155,7 +155,7 @@ In a free text field, providers of online platforms can provide information in t
 why the moderated content is illegal or to explain the facts and circumstances that led to the moderation decision(s).
 <br><br>
 For a full overview of the free text fields contained in the DSA Transparency Database schema, please consider
-the <a href="{{  route('profile.page.show', ['api-documentation']) }}">API documentation</a>.
+the <a href="{{  route('page.show', ['api-documentation']) }}">API documentation</a>.
 </x-ecl.accordion>
 
 <x-ecl.accordion label="Where can I find more information about the DSA?">

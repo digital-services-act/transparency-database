@@ -9,7 +9,7 @@ Automated Submissions using an API
 ==================================
 
 The [Transparency Database](https://transparency.dsa.ec.europa.eu/) has an API that allows providers of online platforms that issue large numbers of statements of
-reasons to submit them without using the web interface. To learn about the capabilities of the API, you can consult the [API documentation](https://transparency.dsa.ec.europa.eu/profile/page/api-documentation).
+reasons to submit them without using the web interface. To learn about the capabilities of the API, you can consult the [API documentation](https://transparency.dsa.ec.europa.eu/page/api-documentation).
 
 Search Using an API (not yet implemented, for future releases)
 ==============================================================
