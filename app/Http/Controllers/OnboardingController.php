@@ -23,6 +23,10 @@ class OnboardingController extends Controller
 
     public function index(Request $request)
     {
+
+        $all_sending_platform_ids = $this->statement_search_service->allSendingPlatformIds();
+        $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
+
         // Establish the counts.
         $vlop_count = Platform::Vlops()->count();
         $non_vlop_count = Platform::nonVlops()->count();
@@ -36,9 +40,11 @@ class OnboardingController extends Controller
         $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
 
         $filters = [];
-        $filters['s'] = $request->get('s', '');
-        $filters['vlop'] = $request->get('vlop', 0);
-        $filters['onboarded'] = $request->get('onboarded', 0);
+        $filters['s'] = $request->get('s');
+        $filters['vlop'] = $request->get('vlop');
+        $filters['onboarded'] = $request->get('onboarded');
+        $filters['has_tokens'] = $request->get('has_tokens');
+        $filters['has_statements'] = $request->get('has_statements');
 
         // Get the platforms.
         $platforms = $this->platform_query_service->query($filters)->with('users');
@@ -85,9 +91,31 @@ class OnboardingController extends Controller
                 'value' => 0
             ]
         ];
+        $has_tokens = [
+            [
+                'label' => 'Yes',
+                'value' => 1
+            ],
+            [
+                'label' => 'No',
+                'value' => 0
+            ]
+        ];
+        $has_statements = [
+            [
+                'label' => 'Yes',
+                'value' => 1
+            ],
+            [
+                'label' => 'No',
+                'value' => 0
+            ]
+        ];
         return [
             'vlops' => $vlops,
             'onboardeds' => $onboardeds,
+            'has_tokens' => $has_tokens,
+            'has_statements' => $has_statements,
         ];
     }
 }

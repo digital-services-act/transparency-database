@@ -14,7 +14,9 @@ class PlatformQueryService
     private array $allowed_filters = [
         's',
         'vlop',
-        'onboarded'
+        'onboarded',
+        'has_tokens',
+        'has_statements',
     ];
 
     /**
@@ -30,7 +32,6 @@ class PlatformQueryService
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
                     if (method_exists($this, $method)) {
-
                         $this->$method($query, $filters[$filter_key]);
                     }
                 } catch (TypeError|Exception $e) {
@@ -85,5 +86,42 @@ class PlatformQueryService
         if (!$filter_value) {
             $query->whereNot('onboarded', 1);
         }
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $filter_value
+     *
+     * @return void
+     */
+    private function applyHasTokensFilter(Builder $query, string $filter_value): void
+    {
+        if ($filter_value === '1') {
+            $query->where('has_tokens', 1);
+        }
+        if (!$filter_value) {
+            $query->whereNot('has_tokens', 1);
+        }
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $filter_value
+     *
+     * @return void
+     */
+    private function applyHasStatementsFilter(Builder $query, string $filter_value): void
+    {
+        if ($filter_value === '1') {
+            $query->where('has_statements', 1);
+        }
+        if (!$filter_value) {
+            $query->whereNot('has_statements', 1);
+        }
+    }
+
+    public function updateHasStatements(array $platform_ids, int $has_statements = 1): void
+    {
+        Platform::query()->whereIn('id', $platform_ids)->update(['has_statements' => $has_statements]);
     }
 }

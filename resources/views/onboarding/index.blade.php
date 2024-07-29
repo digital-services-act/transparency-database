@@ -160,7 +160,7 @@
     <form class="ecl-container">
         <div class="ecl-row">
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.checkbox label="Platform is VLOP"
+                <x-ecl.checkbox label="Platform is VLOP?"
                                 name="vlop"
                                 id="vlop"
                                 value="1"
@@ -169,7 +169,7 @@
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.checkbox label="Platform is Onboarded"
+                <x-ecl.checkbox label="Platform is Onboarded?"
                                 name="onboarded"
                                 id="onboarded"
                                 value="1"
@@ -184,6 +184,28 @@
             <div class="ecl-col-m-3 ecl-u-align-content-center ecl-u-type-align-center">
                 <x-ecl.button label="Filter"/>
             </div>
+        </div>
+        <div class="ecl-row">
+            <div class="ecl-col-m-3 ecl-u-align-content-center">
+                <x-ecl.checkbox label="Platform has Tokens?"
+                                name="has_tokens"
+                                id="has_tokens"
+                                value="1"
+                                checked="{{ request()->get('has_tokens', 0) }}"
+
+                />
+            </div>
+            <div class="ecl-col-m-3 ecl-u-align-content-center">
+                <x-ecl.checkbox label="Platform has Statements?"
+                                name="has_statements"
+                                id="has_statements"
+                                value="1"
+                                checked="{{ request()->get('has_statements', 0) }}"
+
+                />
+            </div>
+            <div class="ecl-col-m-3"></div>
+            <div class="ecl-col-m-3"></div>
         </div>
     </form>
 
@@ -207,10 +229,10 @@
             </p>
         @endif
 
-        @if(count($platform->users) == 0)
+        @if(count($platform->users) === 0)
             <p class="ecl-u-type-paragraph">
                 No users found.
-                <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>
+                <x-ecl.cta-button label="Create a User" url="{{ route('user.create', ['returnto' => request()->fullUrl(), 'platform_id' => $platform->id]) }}"/>
             </p>
         @else
             <x-users.table :users="$platform->users"/>
