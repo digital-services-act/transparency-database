@@ -21,13 +21,13 @@
 <ul class="ecl-unordered-list ecl-unordered-list--no-bullet ecl-u-mb-l">
     <x-ecl.error-feedback name="roles"/>
     @foreach($options['roles'] as $role)
-        <li class="ecl-unordered-list__item">
+
             <x-ecl.checkbox id="permission-{{ $role->id }}"
                             name="roles[]"
                             value="{{ $role->id }}"
-                            checked="{{ ($action=='edit' && $user->roles()->pluck('id')->contains($role->id)) || ($action=='create' && $role->name == 'Contributor') }}"
+                            checked="{{ ($action === 'edit' && $user->roles()->pluck('id')->contains($role->id)) || ($action === 'create' && $role->name === 'Contributor') || ($action === 'create' && $role->name === 'User') }}"
                             label="{{ $role->name }}"
             />
-        </li>
+
     @endforeach
 </ul>

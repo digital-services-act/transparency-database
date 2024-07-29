@@ -30,6 +30,8 @@ class PlatformUpdateRequest extends FormRequest
             'name' => ['string', 'required', 'max:255'],
             'vlop' => ['int', 'required'],
             'onboarded' => ['int', 'nullable', 'sometimes'],
+            'has_tokens' => ['int', 'nullable', 'sometimes'],
+            'has_statements' => ['int', 'nullable', 'sometimes'],
             'dsa_common_id' => [
                 'string',
                 'nullable',

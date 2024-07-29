@@ -18,13 +18,15 @@ class Platform extends Model
     protected $hidden = [
         'deleted_at',
         'updated_at',
+        'updated_by',
         'created_at',
+        'created_by',
         'uuid',
         'user_id',
     ];
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */

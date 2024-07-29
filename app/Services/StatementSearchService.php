@@ -395,6 +395,17 @@ class StatementSearchService
         }
     }
 
+    public function allSendingPlatformIds(): array
+    {
+        return Cache::remember('all_sending_platform_ids', self::ONE_HOUR, function () {
+            $query             = "SELECT DISTINCT(platform_id) FROM " . $this->index_name;
+            $result = $this->runSql($query);
+            return array_map(function($row){
+                return $row[0];
+            }, $result['datarows']);
+        });
+    }
+
     public function totalNonVlopPlatformsSending(): int
     {
         return Cache::remember('total_sending_non_vlop_platforms', self::ONE_HOUR, function () {
@@ -547,36 +558,35 @@ class StatementSearchService
     public function totalsForPlatformsDate(Carbon $date): array
     {
         $aggregates = $this->processDateAggregate($date, ['platform_id']);
-
         return $aggregates['aggregates'];
     }
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
         $query   = "SELECT COUNT(*), method, platform_id FROM ".$this->index_name." WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
-        $results = $this->runSql($query);
-        $rows    = $results['datarows'];
-        $out     = [];
-        foreach ($rows as $row) {
-            $out[$row[2]][$row[1]] = $row[0];
-        }
-
-        return $out;
+        return $this->extractMethodAggregateFromQuery($query);
     }
 
     public function methodsByPlatformAll(): array
     {
         return Cache::remember('methods_by_platform_all', self::ONE_DAY, function () {
             $query   = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " GROUP BY platform_id, method";
-            $results = $this->runSql($query);
-            $rows    = $results['datarows'];
-            $out     = [];
+            return $this->extractMethodAggregateFromQuery($query);
+        });
+
+    }
+
+    private function extractMethodAggregateFromQuery(string $query): array
+    {
+        $results = $this->runSql($query);
+        $rows    = $results['datarows'];
+        $out     = [];
+        if (config('scout.driver') === 'opensearch') {
             foreach ($rows as $row) {
                 $out[$row[2]][$row[1]] = $row[0];
             }
-
-            return $out;
-        });
+        }
+        return $out;
     }
 
     public function totalForPlatformIdAndMethod(int $platform_id, string $method): int
