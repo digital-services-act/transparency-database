@@ -61,6 +61,7 @@ class StatementSearchService
         'decision_provision',
         'decision_visibility_single',
         'platform_id',
+        'platform_vlop',
         'received_date',
         'source_type',
     ];
@@ -1239,6 +1240,10 @@ JSON;
                     'platform_uuid'                    =>
                         [
                             'type' => 'text',
+                        ],
+                    'platform_vlop'                    =>
+                        [
+                            'type' => 'boolean',
                         ],
                     'source_identity'                  =>
                         [

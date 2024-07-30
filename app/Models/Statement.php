@@ -558,7 +558,6 @@ class Statement extends Model
         } else {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-'.$this->platform_id);
         }
-
     }
 
     public function platformUuidCached(): string
@@ -568,7 +567,15 @@ class Statement extends Model
         } else {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-'.$this->platform_id);
         }
+    }
 
+    public function platformVlopCached(): string
+    {
+        if (!is_null($this->platform)){
+            return Cache::remember('platform-' . $this->platform_id . '-vlop', 3600, fn() => $this->platform->vlop);
+        } else {
+            return Cache::remember('platform-' . $this->platform_id . '-vlop', 3600, fn() => 'deleted-vlop-'.$this->platform_id);
+        }
     }
 
     public function toSearchableArray(): array
@@ -608,6 +615,7 @@ class Statement extends Model
             'platform_id' => $this->platform_id,
             'platform_name' => $this->platformNameCached(),
             'platform_uuid' => $this->platformUuidCached(),
+            'platform_vlop' => false,//$this->platformVlopCached() === '1',
             'content_date' => $this->content_date,
             'application_date' => $this->application_date,
             'created_at' => $this->created_at,
