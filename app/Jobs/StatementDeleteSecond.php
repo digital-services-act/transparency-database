@@ -34,9 +34,6 @@ class StatementDeleteSecond implements ShouldQueue
      */
     public function handle(): void
     {
-        $two_ten_days = 210 * 24 * 60 * 60;
-        if ($this->timestamp < $two_ten_days) {
-            DB::table('statements')->where('created_at', date('Y-m-d H:i:s', $this->timestamp))->delete();
-        }
+        DB::table('statements')->where('created_at', date('Y-m-d H:i:s', $this->timestamp))->delete();
     }
 }
