@@ -26,22 +26,21 @@ use App\Http\Controllers\Traits\Sanitizer;
 
 class StatementController extends Controller
 {
-    protected EuropeanCountriesService $european_countries_service;
-
     use Sanitizer;
 
     public function __construct(
         protected StatementQueryService $statement_query_service,
         protected StatementSearchService $statement_search_service,
-        EuropeanCountriesService $european_countries_service,
+        protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
     )
     {
-        $this->european_countries_service = $european_countries_service;
     }
 
     /**
+     * @param Request $request
+     *
      * @return View|Factory|Application
      */
     public function index(Request $request): View|Factory|Application
@@ -183,7 +182,7 @@ class StatementController extends Controller
         $validated = $this->sanitizeData($validated);
 
         try {
-            Statement::create($validated);
+            $statement = Statement::create($validated);
         } catch (QueryException $queryException) {
             if (
                 str_contains($queryException->getMessage(), "statements_platform_id_puid_unique")
@@ -199,7 +198,7 @@ class StatementController extends Controller
             }
         }
 
-        return redirect()->route('statement.index')->with('success', 'The statement has been created.');
+        return redirect()->route('statement.index')->with('success', 'The statement has been created. <a href="/statement/'.$statement->id.'">Click here to view it.</a>');
     }
 
     /**

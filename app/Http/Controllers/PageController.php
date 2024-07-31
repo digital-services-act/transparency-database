@@ -35,13 +35,15 @@ class PageController extends Controller
 
 
         $page_title = ucwords(str_replace("-", " ", (string) $page));
+        $page_title = __('pages.' . $page_title);
+
 
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
         $page_title_mods = [
-            'Faq' => 'DSA Transparency Database FAQ',
-            'Api Documentation' => 'API Documentation',
-            'Documentation' => 'Global Documentation'
+            'Faq' => __('pages.Faq'),
+            'Api Documentation' => __('pages.Api Documentation'),
+            'Documentation' => __('pages.Documentation')
         ];
 
 
@@ -54,10 +56,9 @@ class PageController extends Controller
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Faq' => 'DSA Transparency Database FAQ',
-            'Api Documentation' => 'API Documentation',
-            'Documentation' => 'Global Documentation',
-
+            'Faq' => __('pages.Faq'),
+            'Api Documentation' => __('pages.Api Documentation'),
+            'Documentation' => __('pages.Documentation')
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
@@ -67,7 +68,8 @@ class PageController extends Controller
 
 
         $page_content = '';
-        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
+        // Localize the page
+        $page = $this->getPagePath($page);
 
 
 
@@ -77,7 +79,6 @@ class PageController extends Controller
             'page_title' => $page_title,
             'breadcrumb' => $breadcrumb,
             'baseurl' => route('home'),
-            'ecl_init' => true,
         ];
 
 
@@ -110,7 +111,7 @@ class PageController extends Controller
                 $id = strtolower(str_replace(" ", "-", (string) $matches[3]));
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
-            
+
             return $matches[0];
         }, (string) $parsedown->text(file_get_contents($file)));
     }
@@ -124,5 +125,11 @@ class PageController extends Controller
             'Faq'
         ];
         return in_array($page_title, $show_feedback_pages);
+    }
+
+    public function getPagePath($page) {
+        $localePath = __DIR__ . '/../../../resources/markdown/' . app()->getLocale() . '/' . $page . '.md';
+        $fallbackPath = __DIR__ . '/../../../resources/markdown/en/' . $page . '.md';
+        return file_exists($localePath) ? $localePath : $fallbackPath;
     }
 }

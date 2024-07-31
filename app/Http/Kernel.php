@@ -38,7 +38,8 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             'throttle:web',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \EcPhp\LaravelCas\Middleware\CasAuthenticator::class
+            \EcPhp\LaravelCas\Middleware\CasAuthenticator::class,
+            \App\Http\Middleware\Locale::class,
         ],
 
         'api' => [

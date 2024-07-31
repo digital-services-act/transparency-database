@@ -18,13 +18,15 @@ class Platform extends Model
     protected $hidden = [
         'deleted_at',
         'updated_at',
+        'updated_by',
         'created_at',
+        'created_by',
         'uuid',
         'user_id',
     ];
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
@@ -67,8 +69,12 @@ class Platform extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(static function ($statement) {
-            $statement->uuid = Str::uuid();
+        static::creating(static function ($platform) {
+            $platform->uuid = Str::uuid();
+            $platform->created_by = auth()->user()->id ?? null;
+        });
+        static::updating(static function($platform) {
+            $platform->updated_by = auth()->user()->id ?? null;
         });
     }
 

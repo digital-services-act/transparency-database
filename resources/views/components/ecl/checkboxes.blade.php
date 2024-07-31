@@ -1,6 +1,6 @@
 @props(['label' => 'label', 'id' => 'id', 'name' => 'name', 'required' => false, 'help' => null, 'options' => [], 'default' => [], 'justlabel' => false])
 
-<fieldset class="ecl-form-group ecl-u-mb-l">
+<fieldset class="ecl-form-group ecl-u-mb-2xl">
 
     <x-ecl.label type="legend" :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel"/>
 

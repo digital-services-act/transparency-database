@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Platform;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +12,7 @@ class PlatformUpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user()->canAny(['create platforms', 'view platforms']);
     }
@@ -21,15 +20,18 @@ class PlatformUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $platform = $this->route('platform');
 
         return [
             'name' => ['string', 'required', 'max:255'],
             'vlop' => ['int', 'required'],
+            'onboarded' => ['int', 'nullable', 'sometimes'],
+            'has_tokens' => ['int', 'nullable', 'sometimes'],
+            'has_statements' => ['int', 'nullable', 'sometimes'],
             'dsa_common_id' => [
                 'string',
                 'nullable',

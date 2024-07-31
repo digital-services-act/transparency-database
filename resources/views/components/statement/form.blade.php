@@ -1,19 +1,17 @@
 @php use App\Models\Statement; @endphp
 @props(['statement' => null, 'options' => null])
 
-<h4>Decision Taken (Please select at least one item from the available options)</h4>
+<h4 class="ecl-u-type-heading-4">{{__('statement-create.Select visibility decision(s)')}}</h4>
 
 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
               name="decision_visibility"
               id="decision_visibility"
               :options="$options['decision_visibilities']"
               select_all="All"
-              select_item="Select visibility decision(s)"
+              select_item="{{__('statement-create.Select visibility decision(s)')}}"
               enter_keyword="Enter a visibility decision"
+              info_text="Additional Information for Visibility Restriction"
 />
-
-
-
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
                  id="decision_visibility_other" required="true"/>
@@ -34,6 +32,7 @@
               default="{{ $statement->decision_monetary }}"
               justlabel="true"
               :allow_null="true"
+              info_text="Additional Information for Monetary Payments suspension"
 />
 
 
@@ -114,7 +113,9 @@
               :options="$options['decision_grounds']"
               required="true"/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" name="decision_ground_reference_url" id="decision_ground_reference_url" />
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" name="decision_ground_reference_url" id="decision_ground_reference_url"
+                 info_text="Some help about the decision_ground_reference_url"
+/>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND" name="illegal_content_legal_ground"
                  id="illegal_content_legal_ground" required="true"/>

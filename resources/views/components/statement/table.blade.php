@@ -8,13 +8,14 @@
     }
 </style>
 
+
 <table class="ecl-table ecl-table--zebra">
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
-        <th class="ecl-table__header">Platform</th>
-        <th class="ecl-table__header">Restrictions</th>
-        <th class="ecl-table__header">Category</th>
-        <th class="ecl-table__header">Creation Date</th>
+        <th class="ecl-table__header">{{__('statement-table.Platform')}}</th>
+        <th class="ecl-table__header">{{__('statement-table.Restrictions')}}</th>
+        <th class="ecl-table__header">{{__('statement-table.Category')}}</th>
+        <th class="ecl-table__header">{{__('statement-table.Creation Date')}}</th>
     </tr>
     </thead>
     <tbody class="ecl-table__body">
@@ -23,8 +24,10 @@
         <tr class="ecl-table__row statement-row" data-url="{{ route('statement.show', [$statement]) }}">
             <td class="ecl-table__cell" data-ecl-table-header="Platform">{{$statement->platform_name}}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{$statement->restrictions()}}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="Category">{{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="Creation Date">{{ $statement->created_at->format('Y-m-d') }}</td>
+            <td class="ecl-table__cell"
+                data-ecl-table-header="Category">{{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
+            <td class="ecl-table__cell"
+                data-ecl-table-header="Creation Date">{{ $statement->created_at->format('Y-m-d') }}</td>
         </tr>
 
     @endforeach
@@ -32,15 +35,16 @@
 </table>
 
 
+
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
-    let rows = document.getElementsByClassName('statement-row');
+    let rows = document.getElementsByClassName('statement-row')
     for (let i = 0; i < rows.length; i++) {
       rows[i].addEventListener('click', (e) => {
-        document.location.href = rows[i].getAttribute('data-url');
-      });
+        document.location.href = rows[i].getAttribute('data-url')
+      })
     }
-  });
+  })
 </script>
 
 {{ $statements->links('paginator') }}

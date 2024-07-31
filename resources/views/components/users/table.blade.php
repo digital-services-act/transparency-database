@@ -19,10 +19,10 @@
             <td class="ecl-table__cell" data-ecl-table-header="Has Token ?">{{ $user->hasValidApiTokenHuman()  }}</td>
             <td class="ecl-table__cell" data-ecl-table-header="Actions">
 
-                <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('user.edit', [$user]) }}'">edit</button>
+                <button class="ecl-u-d-inline ecl-u-f-l ecl-u-mr-m ecl-button ecl-button--secondary" onclick="document.location.href = '{{ route('user.edit', ['user' => $user, 'returnto' => request()->fullUrl()]) }}'">edit</button>
 
                 @if($delete)
-                <form action="{{ route('user.destroy', [$user]) }}" method="POST">
+                <form action="{{ route('user.destroy', ['user' => $user, 'returnto' => request()->fullUrl()]) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <input type="submit" class="ecl-u-d-inline ecl-u-f-l ecl-button ecl-button--secondary" value="delete" />

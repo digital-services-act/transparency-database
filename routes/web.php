@@ -21,6 +21,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -57,7 +58,7 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::resource('user', UserController::class, ['middleware' => ['can:create users']]);
         Route::resource('platform', PlatformController::class, ['middleware' => ['can:create platforms']]);
 
-        Route::get('/admin/onboarding', static fn(\Illuminate\Http\Request $request) => (new \App\Http\Controllers\OnboardingController())->index($request))->name('onboarding.index')->can('view platforms');
+        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
         Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
         Route::get('/profile/start', static fn(
@@ -78,11 +79,23 @@ Route::middleware(['force.auth'])->group(static function () {
 
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
     Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
-    Route::get('/statement/{statement}', [StatementController::class, 'show'])->name('statement.show');
+    Route::get('/statement/{statement}', [StatementController::class, 'show'])
+        ->where('statement', '[0-9]+')  // Only accept digits for a statement
+        ->name('statement.show');
     Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
     Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
     Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', static fn(string $page, bool $profile = false): Application|Factory|View|RedirectResponse|Redirector => (new PageController())->show($page, $profile))->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    Route::get('setlocale', function (Request $request) {
+        if(!config('dsa.TRANSLATIONS')) return back();
+        $locale = $request->input('locale');
+        if (in_array($locale, config('app.locales'))) {
+            session(['locale' => $locale]);
+            session(['force_lang' => true]);
+        }
+        return back();
+    })->name('setlocale');
 });

@@ -54,7 +54,7 @@ class   StatementPreprodSyncChunk implements ShouldQueue
             $range = range($this->min, $end);
             // Bulk sync
 
-            $to_insert = DB::table('statements')->whereIn('id', $range)->get()->map(function ($item){
+            $to_insert = DB::connection('mysql::read')->table('statements')->whereIn('id', $range)->get()->map(function ($item){
                 return get_object_vars($item);
             })->toArray();
             Statement::on('mysqlpreprod')->insert($to_insert);

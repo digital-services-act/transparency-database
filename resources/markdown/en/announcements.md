@@ -1,3 +1,26 @@
+#### [Announcement – DB] Update to the submissions by Google Shopping
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/07/2024</p>
+
+Starting from 28 June 2024, submissions to the DSA Transparency Database from Google Shopping no longer include automated notifications provided to merchants when their offers are not eligible for personalised ads targeting as such notifications seem to be outside the scope of the DSA Transparency Database.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+#### [Announcement – DB] Consistency check of the Transparency Database completed
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 18/06/2024</p>
+
+On 18 June 2024, the DSA Transparency Database team completed the data consistency check. After the data cleaning, all the daily dumps files have been regenerated to reflect the cleaned content of the database. The dashboard and the descriptive statistics on the website’s homepage have also been updated accordingly. The DSA Transparency Database team will continue to monitor the consistency and quality of the data submitted to the database.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+#### [Announcement – DB] Removing duplicated entries from the Transparency Database
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 14/05/2024</p>
+
+On Wednesday 22 May 2024, the DSA Transparency Database (TDB) team will perform a data consistency check on the database in order to remove Statement of Reasons (SoR) that may have been either repeatedly or faultily submitted to the database. This is why the number of statements of reasons reported both in the dashboard and the descriptive statistics on the homepage is expected to significantly decrease once the data cleaning procedure is completed.
+
+A following announcement will be published to flag that: i) the data consistency check is completed, and, ii) that the daily dumps' files have been recreated to reflect the cleaned content of the TDB.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement - API] Restoring the 422 error for duplicated platform uid (puid)
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/04/2024</p>
 On 8th of April 2024, the European Commission restored the 422 – Unprocessable Content error. The API endpoint will return the error whenever a platform is submitting a Statement of Reasons (SoR) containing a platform unique identifier (puid) already found in the SoR previously submitted to the database by the same platform.

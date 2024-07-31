@@ -24,17 +24,17 @@ trait Sanitizer
 
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
-        if (array_key_exists('decision_visibility', $validated)) {
+        if (array_key_exists('decision_visibility', $validated) && !is_null($validated['decision_visibility'])) {
             $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
             sort($validated['decision_visibility']);
         }
 
-        if (array_key_exists('category_specification', $validated)) {
+        if (array_key_exists('category_specification', $validated) && !is_null($validated['category_specification'])) {
             $validated['category_specification'] = array_unique($validated['category_specification']);
             sort($validated['category_specification']);
         }
 
-        if (array_key_exists('category_addition', $validated)) {
+        if (array_key_exists('category_addition', $validated) && !is_null($validated['category_addition'])) {
             $valueToRemove = $validated['category'];
 
             $collection = collect($validated['category_addition']);
