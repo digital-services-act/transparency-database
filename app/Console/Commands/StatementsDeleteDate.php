@@ -2,11 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementDeleteSecond;
-use App\Jobs\StatementIndexRange;
-use App\Services\DayArchiveService;
+use App\Jobs\StatementDeleteDay;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class StatementsDeleteDate extends Command
 {
@@ -31,15 +28,7 @@ class StatementsDeleteDate extends Command
     public function handle(): void
     {
         $date = $this->sanitizeDateArgument();
-
-
         $min = $date->subSeconds($date->secondsSinceMidnight())->clone();
-        $max = $date->addSeconds($date->secondsUntilEndOfDay())->clone();
-
-
-        while($min <= $max) {
-            StatementDeleteSecond::dispatch($min->timestamp);
-            $min->addSecond();
-        }
+        StatementDeleteDay::dispatch($min->timestamp);
     }
 }
