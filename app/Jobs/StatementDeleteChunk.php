@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Models\Statement;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StatementDeleteChunk implements ShouldQueue
@@ -46,8 +46,7 @@ class StatementDeleteChunk implements ShouldQueue
             }
 
             $range = range($this->min, $end);
-            // Bulk indexing.
-            $statements = Statement::query()->whereIn('id', $range)->delete();
+            DB::table('statements')->whereIn('id', $range)->delete();
 
 
             if ($end >= $this->max) {
