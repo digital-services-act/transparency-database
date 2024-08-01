@@ -16,7 +16,7 @@ class StatementsDeleteDateSeq extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:delete-date-seq {date=211} {chunk=500}';
+    protected $signature = 'statements:delete-date-seq {date=211} {chunk=3000}';
 
     /**
      * The console command description.
