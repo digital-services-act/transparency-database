@@ -34,10 +34,10 @@ class StatementDeleteMinute implements ShouldQueue
      */
     public function handle(): void
     {
-        $range = range($this->timestamp, $this->timestamp + 59);
-        $datestamps = array_map(function($timestamp){
-            return date('Y-m-d H:i:s', $timestamp);
-        }, $range);
-        DB::table('statements')->whereIn('created_at', $datestamps)->delete();
+        $i = 0;
+        while ($i < 60) {
+            StatementDeleteSecond::dispatch($this->timestamp + $i);
+            $i++;
+        }
     }
 }
