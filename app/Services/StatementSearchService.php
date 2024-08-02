@@ -630,8 +630,8 @@ class StatementSearchService
         $rows    = $results['datarows'];
         $out     = [];
         if (config('scout.driver') === 'opensearch') {
-            foreach ($rows as $row) {
-                $out[$row[2]][$row[1]] = $row[0];
+            foreach ($rows as [$total, $method, $platform_id]) {
+                $out[$platform_id][$method] = $total;
             }
         }
 
