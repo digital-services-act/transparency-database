@@ -397,7 +397,7 @@ class StatementSearchService
 
     public function allSendingPlatformIds(): array
     {
-        return Cache::remember('all_sending_platform_ids', self::ONE_DAY, function () {
+        return Cache::remember('all_sending_platform_ids', self::ONE_HOUR, function () {
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_platform_ids = [];
             foreach ($platform_ids_methods_data as $platform_id => $methods) {
