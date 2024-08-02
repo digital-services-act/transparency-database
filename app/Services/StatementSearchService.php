@@ -633,10 +633,14 @@ class StatementSearchService
             foreach ($rows as $row) {
                 $out[$row[2]][$row[1]] = $row[0];
             }
-            $out[$row[2]][Statement::METHOD_FORM] = $out[$row[2]][Statement::METHOD_FORM] ?? 0;
-            $out[$row[2]][Statement::METHOD_API] = $out[$row[2]][Statement::METHOD_API] ?? 0;
-            $out[$row[2]][Statement::METHOD_API_MULTI] = $out[$row[2]][Statement::METHOD_API_MULTI] ?? 0;
         }
+
+        foreach( $out as $platform_id => $methods) {
+            $out[$platform_id][Statement::METHOD_FORM] ??= 0;
+            $out[$platform_id][Statement::METHOD_API] ??= 0;
+            $out[$platform_id][Statement::METHOD_API_MULTI] ??= 0;
+        }
+
         return $out;
     }
 
