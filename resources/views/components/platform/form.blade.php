@@ -19,21 +19,21 @@
              required="true"
 />
 
-<x-ecl.radio label="Platform has Tokens?"
-             name="has_tokens"
-             id="has_tokens"
-             :options="$options['has_tokens']"
-             default="{{ $platform->has_tokens }}"
-             required="true"
-/>
+{{--<x-ecl.radio label="Platform has Tokens?"--}}
+{{--             name="has_tokens"--}}
+{{--             id="has_tokens"--}}
+{{--             :options="$options['has_tokens']"--}}
+{{--             default="{{ $platform->has_tokens }}"--}}
+{{--             required="true"--}}
+{{--/>--}}
 
-<x-ecl.radio label="Platform has Statements?"
-             name="has_statements"
-             id="has_statements"
-             :options="$options['has_statements']"
-             default="{{ $platform->has_statements }}"
-             required="true"
-/>
+{{--<x-ecl.radio label="Platform has Statements?"--}}
+{{--             name="has_statements"--}}
+{{--             id="has_statements"--}}
+{{--             :options="$options['has_statements']"--}}
+{{--             default="{{ $platform->has_statements }}"--}}
+{{--             required="true"--}}
+{{--/>--}}
 
 
 

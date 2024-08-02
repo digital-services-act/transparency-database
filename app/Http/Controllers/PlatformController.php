@@ -75,8 +75,8 @@ class PlatformController extends Controller
             'dsa_common_id' => $validated['dsa_common_id'] ?? null,
             'vlop' => $validated['vlop'],
             'onboarded' => $validated['onboarded'] ?? 0,
-            'has_tokens' => $validated['has_tokens'] ?? 0,
-            'has_statements' => $validated['has_statements'] ?? 0,
+            'has_tokens' => 0,
+            'has_statements' => 0
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
