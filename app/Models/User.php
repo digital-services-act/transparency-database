@@ -82,13 +82,12 @@ class User extends Authenticatable
 
     public function hasValidApiToken(): bool
     {
-        return $this->tokens()
-            ->where('name', 'api-token')
-            ->where(static function ($inner) {
-                $inner->orWhereNull('expires_at');
-                $inner->orWhere('expires_at', '>=', Carbon::now());
-            })
-            ->count() > 0;
+        foreach ($this->tokens as $token) {
+            if ($token->expires_at === null || $token->expires_at >= Carbon::now()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasValidApiTokenHuman(): string
