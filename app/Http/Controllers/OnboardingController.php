@@ -24,18 +24,26 @@ class OnboardingController extends Controller
     public function index(Request $request)
     {
 
+        // Get and cache the global platform method data.
+        $platform_ids_methods_data = $this->statement_search_service->methodsByPlatformAll();
+
+        // All calls after this one should be using the cached data.
+
         $all_sending_platform_ids = $this->statement_search_service->allSendingPlatformIds();
         $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
 
         // Establish the counts.
         $vlop_count = Platform::Vlops()->count();
         $non_vlop_count = Platform::nonVlops()->count();
+
+        // Should be coming from the cached opensearch result.
         $total_vlop_platforms_sending = $this->statement_search_service->totalVlopPlatformsSending();
         $total_vlop_platforms_sending_api = $this->statement_search_service->totalVlopPlatformsSendingApi();
         $total_vlop_platforms_sending_webform = $this->statement_search_service->totalVlopPlatformsSendingWebform();
         $total_non_vlop_platforms_sending = $this->statement_search_service->totalNonVlopPlatformsSending();
         $total_non_vlop_platforms_sending_api = $this->statement_search_service->totalNonVlopPlatformsSendingApi();
         $total_non_vlop_platforms_sending_webform = $this->statement_search_service->totalNonVlopPlatformsSendingWebform();
+
         $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
         $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
 
@@ -47,14 +55,14 @@ class OnboardingController extends Controller
         $filters['has_statements'] = $request->get('has_statements');
 
         // Get the platforms.
-        $platforms = $this->platform_query_service->query($filters)->with('users');
+        $platforms = $this->platform_query_service->query($filters)->with('users', 'users.roles', 'users.tokens');
         $platforms->orderBy('name');
         $platforms = $platforms->paginate(10)->withQueryString();
         $options = $this->prepareOptions();
 
         return view('onboarding.index', [
+            'platform_ids_methods_data' => $platform_ids_methods_data,
             'platforms' => $platforms,
-            'sss' => $this->statement_search_service,
             'options' => $options,
             'vlop_count' => $vlop_count,
             'non_vlop_count' => $non_vlop_count,
