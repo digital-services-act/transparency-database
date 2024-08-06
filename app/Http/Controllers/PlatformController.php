@@ -74,7 +74,9 @@ class PlatformController extends Controller
             'name' => $validated['name'],
             'dsa_common_id' => $validated['dsa_common_id'] ?? null,
             'vlop' => $validated['vlop'],
-            'onboarded' => $validated['onboarded'] ?? 0
+            'onboarded' => $validated['onboarded'] ?? 0,
+            'has_tokens' => 0,
+            'has_statements' => 0
         ]);
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
@@ -134,6 +136,8 @@ class PlatformController extends Controller
 
         $platform->vlop = $validated['vlop'];
         $platform->onboarded = $validated['onboarded'] ?? $platform->onboarded;
+        $platform->has_tokens = $validated['has_tokens'] ?? $platform->has_tokens;
+        $platform->has_statements = $validated['has_statements'] ?? $platform->has_statements;
         $platform->save();
 
         $returnto = Session::get('returnto');
@@ -220,9 +224,31 @@ class PlatformController extends Controller
                 'value' => 0
             ]
         ];
+        $has_tokens = [
+            [
+                'label' => 'Yes',
+                'value' => 1
+            ],
+            [
+                'label' => 'No',
+                'value' => 0
+            ]
+        ];
+        $has_statements = [
+            [
+                'label' => 'Yes',
+                'value' => 1
+            ],
+            [
+                'label' => 'No',
+                'value' => 0
+            ]
+        ];
         return [
             'vlops' => $vlops,
             'onboardeds' => $onboardeds,
+            'has_tokens' => $has_tokens,
+            'has_statements' => $has_statements,
         ];
     }
 

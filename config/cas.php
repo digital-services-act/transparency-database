@@ -166,7 +166,7 @@ return [
     | This should only be used for developmental purposes.  getAttributes()
     | will return null in this condition.
      */
-    'cas_masquerade'      => env('CAS_MASQUERADE', ''),
+    'cas_masquerade'      => env('CAS_MASQUERADE', null),
 
     /*
     |--------------------------------------------------------------------------

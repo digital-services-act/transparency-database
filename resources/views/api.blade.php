@@ -18,7 +18,7 @@
         @if($token_plain_text)
             <p class="ecl-u-type-paragraph">
             {{__('api.Your token for accessing the API is: ')}} <pre id="plaintoken">{{ $token_plain_text }}</pre>
-            <button class="btn" onclick="copyContent()">{{__('api.Copy To Clipboard')}}</button>
+            <button class="ecl-button ecl-button--primary" onclick="copyContent()">{{__('api.Copy To Clipboard')}}</button>
             <script>
               let text = document.getElementById('plaintoken').innerHTML;
               const copyContent = async () => {

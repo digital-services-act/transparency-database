@@ -17,6 +17,8 @@ use Illuminate\Contracts\Auth\Guard as AuthGuard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 final class CasGuard implements AuthGuard
 {
@@ -31,6 +33,22 @@ final class CasGuard implements AuthGuard
         private readonly Request $request,
         private readonly Session $session
     ) {
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function masquerade(){
+        if (strtolower((string)config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
+            throw new \Exception('Masquerade cannot be used in a production environment.');
+        };
+        $attributes = [
+            "email" => config('cas.cas_masquerade')
+        ];
+        $user = User::firstOrCreateByAttributes($attributes);
+        $this->setUser($user);
+        return $user;
     }
 
     public function attempt(array $credentials): ?Authenticatable

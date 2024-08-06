@@ -395,69 +395,128 @@ class StatementSearchService
         }
     }
 
+    public function allSendingPlatformIds(): array
+    {
+        return Cache::remember('all_sending_platform_ids', self::ONE_HOUR, function () {
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_platform_ids = [];
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                foreach ($methods as $method => $total) {
+                    if ($total) {
+                        $sending_platform_ids[] = $platform_id;
+                        break;
+                    }
+                }
+            }
+            return $sending_platform_ids;
+        });
+    }
+
     public function totalNonVlopPlatformsSending(): int
     {
         return Cache::remember('total_sending_non_vlop_platforms', self::ONE_HOUR, function () {
-            $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE platform_id NOT IN (" . $vlop_platform_ids . ")";
-
-            return $this->runAndExtractCountQuerySql($query);
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_non_vlop_platform_ids = [];
+            $vlop_ids = $this->vlopIds();
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (! in_array($platform_id, $vlop_ids, true)) {
+                    foreach ($methods as $method => $total) {
+                        if ($total) {
+                            $sending_non_vlop_platform_ids[] = $platform_id;
+                            break;
+                        }
+                    }
+                }
+            }
+            return count($sending_non_vlop_platform_ids);
         });
     }
 
     public function totalNonVlopPlatformsSendingApi(): int
     {
         return Cache::remember('total_sending_non_vlop_platforms_api', self::ONE_HOUR, function () {
-            $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' AND platform_id NOT IN (" . $vlop_platform_ids . ")";
-
-            return $this->runAndExtractCountQuerySql($query);
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_api_non_vlop_platform_ids = [];
+            $vlop_ids = $this->vlopIds();
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && ! in_array($platform_id, $vlop_ids, true)) {
+                    $sending_api_non_vlop_platform_ids[] = $platform_id;
+                }
+            }
+            return count($sending_api_non_vlop_platform_ids);
         });
     }
 
     public function totalNonVlopPlatformsSendingWebform(): int
     {
         return Cache::remember('total_sending_non_vlop_platforms_webform', self::ONE_HOUR, function () {
-            $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' AND platform_id NOT IN (" . $vlop_platform_ids . ")";
-
-            return $this->runAndExtractCountQuerySql($query);
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_webform_non_vlop_platform_ids = [];
+            $vlop_ids = $this->vlopIds();
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if ($methods[Statement::METHOD_FORM] && ! in_array($platform_id, $vlop_ids, true)) {
+                    $sending_webform_non_vlop_platform_ids[] = $platform_id;
+                }
+            }
+            return count($sending_webform_non_vlop_platform_ids);
         });
     }
 
     public function totalVlopPlatformsSending(): int
     {
         return Cache::remember('total_sending_vlop_platforms', self::ONE_HOUR, function () {
-            $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE platform_id IN (" . $vlop_platform_ids . ")";
-
-            return $this->runAndExtractCountQuerySql($query);
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_vlop_platform_ids = [];
+            $vlop_ids = $this->vlopIds();
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (in_array($platform_id, $vlop_ids, true)) {
+                    foreach ($methods as $method => $total) {
+                        if ($total) {
+                            $sending_vlop_platform_ids[] = $platform_id;
+                            break;
+                        }
+                    }
+                }
+            }
+            return count($sending_vlop_platform_ids);
         });
     }
 
     public function totalVlopPlatformsSendingApi(): int
     {
         return Cache::remember('total_sending_vlop_platforms_api', self::ONE_HOUR, function () {
-            $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method != '" . Statement::METHOD_FORM . "' AND platform_id IN (" . $vlop_platform_ids . ")";
-
-            return $this->runAndExtractCountQuerySql($query);
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_api_vlop_platform_ids = [];
+            $vlop_ids = $this->vlopIds();
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && in_array($platform_id, $vlop_ids, true)) {
+                    $sending_api_vlop_platform_ids[] = $platform_id;
+                }
+            }
+            return count($sending_api_vlop_platform_ids);
         });
     }
 
     public function totalVlopPlatformsSendingWebform(): int
     {
         return Cache::remember('total_sending_vlop_platforms_webform', self::ONE_HOUR, function () {
-            $vlop_platform_ids = $this->vlopIdsAsString();
-            $query             = "SELECT COUNT(DISTINCT(platform_id)) FROM " . $this->index_name . " WHERE method = '" . Statement::METHOD_FORM . "' AND platform_id IN (" . $vlop_platform_ids . ")";
-
-            return $this->runAndExtractCountQuerySql($query);
+            $platform_ids_methods_data = $this->methodsByPlatformAll();
+            $sending_webform_vlop_platform_ids = [];
+            $vlop_ids = $this->vlopIds();
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if ($methods[Statement::METHOD_FORM] && in_array($platform_id, $vlop_ids, true)) {
+                    $sending_webform_vlop_platform_ids[] = $platform_id;
+                }
+            }
+            return count($sending_webform_vlop_platform_ids);
         });
     }
 
-    private function vlopIdsAsString(): string
+    private function vlopIds(): array
     {
-        return implode(',', Platform::Vlops()->pluck('id')->toArray());
+        return Cache::remember('vlop_ids', self::ONE_HOUR, function() {
+            return Platform::Vlops()->pluck('id')->toArray();
+        });
     }
 
     public function startCountQuery(): string
@@ -547,36 +606,42 @@ class StatementSearchService
     public function totalsForPlatformsDate(Carbon $date): array
     {
         $aggregates = $this->processDateAggregate($date, ['platform_id']);
-
         return $aggregates['aggregates'];
     }
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
         $query   = "SELECT COUNT(*), method, platform_id FROM ".$this->index_name." WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
-        $results = $this->runSql($query);
-        $rows    = $results['datarows'];
-        $out     = [];
-        foreach ($rows as $row) {
-            $out[$row[2]][$row[1]] = $row[0];
-        }
-
-        return $out;
+        return $this->extractMethodAggregateFromQuery($query);
     }
 
     public function methodsByPlatformAll(): array
     {
-        return Cache::remember('methods_by_platform_all', self::ONE_DAY, function () {
+        return Cache::remember('methods_by_platform_all', self::ONE_HOUR, function () {
             $query   = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " GROUP BY platform_id, method";
-            $results = $this->runSql($query);
-            $rows    = $results['datarows'];
-            $out     = [];
-            foreach ($rows as $row) {
-                $out[$row[2]][$row[1]] = $row[0];
-            }
-
-            return $out;
+            return $this->extractMethodAggregateFromQuery($query);
         });
+
+    }
+
+    private function extractMethodAggregateFromQuery(string $query): array
+    {
+        $results = $this->runSql($query);
+        $rows    = $results['datarows'];
+        $out     = [];
+        if (config('scout.driver') === 'opensearch') {
+            foreach ($rows as [$total, $method, $platform_id]) {
+                $out[$platform_id][$method] = $total;
+            }
+        }
+
+        foreach( $out as $platform_id => $methods) {
+            $out[$platform_id][Statement::METHOD_FORM] ??= 0;
+            $out[$platform_id][Statement::METHOD_API] ??= 0;
+            $out[$platform_id][Statement::METHOD_API_MULTI] ??= 0;
+        }
+
+        return $out;
     }
 
     public function totalForPlatformIdAndMethod(int $platform_id, string $method): int

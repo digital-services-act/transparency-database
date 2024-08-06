@@ -21,7 +21,7 @@ class OpenSearchIndexSettingsRefreshInterval extends Command
      *
      * @var string
      */
-    protected $description = 'Set the replicas for an index. Should be 0 or 2';
+    protected $description = 'Set the refreshing interval for an index.';
 
     /**
      * Execute the console command.
