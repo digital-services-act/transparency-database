@@ -57,7 +57,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/CasGuard.php","vendor/ecphp/laravel-cas/src/Middleware/CasAuthenticator.php","vendor/ecphp/laravel-cas/src/Controllers/LoginController.php"],
-        "files": ["app/Overrides/CasGuard.php","app/Overrides/CasAuthenticator.php","app/Overrides/LoginController.php"]
+        "files": ["overrides/CasGuard.php","overrides/CasAuthenticator.php","overrides/LoginController.php"]
     },
     "autoload-dev": {
         "psr-4": {
