@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0b39a43ebb2c3ff974eb9f4e7abca2b",
+    "content-hash": "a02396d791dd74865e74930b61a5f71d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2581,72 +2581,6 @@
                 "source": "https://github.com/laravel/vapor-core/tree/v2.37.1"
             },
             "time": "2024-03-26T16:55:06+00:00"
-        },
-        {
-            "name": "laravel/vapor-ui",
-            "version": "v1.7.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/vapor-ui.git",
-                "reference": "873d82bf8eb9d5018fc7909aaa95cf4f5cba52d4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/vapor-ui/zipball/873d82bf8eb9d5018fc7909aaa95cf4f5cba52d4",
-                "reference": "873d82bf8eb9d5018fc7909aaa95cf4f5cba52d4",
-                "shasum": ""
-            },
-            "require": {
-                "aws/aws-sdk-php": "^3.148.3",
-                "laravel/framework": "^8.0|^9.0|^10.0",
-                "php": "^7.3|^8.0",
-                "symfony/yaml": "^5.1.4|^6.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^6.17.1|^7.0|^8.0",
-                "pestphp/pest": "^1.22.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Laravel\\VaporUi\\VaporUiServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\VaporUi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                },
-                {
-                    "name": "Nuno Maduro",
-                    "email": "nuno@laravel.com"
-                }
-            ],
-            "description": "The Laravel Vapor UI.",
-            "keywords": [
-                "laravel",
-                "vapor"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/vapor-ui/issues",
-                "source": "https://github.com/laravel/vapor-ui"
-            },
-            "abandoned": true,
-            "time": "2023-04-07T13:48:07+00:00"
         },
         {
             "name": "league/commonmark",
@@ -8786,78 +8720,6 @@
             "time": "2024-06-28T08:00:31+00:00"
         },
         {
-            "name": "symfony/yaml",
-            "version": "v6.4.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "52903de178d542850f6f341ba92995d3d63e60c9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/52903de178d542850f6f341ba92995d3d63e60c9",
-                "reference": "52903de178d542850f6f341ba92995d3d63e60c9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1",
-                "symfony/deprecation-contracts": "^2.5|^3",
-                "symfony/polyfill-ctype": "^1.8"
-            },
-            "conflict": {
-                "symfony/console": "<5.4"
-            },
-            "require-dev": {
-                "symfony/console": "^5.4|^6.0|^7.0"
-            },
-            "bin": [
-                "Resources/bin/yaml-lint"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Yaml\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Loads and dumps YAML files",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/yaml/tree/v6.4.8"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-05-31T14:49:08+00:00"
-        },
-        {
             "name": "tightenco/ziggy",
             "version": "v1.8.2",
             "source": {
@@ -12447,6 +12309,78 @@
                 }
             ],
             "time": "2024-06-12T15:01:18+00:00"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v6.4.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "52903de178d542850f6f341ba92995d3d63e60c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/52903de178d542850f6f341ba92995d3d63e60c9",
+                "reference": "52903de178d542850f6f341ba92995d3d63e60c9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-ctype": "^1.8"
+            },
+            "conflict": {
+                "symfony/console": "<5.4"
+            },
+            "require-dev": {
+                "symfony/console": "^5.4|^6.0|^7.0"
+            },
+            "bin": [
+                "Resources/bin/yaml-lint"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Loads and dumps YAML files",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/yaml/tree/v6.4.8"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-05-31T14:49:08+00:00"
         },
         {
             "name": "theseer/tokenizer",
