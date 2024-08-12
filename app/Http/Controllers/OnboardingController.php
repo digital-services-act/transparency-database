@@ -33,8 +33,8 @@ class OnboardingController extends Controller
         $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
 
         // Establish the counts.
-        $vlop_count = Platform::Vlops()->count();
-        $non_vlop_count = Platform::nonVlops()->count();
+        $vlop_count = Platform::nonDsa()->Vlops()->count();
+        $non_vlop_count = Platform::nonDsa()->nonVlops()->count();
 
         // Should be coming from the cached opensearch result.
         $total_vlop_platforms_sending = $this->statement_search_service->totalVlopPlatformsSending();
