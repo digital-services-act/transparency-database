@@ -87,7 +87,7 @@
                 <div class="ecl-u-type-bold ecl-u-mb-s">{{__('dashboard.Definitions')}}</div>
 
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">{{__('dashboard.For definitions of terms used, please refer to the')}}
-                    <a href="{{ route('page.show', ['faq']) }}">{{__('menu.FAQ')}}</a>
+                    <a href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers">{{__('menu.FAQ')}}</a>
                     {{__('dashboard.section and the')}}
                     <a href="{{ route('page.show', ['api-documentation']) }}">{{__('dashboard.API documentation')}}</a>
                     {{__('dashboard.of the DSA Transparency Database. Kindly note that “violations” refer to the variable “category” of the API documentation.')}}</div>
@@ -117,7 +117,7 @@
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">{{__('dashboard.To remove all applied filters, press the ‘Remove all filters’ button at the bottom of the menu.')}}
                 </div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">{{__('dashboard.Please refer to the')}} <a href="{{ route('page.show', ['faq']) }}">{{__('dashboard.FAQ section')}}</a> {{__('dashboard.about the filters that are available.')}}
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">{{__('dashboard.Please refer to the')}} <a href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers">{{__('dashboard.FAQ section')}}</a> {{__('dashboard.about the filters that are available.')}}
                 </div>
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">{{__('dashboard.Selecting multiple elements')}}</div>

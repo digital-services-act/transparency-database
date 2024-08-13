@@ -38,9 +38,9 @@
                 {{__('dayarchive.The daily dumps are currently provided in a nested zip archive containing the csv chunks. Specifically, each .zip file contains several zip files. Each of the latter contains the csv files storing all the statements of reasons received on a given day from the selected platform(s).')}}<br>
                 <br>
                 {!! __('dayarchive.Please note that a Data Retention Policy applies and the daily dumps will be available during a limited period following their creation date.') !!}<br/><br/>
-                <a href="{{ route('page.show', ['faq']) }}">{{__('dayarchive.Read more about the Full and light version of the archive in the FAQ')}}</a><br>
+                <a href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers">{{__('dayarchive.Read more about the Full and light version of the archive in the FAQ')}}</a><br>
                 <br>
-                <a href="{{ route('page.show', ['faq']) }}">{{__('dayarchive.Read more about the archive format and the SHA1 in the FAQ')}}</a>
+                <a href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers">{{__('dayarchive.Read more about the archive format and the SHA1 in the FAQ')}}</a>
             </p>
 
         </div>

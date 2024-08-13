@@ -26,7 +26,7 @@
 
             <p class="ecl-u-type-paragraph">
                 <x-ecl.cta-button label="{{__('home.More questions? Check our FAQ')}}"
-                                  url="{{ route('page.show', ['faq']) }}"/>
+                                  url="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers"/>
             </p>
 
         </div>
