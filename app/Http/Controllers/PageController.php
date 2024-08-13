@@ -41,7 +41,6 @@ class PageController extends Controller
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
         $page_title_mods = [
-            'Faq' => __('pages.Faq'),
             'Api Documentation' => __('pages.Api Documentation'),
             'Documentation' => __('pages.Documentation')
         ];
@@ -56,7 +55,6 @@ class PageController extends Controller
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Faq' => __('pages.Faq'),
             'Api Documentation' => __('pages.Api Documentation'),
             'Documentation' => __('pages.Documentation')
         ];
