@@ -177,14 +177,9 @@
                     </thead>
                     <tbody class="ecl-table__body">
                     <tr class="ecl-table__row">
-                        <td class="ecl-table__cell"
-                            data-ecl-table-header="API">{{ $platform_ids_methods_data[$platform->id]['API'] }}</td>
-                        <td class="ecl-table__cell"
-                            data-ecl-table-header="API MULTI">{{ $platform_ids_methods_data[$platform->id]['API_MULTI'] }}</
-                        >
-                        <td class="ecl-table__cell"
-                            data-ecl-table-header="FORM">{{ $platform_ids_methods_data[$platform->id]['FORM'] }}</
-                        >
+                        <td class="ecl-table__cell" data-ecl-table-header="API">@aif($platform_ids_methods_data[$platform->id]['API'])</td>
+                        <td class="ecl-table__cell" data-ecl-table-header="API MULTI">@aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</td>
+                        <td class="ecl-table__cell" data-ecl-table-header="FORM">@aif($platform_ids_methods_data[$platform->id]['FORM'])</td>
                     </tr>
                     </tbody>
                 </table>

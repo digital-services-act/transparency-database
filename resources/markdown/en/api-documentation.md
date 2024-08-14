@@ -687,7 +687,7 @@ Limited to 500 characters and must contain alphanumeric characters (a-z, A-Z, 0-
 
 ## Existing PUID
 
-There is an end point that will allow you to check if a PUID value is already used.
+There is an endpoint that will allow you to get a SoR by PUID. Note that the SoR will usually be retrievable through this endpoint 24 hours after its submission.
 
 To check if an existing PUID is alread used in a statement of reason using the API you will need to make a
 ```GET``` request to this endpoint.

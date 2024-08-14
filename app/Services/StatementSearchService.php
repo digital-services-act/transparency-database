@@ -618,7 +618,8 @@ class StatementSearchService
     public function methodsByPlatformAll(): array
     {
         return Cache::remember('methods_by_platform_all', self::ONE_HOUR, function () {
-            $query   = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " GROUP BY platform_id, method";
+            $dsa_team_platform_id = Platform::dsaTeamPlatformId();
+            $query   = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " WHERE platform_id <> ". $dsa_team_platform_id ." GROUP BY platform_id, method";
             return $this->extractMethodAggregateFromQuery($query);
         });
 

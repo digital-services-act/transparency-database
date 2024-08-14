@@ -55,9 +55,14 @@ class Platform extends Model
         return $this->name === self::LABEL_DSA_TEAM;
     }
 
-    public static function getDsaPlatform()
+    public static function getDsaPlatform(): Model|Builder|null
     {
-        return Platform::where('name', self::LABEL_DSA_TEAM)->first();
+        return self::query()->where('name', self::LABEL_DSA_TEAM)->first();
+    }
+
+    public static function dsaTeamPlatformId(): int
+    {
+        return self::getDsaPlatform()->id;
     }
 
     public function slugifyName()

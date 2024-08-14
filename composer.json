@@ -20,7 +20,6 @@
         "laravel/scout": "^10.1",
         "laravel/tinker": "^2.8",
         "laravel/vapor-core": "^2.26",
-        "laravel/vapor-ui": "^1.7",
         "league/flysystem-aws-s3-v3": "^3.19",
         "maatwebsite/excel": "^3.1",
         "nyholm/psr7": "^1.8",
@@ -58,7 +57,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/CasGuard.php","vendor/ecphp/laravel-cas/src/Middleware/CasAuthenticator.php","vendor/ecphp/laravel-cas/src/Controllers/LoginController.php"],
-        "files": ["app/Overrides/CasGuard.php","app/Overrides/CasAuthenticator.php","app/Overrides/LoginController.php"]
+        "files": ["overrides/CasGuard.php","overrides/CasAuthenticator.php","overrides/LoginController.php"]
     },
     "autoload-dev": {
         "psr-4": {

@@ -44,7 +44,7 @@ class TokenServiceTest extends TestCase
     {
         $platformA = Platform::factory()->create(['vlop' => 1, 'name' => 'Platform A']);
         $platformB = Platform::factory()->create(['vlop' => 0, 'name' => 'Platform B']);
-        $platformC = Platform::factory()->create(['vlop' => 1, 'name' => 'DSA Team']);
+        $platformC = Platform::getDsaPlatform();
 
         $user1 = User::factory()->create(['platform_id' => $platformA->id]);
         $user2 = User::factory()->create(['platform_id' => $platformA->id]);

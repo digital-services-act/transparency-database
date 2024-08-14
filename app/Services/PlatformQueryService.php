@@ -26,7 +26,7 @@ class PlatformQueryService
      */
     public function query(array $filters): Builder
     {
-        $query = Platform::query();
+        $query = Platform::NonDsa();
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key])) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
