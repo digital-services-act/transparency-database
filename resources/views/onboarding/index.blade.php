@@ -15,146 +15,63 @@
         Onboarding Dashboard
     </h1>
 
-
-
-
-    <div class="ecl-table-responsive">
-        <table class="ecl-table ecl-table--zebra">
-            <thead class="ecl-table__head">
-            <tr class="ecl-table__row">
-                <th scope="col" class="ecl-table__header">Statistic</th>
-                <th scope="col" class="ecl-table__header">Total</th>
-            </tr>
-            </thead>
-            <tbody class="ecl-table__body">
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    VLOP Platforms
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $vlop_count }}
-                </td>
-            </tr>
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    VLOP Platforms that have sent data via API
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $total_vlop_platforms_sending_api }}
-                </td>
-            </tr>
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    VLOP Platforms that have sent data via webform
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $total_vlop_platforms_sending_webform }}
-                </td>
-            </tr>
-
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    VLOP Valid Tokens
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $total_vlop_valid_tokens }}
-                </td>
-            </tr>
-
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    Non-VLOP Platforms
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $non_vlop_count }}
-                </td>
-            </tr>
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    Non-VLOP Platforms that have sent data via API
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $total_non_vlop_platforms_sending_api }}
-                </td>
-            </tr>
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    Non-VLOP Platforms that have sent data via webform
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $total_non_vlop_platforms_sending_webform }}
-                </td>
-            </tr>
-
-
-            <tr class="ecl-table__row">
-                <td class="ecl-table__cell" data-ecl-table-header="Statistic">
-                    Non-VLOP Valid Tokens
-                </td>
-                <td class="ecl-table__cell" data-ecl-table-header="Total">
-                    {{ $total_non_vlop_valid_tokens }}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-
-
-
-    <form class="ecl-container ecl-u-mt-2xl">
+    <form class="ecl-u-mt-2xl">
         <div class="ecl-row">
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.checkbox label="Platform is VLOP?"
+                <x-ecl.select label="Select Type of Platform:"
                                 name="vlop"
                                 id="vlop"
-                                value="1"
-                                checked="{{ request()->get('vlop', 0) }}"
-
+                                :options="$options['vlops']"
+                                :required="true"
+                                default="{{ request()->get('vlop', -1) }}"
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.checkbox label="Platform is Onboarded?"
-                                name="onboarded"
-                                id="onboarded"
-                                value="1"
-                                checked="{{ request()->get('onboarded', 0) }}"
-
+                <x-ecl.select label="Platform is Onboarded:"
+                              name="onboarded"
+                              id="onboarded"
+                              :options="$options['onboardeds']"
+                              :required="true"
+                              default="{{ request()->get('onboarded', -1) }}"
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.checkbox label="Platform has Tokens?"
-                                name="has_tokens"
-                                id="has_tokens"
-                                value="1"
-                                checked="{{ request()->get('has_tokens', 0) }}"
-
+                <x-ecl.select label="Platform has Tokens:"
+                              name="has_tokens"
+                              id="has_tokens"
+                              :options="$options['has_tokens']"
+                              :required="true"
+                              default="{{ request()->get('has_tokens', -1) }}"
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.checkbox label="Platform has Statements?"
-                                name="has_statements"
-                                id="has_statements"
-                                value="1"
-                                checked="{{ request()->get('has_statements', 0) }}"
-
+                <x-ecl.select label="Platform has Statements:"
+                              name="has_statements"
+                              id="has_statements"
+                              :options="$options['has_statements']"
+                              :required="true"
+                              default="{{ request()->get('has_statements', -1) }}"
                 />
             </div>
         </div>
         <div class="ecl-row">
             <div class="ecl-col-m-6">
                 <x-ecl.textfield name="s" label=""
-                                 placeholder="search by name" justlabel="true" value="{{ request()->get('s', '') }}"/>
+                                 placeholder="Search by platform name" justlabel="true" value="{{ request()->get('s', '') }}"/>
             </div>
             <div class="ecl-col-m-6 ecl-u-align-content-center ecl-u-type-align-center">
-                <x-ecl.button label="Filter"/>
+                <x-ecl.button label="Filter Results"/>
+                &nbsp;&nbsp;&nbsp;
+                <a href="{{ route('onboarding.index') }}" class="ecl-link">Clear Filters</a>
             </div>
         </div>
     </form>
 
+    <h2 class="ecl-u-type-heading-2">{{ $platforms->total() }} Platforms</h2>
+
     @foreach($platforms as $platform)
 
-        <h2 class="ecl-u-type-heading-2">
+        <h3 class="ecl-u-type-heading-3">
             {{ $platform->name }}
             <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => request()->fullUrl()]) }}"
                class="ecl-link" title="Edit Platform">
@@ -162,7 +79,7 @@
                     <x-ecl.icon icon="edit"/>
                 </svg>
             </a>
-        </h2>
+        </h3>
 
         <h6 class="ecl-u-type-heading-6">Statements</h6>
         @if ($platform_ids_methods_data[$platform->id] ?? false)

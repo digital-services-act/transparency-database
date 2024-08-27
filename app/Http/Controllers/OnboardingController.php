@@ -6,6 +6,9 @@ use App\Models\Platform;
 use App\Services\PlatformQueryService;
 use App\Services\StatementSearchService;
 use App\Services\TokenService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
 class OnboardingController extends Controller
@@ -21,31 +24,9 @@ class OnboardingController extends Controller
         $this->tokenService = $tokenService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-
-        // Get and cache the global platform method data.
         $platform_ids_methods_data = $this->statement_search_service->methodsByPlatformAll();
-
-        // All calls after this one should be using the cached data.
-
-        $all_sending_platform_ids = $this->statement_search_service->allSendingPlatformIds();
-        $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
-
-        // Establish the counts.
-        $vlop_count = Platform::Vlops()->count();
-        $non_vlop_count = Platform::nonVlops()->count();
-
-        // Should be coming from the cached opensearch result.
-        $total_vlop_platforms_sending = $this->statement_search_service->totalVlopPlatformsSending();
-        $total_vlop_platforms_sending_api = $this->statement_search_service->totalVlopPlatformsSendingApi();
-        $total_vlop_platforms_sending_webform = $this->statement_search_service->totalVlopPlatformsSendingWebform();
-        $total_non_vlop_platforms_sending = $this->statement_search_service->totalNonVlopPlatformsSending();
-        $total_non_vlop_platforms_sending_api = $this->statement_search_service->totalNonVlopPlatformsSendingApi();
-        $total_non_vlop_platforms_sending_webform = $this->statement_search_service->totalNonVlopPlatformsSendingWebform();
-
-        $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
-        $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
 
         $filters = [];
         $filters['s'] = $request->get('s');
@@ -64,16 +45,6 @@ class OnboardingController extends Controller
             'platform_ids_methods_data' => $platform_ids_methods_data,
             'platforms' => $platforms,
             'options' => $options,
-            'vlop_count' => $vlop_count,
-            'non_vlop_count' => $non_vlop_count,
-            'total_vlop_platforms_sending' => $total_vlop_platforms_sending,
-            'total_vlop_platforms_sending_api' => $total_vlop_platforms_sending_api,
-            'total_vlop_platforms_sending_webform' => $total_vlop_platforms_sending_webform,
-            'total_non_vlop_platforms_sending' => $total_non_vlop_platforms_sending,
-            'total_non_vlop_platforms_sending_api' => $total_non_vlop_platforms_sending_api,
-            'total_non_vlop_platforms_sending_webform' => $total_non_vlop_platforms_sending_webform,
-            'total_vlop_valid_tokens' => $total_vlop_valid_tokens,
-            'total_non_vlop_valid_tokens' => $total_non_vlop_valid_tokens,
         ]);
     }
 
@@ -81,13 +52,17 @@ class OnboardingController extends Controller
     {
         $vlops = [
             [
-                'label' => 'Yes',
+                'label' => 'VLOPs',
                 'value' => 1
             ],
             [
-                'label' => 'No',
+                'label' => 'Non-Vlops',
                 'value' => 0
-            ]
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
+            ],
         ];
         $onboardeds = [
             [
@@ -97,7 +72,11 @@ class OnboardingController extends Controller
             [
                 'label' => 'No',
                 'value' => 0
-            ]
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
+            ],
         ];
         $has_tokens = [
             [
@@ -107,7 +86,11 @@ class OnboardingController extends Controller
             [
                 'label' => 'No',
                 'value' => 0
-            ]
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
+            ],
         ];
         $has_statements = [
             [
@@ -117,6 +100,10 @@ class OnboardingController extends Controller
             [
                 'label' => 'No',
                 'value' => 0
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
             ]
         ];
         return [
