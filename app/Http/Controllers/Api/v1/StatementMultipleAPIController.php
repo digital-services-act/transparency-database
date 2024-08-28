@@ -90,8 +90,18 @@ class StatementMultipleAPIController extends Controller
             $user_id, $method, $this);
 
         try {
-            // Bulk Insert
-            Statement::insert($payload['statements']);
+
+            if (strtolower((string)config('app.env_real')) === 'production') {
+                // Bulk insert on production, the cron will index later.
+                Statement::insert($payload['statements']);
+            } else {
+                foreach ($payload['statements'] as $statement) {
+                    // Create them in Eloquent individually so that they get indexed.
+                    Statement::create($statement);
+                }
+            }
+
+
 
             //No error, add the platform unique ids into the cache and database
             foreach ($payload['statements'] as $statement) {
