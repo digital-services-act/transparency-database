@@ -19,11 +19,11 @@
         <div class="ecl-row">
             <div class="ecl-col-m-3 ecl-u-align-content-center">
                 <x-ecl.select label="Select Type of Platform:"
-                                name="vlop"
-                                id="vlop"
-                                :options="$options['vlops']"
-                                :required="true"
-                                default="{{ request()->get('vlop', -1) }}"
+                              name="vlop"
+                              id="vlop"
+                              :options="$options['vlops']"
+                              :required="true"
+                              default="{{ request()->get('vlop', -1) }}"
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
@@ -57,7 +57,8 @@
         <div class="ecl-row">
             <div class="ecl-col-m-6">
                 <x-ecl.textfield name="s" label=""
-                                 placeholder="Search by platform name" justlabel="true" value="{{ request()->get('s', '') }}"/>
+                                 placeholder="Search by platform name" justlabel="true"
+                                 value="{{ request()->get('s', '') }}"/>
             </div>
             <div class="ecl-col-m-6 ecl-u-align-content-center ecl-u-type-align-center">
                 <x-ecl.button label="Filter Results"/>
@@ -71,38 +72,40 @@
 
     @foreach($platforms as $platform)
 
-        <h3 class="ecl-u-type-heading-3">
-            {{ $platform->name }}
-            <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => request()->fullUrl()]) }}"
-               class="ecl-link" title="Edit Platform">
-                <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon>
-                    <x-ecl.icon icon="edit"/>
-                </svg>
-            </a>
-        </h3>
+        <div class="ecl-u-mb-6xl">
+            <h3 class="ecl-u-type-heading-3">
+                {{ $platform->name }}
+                <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => request()->fullUrl()]) }}"
+                   class="ecl-link" title="Edit Platform">
+                    <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true"
+                         data-ecl-icon>
+                        <x-ecl.icon icon="edit"/>
+                    </svg>
+                </a>
+            </h3>
 
-        <p class="ecl-u-type-paragraph"><strong>Statements</strong></p>
-        @if ($platform_ids_methods_data[$platform->id] ?? false)
-            <div class="ecl-u-d-flex ecl-u-type-paragraph">
-                <div class="ecl-u-mr-2xl">API: @aif($platform_ids_methods_data[$platform->id]['API'])</div>
-                <div class="ecl-u-mr-2xl">API MULTI: @aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</div>
-                <div class="">FORM: @aif($platform_ids_methods_data[$platform->id]['FORM'])</div>
-            </div>
-        @else
-            <p class="ecl-u-type-paragraph">
-                No statements found.
+            <p class="ecl-u-type-paragraph ecl-u-ml-2xl">
+                <strong>Statements</strong>
+                @if ($platform_ids_methods_data[$platform->id] ?? false)
+                    <span class="ecl-u-ml-2xl ecl-u-mr-2xl">API: @aif($platform_ids_methods_data[$platform->id]['API'])</span>
+                    <span class="ecl-u-mr-2xl">API MULTI: @aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</span>
+                    <span class="">FORM: @aif($platform_ids_methods_data[$platform->id]['FORM'])</span>
+                @else
+                    No statements found.
+                @endif
             </p>
-        @endif
 
-        @if(count($platform->users) === 0)
-            <p class="ecl-u-type-paragraph">
-                No users found.
-                <x-ecl.cta-button label="Create a User"
-                                  url="{{ route('user.create', ['returnto' => request()->fullUrl(), 'platform_id' => $platform->id]) }}"/>
-            </p>
-        @else
-            <x-users.table :users="$platform->users"/>
-        @endif
+
+            @if(count($platform->users) === 0)
+                <p class="ecl-u-type-paragraph">
+                    No users found.
+                    <x-ecl.cta-button label="Create a User"
+                                      url="{{ route('user.create', ['returnto' => request()->fullUrl(), 'platform_id' => $platform->id]) }}"/>
+                </p>
+            @else
+                <x-users.table :users="$platform->users"/>
+            @endif
+        </div>
 
     @endforeach
 
