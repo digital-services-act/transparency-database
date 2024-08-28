@@ -430,8 +430,7 @@ class GroupedSubmissionsService
         &$statements,
         ?int $platform_id,
         $user_id,
-        string $method,
-        StatementMultipleAPIController $statementMultipleAPIController
+        string $method
     ): array {
 // enrich the payload for bulk insert.
         $now = Carbon::now();
