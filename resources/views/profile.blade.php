@@ -64,13 +64,11 @@
         </div>
     @endcanany
 
-    <x-ecl.message type="info" icon="information" title="{{__('profile.Assistance')}}"
-                   message="{!! __('profile.For any type of issues please contact:') !!}"
-                   :close="true"/>
 
-    <h3 class="ecl-u-type-heading-3">Onboarding Statistics</h3>
 
-    <h4 class="ecl-u-type-heading-4">VLOPs</h4>
+    <h2 class="ecl-u-type-heading-2">Onboarding Statistics</h2>
+
+    <h3 class="ecl-u-type-heading-3">VLOPs</h3>
 
     <div class="ecl-table-responsive">
         <table class="ecl-table ecl-table--zebra">
@@ -116,9 +114,11 @@
             </tr>
             </tbody>
         </table>
+    </div>
 
-        <h4 class="ecl-u-type-heading-4">Non-VLOPs</h4>
+    <h3 class="ecl-u-type-heading-3">Non-VLOPs</h3>
 
+    <div class="ecl-table-responsive ecl-u-mb-6xl">
         <table class="ecl-table ecl-table--zebra">
             <thead class="ecl-table__head">
             <tr class="ecl-table__row">
@@ -165,5 +165,10 @@
             </tbody>
         </table>
     </div>
+
+
+    <x-ecl.message type="info" icon="information" title="{{__('profile.Assistance')}}"
+                   message="{!! __('profile.For any type of issues please contact:') !!}"
+                   :close="true"/>
 
 @endsection

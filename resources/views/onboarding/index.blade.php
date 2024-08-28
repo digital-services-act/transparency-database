@@ -81,32 +81,18 @@
             </a>
         </h3>
 
-        <h6 class="ecl-u-type-heading-6">Statements</h6>
+        <p class="ecl-u-type-paragraph"><strong>Statements</strong></p>
         @if ($platform_ids_methods_data[$platform->id] ?? false)
-            <div class="ecl-table-responsive">
-                <table class="ecl-table">
-                    <thead class="ecl-table__head">
-                    <tr class="ecl-table__row">
-                        <th class="ecl-table__header" scope="col" width="33%">API</th>
-                        <th class="ecl-table__header" scope="col" width="33%">API MULTI</th>
-                        <th class="ecl-table__header" scope="col" width="33%">FORM</th>
-                    </tr>
-                    </thead>
-                    <tbody class="ecl-table__body">
-                    <tr class="ecl-table__row">
-                        <td class="ecl-table__cell" data-ecl-table-header="API">@aif($platform_ids_methods_data[$platform->id]['API'])</td>
-                        <td class="ecl-table__cell" data-ecl-table-header="API MULTI">@aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</td>
-                        <td class="ecl-table__cell" data-ecl-table-header="FORM">@aif($platform_ids_methods_data[$platform->id]['FORM'])</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="ecl-u-d-flex ecl-u-type-paragraph">
+                <div class="ecl-u-mr-2xl">API: @aif($platform_ids_methods_data[$platform->id]['API'])</div>
+                <div class="ecl-u-mr-2xl">API MULTI: @aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</div>
+                <div class="">FORM: @aif($platform_ids_methods_data[$platform->id]['FORM'])</div>
             </div>
         @else
             <p class="ecl-u-type-paragraph">
                 No statements found.
             </p>
         @endif
-
 
         @if(count($platform->users) === 0)
             <p class="ecl-u-type-paragraph">
@@ -115,7 +101,6 @@
                                   url="{{ route('user.create', ['returnto' => request()->fullUrl(), 'platform_id' => $platform->id]) }}"/>
             </p>
         @else
-            <h6 class="ecl-u-type-heading-6">Users</h6>
             <x-users.table :users="$platform->users"/>
         @endif
 
