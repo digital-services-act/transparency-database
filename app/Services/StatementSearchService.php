@@ -376,7 +376,7 @@ class StatementSearchService
 
     public function bulkIndexStatements(Collection $statements): void
     {
-        if ($statements->count() !== 0) {
+        if ($statements->count() !== 0 && config('scout.driver') === 'opensearch') {
             $bulk = [];
             /** @var Statement $statement */
             foreach ($statements as $statement) {
