@@ -77,8 +77,8 @@
                 />
 
             </div>
-            <div class="ecl-col-l-2">
-                <div class="ecl-form-group ecl-u-mb-l" style="margin-top: 36px;">
+            <div class="ecl-col-l-2 ecl-u-align-content-center">
+                <div class="ecl-form-group" style="margin-top: 26px;">
                     <button class="ecl-button ecl-button--primary" type="submit">
                         <span class="ecl-button__container">
                             <span class="ecl-button__label"

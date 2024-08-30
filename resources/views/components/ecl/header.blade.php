@@ -15,8 +15,9 @@
                         </picture>
                     </a>
                     <div class="ecl-site-header__action">
-                        @if(config('dsa.TRANSLATIONS'))
-                            <x-ecl.language-menu/>
+
+                        @if(config('dsa.webt.clientId'))
+                            <x-ecl.language-menu />
                         @endif
                         {{--                        <x-ecl.search-site/>--}}
                         <x-ecl.login-menu/>

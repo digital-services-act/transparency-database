@@ -23,8 +23,8 @@
                      focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="logged-in"/>
                 </svg>
-                {{__('menu.Logged In')}}
-                &nbsp;
+                {{ __('menu.Logged In') }}
+                <span>&nbsp;</span>
                 <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180"
                      focusable="false" aria-hidden="false">
                     <x-ecl.icon icon="corner-arrow"/>
