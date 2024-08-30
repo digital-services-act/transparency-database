@@ -99,7 +99,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
-
 <script>
     @if($ecl_init)
         ECL.autoInit();
@@ -109,7 +108,15 @@
 {{--DO NOT SPLIT THIS LINE--}}
 <script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
 @endif
-<script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}
+<script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
+@if(config('dsa.webt.clientId', false))
+<script type="text/javascript" src="https://unpkg.com/@tilde-nlp/website-translator/dist/widget.js"></script>
+<script>
+  WebsiteTranslator.Options.api.clientId = "{{ config('dsa.webt.clientId') }}";
+  WebsiteTranslator.Options.api.url = "{{ config('dsa.webt.url') }}";
+  WebsiteTranslator.Options.api.version = {{ config('dsa.webt.version') }};
+  WebsiteTranslator.Initialize()
 </script>
+@endif
 </body>
 </html>
