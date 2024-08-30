@@ -115,7 +115,9 @@
   WebsiteTranslator.Options.api.clientId = "{{ config('dsa.webt.clientId') }}";
   WebsiteTranslator.Options.api.url = "{{ config('dsa.webt.url') }}";
   WebsiteTranslator.Options.api.version = {{ config('dsa.webt.version') }};
-  WebsiteTranslator.Initialize()
+  WebsiteTranslator.Options.ui.layout = "menu";
+  WebsiteTranslator.Initialize();
+  console.log(WebsiteTranslator);
 </script>
 @endif
 </body>

@@ -41,8 +41,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
-        Route::get('feedback', static fn(Request $request) => (new FeedbackController())->index($request))->name('feedback.index');
-        Route::post('feedback', static fn(FeedbackSendRequest $request) => (new FeedbackController())->send($request))->name('feedback.send');
+        Route::get('feedback',[FeedbackController::class, 'index'])->name('feedback.index');
+        Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
         Route::group(['middleware' => ['can:create statements']], static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
             Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
@@ -61,16 +61,10 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
         Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
-        Route::get('/profile/start', static fn(
-            Request $request
-        ): Application|Factory|View => (new ProfileController())->profile($request))->name('profile.start');
-        Route::get('/profile/page/{page}', static fn(string $page): Factory|View|Application => (new PageController())->profileShow($page))->name('profile.page.show');
-        Route::get('/profile/api', static fn(
-            Request $request
-        ): Application|Factory|View => (new ProfileController())->apiIndex($request))->name('profile.api.index')->can('create statements');
-        Route::post('/profile/api/new-token', static fn(
-            Request $request
-        ): Application|RedirectResponse|Redirector => (new ProfileController())->newToken($request))->name('profile.api.new-token')->can('create statements');
+        Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
+        Route::get('/profile/page/{page}', [PageController::class, 'profileShow')->name('profile.page.show');
+        Route::get('/profile/api', [ProfileController::class, 'apiIndex')->name('profile.api.index')->can('create statements');
+        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('create statements');
 
 });
 
@@ -89,13 +83,4 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/page/{page}', static fn(string $page, bool $profile = false): Application|Factory|View|RedirectResponse|Redirector => (new PageController())->show($page, $profile))->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-    Route::get('setlocale', function (Request $request) {
-        if(!config('dsa.TRANSLATIONS')) return back();
-        $locale = $request->input('locale');
-        if (in_array($locale, config('app.locales'))) {
-            session(['locale' => $locale]);
-            session(['force_lang' => true]);
-        }
-        return back();
-    })->name('setlocale');
 });
