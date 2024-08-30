@@ -62,8 +62,8 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
         Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
-        Route::get('/profile/page/{page}', [PageController::class, 'profileShow')->name('profile.page.show');
-        Route::get('/profile/api', [ProfileController::class, 'apiIndex')->name('profile.api.index')->can('create statements');
+        Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
+        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('create statements');
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('create statements');
 
 });
