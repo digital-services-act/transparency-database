@@ -1,20 +1,20 @@
 @props(['lang','label'])
 <li class="ecl-site-header__language-item">
-    @if(app()->getLocale() == $lang)
+    @if(strtoupper(request()->query('lang')) === $lang)
 
-        <a href="/setlocale/?locale={{$lang}}"
+        <a href="?lang={{ strtolower($lang) }}"
            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link ecl-site-header__language-link--active"
-           lang="{{$lang}}" hreflang="{{$lang}}">
-            <span class="ecl-site-header__language-link-code">{{$lang}}</span>
-            <span class="ecl-site-header__language-link-label">{{$label}}</span>
+           lang="{{ strtolower($lang) }}" hreflang="{{ strtolower($lang) }}">
+            <span class="ecl-site-header__language-link-code">{{ $lang }}</span>
+            <span class="ecl-site-header__language-link-label">{{ $label }}</span>
         </a>
 
     @else
 
-        <a href="/setlocale/?locale={{$lang}}"
+        <a href="?lang={{ strtolower($lang) }}"
            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link"
-           lang="{{$lang}}" hreflang="{{$lang}}">
-            <span class="ecl-site-header__language-link-code">{{$lang}}</span>
+           lang="{{ strtolower($lang) }}" hreflang="{{ strtolower($lang) }}">
+            <span class="ecl-site-header__language-link-code">{{ $lang }}</span>
             <span class="ecl-site-header__language-link-label">{{$label}}</span>
         </a>
 

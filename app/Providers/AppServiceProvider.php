@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
+use App\Services\EuropeanLanguagesService;
 use GuzzleHttp\Client;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
@@ -68,12 +69,8 @@ class AppServiceProvider extends ServiceProvider
         view()->share('ecl_init', true);
 
         view()->composer('*', function ($view) {
-
-            $view->with('languages', [
-                'en' => 'english',
-                'fr' => 'français',
-                'it' => 'italiano'
-            ]);
+            $languages = app(EuropeanLanguagesService::class)->getEuropeanLanguages();
+            $view->with('languages', $languages);
         });
 
         // Analytics Float Format
