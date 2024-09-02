@@ -7,24 +7,17 @@ use App\Http\Controllers\LogMessagesController;
 use App\Http\Controllers\DayArchiveController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
-use App\Http\Requests\FeedbackSendRequest;
-use App\Http\Requests\PlatformRegisterStoreRequest;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-use Spatie\Honeypot\ProtectAgainstSpam;
 
 
 /*
@@ -80,7 +73,7 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
     Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/page/{page}', static fn(string $page, bool $profile = false): Application|Factory|View|RedirectResponse|Redirector => (new PageController())->show($page, $profile))->name('page.show');
+    Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
 });

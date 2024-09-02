@@ -35,9 +35,28 @@ class OnboardingController extends Controller
         $filters['has_tokens'] = $request->get('has_tokens');
         $filters['has_statements'] = $request->get('has_statements');
 
+        $allowed_orderbys = [
+            'name',
+            'created_at'
+        ];
+
+        $allowed_directions = [
+            'asc',
+            'desc'
+        ];
+
+        $orderby = $request->get('orderby', $allowed_orderbys[0]);
+        $direction = $request->get('direction', $allowed_directions[0]);
+
         // Get the platforms.
         $platforms = $this->platform_query_service->query($filters)->with('users', 'users.roles', 'users.tokens');
-        $platforms->orderBy('name');
+
+        if (in_array($orderby, $allowed_orderbys, true) && in_array($direction, $allowed_directions, true)) {
+            $platforms->orderBy($orderby, $direction);
+        } else {
+            $platforms->orderBy($allowed_orderbys[0], $allowed_directions[0]);
+        }
+
         $platforms = $platforms->paginate(10)->withQueryString();
         $options = $this->prepareOptions();
 
