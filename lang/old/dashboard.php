@@ -2,7 +2,7 @@
 
 return [
     "Dashboard" => "Dashboard",
-    "The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard:" => "The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard:",
+    "",
     "Overview" => "Overview",
     "Timelines" => "Timelines",
     "Violations" => "Violations",
@@ -10,12 +10,12 @@ return [
     "Platforms" => "Platforms",
     "Other analysis" => "Other analysis",
     "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard." => "For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.",
-    "By default, the dashboard displays data from the last 30 days; you can apply filters to view data for other time periods." => "<strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply filters to view data for other time periods.",
-    "Please note that a Data Retention Policy applies and that the Dashboard is showing data aggregated from a longer period of time in the past with respect to the data available on the search page. This might result in different numbers of Statements of Reasons being reported by the Dashboard and the search pages even when the same filtering settings are applied." => "Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the Dashboard is showing data aggregated from a longer period of time in the past with respect to the data available on the search page. This might result in different numbers of Statements of Reasons being reported by the Dashboard and the search pages even when the same filtering settings are applied.",
+
+
     "Instructions" => "Instructions",
     "Introduction" => "Introduction",
-    "The purpose of this dashboard is to help users without programming skills explore aggregated data in the DSA Transparency Database. These instructions are to assist you in making the best use of all the available features." => "The purpose of this dashboard is to help users without programming skills explore aggregated data in the DSA Transparency Database. These instructions are to assist you in making the best use of all the available features.",
-    "This dashboard comprises 5 pages, in addition to these instructions. Each page contains 2-3 visualizations, typically grouped by theme, such as timelines, violations, or restrictions. In addition, the “5-Other analyses” page shows a breakdown of statements of reasons by content type. It also shows how the grounds for the restrictions imposed and the information source used relate to one another as well as the relationship between automatic content moderation decisions and automatic detection of content for moderation." => "This dashboard comprises 5 pages, in addition to these instructions. Each page contains 2-3 visualizations, typically grouped by theme, such as timelines, violations, or restrictions. In addition, the “5-Other analyses” page shows a breakdown of statements of reasons by content type. It also shows how the grounds for the restrictions imposed and the information source used relate to one another as well as the relationship between automatic content moderation decisions and automatic detection of content for moderation.",
+    "",
+
     "Data update" => "Data update",
     "The data is updated every day at 06:00 (CET)." => "The data is updated every day at 06:00 (CET).",
     "Definitions" => "Definitions",
@@ -23,8 +23,7 @@ return [
     "section and the" => "section and the",
     "of the DSA Transparency Database. Kindly note that “violations” refer to the variable “category” of the API documentation." => "of the DSA Transparency Database. Kindly note that “violations” refer to the variable “category” of the API documentation.",
     "Interactivity" => "Interactivity",
-    "Each visualization is interactive: 1) additional information is provided when the mouse hovers over a visualization, and 2) you can click on any of the elements (e.g. bars, charts, labels) to highlight specific data. The rest of the visualizations in the page will accordingly highlight the relevant data." => "Each visualization is interactive: 1) additional information is provided when the mouse hovers over a visualization, and 2) you can click on any of the elements (e.g. bars, charts, labels) to highlight specific data. The rest of the visualizations in the page will accordingly highlight the relevant data.",
-    "Note that highlights apply only to the page in which they are triggered. For filters that apply to all the pages, use the ‘filters’ menu on the top left – see below." => "Note that highlights apply only to the page in which they are triggered. For filters that apply to all the pages, use the ‘filters’ menu on the top left – see below.",
+    "Note that highlights apply only to the page in which they are triggered. For filters that apply to all the pages, use the ‘filters’ menu on the top left – see below." => "",
     "Filters" => "Filters",
     "The three lines on the top left of the dashboard open the filters menu." => "The three lines on the top left of the dashboard open the filters menu.",
     "Select the element you want to focus on (e.g., specific platform(s), types of violations or restrictions), and the visualizations on all the pages will update accordingly." => "Select the element you want to focus on (e.g., specific platform(s), types of violations or restrictions), and the visualizations on all the pages will update accordingly.",

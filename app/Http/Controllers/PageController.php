@@ -35,14 +35,16 @@ class PageController extends Controller
 
 
         $page_title = ucwords(str_replace("-", " ", (string) $page));
-        $page_title = __('pages.' . $page_title);
 
 
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
         $page_title_mods = [
-            'Api Documentation' => __('pages.Api Documentation'),
-            'Documentation' => __('pages.Documentation')
+            'Api Documentation' => 'API',
+            'Onboarding' => 'Platform Onboarding',
+            'Legal Information' => 'Legal Notice',
+            'Documentation' => 'Documentation',
+            'Webform Documentation' => "Webform"
         ];
 
 
@@ -55,8 +57,11 @@ class PageController extends Controller
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Api Documentation' => __('pages.Api Documentation'),
-            'Documentation' => __('pages.Documentation')
+            'Onboarding' => 'Platform Onboarding',
+            'Api Documentation' => 'API',
+            'Documentation' => 'Documentation',
+            'Webform Documentation' => "Webform",
+            'Legal Information' => 'Legal Notice',
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
@@ -66,8 +71,7 @@ class PageController extends Controller
 
 
         $page_content = '';
-        // Localize the page
-        $page = $this->getPagePath($page);
+        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
 
 
@@ -123,11 +127,5 @@ class PageController extends Controller
             'Faq'
         ];
         return in_array($page_title, $show_feedback_pages);
-    }
-
-    public function getPagePath($page) {
-        $localePath = __DIR__ . '/../../../resources/markdown/' . app()->getLocale() . '/' . $page . '.md';
-        $fallbackPath = __DIR__ . '/../../../resources/markdown/en/' . $page . '.md';
-        return file_exists($localePath) ? $localePath : $fallbackPath;
     }
 }

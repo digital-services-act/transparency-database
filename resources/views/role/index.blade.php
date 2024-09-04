@@ -3,7 +3,7 @@
 @section('title', 'Manage Roles')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Dashboard" url="{{ route('dashboard') }}" />
     <x-ecl.breadcrumb label="Roles" />
 @endsection
