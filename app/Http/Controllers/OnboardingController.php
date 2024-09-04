@@ -35,6 +35,8 @@ class OnboardingController extends Controller
         $filters['has_tokens'] = $request->get('has_tokens');
         $filters['has_statements'] = $request->get('has_statements');
 
+        $sorting_query_base = "?" . http_build_query($filters);
+
         $allowed_orderbys = [
             'name',
             'created_at'
@@ -45,8 +47,12 @@ class OnboardingController extends Controller
             'desc'
         ];
 
-        $orderby = $request->get('orderby', $allowed_orderbys[0]);
-        $direction = $request->get('direction', $allowed_directions[0]);
+        $sorting = $request->get('sorting', 'name:asc');
+        $parts = explode(":", $sorting);
+
+
+        $orderby = $parts[0] ?? $allowed_orderbys[0];
+        $direction = $parts[1] ?? $allowed_directions[0];
 
         // Get the platforms.
         $platforms = $this->platform_query_service->query($filters)->with('users', 'users.roles', 'users.tokens');
@@ -59,11 +65,14 @@ class OnboardingController extends Controller
 
         $platforms = $platforms->paginate(10)->withQueryString();
         $options = $this->prepareOptions();
+        $all_platforms_count = Platform::nonDSA()->count();
 
         return view('onboarding.index', [
             'platform_ids_methods_data' => $platform_ids_methods_data,
             'platforms' => $platforms,
             'options' => $options,
+            'all_platforms_count' => $all_platforms_count,
+            'sorting_query_base' => $sorting_query_base
         ]);
     }
 
@@ -125,11 +134,30 @@ class OnboardingController extends Controller
                 'value' => -1
             ]
         ];
+        $sorting = [
+            [
+                'label' => 'A to Z',
+                'value' => 'name:asc'
+            ],
+            [
+                'label' => 'Z to A',
+                'value' => 'name:desc'
+            ],
+            [
+                'label' => 'Created New Old',
+                'value' => 'created_at:desc'
+            ],
+            [
+                'label' => 'Created Old New',
+                'value' => 'created_at:asc'
+            ],
+        ];
         return [
             'vlops' => $vlops,
             'onboardeds' => $onboardeds,
             'has_tokens' => $has_tokens,
             'has_statements' => $has_statements,
+            'sorting' => $sorting
         ];
     }
 }

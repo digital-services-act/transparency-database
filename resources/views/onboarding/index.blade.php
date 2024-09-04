@@ -16,6 +16,7 @@
     </h1>
 
     <form class="ecl-u-mt-2xl">
+
         <div class="ecl-row">
             <div class="ecl-col-m-3 ecl-u-align-content-center">
                 <x-ecl.select label="Select Type of Platform:"
@@ -54,25 +55,47 @@
                 />
             </div>
         </div>
-        <div class="ecl-row">
+        <div class="ecl-row ecl-u-mb-2xl">
             <div class="ecl-col-m-6">
                 <x-ecl.textfield name="s" label=""
                                  placeholder="Search by platform name" justlabel="true"
                                  value="{{ request()->get('s', '') }}"/>
             </div>
-            <div class="ecl-col-m-6 ecl-u-align-content-center ecl-u-type-align-center">
+            <div class="ecl-col-m-6 ecl-u-align-content-center">
                 <x-ecl.button label="Filter Results"/>
                 &nbsp;&nbsp;&nbsp;
-                <a href="{{ route('onboarding.index') }}" class="ecl-link">Clear Filters</a>
+                <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone">Clear Filters</a>
             </div>
         </div>
+
     </form>
 
-    <h2 class="ecl-u-type-heading-2">{{ $platforms->total() }} Platforms</h2>
+    <div class="ecl-row" style="font-family: Arial, sans-serif;">
+        <div class="ecl-col-m-6">
+            <h2 class="ecl-u-type-heading-2">Platforms {{ $platforms->total() }} of {{ $all_platforms_count }}</h2>
+        </div>
+        <div class="ecl-col-m-6 ecl-u-align-content-center ecl-u-type-align-right">
+            Sort:
+            @foreach($options['sorting'] as $option)
+                @if(request()->get('sorting', 'name:asc') === $option['value'])
+                    <strong>{{ $option['label'] }}</strong>
+                @else
+                    <a href="{{ $sorting_query_base }}&sorting={{ $option['value'] }}" class="ecl-link ecl-link--standalone" style="@if(request()->get('sorting', 'name:asc') === $option['value'])font-weight: bold; @endif">{{ $option['label'] }}</a>
+                @endif
+
+                @if(! $loop->last)
+                    |
+                @endif
+            @endforeach
+        </div>
+    </div>
+
 
     @foreach($platforms as $platform)
 
         <div class="ecl-u-mb-6xl">
+
+
             <h3 class="ecl-u-type-heading-3">
                 {{ $platform->name }}
                 <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => request()->fullUrl()]) }}"
@@ -84,16 +107,21 @@
                 </a>
             </h3>
 
-            <p class="ecl-u-type-paragraph ecl-u-ml-2xl">
-                <strong>Statements</strong>
-                @if ($platform_ids_methods_data[$platform->id] ?? false)
-                    <span class="ecl-u-ml-2xl ecl-u-mr-2xl">API: @aif($platform_ids_methods_data[$platform->id]['API'])</span>
-                    <span class="ecl-u-mr-2xl">API MULTI: @aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</span>
-                    <span class="">FORM: @aif($platform_ids_methods_data[$platform->id]['FORM'])</span>
-                @else
-                    No statements found.
-                @endif
-            </p>
+            <div class="ecl-row ecl-u-mb-l" style="font-family: Arial, sans-serif;">
+                <div class="ecl-col-l-6">
+                    <strong>Statements</strong>
+                    @if ($platform_ids_methods_data[$platform->id] ?? false)
+                        <span class="ecl-u-ml-2xl ecl-u-mr-2xl">API: @aif($platform_ids_methods_data[$platform->id]['API'])</span>
+                        <span class="ecl-u-mr-2xl">API MULTI: @aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</span>
+                        <span class="">FORM: @aif($platform_ids_methods_data[$platform->id]['FORM'])</span>
+                    @else
+                        No statements found.
+                    @endif
+                </div>
+                <div class="ecl-col-l-6 ecl-u-align-content-end ecl-u-type-align-right">
+                    <strong>Created at:</strong> {{ $platform->created_at->format('d-m-Y') }}
+                </div>
+            </div>
 
 
             @if(count($platform->users) === 0)
