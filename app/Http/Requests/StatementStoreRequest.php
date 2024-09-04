@@ -119,6 +119,7 @@ class StatementStoreRequest extends FormRequest
             'end_date_monetary_restriction.date_format'    => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
             'end_date_service_restriction.date_format'     => 'The end date of service restriction does not match the format YYYY-MM-DD.',
             'end_date_visibility_restriction.date_format'  => 'The end date of visibility restriction does not match the format YYYY-MM-DD.',
+            'puid.regex'                                   => 'The puid format is invalid.'
         ];
     }
 
