@@ -67,24 +67,43 @@ class OnboardingController extends Controller
         $options = $this->prepareOptions();
         $all_platforms_count = Platform::nonDSA()->count();
 
-
-        $tags = [
-            [
-                'label' => 'test 1',
-                'url' => 'test',
-                'removable' => true
-            ],
-            [
-                'label' => 'test 2',
-                'url' => 'test',
-                'removable' => true
-            ],
-            [
-                'label' => 'test 3',
-                'url' => 'test',
-                'removable' => true
-            ]
+        $possible_tags = [
+            'vlop:1' => 'is VLOP',
+            'vlop:0' => 'is Non-VLOP',
+            'onboarded:1' => 'onboarded',
+            'onboarded:0' => 'not onboarded',
+            'has_tokens:0' => 'does not have tokens',
+            'has_tokens:1' => 'has tokens',
+            'has_statements:0' => 'does not have statements',
+            'has_statements:1' => 'has statements',
         ];
+
+        $tags = [];
+        foreach ($filters as $filter => $value) {
+            $key = $filter . ':' . $value;
+            if (isset($possible_tags[$key])) {
+                $filters_copy = $filters;
+                unset($filters_copy[$filter]);
+                $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
+                $tag = [
+                    'label' => $possible_tags[$key],
+                    'url' => $url,
+                    'removable' => true
+                ];
+                $tags[] = $tag;
+            }
+        }
+
+        if (isset($filters['s']) && $filters['s'] !== '') {
+            $filters_copy = $filters;
+            unset($filters_copy['s']);
+            $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
+            $tags[] = [
+                'label' => 'matching term: "'. htmlentities($filters['s']) .'"',
+                'url' => $url,
+                'removable' => true
+            ];
+        }
 
         return view('onboarding.index', [
             'platform_ids_methods_data' => $platform_ids_methods_data,

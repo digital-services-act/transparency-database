@@ -64,9 +64,14 @@
             <div class="ecl-col-m-6 ecl-u-align-content-center">
                 <x-ecl.button label="Filter results"/>
                 &nbsp;&nbsp;&nbsp;
-                <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone" disabled="true">Clear all</a>
+                @if($tags)
+                    <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone">Clear all</a>
+                @else
+                    <span class="ecl-u-type-color-primary-20" style="font-family: Arial, sans-serif;">Clear all</span>
+                @endif
             </div>
         </div>
+        <input type="hidden" name="sorting" value="{{ request()->get('sorting', 'name:asc') }}" />
     </form>
 
 

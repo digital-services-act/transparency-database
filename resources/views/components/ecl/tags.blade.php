@@ -5,7 +5,7 @@
         @if($tag['removable'] ?? false)
 
             <li class="ecl-tag-set__item">
-                <button type="button" class="ecl-tag ecl-tag--removable">
+                <a href="{{ $tag['url'] }}" class="ecl-tag ecl-tag--removable">
                     {{ $tag['label'] }}
                     <span class="ecl-tag__icon">
                         <svg class="ecl-icon ecl-icon--xs ecl-tag__icon-close" focusable="false" aria-hidden="false" role="img">
@@ -13,7 +13,7 @@
                             <x-ecl.icon icon="close-outline" />
                         </svg>
                     </span>
-                </button>
+                </a>
             </li>
 
         @else
