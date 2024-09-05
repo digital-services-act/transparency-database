@@ -65,9 +65,9 @@
                 <x-ecl.button label="Filter results"/>
                 &nbsp;&nbsp;&nbsp;
                 @if($tags)
-                    <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone">Clear all</a>
+                    <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone">Reset all</a>
                 @else
-                    <span class="ecl-u-type-color-primary-20" style="font-family: Arial, sans-serif;">Clear all</span>
+                    <span class="ecl-u-type-color-primary-20" style="font-family: Arial, sans-serif;">Reset all</span>
                 @endif
             </div>
         </div>
