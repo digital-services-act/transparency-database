@@ -58,17 +58,19 @@
         <div class="ecl-row ecl-u-mb-2xl">
             <div class="ecl-col-m-6">
                 <x-ecl.textfield name="s" label=""
-                                 placeholder="Search by platform name" justlabel="true"
+                                 placeholder="Search for platform name" justlabel="true"
                                  value="{{ request()->get('s', '') }}"/>
             </div>
             <div class="ecl-col-m-6 ecl-u-align-content-center">
-                <x-ecl.button label="Filter Results"/>
+                <x-ecl.button label="Filter results"/>
                 &nbsp;&nbsp;&nbsp;
-                <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone">Clear Filters</a>
+                <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone" disabled="true">Clear all</a>
             </div>
         </div>
-
     </form>
+
+
+    <x-ecl.tags :tags="$tags" />
 
     <div class="ecl-row" style="font-family: Arial, sans-serif;">
         <div class="ecl-col-m-6">

@@ -67,12 +67,32 @@ class OnboardingController extends Controller
         $options = $this->prepareOptions();
         $all_platforms_count = Platform::nonDSA()->count();
 
+
+        $tags = [
+            [
+                'label' => 'test 1',
+                'url' => 'test',
+                'removable' => true
+            ],
+            [
+                'label' => 'test 2',
+                'url' => 'test',
+                'removable' => true
+            ],
+            [
+                'label' => 'test 3',
+                'url' => 'test',
+                'removable' => true
+            ]
+        ];
+
         return view('onboarding.index', [
             'platform_ids_methods_data' => $platform_ids_methods_data,
             'platforms' => $platforms,
             'options' => $options,
             'all_platforms_count' => $all_platforms_count,
-            'sorting_query_base' => $sorting_query_base
+            'sorting_query_base' => $sorting_query_base,
+            'tags' => $tags
         ]);
     }
 
