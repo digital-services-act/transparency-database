@@ -4,7 +4,7 @@
 @section('title', 'Statement of Reasons Details - ' . $statement->title)
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Statements of Reasons" url="{{ route('statement.index') }}"/>
     <x-ecl.breadcrumb label="Statement of reasons details: {{$statement->uuid}}"/>
 @endsection

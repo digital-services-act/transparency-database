@@ -3,7 +3,7 @@
 @section('title', 'Statements')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="Search for Statements of Reasons" url="{{ route('statement.index') }}"/>
     <x-ecl.breadcrumb label="Advanced Search"/>
 @endsection
@@ -19,7 +19,8 @@
         <a href="{{ route('feedback.index') }}" class="ecl-link ecl-link--standalone">link</a> to the feedback form.
     </p>
     <p class="ecl-u-type-paragraph">
-        {!! __('dayarchive.Please note that a Data Retention Policy applies and the daily dumps will be available during a limited period following their creation date.') !!}</p>
+        Please note that a <a href="/page/data-retention-policy">Data Retention Policy</a> applies and the daily
+        dumps will be available during a limited period following their creation date.</p>
 
 
     <x-statement.search-form :options="$options"/>
