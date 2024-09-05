@@ -3,8 +3,8 @@
 @section('title', 'Create a statement of Reasons')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="{{__('pages.Create a Statement of Reason')}}" />
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
+    <x-ecl.breadcrumb label="Create a Statement of Reasons" />
 @endsection
 
 @section('content')
@@ -23,7 +23,7 @@
         <x-statement.form :statement="$statement" :options="$options" />
     </form>
 
-    <button class="ecl-button ecl-button--primary" onClick="document.getElementById('create-statement-form').submit();">{{__('statement-create.button')}}</button>
+    <button class="ecl-button ecl-button--primary" onClick="document.getElementById('create-statement-form').submit();">Create the Statement of Reasons</button>
     <script>
 
     </script>

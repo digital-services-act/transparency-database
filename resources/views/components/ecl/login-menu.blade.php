@@ -11,7 +11,7 @@
                 <title>Log in</title>
                 <x-ecl.icon icon="log-in"/>
             </svg>
-            {{__('menu.Log In')}}</a>
+            Log In</a>
     @endguest
     @auth
 
@@ -23,7 +23,7 @@
                      focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="logged-in"/>
                 </svg>
-                {{ __('menu.Logged In') }}
+                Logged In
                 <span>&nbsp;</span>
                 <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180"
                      focusable="false" aria-hidden="false">
@@ -34,17 +34,17 @@
             <div id="login-box-id" class="ecl-site-header__login-box"
                  data-ecl-login-box="true">
                 <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
-                                 title="{{__('menu.Your Profile')}}"/>
+                                 title="Your Profile"/>
                 @can('create statements')
                     <x-ecl.menu-item icon="settings" :link="route('profile.api.index')"
-                                     title="{{__('menu.API Token Management')}}"/>
+                                     title="API Token Management"/>
 
                     <x-ecl.menu-item icon="edit" :link="route('statement.create')"
-                                     title="{{__('menu.Submit statements of reasons')}}"/>
+                                     title="Submit statements of reasons"/>
 
                 @endcan
                 <hr class="ecl-site-header__login-separator">
-                <x-ecl.menu-item link="/logout" title="{{__('menu.Logout')}}"/>
+                <x-ecl.menu-item link="/logout" title="Logout"/>
             </div>
 
     @endauth

@@ -3,7 +3,7 @@
 @section('title', 'Create a user')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}" />
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
     <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}" />
     <x-ecl.breadcrumb label="Users" url="{{ route('user.index') }}" />
     <x-ecl.breadcrumb label="Create a User" />
