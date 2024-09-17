@@ -11,7 +11,10 @@
 
     <h1 class="ecl-u-type-heading-1 ecl-u-mb-xl-6xl">User Profile </h1>
     <p class="ecl-u-type-paragraph ecl-u-mb-xl-2xl"
-       style="font-size:16pc; margin-top:-26px; font-style: italic !important">{{auth()->user()->email}}</p>
+       style="font-size:16pc; margin-top:-26px; font-style: italic !important">{{auth()->user()->email}}
+        <a class="ecl-button ecl-button--ghost" href="/logout">Logout</a>
+    </p>
+
 
     <div class="ecl-row ecl-u-flex ecl-u-flex-wrap ecl-u-mb-xl-6xl" style="gap: 2rem; margin-left: 0;">
         @can('create statements')
@@ -24,9 +27,6 @@
                    href="{{ route('statement.create') }}">Submit statements of reasons</a>
             </div>
         @endcan
-        <div class="ecl-col ecl-u-flex-item-grow">
-            <a class="ecl-button ecl-button--secondary" href="/logout">Logout</a>
-        </div>
     </div>
 
     @canany(['create users','create platforms','view logs','view platforms',])
