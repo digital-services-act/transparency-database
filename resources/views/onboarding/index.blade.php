@@ -67,7 +67,7 @@
                 @if($tags)
                     <a href="{{ route('onboarding.index') }}" class="ecl-link ecl-link--standalone">Reset all</a>
                 @else
-                    <span class="ecl-u-type-color-primary-60" style="font-family: Arial, sans-serif;">Reset all</span>
+                    <span style="font-family: Arial, sans-serif; color: #546FA6;">Reset all</span>
                 @endif
             </div>
         </div>
