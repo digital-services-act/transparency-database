@@ -95,8 +95,11 @@
                     :content="$statement->incompatible_content_ground"></x-infoline>
         <x-infoline :title="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_EXPLANATION"
                     :content="$statement->incompatible_content_explanation"></x-infoline>
-        <x-infoline :title="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL"
-                    :content="$statement->incompatible_content_illegal?'Yes':'No'"></x-infoline>
+        <x-infoline
+            :title="Statement::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL"
+            :content="is_null($statement->incompatible_content_illegal) ? 'N/A' : $statement->incompatible_content_illegal">
+        </x-infoline>
+
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_TERRITORIAL_SCOPE"
