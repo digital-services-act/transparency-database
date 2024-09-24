@@ -82,7 +82,7 @@
             <tbody class="ecl-table__body">
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    VLOP Platforms
+                    Onboarded Platforms
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $vlop_count }}
@@ -90,7 +90,7 @@
             </tr>
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    VLOP Platforms that have sent data via API
+                    Platforms that have sent data via API
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_vlop_platforms_sending_api }}
@@ -98,7 +98,7 @@
             </tr>
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    VLOP Platforms that have sent data via webform
+                    Platforms that have sent data via webform
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_vlop_platforms_sending_webform }}
@@ -107,7 +107,7 @@
 
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    VLOP Valid Tokens
+                    Valid Tokens
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_vlop_valid_tokens }}
@@ -131,7 +131,7 @@
 
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Non-VLOP Platforms
+                    Onboarded Platforms
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $non_vlop_count }}
@@ -139,7 +139,7 @@
             </tr>
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Non-VLOP Platforms that have sent data via API
+                    Platforms that have sent data via API
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_non_vlop_platforms_sending_api }}
@@ -147,7 +147,7 @@
             </tr>
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Non-VLOP Platforms that have sent data via webform
+                    Platforms that have sent data via webform
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_non_vlop_platforms_sending_webform }}
@@ -157,7 +157,7 @@
 
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Non-VLOP Valid Tokens
+                    Valid Tokens
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_non_vlop_valid_tokens }}

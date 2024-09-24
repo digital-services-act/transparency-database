@@ -15,6 +15,7 @@ use Closure;
 use EcPhp\CasLib\Contract\CasInterface;
 use EcPhp\CasLib\Contract\Response\Type\ServiceValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Psr\Http\Message\ServerRequestInterface;
 
 final readonly class CasAuthenticator
@@ -33,8 +34,14 @@ final readonly class CasAuthenticator
 
         /** @var ServiceValidate $response */
         $response = $this->cas->requestTicketValidation($this->serverRequest);
-        auth('web')->attempt($response->getCredentials());
+
+        // Attempt to authenticate the user with the credentials provided by CAS
+        if (auth('web')->attempt($response->getCredentials())) {
+            // If the user was trying to access a protected route, redirect them back to that route
+            return Redirect::intended(route('home'));
+        }
 
         return redirect(route(config('laravel-cas.redirect_login_route')));
+
     }
 }
