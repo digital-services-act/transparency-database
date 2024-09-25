@@ -26,5 +26,19 @@ class UserAPIController extends Controller
         return response()->json(['active' => $is_active], Response::HTTP_OK);
     }
 
+    public function delete($email)
+    {
+        // Find the user by email or return a 404 response
+        $user = User::where('email', $email)->firstOrFail();
+
+
+        // Perform the delete operations
+        $user->tokens()->delete();
+        $user->delete();
+
+        // Return a success response with HTTP 204 No Content (indicating successful deletion)
+        return response()->json(['message' => 'User deleted successfully'], Response::HTTP_OK);
+    }
+
 
 }
