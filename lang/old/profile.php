@@ -10,7 +10,7 @@ return [
     'Log Messages' => 'Log Messages',
     'Onboarding Dashboard' => 'Onboarding Dashboard',
     'Assistance' => 'Assistance',
-    'For any type of issues please contact:' => 'For any type of issues please contact: <strong><a href="mailto:CNECT-DSA-HELPDESK&#64;ec.europa.eu">CNECT-DSA-HELPDESK&#64;ec.europa.eu</a></strong>',
+    'For any type of issues please contact:' => '',
 
 
 

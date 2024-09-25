@@ -41,5 +41,6 @@ final readonly class CasAuthenticator
         }
 
         return redirect(route(config('laravel-cas.redirect_login_route')));
+
     }
 }

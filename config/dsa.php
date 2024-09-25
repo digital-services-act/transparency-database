@@ -12,4 +12,10 @@ return [
     'POWERBI' => env('POWERBI', ''),
     'TRANSLATIONS' => env('TRANSLATIONS', false),
 
+    'webt' => [
+        'clientId' => env('WEBT_CLIENTID', false),
+        'url' => env('WEBT_URL', false),
+        'version' => env('WEBT_VERSION', 2),
+    ]
+
 ];

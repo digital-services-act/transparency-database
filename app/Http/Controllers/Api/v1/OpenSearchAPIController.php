@@ -259,7 +259,7 @@ class OpenSearchAPIController extends Controller
     public function platforms(): JsonResponse|array
     {
         try {
-            $platforms = Platform::all()->toArray();
+            $platforms = Platform::NonDSA()->get()->toArray();
             $out       = array_map(static fn($platform) => ['id' => $platform['id'], 'name' => $platform['name'], 'vlop' => $platform['vlop'] === 1], $platforms);
 
             return response()->json(['platforms' => $out]);

@@ -6,6 +6,9 @@ use App\Models\Platform;
 use App\Services\PlatformQueryService;
 use App\Services\StatementSearchService;
 use App\Services\TokenService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
 class OnboardingController extends Controller
@@ -21,31 +24,9 @@ class OnboardingController extends Controller
         $this->tokenService = $tokenService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-
-        // Get and cache the global platform method data.
         $platform_ids_methods_data = $this->statement_search_service->methodsByPlatformAll();
-
-        // All calls after this one should be using the cached data.
-
-        $all_sending_platform_ids = $this->statement_search_service->allSendingPlatformIds();
-        $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
-
-        // Establish the counts.
-        $vlop_count = Platform::Vlops()->count();
-        $non_vlop_count = Platform::nonVlops()->count();
-
-        // Should be coming from the cached opensearch result.
-        $total_vlop_platforms_sending = $this->statement_search_service->totalVlopPlatformsSending();
-        $total_vlop_platforms_sending_api = $this->statement_search_service->totalVlopPlatformsSendingApi();
-        $total_vlop_platforms_sending_webform = $this->statement_search_service->totalVlopPlatformsSendingWebform();
-        $total_non_vlop_platforms_sending = $this->statement_search_service->totalNonVlopPlatformsSending();
-        $total_non_vlop_platforms_sending_api = $this->statement_search_service->totalNonVlopPlatformsSendingApi();
-        $total_non_vlop_platforms_sending_webform = $this->statement_search_service->totalNonVlopPlatformsSendingWebform();
-
-        $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
-        $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
 
         $filters = [];
         $filters['s'] = $request->get('s');
@@ -54,26 +35,83 @@ class OnboardingController extends Controller
         $filters['has_tokens'] = $request->get('has_tokens');
         $filters['has_statements'] = $request->get('has_statements');
 
+        $sorting_query_base = "?" . http_build_query($filters);
+
+        $allowed_orderbys = [
+            'name',
+            'created_at'
+        ];
+
+        $allowed_directions = [
+            'asc',
+            'desc'
+        ];
+
+        $sorting = $request->get('sorting', 'name:asc');
+        $parts = explode(":", $sorting);
+
+
+        $orderby = $parts[0] ?? $allowed_orderbys[0];
+        $direction = $parts[1] ?? $allowed_directions[0];
+
         // Get the platforms.
         $platforms = $this->platform_query_service->query($filters)->with('users', 'users.roles', 'users.tokens');
-        $platforms->orderBy('name');
+
+        if (in_array($orderby, $allowed_orderbys, true) && in_array($direction, $allowed_directions, true)) {
+            $platforms->orderBy($orderby, $direction);
+        } else {
+            $platforms->orderBy($allowed_orderbys[0], $allowed_directions[0]);
+        }
+
         $platforms = $platforms->paginate(10)->withQueryString();
         $options = $this->prepareOptions();
+        $all_platforms_count = Platform::nonDSA()->count();
+
+        $possible_tags = [
+            'vlop:1' => 'is VLOP',
+            'vlop:0' => 'is Non-VLOP',
+            'onboarded:1' => 'onboarded',
+            'onboarded:0' => 'not onboarded',
+            'has_tokens:0' => 'does not have tokens',
+            'has_tokens:1' => 'has tokens',
+            'has_statements:0' => 'does not have statements',
+            'has_statements:1' => 'has statements',
+        ];
+
+        $tags = [];
+        foreach ($filters as $filter => $value) {
+            $key = $filter . ':' . $value;
+            if (isset($possible_tags[$key])) {
+                $filters_copy = $filters;
+                unset($filters_copy[$filter]);
+                $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
+                $tag = [
+                    'label' => $possible_tags[$key],
+                    'url' => $url,
+                    'removable' => true
+                ];
+                $tags[] = $tag;
+            }
+        }
+
+        if (isset($filters['s']) && $filters['s'] !== '') {
+            $filters_copy = $filters;
+            unset($filters_copy['s']);
+            $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
+            $tags[] = [
+                'label' => 'matching term: "'. htmlentities($filters['s']) .'"',
+                'url' => $url,
+                'removable' => true
+            ];
+        }
 
         return view('onboarding.index', [
             'platform_ids_methods_data' => $platform_ids_methods_data,
             'platforms' => $platforms,
             'options' => $options,
-            'vlop_count' => $vlop_count,
-            'non_vlop_count' => $non_vlop_count,
-            'total_vlop_platforms_sending' => $total_vlop_platforms_sending,
-            'total_vlop_platforms_sending_api' => $total_vlop_platforms_sending_api,
-            'total_vlop_platforms_sending_webform' => $total_vlop_platforms_sending_webform,
-            'total_non_vlop_platforms_sending' => $total_non_vlop_platforms_sending,
-            'total_non_vlop_platforms_sending_api' => $total_non_vlop_platforms_sending_api,
-            'total_non_vlop_platforms_sending_webform' => $total_non_vlop_platforms_sending_webform,
-            'total_vlop_valid_tokens' => $total_vlop_valid_tokens,
-            'total_non_vlop_valid_tokens' => $total_non_vlop_valid_tokens,
+            'all_platforms_count' => $all_platforms_count,
+            'sorting_query_base' => $sorting_query_base,
+            'tags' => $tags
         ]);
     }
 
@@ -81,13 +119,17 @@ class OnboardingController extends Controller
     {
         $vlops = [
             [
-                'label' => 'Yes',
+                'label' => 'VLOPs',
                 'value' => 1
             ],
             [
-                'label' => 'No',
+                'label' => 'Non-Vlops',
                 'value' => 0
-            ]
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
+            ],
         ];
         $onboardeds = [
             [
@@ -97,7 +139,11 @@ class OnboardingController extends Controller
             [
                 'label' => 'No',
                 'value' => 0
-            ]
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
+            ],
         ];
         $has_tokens = [
             [
@@ -107,7 +153,11 @@ class OnboardingController extends Controller
             [
                 'label' => 'No',
                 'value' => 0
-            ]
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
+            ],
         ];
         $has_statements = [
             [
@@ -117,13 +167,36 @@ class OnboardingController extends Controller
             [
                 'label' => 'No',
                 'value' => 0
+            ],
+            [
+                'label' => 'All Platforms',
+                'value' => -1
             ]
+        ];
+        $sorting = [
+            [
+                'label' => 'A to Z',
+                'value' => 'name:asc'
+            ],
+            [
+                'label' => 'Z to A',
+                'value' => 'name:desc'
+            ],
+            [
+                'label' => 'Created New Old',
+                'value' => 'created_at:desc'
+            ],
+            [
+                'label' => 'Created Old New',
+                'value' => 'created_at:asc'
+            ],
         ];
         return [
             'vlops' => $vlops,
             'onboardeds' => $onboardeds,
             'has_tokens' => $has_tokens,
             'has_statements' => $has_statements,
+            'sorting' => $sorting
         ];
     }
 }

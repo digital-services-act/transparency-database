@@ -51,5 +51,6 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('user/{email}', static fn($email) => (new \App\Http\Controllers\Api\v1\UserAPIController())->get($email))->name('api.v1.user.get')->can('view users');
     Route::delete('user/{email}', static fn($email) => (new \App\Http\Controllers\Api\v1\UserAPIController())->delete($email))->name('api.v1.user.delete')->can('create users');
     Route::post('platform/{platform:dsa_common_id}/users', static fn(\App\Http\Requests\PlatformUsersStoreRequest $request, \App\Models\Platform $platform): \Illuminate\Http\JsonResponse => (new \App\Http\Controllers\Api\v1\PlatformUserAPIController())->store($request, $platform))->name('api.v1.platform-users.store')->can('create users');
+
 });
 
