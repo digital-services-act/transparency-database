@@ -42,7 +42,7 @@
         3. Timelines<br/>
         4. Violations<br/>
         5. Restrictions<br/>
-        6. Platforms<br/>
+        6. All platforms<br/>
         7. Other analysis<br/><br/>
         For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.<br/>
         <strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply filters to view data for other time periods.<br/><br/>
