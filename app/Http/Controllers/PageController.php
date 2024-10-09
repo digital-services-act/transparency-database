@@ -44,7 +44,8 @@ class PageController extends Controller
             'Onboarding' => 'Platform Onboarding',
             'Legal Information' => 'Legal Notice',
             'Documentation' => 'Documentation',
-            'Webform Documentation' => "Webform"
+            'Webform Documentation' => "Webform",
+            'Accessibility' => "Accessibility Statement"
         ];
 
 
@@ -62,6 +63,7 @@ class PageController extends Controller
             'Documentation' => 'Documentation',
             'Webform Documentation' => "Webform",
             'Legal Information' => 'Legal Notice',
+            'Accessibility' => "Accessibility Statement"
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
