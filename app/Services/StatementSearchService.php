@@ -825,13 +825,6 @@ class StatementSearchService
                     "id"
                 ],
                 "excludes" => []
-            ],
-            "sort"    => [
-                [
-                    "created_at" => [
-                        "order" => "asc"
-                    ]
-                ]
             ]
         ];
 
