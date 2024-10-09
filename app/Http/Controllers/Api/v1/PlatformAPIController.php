@@ -15,7 +15,7 @@ class PlatformAPIController extends Controller
 {
     use ExceptionHandlingTrait;
 
-    public function get(Platform $platform)
+    public function get(Platform $platform): JsonResponse
     {
 
         // Check if the application is in dev, acc or sandbox

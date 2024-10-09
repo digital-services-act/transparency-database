@@ -13,12 +13,14 @@ use App\Services\EuropeanCountriesService;
 use App\Services\GroupedSubmissionsService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementSearchService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
 class StatementMultipleAPIController extends Controller
 {
@@ -26,19 +28,17 @@ class StatementMultipleAPIController extends Controller
     use ExceptionHandlingTrait;
     use StatementAPITrait;
 
-    protected EuropeanCountriesService $european_countries_service;
-
-    protected StatementSearchService $statement_search_service;
-
     public function __construct(
         protected PlatformUniqueIdService $platform_unique_id_service,
-        protected GroupedSubmissionsService $grouped_submissions_service
+        protected GroupedSubmissionsService $grouped_submissions_service,
+        protected StatementSearchService $statement_search_service,
+        protected EuropeanCountriesService $european_countries_service
     ) {
     }
 
 
     /**
-     * @throws PuidNotUniqueMultipleException|PuidNotUniqueSingleException
+     * @throws PuidNotUniqueMultipleException|PuidNotUniqueSingleException|JsonException
      */
     public function store(Request $request): JsonResponse
     {
@@ -87,11 +87,22 @@ class StatementMultipleAPIController extends Controller
         }
 
         $out = $this->grouped_submissions_service->enrichThePayloadForBulkInsert($payload['statements'], $platform_id,
-            $user_id, $method, $this);
+            $user_id, $method);
 
         try {
-            // Bulk Insert
-            Statement::insert($payload['statements']);
+
+            if (strtolower((string)config('app.env_real')) === 'production') {
+                // Bulk insert on production, the cron will index later.
+                Statement::insert($payload['statements']);
+            } else {
+                // Not production, we index at the moment.
+                $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
+                Statement::insert($payload['statements']);
+                $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
+
+                $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
+                $this->statement_search_service->bulkIndexStatements($statements);
+            }
 
             //No error, add the platform unique ids into the cache and database
             foreach ($payload['statements'] as $statement) {

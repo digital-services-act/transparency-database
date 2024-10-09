@@ -67,8 +67,8 @@ class PlatformQueryService
         if ($filter_value === '1') {
             $query->where('vlop', 1);
         }
-        if (!$filter_value) {
-            $query->whereNot('vlop', 1);
+        if ($filter_value === '0') {
+            $query->where('vlop', 0);
         }
     }
 
@@ -83,8 +83,8 @@ class PlatformQueryService
         if ($filter_value === '1') {
             $query->where('onboarded', 1);
         }
-        if (!$filter_value) {
-            $query->whereNot('onboarded', 1);
+        if ($filter_value === '0') {
+            $query->where('onboarded', 0);
         }
     }
 
@@ -99,8 +99,8 @@ class PlatformQueryService
         if ($filter_value === '1') {
             $query->where('has_tokens', 1);
         }
-        if (!$filter_value) {
-            $query->whereNot('has_tokens', 1);
+        if ($filter_value === '0') {
+            $query->where('has_tokens', 0);
         }
     }
 
@@ -115,8 +115,8 @@ class PlatformQueryService
         if ($filter_value === '1') {
             $query->where('has_statements', 1);
         }
-        if (!$filter_value) {
-            $query->whereNot('has_statements', 1);
+        if ($filter_value === '0') {
+            $query->where('has_statements', 0);
         }
     }
 

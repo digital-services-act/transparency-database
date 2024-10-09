@@ -376,7 +376,7 @@ class StatementSearchService
 
     public function bulkIndexStatements(Collection $statements): void
     {
-        if ($statements->count() !== 0) {
+        if ($statements->count() !== 0 && config('scout.driver') === 'opensearch') {
             $bulk = [];
             /** @var Statement $statement */
             foreach ($statements as $statement) {
@@ -573,6 +573,13 @@ class StatementSearchService
     public function getCountQueryResult(array $conditions = []): int
     {
         return $this->extractCountQueryResult($this->runSql($this->startCountQuery() . $this->buildWheres($conditions)));
+    }
+
+    public function highestId(): int
+    {
+        $sql = "SELECT max(id) AS max_id FROM ". $this->index_name;
+        $result = $this->runSql($sql);
+        return (int)($result['datarows'][0][0] ?? 0);
     }
 
     public function grandTotal(): int

@@ -23,11 +23,11 @@
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
         <th class="ecl-table__header">Date</th>
-        @if(!$reindexing)<th class="ecl-table__header">{{__('dayarchive.Statements of Reasons')}}</th>@endif
-        <th class="ecl-table__header">{{__('dayarchive.Full')}}</th>
-        <th class="ecl-table__header">{{__('dayarchive.Size')}}</th>
-        <th class="ecl-table__header">{{__('dayarchive.Light')}}</th>
-        <th class="ecl-table__header">{{__('dayarchive.Size')}}</th>
+        @if(!$reindexing)<th class="ecl-table__header">Statements of Reasons</th>@endif
+        <th class="ecl-table__header">Full</th>
+        <th class="ecl-table__header">Size</th>
+        <th class="ecl-table__header">Light</th>
+        <th class="ecl-table__header">Size</th>
     </tr>
     </thead>
     <tbody class="ecl-table__body" style="font-size: smaller;">
