@@ -91,15 +91,16 @@ class StatementMultipleAPIController extends Controller
         try {
 
 
-            // Bulk insert on production, the cron will index later.
-            Statement::insert($payload['statements']);
+            if (strtolower((string)config('app.env_real')) === 'production') {
+                // Bulk insert on production, the cron will index later.
+                Statement::insert($payload['statements']);
+            } else {
+                // Not production, we index at the moment.
+                $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
+                Statement::insert($payload['statements']);
+                $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
 
-            if (strtolower((string)config('app.env_real')) !== 'production') {
-                $uuids = [];
-                foreach ($out as $statement) {
-                    $uuids[] = $statement['uuid'];
-                }
-                $statements = Statement::query()->whereIn('uuid', $uuids)->get();
+                $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
                 $this->statement_search_service->bulkIndexStatements($statements);
             }
 
