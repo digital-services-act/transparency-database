@@ -34,7 +34,9 @@
 
             <p class="ecl-u-type-paragraph">
                 <x-ecl.cta-button label="More questions? Check our FAQ"
-                                  url="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers"/>
+                                  url="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers"
+                                  newWindow="true"
+                />
             </p>
 
         </div>
@@ -50,7 +52,10 @@
     <div class="ecl-row ecl-u-mb-l">
         <div class="ecl-col-l-8">
             <p class="ecl-u-type-paragraph">
-                Below you can find some summary statistics on the statements of reasons submitted by providers of online platforms to the Commission in the last six months (180 days, see the <a href="{{ route('page.show', ['page' => 'data-retention-policy']) }}">Data Retention Policy</a> for details).
+                Below you can find some summary statistics on the statements of reasons submitted by providers of online
+                platforms to the Commission in the last six months (180 days, see the <a
+                    href="{{ route('page.show', ['page' => 'data-retention-policy']) }}">Data Retention Policy</a> for
+                details).
             </p>
         </div>
 
