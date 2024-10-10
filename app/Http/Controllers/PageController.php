@@ -40,11 +40,13 @@ class PageController extends Controller
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
         $page_title_mods = [
-            'Api Documentation' => 'API',
-            'Onboarding' => 'Platform Onboarding',
+            'Api Documentation' => 'API Documentation',
+            'Onboarding' => 'Platform Onboarding Documentation',
             'Legal Information' => 'Legal Notice',
-            'Documentation' => 'Documentation',
-            'Webform Documentation' => "Webform"
+            'Documentation' => 'Overview documentation',
+            'Webform Documentation' => "Webform Documentation",
+            'Accessibility' => "Accessibility Statement",
+
         ];
 
 
@@ -57,11 +59,12 @@ class PageController extends Controller
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Onboarding' => 'Platform Onboarding',
-            'Api Documentation' => 'API',
+            'Onboarding' => 'Onboarding documentation',
+            'Api Documentation' => 'API Documentation',
             'Documentation' => 'Documentation',
-            'Webform Documentation' => "Webform",
+            'Webform Documentation' => "Webform Documentation",
             'Legal Information' => 'Legal Notice',
+            'Accessibility' => "Accessibility Statement"
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {

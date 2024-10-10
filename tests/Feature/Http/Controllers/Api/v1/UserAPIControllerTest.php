@@ -106,5 +106,33 @@ class UserAPIControllerTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function it_should_deactivate_user_and_tokens(): void
+    {
+
+        $this->signInAsOnboarding();
+
+        $user = User::factory()
+            ->create(
+                ['email' => 'foo@bar.com']
+            );
+
+        $user->createToken(User::API_TOKEN_KEY)->plainTextToken;
+
+        $this->assertNotNull(User::firstWhere('email','foo@bar.com'));
+
+        $response = $this->delete(route('api.v1.user.delete', ['email' => 'foo@bar.com']), [
+            'Accept' => 'application/json',
+        ]);
+
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertNull(User::firstWhere('email','foo@bar.com'));
+
+    }
+
 
 }

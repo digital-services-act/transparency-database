@@ -163,6 +163,33 @@ class DayArchiveServiceTest extends TestCase
     }
 
 
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_the_first_id_from_date_in_the_first_minute(): void
+    {
+
+        $admin      = $this->signInAsAdmin();
+        $fields_one = $this->required_fields;
+        $fields_two = $this->required_fields;
+
+        $fields_one['user_id']     = $admin->id;
+        $fields_one['platform_id'] = $admin->platform->id;
+        $fields_one['created_at']  = '2030-01-01 00:00:05';
+
+        $fields_two['puid']        = 'TK422';
+        $fields_two['user_id']     = $admin->id;
+        $fields_two['platform_id'] = $admin->platform->id;
+        $fields_two['created_at']  = '2030-01-01 00:00:10';
+
+        $statement_one = Statement::create($fields_one);
+        $statement_two = Statement::create($fields_two);
+
+        $first_id = $this->day_archive_service->getFirstIdOfDate(Carbon::createFromDate(2030, 1, 1));
+
+        $this->assertEquals($statement_one->id, $first_id);
+    }
 
     /**
      * @test
@@ -190,6 +217,34 @@ class DayArchiveServiceTest extends TestCase
         $last_id = $this->day_archive_service->getLastIdOfDate(Carbon::createFromDate(2030, 1, 1));
 
         $this->assertEquals($statement_two->id, $last_id);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_the_last_id_from_date_in_the_last_minute(): void
+    {
+
+        $admin      = $this->signInAsAdmin();
+        $fields_one = $this->required_fields;
+        $fields_two = $this->required_fields;
+
+        $fields_one['user_id']     = $admin->id;
+        $fields_one['platform_id'] = $admin->platform->id;
+        $fields_one['created_at']  = '2030-01-01 23:59:45'; // also prove the while loop works
+
+        $fields_two['puid']        = 'TK422';
+        $fields_two['user_id']     = $admin->id;
+        $fields_two['platform_id'] = $admin->platform->id;
+        $fields_two['created_at']  = '2030-01-01 23:59:45';
+
+        $statement_one = Statement::create($fields_one);
+        $statement_two = Statement::create($fields_two);
+
+        $first_id = $this->day_archive_service->getLastIdOfDate(Carbon::createFromDate(2030, 1, 1));
+
+        $this->assertEquals($statement_two->id, $first_id);
     }
 
     /**
