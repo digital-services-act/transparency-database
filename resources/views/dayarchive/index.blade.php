@@ -79,7 +79,7 @@
 
             </div>
             <div class="ecl-col-l-2 ecl-u-align-content-center">
-                <div class="ecl-form-group" style="margin-top: 26px;">
+                <div class="ecl-form-group" style="margin-top: 24px;">
                     <button class="ecl-button ecl-button--primary" type="submit">
                         <span class="ecl-button__container">
                             <span class="ecl-button__label"
