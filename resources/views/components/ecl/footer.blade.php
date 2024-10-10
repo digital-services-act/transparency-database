@@ -84,10 +84,9 @@
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Data Retention Policy">Data Retention Policy</a></li>
                         <li class="ecl-site-footer__list-item">
-                            <a href="{{ route('page.show', ['page' => 'accessibility']) }}"
+                            <a href="{{ route('page.show', ['page' => 'accessibility-statement']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Data Retention Policy">Accessibility</a></li>
-test
                     </ul>
                 </div>
 
