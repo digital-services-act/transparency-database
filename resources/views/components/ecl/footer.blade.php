@@ -87,7 +87,7 @@
                             <a href="{{ route('page.show', ['page' => 'accessibility']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Data Retention Policy">Accessibility</a></li>
-
+test
                     </ul>
                 </div>
 
