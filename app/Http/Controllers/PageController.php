@@ -41,7 +41,7 @@ class PageController extends Controller
 
         $page_title_mods = [
             'Api Documentation' => 'API Documentation',
-            'Onboarding' => 'Platform Onboarding Documentation',
+            'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information' => 'Legal Notice',
             'Documentation' => 'Overview documentation',
             'Webform Documentation' => "Webform Documentation",
@@ -59,7 +59,7 @@ class PageController extends Controller
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Onboarding' => 'Onboarding documentation',
+            'Onboarding Documentation' => 'Onboarding Documentation',
             'Api Documentation' => 'API Documentation',
             'Documentation' => 'Documentation',
             'Webform Documentation' => "Webform Documentation",

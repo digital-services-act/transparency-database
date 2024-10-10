@@ -13,11 +13,6 @@
                     <div class="ecl-site-footer__description">
                         This site is managed by the Directorate-General for "Communications Networks, Content and Technology"
                     </div>
-                    <div>
-                        <a href="{{ route('page.show', ['page' => 'accessibility']) }}"
-                           class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                           aria-label="Feedback">Accessibility</a>
-                    </div>
                 </div>
 
             </div>

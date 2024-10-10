@@ -145,26 +145,26 @@
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">
-                                            Documentation
+                                            Overview
                                         </a>
                                     </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('page.show', ['onboarding']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Onboarding Documentation</a>
+                                        <a href="{{  route('page.show', ['onboarding-documentation']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Platform Onboarding</a>
                                     </li>
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['api-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API Documentation</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API</a>
                                     </li>
 
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['webform-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Webform Documentation</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Webform</a>
                                     </li>
                                 </ul>
                             </div>
