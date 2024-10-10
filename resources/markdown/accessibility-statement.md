@@ -1,5 +1,3 @@
-# Accessibility Statement
-
 This statement applies to content published on the domain: [https://transparency.dsa.ec.europa.eu/](https://transparency.dsa.ec.europa.eu/).  
 It does not apply to other content or websites published on any of its subdomains. These websites and their content will have their own specific accessibility statement.
 

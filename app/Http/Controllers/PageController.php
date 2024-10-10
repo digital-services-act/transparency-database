@@ -45,7 +45,7 @@ class PageController extends Controller
             'Legal Information' => 'Legal Notice',
             'Documentation' => 'Overview documentation',
             'Webform Documentation' => "Webform Documentation",
-            'Accessibility' => "Accessibility Statement",
+            'Accessibility Statement' => "Accessibility Statement",
 
         ];
 
@@ -64,7 +64,7 @@ class PageController extends Controller
             'Documentation' => 'Documentation',
             'Webform Documentation' => "Webform Documentation",
             'Legal Information' => 'Legal Notice',
-            'Accessibility' => "Accessibility Statement"
+            'Accessibility Statement' => "Accessibility Statement"
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
