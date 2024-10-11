@@ -150,7 +150,7 @@
                                     </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('page.show', ['onboarding']) }}"
+                                        <a href="{{  route('page.show', ['onboarding-documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">Platform Onboarding</a>
                                     </li>
 

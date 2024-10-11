@@ -17,6 +17,7 @@ The website was last tested on 11/10/2024.
 
 ## Preparation of this Statement
 This statement was reviewed on 11/10/2024.  
+
 The statement is based on a review by an automated tool called Axe Monitor.
 
 ## Feedback
@@ -43,4 +44,6 @@ The accessibility of the DSA Transparency Database website relies on the followi
 Despite our best efforts to ensure accessibility of the DSA Transparency Database website, we are aware of some limitations which we are working to fix. Below is a description of known limitations and potential solutions. Please contact us if you encounter an issue not listed below.
 
 ### Known limitations of the DSA Transparency Database website:
+
 - Some/many/most selects are not clearly associated with form controls
+

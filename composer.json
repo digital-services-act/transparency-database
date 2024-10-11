@@ -96,10 +96,6 @@
         "backpack": {
             "type": "composer",
             "url": "https://repo.backpackforlaravel.com/"
-        },
-        "0": {
-            "type": "vcs",
-            "url": "https://github.com/alainvd/laravel-teams-logging.git"
         }
     },
     "config": {
