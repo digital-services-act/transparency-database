@@ -45,5 +45,5 @@ Despite our best efforts to ensure accessibility of the DSA Transparency Databas
 
 ### Known limitations of the DSA Transparency Database website:
 
-- Some/many/most selects are not clearly associated with form controls
+- Some selects are not clearly associated with form controls
 
