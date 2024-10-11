@@ -13,6 +13,13 @@
                     <div class="ecl-site-footer__description">
                         This site is managed by the Directorate-General for "Communications Networks, Content and Technology"
                     </div>
+
+                    <div class="ecl-u-mt-2xl">
+                            <a href="{{ route('page.show', ['page' => 'accessibility-statement']) }}"
+                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
+                               aria-label="Data Retention Policy">Accessibility</a>
+                    </div>
+
                 </div>
 
             </div>
@@ -78,11 +85,6 @@
                             <a href="{{ route('page.show', ['page' => 'data-retention-policy']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Data Retention Policy">Data Retention Policy</a></li>
-                        <li class="ecl-site-footer__list-item">
-                            <a href="{{ route('page.show', ['page' => 'accessibility']) }}"
-                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Data Retention Policy">Accessibility</a></li>
-
                     </ul>
                 </div>
 
