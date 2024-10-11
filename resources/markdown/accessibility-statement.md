@@ -8,15 +8,16 @@ This website is managed by the European Commission’s Directorate-General Commu
 - Navigate most of the website using just a keyboard
 - Navigate most of the website using a modern screen reader and speech recognition software (on your computer or phone)
 
-This website is designed to comply with the technical standard for websites and mobile apps EN 301 549 v.3.2.1. This closely follows level ‘AA’ of the Web Content Accessibility Guidelines (WCAG) version 2.1.
+This website is designed to comply with the [technical standard for websites and mobile apps EN 301 549 v.3.2.1](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/en_301549v030201p.pdf). This closely follows level ‘AA’ of the [Web Content Accessibility Guidelines (WCAG) version 2.1](https://www.w3.org/TR/WCAG21/).
 
 ## Compliance Status
-This website is partially compliant with technical standard EN 301 549 v.3.2.1 and the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA. See the Non-accessible content section for more details.
+This website is partially compliant with the [technical standard for websites and mobile apps EN 301 549 v.3.2.1](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/en_301549v030201p.pdf) and the [Web Content Accessibility Guidelines (WCAG) version 2.1](https://www.w3.org/TR/WCAG21/). See the [Non-accessible content](#non-accessible-content) section for more details.
 
-The website was last tested on xx/xx/2024.
+The website was last tested on 11/10/2024.
 
 ## Preparation of this Statement
-This statement was reviewed on xx/xx/2024.  
+This statement was reviewed on 11/10/2024.  
+
 The statement is based on a review by an automated tool called Axe Monitor.
 
 ## Feedback
@@ -43,11 +44,6 @@ The accessibility of the DSA Transparency Database website relies on the followi
 Despite our best efforts to ensure accessibility of the DSA Transparency Database website, we are aware of some limitations which we are working to fix. Below is a description of known limitations and potential solutions. Please contact us if you encounter an issue not listed below.
 
 ### Known limitations of the DSA Transparency Database website:
-- Some/many/most pages have poor colour contrast
-- Some functionality is not accessible using only a keyboard
-- Some/many/most heading elements are not used consistently
-- Some/many/most labels are not correctly connected with their corresponding form fields
-- Some/many/most images do not have alt text descriptions
-- Some/many/most buttons and/or links don’t have readable text
-- Some/many/most error messages are not clearly associated with form controls
-- Some/many/most documents are in PDF format and are not accessible
+
+- Some/many/most selects are not clearly associated with form controls
+
