@@ -17,14 +17,14 @@ class PageController extends Controller
     public function show(string $page, bool $profile = false): \Illuminate\Foundation\Application|View|Factory|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
-        $page = mb_strtolower($page);
+        $page = (string)mb_strtolower($page);
 
 
         // sanitize
         $page = preg_replace("/[^a-z-]/", "", $page);
 
         $redirects = [
-            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
+            'cookie-policy'  => 'https://commission.europa.eu/cookies-policy_en',
             'latest-updates' => '/',
 //            'faq' => 'faq'
         ];
@@ -34,37 +34,36 @@ class PageController extends Controller
         }
 
 
-        $page_title = ucwords(str_replace("-", " ", (string) $page));
+        $page_title = ucwords(str_replace("-", " ", (string)$page));
 
 
         $show_feedback_link = $this->getShow_feedback_link($page_title);
 
         $page_title_mods = [
-            'Api Documentation' => 'API Documentation',
+            'Api Documentation'        => 'API Documentation',
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
-            'Legal Information' => 'Legal Notice',
-            'Documentation' => 'Overview documentation',
-            'Webform Documentation' => "Webform Documentation",
-            'Accessibility Statement' => "Accessibility Statement",
+            'Legal Information'        => 'Legal Notice',
+            'Documentation'            => 'Overview documentation',
+            'Webform Documentation'    => "Webform Documentation",
+            'Accessibility Statement'  => "Accessibility Statement",
 
         ];
-
 
 
         if (isset($page_title_mods[$page_title])) {
             $page_title = $page_title_mods[$page_title];
         }
 
-        $breadcrumb = ucwords(str_replace("-", " ", (string) $page));
+        $breadcrumb = ucwords(str_replace("-", " ", (string)$page));
 
         $breadcrumb_mods = [
-            'Home' => '',
+            'Home'                     => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
-            'Api Documentation' => 'API Documentation',
-            'Documentation' => 'Documentation',
-            'Webform Documentation' => "Webform Documentation",
-            'Legal Information' => 'Legal Notice',
-            'Accessibility Statement' => "Accessibility Statement"
+            'Api Documentation'        => 'API Documentation',
+            'Documentation'            => 'Documentation',
+            'Webform Documentation'    => "Webform Documentation",
+            'Legal Information'        => 'Legal Notice',
+            'Accessibility Statement'  => "Accessibility Statement"
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
@@ -72,20 +71,17 @@ class PageController extends Controller
         }
 
 
-
         $page_content = '';
-        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
-
+        $page         = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
 
         $view_data = [
-            'profile' => $profile,
+            'profile'            => $profile,
             'show_feedback_link' => $show_feedback_link,
-            'page_title' => $page_title,
-            'breadcrumb' => $breadcrumb,
-            'baseurl' => route('home'),
+            'page_title'         => $page_title,
+            'breadcrumb'         => $breadcrumb,
+            'baseurl'            => route('home'),
         ];
-
 
 
         if (file_exists($page)) {
@@ -111,14 +107,15 @@ class PageController extends Controller
     private function convertMdFile(string $file): string
     {
         $parsedown = new Parsedown();
-        return preg_replace_callback( '/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', static function ($matches) {
-            if ( ! stripos( (string) $matches[0], 'id=' ) ) {
-                $id = strtolower(str_replace(" ", "-", (string) $matches[3]));
+
+        return preg_replace_callback('/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', static function ($matches) {
+            if ( ! stripos((string)$matches[0], 'id=')) {
+                $id         = strtolower(str_replace(" ", "-", (string)$matches[3]));
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
 
             return $matches[0];
-        }, (string) $parsedown->text(file_get_contents($file)));
+        }, (string)$parsedown->text(file_get_contents($file)));
     }
 
     /**
@@ -129,6 +126,7 @@ class PageController extends Controller
         $show_feedback_pages = [
             'Faq'
         ];
+
         return in_array($page_title, $show_feedback_pages);
     }
 }
