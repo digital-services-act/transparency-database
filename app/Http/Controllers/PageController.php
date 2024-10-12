@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Blade;
 use Parsedown;
@@ -115,12 +113,9 @@ class PageController extends Controller
             }
 
             return $matches[0];
-        }, (string)$parsedown->text(file_get_contents($file)));
+        }, $parsedown->text(file_get_contents($file)));
     }
 
-    /**
-     * @return bool
-     */
     public function getShow_feedback_link(string $page_title): bool
     {
         $show_feedback_pages = [
