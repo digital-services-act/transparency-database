@@ -13,7 +13,6 @@ use App\Services\EuropeanCountriesService;
 use App\Services\GroupedSubmissionsService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementSearchService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -103,6 +102,7 @@ class StatementMultipleAPIController extends Controller
                 $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
                 $this->statement_search_service->bulkIndexStatements($statements);
             }
+
 
             //No error, add the platform unique ids into the cache and database
             foreach ($payload['statements'] as $statement) {
