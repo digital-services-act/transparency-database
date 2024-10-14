@@ -575,6 +575,13 @@ class StatementSearchService
         return $this->extractCountQueryResult($this->runSql($this->startCountQuery() . $this->buildWheres($conditions)));
     }
 
+    public function highestId(): int
+    {
+        $sql = "SELECT max(id) AS max_id FROM ". $this->index_name;
+        $result = $this->runSql($sql);
+        return (int)($result['datarows'][0][0] ?? 0);
+    }
+
     public function grandTotal(): int
     {
         return Cache::remember('grand_total', self::ONE_DAY, fn() => $this->grandTotalNoCache());
@@ -818,13 +825,6 @@ class StatementSearchService
                     "id"
                 ],
                 "excludes" => []
-            ],
-            "sort"    => [
-                [
-                    "created_at" => [
-                        "order" => "asc"
-                    ]
-                ]
             ]
         ];
 

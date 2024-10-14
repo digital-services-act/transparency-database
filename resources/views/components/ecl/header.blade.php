@@ -15,8 +15,9 @@
                         </picture>
                     </a>
                     <div class="ecl-site-header__action">
-                        @if(config('dsa.TRANSLATIONS'))
-                            <x-ecl.language-menu/>
+
+                        @if(config('dsa.webt.clientId'))
+                            <x-ecl.language-menu />
                         @endif
                         {{--                        <x-ecl.search-site/>--}}
                         <x-ecl.login-menu/>
@@ -29,7 +30,7 @@
 
         <div class="ecl-site-header__banner">
             <div class="ecl-container">
-                <div class="ecl-site-header__site-name">{{__('app.title')}}</div>
+                <div class="ecl-site-header__site-name">DSA Transparency Database</div>
             </div>
         </div>
 
@@ -83,28 +84,28 @@
                             <a href="{{ route('home') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">{{__('menu.Home')}}</a>
+                               id="ecl-menu-home-link">Home</a>
                         </li>
 
                         <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
                             <a href="{{ route('dashboard') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">{{__('menu.Dashboard')}}</a>
+                               id="ecl-menu-home-link">Dashboard</a>
                         </li>
 
                         <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
                             <a href="{{ route('dayarchive.index') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">{{__('menu.Data Download')}}</a>
+                               id="ecl-menu-home-link">Data Download</a>
                         </li>
 
                         <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
                             <a href="{{ route('statement.index') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">{{__('menu.Search for Statements of Reasons')}}</a>
+                               id="ecl-menu-home-link">Search for Statements of Reasons</a>
                         </li>
 
 
@@ -114,7 +115,7 @@
                             <a href="{{  route('page.show', ['documentation']) }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">{{__('menu.Documentations')}}</a>
+                               id="ecl-menu-item-platforms-link">Documentation</a>
                             <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
                                     type="button"
                                     data-ecl-menu-caret="" aria-label="Platforms"
@@ -136,7 +137,7 @@
 {{--                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
 {{--                                            <a href="{{ route('statement.create') }}"--}}
 {{--                                               class="ecl-link ecl-link--standalone ecl-menu__sublink">--}}
-{{--                                                {{__('menu.Submit statements of reasons')}}--}}
+{{--                                                Submit statements of reasons--}}
 {{--                                            </a>--}}
 {{--                                        </li>--}}
 {{--                                    @endcan--}}
@@ -144,26 +145,26 @@
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">
-                                            {{__('menu.Overview')}}
+                                            Overview
                                         </a>
                                     </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('page.show', ['onboarding']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Onboarding')}}</a>
+                                        <a href="{{  route('page.show', ['onboarding-documentation']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Platform Onboarding</a>
                                     </li>
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['api-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('menu.API Documentation')}}</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API</a>
                                     </li>
 
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['webform-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">{{__('pages.Webform Documentation')}}</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Webform</a>
                                     </li>
                                 </ul>
                             </div>

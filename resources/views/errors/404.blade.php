@@ -3,7 +3,7 @@
 @section('title', '404 - Not Found')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
     <x-ecl.breadcrumb label="404 - Not Found"/>
 @endsection
 

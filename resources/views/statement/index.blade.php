@@ -3,18 +3,33 @@
 @section('title', 'Statements of Reasons')
 
 @section('breadcrumbs')
-    <x-ecl.breadcrumb label="{{__('menu.Home')}}" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="{{__('statement-search.title')}}"/>
+    <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
+    <x-ecl.breadcrumb label="Search “Statements of reasons”"/>
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">{{__('statement-search.title')}}</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Search “Statements of reasons”</h1>
 
     <div class="ecl-row ecl-u-mt-l ecl-u-mb-xl">
         <div class="ecl-col-l-8">
             <div class="ecl-u-type-paragraph">
-  {!!  __('statement-search.body') !!}
+                On this page, you can search for statements of reasons submitted by providers of online platforms. You
+                can use the free text search box to look for specific words within the free text fields of each
+                statement of reason submitted by providers of online platforms.
+                <br/>
+                <br/>
+                Through the advanced search button, you can easily find the statements of reasons submitted by each
+                platform, and filter by several data fields, e.g. the type of restriction(s) imposed, categories and
+                keywords, or the type or language of the content. Please note that only the first 10 000 results are
+                paginated, and only the first 1000 statements of reasons can be exported in .csv
+                format at a given time. The data is updated once every day. If you want to access a larger subset of
+                statements of reasons, please visit the
+                “<a class="ecl-link" href="/data-download">Data download</a>” page.
+                To submit feedback on the content of this page and to propose additional features, please visit the
+                <a class="ecl-link" href="/feedback">feedback form</a>.<br/><br/>
+                Please note that a <a href="/page/data-retention-policy">Data Retention Policy</a> applies and search results refer to the Statements of Reasons submitted within a limited amount of time in time past.
+
             </div>
         </div>
         <div class="ecl-col-l-4">
@@ -37,7 +52,7 @@
         </div>
         <div class="ecl-col-l-4">
             <a href="{{ route('statement.search', request()->query()) }}" class="ecl-button ecl-button--secondary">
-                {{__('statement-search.Advanced Search')}}
+                Advanced Search
             </a>
         </div>
     </div>
@@ -48,9 +63,9 @@
 
         <div class="ecl-u-type-paragraph ecl-u-mr-s">
             @if(!$reindexing)
-                {{__('statement-search.Statements of Reasons')}}: {{ $total }}
+                Statements of Reasons: {{ $total }}
             @else
-                {{__('statement-search.Statements of Reasons Found: ')}}: {{ $total }}
+                Statements of Reasons Found: : {{ $total }}
             @endif
         </div>
 

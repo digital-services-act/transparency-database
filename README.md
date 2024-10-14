@@ -91,3 +91,7 @@ License
 =======
 
 DSA Transparency Database is licensed under GPLv2. See LICENSE.txt for more information.
+
+Assistance
+=======
+For any type of issues please contact: CNECT-DSA-HELPDESK@ec.europa.eu

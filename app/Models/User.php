@@ -82,7 +82,7 @@ class User extends Authenticatable
 
     public function hasValidApiToken(): bool
     {
-        foreach ($this->tokens as $token) {
+        foreach ($this->tokens()->get() as $token) {
             if ($token->expires_at === null || $token->expires_at >= Carbon::now()) {
                 return true;
             }

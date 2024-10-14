@@ -90,7 +90,6 @@ class StatementMultipleAPIController extends Controller
 
         try {
 
-
             if (strtolower((string)config('app.env_real')) === 'production') {
                 // Bulk insert on production, the cron will index later.
                 Statement::insert($payload['statements']);

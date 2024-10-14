@@ -40,7 +40,7 @@ class GenerateStatements extends Command
         }
 
         for ($cpt = 0; $cpt < $amount; ++$cpt) {
-            StatementCreation::dispatch($date);
+            StatementCreation::dispatch($date->timestamp);
         }
     }
 }
