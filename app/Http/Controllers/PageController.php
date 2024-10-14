@@ -41,7 +41,7 @@ class PageController extends Controller
             'Api Documentation'        => 'API Documentation',
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information'        => 'Legal Notice',
-            'Documentation'            => 'Overview documentation',
+            'Documentation'            => 'Overview Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Accessibility Statement'  => "Accessibility Statement",
 
