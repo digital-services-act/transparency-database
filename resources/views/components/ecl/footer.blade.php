@@ -14,11 +14,7 @@
                         This site is managed by the Directorate-General for "Communications Networks, Content and Technology"
                     </div>
 
-                    <div class="ecl-u-mt-2xl">
-                            <a href="{{ route('page.show', ['page' => 'accessibility-statement']) }}"
-                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Data Retention Policy">Accessibility</a>
-                    </div>
+
 
                 </div>
 
@@ -37,6 +33,11 @@
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Feedback">Feedback</a>
                         </li>
+                        <div class="ecl-u-mt-6xl">
+                            <a href="{{ route('page.show', ['page' => 'accessibility-statement']) }}"
+                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
+                               aria-label="Data Retention Policy">Accessibility</a>
+                        </div>
                     </ul>
                 </div>
             </div>
