@@ -66,7 +66,7 @@
 
 
 
-
+    @can('view platforms')
     <h2 class="ecl-u-type-heading-2">Onboarding Statistics</h2>
 
     <h3 class="ecl-u-type-heading-3">VLOPs</h3>
@@ -166,7 +166,7 @@
             </tbody>
         </table>
     </div>
-
+    @endcan
 
 
     <x-ecl.message type="info" icon="information" title="Assistance"
