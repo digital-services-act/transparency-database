@@ -1,3 +1,14 @@
+#### [Announcement – DSA-TDB] New open-source package on code.europa.eu
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 29/10/2024</p>
+
+
+The DSA Transparency Database team is pleased to announce the release of a new open-source package on [code.europa.eu](https://code.europa.eu/info/about), designed to facilitate the download and analysis of data in the Database. The application, called [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb), is a Python package that aims to streamline the data analysis process and support future research. 
+
+dsa-tdb is available for use in various formats, including a [command line interface](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/commands.html), an [interactive mode](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html), and a [Docker container](https://code.europa.eu/dsa/transparency-database/dsa-tdb/container_registry) serving a Jupyter notebook server out of the box. To access the package and start exploring the DSA Transparency Database data, visit the [dsa-tdb package homepage](https://code.europa.eu/dsa/transparency-database/dsa-tdb) and read the [online documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html). 
+
+We hope this new tool will enhance the user experience of the DSA Transparency Database and support the research community in extracting valuable insights from the database. 
+
+
 #### [Announcement – DB] Update to the submissions by Google Shopping
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/07/2024</p>
 
