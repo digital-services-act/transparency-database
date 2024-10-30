@@ -8,6 +8,7 @@ dsa-tdb is available for use in various formats, including a [command line inter
 
 We hope this new tool will enhance the user experience of the DSA Transparency Database and support the research community in extracting valuable insights from the database. 
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
 #### [Announcement – DB] Update to the submissions by Google Shopping
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/07/2024</p>
