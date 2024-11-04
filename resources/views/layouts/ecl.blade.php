@@ -109,6 +109,7 @@
 <script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
 @endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
+<script defer src="https://webtools.europa.eu/load.js?globan=1110" type="text/javascript"></script>
 @if(config('dsa.webt.clientId', false))
 <script type="text/javascript" src="https://unpkg.com/@tilde-nlp/website-translator/dist/widget.js"></script>
 <script>
