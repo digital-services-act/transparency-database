@@ -1,3 +1,13 @@
+#### [Announcement – DB] 2025 Update of the DSA Transparency Database schema in line with the Implementing Regulation on Transparency Reporting 
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 04/11/2024</p>
+
+
+Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations" class="ecl-link">published the Implementing Act on Transparency Reporting</a>, which standardizes the form, content and reporting periods of DSA transparency reports. To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database will be updated to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. As of 1 July 2025, statements of reasons that are submitted to the DSA Transparency Database therefore will have to comply with the updated schema. To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database in Q2 of 2025. 
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+
 #### [Announcement – DSA-TDB] New open-source package on code.europa.eu
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 29/10/2024</p>
 
