@@ -13,7 +13,6 @@ class TokenServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-
     /** @test */
     public function it_calculates_total_vlop_valid_tokens_correctly()
     {
@@ -38,8 +37,6 @@ class TokenServiceTest extends TestCase
         $this->assertEquals(1, $total_non_vlop_valid_tokens);
     }
 
-
-
     private function seedTestData()
     {
         $platformA = Platform::factory()->create(['vlop' => 1, 'name' => 'Platform A']);
@@ -56,5 +53,8 @@ class TokenServiceTest extends TestCase
         PersonalAccessToken::factory()->create(['tokenable_id' => $user3->id]);
         PersonalAccessToken::factory()->create(['tokenable_id' => $user4->id]);
 
+        // Create second token for user 1 and user 3
+        PersonalAccessToken::factory()->create(['tokenable_id' => $user1->id]);
+        PersonalAccessToken::factory()->create(['tokenable_id' => $user3->id]);
     }
 }
