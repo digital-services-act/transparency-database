@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
@@ -11,14 +10,8 @@ use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
