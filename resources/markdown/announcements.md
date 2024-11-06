@@ -20,16 +20,6 @@ We hope this new tool will enhance the user experience of the DSA Transparency D
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
-[//]: # (#### [Announcement – Dashboard] New pages and filters for better separation between platforms)
-
-[//]: # (<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/10/2024</p>)
-
-[//]: # ()
-[//]: # (On 14th October 2024, the dashboard of the DSA Transparency Database was updated to include a clearer separation between the Statements of Reasons submitted by Very Large Online Platforms &#40;VLOPs&#41;  and the rest &#40;non-VLOP&#41; platforms. The changes are particularly notable in the first and second pages of the dashboard; unified information for all platforms is available in page 6 &#40;‘all platforms’&#41;. A new taxonomy was also added in the ‘Platforms’ filter that allows users to select with a single click all the VLOPs or all the non-VLOPs.)
-
-[//]: # ()
-[//]: # (<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>)
-
 #### [Announcement – DB] Update to the submissions by Google Shopping
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/07/2024</p>
 
