@@ -10,6 +10,7 @@ use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class PlatformAPIController extends Controller
 {
@@ -30,9 +31,11 @@ class PlatformAPIController extends Controller
 
     public function store(PlatformStoreRequest $request): JsonResponse
     {
+        Log::info("API - Platform Store - Start");
 
         $validated = $request->safe()->toArray();
 
+        Log::info($validated);
 
         try {
             $platform = Platform::create($validated);
@@ -42,19 +45,19 @@ class PlatformAPIController extends Controller
 
         }
 
-
+        Log::info("API - Platform Store - Success");
         return response()->json($platform, Response::HTTP_CREATED);
     }
 
     public function update(Platform $platform, PlatformUpdateRequest $request): JsonResponse
     {
-
+        Log::info("API - Platform Update - Start");
         $validated = $request->safe()->toArray();
-
+        Log::info($validated);
         $platform->name = $validated['name'];
         $platform->vlop = $validated['vlop'];
         $platform->save();
-
+        Log::info("API - Platform Update - Success");
         return response()->json($platform, Response::HTTP_OK);
     }
 
