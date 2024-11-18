@@ -128,9 +128,16 @@ class GroupedSubmissionsService
         array $errors,
     ): array {
         foreach ($payload['statements'] as $index => $statement) {
-            $decision_visibility_other_required = in_array('DECISION_VISIBILITY_OTHER',
-                $statement['decision_visibility'] ?? [], true);
-            $content_type_other_required = in_array('CONTENT_TYPE_OTHER', $statement['content_type'] ?? [], true);
+
+            $decision_visibility = $statement['decision_visibility'] ?? [];
+            $decision_visibility = is_array($decision_visibility) ? $decision_visibility : [];
+
+            $decision_visibility_other_required = in_array('DECISION_VISIBILITY_OTHER', $decision_visibility, true);
+
+            $content_type = $statement['content_type'] ?? [];
+            $content_type = is_array($content_type) ? $content_type : [];
+
+            $content_type_other_required = in_array('CONTENT_TYPE_OTHER', $content_type, true);
 
 
 
