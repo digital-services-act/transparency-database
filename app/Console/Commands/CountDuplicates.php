@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use JsonException;
 use Symfony\Component\VarDumper\VarDumper;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CountDuplicates extends Command
 {
     use CommandTrait;

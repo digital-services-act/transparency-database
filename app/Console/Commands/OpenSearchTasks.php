@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use OpenSearch\Client;
 use Symfony\Component\VarDumper\VarDumper;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OpenSearchTasks extends Command
 {
     /**

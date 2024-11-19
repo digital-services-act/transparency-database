@@ -22,6 +22,7 @@ class StatementSearchServiceProvider extends ServiceProvider implements Deferrab
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

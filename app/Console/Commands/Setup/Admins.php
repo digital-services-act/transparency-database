@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Admins extends Command
 {
     /**

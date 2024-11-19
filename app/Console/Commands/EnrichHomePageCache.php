@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @codeCoverageIgnore
+ */
 class EnrichHomePageCache extends Command
 {
     /**

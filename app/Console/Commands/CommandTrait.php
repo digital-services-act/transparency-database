@@ -8,6 +8,9 @@ use RuntimeException;
 
 use function PHPUnit\Framework\throwException;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait CommandTrait
 {
     public function sanitizeDateArgument(): Carbon

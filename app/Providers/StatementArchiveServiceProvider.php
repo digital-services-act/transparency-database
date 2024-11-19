@@ -22,6 +22,7 @@ class StatementArchiveServiceProvider extends ServiceProvider implements Deferra
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

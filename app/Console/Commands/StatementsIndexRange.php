@@ -7,6 +7,9 @@ use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsIndexRange extends Command
 {
     use CommandTrait;

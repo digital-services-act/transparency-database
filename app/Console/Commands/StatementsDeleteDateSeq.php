@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsDeleteDateSeq extends Command
 {
     use CommandTrait;

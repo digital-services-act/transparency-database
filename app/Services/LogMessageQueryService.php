@@ -26,12 +26,8 @@ class LogMessageQueryService
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                try {
-                    if (method_exists($this, $method)) {
-                        $this->$method($query, $filters[$filter_key]);
-                    }
-                } catch (TypeError|Exception $e) {
-                    Log::error("Log Message Query Service Error", ['exception' => $e]);
+                if (method_exists($this, $method)) {
+                    $this->$method($query, $filters[$filter_key]);
                 }
             }
         }
