@@ -384,6 +384,48 @@ class StatementMultipleAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function it_should_only_accept_arrays_as_content_type(): void
+    {
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(5);
+
+        $statements[0]['content_type'] = 'CONTENT_TYPE_OTHER';
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(1, $response->json('errors'));
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_only_accept_arrays_as_decision_visibility(): void
+    {
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(5);
+
+        $statements[0]['content_type'] = 'DECISION_VISIBILITY_CONTENT_REMOVED';
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(1, $response->json('errors'));
+        $this->assertCount(10, Statement::all());
+    }
+
+    /**
+     * @test
+     */
     public function it_should_require_descriptions_when_other_fields_are_sent_via_multiple_statements(): void
     {
         $this->signInAsContributor();

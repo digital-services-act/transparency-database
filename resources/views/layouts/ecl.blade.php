@@ -48,7 +48,7 @@
     >
 
 
-    <script defer src="https://europa.eu/webtools/load.js?theme=ec"></script>
+{{--    <script defer src="https://europa.eu/webtools/load.js?theme=ec"></script>--}}
     <script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
 
     @section('extra-head')
