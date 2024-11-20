@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DayArchive extends Model
 {
+    use HasFactory;
     protected $guarded = [];
 
     protected $casts = [
