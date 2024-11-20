@@ -51,7 +51,7 @@ class StatementDeleteChunk implements ShouldQueue
 
 
         if ($end >= $this->max) {
-            Log::info('StatementSearchableChunk Max Reached at ' . Carbon::now()->format('Y-m-d H:i:s'));
+            Log::info('StatementDeleteChunk Max Reached at ' . Carbon::now()->format('Y-m-d H:i:s'));
         }
     }
 }
