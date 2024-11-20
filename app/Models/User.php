@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,7 +61,7 @@ class User extends Authenticatable
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public static function firstOrCreateByAttributes($attributes)
+    public static function firstOrCreateByAttributes(array $attributes): Model|User
     {
         if (!isset ($attributes['email'])) {
             throw new Exception("Fatal Error: CAS callback did not contain an email");

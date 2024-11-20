@@ -5,7 +5,6 @@ namespace Tests\Feature\Models;
 
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class StatementTest extends TestCase
