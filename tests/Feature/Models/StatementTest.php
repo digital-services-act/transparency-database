@@ -268,4 +268,77 @@ class StatementTest extends TestCase
         $this->assertArrayHasKey('automated_detection', $searchable);
         $this->assertTrue($searchable['automated_detection']);
     }
+
+    /**
+     * @test
+     */
+    public function it_handles_platform_uuid_caching(): void
+    {
+        $platform = Platform::factory()->create(['uuid' => Str::uuid()]);
+        $statement = Statement::factory()->create(['platform_id' => $platform->id]);
+
+        $this->assertEquals($platform->uuid, $statement->platformUuidCached());
+        
+        // Test cache hit
+        Cache::shouldReceive('remember')
+            ->once()
+            ->andReturn($platform->uuid);
+            
+        $statement->platformUuidCached();
+    }
+
+    /**
+     * @test
+     */
+    public function it_prepares_syncable_array_correctly(): void
+    {
+        $statement = Statement::factory()->create([
+            'decision_visibility' => ['REMOVED'],
+            'content_type' => ['TEXT', 'IMAGE'],
+            'automated_detection' => Statement::AUTOMATED_DETECTION_YES
+        ]);
+
+        $syncable = $statement->toSyncableArray();
+
+        $this->assertArrayHasKey('id', $syncable);
+        $this->assertArrayHasKey('uuid', $syncable);
+        $this->assertArrayHasKey('platform_id', $syncable);
+        $this->assertArrayHasKey('decision_visibility', $syncable);
+        $this->assertArrayHasKey('content_type', $syncable);
+        $this->assertArrayHasKey('automated_detection', $syncable);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_scout_key_methods(): void
+    {
+        $statement = Statement::factory()->create();
+        
+        $this->assertEquals($statement->id, $statement->getScoutKey());
+        $this->assertEquals('id', $statement->getScoutKeyName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_platform_attributes_when_platform_missing(): void
+    {
+        // Create a statement without platform_id
+        $statement = Statement::factory()->make(['platform_id' => null]);
+        
+        $this->assertEquals('', $statement->platform_name);
+        $this->assertEquals('deleted-uuid-', $statement->platformUuidCached());
+        $this->assertEquals('deleted-name-', $statement->platformNameCached());
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_searchable_index_name(): void
+    {
+        $statement = Statement::factory()->create();
+        
+        $this->assertEquals('statement_index', $statement->searchableAs());
+    }
 }
