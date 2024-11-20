@@ -4,12 +4,11 @@ namespace Tests\Feature\Http\Middleware;
 
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Models\User;
-use App\Models\Platform;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RedirectIfAuthenticatedTest extends TestCase
 {
