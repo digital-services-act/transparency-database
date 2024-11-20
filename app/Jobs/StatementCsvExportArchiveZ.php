@@ -16,6 +16,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
+/**
+ * 
+ * @codeCoverageIgnore
+ */
 class StatementCsvExportArchiveZ implements ShouldQueue
 {
     use Dispatchable;

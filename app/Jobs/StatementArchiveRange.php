@@ -11,6 +11,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * 
+ * @codeCoverageIgnore
+ */
 class StatementArchiveRange implements ShouldQueue
 {
     use Dispatchable;

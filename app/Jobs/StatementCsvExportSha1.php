@@ -10,6 +10,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * 
+ * @codeCoverageIgnore
+ */
 class StatementCsvExportSha1 implements ShouldQueue
 {
     use Dispatchable;

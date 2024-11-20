@@ -43,7 +43,7 @@ class LogMessageQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        if (preg_match('/^\d+$/', $filter_value)) {
+        if (filter_var($filter_value, FILTER_VALIDATE_INT)) {
             $filter_value = (int)$filter_value;
             $query->where('id', $filter_value);
         } else {
