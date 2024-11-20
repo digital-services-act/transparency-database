@@ -784,14 +784,12 @@ class Statement extends Model
         $keys = array_filter($keys);
 
         foreach ($keys as $key) {
-            // Use constant() to get the value of the constant by its name
-            try {
+            // Use defined() to check if constant exists before trying to get its value
+            if (defined(self::class . '::' . $key)) {
                 $value = constant(self::class . '::' . $key);
                 if ($value !== null) {
                     $enumValues[] = $value;
                 }
-            } catch (Exception) {
-
             }
         }
 
