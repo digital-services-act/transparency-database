@@ -170,4 +170,28 @@ class PlatformRegisterStoreRequestTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['url']);
     }
+
+    /** @test */
+    public function in_method_builds_validation_rule_correctly()
+    {
+        // Create a request instance
+        $request = new PlatformRegisterStoreRequest();
+        
+        // Use reflection to access private method
+        $reflectionClass = new \ReflectionClass($request);
+        $method = $reflectionClass->getMethod('in');
+        $method->setAccessible(true);
+
+        // Test with simple array
+        $result = $method->invoke($request, ['a', 'b', 'c']);
+        $this->assertEquals('in:a,b,c', $result);
+
+        // Test with empty array
+        $result = $method->invoke($request, []);
+        $this->assertEquals('in:', $result);
+
+        // Test with array containing special characters
+        $result = $method->invoke($request, ['a,b', 'c:d', 'e;f']);
+        $this->assertEquals('in:a,b,c:d,e;f', $result);
+    }
 }
