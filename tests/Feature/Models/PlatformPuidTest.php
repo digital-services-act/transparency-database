@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Feature\Models;
 
 use App\Models\Platform;
 use App\Models\PlatformPuid;
