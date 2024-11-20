@@ -32,17 +32,13 @@ class PlatformAPIController extends Controller
     public function store(PlatformStoreRequest $request): JsonResponse
     {
         Log::info("API - Platform Store - Start");
-
         $validated = $request->safe()->toArray();
-
         Log::info($validated);
 
         try {
             $platform = Platform::create($validated);
         } catch (QueryException $queryException) {
-
             return $this->handleQueryException($queryException, 'Platform');
-
         }
 
         Log::info("API - Platform Store - Success");

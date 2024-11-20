@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Services;
 
-use App\Models\ArchivedStatement;
 use App\Models\DayArchive;
+use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DayArchiveService;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -42,6 +43,18 @@ class DayArchiveServiceTest extends TestCase
             'application_date'             => '2023-05-18',
             'content_date'                 => '2023-05-18'
         ];
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_builds_an_exports_array(): void
+    {
+        $result = $this->day_archive_service->buildBasicExportsArray();
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
+        $this->assertCount(20, $result);
     }
 
     /**
@@ -257,4 +270,71 @@ class DayArchiveServiceTest extends TestCase
         $last_id = $this->day_archive_service->getLastIdOfDate(Carbon::createFromDate(2030, 1, 1));
         $this->assertFalse($last_id);
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_a_query_by_platform(): void
+    {
+        $platform = Platform::first();
+        $result = $this->day_archive_service->platformList($platform);
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Builder::class, $result);
+        $sql = $result->toSql();
+        $this->assertEquals('select * from "day_archives" where "platform_id" = ? and "completed_at" is not null order by "date" desc', $sql);   
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_a_day_archive_by_platform_date(): void
+    {
+        $platform = Platform::first();
+        $date = Carbon::createFromDate(2024, 6, 15);
+
+        $day_archive = DayArchive::create([
+            'date' => $date,
+            'platform_id' => $platform->id
+        ]);
+
+        $result = $this->day_archive_service->getDayArchiveByPlatformDate($platform, $date);
+
+        $this->assertNotNull($result);
+        $this->assertEquals($day_archive->id, $result->id);
+
+        $date_other = Carbon::createFromDate(2024, 6, 16);
+
+        $result = $this->day_archive_service->getDayArchiveByPlatformDate($platform, $date_other);
+
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_a_query_for_a_date(): void
+    {
+        $date = Carbon::createFromDate(2024, 6, 15);
+        $result = $this->day_archive_service->getDayArchivesByDate($date);
+
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Builder::class, $result);
+        $sql = $result->toSql();
+        $this->assertEquals('select * from "day_archives" where strftime(\'%Y-%m-%d\', "date") = cast(? as text)', $sql);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_gets_a_big_raw_select_string(): void
+    {
+        $result = $this->day_archive_service->getSelectRawString();
+        $this->assertNotNull($result);
+        $this->assertIsString($result);
+    }
+
 }
