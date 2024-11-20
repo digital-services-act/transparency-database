@@ -341,4 +341,44 @@ class StatementTest extends TestCase
         
         $this->assertEquals('statement_index', $statement->searchableAs());
     }
+
+    /**
+     * @test
+     */
+    public function it_handles_non_array_json_decode_result(): void
+    {
+        $statement = Statement::factory()->create();
+
+        // Test with JSON that decodes to a string
+        $statement->territorial_scope = '"single_value"';
+        $statement->save();
+        $statement->refresh();
+        
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertEmpty($statement->territorial_scope);
+
+        // Test with JSON that decodes to a number
+        $statement->territorial_scope = '123';
+        $statement->save();
+        $statement->refresh();
+        
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertEmpty($statement->territorial_scope);
+
+        // Test with JSON that decodes to a boolean
+        $statement->territorial_scope = 'true';
+        $statement->save();
+        $statement->refresh();
+        
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertEmpty($statement->territorial_scope);
+
+        // Test with JSON that decodes to an object
+        $statement->territorial_scope = '{"key": "value"}';
+        $statement->save();
+        $statement->refresh();
+        
+        $this->assertIsArray($statement->territorial_scope);
+        $this->assertEmpty($statement->territorial_scope);
+    }
 }
