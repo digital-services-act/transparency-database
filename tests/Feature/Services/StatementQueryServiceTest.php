@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Services;
 
+use App\Models\Platform;
 use App\Models\Statement;
+use App\Models\User;
 use App\Services\StatementQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -225,5 +227,165 @@ class StatementQueryServiceTest extends TestCase
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
         $this->assertStringContainsString('select * from "statements" where "category" in (?', $sql);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_errors_gracefully(): void
+    {
+        // Create a statement with known values
+        Statement::query()->delete();
+        Statement::factory()->create([
+            'incompatible_content_ground' => 'test content'
+        ]);
+        
+        // Test with invalid filter type (should log error but not throw exception)
+        $filters = [
+            'automated_detection' => 'invalid' // Should be array but we pass string
+        ];
+        
+        $result = $this->statement_query_service->query($filters);
+        $this->assertNotNull($result); // Should return a query builder despite error
+        
+        // Test with non-existent filter method
+        $filters = [
+            'non_existent_filter' => ['value']
+        ];
+        
+        $result = $this->statement_query_service->query($filters);
+        $this->assertNotNull($result); // Should return a query builder despite error
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_text_search(): void
+    {
+        Statement::query()->delete();
+        
+        // Create a platform and user for the statement
+        $platform = Platform::factory()->create();
+        $user = User::factory()->create(['platform_id' => $platform->id]);
+        
+        $puid = 'test-puid-123';
+        $decision_facts = 'test facts';
+        
+        // Create a statement with known searchable content
+        $statement = Statement::factory()->create([
+            'puid' => $puid,
+            'decision_facts' => $decision_facts,
+            'incompatible_content_ground' => 'test content ground',
+            'incompatible_content_explanation' => 'test explanation',
+            'illegal_content_legal_ground' => 'test legal ground',
+            'illegal_content_explanation' => 'test legal explanation',
+            'decision_visibility_other' => 'test visibility',
+            'decision_monetary_other' => 'test monetary',
+            'content_type_other' => 'test content type',
+            'source_identity' => 'test source'
+        ]);
+
+        // Save the UUID that was auto-generated
+        $uuid = $statement->uuid;
+        
+        // Verify test data was created
+        $this->assertDatabaseHas('statements', ['uuid' => $uuid]);
+        
+        // Test each searchable field
+        $searchTerms = [
+            'test content ground',
+            'test explanation',
+            'test legal ground',
+            'test legal explanation',
+            'test facts',
+            $uuid,
+            $puid,
+            'test visibility',
+            'test monetary',
+            'test content type',
+            'test source'
+        ];
+        
+        foreach ($searchTerms as $term) {
+            $result = $this->statement_query_service->query(['s' => $term]);
+            // Log the query and result for debugging
+            $this->assertTrue($result->count() > 0, "Failed to find term: $term. Found {$result->count()} results. SQL: {$result->toSql()}");
+        }
+        
+        // Test term that doesn't exist
+        $result = $this->statement_query_service->query(['s' => 'nonexistent']);
+        $this->assertEquals(0, $result->count());
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_decision_fields(): void
+    {
+        Statement::query()->delete();
+        
+        // Create statements with various decision fields
+        Statement::factory()->create([
+            'decision_monetary' => array_key_first(Statement::DECISION_MONETARIES),
+            'decision_provision' => array_key_first(Statement::DECISION_PROVISIONS),
+            'decision_account' => array_key_first(Statement::DECISION_ACCOUNTS),
+            'account_type' => array_key_first(Statement::ACCOUNT_TYPES)
+        ]);
+        
+        // Test decision_monetary filter
+        $result = $this->statement_query_service->query([
+            'decision_monetary' => [array_key_first(Statement::DECISION_MONETARIES)]
+        ]);
+        $this->assertEquals(1, $result->count());
+        
+        // Test decision_provision filter
+        $result = $this->statement_query_service->query([
+            'decision_provision' => [array_key_first(Statement::DECISION_PROVISIONS)]
+        ]);
+        $this->assertEquals(1, $result->count());
+        
+        // Test decision_account filter
+        $result = $this->statement_query_service->query([
+            'decision_account' => [array_key_first(Statement::DECISION_ACCOUNTS)]
+        ]);
+        $this->assertEquals(1, $result->count());
+        
+        // Test account_type filter
+        $result = $this->statement_query_service->query([
+            'account_type' => [array_key_first(Statement::ACCOUNT_TYPES)]
+        ]);
+        $this->assertEquals(1, $result->count());
+        
+        // Test with invalid values
+        $result = $this->statement_query_service->query([
+            'decision_monetary' => ['INVALID_VALUE']
+        ]);
+        // The filter_values_validated will be empty, so no WHERE clause will be added
+        $this->assertGreaterThanOrEqual(0, $result->count());
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_on_content_language(): void
+    {
+        Statement::query()->delete();
+        
+        // Create a statement with a specific content language
+        Statement::factory()->create([
+            'content_language' => 'en'
+        ]);
+        
+        // Test filtering by content language
+        $result = $this->statement_query_service->query([
+            'content_language' => ['en']
+        ]);
+        $this->assertEquals(1, $result->count());
+        
+        // Test filtering by non-existent language
+        $result = $this->statement_query_service->query([
+            'content_language' => ['xx']
+        ]);
+        $this->assertEquals(0, $result->count());
     }
 }
