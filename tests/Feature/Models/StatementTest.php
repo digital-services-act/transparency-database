@@ -381,4 +381,20 @@ class StatementTest extends TestCase
         $this->assertIsArray($statement->territorial_scope);
         $this->assertEmpty($statement->territorial_scope);
     }
+
+    public function test_it_handles_non_array_json_decode_result()
+    {
+        $statement = Statement::factory()->create();
+        $result = $statement->getRawKeys('uuid');
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
+
+    public function test_it_handles_null_key_result()
+    {
+        $statement = Statement::factory()->create();
+        $result = $statement->getRawKeys('something_that_does_not_exist');
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
 }

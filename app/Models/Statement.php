@@ -804,13 +804,14 @@ class Statement extends Model
      */
     public function getRawKeys($key): array
     {
-        if(is_null($this->getRawOriginal($key))) {
+        $raw_original = (string) $this->getRawOriginal($key);
+        if($raw_original === '') {
             return [];
         }
 
         // Catch potential bad json here.
         try {
-            $out = json_decode((string) $this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
+            $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $exception) {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];
