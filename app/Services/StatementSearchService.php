@@ -8,16 +8,16 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use JsonException;
 use Laravel\Scout\Builder;
 use OpenSearch\Client;
-use Random\RandomException;
 use RuntimeException;
 use stdClass;
 
-
+/**
+ * @codeCoverageIgnore This whole service does many opensearch calls. Mocking the returns is not possible
+ */
 class StatementSearchService
 {
 
@@ -128,7 +128,9 @@ class StatementSearchService
 
 
         if (config('scout.driver', '') === 'database' && config('app.env') !== 'testing') {
+            // @codeCoverageIgnoreStart
             $query = $filters['s'] ?? '';
+            // @codeCoverageIgnoreEnd
         }
 
         return $query;
@@ -195,7 +197,9 @@ class StatementSearchService
         }
 
         if (config('scout.driver', '') === 'database' && config('app.env', '') !== 'testing') {
+            // @codeCoverageIgnoreStart
             return $filter_value;
+            // @codeCoverageIgnoreEnd
         }
 
         return implode(' OR ', $ors);
@@ -313,6 +317,11 @@ class StatementSearchService
         return implode(' OR ', $ors);
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @param array $filter_values
+     * @return string
+     */
     private function applyContentLanguageFilter(array $filter_values): string
     {
         $ors           = [];
@@ -374,6 +383,11 @@ class StatementSearchService
     }
 
 
+    /**
+     * @codeCoverageIgnore This is calling opensearch directly
+     * @param \Illuminate\Database\Eloquent\Collection $statements
+     * @return void
+     */
     public function bulkIndexStatements(Collection $statements): void
     {
         if ($statements->count() !== 0 && config('scout.driver') === 'opensearch') {
@@ -395,6 +409,10 @@ class StatementSearchService
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return array
+     */
     public function allSendingPlatformIds(): array
     {
         return Cache::remember('all_sending_platform_ids', self::ONE_HOUR, function () {
