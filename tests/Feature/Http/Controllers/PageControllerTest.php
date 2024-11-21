@@ -16,12 +16,11 @@ class PageControllerTest extends TestCase
         
         // Create test markdown files
         $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        if (!File::exists($markdownDir)) {
-            File::makeDirectory($markdownDir, 0755, true);
+        $testfile = $markdownDir . '/test-page.md';
+
+        if (!File::exists($testfile)) {
+            File::put($testfile, "# Test Page\nThis is a test page content.");
         }
-        
-        // Create a test markdown file
-        File::put($markdownDir . '/test-page.md', "# Test Page\nThis is a test page content.");
     }
 
     protected function tearDown(): void
@@ -30,7 +29,8 @@ class PageControllerTest extends TestCase
         
         // Clean up test markdown files
         $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        File::deleteDirectory($markdownDir);
+        $testfile = $markdownDir . '/test-page.md';
+        File::delete($testfile);
     }
 
     public function test_show_displays_markdown_page(): void
