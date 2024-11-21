@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use Tests\TestCase;
-use Illuminate\Support\Facades\Cache;
-use App\Services\StatementSearchService;
 use App\Models\Platform;
-use App\Models\Statement;
+use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Tests\TestCase;
 
 class HomeControllerTest extends TestCase
 {

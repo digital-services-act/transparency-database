@@ -28,6 +28,7 @@ class PlatformFactory extends Factory
         return [
             'name' => $this->faker->unique()->randomElement($platform_names),
             'dsa_common_id' => $this->faker->uuid(),
+            'uuid' => $this->faker->uuid(),
         ];
     }
 }
