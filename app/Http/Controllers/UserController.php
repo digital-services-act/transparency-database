@@ -33,8 +33,9 @@ class UserController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         $users = User::query();
-        $s = $request->get('s');
-        $uuid = $request->get('uuid');
+        $s = $request->query('s');
+        $uuid = $request->query('uuid');
+
         if ($s) {
             $users->where('email', 'like', '%' . $s . '%');
         }
