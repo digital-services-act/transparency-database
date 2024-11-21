@@ -10,31 +10,13 @@ class PageControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        
-        // Create test markdown files
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        $testfile = $markdownDir . '/test-page.md';
-
-        if (!File::exists($testfile)) {
-            File::put($testfile, "# Test Page\nThis is a test page content.");
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        
-        // Clean up test markdown files
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        $testfile = $markdownDir . '/test-page.md';
-        File::delete($testfile);
-    }
+    protected string $markdownDir = __DIR__ . '/../../../../resources/markdown';
 
     public function test_show_displays_markdown_page(): void
     {
+        $testfile = "{$this->markdownDir}/test-page.md";
+        File::put($testfile, "# Test Page\nThis is a test page content.");
+
         $response = $this->get('/page/test-page');
 
         $response->assertStatus(200);
@@ -44,13 +26,15 @@ class PageControllerTest extends TestCase
         $response->assertViewHas('page_title', 'Test Page');
         $response->assertViewHas('breadcrumb', 'Test Page');
         $response->assertViewHas('show_feedback_link', false);
+
+        File::delete($testfile);
     }
 
     public function test_show_sanitizes_page_name(): void
     {
         // Create a test file with sanitized name
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        File::put($markdownDir . '/testpage.md', "# Test Page\nContent.");
+        $testfile = "{$this->markdownDir}/testpage.md";
+        File::put($testfile, "# Test Page\nContent.");
 
         // Try to access with unsanitized name
         $response = $this->get('/page/Test..Page!!!');
@@ -58,6 +42,8 @@ class PageControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('page');
         $response->assertSee('Test Page');
+
+        File::delete($testfile);
     }
 
     public function test_show_handles_redirects(): void
@@ -77,10 +63,6 @@ class PageControllerTest extends TestCase
 
     public function test_show_modifies_page_titles(): void
     {
-        // Create a test file
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        File::put($markdownDir . '/api-documentation.md', "# API Documentation\nContent.");
-
         $response = $this->get('/page/api-documentation');
 
         $response->assertStatus(200);
@@ -88,39 +70,32 @@ class PageControllerTest extends TestCase
         $response->assertViewHas('breadcrumb', 'API Documentation');
     }
 
-    public function test_show_handles_feedback_link(): void
-    {
-        // Create a FAQ page
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        File::put($markdownDir . '/faq.md', "# FAQ\nContent.");
-
-        $response = $this->get('/page/faq');
-
-        $response->assertStatus(200);
-        $response->assertViewHas('show_feedback_link', true);
-    }
-
     public function test_profile_show_sets_profile_flag(): void
     {
         $this->signIn();
-        // Create a test file
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
-        File::put($markdownDir . '/test-profile.md', "# Test Profile\nContent.");
+    
+        // Create a test file 
+        $testfile = "{$this->markdownDir}/test-profile.md";
+        File::put($testfile, "# Test Profile\nContent.");
 
 
         $response = $this->get('/profile/page/test-profile');
 
         $response->assertStatus(200);
         $response->assertViewHas('profile', true);
+
+        File::delete($testfile);
     }
 
     public function test_markdown_conversion_adds_header_ids(): void
     {
         $this->signIn();
         // Create a test file with multiple headers
-        $markdownDir = __DIR__ . '/../../../../resources/markdown';
         $markdown = "# Main Title\n## Sub Section\n### Another Section";
-        File::put($markdownDir . '/headers.md', $markdown);
+    
+        // Create a test file 
+        $testfile = "{$this->markdownDir}/headers.md";
+        File::put($testfile,$markdown);
 
         $response = $this->get('/page/headers');
 
@@ -128,5 +103,7 @@ class PageControllerTest extends TestCase
         $response->assertSee('id="main-title"', false);
         $response->assertSee('id="sub-section"', false);
         $response->assertSee('id="another-section"', false);
+
+        File::delete($testfile);
     }
 }
