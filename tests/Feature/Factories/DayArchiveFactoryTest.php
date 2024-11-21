@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Factories;
+namespace Tests\Feature\Factories;
 
 use App\Models\DayArchive;
 use App\Models\Platform;
