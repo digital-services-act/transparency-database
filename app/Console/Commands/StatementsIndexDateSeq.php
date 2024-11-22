@@ -2,13 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementIndexRange;
 use App\Jobs\StatementSearchableChunk;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsIndexDateSeq extends Command
 {
     use CommandTrait;

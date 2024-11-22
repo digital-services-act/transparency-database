@@ -10,7 +10,6 @@
               select_all="All"
               select_item="Select visibility decision(s)"
               enter_keyword="Enter a visibility decision"
-              info_text="Additional Information for Visibility Restriction"
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_FORM_OTHER" name="decision_visibility_other"
@@ -32,7 +31,6 @@
               default="{{ $statement->decision_monetary }}"
               justlabel="true"
               :allow_null="true"
-              info_text="Additional Information for Monetary Payments suspension"
 />
 
 
@@ -113,8 +111,9 @@
               :options="$options['decision_grounds']"
               required="true"/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" name="decision_ground_reference_url" id="decision_ground_reference_url"
-                 info_text="Some help about the decision_ground_reference_url"
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" 
+              name="decision_ground_reference_url" id="decision_ground_reference_url"
+                 
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND" name="illegal_content_legal_ground"

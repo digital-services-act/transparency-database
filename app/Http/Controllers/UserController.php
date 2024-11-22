@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\Session;
 use Random\RandomException;
 use Spatie\Permission\Models\Role;
 
-
+/**
+ * Class UserController
+ * @package App\Http\Controllers
+ */
 class UserController extends Controller
 {
     /**
@@ -30,8 +33,9 @@ class UserController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         $users = User::query();
-        $s = $request->get('s');
-        $uuid = $request->get('uuid');
+        $s = $request->query('s');
+        $uuid = $request->query('uuid');
+
         if ($s) {
             $users->where('email', 'like', '%' . $s . '%');
         }
@@ -163,11 +167,12 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->safe()->merge([
-
-        ])->toArray();
+        $validated = $request->safe()->merge([])->toArray();
+        
+        $user->email = $validated['email'];
         $user->platform_id = $validated['platform_id'];
         $user->save();
+        
         $user->roles()->detach();
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);

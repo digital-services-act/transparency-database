@@ -19,7 +19,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Cache;
 
 
 class StatementAPIController extends Controller
@@ -89,15 +88,10 @@ class StatementAPIController extends Controller
             $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
         } catch (PuidNotUniqueSingleException $e) {
             return $e->getJsonResponse();
-        } catch (QueryException $queryException) {
-            return $this->handleQueryException($queryException, 'Statement');
         }
-
-        try {
-            $statement = Statement::create($validated);
-        } catch (QueryException $queryException) {
-            return $this->handleQueryException($queryException, 'Statement');
-        }
+        
+        $statement = Statement::create($validated);
+        
 
 
         $out = $statement->toArray();

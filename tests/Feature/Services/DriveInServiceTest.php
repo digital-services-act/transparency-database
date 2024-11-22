@@ -36,4 +36,20 @@ class DriveInServiceTest extends TestCase
         $similar_words = $this->drive_in_service->getSimilarityWords('alice');
         $this->assertEquals($mock_similar_result_array, $similar_words);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_returns_blank_array_on_issue(): void
+    {
+        $mock_result = false; // bogus return from the service.
+        $mock_similar_result_array = [];
+        Http::fake([
+            '*' => Http::response(["message" =>"ok","result" => $mock_result], 200)
+        ]);
+
+        $similar_words = $this->drive_in_service->getSimilarityWords('alice');
+        $this->assertEquals([], $similar_words);
+    }
 }

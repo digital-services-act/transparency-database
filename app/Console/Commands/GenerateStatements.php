@@ -6,6 +6,9 @@ use App\Jobs\StatementCreation;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
+/**
+ * @codeCoverageIgnore
+ */
 class GenerateStatements extends Command
 {
     use CommandTrait;

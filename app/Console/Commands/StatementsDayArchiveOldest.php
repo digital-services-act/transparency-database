@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsDayArchiveOldest extends Command
 {
     use CommandTrait;

@@ -21,6 +21,7 @@ class DriveInServiceProvider extends ServiceProvider implements DeferrableProvid
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

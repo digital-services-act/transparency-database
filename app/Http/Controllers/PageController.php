@@ -31,11 +31,7 @@ class PageController extends Controller
             return redirect($redirects[$page]);
         }
 
-
         $page_title = ucwords(str_replace("-", " ", (string)$page));
-
-
-        $show_feedback_link = $this->getShow_feedback_link($page_title);
 
         $page_title_mods = [
             'Api Documentation'        => 'API Documentation',
@@ -68,14 +64,11 @@ class PageController extends Controller
             $breadcrumb = $breadcrumb_mods[$breadcrumb];
         }
 
-
         $page_content = '';
         $page         = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
-
         $view_data = [
             'profile'            => $profile,
-            'show_feedback_link' => $show_feedback_link,
             'page_title'         => $page_title,
             'breadcrumb'         => $breadcrumb,
             'baseurl'            => route('home'),
@@ -114,14 +107,5 @@ class PageController extends Controller
 
             return $matches[0];
         }, $parsedown->text(file_get_contents($file)));
-    }
-
-    public function getShow_feedback_link(string $page_title): bool
-    {
-        $show_feedback_pages = [
-            'Faq'
-        ];
-
-        return in_array($page_title, $show_feedback_pages);
     }
 }

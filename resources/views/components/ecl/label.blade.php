@@ -1,4 +1,4 @@
-@props(['label' => 'label', 'required' => false, 'for' => 'for', 'name' => 'name', 'type' => 'label', 'justlabel' => false, 'info_text'=>false])
+@props(['label' => 'label', 'required' => false, 'for' => 'for', 'name' => 'name', 'type' => 'label', 'justlabel' => false])
 <div class="ecl-u-type-paragraph ecl-u-mt-2xl" style="max-width:none !important; ">
     <{{ $type }} for
     ="{{ $for }}" style="white-space: normal !important; display: inline !important;" class="ecl-form-label @error($name)ecl-form-label--invalid @enderror">{!! $label !!}
@@ -9,9 +9,5 @@
             <span class="ecl-form-label__optional"> (optional)</span>
         @endif
     @endif
-    @if($info_text)
-{{--        <x-hover-text :hoverText="$info_text"/>--}}
-    @endif
-</{{ $type }}>
-
-    </div>
+    </{{ $type }}>
+</div>

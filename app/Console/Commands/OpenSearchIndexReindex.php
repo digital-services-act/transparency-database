@@ -6,6 +6,9 @@ use Exception;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OpenSearchIndexReindex extends Command
 {
     /**

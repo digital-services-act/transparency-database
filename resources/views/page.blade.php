@@ -32,14 +32,6 @@
 
     <h1 class="ecl-u-type-heading-1">{{$page_title}}</h1>
 
-    @if($show_feedback_link)
-        <p class="ecl-u-type-paragraph">
-            If you can't find an answer to your question, feel free to use our <a href="{{route('feedback.index')}}">contact
-                form</a>
-        </p>
-    @endif
-
-
     <div class="ecl-row data-ecl-inpage-navigation-container">
         <div class="ecl-col-l-3 ecl-u-d-none" id="toc-wrapper">
 

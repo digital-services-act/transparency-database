@@ -6,8 +6,6 @@ use Exception;
 use Illuminate\Support\Carbon;
 use RuntimeException;
 
-use function PHPUnit\Framework\throwException;
-
 trait CommandTrait
 {
     public function sanitizeDateArgument(): Carbon
@@ -25,7 +23,7 @@ trait CommandTrait
                 $date = Carbon::createFromFormat('Y-m-d', $date);
             } catch (Exception) {
                 $this->error('Issue with the date provided, checked the format yyyy-mm-dd');
-                throwException(new RuntimeException('Issue with the date provided, checked the format yyyy-mm-dd'));
+                throw new RuntimeException('Issue with the date provided, checked the format yyyy-mm-dd');
             }
         }
 

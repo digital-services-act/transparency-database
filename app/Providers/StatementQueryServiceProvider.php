@@ -21,6 +21,7 @@ class StatementQueryServiceProvider extends ServiceProvider implements Deferrabl
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

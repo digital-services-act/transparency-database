@@ -145,4 +145,27 @@ class EuropeanCountriesServiceTest extends TestCase
         $all = json_encode(EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES, JSON_THROW_ON_ERROR);
         $this->assertLessThan($max, strlen($all));
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_throws_an_error_and_returns_false(): void
+    {
+        $test_iso = 'xx';
+        $result = $this->european_countries_service->getCountryName($test_iso);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_returns_nothing_on_nothing(): void
+    {
+        $test_countries = [];
+        $result = $this->european_countries_service->getCountryNames($test_countries);
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
 }

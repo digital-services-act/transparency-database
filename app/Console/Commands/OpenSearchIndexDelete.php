@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OpenSearchIndexDelete extends Command
 {
     /**

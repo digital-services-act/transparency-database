@@ -23,9 +23,9 @@ class DriveInService
         // Sometimes we get a null from the service...
         if (is_array($results)) {
             return $this->parseSimilarityResults($results);
-        } else {
-            return [];
-        }
+        } 
+        
+        return [];
     }
 
     private function parseSimilarityResults(array $results): array
