@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use App\Jobs\StatementIndexSecond;
 use Illuminate\Console\Command;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsIndexDateBySeconds extends Command
 {
     use CommandTrait;

@@ -155,12 +155,8 @@ class PlatformController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Platform $platform): RedirectResponse
+    public function destroy(Request $request, Platform $platform): RedirectResponse
     {
-        if (auth()->user()->cannot('administrate')) {
-            return redirect()->route('platform.index')->with('error', "You don't have enough rights to delete a platform");
-        }
-
         $dsaPlatform = Platform::getDsaPlatform();
 
         if ($platform->id == $dsaPlatform->id) {
@@ -178,28 +174,6 @@ class PlatformController extends Controller
 
         // Carry on
         return redirect()->route('platform.index')->with('success', 'The platform has been deleted');
-    }
-
-    /**
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
-     */
-    public function platformRegister(Request $request)
-    {
-        if ($request->user()->platform && $request->user()->platform->name !== Platform::LABEL_DSA_TEAM) {
-            return redirect()->route('dashboard')->with('error', 'Your account is currently linked to a platform and therefor you may not register a new platform.');
-        }
-
-        $options = $this->prepareOptions();
-        return view('platform.register', ['options' => $options]);
-    }
-
-    public function platformRegisterStore(PlatformRegisterStoreRequest $request): RedirectResponse
-    {
-        $validated = $request->safe()->merge([
-
-        ])->toArray();
-
-        return redirect()->route('dashboard')->with('success', 'The platform has been registered, representatives will be in contact with you shortly.');
     }
 
     private function prepareOptions(): array

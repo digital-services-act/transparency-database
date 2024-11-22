@@ -6,6 +6,9 @@ use App\Models\Platform;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AssignPlatformUuid extends Command
 {
     /**

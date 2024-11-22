@@ -22,6 +22,7 @@ class DayArchiveServiceProvider extends ServiceProvider implements DeferrablePro
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

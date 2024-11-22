@@ -40,6 +40,7 @@ class StatementQueryService
         'decision_account',
         'account_type',
         'category',
+        'category_specification',
         'content_type',
         'content_language',
         'territorial_scope',
@@ -75,18 +76,19 @@ class StatementQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        $query->orWhere('incompatible_content_ground', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('incompatible_content_explanation', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('illegal_content_legal_ground', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('illegal_content_explanation', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('decision_facts', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('uuid', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('puid', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%');
-        $query->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%');
-
+        $query->where(function($q) use ($filter_value) {
+            $q->orWhere('incompatible_content_ground', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('incompatible_content_explanation', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('illegal_content_legal_ground', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('illegal_content_explanation', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('decision_facts', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('uuid', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('puid', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%');
+        });
     }
 
     /**
@@ -145,7 +147,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_GROUNDS));
         if ($filter_values_validated !== []) {
-            $query->whereIn('decision_ground', $filter_value);
+            $query->whereIn('decision_ground', $filter_values_validated);
         }
     }
 
@@ -157,9 +159,11 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
         if ($filter_values_validated !== []) {
-            foreach ($filter_values_validated as $decision_visibility) {
-                $query->where('decision_visibility', 'LIKE', '%"' . $decision_visibility . '"%');
-            }
+            $query->where(function ($query) use ($filter_values_validated) {
+                foreach ($filter_values_validated as $value) {
+                    $query->orWhereRaw('json_extract(decision_visibility, "$") LIKE ?', ['%"' . $value . '"%']);
+                }
+            });
         }
     }
 
@@ -171,7 +175,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_MONETARIES));
         if ($filter_values_validated !== []) {
-            $query->whereIn('decision_monetary', $filter_value);
+            $query->whereIn('decision_monetary', $filter_values_validated);
         }
     }
 
@@ -183,7 +187,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_PROVISIONS));
         if ($filter_values_validated !== []) {
-            $query->whereIn('decision_provision', $filter_value);
+            $query->whereIn('decision_provision', $filter_values_validated);
         }
     }
 
@@ -195,7 +199,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_ACCOUNTS));
         if ($filter_values_validated !== []) {
-            $query->whereIn('decision_account', $filter_value);
+            $query->whereIn('decision_account', $filter_values_validated);
         }
     }
 
@@ -203,7 +207,7 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::ACCOUNT_TYPES));
         if ($filter_values_validated !== []) {
-            $query->whereIn('account_type', $filter_value);
+            $query->whereIn('account_type', $filter_values_validated);
         }
     }
 
@@ -211,9 +215,11 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::KEYWORDS));
         if ($filter_values_validated !== []) {
-            foreach ($filter_values_validated as $category_specification) {
-                $query->where('category_specification', 'LIKE', '%"' . $category_specification . '"%');
-            }
+            $query->where(function ($query) use ($filter_values_validated) {
+                foreach ($filter_values_validated as $value) {
+                    $query->orWhereRaw('json_extract(category_specification, "$") LIKE ?', ['%"' . $value . '"%']);
+                }
+            });
         }
     }
 
@@ -226,9 +232,11 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
         if ($filter_values_validated !== []) {
-            foreach ($filter_values_validated as $content_type) {
-                $query->where('content_type', 'LIKE', '%"' . $content_type . '"%');
-            }
+            $query->where(function ($query) use ($filter_values_validated) {
+                foreach ($filter_values_validated as $value) {
+                    $query->orWhereRaw('json_extract(content_type, "$") LIKE ?', ['%"' . $value . '"%']);
+                }
+            });
         }
     }
 
@@ -238,7 +246,7 @@ class StatementQueryService
      */
     private function applyContentLanguageFilter(Builder $query, array $filter_value): void
     {
-        $query->whereIn('content_type', $filter_value);
+        $query->whereIn('content_language', $filter_value);
     }
 
     /**
@@ -281,9 +289,11 @@ class StatementQueryService
     {
         $filter_values_validated = array_intersect($filter_value, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         if ($filter_values_validated !== []) {
-            foreach ($filter_values_validated as $country) {
-                $query->where('territorial_scope', 'LIKE', '%"' . $country . '"%');
-            }
+            $query->where(function ($query) use ($filter_values_validated) {
+                foreach ($filter_values_validated as $value) {
+                    $query->orWhereRaw('json_extract(territorial_scope, "$") LIKE ?', ['%"' . $value . '"%']);
+                }
+            });
         }
     }
 

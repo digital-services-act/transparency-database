@@ -125,6 +125,33 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function api_statement_existing_puid_gives_404_when_statement_not_in_db(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $statement = $this->statement;
+
+        $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
+            $mock->shouldReceive('PlatformIdPuidToId')->andReturn($statement->id);
+        });
+
+        $this->statement->forceDelete();
+
+        $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @test
+     */
     public function api_statement_existing_puid_gives_404(): void
     {
         $this->setUpFullySeededDatabase();
@@ -665,6 +692,25 @@ class StatementAPIControllerTest extends TestCase
     /**
      * @test
      */
+    public function store_handles_query_exception_in_puid_check(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        // Create a statement with invalid data that will trigger a database error
+        $this->required_fields['puid'] = null; // This should trigger a database error since PUID is required
+
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonStructure(['message', 'errors']);
+    }
+
+    /**
+     * @test
+     */
     public function store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
     {
 
@@ -979,8 +1025,63 @@ class StatementAPIControllerTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function store_should_save_null_decisions_when_account_is_suspended_2(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
 
+        $this->required_fields['decisions'] = null;
 
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json'
+        ]);
 
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonPath('decisions', null);
+    }
+
+    /**
+     * @test
+     */
+    public function show_uuid_redirects_when_uuid_exists(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $admin = $this->signInAsAdmin();
+        $attributes = $this->required_fields;
+        $attributes['user_id'] = $admin->id;
+        $attributes['platform_id'] = $admin->platform_id;
+        $this->statement = Statement::create($attributes);
+
+        $uuid = $this->statement->uuid;
+
+        $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($uuid) {
+            $mock->shouldReceive('uuidToId')
+                ->with($uuid)
+                ->andReturn($this->statement->id);
+        });
+
+        $response = $this->get(route('api.v1.statement.show.uuid', [$uuid]));
+        $response->assertRedirect(route('api.v1.statement.show', [$this->statement->id]));
+    }
+
+    /**
+     * @test
+     */
+    public function show_uuid_returns_404_when_uuid_not_found(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
+        $this->mock(StatementSearchService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('uuidToId')
+                ->andReturn(0);
+        });
+
+        $response = $this->get(route('api.v1.statement.show.uuid', ['non-existent-uuid']));
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertJson(['message' => 'statement of reason not found']);
+    }
 }
-

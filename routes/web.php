@@ -33,26 +33,24 @@ Route::middleware(['force.auth'])->group(static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
             Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
         });
-        Route::group(['middleware' => ['can:administrate']], static function () {
-            Route::prefix('/admin/')->group(static function () {
-//                Route::resource('role', RoleController::class);
-//                Route::resource('permission', PermissionController::class);
+
+        Route::prefix('/admin/')->group(static function () {
+            Route::group(['middleware' => ['can:administrate']], static function () {
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
+            Route::get('onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
+            Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
         });
 
         Route::resource('user', UserController::class, ['middleware' => ['can:create users']]);
         Route::resource('platform', PlatformController::class, ['middleware' => ['can:create platforms']]);
-
-        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
-        Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
         Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
         Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
         Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('create statements');
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('create statements');
 
-});
+    });
 
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');

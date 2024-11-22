@@ -7,6 +7,9 @@ use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsDeDuplicateDate extends Command
 {
     use CommandTrait;

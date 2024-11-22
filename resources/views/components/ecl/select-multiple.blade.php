@@ -1,6 +1,6 @@
-@props(['enter_keyword'=>'Enter keyword','select_item'=>'Select an Item', 'justlabel' => false, 'select_all' => 'Select All', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => [], 'info_text' => null])
+@props(['enter_keyword'=>'Enter keyword','select_item'=>'Select an Item', 'justlabel' => false, 'select_all' => 'Select All', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => []])
 <div class="ecl-form-group ecl-u-mb-2xl" id="{{ $id }}-multisel">
-    <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" :info_text="$info_text"/>
+    <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" />
     <x-ecl.help :help="$help"/>
     <x-ecl.error-feedback :name="$name"/>
     <div class="ecl-select__container ecl-select__container--{{ $size }}">

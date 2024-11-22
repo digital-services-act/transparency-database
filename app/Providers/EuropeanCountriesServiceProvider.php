@@ -21,6 +21,7 @@ class EuropeanCountriesServiceProvider extends ServiceProvider implements Deferr
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

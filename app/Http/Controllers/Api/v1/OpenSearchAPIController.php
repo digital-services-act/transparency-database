@@ -14,6 +14,9 @@ use Illuminate\Support\Carbon;
 use OpenSearch\Client;
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore This is an admin WIP route and thus we are not going to worry about coverage
+ */
 class OpenSearchAPIController extends Controller
 {
     private string $index_name = 'statement_index';

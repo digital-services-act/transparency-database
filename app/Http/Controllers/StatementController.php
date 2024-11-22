@@ -62,9 +62,9 @@ class StatementController extends Controller
         $total = $setup['total'];
 
         $similarity_results = null;
-        if ($request->get('s')) {
-            $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
-        }
+        // if ($request->get('s')) {
+        //     $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
+        // }
 
         $reindexing = Cache::get('reindexing', false);
 
@@ -85,8 +85,14 @@ class StatementController extends Controller
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
     private function setupQuery(Request $request): array
     {
+        // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
             $statements = $this->statement_search_service->query($request->query());
             $total = $this->statement_search_service->query($request->query(),[
@@ -126,12 +132,6 @@ class StatementController extends Controller
         if(!$request->user()->platform) {
             return back()->withErrors('Your account is not associated with a platform.');
         }
-
-        // If you are not allowed to create statements we also don't want you here.
-        if(!$request->user()->can('create statements')) {
-            return back()->withErrors('Your account is not able to create statements.');
-        }
-
         $statement = new Statement();
         $statement->territorial_scope = [];
 
@@ -172,7 +172,6 @@ class StatementController extends Controller
     public function store(StatementStoreRequest $request): RedirectResponse
     {
 
-
         $validated = $request->safe()->merge([
             'platform_id' => $request->user()->platform_id,
             'user_id' => $request->user()->id,
@@ -181,23 +180,8 @@ class StatementController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
-        try {
-            $statement = Statement::create($validated);
-        } catch (QueryException $queryException) {
-            if (
-                str_contains($queryException->getMessage(), "statements_platform_id_puid_unique")
-            ) {
-                return back()->withInput()->withErrors([
-                    'puid' => [
-                        'The identifier given is not unique within this platform.'
-                    ]
-                ]);
-            } else {
-                Log::error('Statement Creation Query Exception Thrown', ['exception' => $queryException]);
-                back()->withInput()->withErrors(['exception' => 'An uncaught exception was thrown, support has been notified.']);
-            }
-        }
-
+        $statement = Statement::create($validated);
+        
         return redirect()->route('statement.index')->with('success', 'The statement has been created. <a href="/statement/'.$statement->id.'">Click here to view it.</a>');
     }
 

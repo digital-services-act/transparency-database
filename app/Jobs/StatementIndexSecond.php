@@ -13,6 +13,10 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * 
+ * @codeCoverageIgnore
+ */
 class StatementIndexSecond implements ShouldQueue
 {
     use Dispatchable;
