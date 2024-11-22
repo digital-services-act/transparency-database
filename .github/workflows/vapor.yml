@@ -30,11 +30,12 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: php artisan test --parallel --coverage-clover clover.xml
-      - name: Coverage Check
-        uses: docker://ghcr.io/ericsizemore/phpunit-coverage-check-action:2.0.1
+      - name: Code Coverage Check
+        uses: sourcetoad/phpunit-coverage-action@v1
         with:
-          clover_file: 'clover.xml'
-          threshold: 100  
+            clover_report_path: clover.xml
+            min_coverage_percent: 100
+            fail_build_on_under: true  
 #      - name: Require Vapor CLI
 #        run: composer global require laravel/vapor-cli
 #      - name: Deploy Environment
