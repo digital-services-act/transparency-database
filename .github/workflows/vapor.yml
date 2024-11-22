@@ -14,7 +14,7 @@ jobs:
       - name: Install Dependencies
         run: |
           php --version
-          composer install -n --prefer-dist
+          composer install -n --prefer-dist --no-progress
       - name: Prepare Laravel Application
         run: cp .env.ci .env
       - name: Generate key
@@ -31,7 +31,7 @@ jobs:
           DB_DATABASE: database/database.sqlite
         run: php artisan test --parallel --coverage-clover clover.xml
       - name: Coverage Check
-        uses: docker://ghcr.io/ericsizemore/phpunit-coverage-check-action
+        uses: docker://ghcr.io/ericsizemore/phpunit-coverage-check-action:2.0.1
         with:
           clover_file: 'clover.xml'
           threshold: 100  
