@@ -5,9 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-/**
- * @codeCoverageIgnore
- */
 class Heartbeat extends Command
 {
 
@@ -18,7 +15,7 @@ class Heartbeat extends Command
     public function handle()
     {
         try {
-            // Attempt to query the users table
+            // Attempt to query the statements table
             DB::table('statements')->select(DB::raw(1))->take(1)->get();
 
             // If the query is successful, database is up
