@@ -108,7 +108,7 @@ You will also receive a payload with the statement as created in the database:
     "decision_account": "DECISION_ACCOUNT_SUSPENDED",
     "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-    "decision_ground_reference_url": "https:\/\/www.anurl.com",
+    "decision_ground_reference_url": "https://www.anurl.com",
     "incompatible_content_ground": "incompatible content grounds",
     "incompatible_content_explanation": "incompatible content explanation",
     "incompatible_content_illegal": "Yes",
@@ -134,12 +134,13 @@ You will also receive a payload with the statement as created in the database:
     "end_date_visibility_restriction": null,
     "end_date_account_restriction": null,
     "end_date_service_restriction": null,
-    "puid": "TK421",
-    "uuid": "7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
-    "platform_name": "...",
-    "created_at": "2023-08-08 08:08:08",
-    "permalink": ".... statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225",
-    "self": ".... api/v1/statement/7d0d0f7c-3ba9-45ba-966a-ec621eb17225"
+    "uuid": "4b989c23-3736-4fd9-8612-a975b98d88d6",
+    "created_at": "2024-11-25 09:16:55",
+    "id": 34509873504987,
+    "platform_name": "The Platform",
+    "permalink": "https://.../statement/34509873504987",
+    "self": "https://.../api/v1/statement/34509873504987",
+    "puid": "TK421"
 }
 ```
 
@@ -152,14 +153,17 @@ and you will need to retry at a later time." close="" />
 
 Every statement created in the database receives an UUID which identifies the statement uniquely.
 
-This UUID is then used in the urls for retrieving and viewing the statement online.
+## ID
 
-These urls are present in the response after creating as the "uuid", "permalink" and "self" attributes.
+Every statement created in the database receives an ID which identifies the statement uniquely.
+
+This ID is then used in the urls for retrieving and viewing the statement online.
+
+These urls are present in the response after creating as the, "permalink" and "self" attributes.
 
 ## Creating Multiple Statements
 
-We highly encourage all platforms to bundle and create multiple Statements of Reason in one API call
-using the multiple endpoint.
+We highly encourage all platforms to bundle and create multiple Statements of Reason in one API call using the multiple endpoint.
 
 Please to make a ```POST``` request to this endpoint.
 
@@ -226,11 +230,10 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
             "decision_monetary": "DECISION_MONETARY_OTHER",
             ...
             ...
+            ...
             "uuid": "bf92a941-c77a-4b9d-a236-38956ae79cc5",
             "created_at": "2023-11-07 07:53:43",
-            "platform_name": "DSA Team",
-            "permalink": "https://.../statement/bf92a941-c77a-4b9d-a236-38956ae79cc5",
-            "self": "https://.../api/v1/statement/bf92a941-c77a-4b9d-a236-38956ae79cc5",
+            "platform_name": "The Platform",
             "puid": "b5ec958d-892a-4c11-a3f2-6a3ad597eeb1"
         },
         {
@@ -242,9 +245,7 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
             ...
             "uuid": "174a1921-0d9e-4864-b095-6774fb0237da",
             "created_at": "2023-11-07 07:53:44",
-            "platform_name": "DSA Team",
-            "permalink": "https://.../statement/174a1921-0d9e-4864-b095-6774fb0237da",
-            "self": "https://.../api/v1/statement/174a1921-0d9e-4864-b095-6774fb0237da",
+            "platform_name": "The Platform",
             "puid": "a12b436a-33b1-4403-99b2-8c16e3c5502f"
         },
         {
@@ -256,9 +257,7 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
             ...
             "uuid": "b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
             "created_at": "2023-11-07 07:53:45",
-            "platform_name": "DSA Team",
-            "permalink": "https://.../statement/b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
-            "self": "https://.../api/v1/statement/b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
+            "platform_name": "The Platform",
             "puid": "649c58f6-8412-4100-b10c-010b76f5a41a"
         },
         ...
@@ -721,12 +720,55 @@ When there is a statement found the existing statement will be returned in the b
 
 ```javascript
 {
-    "uuid": "4b449e79-a41f-4934-aa9a-9c442899951e",
+    "id": 23908734597,
+    "uuid": "4b989c23-3736-4fd9-8612-a975b98d88d6",
     "decision_visibility": [
-        "DECISION_VISIBILITY_CONTENT_REMOVED"
+        "DECISION_VISIBILITY_CONTENT_DISABLED"
     ],
     "decision_visibility_other": null,
-    ...
+    "decision_monetary": "DECISION_MONETARY_TERMINATION",
+    "decision_monetary_other": null,
+    "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
+    "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+    "account_type": "ACCOUNT_TYPE_BUSINESS",
+    "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+    "decision_ground_reference_url": "https://www.anurl.com",
+    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
+    "category_addition": [],
+    "category_specification": [],
+    "category_specification_other": null,
+    "content_type": [
+        "CONTENT_TYPE_AUDIO",
+        "CONTENT_TYPE_SYNTHETIC_MEDIA",
+        "CONTENT_TYPE_VIDEO"
+    ],
+    "content_type_other": null,
+    "illegal_content_legal_ground": null,
+    "illegal_content_explanation": null,
+    "incompatible_content_ground": "incompatible content grounds",
+    "incompatible_content_explanation": "incompatible content explanation",
+    "incompatible_content_illegal": "Yes",
+    "territorial_scope": [
+        "DE",
+        "ES",
+        "PT"
+    ],
+    "content_language": "EN",
+    "content_date": "2023-08-08",
+    "application_date": "2023-08-08",
+    "end_date_visibility_restriction": null,
+    "end_date_monetary_restriction": "2023-08-08",
+    "end_date_service_restriction": null,
+    "end_date_account_restriction": null,
+    "decision_facts": "facts about the decision",
+    "source_type": "SOURCE_TRUSTED_FLAGGER",
+    "source_identity": null,
+    "automated_detection": "No",
+    "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
+    "created_at": "2024-11-25 09:16:55",
+    "platform_name": "The Platform",
+    "permalink": "https://.../statement/23908734597",
+    "self": "https://.../api/v1/statement/23908734597"
 ```
 
 
@@ -911,5 +953,5 @@ The source code for this application can be viewed here:
 
 Using the repository code you can even setup and run a local replica development testing area.
 
-Within the github environment you are also more than welcome to give feedback, pull requests and
+Within the github environment you are also more than welcome to give pull requests and
 reviews concerning the source code. 
