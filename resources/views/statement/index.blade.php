@@ -19,17 +19,15 @@
                 statement of reason submitted by providers of online platforms.
                 <br/>
                 <br/>
-                Through the advanced search button, you can easily find the statements of reasons submitted by each
-                platform, and filter by several data fields, e.g. the type of restriction(s) imposed, categories and
-                keywords, or the type or language of the content. Please note that only the first 10 000 results are
-                paginated, and only the first 1000 statements of reasons can be exported in .csv
+                You can easily find the statements of reasons submitted by each platform using the filters below. Filter by several data fields, 
+                e.g. the type of restriction(s) imposed, categories and keywords, or the type or language of the content. 
+                Please note that only the first 10,000 results are paginated, and only the first 1,000 statements of reasons can be exported in .csv
                 format at a given time. The data is updated once every day. If you want to access a larger subset of
                 statements of reasons, please visit the
-                “<a class="ecl-link" href="/data-download">Data download</a>” page.
+                "<a class="ecl-link" href="/data-download">Data download</a>" page.
                 To submit feedback on the content of this page and to propose additional features, please visit the
                 <a class="ecl-link" href="/feedback">feedback form</a>.<br/><br/>
                 Please note that a <a href="/page/data-retention-policy">Data Retention Policy</a> applies and search results refer to the Statements of Reasons submitted within a limited amount of time in time past.
-
             </div>
         </div>
         <div class="ecl-col-l-4">
@@ -39,24 +37,15 @@
                         <picture class="ecl-picture ecl-media-container__picture"><img
                                 class="ecl-media-container__media"
                                 src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-1.jpeg"
-                                alt="Digital Services Act Logo"></picture>
+                                alt="DSA Image"/>
+                        </picture>
                     </div>
                 </figure>
             </div>
         </div>
     </div>
 
-    <div class="ecl-row">
-        <div class="ecl-col-l-6">
-            <x-statement.search-form-simple :similarity_results="$similarity_results"/>
-        </div>
-        <div class="ecl-col-l-4">
-            <a href="{{ route('statement.search', request()->query()) }}" class="ecl-button ecl-button--secondary">
-                Advanced Search
-            </a>
-        </div>
-    </div>
-
+    <x-statement.search-form :options="$options"/>
 
 
     <div class="ecl-u-pt-l ecl-u-d-inline-flex ecl-u-align-items-center ecl-u-f-r">
@@ -85,5 +74,5 @@
 
     <x-statement.table :statements="$statements"/>
 
-@endsection
 
+@endsection
