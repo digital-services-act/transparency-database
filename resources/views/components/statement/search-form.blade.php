@@ -1,7 +1,8 @@
 @php use App\Models\Statement; @endphp
 @props(['options' => null, 'similarity_results' => null])
 
-<form method="get" action="{{ route('statement.index') }}">
+<form method="post" action="{{ route('statement.index') }}">
+    @csrf
 
     <x-ecl.textfield name="s" id="s" label="Search and Filtering" justlabel="true"
                      placeholder="enter your text search here" :value="request()->get('s', '')"/>

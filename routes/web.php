@@ -54,7 +54,7 @@ Route::middleware(['force.auth'])->group(static function () {
 
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
-
+    Route::post('/statement', [StatementController::class, 'index'])->name('statement.index.post');
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
     Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
     Route::get('/statement/{statement}', [StatementController::class, 'show'])

@@ -92,10 +92,13 @@ class StatementController extends Controller
      */
     private function setupQuery(Request $request): array
     {
+        // Get parameters from both POST and GET requests
+        $params = $request->isMethod('post') ? $request->all() : $request->query();
+        
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
-            $statements = $this->statement_search_service->query($request->query());
-            $total = $this->statement_search_service->query($request->query(),[
+            $statements = $this->statement_search_service->query($params);
+            $total = $this->statement_search_service->query($params,[
                 'size' => 1,
                 'from' => 0,
                 'track_total_hits' => true
@@ -104,8 +107,8 @@ class StatementController extends Controller
             // This should never happen,
             // raw queries on the statement table is very bad
             // maybe ok for a local dev sure
-            $statements = $this->statement_query_service->query($request->query());
-            $total = $this->statement_query_service->query($request->query())->count();
+            $statements = $this->statement_query_service->query($params);
+            $total = $this->statement_query_service->query($params)->count();
         }
 
         return [
