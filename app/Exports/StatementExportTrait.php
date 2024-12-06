@@ -3,6 +3,10 @@
 namespace App\Exports;
 trait StatementExportTrait
 {
+    /**
+     * headings for the full csv export and the mini csv export
+     * @return array
+     */
     public function headings(): array
     {
         return [
@@ -61,6 +65,9 @@ trait StatementExportTrait
         ];
     }
 
+    /**
+     * headings for the mini csv export
+     */
     public function headingsLight(): array
     {
         return [
@@ -119,9 +126,14 @@ trait StatementExportTrait
         ];
     }
 
+    /**
+     * This function maps a eloquent model to an array for the mini CSV export.
+     * @param mixed $statement
+     * @return array
+     */
     public function map($statement): array
     {
-        return [
+        $out = [
             $statement->getRawOriginal('uuid'),
 
             $statement->getRawOriginal('decision_visibility'),
@@ -176,8 +188,23 @@ trait StatementExportTrait
 
             $statement->getRawOriginal('created_at'),
         ];
+
+        foreach ($out as $key => $value) {
+            $value = trim($value);
+            $value = preg_replace('~[\r\n]+~', ' ', $value);
+            $out[$key] = $value;
+        }
+
+        return $out;
+
     }
 
+    /**
+     * This function maps a raw sql query statement for full csv, not an eloquent model.
+     * @param mixed $statement
+     * @param mixed $platforms
+     * @return array
+     */
     public function mapRaw($statement, $platforms): array
     {
         return [
@@ -237,6 +264,12 @@ trait StatementExportTrait
         ];
     }
 
+    /**
+     * This function maps a raw sql query statement for light csv export, not an eloquent model.
+     * @param mixed $statement
+     * @param mixed $platforms
+     * @return array
+     */
     public function mapRawLight($statement, $platforms): array
     {
         return [

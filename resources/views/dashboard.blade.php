@@ -45,7 +45,7 @@
         6. Other analysis<br/><br/>
         For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.<br/>
         <strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply filters to view data for other time periods.<br/><br/>
-        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the Dashboard is showing data aggregated from a longer period of time in the past with respect to the data available on the search page. This might result in different numbers of Statements of Reasons being reported by the Dashboard and the search pages even when the same filtering settings are applied.
+        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the dashboard can show aggregated data over a longer period of time in the past compared to the data available on the "<a href='{{ route('statement.index') }}'>Search for statements of reasons</a>" page. This might result in different numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering settings are applied.
 
     </p>
 
@@ -166,4 +166,3 @@
 
 
 @endsection
-
