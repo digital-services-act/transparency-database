@@ -31,7 +31,7 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
         Route::group(['middleware' => ['can:create statements']], static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
-            Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
+            Route::post('/statement/store', [StatementController::class, 'store'])->name('statement.store');
         });
 
         Route::prefix('/admin/')->group(static function () {

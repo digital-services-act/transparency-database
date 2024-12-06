@@ -1,11 +1,11 @@
 @php use App\Models\Statement; @endphp
 @props(['options' => null, 'similarity_results' => null])
 
-<form method="post" action="{{ route('statement.index') }}">
+<form method="post" action="{{ route('statement.index.post') }}">
     @csrf
 
     <x-ecl.textfield name="s" id="s" label="Search and Filtering" justlabel="true"
-                     placeholder="enter your text search here" :value="request()->get('s', '')"/>
+                     placeholder="enter your text search here" :value="request()->input('s', '')"/>
 
     @if($similarity_results)
         <div class="ecl-u-mb-l" style="width: 400px;">
@@ -26,7 +26,7 @@
 
         <x-ecl.select-multiple label="Platform" name="platform_id" id="platform_id"
                                justlabel="true"
-                               :options="$options['platforms']" :default="request()->get('platform_id', [])"
+                               :options="$options['platforms']" :default="request()->input('platform_id', [])"
                                select_all="All platforms" select_item="Select one or more platforms"
                                enter_keyword="Enter a platform name" />
 
@@ -35,6 +35,7 @@
                                id="decision_ground"
                                justlabel="true"
                                :options="$options['decision_grounds']"
+                               :default="request()->input('decision_ground', [])"
                                select_all="All decisions grounds" select_item="Select one or more decision grounds"
                                enter_keyword="Enter a decision ground" />
 
@@ -43,6 +44,7 @@
                                id="decision_visibility"
                                justlabel="true"
                                :options="$options['decision_visibilities']"
+                               :default="request()->input('decision_visibility', [])"
                                select_all="All visibility restrictions" select_item="Select one or more visibility restrictions"
                                enter_keyword="Enter a visibility restriction" />
 
@@ -51,6 +53,7 @@
                                id="decision_monetary"
                                justlabel="true"
                                :options="$options['decision_monetaries']"
+                               :default="request()->input('decision_monetary', [])"
                                select_all="All monetary restrictions" select_item="Select one or more monetary restrictions"
                                enter_keyword="Enter a monetary restriction" />
 
@@ -59,6 +62,7 @@
                                id="decision_provision"
                                justlabel="true"
                                :options="$options['decision_provisions']"
+                               :default="request()->input('decision_provision', [])"
                                select_all="All provision restrictions" select_item="Select one or more provision restrictions"
                                enter_keyword="Enter a provision restriction" />
 
@@ -67,6 +71,7 @@
                                id="decision_account"
                                justlabel="true"
                                :options="$options['decision_accounts']"
+                               :default="request()->input('decision_account', [])"
                                select_all="All account restrictions" select_item="Select one or more account restrictions"
                                enter_keyword="Enter an account restriction" />
 
@@ -75,25 +80,25 @@
                                id="account_type"
                                justlabel="true"
                                :options="$options['account_types']"
+                               :default="request()->input('account_type', [])"
                                select_all="All account types" select_item="Select one or more account types"
                                enter_keyword="Enter an account type" />
-
 
         <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_CATEGORY"
                                name="category"
                                id="category"
                                justlabel="true"
                                :options="$options['categories']"
+                               :default="request()->input('category', [])"
                                select_all="All categories" select_item="Select one or more categories"
                                enter_keyword="Enter a category" />
-
-
 
         <x-ecl.select-multiple :label="Statement::LABEL_KEYWORDS"
                                name="category_specification"
                                id="category_specification"
                                justlabel="true"
                                :options="$options['category_specifications']"
+                               :default="request()->input('category_specification', [])"
                                select_all="All keywords" select_item="Select one or more keywords"
                                enter_keyword="Enter a keyword" />
 
@@ -102,7 +107,7 @@
                                id="territorial_scope"
                                justlabel="true"
                                width="10%"
-                               :options="$options['countries']" :default="request()->get('territorial_scope', [])"
+                               :options="$options['countries']" :default="request()->input('territorial_scope', [])"
         />
 
         <p class="ecl-u-type-paragraph">
@@ -180,6 +185,7 @@
                                id="content_type"
                                justlabel="true"
                                :options="$options['content_types']"
+                               :default="request()->input('content_type', [])"
                                select_all="All content types" select_item="Select one or more content types"
                                enter_keyword="Enter a content type" />
 
@@ -187,12 +193,11 @@
                                name="content_language"
                                justlabel="true"
                                id="content_language"
-                               :default="request()->get('content_language', [])"
+                               :default="request()->input('content_language', [])"
                                :options="$options['languages']"
                                select_all="All languages" select_item="Select one or more languages"
                                enter_keyword="Enter a language name"
         />
-
 
         <x-ecl.checkboxes-flex
             :label="Statement::LABEL_STATEMENT_AUTOMATED_DETECTION"
@@ -200,7 +205,7 @@
             name="automated_detection"
             id="automated_detection"
             :options="$options['automated_detections']"
-            :default="request()->get('automated_detection', [])"
+            :default="request()->input('automated_detection', [])"
         />
 
         {{--        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_AUTOMATED_DECISION"--}}
@@ -218,7 +223,7 @@
             name="automated_decision"
             id="automated_decision"
             :options="$options['automated_decisions']"
-            :default="request()->get('automated_decision', [])"
+            :default="request()->input('automated_decision', [])"
         />
 
         {{--        <x-ecl.checkboxes--}}
@@ -235,14 +240,15 @@
                                id="source_type"
                                justlabel="true"
                                :options="$options['source_types']"
+                               :default="request()->input('source_type', [])"
                                select_all="All information sources" select_item="Select one or more information sources"
                                enter_keyword="Enter an information source" />
 
         <x-ecl.datepicker label="Created Starting" id="created_at_start" justlabel="true"
-                          name="created_at_start" :value="request()->get('created_at_start', '')"/>
+                          name="created_at_start" :value="request()->input('created_at_start', '')"/>
 
         <x-ecl.datepicker label="Created Ending" id="created_at_end" justlabel="true"
-                          name="created_at_end" :value="request()->get('created_at_end', '')"/>
+                          name="created_at_end" :value="request()->input('created_at_end', '')"/>
 
         <x-ecl.button label="search"/>
 
