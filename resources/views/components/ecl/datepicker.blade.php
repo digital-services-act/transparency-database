@@ -7,7 +7,7 @@
         <input type="text"
                autoComplete="off"
                data-ecl-datepicker-toggle=""
-               data-ecl-auto-init="Datepicker"
+
                id="{{ $id }}"
                name="{{ $name }}"
                class="ecl-datepicker__field ecl-text-input ecl-text-input--{{ $size }}" @if($required)required="" @endif
@@ -18,3 +18,26 @@
         </svg>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var field = document.getElementById('{{ $id }}');
+    if (field) {
+        new Pikaday({
+            field: field,
+            format: 'DD-MM-YYYY',
+            theme : 'ecl-datepicker-theme',
+            toString(date, format) {
+                return moment(date).format(format);
+            },
+            parse(dateString, format) {
+                return moment(dateString, format).toDate();
+
+            },
+            setDefaultDate: false,
+            defaultDate: null,
+            minDate: null
+        });
+    }
+});
+</script>
