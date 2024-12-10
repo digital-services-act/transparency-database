@@ -36,17 +36,18 @@
 
 
     <p class="ecl-u-type-paragraph" style="max-width:none !important">
-        The dashboard below provides a user-friendly and interactive interface to explore summarized data, offering a comprehensive overview. Start exploring the data by clicking on different elements. You can navigate across the following pages, from left to right at the bottom of the dashboard:<br/><br/>
-        1. Overview<br/>
-        2. Timelines<br/>
-        3. Violations<br/>
-        4. Restrictions<br/>
-        5. Platforms<br/>
-        6. Other analysis<br/><br/>
-        For additional guidance on making the best use of the tool, please refer to instructions below the dashboard.<br/>
+        The dashboard below provides a user-friendly and interactive interface to explore summarized data. Start exploring the data by clicking on different elements. Via the <strong>menu</strong>, on the top left of the dashboard, you can set filters.
+        <br/><br/>
+        You can navigate across the following pages, from left to right at the bottom of the dashboard:
+        <br/>
+        1. Platform overview<br/>
+        2. Restrictions and violations overview<br/>
+        3. Timelines<br/>
+        4. Violations analysis<br/>
+        5. Restrictions analysis<br/>
+        6. Other analyses <br/><br/>
+        For additional guidance on making the best use of the tool, please refer to <strong>instructions below the dashboard</strong>.<br/>
         <strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply filters to view data for other time periods.<br/><br/>
-        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the dashboard can show aggregated data over a longer period of time in the past compared to the data available on the "<a href='{{ route('statement.index') }}'>Search for statements of reasons</a>" page. This might result in different numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering settings are applied.
-
     </p>
 
     <div class="responsive-iframe-container">
