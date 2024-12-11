@@ -17,14 +17,12 @@ class PageController extends Controller
         // lower and disallow ../ and weird stuff.
         $page = (string)mb_strtolower($page);
 
-
         // sanitize
         $page = preg_replace("/[^a-z-]/", "", $page);
 
         $redirects = [
             'cookie-policy'  => 'https://commission.europa.eu/cookies-policy_en',
-            'latest-updates' => '/',
-//            'faq' => 'faq'
+            'latest-updates' => '/'
         ];
 
         if (isset($redirects[$page])) {
@@ -40,8 +38,22 @@ class PageController extends Controller
             'Documentation'            => 'Overview Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Accessibility Statement'  => "Accessibility Statement",
-
         ];
+
+        // Some pages will have no table of contents
+        $table_of_contents = true;
+        $right_side_image = "";
+
+        // No table of contents and right side image
+        $no_tocs_pages = [
+            'data-analysis-software' => 'https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg'
+        ];
+
+        if (key_exists($page, $no_tocs_pages)) {
+            $table_of_contents = false;
+            $right_side_image = $no_tocs_pages[$page];
+        }
+        
 
 
         if (isset($page_title_mods[$page_title])) {
@@ -71,6 +83,8 @@ class PageController extends Controller
             'profile'            => $profile,
             'page_title'         => $page_title,
             'breadcrumb'         => $breadcrumb,
+            'table_of_contents'  => $table_of_contents,
+            'right_side_image'   => $right_side_image,
             'baseurl'            => route('home'),
         ];
 
