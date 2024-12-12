@@ -160,6 +160,11 @@
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">API and schema</a>
                                     </li>
 
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('page.show', ['migration-to-api-v-two']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Migration to API v2</a>
+                                    </li>
+
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
