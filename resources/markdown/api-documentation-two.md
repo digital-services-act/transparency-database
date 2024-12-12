@@ -1,17 +1,3 @@
-<div class="ecl-notification ecl-notification--info" data-ecl-notification="" role="alert" data-ecl-auto-init="Notification" data-ecl-auto-initialized="true">
-
-<svg class="ecl-icon ecl-icon--l ecl-notification__icon" focusable="false" aria-hidden="false" role="img">
-    <title>Information</title>
-    <use xlink:href="/static/ecl/images/icons/sprites/icons.svg#information"></use>
-  </svg>
-  <div class="ecl-notification__content"><button class="ecl-button ecl-button--tertiary ecl-notification__close ecl-button--icon-only" type="button" data-ecl-notification-close=""><span class="ecl-button__container"><span class="ecl-button__label" data-ecl-label="true">Close</span><svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon="">
-        </svg></span></button>
-
-    <div class="ecl-notification__description">Please note that starting from 1 July 2025 a new Transparency Database and API schema will be adopted. This change will align the content of the Transparency Database with the template contained in the Transparency Reporting Implementing Act, enhancing the consistency and comparability acroos the DSA transparency provisions. Read more about the forthcoming changes in the <a href="/page/migration-to-api-v-two">dedicated documentation page</a>.</div>
-
-  </div>
-</div>
-
 # How to use the API
 
 Specific users of this database are given the ability to create
@@ -20,18 +6,12 @@ efficiency and allows for automation.
 
 ## Requesting API access
 
-To set up your statement of reasons submission process, please
-register [here](https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons) regarding your obligations under
-article 24(5) of the DSA.
-After receiving your registration form, the Digital Service Coordinator of your Member State will contact you providing
-the details on how to complete the onboarding of your online platform.
+To set up your statement of reasons submission process, please register [here](https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons) regarding your obligations under article 24(5) of the DSA. 
+After receiving your registration form, the Digital Service Coordinator of your Member State will contact you providing the details on how to complete the onboarding of your online platform.
 
-Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your
-submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface (
-API) or a webform, according to the volume of your data and technical needs.
+Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface ( API) or a webform, according to the volume of your data and technical needs.
 
-Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency
-Database, where you can start submitting your statement of reasons via an API or a webform.
+Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency Database, where you can start submitting your statement of reasons via an API or a webform.
 
 ## Your API Token
 
@@ -80,9 +60,7 @@ Example JSON payload body:
 
 ```json
 {
-    "decision_visibility": [
-        "DECISION_VISIBILITY_CONTENT_DISABLED"
-    ],
+    "decision_visibility": ["DECISION_VISIBILITY_CONTENT_DISABLED"],
     "decision_monetary": "DECISION_MONETARY_TERMINATION",
     "end_date_monetary_restriction": "2023-08-08",
     "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
@@ -90,11 +68,7 @@ Example JSON payload body:
     "account_type": "ACCOUNT_TYPE_BUSINESS",
     "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
     "decision_ground_reference_url": "https://www.anurl.com",
-    "content_type": [
-        "CONTENT_TYPE_VIDEO",
-        "CONTENT_TYPE_AUDIO",
-        "CONTENT_TYPE_SYNTHETIC_MEDIA"
-    ],
+    "content_type": ["CONTENT_TYPE_VIDEO","CONTENT_TYPE_AUDIO","CONTENT_TYPE_SYNTHETIC_MEDIA"],
     "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
     "illegal_content_legal_ground": "illegal content legal grounds",
     "illegal_content_explanation": "illegal content explanation",
@@ -189,8 +163,7 @@ These urls are present in the response after creating as the, "permalink" and "s
 
 ## Creating Multiple Statements
 
-We highly encourage all platforms to bundle and create multiple Statements of Reason in one API call using the multiple
-endpoint.
+We highly encourage all platforms to bundle and create multiple Statements of Reason in one API call using the multiple endpoint.
 
 Please to make a ```POST``` request to this endpoint.
 
@@ -205,9 +178,7 @@ Here is an example:
 
 ```javascript
 {
-    "statements"
-:
-    [
+    "statements": [
         {
             "decision_visibility": [
                 "DECISION_VISIBILITY_CONTENT_DISABLED"
@@ -251,9 +222,7 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
 
 ```javascript
 {
-    "statements"
-:
-    [
+    "statements": [
         {
             "decision_visibility": [
                 "DECISION_VISIBILITY_CONTENT_DEMOTED"
@@ -262,71 +231,37 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
             ...
             ...
             ...
-                "uuid"
-:
-    "bf92a941-c77a-4b9d-a236-38956ae79cc5",
-        "created_at"
-:
-    "2023-11-07 07:53:43",
-        "platform_name"
-:
-    "The Platform",
-        "puid"
-:
-    "b5ec958d-892a-4c11-a3f2-6a3ad597eeb1"
-},
-    {
-        "decision_visibility"
-    :
-        [
-            "DECISION_VISIBILITY_CONTENT_DEMOTED"
-        ],
-    ...
-    ...
-    ...
-        "uuid"
-    :
-        "174a1921-0d9e-4864-b095-6774fb0237da",
-            "created_at"
-    :
-        "2023-11-07 07:53:44",
-            "platform_name"
-    :
-        "The Platform",
-            "puid"
-    :
-        "a12b436a-33b1-4403-99b2-8c16e3c5502f"
-    }
-,
-    {
-        "decision_account"
-    :
-        "DECISION_ACCOUNT_SUSPENDED",
-            "account_type"
-    :
-        "ACCOUNT_TYPE_PRIVATE",
-            "decision_ground"
-    :
-        "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-    ...
-    ...
-    ...
-        "uuid"
-    :
-        "b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
-            "created_at"
-    :
-        "2023-11-07 07:53:45",
-            "platform_name"
-    :
-        "The Platform",
-            "puid"
-    :
-        "649c58f6-8412-4100-b10c-010b76f5a41a"
-    }
-,
-...
-]
+            "uuid": "bf92a941-c77a-4b9d-a236-38956ae79cc5",
+            "created_at": "2023-11-07 07:53:43",
+            "platform_name": "The Platform",
+            "puid": "b5ec958d-892a-4c11-a3f2-6a3ad597eeb1"
+        },
+        {
+            "decision_visibility": [
+                "DECISION_VISIBILITY_CONTENT_DEMOTED"
+            ],
+            ...
+            ...
+            ...
+            "uuid": "174a1921-0d9e-4864-b095-6774fb0237da",
+            "created_at": "2023-11-07 07:53:44",
+            "platform_name": "The Platform",
+            "puid": "a12b436a-33b1-4403-99b2-8c16e3c5502f"
+        },
+        {
+            "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+            "account_type": "ACCOUNT_TYPE_PRIVATE",
+            "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+            ...
+            ...
+            ...
+            "uuid": "b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
+            "created_at": "2023-11-07 07:53:45",
+            "platform_name": "The Platform",
+            "puid": "649c58f6-8412-4100-b10c-010b76f5a41a"
+        },
+        ...
+    ]
 }
 ```
 
@@ -339,22 +274,18 @@ The attributes of the statement take on two main forms.
 
 When submitting statements please take care to not submit ANY personal data. On a
 regular basis we will do checks on the database to ensure that no personal data has been
-submitted. However, in accordance with Article 24(5), it is the obligation of providers of online platforms to ensure
-that the information submitted does not contain personal data.
+submitted. However, in accordance with Article 24(5), it is the obligation of providers of online platforms to ensure that the information submitted does not contain personal data.
 
 ## Additional Explanation For Statement Attributes
 
-Please refer to
-our [Additional Explanation For Statement Attributes](/page/additional-explanation-for-statement-attributes) page for
-more information about the attributes.
+Please refer to our [Additional Explanation For Statement Attributes](/page/additional-explanation-for-statement-attributes) page for more information about the attributes.
 
 ### Decision Visibility (decision_visibility)
 
 This attribute tells us the visibility restriction of specific items of information provided by the
 recipient of the service.
 
-This attribute is mandatory only if the following fields are empty: decision_monetary, decision_provision and
-decision_account
+This attribute is mandatory only if the following fields are empty: decision_monetary, decision_provision and decision_account
 
 The value provided must be an array with at least one of the following:
 
@@ -369,7 +300,7 @@ The value provided must be an array with at least one of the following:
 @endphp
 </ul>
 
-### Decision Visibility Other (decision_visibility_other)
+###  Decision Visibility Other (decision_visibility_other)
 
 This is required if DECISION_VISIBILITY_OTHER was the decision_visibility.
 
@@ -379,8 +310,7 @@ Limited to 500 characters.
 
 This is an attribute that gives information about the Monetary payments suspension, termination or other restriction
 
-This attribute is mandatory only if the following fields are empty: decision_visibility, decision_provision and
-decision_account
+This attribute is mandatory only if the following fields are empty: decision_visibility, decision_provision and decision_account
 
 The value provided must be one of the following:
 
@@ -395,7 +325,7 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Decision Monetary Other (decision_monetary_other)
+###  Decision Monetary Other (decision_monetary_other)
 
 This is required if DECISION_MONETARY_OTHER was the decision_monetary.
 
@@ -405,8 +335,7 @@ Limited to 500 characters.
 
 This is an attribute that tells us about the suspension or termination of the provision of the service.
 
-This attribute is mandatory only if the following fields are empty: decision_visibility, decision_monetary and
-decision_account
+This attribute is mandatory only if the following fields are empty: decision_visibility, decision_monetary and decision_account
 
 The value provided must be one of the following:
 
@@ -425,8 +354,7 @@ The value provided must be one of the following:
 
 This is an attribute that tells us about the account's status.
 
-This attribute is mandatory only if the following fields are empty: decision_visibility, decision_monetary and
-decision_provision
+This attribute is mandatory only if the following fields are empty: decision_visibility, decision_monetary and decision_provision
 
 The value provided must be one of the following:
 
@@ -440,6 +368,7 @@ The value provided must be one of the following:
     }
 @endphp
 </ul>
+
 
 ### Account Type (account_type)
 
@@ -481,6 +410,7 @@ This is a required field and tells us the basis on which the decision was taken.
     }
 @endphp
 </ul>
+
 
 ### Decision Ground Reference Url (decision_ground_reference_url)
 
@@ -552,16 +482,69 @@ This is a required attribute, and it tells us which category the statement belon
 
 The value provided must be one of the following:
 
-<ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
-</ul>
+STATEMENT_CATEGORY_ANIMAL_WELFARE
+
+Animal welfare
+
+STATEMENT_CATEGORY_CONSUMER_INFORMATION
+
+Consumer information infringements
+
+STATEMENT_CATEGORY_CYBER_VIOLENCE
+
+Cyber violence
+
+STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN
+
+Cyber violence against women
+
+STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS
+
+Data protection and privacy violations
+
+STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH
+
+Illegal or harmful speech
+
+STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS
+
+Intellectual property infringements
+
+STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS
+
+Negative effects on civic discourse or elections
+
+STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE
+
+Type of alleged illegal content not specified by the notifier
+
+STATEMENT_CATEGORY_OTHER_VIOLATION_TC
+
+Other violation of provider’s terms and conditions
+
+STATEMENT_CATEGORY_PROTECTION_OF_MINORS
+
+Protection of minors
+
+STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY
+
+Risk for public security
+
+STATEMENT_CATEGORY_SCAMS_AND_FRAUD
+
+Scams and/or fraud
+
+STATEMENT_CATEGORY_SELF_HARM
+
+Self-harm
+
+STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS
+
+Unsafe, non-compliant or prohibited products
+
+STATEMENT_CATEGORY_VIOLENCE
+
+Violence
 
 ### Additional Categories (category_addition)
 
@@ -569,16 +552,69 @@ This is an optional attribute, and it tells us which additional categories the s
 
 The value provided must be an array with one or more of the following:
 
-<ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
-</ul>
+STATEMENT_CATEGORY_ANIMAL_WELFARE
+
+Animal welfare
+
+STATEMENT_CATEGORY_CONSUMER_INFORMATION
+
+Consumer information infringements
+
+STATEMENT_CATEGORY_CYBER_VIOLENCE
+
+Cyber violence
+
+STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN
+
+Cyber violence against women
+
+STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS
+
+Data protection and privacy violations
+
+STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH
+
+Illegal or harmful speech
+
+STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS
+
+Intellectual property infringements
+
+STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS
+
+Negative effects on civic discourse or elections
+
+STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE
+
+Type of alleged illegal content not specified by the notifier
+
+STATEMENT_CATEGORY_OTHER_VIOLATION_TC
+
+Other violation of provider’s terms and conditions
+
+STATEMENT_CATEGORY_PROTECTION_OF_MINORS
+
+Protection of minors
+
+STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY
+
+Risk for public security
+
+STATEMENT_CATEGORY_SCAMS_AND_FRAUD
+
+Scams and/or fraud
+
+STATEMENT_CATEGORY_SELF_HARM
+
+Self-harm
+
+STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS
+
+Unsafe, non-compliant or prohibited products
+
+STATEMENT_CATEGORY_VIOLENCE
+
+Violence
 
 ### Category Specification (category_specification)
 
@@ -586,18 +622,287 @@ This is an optional attribute, and it tells us which additional keywords the sta
 
 The value provided must be an array with one or more of the following:
 
-<ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::KEYWORDS as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
-</ul>
+KEYWORD_ANIMAL_HARM
 
-### Other Keyword (category_specification_other)
+Animal Harm
+
+KEYWORD_ADULT_SEXUAL_MATERIAL
+
+Adult Sexual Material
+
+KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS
+
+Age-Specific Restrictions Concerning Minors
+
+KEYWORD_AGE_SPECIFIC_RESTRICTIONS
+
+Age-Specific Restrictions
+
+KEYWORD_BIOMETRIC_DATA_BREACH
+
+Biometric Data Breach
+
+KEYWORD_BULLYING_AGAINST_GIRLS
+
+Cyber bullying and intimidation against girls
+
+KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL
+
+Child Sexual Abuse Material
+
+KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL_DEEPFAKE
+
+Child sexual abuse material containing deepfake or similar technology
+
+KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS
+
+Content Promoting Eating Disorders
+
+KEYWORD_COORDINATED_HARM
+
+Coordinated Harm
+
+KEYWORD_COPYRIGHT_INFRINGEMENT
+
+Copyright Infringements
+
+KEYWORD_CYBER_BULLYING_INTIMIDATION
+
+Cyber bullying and intimidation
+
+KEYWORD_CYBER_HARASSMENT
+
+Cyber harassment
+
+KEYWORD_CYBER_HARASSMENT_AGAINST_WOMEN
+
+Cyber harassment against women
+
+KEYWORD_CYBER_INCITEMENT
+
+Cyber incitement to hatred or violence
+
+KEYWORD_CYBER_STALKING
+
+Cyber stalking
+
+KEYWORD_CYBER_STALKING_AGAINST_WOMEN
+
+Cyber stalking against women  
+
+KEYWORD_DATA_FALSIFICATION
+
+Data Falsification
+
+KEYWORD_DEFAMATION
+
+Defamation
+
+KEYWORD_DESIGN_INFRINGEMENT
+
+Design Infringements
+
+KEYWORD_DISCRIMINATION
+
+Discrimination
+
+KEYWORD_MISINFORMATION_DISINFORMATIONMisinformation, disinformation, foreign information manipulation and interference  
+
+KEYWORD_FEMALE_GENDERED_DISINFORMATION
+
+Gendered disinformation  
+
+ 
+
+KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT
+
+Geographic Indications Infringements
+
+KEYWORD_GEOGRAPHICAL_REQUIREMENTS
+
+Geographical Requirements
+
+KEYWORD_GOODS_SERVICES_NOT_PERMITTED
+
+Goods/Services Not Permitted to Be Offered on the Platform
+
+KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS
+
+Grooming/Sexual Enticement of Minors
+
+KEYWORD_HATE_SPEECH
+
+Illegal incitement to violence and hatred based on protected characteristics (hate speech)
+
+KEYWORD_HIDDEN_ADVERTISEMENT
+
+Hidden advertisement or commercial communication, including by influencers
+
+KEYWORD_HUMAN_EXPLOITATION
+
+Human Exploitation
+
+KEYWORD_HUMAN_TRAFFICKING
+
+Human Trafficking
+
+KEYWORD_ILLEGAL_ORGANIZATIONS
+
+Illegal Organizations
+
+KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING
+
+Impersonation or Account Hijacking
+
+KEYWORD_INAUTHENTIC_ACCOUNTS
+
+Inauthentic Accounts
+
+KEYWORD_INAUTHENTIC_LISTINGS
+
+Inauthentic Listings
+
+KEYWORD_INAUTHENTIC_USER_REVIEWS
+
+Inauthentic User Reviews
+
+KEYWORD_INCITEMENT_VIOLENCE_HATRED
+
+General calls or incitement to violence and/or hatred
+
+KEYWORD_INCITEMENT_AGAINST_WOMEN
+
+Illegal incitement to violence and hatred against women  
+
+KEYWORD_INSUFFICIENT_INFORMATION_ON_TRADERSInsufficient Information on Traders
+
+KEYWORD_LANGUAGE_REQUIREMENTS
+
+Language Requirements
+
+
+
+KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS
+
+Misleading information about the consumer’s rights
+
+KEYWORD_MISLEADING_INFO_GOODS_SERVICES
+
+Misleading information about the characteristics of the goods and services
+
+KEYWORD_MISSING_PROCESSING_GROUND
+
+Missing Processing Ground for Data
+
+KEYWORD_NON_CONSENSUAL_IMAGE_SHARINGNon-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors)
+
+KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN
+
+Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors)
+
+KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKENon-consensual sharing of material containing deepfake or similar technology using a third party's features (excluding content depicting minors)  
+
+KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN
+
+Non-consensual sharing of material containing deepfake or similar technology using a third party's features against women (excluding content depicting minors)
+
+
+
+KEYWORD_NONCOMPLIANCE_PRICING
+
+Non-compliance with pricing regulations
+
+KEYWORD_NUDITY
+
+Nudity
+
+KEYWORD_PATENT_INFRINGEMENT
+
+Patent Infringements
+
+KEYWORD_PHISHING
+
+Phishing
+
+KEYWORD_PROHIBITED_PRODUCTS
+
+Prohibited or restricted products
+
+KEYWORD_PYRAMID_SCHEMES
+
+Pyramid Schemes
+
+KEYWORD_RIGHT_TO_BE_FORGOTTEN
+
+Right to Be Forgotten
+
+KEYWORD_RISK_ENVIRONMENTAL_DAMAGE
+
+Risk for Environmental Damage
+
+KEYWORD_RISK_PUBLIC_HEALTH
+
+Risk for Public Health
+
+KEYWORD_SELF_MUTILATION
+
+Self-Mutilation
+
+KEYWORD_STALKING
+
+Stalking
+
+KEYWORD_SUICIDE
+
+Suicide
+
+KEYWORD_TERRORIST_CONTENT
+
+Terrorist Content
+
+KEYWORD_TRADE_SECRET_INFRINGEMENT
+
+Trade Secret Infringements
+
+KEYWORD_TRADEMARK_INFRINGEMENT
+
+Trademark Infringements
+
+KEYWORD_TRAFFICKING_WOMEN_GIRLS
+
+Trafficking in women and girls
+
+KEYWORD_UNLAWFUL_SALE_ANIMALS
+
+Unlawful Sale of Animals
+
+KEYWORD_UNSAFE_CHALLENGES
+
+Unsafe Challenges
+
+KEYWORD_UNSAFE_PRODUCTS
+
+Unsafe or non-compliant products
+
+KEYWORD_VIOLATION_EU_LAW
+
+Violation of EU law relevant to civic discourse or elections
+
+KEYWORD_VIOLATION_NATIONAL_LAW
+
+Violation of national law relevant to civic discourse or elections
+
+KEYWORD_OTHER
+
+### Content identifier (content_ID)
+
+This is an optional attribute, which allows to track existing identifiers of illegal content in key-value format.
+
+The attribute must be provided in key-value format.
+
+Currently, the only foreseen key that will be accepted is “EAN-13”, with which a product identifier in the form of an EAN-13 code can be submitted as a value.
+
+###  Other Keyword (category_specification_other)
 
 This field can be provided if KEYWORD_OTHER is part of the category_specification.
 
@@ -620,8 +925,7 @@ For European Union (EU) use:
 
 For European Economic Area (EEA) use:
 
-@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]';
-@endphp
+@php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]'; @endphp
 
 ### Content Language (content_language)
 
@@ -629,8 +933,7 @@ This is the language that the content was in.
 
 This attribute is optional.
 
-The value though must be one of the uppercase two
-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) codes.
+The value though must be one of the uppercase two letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) codes.
 
 Ex,
 
@@ -638,8 +941,7 @@ Ex,
 
 ### Content Date (content_date)
 
-This is a required date field that indicates the upload or posting date of the content. The date should follow this
-format:
+This is a required date field that indicates the upload or posting date of the content. The date should follow this format:
 
 ```YYYY-MM-DD```
 
@@ -725,8 +1027,7 @@ The value provided must be one of the following:
 
 ### Source Identity (source_identity)
 
-This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type'
-is set to 'SOURCE_VOLUNTARY'
+This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type' is set to 'SOURCE_VOLUNTARY'
 
 Limited to 500 characters.
 
@@ -750,18 +1051,17 @@ This is a required attribute and it must be one of the following:
 @endphp
 </ul>
 
+
 ### Platform Unique Identifier (puid)
 
-This is a string that uniquely identifies this statement within the platform. This attribute is required and it must be
-unique within your platform.
+This is a string that uniquely identifies this statement within the platform. This attribute is required and it must be unique within your platform.
 
-Limited to 500 characters and must contain alphanumeric characters (a-z, A-Z, 0-9), hyphens "-" and underscores "_"only.
-No spaces, new-line or any other special characters are accepted.
+Limited to 500 characters and must contain alphanumeric characters (a-z, A-Z, 0-9), hyphens "-" and underscores "_" only. No spaces, new-line or any other special characters are accepted.
+
 
 ## Existing PUID
 
-There is an endpoint that will allow you to get a SoR by PUID. Note that the SoR will usually be retrievable through
-this endpoint 24 hours after its submission.
+There is an endpoint that will allow you to get a SoR by PUID. Note that the SoR will usually be retrievable through this endpoint 24 hours after its submission.
 
 To check if an existing PUID is alread used in a statement of reason using the API you will need to make a
 ```GET``` request to this endpoint.
@@ -787,9 +1087,7 @@ When there is no statement found the body will contain the message.
 
 ```javascript
 {
-    "message"
-:
-    "statement of reason not found"
+    "message": "statement of reason not found"
 }
 ```
 
@@ -797,134 +1095,57 @@ When there is a statement found the existing statement will be returned in the b
 
 ```javascript
 {
-    "id"
-:
-    23908734597,
-        "uuid"
-:
-    "4b989c23-3736-4fd9-8612-a975b98d88d6",
-        "decision_visibility"
-:
-    [
+    "id": 23908734597,
+    "uuid": "4b989c23-3736-4fd9-8612-a975b98d88d6",
+    "decision_visibility": [
         "DECISION_VISIBILITY_CONTENT_DISABLED"
     ],
-        "decision_visibility_other"
-:
-    null,
-        "decision_monetary"
-:
-    "DECISION_MONETARY_TERMINATION",
-        "decision_monetary_other"
-:
-    null,
-        "decision_provision"
-:
-    "DECISION_PROVISION_TOTAL_SUSPENSION",
-        "decision_account"
-:
-    "DECISION_ACCOUNT_SUSPENDED",
-        "account_type"
-:
-    "ACCOUNT_TYPE_BUSINESS",
-        "decision_ground"
-:
-    "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-        "decision_ground_reference_url"
-:
-    "https://www.anurl.com",
-        "category"
-:
-    "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
-        "category_addition"
-:
-    [],
-        "category_specification"
-:
-    [],
-        "category_specification_other"
-:
-    null,
-        "content_type"
-:
-    [
+    "decision_visibility_other": null,
+    "decision_monetary": "DECISION_MONETARY_TERMINATION",
+    "decision_monetary_other": null,
+    "decision_provision": "DECISION_PROVISION_TOTAL_SUSPENSION",
+    "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+    "account_type": "ACCOUNT_TYPE_BUSINESS",
+    "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+    "decision_ground_reference_url": "https://www.anurl.com",
+    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
+    "category_addition": [],
+    "category_specification": [],
+    "category_specification_other": null,
+    "content_type": [
         "CONTENT_TYPE_AUDIO",
         "CONTENT_TYPE_SYNTHETIC_MEDIA",
         "CONTENT_TYPE_VIDEO"
     ],
-        "content_type_other"
-:
-    null,
-        "illegal_content_legal_ground"
-:
-    null,
-        "illegal_content_explanation"
-:
-    null,
-        "incompatible_content_ground"
-:
-    "incompatible content grounds",
-        "incompatible_content_explanation"
-:
-    "incompatible content explanation",
-        "incompatible_content_illegal"
-:
-    "Yes",
-        "territorial_scope"
-:
-    [
+    "content_type_other": null,
+    "illegal_content_legal_ground": null,
+    "illegal_content_explanation": null,
+    "incompatible_content_ground": "incompatible content grounds",
+    "incompatible_content_explanation": "incompatible content explanation",
+    "incompatible_content_illegal": "Yes",
+    "territorial_scope": [
         "DE",
         "ES",
         "PT"
     ],
-        "content_language"
-:
-    "EN",
-        "content_date"
-:
-    "2023-08-08",
-        "application_date"
-:
-    "2023-08-08",
-        "end_date_visibility_restriction"
-:
-    null,
-        "end_date_monetary_restriction"
-:
-    "2023-08-08",
-        "end_date_service_restriction"
-:
-    null,
-        "end_date_account_restriction"
-:
-    null,
-        "decision_facts"
-:
-    "facts about the decision",
-        "source_type"
-:
-    "SOURCE_TRUSTED_FLAGGER",
-        "source_identity"
-:
-    null,
-        "automated_detection"
-:
-    "No",
-        "automated_decision"
-:
-    "AUTOMATED_DECISION_PARTIALLY",
-        "created_at"
-:
-    "2024-11-25 09:16:55",
-        "platform_name"
-:
-    "The Platform",
-        "permalink"
-:
-    "https://.../statement/23908734597",
-        "self"
-:
-    "https://.../api/v1/statement/23908734597"
+    "content_language": "EN",
+    "content_date": "2023-08-08",
+    "application_date": "2023-08-08",
+    "end_date_visibility_restriction": null,
+    "end_date_monetary_restriction": "2023-08-08",
+    "end_date_service_restriction": null,
+    "end_date_account_restriction": null,
+    "decision_facts": "facts about the decision",
+    "source_type": "SOURCE_TRUSTED_FLAGGER",
+    "source_identity": null,
+    "automated_detection": "No",
+    "automated_decision": "AUTOMATED_DECISION_PARTIALLY",
+    "created_at": "2024-11-25 09:16:55",
+    "platform_name": "The Platform",
+    "permalink": "https://.../statement/23908734597",
+    "self": "https://.../api/v1/statement/23908734597"
 ```
+
 
 ## Errors
 
@@ -940,8 +1161,7 @@ For Ex,
 You made an API with a blank JSON payload or an invalid JSON payload.
 
 ```javascript
-{
-}
+{}
 ```
 
 The HTTP Status code coming back will be ```422 Unproccessable Content```
@@ -950,75 +1170,45 @@ The payload body will be a JSON object containing more information and the error
 
 ```javascript
 {
-    "message"
-:
-    "The decision visibility field is required when none of decision monetary / decision provision / decision account are present. (and 13 more errors)",
-        "errors"
-:
-    {
-        "decision_visibility"
-    :
-        [
+    "message": "The decision visibility field is required when none of decision monetary / decision provision / decision account are present. (and 13 more errors)",
+    "errors": {
+        "decision_visibility": [
             "The decision visibility field is required when none of decision monetary / decision provision / decision account are present."
         ],
-            "decision_monetary"
-    :
-        [
+        "decision_monetary": [
             "The decision monetary field is required when none of decision visibility / decision provision / decision account are present."
         ],
-            "decision_provision"
-    :
-        [
+        "decision_provision": [
             "The decision provision field is required when none of decision visibility / decision monetary / decision account are present."
         ],
-            "decision_account"
-    :
-        [
+        "decision_account": [
             "The decision account field is required when none of decision visibility / decision monetary / decision provision are present."
         ],
-            "decision_ground"
-    :
-        [
+        "decision_ground": [
             "The decision ground field is required."
         ],
-            "content_type"
-    :
-        [
+        "content_type": [
             "The content type field is required."
         ],
-            "category"
-    :
-        [
+        "category": [
             "The category field is required."
         ],
-            "application_date"
-    :
-        [
+        "application_date": [
             "The application date field is required."
         ],
-            "decision_facts"
-    :
-        [
+        "decision_facts": [
             "The decision facts field is required."
         ],
-            "source_type"
-    :
-        [
+        "source_type": [
             "The source type field is required."
         ],
-            "automated_detection"
-    :
-        [
+        "automated_detection": [
             "The automated detection field is required."
         ],
-            "automated_decision"
-    :
-        [
+        "automated_decision": [
             "The automated decision field is required."
         ],
-            "puid"
-    :
-        [
+        "puid": [
             "The puid field is required."
         ]
     }
@@ -1030,7 +1220,6 @@ The error messages for the individual fields will vary depending on what was att
 Such as the following:
 
 If you sent
-
 ```
 {
     ...
@@ -1043,15 +1232,9 @@ If you sent
 
 ```javascript
 {
-    "message"
-:
-    "The selected automated decision is invalid.",
-        "errors"
-:
-    {
-        "automated_decision"
-    :
-        [
+    "message": "The selected automated decision is invalid.",
+    "errors": {
+        "automated_decision": [
             "The selected automated decision is invalid."
         ]
     }
@@ -1064,38 +1247,22 @@ When you are you calling the multiple endpoint you will encounter the same error
 However, the errors will be indexed to the Statement of Reason that you are trying to create.
 
 ex,
-
 ```javascript
 {
-    "errors"
-:
-    {
-        "statement_0"
-    :
-        {
-            "decision_monetary"
-        :
-            [
+    "errors": {
+        "statement_0": {
+            "decision_monetary": [
                 "The selected decision monetary is invalid."
             ],
-                "decision_ground"
-        :
-            [
+                "decision_ground": [
                 "The selected decision ground is invalid."
             ],
-                "automated_detection"
-        :
-            [
+                "automated_detection": [
                 "The automated detection field is required."
             ]
-        }
-    ,
-        "statement_2"
-    :
-        {
-            "decision_provision"
-        :
-            [
+        },
+        "statement_2": {
+            "decision_provision": [
                 "The selected decision provision is invalid."
             ]
         }
@@ -1103,8 +1270,7 @@ ex,
 }
 ```
 
-This means that the decision monetary, the decision ground and the automated detection fields were invalid in the
-statement of reason at position 0 in the array.
+This means that the decision monetary, the decision ground and the automated detection fields were invalid in the statement of reason at position 0 in the array.
 This means that the decision provision is invalid in the statement of reason at position 2 in the array.
 
 In this case, **NONE** of the statements where created, the request needs to be fixed and resent.
@@ -1133,40 +1299,26 @@ the statement. This will look like the following:
 
 ```javascript
 {
-    "message"
-:
-    "The identifier given is not unique within this platform.",
-        "errors"
-:
-    {
-        "puid"
-    :
-        [
-            "The identifier given is not unique within this platform."
-        ]
-    }
-,
-    "existing"
-:
-    {
-        "uuid"
-    :
-        "6bf8beb0-765c-4e79-8cb1-dc93fc7478bb",
-            "decision_visibility"
-    :
-        [
-            ...
-        ],
+  "message": "The identifier given is not unique within this platform.",
+  "errors": {
+    "puid": [
+      "The identifier given is not unique within this platform."
+    ]
+  },
+  "existing": {
+    "uuid": "6bf8beb0-765c-4e79-8cb1-dc93fc7478bb",
+    "decision_visibility": [
+      ...
+    ],
     ...
-        "permalink"
-    :
-        "... /statement/6bf8beb0-765c-4e79-8cb1-dc93fc7478bb",
-            "self"
-    :
-        "... /api/v1/statement/6bf8beb0-765c-4e79-8cb1-dc93fc7478bb"
-    }
+    "permalink": "... /statement/6bf8beb0-765c-4e79-8cb1-dc93fc7478bb",
+    "self": "... /api/v1/statement/6bf8beb0-765c-4e79-8cb1-dc93fc7478bb"
+  }
 }
 ```
+
+
+
 
 ## Source Code
 
