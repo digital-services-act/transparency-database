@@ -3,7 +3,7 @@
 
 <form method="get" action="{{ route('statement.index') }}">
 
-    <x-ecl.textfield name="s" id="s" label="Search and Filtering" justlabel="true"
+    <x-ecl.textfield name="s" id="s" label="Search in the free-text fields" justlabel="true"
                      placeholder="enter your text search here" :value="request()->get('s', '')"/>
 
     @if($similarity_results)
