@@ -50,6 +50,9 @@
             dashboard</strong>.<br />
         <strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply
         filters to view data for other time periods.<br /><br />
+
+        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the Dashboard can show aggregated data over a longer period of time in the past compared to the data available on the “<a href="{{route('statement.index')}}">Search for statements of reasons</a>” page. This might result in different numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering settings are applied.
+
     </p>
 
     <div class="responsive-iframe-container">
