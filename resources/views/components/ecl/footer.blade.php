@@ -86,6 +86,11 @@
                             <a href="{{ route('page.show', ['page' => 'data-retention-policy']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
                                aria-label="Data Retention Policy">Data Retention Policy</a></li>
+
+                        <li class="ecl-site-footer__list-item">
+                            <a href="{{ route('page.show', ['page' => 'data-license']) }}"
+                               class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
+                               aria-label="Data Retention Policy">Data License</a></li>
                     </ul>
                 </div>
 

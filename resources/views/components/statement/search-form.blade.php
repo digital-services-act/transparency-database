@@ -4,8 +4,8 @@
 <form method="post" action="{{ route('statement.index.post') }}">
     @csrf
 
-    <x-ecl.textfield name="s" id="s" label="Search and Filtering" justlabel="true"
-                     placeholder="enter your text search here" :value="request()->input('s', '')"/>
+    <x-ecl.textfield name="s" id="s" label="Search in the free-text fields" justlabel="true"
+                     placeholder="enter your text search here" :value="request()->get('s', '')"/>
 
     @if($similarity_results)
         <div class="ecl-u-mb-l" style="width: 400px;">

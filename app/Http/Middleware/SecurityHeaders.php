@@ -22,7 +22,7 @@ class SecurityHeaders
 
         $response->headers->set(
             'Content-Security-Policy',
-            "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com code.jquery.com https://webtools.europa.eu *.europa.eu *.webanalytics.europa.eu https://cdnjs.cloudflare.com https://europa.eu https://*.cloudfront.net; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com code.jquery.com https://webtools.europa.eu *.europa.eu https://*.cloudfront.net; img-src 'self' https://webtools.europa.eu *.webanalytics.europa.eu https://dsa-images-disk.s3.eu-central-1.amazonaws.com *.europa.eu https://*.cloudfront.net data:; connect-src 'self' *.europa.eu https://webtools.europa.eu *.webanalytics.europa.eu; frame-src 'self' https://app.powerbi.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+            "default-src 'self'; script-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com code.jquery.com *.eu-central-1.elb.amazonaws.com  https://webtools.europa.eu *.europa.eu *.webanalytics.europa.eu https://cdnjs.cloudflare.com https://europa.eu https://*.cloudfront.net https://unpkg.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com code.jquery.com https://webtools.europa.eu *.europa.eu https://*.cloudfront.net; img-src 'self' https://webtools.europa.eu *.webanalytics.europa.eu https://dsa-images-disk.s3.eu-central-1.amazonaws.com *.europa.eu https://*.cloudfront.net data:; connect-src 'self' *.eu-central-1.elb.amazonaws.com *.europa.eu https://webtools.europa.eu *.webanalytics.europa.eu; frame-src 'self' https://app.powerbi.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
         );
 
         // X-Frame-Options
