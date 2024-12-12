@@ -18,8 +18,11 @@ class PageController extends Controller
         $page = (string)mb_strtolower($page);
 
 
+
         // sanitize
         $page = preg_replace("/[^a-z-]/", "", $page);
+
+//        dd($page);
 
         $redirects = [
             'cookie-policy'  => 'https://commission.europa.eu/cookies-policy_en',
@@ -35,11 +38,14 @@ class PageController extends Controller
 
         $page_title_mods = [
             'Api Documentation'        => 'API Documentation',
+            'Api Documentation Two'  => "Api Documentation V2",
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information'        => 'Legal Notice',
             'Documentation'            => 'Overview Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Accessibility Statement'  => "Accessibility Statement",
+            'Migration To Api V Two'  => "Migration To Api V2",
+
 
         ];
 
@@ -54,10 +60,12 @@ class PageController extends Controller
             'Home'                     => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
             'Api Documentation'        => 'API Documentation',
+            'Api Documentation Two'  => "Api Documentation V2",
             'Documentation'            => 'Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Legal Information'        => 'Legal Notice',
-            'Accessibility Statement'  => "Accessibility Statement"
+            'Accessibility Statement'  => "Accessibility Statement",
+            'Migration To Api V Two'  => "Migration To Api V2",
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
