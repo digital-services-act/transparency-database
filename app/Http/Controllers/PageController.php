@@ -37,7 +37,7 @@ class PageController extends Controller
         $page_title = ucwords(str_replace("-", " ", (string)$page));
 
         $page_title_mods = [
-            'Api Documentation'        => 'API Documentation',
+            'Api Documentation'        => 'API and Schema',
             'Api Documentation Two'  => "Api Documentation V2",
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information'        => 'Legal Notice',
@@ -59,7 +59,7 @@ class PageController extends Controller
         $breadcrumb_mods = [
             'Home'                     => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
-            'Api Documentation'        => 'API Documentation',
+            'Api Documentation'        => 'API and Schema',
             'Api Documentation Two'  => "Api Documentation V2",
             'Documentation'            => 'Documentation',
             'Webform Documentation'    => "Webform Documentation",

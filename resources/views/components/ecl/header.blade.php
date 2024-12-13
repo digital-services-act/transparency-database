@@ -157,7 +157,7 @@
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['api-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API and schema</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API and Schema</a>
                                     </li>
 
 {{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
