@@ -62,6 +62,7 @@ Route::middleware(['force.auth'])->group(static function () {
         ->name('statement.show');
     Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
     Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
+    Route::view('/explore-data/toolbox', 'explore-data.toolbox')->name('explore-data.toolbox');
     Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
