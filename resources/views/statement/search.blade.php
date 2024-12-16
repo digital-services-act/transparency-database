@@ -15,7 +15,7 @@
     <p class="ecl-u-type-paragraph">
         On this page, you can search for statements of reasons submitted by providers
         of online platforms. You can use the free text search box to look for specific
-        words within the free text fields of each statement of reasons submitted by
+        words <strong>within the free text fields of each statement of reasons</strong> submitted by
         providers of online platforms-to be specific, searching for the platform name
         in that box does not guarantee that you will get that platform's data, please
         use the “Platform” dropdown selector to select one or more platforms.
