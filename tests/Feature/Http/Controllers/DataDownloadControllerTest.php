@@ -7,7 +7,7 @@ use App\Models\Platform;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class DayArchiveControllerTest extends TestCase
+class DataDownloadControllerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
@@ -24,9 +24,9 @@ class DayArchiveControllerTest extends TestCase
      */
     public function test_can_view_day_archive_index_page()
     {
-        $response = $this->get('/data-download');
+        $response = $this->get('/explore-data/download');
         $response->assertStatus(200);
-        $response->assertViewIs('dayarchive.index');
+        $response->assertViewIs('explore-data.download');
         $response->assertViewHas(['dayarchives', 'options', 'platform', 'reindexing']);
     }
 
@@ -36,8 +36,8 @@ class DayArchiveControllerTest extends TestCase
     public function test_can_view_day_archive_index_page_with_platform_uuid()
     {
         $platform = Platform::factory()->create();
-        $response = $this->get('/data-download/?uuid=' . $platform->uuid);
+        $response = $this->get('/explore-data/download/?uuid=' . $platform->uuid);
         $response->assertStatus(200);
-        $response->assertViewIs('dayarchive.index');
+        $response->assertViewIs('explore-data.download');
     }
 }
