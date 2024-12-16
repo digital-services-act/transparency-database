@@ -11,7 +11,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
-class DayArchiveController extends Controller
+class DataDownloadController extends Controller
 {
     public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service)
     {
@@ -32,7 +32,7 @@ class DayArchiveController extends Controller
 
         $options = $this->prepareOptions();
 
-        return view('dayarchive.index', [
+        return view('explore-data.download', [
             'dayarchives' => $dayarchives,
             'options' => $options,
             'platform' => $platform,
