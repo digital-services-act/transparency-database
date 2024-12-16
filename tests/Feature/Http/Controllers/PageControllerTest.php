@@ -66,8 +66,8 @@ class PageControllerTest extends TestCase
         $response = $this->get('/page/api-documentation');
 
         $response->assertStatus(200);
-        $response->assertViewHas('page_title', 'API Documentation');
-        $response->assertViewHas('breadcrumb', 'API Documentation');
+        $response->assertViewHas('page_title', 'API and Schema');
+        $response->assertViewHas('breadcrumb', 'API and Schema');
     }
 
     public function test_profile_show_sets_profile_flag(): void
