@@ -2,9 +2,9 @@
 
 
 @if($platform)
-    @section('title', 'Data Download for ' . $platform->name)
+    @section('title', 'Download for ' . $platform->name)
 @else
-    @section('title', 'Data Download')
+    @section('title', 'Download')
 @endif
 
 

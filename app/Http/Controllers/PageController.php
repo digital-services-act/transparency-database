@@ -38,13 +38,13 @@ class PageController extends Controller
 
         $page_title_mods = [
             'Api Documentation'        => 'API and Schema',
-            'Api Documentation Two'  => "Api Documentation V2",
+            'Api Documentation Two'  => "API Documentation V2",
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information'        => 'Legal Notice',
             'Documentation'            => 'Overview Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To Api V2",
+            'Migration To Api V Two'  => "Migration To API v2",
 
 
         ];
@@ -60,12 +60,12 @@ class PageController extends Controller
             'Home'                     => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
             'Api Documentation'        => 'API and Schema',
-            'Api Documentation Two'  => "Api Documentation V2",
+            'Api Documentation Two'  => "API Documentation V2",
             'Documentation'            => 'Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Legal Information'        => 'Legal Notice',
             'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To Api V2",
+            'Migration To Api V Two'  => "Migration To API v2",
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
