@@ -7,7 +7,7 @@
   <div class="ecl-notification__content"><button class="ecl-button ecl-button--tertiary ecl-notification__close ecl-button--icon-only" type="button" data-ecl-notification-close=""><span class="ecl-button__container"><span class="ecl-button__label" data-ecl-label="true">Close</span><svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon="">
         </svg></span></button>
 
-    <div class="ecl-notification__description">Please note that starting from 1 July 2025 a new Transparency Database and API schema will be adopted. This change will align the content of the Transparency Database with the template contained in the Transparency Reporting Implementing Act, enhancing the consistency and comparability acroos the DSA transparency provisions. Read more about the forthcoming changes in the <a href="/page/migration-to-api-v-two">dedicated documentation page</a>.</div>
+    <div class="ecl-notification__description">Please note that starting from 1 July 2025 a new Transparency Database and API schema will be adopted. This change will align the content of the Transparency Database with the template contained in the <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations">Transparency Reporting Implementing Act</a>, enhancing the consistency and comparability across the DSA transparency provisions. Read more about the forthcoming changes in the <a href="/page/migration-to-api-v-two">dedicated documentation page</a>.</div>
 
   </div>
 </div>
