@@ -97,7 +97,7 @@
                         <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
                             data-ecl-has-children=""
                             aria-expanded="false" id="ecl-menu-item-platforms">
-                            <a href="#"
+                            <a href="{{  route('explore-data.overview') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
                                id="ecl-menu-item-platforms-link">Explore Data</a>
@@ -118,6 +118,13 @@
 
                             <div class="ecl-menu__mega" data-ecl-menu-mega="">
                                 <ul class="ecl-menu__sublist">
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('explore-data.overview') }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">
+                                            Overview
+                                        </a>
+                                    </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('dayarchive.index') }}"

@@ -61,9 +61,15 @@ Route::middleware(['force.auth'])->group(static function () {
         ->where('statement', '[0-9]+')  // Only accept digits for a statement
         ->name('statement.show');
     Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
+    
     Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index');
+    
+    Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');
     Route::view('/explore-data/toolbox', 'explore-data.toolbox')->name('explore-data.toolbox');
-    Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
+    
+    Route::get('/daily-archives', static fn() => Redirect::to(route('dayarchive.index'), 301));
+    Route::get('/data-download', static fn() => Redirect::to(route('dayarchive.index'), 301));
+
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
