@@ -25,14 +25,14 @@
             scope and long free text fields is dropped. These files can be downloaded in CSV format.
         </p>
         <p class="ecl-u-type-paragraph">
-            <x-ecl.external-link url="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers" label="Read more about the downloadable files versions in the technical FAQ" />
+            <x-ecl.external-link href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers" label="Read more about the downloadable files versions in the technical FAQ" />
         </p>
         <p class="ecl-u-type-paragraph">
             If you want to automatise the downloading and management of such daily data, you can use the 
             <a class="ecl-link" href="{{ route('explore-data.toolbox') }}">dsa-tdb package</a>. The dsa-tdb package and its related applications streamline the
             download, filtering and analysis of the Transparency Database data in a user-friendly way: read more about
-            it in the <x-ecl.external-link url="https://code.europa.eu/dsa/transparency-database/dsa-tdb" label="package source code repository" /> and in
-            its <x-ecl.external-link label="online documentation" url="https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/" />.
+            it in the <x-ecl.external-link href="https://code.europa.eu/dsa/transparency-database/dsa-tdb" label="package source code repository" /> and in
+            its <x-ecl.external-link label="online documentation" href="https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/" />.
         </p>
         <p class="ecl-u-type-paragraph">
             If you use the data from the DSA Transparency Database for your research work, please cite it using the
@@ -43,7 +43,7 @@
             Communications Networks, Content and Technology, 2023.
         </p>
         <p class="ecl-u-type-paragraph">
-            <x-ecl.external-link url="https://doi.org/10.2906/134353607485211" label="https://doi.org/10.2906/134353607485211" />
+            <x-ecl.external-link href="https://doi.org/10.2906/134353607485211" label="https://doi.org/10.2906/134353607485211" />
         </p>
     </div>
     <div class="ecl-col-l-4">
