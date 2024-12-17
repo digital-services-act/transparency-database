@@ -28,8 +28,8 @@
     </p>
 
     <p class="ecl-u-type-paragraph">
-        Please note that only the first 10 000 results are paginated, and only the first 
-        1000 statements of reasons amongst those can be exported in .csv format at a given time.
+        Please note that <strong>only the first 10 000 results are paginated</strong>, and <strong>only the first 
+        1000 statements of reasons amongst those can be exported in .csv format at a given time</strong>.
     </p>
     <p class="ecl-u-type-paragraph">
         If you want to access a larger subset of statements of reasons or an aggregate view of them, 
