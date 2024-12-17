@@ -44,7 +44,7 @@ class PageController extends Controller
             'Documentation'            => 'Overview Documentation',
             'Webform Documentation'    => "Webform Documentation",
             'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To Api V2",
+            'Migration To Api V Two'  => "Migration To API v2",
 
 
         ];
@@ -65,7 +65,7 @@ class PageController extends Controller
             'Webform Documentation'    => "Webform Documentation",
             'Legal Information'        => 'Legal Notice',
             'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To Api V2",
+            'Migration To Api V Two'  => "Migration To API v2",
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
