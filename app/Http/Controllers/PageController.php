@@ -15,57 +15,63 @@ class PageController extends Controller
     public function show(string $page, bool $profile = false): \Illuminate\Foundation\Application|View|Factory|Redirector|Application|RedirectResponse
     {
         // lower and disallow ../ and weird stuff.
-        $page = (string)mb_strtolower($page);
-
-
+        $page = (string) mb_strtolower($page);
 
         // sanitize
         $page = preg_replace("/[^a-z-]/", "", $page);
 
-//        dd($page);
-
         $redirects = [
-            'cookie-policy'  => 'https://commission.europa.eu/cookies-policy_en',
-            'latest-updates' => '/',
-//            'faq' => 'faq'
+            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
+            'latest-updates' => '/'
         ];
 
         if (isset($redirects[$page])) {
             return redirect($redirects[$page]);
         }
 
-        $page_title = ucwords(str_replace("-", " ", (string)$page));
+        $page_title = ucwords(str_replace("-", " ", (string) $page));
 
         $page_title_mods = [
-            'Api Documentation'        => 'API and Schema',
-            'Api Documentation Two'  => "Api Documentation V2",
+            'Api Documentation' => 'API and Schema',
+            'Api Documentation Two' => "Api Documentation V2",
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
-            'Legal Information'        => 'Legal Notice',
-            'Documentation'            => 'Overview Documentation',
-            'Webform Documentation'    => "Webform Documentation",
-            'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To Api V2",
-
-
+            'Legal Information' => 'Legal Notice',
+            'Documentation' => 'Overview Documentation',
+            'Webform Documentation' => "Webform Documentation",
+            'Accessibility Statement' => "Accessibility Statement",
+            'Migration To Api V Two' => "Migration To Api V2",
         ];
 
+        // Some pages will have no table of contents
+        $table_of_contents = true;
+        $right_side_image = "";
+
+        // No table of contents and right side image
+        $no_tocs_pages = [
+            'data-analysis-software' => 'https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg'
+        ];
+
+        if (key_exists($page, $no_tocs_pages)) {
+            $table_of_contents = false;
+            $right_side_image = $no_tocs_pages[$page];
+        }
 
         if (isset($page_title_mods[$page_title])) {
             $page_title = $page_title_mods[$page_title];
         }
 
-        $breadcrumb = ucwords(str_replace("-", " ", (string)$page));
+        $breadcrumb = ucwords(str_replace("-", " ", (string) $page));
 
         $breadcrumb_mods = [
-            'Home'                     => '',
+            'Home' => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
-            'Api Documentation'        => 'API and Schema',
-            'Api Documentation Two'  => "Api Documentation V2",
-            'Documentation'            => 'Documentation',
-            'Webform Documentation'    => "Webform Documentation",
-            'Legal Information'        => 'Legal Notice',
-            'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To Api V2",
+            'Api Documentation' => 'API and Schema',
+            'Api Documentation Two' => "Api Documentation V2",
+            'Documentation' => 'Documentation',
+            'Webform Documentation' => "Webform Documentation",
+            'Legal Information' => 'Legal Notice',
+            'Accessibility Statement' => "Accessibility Statement",
+            'Migration To Api V Two' => "Migration To Api V2",
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
@@ -73,13 +79,15 @@ class PageController extends Controller
         }
 
         $page_content = '';
-        $page         = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
+        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
         $view_data = [
-            'profile'            => $profile,
-            'page_title'         => $page_title,
-            'breadcrumb'         => $breadcrumb,
-            'baseurl'            => route('home'),
+            'profile' => $profile,
+            'page_title' => $page_title,
+            'breadcrumb' => $breadcrumb,
+            'table_of_contents' => $table_of_contents,
+            'right_side_image' => $right_side_image,
+            'baseurl' => route('home'),
         ];
 
 
@@ -108,8 +116,8 @@ class PageController extends Controller
         $parsedown = new Parsedown();
 
         return preg_replace_callback('/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', static function ($matches) {
-            if ( ! stripos((string)$matches[0], 'id=')) {
-                $id         = strtolower(str_replace(" ", "-", (string)$matches[3]));
+            if (!stripos((string) $matches[0], 'id=')) {
+                $id = strtolower(str_replace(" ", "-", (string) $matches[3]));
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
 

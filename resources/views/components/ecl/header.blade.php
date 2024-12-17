@@ -127,7 +127,7 @@
                                     </li>
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
-                                        <a href="{{  route('explore-data.toolbox') }}"
+                                        <a href="{{ route('page.show', ['page' => 'data-analysis-software']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">
                                             Toolbox
                                         </a>

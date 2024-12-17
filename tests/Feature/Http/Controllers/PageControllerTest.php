@@ -106,4 +106,14 @@ class PageControllerTest extends TestCase
 
         File::delete($testfile);
     }
+
+    public function test_show_handles_pages_without_table_of_contents(): void
+    {
+        $response = $this->get('/page/data-analysis-software');
+
+        $response->assertStatus(200);
+        $response->assertViewIs('page');
+        $response->assertViewHas('table_of_contents', false);
+        $response->assertViewHas('right_side_image', 'https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg');
+    }
 }

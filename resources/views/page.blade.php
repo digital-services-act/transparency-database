@@ -34,47 +34,64 @@
 
     <div class="ecl-row data-ecl-inpage-navigation-container">
         <div class="ecl-col-l-3 ecl-u-d-none" id="toc-wrapper">
-
-
-            <nav class="ecl-inpage-navigation"
-                 data-ecl-auto-init="InpageNavigation"
-                 data-ecl-inpage-navigation="true"
-                 aria-labelledby="ecl-inpage-navigation-default">
-                <div class="ecl-inpage-navigation__title" id="ecl-inpage-navigation-default">Page contents</div>
-
-                <div class="ecl-inpage-navigation__body">
-
-                    <div id="toc-area">
-                        <div class="ecl-inpage-navigation__trigger-wrapper">
-                            <button type="button" class="ecl-inpage-navigation__trigger"
-                                    id="ecl-inpage-navigation-default-trigger"
-                                    data-ecl-inpage-navigation-trigger="true"
-                                    aria-controls="ecl-inpage-navigation-list" aria-expanded="false"
-                                    aria-label="inpage-navigation trigger">
-                                <span class="ecl-inpage-navigation__trigger-current"
-                                      data-ecl-inpage-navigation-trigger-current="true">
-                                </span>
-                                <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-inpage-navigation__trigger-icon"
-                                     focusable="false" aria-hidden="true">
-                                    <x-ecl.icon icon="corner-arrow"/>
-                                </svg>
-                            </button>
+            @if($table_of_contents)
+                <nav class="ecl-inpage-navigation"
+                    data-ecl-auto-init="InpageNavigation"
+                    data-ecl-inpage-navigation="true"
+                    aria-labelledby="ecl-inpage-navigation-default">
+                    <div class="ecl-inpage-navigation__title" id="ecl-inpage-navigation-default">Page contents</div>
+                    <div class="ecl-inpage-navigation__body">
+                        <div id="toc-area">
+                            <div class="ecl-inpage-navigation__trigger-wrapper">
+                                <button type="button" class="ecl-inpage-navigation__trigger"
+                                        id="ecl-inpage-navigation-default-trigger"
+                                        data-ecl-inpage-navigation-trigger="true"
+                                        aria-controls="ecl-inpage-navigation-list" aria-expanded="false"
+                                        aria-label="inpage-navigation trigger">
+                                    <span class="ecl-inpage-navigation__trigger-current"
+                                        data-ecl-inpage-navigation-trigger-current="true">
+                                    </span>
+                                    <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-inpage-navigation__trigger-icon"
+                                        focusable="false" aria-hidden="true">
+                                        <x-ecl.icon icon="corner-arrow"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <ul class="ecl-inpage-navigation__list"
+                                data-ecl-inpage-navigation-list="true"
+                                id="ecl-inpage-navigation-default-list"
+                            >
+                            </ul>
                         </div>
-                        <ul class="ecl-inpage-navigation__list"
-                            data-ecl-inpage-navigation-list="true"
-                            id="ecl-inpage-navigation-default-list"
-                        >
-                        </ul>
                     </div>
+                </nav>
+            @endif
+        </div>
+        @if($table_of_contents || !$right_side_image)
+            <div class="ecl-col-l-12" id="content-wrapper">
+                <div id="content-area">
+                    {!! $page_content !!}
                 </div>
-
-            </nav>
-        </div>
-        <div class="ecl-col-l-12" id="content-wrapper">
-            <div id="content-area">
-                {!! $page_content !!}
             </div>
-        </div>
+        @else
+            <div class="ecl-col-l-8" id="content-wrapper">
+                <div id="content-area">
+                    {!! $page_content !!}
+                </div>
+            </div>
+            <div class="ecl-col-l-4">
+                <div class="ecl-media-container">
+                    <figure class="ecl-media-container__figure">
+                        <div class="ecl-media-container__caption">
+                            <picture class="ecl-picture ecl-media-container__picture"><img
+                                    class="ecl-media-container__media"
+                                    src="{{ $right_side_image }}"
+                                    alt="{{ $page_title }}"></picture>
+                        </div>
+                    </figure>
+                </div>
+            </div>
+        @endif
     </div>
 
     <link rel="stylesheet"
@@ -97,8 +114,11 @@
                   dis.addClass('ecl-u-type-heading-1')
                 }
 
-                $('#ecl-inpage-navigation-default-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
-                    '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
+                @if($table_of_contents)
+                    // Only do these things if we have a table of contents
+                    $('#ecl-inpage-navigation-default-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
+                        '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
+                @endif
             })
         })
 
@@ -112,11 +132,14 @@
                   dis.addClass('ecl-u-type-heading-2');
                 }
 
-                $('#ecl-inpage-navigation-default-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
+                @if($table_of_contents)
+                    // Only do these things if we have a table of contents
+                    $('#ecl-inpage-navigation-default-list').append('<li class="ecl-inpage-navigation__item"><a href="#' + id +
                     '" class="ecl-link ecl-inpage-navigation__link" data-ecl-inpage-navigation-link="">' + t + '</a></li>');
-                $('#toc-wrapper').removeClass('ecl-u-d-none');
-                $('#content-wrapper').removeClass('ecl-col-l-12');
-                $('#content-wrapper').addClass('ecl-col-l-9');
+                    $('#toc-wrapper').removeClass('ecl-u-d-none');
+                    $('#content-wrapper').removeClass('ecl-col-l-12');
+                    $('#content-wrapper').addClass('ecl-col-l-9');
+                @endif
             })
         })
 
