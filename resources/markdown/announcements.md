@@ -1,3 +1,8 @@
+#### [Announcement – Dashboard] New pages and filters for better separation between platforms
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published Published 19/12/2024</p>
+
+On 14th October 2024, the [dashboard](/dashboard) of the DSA Transparency Database was updated to include a clearer separation between the Statements of Reasons submitted by Very Large Online Platforms (VLOPs)  and the rest (non-VLOP) platforms. The changes are particularly notable in the first and second pages of the dashboard; unified information for all platforms is available in page 6 (‘all platforms’). A new taxonomy was also added in the ‘Platforms’ filter that allows users to select with a single click all the VLOPs or all the non-VLOPs.
+
 #### [Announcement – DB] 2025 Update of the DSA Transparency Database schema in line with the Implementing Regulation on Transparency Reporting
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 04/11/2024</p>
@@ -10,7 +15,6 @@ Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/
 
 #### [Announcement – DSA-TDB] New open-source package on code.europa.eu
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 29/10/2024</p>
-
 
 The DSA Transparency Database team is pleased to announce the release of a new open-source package on [code.europa.eu](https://code.europa.eu/info/about), designed to facilitate the download and analysis of data in the Database. The application, called [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb), is a Python package that aims to streamline the data analysis process and support future research.
 
