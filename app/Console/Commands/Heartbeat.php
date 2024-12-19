@@ -4,26 +4,83 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Console\Commands\Traits\LoggableTrait;
+use App\Console\Commands\Traits\DocumentableTrait;
 
 class Heartbeat extends Command
 {
+    use LoggableTrait;
+    use DocumentableTrait;
 
-    protected $signature = 'heartbeat';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'heartbeat {--timeout=5 : Maximum time in seconds to wait for response}';
 
-    protected $description = 'Check if the database is up by querying the users table.';
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Check if the database is up by performing a simple query.';
 
-    public function handle()
+    /**
+     * Command argument descriptions.
+     *
+     * @var array<string, string>
+     */
+    protected $arguments = [
+        '--timeout' => 'Maximum time in seconds to wait for response',
+    ];
+
+    /**
+     * Command usage examples.
+     *
+     * @var array<string>
+     */
+    protected $examples = [
+        'heartbeat',
+        'heartbeat --timeout=10',
+    ];
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): int
     {
         try {
-            // Attempt to query the users table
-            DB::table('statements')->select(DB::raw(1))->take(1)->get();
+            $timeout = $this->option('timeout');
+            
+            // Configure database timeout if specified
+            if ($timeout) {
+                $driver = config('database.default');
+                config(["database.connections.{$driver}.options" => [
+                    \PDO::ATTR_TIMEOUT => (int)$timeout
+                ]]);
+                DB::reconnect();
+            }
 
-            // If the query is successful, database is up
-            $this->info('Database is up.');
+            // Simple query to check database connectivity
+            $startTime = microtime(true);
+            DB::select('SELECT 1');
+            $duration = round((microtime(true) - $startTime) * 1000, 2);
 
+            $this->logInfo("Database is up (took {$duration}ms)", [
+                'duration_ms' => $duration,
+                'timeout' => $timeout
+            ]);
+
+            return Command::SUCCESS;
         } catch (\Exception $e) {
-            // If an exception occurs, database is down
-            $this->error('Database is down: ' . $e->getMessage());
+            $this->logError('Database connection failed', [
+                'error' => $e->getMessage(),
+                'timeout' => $timeout ?? null,
+                'exception_class' => get_class($e)
+            ]);
+
+            return Command::FAILURE;
         }
     }
 }

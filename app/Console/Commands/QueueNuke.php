@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands;
 
-
-
 use Illuminate\Console\Command;
-use Illuminate\Queue\Jobs\Job;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Queue;
 
+/**
+ * @codeCoverageIgnore
+ */
 class QueueNuke extends Command
 {
     use CommandTrait;

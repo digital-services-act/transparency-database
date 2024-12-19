@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsDayArchiveZ extends Command
 {
     use CommandTrait;

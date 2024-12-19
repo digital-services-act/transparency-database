@@ -3,10 +3,12 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Statement;
+use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
 use JMac\Testing\Traits\AdditionalAssertions;
+use Mockery\MockInterface;
 use Tests\Feature\Http\Controllers\Api\v1\StatementAPIControllerTest;
 use Tests\TestCase;
 
@@ -53,13 +55,87 @@ class StatementControllerTest extends TestCase
      */
     public function index_displays_view_if_logged_with_rights(): void
     {
-
         $this->signInAsAdmin();
         $response = $this->get(route('statement.index'));
         $response->assertOk();
         $response->assertViewIs('statement.index');
         $response->assertViewHas('statements');
     }
+
+    /**
+     * @test
+     */
+    public function index_handles_the_max_pages_issue(): void
+    {
+        $this->signInAsAdmin();
+        $response = $this->get(route('statement.index', ['page' => 400]));
+        $response->assertOk();
+        $response->assertViewIs('statement.index');
+        $response->assertViewHas('statements');
+    }
+
+    
+    /**
+     * @test
+     */
+    public function basic_search_route_works(): void
+    {
+        $this->signInAsAdmin();
+        $response = $this->get(route('statement.search'));
+        $response->assertOk();
+        $response->assertViewIs('statement.search');
+    }
+
+    
+    /**
+     * @test
+     */
+    public function create_blocks_when_no_platform(): void
+    {
+        $user = $this->signInAsAdmin();
+        $user->platform_id = null;
+        $user->save();
+
+        $response = $this->get(route('statement.create'));
+        $response->assertRedirect();
+    }
+
+
+    
+    /**
+     * @test
+     */
+    public function showUuid_works(): void
+    {
+        $this->signInAsAdmin();
+        $statement = Statement::factory()->create();
+        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
+            $mock->shouldReceive('uuidToId')
+                ->with($statement->uuid)
+                ->andReturn($statement->id);
+        });
+        $response = $this->get(route('statement.show.uuid', ['uuid' => $statement->uuid]));
+        $response->assertRedirect(route('statement.show', ['statement' => $statement]));
+    }
+
+
+    /**
+     * @test
+     */
+    public function showUuid_throws_404(): void
+    {
+        $this->signInAsAdmin();
+        $statement = Statement::factory()->create();
+        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
+            $mock->shouldReceive('uuidToId')
+                ->with($statement->uuid)
+                ->andReturn(0);
+        });
+        $response = $this->get(route('statement.show.uuid', ['uuid' => $statement->uuid]));
+        $response->assertNotFound();
+    }
+
+
 
     //Removed as index does need auth now
 //    /**

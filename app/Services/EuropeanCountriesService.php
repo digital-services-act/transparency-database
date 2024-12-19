@@ -107,14 +107,8 @@ class EuropeanCountriesService
     public function getCountryName(string $iso): bool | string
     {
         if (in_array($iso, self::EUROPEAN_COUNTRY_CODES)) {
-            try {
-                return Countries::getName($iso);
-            } catch (Exception $e) {
-                Log::error('European country code problem, could not convert "' . $iso .'"', ['exception' => $e]);
-                return false; // should never happen but ...
-            }
+            return Countries::getName($iso);
         }
-
         return false;
     }
 

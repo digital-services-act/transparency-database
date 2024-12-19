@@ -7,6 +7,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use JsonException;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AggregatesFreeze extends Command
 {
     use CommandTrait;

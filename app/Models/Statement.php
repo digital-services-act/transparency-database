@@ -283,125 +283,124 @@ class Statement extends Model
         'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
     ];
 
-    public const KEYWORD_ANIMAL_HARM = 'Animal Harm';
+    public const KEYWORD_ANIMAL_HARM = 'Animal harm';
 
-    public const KEYWORD_ADULT_SEXUAL_MATERIAL = 'Adult Sexual Material';
+    public const KEYWORD_ADULT_SEXUAL_MATERIAL = 'Adult sexual material';
 
-    public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-Specific Restrictions Concerning Minors';
+    public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-specific restrictions concerning minors';
 
-    public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-Specific Restrictions';
+    public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-specific restrictions';
+    public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric data breach';
 
-    public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric Data Breach';
+    public const KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL = 'Child sexual abuse material';
 
-    public const KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL = 'Child Sexual Abuse Material';
+    public const KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS = 'Content promoting eating disorders';
 
-    public const KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS = 'Content Promoting Eating Disorders';
+    public const KEYWORD_COORDINATED_HARM = 'Coordinated harm';
 
-    public const KEYWORD_COORDINATED_HARM = 'Coordinated Harm';
+    public const KEYWORD_COPYRIGHT_INFRINGEMENT = 'Copyright infringement';
 
-    public const KEYWORD_COPYRIGHT_INFRINGEMENT = 'Copyright Infringement';
+    public const KEYWORD_DANGEROUS_TOYS = 'Dangerous toys';
 
-    public const KEYWORD_DANGEROUS_TOYS = 'Dangerous Toys';
-
-    public const KEYWORD_DATA_FALSIFICATION = 'Data Falsification';
+    public const KEYWORD_DATA_FALSIFICATION = 'Data falsification';
 
     public const KEYWORD_DEFAMATION = 'Defamation';
 
-    public const KEYWORD_DESIGN_INFRINGEMENT = 'Design Infringement';
+    public const KEYWORD_DESIGN_INFRINGEMENT = 'Design infringement';
 
     public const KEYWORD_DISCRIMINATION = 'Discrimination';
 
     public const KEYWORD_DISINFORMATION = 'Disinformation';
 
-    public const KEYWORD_FOREIGN_INFORMATION_MANIPULATION = 'Foreign Information Manipulation and Interference';
+    public const KEYWORD_FOREIGN_INFORMATION_MANIPULATION = 'Foreign information manipulation and interference';
 
-    public const KEYWORD_GENDER_BASED_VIOLENCE = 'Gender-Based Violence';
+    public const KEYWORD_GENDER_BASED_VIOLENCE = 'Gender-based violence';
 
-    public const KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT = 'Geographic Indications Infringements';
+    public const KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT = 'Geographic indications infringements';
 
-    public const KEYWORD_GEOGRAPHICAL_REQUIREMENTS = 'Geographical Requirements';
+    public const KEYWORD_GEOGRAPHICAL_REQUIREMENTS = 'Geographical requirements';
 
-    public const KEYWORD_GOODS_SERVICES_NOT_PERMITTED = 'Goods/Services Not Permitted to Be Offered on the Platform';
+    public const KEYWORD_GOODS_SERVICES_NOT_PERMITTED = 'Goods/services not permitted to be offered on the platform';
 
-    public const KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS = 'Grooming/Sexual Enticement of Minors';
+    public const KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS = 'Grooming/sexual enticement of minors';
 
-    public const KEYWORD_HATE_SPEECH = 'Hate Speech';
+    public const KEYWORD_HATE_SPEECH = 'Hate speech';
 
-    public const KEYWORD_HUMAN_EXPLOITATION = 'Human Exploitation';
+    public const KEYWORD_HUMAN_EXPLOITATION = 'Human exploitation';
 
-    public const KEYWORD_HUMAN_TRAFFICKING = 'Human Trafficking';
+    public const KEYWORD_HUMAN_TRAFFICKING = 'Human trafficking';
 
-    public const KEYWORD_ILLEGAL_ORGANIZATIONS = 'Illegal Organizations';
+    public const KEYWORD_ILLEGAL_ORGANIZATIONS = 'Illegal organizations';
 
-    public const KEYWORD_IMAGE_BASED_SEXUAL_ABUSE = 'Image-Based Sexual Abuse (excluding content depicting minors)';
+    public const KEYWORD_IMAGE_BASED_SEXUAL_ABUSE = 'Image-based sexual abuse (excluding content depicting minors)';
 
-    public const KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING = 'Impersonation or Account Hijacking';
+    public const KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING = 'Impersonation or account hijacking';
 
-    public const KEYWORD_INAUTHENTIC_ACCOUNTS = 'Inauthentic Accounts';
+    public const KEYWORD_INAUTHENTIC_ACCOUNTS = 'Inauthentic accounts';
 
-    public const KEYWORD_INAUTHENTIC_LISTINGS = 'Inauthentic Listings';
+    public const KEYWORD_INAUTHENTIC_LISTINGS = 'Inauthentic listings';
 
-    public const KEYWORD_INAUTHENTIC_USER_REVIEWS = 'Inauthentic User Reviews';
+    public const KEYWORD_INAUTHENTIC_USER_REVIEWS = 'Inauthentic user reviews';
 
-    public const KEYWORD_INCITEMENT_VIOLENCE_HATRED = 'Incitement to Violence and/or Hatred';
+    public const KEYWORD_INCITEMENT_VIOLENCE_HATRED = 'Incitement to violence and/or hatred';
 
-    public const KEYWORD_INSUFFICIENT_INFORMATION_TRADERS = 'Insufficient Information on Traders';
+    public const KEYWORD_INSUFFICIENT_INFORMATION_TRADERS = 'Insufficient information on traders';
 
-    public const KEYWORD_LANGUAGE_REQUIREMENTS = 'Language Requirements';
+    public const KEYWORD_LANGUAGE_REQUIREMENTS = 'Language requirements';
 
     public const KEYWORD_MISINFORMATION = 'Misinformation';
 
-    public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing Processing Ground for Data';
+    public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing processing ground for data';
 
-    public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-Consensual Image Sharing';
+    public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-consensual image sharing';
 
-    public const KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE = 'Non-Consensual Items Containing Deepfake or Similar Technology Using a Third Party’s Features';
+    public const KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE = 'Non-consensual items containing deepfake or similar technology using a third party’s features';
 
     public const KEYWORD_NUDITY = 'Nudity';
 
-    public const KEYWORD_ONLINE_BULLYING_INTIMIDATION = 'Online Bullying/Intimidation';
+    public const KEYWORD_ONLINE_BULLYING_INTIMIDATION = 'Online bullying/intimidation';
 
-    public const KEYWORD_PATENT_INFRINGEMENT = 'Patent Infringement';
+    public const KEYWORD_PATENT_INFRINGEMENT = 'Patent infringement';
 
     public const KEYWORD_PHISHING = 'Phishing';
 
-    public const KEYWORD_PYRAMID_SCHEMES = 'Pyramid Schemes';
+    public const KEYWORD_PYRAMID_SCHEMES = 'Pyramid schemes';
 
-    public const KEYWORD_REGULATED_GOODS_SERVICES = 'Regulated Goods and Services';
+    public const KEYWORD_REGULATED_GOODS_SERVICES = 'Regulated goods and services';
 
-    public const KEYWORD_RIGHT_TO_BE_FORGOTTEN = 'Right to Be Forgotten';
+    public const KEYWORD_RIGHT_TO_BE_FORGOTTEN = 'Right to be forgotten';
 
-    public const KEYWORD_RISK_ENVIRONMENTAL_DAMAGE = 'Risk for Environmental Damage';
+    public const KEYWORD_RISK_ENVIRONMENTAL_DAMAGE = 'Risk for environmental damage';
 
-    public const KEYWORD_RISK_PUBLIC_HEALTH = 'Risk for Public Health';
+    public const KEYWORD_RISK_PUBLIC_HEALTH = 'Risk for public health';
 
-    public const KEYWORD_SELF_MUTILATION = 'Self-Mutilation';
+    public const KEYWORD_SELF_MUTILATION = 'Self-mutilation';
 
     public const KEYWORD_STALKING = 'Stalking';
 
     public const KEYWORD_SUICIDE = 'Suicide';
 
-    public const KEYWORD_TERRORIST_CONTENT = 'Terrorist Content';
+    public const KEYWORD_TERRORIST_CONTENT = 'Terrorist content';
 
-    public const KEYWORD_TRADE_SECRET_INFRINGEMENT = 'Trade Secret Infringement';
+    public const KEYWORD_TRADE_SECRET_INFRINGEMENT = 'Trade secret infringement';
 
-    public const KEYWORD_TRADEMARK_INFRINGEMENT = 'Trademark Infringement';
+    public const KEYWORD_TRADEMARK_INFRINGEMENT = 'Trademark infringement';
 
-    public const KEYWORD_UNLAWFUL_SALE_ANIMALS = 'Unlawful Sale of Animals';
+    public const KEYWORD_UNLAWFUL_SALE_ANIMALS = 'Unlawful sale of animals';
 
-    public const KEYWORD_UNSAFE_CHALLENGES = 'Unsafe Challenges';
+    public const KEYWORD_UNSAFE_CHALLENGES = 'Unsafe challenges';
 
     public const KEYWORD_OTHER = 'Other';
 
     public const LABEL_KEYWORDS = 'Keywords';
 
-    public const LABEL_KEYWORDS_OTHER = 'Other Keyword';
+    public const LABEL_KEYWORDS_OTHER = 'Other keyword';
 
     public const KEYWORDS = [
         'KEYWORD_ANIMAL_HARM' => self::KEYWORD_ANIMAL_HARM,
         'KEYWORD_ADULT_SEXUAL_MATERIAL' => self::KEYWORD_ADULT_SEXUAL_MATERIAL,
-        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS,
         'KEYWORD_AGE_SPECIFIC_RESTRICTIONS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS,
+        'KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS,
         'KEYWORD_BIOMETRIC_DATA_BREACH' => self::KEYWORD_BIOMETRIC_DATA_BREACH,
         'KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL' => self::KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL,
         'KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS' => self::KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS,
@@ -784,14 +783,12 @@ class Statement extends Model
         $keys = array_filter($keys);
 
         foreach ($keys as $key) {
-            // Use constant() to get the value of the constant by its name
-            try {
+            // Use defined() to check if constant exists before trying to get its value
+            if (defined(self::class . '::' . $key)) {
                 $value = constant(self::class . '::' . $key);
                 if ($value !== null) {
                     $enumValues[] = $value;
                 }
-            } catch (Exception) {
-
             }
         }
 
@@ -806,13 +803,14 @@ class Statement extends Model
      */
     public function getRawKeys($key): array
     {
-        if(is_null($this->getRawOriginal($key))) {
+        $raw_original = (string) $this->getRawOriginal($key);
+        if($raw_original === '') {
             return [];
         }
 
         // Catch potential bad json here.
         try {
-            $out = json_decode((string) $this->getRawOriginal($key), false, 512, JSON_THROW_ON_ERROR);
+            $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $exception) {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];

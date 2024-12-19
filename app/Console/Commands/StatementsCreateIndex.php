@@ -6,6 +6,9 @@ use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsCreateIndex extends Command
 {
     use CommandTrait;

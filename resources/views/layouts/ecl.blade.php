@@ -8,48 +8,47 @@
     <meta content="width=device-width,initial-scale=1" name="viewport" />
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <script>
-      var cl = document.querySelector('html').classList;
-      cl.remove('no-js');
-      cl.add('has-js');
+        var cl = document.querySelector('html').classList;
+        cl.remove('no-js');
+        cl.add('has-js');
     </script>
 
     <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.2/pikaday.js"
-            crossorigin="anonymous"
+        src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.2/pikaday.js"
+        crossorigin="anonymous"
     ></script>
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
     <link
-            rel="stylesheet"
-            href="{{ asset('static/ecl/styles/optional/ecl-reset.css') }}"
-            media="screen"
+        rel="stylesheet"
+        href="{{ asset('static/ecl/styles/optional/ecl-reset.css') }}"
+        media="screen"
     />
 
     <link
-            rel="stylesheet"
-            href="{{ asset('static/ecl/styles/ecl-ec.css') }}"
-            crossorigin="anonymous"
-            media="screen"
+        rel="stylesheet"
+        href="{{ asset('static/ecl/styles/ecl-ec.css') }}"
+        crossorigin="anonymous"
+        media="screen"
     >
 
     <link
-            rel="stylesheet"
-            href="{{ asset('static/ecl/styles/optional/ecl-ec-utilities.css') }}"
-            crossorigin="anonymous"
-            media="screen"
+        rel="stylesheet"
+        href="{{ asset('static/ecl/styles/optional/ecl-ec-utilities.css') }}"
+        crossorigin="anonymous"
+        media="screen"
     />
 
     <link
-            rel="stylesheet"
-            href="{{ asset('static/ecl/styles/ecl-ec-print.css') }}"
-            crossorigin="anonymous"
-            media="print"
+        rel="stylesheet"
+        href="{{ asset('static/ecl/styles/ecl-ec-print.css') }}"
+        crossorigin="anonymous"
+        media="print"
     >
 
 
-    <script defer src="https://europa.eu/webtools/load.js?theme=ec"></script>
-    <script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
+
 
     @section('extra-head')
     @show
@@ -99,27 +98,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous"></script>
+
+
+<script defer src="https://webtools.europa.eu/load.js?globan=1110" type="text/javascript"></script>
+<script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
+
 <script>
+
     @if($ecl_init)
-        ECL.autoInit();
+    ECL.autoInit();
     @endif
 </script>
 @if(config('dsa.SITEID', false) && config('dsa.SITEPATH', false))
-{{--DO NOT SPLIT THIS LINE--}}
-<script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
+    {{--DO NOT SPLIT THIS LINE--}}
+    <script type="application/json">{"utility":"analytics","siteID":"{{ config('dsa.SITEID') }}","sitePath":["{{ config('dsa.SITEPATH') }}"],"instance":"ec"}</script>
 @endif
 <script type="application/json">{"utility": "cck","url": "{{ route('page.show', ['page' => 'cookie-policy']) }}"}</script>
-<script defer src="https://webtools.europa.eu/load.js?globan=1110" type="text/javascript"></script>
+{{--<script defer src="https://europa.eu/webtools/load.js?theme=ec"></script>--}}
+
+
 @if(config('dsa.webt.clientId', false))
-<script type="text/javascript" src="https://unpkg.com/@tilde-nlp/website-translator/dist/widget.js"></script>
-<script>
-  WebsiteTranslator.Options.api.clientId = "{{ config('dsa.webt.clientId') }}";
-  WebsiteTranslator.Options.api.url = "{{ config('dsa.webt.url') }}";
-  WebsiteTranslator.Options.api.version = {{ config('dsa.webt.version') }};
-  WebsiteTranslator.Options.ui.layout = "menu";
-  WebsiteTranslator.Initialize();
-  console.log(WebsiteTranslator);
-</script>
+    <script type="text/javascript" src="https://unpkg.com/@tilde-nlp/website-translator/dist/widget.js"></script>
+    <script>
+        WebsiteTranslator.Options.api.clientId = "{{ config('dsa.webt.clientId') }}";
+        WebsiteTranslator.Options.api.url = "{{ config('dsa.webt.url') }}";
+        WebsiteTranslator.Options.api.version = {{ config('dsa.webt.version') }};
+        WebsiteTranslator.Options.ui.layout = "menu";
+        WebsiteTranslator.Initialize();
+    </script>
 @endif
 </body>
 </html>

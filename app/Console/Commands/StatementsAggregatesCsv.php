@@ -4,10 +4,12 @@ namespace App\Console\Commands;
 
 use App\Services\StatementSearchService;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsAggregatesCsv extends Command
 {
     use CommandTrait;

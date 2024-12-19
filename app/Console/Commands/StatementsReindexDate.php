@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementIndexRange;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsReindexDate extends Command
 {
     use CommandTrait;

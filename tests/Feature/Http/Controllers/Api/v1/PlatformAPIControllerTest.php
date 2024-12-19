@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Platform;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -32,8 +33,6 @@ class PlatformAPIControllerTest extends TestCase
      */
     public function api_platform_store_requires_auth(): void
     {
-
-
         // Not signing in.
         $this->assertCount(20, Platform::all());
 
@@ -67,6 +66,33 @@ class PlatformAPIControllerTest extends TestCase
 
         $this->assertEquals('123-ABC-456', $createdPlatform->dsa_common_id);
         $this->assertCount(21, Platform::all());
+    }
+
+    /**
+     * @test
+     */
+    public function api_platform_store_handles_duplicate_platform(): void
+    {
+        $user = $this->signInAsOnboarding();
+
+        // Create a platform with a specific name
+        Platform::create([
+            'name' => 'Duplicate Platform',
+            'vlop' => 0,
+            'dsa_common_id' => 'unique-id-123'
+        ]);
+
+        // Try to create another platform with the same dsa_common_id
+        $response = $this->post(route('api.v1.platform.store'), [
+            'name' => 'Another Platform',
+            'vlop' => 0,
+            'dsa_common_id' => 'unique-id-123'
+        ], [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonStructure(['message', 'errors']);
     }
 
     /**

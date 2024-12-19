@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use Symfony\Component\VarDumper\VarDumper;
 
+/**
+ * @codeCoverageIgnore
+ */
 class PidPuid2Ids extends Command
 {
     use CommandTrait;
