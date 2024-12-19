@@ -282,7 +282,7 @@ class StatementSearchServiceTest extends TestCase
     /**
      * @test
      */
-    public function if_filters_on_created_at(): void
+    public function it_filters_on_created_at(): void
     {
         $filters['created_at_start'] = '15-12-2020';
         $search                      = $this->statement_search_service->query($filters);
@@ -290,6 +290,7 @@ class StatementSearchServiceTest extends TestCase
         $query = $search->query;
         $this->assertStringContainsString('created_at:[2020-12-15T00:00:00 TO', $query);
 
+        unset($filters['created_at_start']);
         $filters['created_at_end'] = '15-12-2020';
         $search                    = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
@@ -302,6 +303,32 @@ class StatementSearchServiceTest extends TestCase
         $this->assertNotNull($search);
         $query = $search->query;
         $this->assertStringContainsString('2020-12-20T00:00:00 TO 2020-12-21T23:59:59]', $query);
+    }
+
+    /**
+     * @test
+     */
+    public function start_and_end_dates_must_be_valid(): void
+    {
+        $filters['created_at_start'] = 'not a good date';
+        $search                      = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertStringNotContainsString('created_at', $query);
+
+        unset($filters['created_at_start']);
+        $filters['created_at_end'] = 'holy cow a bad date';
+        $search                    = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertStringNotContainsString('created_at', $query);
+
+        $filters['created_at_start'] = 'seriously bad date';
+        $filters['created_at_end']   = 'nothing good here';
+        $search                      = $this->statement_search_service->query($filters);
+        $this->assertNotNull($search);
+        $query = $search->query;
+        $this->assertStringNotContainsString('created_at', $query);
     }
 
     /**

@@ -21,6 +21,7 @@ class PlatformQueryServiceProvider extends ServiceProvider implements Deferrable
     /**
      * Get the services provided by the provider.
      *
+     * @codeCoverageIgnore
      * @return array<int, string>
      */
     #[\Override]

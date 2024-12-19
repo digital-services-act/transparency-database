@@ -35,11 +35,10 @@ class PlatformQueryService
                         $this->$method($query, $filters[$filter_key]);
                     }
                 } catch (TypeError|Exception $e) {
-                    Log::error("Log Message Query Service Error", ['exception' => $e]);
+                    Log::error("Platform Query Service Error", ['exception' => $e]);
                 }
             }
         }
-
         return $query;
     }
 
@@ -62,12 +61,12 @@ class PlatformQueryService
      *
      * @return void
      */
-    private function applyVlopFilter(Builder $query, string $filter_value): void
+    private function applyVlopFilter(Builder $query, int $filter_value): void
     {
-        if ($filter_value === '1') {
+        if ($filter_value === 1) {
             $query->where('vlop', 1);
         }
-        if ($filter_value === '0') {
+        if ($filter_value === 0) {
             $query->where('vlop', 0);
         }
     }
@@ -78,12 +77,12 @@ class PlatformQueryService
      *
      * @return void
      */
-    private function applyOnboardedFilter(Builder $query, string $filter_value): void
+    private function applyOnboardedFilter(Builder $query, int $filter_value): void
     {
-        if ($filter_value === '1') {
+        if ($filter_value === 1) {
             $query->where('onboarded', 1);
         }
-        if ($filter_value === '0') {
+        if ($filter_value === 0) {
             $query->where('onboarded', 0);
         }
     }
@@ -94,12 +93,12 @@ class PlatformQueryService
      *
      * @return void
      */
-    private function applyHasTokensFilter(Builder $query, string $filter_value): void
+    private function applyHasTokensFilter(Builder $query, int $filter_value): void
     {
-        if ($filter_value === '1') {
+        if ($filter_value === 1) {
             $query->where('has_tokens', 1);
         }
-        if ($filter_value === '0') {
+        if ($filter_value === 0) {
             $query->where('has_tokens', 0);
         }
     }
@@ -110,12 +109,12 @@ class PlatformQueryService
      *
      * @return void
      */
-    private function applyHasStatementsFilter(Builder $query, string $filter_value): void
+    private function applyHasStatementsFilter(Builder $query, int $filter_value): void
     {
-        if ($filter_value === '1') {
+        if ($filter_value === 1) {
             $query->where('has_statements', 1);
         }
-        if ($filter_value === '0') {
+        if ($filter_value === 0) {
             $query->where('has_statements', 0);
         }
     }

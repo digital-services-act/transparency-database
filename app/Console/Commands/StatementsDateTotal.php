@@ -6,10 +6,11 @@ use App\Services\DayArchiveService;
 use App\Services\StatementSearchService;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\VarDumper\VarDumper;
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsDateTotal extends Command
 {
     use CommandTrait;

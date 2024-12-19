@@ -2,27 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Models\Platform;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class PlatformFactory extends Factory
 {
-
-
-
-
-
     private function generatePlatformNames() {
 
     }
-
-
-
 
     /**
      * Define the model's default state.
@@ -39,6 +28,7 @@ class PlatformFactory extends Factory
         return [
             'name' => $this->faker->unique()->randomElement($platform_names),
             'dsa_common_id' => $this->faker->uuid(),
+            'uuid' => $this->faker->uuid(),
         ];
     }
 }

@@ -1,24 +1,17 @@
 <?php
 
-
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
-use App\Http\Controllers\DayArchiveController;
+use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -40,26 +33,24 @@ Route::middleware(['force.auth'])->group(static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
             Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');
         });
-        Route::group(['middleware' => ['can:administrate']], static function () {
-            Route::prefix('/admin/')->group(static function () {
-//                Route::resource('role', RoleController::class);
-//                Route::resource('permission', PermissionController::class);
+
+        Route::prefix('/admin/')->group(static function () {
+            Route::group(['middleware' => ['can:administrate']], static function () {
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
             });
+            Route::get('onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
+            Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
         });
 
         Route::resource('user', UserController::class, ['middleware' => ['can:create users']]);
         Route::resource('platform', PlatformController::class, ['middleware' => ['can:create platforms']]);
-
-        Route::get('/admin/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
-        Route::get('/admin/log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
 
         Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
         Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
         Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('create statements');
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('create statements');
 
-});
+    });
 
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
@@ -70,8 +61,15 @@ Route::middleware(['force.auth'])->group(static function () {
         ->where('statement', '[0-9]+')  // Only accept digits for a statement
         ->name('statement.show');
     Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
-    Route::get('/data-download/{uuid?}', [DayArchiveController::class, 'index'])->name('dayarchive.index');
-    Route::get('/daily-archives', static fn() => Redirect::to('/data-download', 301));
+    
+    Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index');
+    
+    Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');
+    Route::view('/explore-data/toolbox', 'explore-data.toolbox')->name('explore-data.toolbox');
+    
+    Route::get('/daily-archives', static fn() => Redirect::to(route('dayarchive.index'), 301));
+    Route::get('/data-download', static fn() => Redirect::to(route('dayarchive.index'), 301));
+
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');

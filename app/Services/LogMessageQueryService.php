@@ -26,12 +26,8 @@ class LogMessageQueryService
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
-                try {
-                    if (method_exists($this, $method)) {
-                        $this->$method($query, $filters[$filter_key]);
-                    }
-                } catch (TypeError|Exception $e) {
-                    Log::error("Log Message Query Service Error", ['exception' => $e]);
+                if (method_exists($this, $method)) {
+                    $this->$method($query, $filters[$filter_key]);
                 }
             }
         }
@@ -47,7 +43,7 @@ class LogMessageQueryService
      */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        if (preg_match('/^\d+$/', $filter_value)) {
+        if (filter_var($filter_value, FILTER_VALIDATE_INT)) {
             $filter_value = (int)$filter_value;
             $query->where('id', $filter_value);
         } else {

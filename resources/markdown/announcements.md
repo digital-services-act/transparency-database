@@ -1,9 +1,14 @@
-#### [Announcement – DB] 2025 Update of the DSA Transparency Database schema in line with the Implementing Regulation on Transparency Reporting 
+#### [Announcement – Dashboard] New pages and filters for better separation between platforms
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published Published 19/12/2024</p>
+
+On 14th October 2024, the [dashboard](/dashboard) of the DSA Transparency Database was updated to include a clearer separation between the Statements of Reasons submitted by Very Large Online Platforms (VLOPs)  and the rest (non-VLOP) platforms. The changes are particularly notable in the first and second pages of the dashboard; unified information for all platforms is available in page 6 (‘all platforms’). A new taxonomy was also added in the ‘Platforms’ filter that allows users to select with a single click all the VLOPs or all the non-VLOPs.
+
+#### [Announcement – DB] 2025 Update of the DSA Transparency Database schema in line with the Implementing Regulation on Transparency Reporting
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 04/11/2024</p>
 
 
-Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations" class="ecl-link">published the Implementing Act on Transparency Reporting</a>, which standardizes the form, content and reporting periods of DSA transparency reports. To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database will be updated to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. As of 1 July 2025, statements of reasons that are submitted to the DSA Transparency Database therefore will have to comply with the updated schema. To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database in Q2 of 2025. 
+Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations" class="ecl-link">published the Implementing Act on Transparency Reporting</a>, which standardizes the form, content and reporting periods of DSA transparency reports. To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database will be updated to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. As of 1 July 2025, statements of reasons that are submitted to the DSA Transparency Database therefore will have to comply with the updated schema. To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database in Q2 of 2025.
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
@@ -11,12 +16,11 @@ Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/
 #### [Announcement – DSA-TDB] New open-source package on code.europa.eu
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 29/10/2024</p>
 
+The DSA Transparency Database team is pleased to announce the release of a new open-source package on [code.europa.eu](https://code.europa.eu/info/about), designed to facilitate the download and analysis of data in the Database. The application, called [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb), is a Python package that aims to streamline the data analysis process and support future research.
 
-The DSA Transparency Database team is pleased to announce the release of a new open-source package on [code.europa.eu](https://code.europa.eu/info/about), designed to facilitate the download and analysis of data in the Database. The application, called [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb), is a Python package that aims to streamline the data analysis process and support future research. 
+dsa-tdb is available for use in various formats, including a [command line interface](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/commands.html), an [interactive mode](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html), and a [Docker container](https://code.europa.eu/dsa/transparency-database/dsa-tdb/container_registry) serving a Jupyter notebook server out of the box. To access the package and start exploring the DSA Transparency Database data, visit the [dsa-tdb package homepage](https://code.europa.eu/dsa/transparency-database/dsa-tdb) and read the [online documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html).
 
-dsa-tdb is available for use in various formats, including a [command line interface](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/commands.html), an [interactive mode](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html), and a [Docker container](https://code.europa.eu/dsa/transparency-database/dsa-tdb/container_registry) serving a Jupyter notebook server out of the box. To access the package and start exploring the DSA Transparency Database data, visit the [dsa-tdb package homepage](https://code.europa.eu/dsa/transparency-database/dsa-tdb) and read the [online documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html). 
-
-We hope this new tool will enhance the user experience of the DSA Transparency Database and support the research community in extracting valuable insights from the database. 
+We hope this new tool will enhance the user experience of the DSA Transparency Database and support the research community in extracting valuable insights from the database.
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 

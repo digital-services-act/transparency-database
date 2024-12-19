@@ -15,6 +15,7 @@ class TokenService
             ->where('platforms.vlop', 1)
             ->whereNot('platforms.id', $dsa_team_platform_id)
             ->whereNull('users.deleted_at')
+            ->distinct()
             ->count('users.id');
     }
 
@@ -26,6 +27,7 @@ class TokenService
             ->where('platforms.vlop', 0)
             ->whereNot('platforms.id', $dsa_team_platform_id)
             ->whereNull('users.deleted_at')
+            ->distinct()
             ->count('users.id');
     }
 }

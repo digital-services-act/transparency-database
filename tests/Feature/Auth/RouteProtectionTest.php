@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
 class RouteProtectionTest extends TestCase
@@ -116,6 +117,13 @@ class RouteProtectionTest extends TestCase
 //        $this->check_route_for_text($route, $allowed, $rejected, 'Log Messages');
 
     }
+
+    public function test_ensure_that_force_authentication_is_working(): void
+    {
+        Config::set('app.env_real', 'dev');
+        $this->get('/')->assertRedirect();
+    }
+
 
     private function check_route($route, $allowed, $restricted): void
     {

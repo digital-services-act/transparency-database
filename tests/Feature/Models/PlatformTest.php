@@ -55,4 +55,27 @@ class PlatformTest extends TestCase
         $this->assertNotNull($platform->created_by);
         $this->assertNull($platform->updated_by);
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_tell_if_it_is_dsa_or_not(): void
+    {
+        $platform = Platform::create([
+            'vlop' => 1,
+            'onboarded' => 1,
+            'name' => 'test platform'
+        ]);
+
+        $this->assertFalse($platform->isDSA());
+
+        $platform = Platform::create([
+            'vlop' => 1,
+            'onboarded' => 1,
+            'name' => Platform::LABEL_DSA_TEAM,
+        ]);
+
+        $this->assertTrue($platform->isDSA());
+    }
 }

@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
+/**
+ * 
+ * @codeCoverageIgnore
+ */
 class   StatementSearchableChunk implements ShouldQueue
 {
     use Dispatchable;

@@ -106,5 +106,8 @@ class Locale
                 return strtolower($preferredLanguage);
             }
         }
+
+        // Return default locale if no supported locale is found
+        return config('app.locale');
     }
 }

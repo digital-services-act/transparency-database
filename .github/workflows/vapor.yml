@@ -14,7 +14,7 @@ jobs:
       - name: Install Dependencies
         run: |
           php --version
-          composer install -n --prefer-dist
+          composer install -n --prefer-dist --no-progress
       - name: Prepare Laravel Application
         run: cp .env.ci .env
       - name: Generate key
@@ -29,7 +29,13 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: php artisan test --parallel
+        run: php artisan test --parallel --coverage-clover clover.xml
+      - name: Code Coverage Check
+        uses: sourcetoad/phpunit-coverage-action@v1
+        with:
+            clover_report_path: clover.xml
+            min_coverage_percent: 100
+            fail_build_on_under: true  
 #      - name: Require Vapor CLI
 #        run: composer global require laravel/vapor-cli
 #      - name: Deploy Environment

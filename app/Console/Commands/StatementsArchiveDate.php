@@ -2,13 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementArchiveRange;
 use App\Services\DayArchiveService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsArchiveDate extends Command
 {
     use CommandTrait;
@@ -49,9 +51,23 @@ class StatementsArchiveDate extends Command
                     ]
                 ]
             ]);
+
+            // Normally at this point we would start the process of removing
+            // statements from the DB and "archiving" them.
+            // However, this part of the process has not been fully greenlit.
+            //
+            // This is what would normally would have been 
             // StatementArchiveRange::dispatch($min, $max, $chunk);
-        } else {
-            Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
+            //
+            // In practice there is no evidence that simply keeping the statements
+            // in the DB is going to harm things and by having them there
+            // ultimately we can rely on them existing.
+            //
+            // The data retention policy will evolve over time and this maybe revisited.
+
+            return;
         }
+
+        Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
     }
 }

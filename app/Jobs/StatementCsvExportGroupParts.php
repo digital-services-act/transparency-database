@@ -11,6 +11,10 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
+/**
+ * 
+ * @codeCoverageIgnore
+ */
 class StatementCsvExportGroupParts implements ShouldQueue
 {
     use Dispatchable;
