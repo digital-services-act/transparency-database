@@ -13,6 +13,7 @@ environments:
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
     warm: 100
+    scheduler: true
     timeout: 240
     queue-timeout: 300
     cache: redis-prod
