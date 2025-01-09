@@ -16,6 +16,7 @@ class PlatformUserAPIControllerTest extends TestCase
     use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
+
     private array $emails;
 
     private Platform $platform;
@@ -25,7 +26,6 @@ class PlatformUserAPIControllerTest extends TestCase
      */
     public function api_platform_user_store_requires_auth(): void
     {
-
         // Not signing in.
 
         $platform = Platform::first();
@@ -41,8 +41,6 @@ class PlatformUserAPIControllerTest extends TestCase
      */
     public function api_platform_user_store_creates_the_user(): void
     {
-
-
         $this->signInAsOnboarding();
 
         $platform = Platform::first();
@@ -54,16 +52,18 @@ class PlatformUserAPIControllerTest extends TestCase
             ]
         ];
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
-            'Accept' => 'application/json'
-        ]);
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),
+            $this->emails, [
+                'Accept' => 'application/json'
+            ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
         //If we retry with the same users, we get an error as the emails can't be duplicates
-        $retry = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
-            'Accept' => 'application/json'
-        ]);
+        $retry = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),
+            $this->emails, [
+                'Accept' => 'application/json'
+            ]);
 
         $retry->assertStatus(422);
 
@@ -76,9 +76,8 @@ class PlatformUserAPIControllerTest extends TestCase
                 "emails.1" => [
                     "The email email2@platform.com is already known in the system."
                 ]
-            ]]);
-
-
+            ]
+        ]);
     }
 
     /**
@@ -87,7 +86,6 @@ class PlatformUserAPIControllerTest extends TestCase
     public function it_should_not_create_duplicates(): void
     {
         // If the user already logged in with EU Login and belongs to a platform, we don't need to add the user again.
-
 
 
         $this->signInAsOnboarding();
@@ -103,16 +101,19 @@ class PlatformUserAPIControllerTest extends TestCase
         //Create a user with the same email
         $platform_user = User::factory()
             ->create(
-                ['email' => 'email1@platform.com',
-                    'platform_id' => $platform->id]
+                [
+                    'email' => 'email1@platform.com',
+                    'platform_id' => $platform->id
+                ]
             );
 
         $platform_user->assignRole('Contributor');
 
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
-            'Accept' => 'application/json'
-        ]);
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),
+            $this->emails, [
+                'Accept' => 'application/json'
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -120,10 +121,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->signIn($platform_user);
 
         $this->get(route('statement.create'))->assertOk();
-
-
     }
-
 
 
     /**
@@ -131,8 +129,6 @@ class PlatformUserAPIControllerTest extends TestCase
      */
     public function it_should_onboard_the_user(): void
     {
-
-
         $this->withoutExceptionHandling();
 
         $this->signInAsOnboarding();
@@ -154,14 +150,53 @@ class PlatformUserAPIControllerTest extends TestCase
                 ]
             );
 
-        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]), $this->emails, [
-            'Accept' => 'application/json'
-        ]);
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),
+            $this->emails, [
+                'Accept' => 'application/json'
+            ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->checkOnboarding($platform_user->fresh(), $platform);
+    }
 
+    /**
+     * @test
+     */
+    public function it_should_onboard_two_users_with_plus_sign_in_email(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $this->signInAsOnboarding();
+
+        $platform = Platform::create([
+            'name' => 'test onboarding',
+            'dsa_common_id' => 'test-common-id'
+        ]);
+
+        $platform_user = User::factory()
+            ->create(
+                [
+                    'email' => 'email@platform.com',
+                    'platform_id' => $platform->id
+                ]
+            );
+
+        $this->emails = [
+            'emails' => [
+                'email+dsa1@platform.com',
+                'email+dsa2@platform.com'
+            ]
+        ];
+
+        $response = $this->post(route('api.v1.platform-users.store', ['platform' => $platform->dsa_common_id]),
+            $this->emails, [
+                'Accept' => 'application/json'
+            ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(3, $platform->fresh()->users);
     }
 
     /**
@@ -174,7 +209,6 @@ class PlatformUserAPIControllerTest extends TestCase
 
         $response = $this->get(route('statement.create'));
         $response->assertOk();
-
     }
 
 
