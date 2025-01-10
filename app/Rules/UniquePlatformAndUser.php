@@ -11,18 +11,20 @@ class UniquePlatformAndUser implements Rule
     #[\Override]
     public function passes($attribute, $value)
     {
-        $platform = request('platform');
-        $emails = request('emails');
-
-        // Check the uniqueness for each combination
-        foreach ($emails as $email) {
-            if (User::where([['platform_id', "=", $platform->id], ['email', '=', $email]])
-                ->exists()) {
-                return false;
-            }
+        $user = User::where('email', $value)->first();
+        
+        // If user doesn't exist, it's valid
+        if (!$user) {
+            return true;
         }
 
-        return true;
+        // If user exists but has no platform, it's valid (will be assigned to this platform)
+        if ($user->platform_id === null) {
+            return true;
+        }
+
+        // If user exists and has a platform, it's invalid
+        return false;
     }
 
     #[\Override]
