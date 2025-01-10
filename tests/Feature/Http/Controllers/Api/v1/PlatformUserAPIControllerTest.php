@@ -200,6 +200,59 @@ class PlatformUserAPIControllerTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function it_should_not_allow_same_user_on_different_platforms(): void
+    {
+        $this->signInAsOnboarding();
+
+        // Create two different platforms
+        $platform1 = Platform::factory()->create(['name' => 'Platform 1']);
+        $platform2 = Platform::factory()->create(['name' => 'Platform 2']);
+
+        $email = 'test.user@example.com';
+        $emails = [
+            'emails' => [$email]
+        ];
+
+        // Create user for platform 1
+        $response1 = $this->post(
+            route('api.v1.platform-users.store', ['platform' => $platform1->dsa_common_id]),
+            $emails,
+            ['Accept' => 'application/json']
+        );
+
+        $response1->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas('users', [
+            'email' => $email,
+            'platform_id' => $platform1->id
+        ]);
+
+        // Try to create the same user for platform 2
+        $response2 = $this->post(
+            route('api.v1.platform-users.store', ['platform' => $platform2->dsa_common_id]),
+            $emails,
+            ['Accept' => 'application/json']
+        );
+
+        $response2->assertStatus(422);
+        $response2->assertJson([
+            "message" => "The email test.user@example.com is already known in the system.",
+            "errors" => [
+                "emails.0" => [
+                    "The email test.user@example.com is already known in the system."
+                ]
+            ]
+        ]);
+
+        // Verify user still belongs to platform 1
+        $this->assertDatabaseHas('users', [
+            'email' => $email,
+            'platform_id' => $platform1->id
+        ]);
+    }
+
+    /**
      * @param $platform
      * @return void
      */
@@ -213,4 +266,3 @@ class PlatformUserAPIControllerTest extends TestCase
 
 
 }
-
