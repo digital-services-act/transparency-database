@@ -3,10 +3,17 @@
 namespace App\Http\Requests;
 
 use App\Models\Platform;
+use App\Http\Controllers\Traits\ApiLoggingTrait;
+use App\Models\ApiLog;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class PlatformStoreRequest extends FormRequest
 {
+    use ApiLoggingTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -37,5 +44,36 @@ class PlatformStoreRequest extends FormRequest
     private function in(array $array): string
     {
         return 'in:' . implode(',', $array);
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param Validator $validator
+     * @return void
+     *
+     * @throws ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $responseData = [
+            'message' => $validator->errors()->first(),
+            'errors' => $validator->errors()
+        ];
+
+        $response = response()->json($responseData, Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        // Create API log with validation error
+        ApiLog::create([
+            'endpoint' => $this->path(),
+            'method' => $this->method(),
+            'platform_id' => null,
+            'request_data' => $this->all(),
+            'response_data' => $responseData,
+            'response_code' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            'error_message' => $validator->errors()->first(),
+        ]);
+
+        throw new ValidationException($validator, $response);
     }
 }
