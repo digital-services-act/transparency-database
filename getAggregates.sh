@@ -14,10 +14,10 @@ while [[ "$current_date" != "$end_date" ]]; do
     csv_url="https://dsa-sor-data-dumps.s3.eu-central-1.amazonaws.com/$base_csv"
 
     if [ ! -f $base_json ]; then
-     wget -q $json_url
+     curl -s -O $json_url
     fi
     if [ ! -f $base_csv ]; then
-      wget -q $csv_url
+      curl -s -O $csv_url
     fi
  
     # Increment current date by 1 day
