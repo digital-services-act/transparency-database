@@ -135,17 +135,22 @@ class DayArchiveService
         return DayArchive::query()->whereDate('date', $date);
     }
 
+    private function cleanTextField(string $fieldName): string
+    {
+        return "REPLACE(REPLACE({$fieldName}, '\n', ' '), '\\\\\"', '\"') AS {$fieldName}";
+    }
+
     public function getSelectRawString(): string
     {
         $selects = [];
         $selects[] = "id";
         $selects[] = "uuid";
         $selects[] = "decision_visibility";
-        $selects[] = "REPLACE(REPLACE(decision_visibility_other, '\n', ' '), '\\\"', '\"') AS decision_visibility_other";
+        $selects[] = $this->cleanTextField("decision_visibility_other");
         $selects[] = "end_date_visibility_restriction";
 
         $selects[] = "decision_monetary";
-        $selects[] = "REPLACE(REPLACE(decision_monetary_other, '\n', ' '), '\\\"', '\"') AS decision_monetary_other";
+        $selects[] = $this->cleanTextField("decision_monetary_other");
         $selects[] = "end_date_monetary_restriction";
 
         $selects[] = "decision_provision";
@@ -156,35 +161,35 @@ class DayArchiveService
         $selects[] = "account_type";
 
         $selects[] = "decision_ground";
-        $selects[] = "REPLACE(REPLACE(decision_ground_reference_url, '\n',' '), '\\\"', '\"') AS decision_ground_reference_url";
+        $selects[] = $this->cleanTextField("decision_ground_reference_url");
 
-        $selects[] = "REPLACE(REPLACE(illegal_content_legal_ground, '\n',' '), '\\\"', '\"') AS illegal_content_legal_ground";
-        $selects[] = "REPLACE(REPLACE(illegal_content_explanation, '\n',' '), '\\\"', '\"') AS illegal_content_explanation";
-        $selects[] = "REPLACE(REPLACE(incompatible_content_ground, '\n',' '), '\\\"', '\"') AS incompatible_content_ground";
-        $selects[] = "REPLACE(REPLACE(incompatible_content_explanation, '\n',' '), '\\\"', '\"') AS incompatible_content_explanation";
+        $selects[] = $this->cleanTextField("illegal_content_legal_ground");
+        $selects[] = $this->cleanTextField("illegal_content_explanation");
+        $selects[] = $this->cleanTextField("incompatible_content_ground");
+        $selects[] = $this->cleanTextField("incompatible_content_explanation");
         $selects[] = "incompatible_content_illegal";
 
         $selects[] = "category";
         $selects[] = "category_addition";
         $selects[] = "category_specification";
-        $selects[] = "REPLACE(REPLACE(category_specification_other, '\n',' '), '\\\"', '\"') AS category_specification_other";
+        $selects[] = $this->cleanTextField("category_specification_other");
 
         $selects[] = "content_type";
-        $selects[] = "REPLACE(REPLACE(content_type_other, '\n',' '), '\\\"', '\"') AS content_type_other";
+        $selects[] = $this->cleanTextField("content_type_other");
         $selects[] = "content_language";
         $selects[] = "content_date";
 
         $selects[] = "territorial_scope";
         $selects[] = "application_date";
-        $selects[] = "REPLACE(REPLACE(decision_facts, '\n',' '), '\\\"', '\"') AS decision_facts";
+        $selects[] = $this->cleanTextField("decision_facts");
 
         $selects[] = "source_type";
-        $selects[] = "REPLACE(REPLACE(source_identity, '\n',' '), '\\\"', '\"') AS source_identity";
+        $selects[] = $this->cleanTextField("source_identity");
 
         $selects[] = "automated_detection";
         $selects[] = "automated_decision";
 
-        $selects[] = "REPLACE(REPLACE(puid, '\n',' '), '\\\"', '\"') AS puid";
+        $selects[] = $this->cleanTextField("puid");
         $selects[] = "created_at";
         $selects[] = "platform_id";
 
