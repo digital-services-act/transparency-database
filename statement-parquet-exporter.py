@@ -15,6 +15,10 @@ import pyarrow.parquet as pq
 import boto3
 from sqlalchemy import create_engine, text
 import sys
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class StatementExporter:
@@ -26,11 +30,25 @@ class StatementExporter:
         self.max_workers = 32  # Fixed number for 96 vCPU instance
         
         # Setup database connection
-        db_host = os.getenv('DB_HOST_READER', 'localhost')
-        db_port = os.getenv('DB_PORT', '3306')
-        db_database = os.getenv('DB_DATABASE', '')
-        db_username = os.getenv('DB_USERNAME', '')
-        db_password = os.getenv('DB_PASSWORD', '')
+        db_host = os.getenv('DB_HOST')
+        if not db_host:
+            raise ValueError("DB_HOST not set in .env file")
+            
+        db_port = os.getenv('DB_PORT')
+        if not db_port:
+            raise ValueError("DB_PORT not set in .env file")
+            
+        db_database = os.getenv('DB_DATABASE')
+        if not db_database:
+            raise ValueError("DB_DATABASE not set in .env file")
+            
+        db_username = os.getenv('DB_USERNAME')
+        if not db_username:
+            raise ValueError("DB_USERNAME not set in .env file")
+            
+        db_password = os.getenv('DB_PASSWORD')
+        if not db_password:
+            raise ValueError("DB_PASSWORD not set in .env file")
         
         connection_string = f'mysql+pymysql://{db_username}:{db_password}@{db_host}:{db_port}/{db_database}'
         
@@ -49,12 +67,23 @@ class StatementExporter:
         self.CHUNK_SIZE = 100000
         
         # Initialize S3 client
+        aws_access_key = os.getenv('AWS_DS_ACCESS_KEY_ID')
+        if not aws_access_key:
+            raise ValueError("AWS_DS_ACCESS_KEY_ID not set in .env file")
+            
+        aws_secret_key = os.getenv('AWS_DS_SECRET_ACCESS_KEY')
+        if not aws_secret_key:
+            raise ValueError("AWS_DS_SECRET_ACCESS_KEY not set in .env file")
+            
+        self.s3_bucket = os.getenv('AWS_PARQUET_BUCKET')
+        if not self.s3_bucket:
+            raise ValueError("AWS_PARQUET_BUCKET not set in .env file")
+        
         self.s3_client = boto3.client(
             's3',
-            aws_access_key_id=os.getenv('AWS_DS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.getenv('AWS_DS_SECRET_ACCESS_KEY')
+            aws_access_key_id=aws_access_key,
+            aws_secret_access_key=aws_secret_key
         )
-        self.s3_bucket = os.getenv('AWS_PARQUET_BUCKET')
         
         # Load platform data into memory
         self._echo("Loading platform data...")
