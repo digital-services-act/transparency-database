@@ -433,8 +433,8 @@ if __name__ == "__main__":
     parser.add_argument(
         '-o', '--output-dir',
         type=str,
-        default='./output',
-        help='Output directory for parquet files'
+        default='storage/app',
+        help='Output directory for parquet files (default: storage/app)'
     )
     
     args = parser.parse_args()
