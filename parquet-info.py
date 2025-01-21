@@ -26,14 +26,13 @@ def get_parquet_info(file_path: str, show_schema: bool = False, sample_rows: Opt
     print(f"Total Rows: {total_rows:,}")
     
     # Get schema information
-    schema = parquet_file.schema
+    schema = parquet_file.schema_arrow
     print(f"Columns: {len(schema.names)}")
     
     if show_schema:
         print("\nSchema:")
-        for i, name in enumerate(schema.names, 1):
-            field = schema.field(name)
-            print(f"{i}. {name}: {field.type}")
+        for i, field in enumerate(schema, 1):
+            print(f"{i}. {field.name}: {field.type}")
     
     # Show sample if requested
     if sample_rows:
