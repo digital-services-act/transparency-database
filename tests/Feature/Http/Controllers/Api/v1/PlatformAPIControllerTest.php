@@ -161,9 +161,9 @@ class PlatformAPIControllerTest extends TestCase
             'vlop' => 0
         ]);
 
-        // Try to create a platform with the same name
+        // Try to create a platform with the same name but different case
         $response = $this->post(route('api.v1.platform.store'), [
-            'name' => 'Existing Platform',
+            'name' => 'EXISTING PLATFORM',
             'vlop' => 0,
             'dsa_common_id' => 'new-id-123'
         ], [
@@ -172,7 +172,7 @@ class PlatformAPIControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertEquals($existingPlatform->id, $response->json('id'));
-        $this->assertEquals('Existing Platform', $response->json('name'));
+        $this->assertEquals('Existing Platform', $response->json('name')); // Should keep original case
         $this->assertEquals('new-id-123', $response->json('dsa_common_id'));
         $this->assertEquals(0, $response->json('vlop')); // Should keep the original vlop value
         $this->assertCount(21, Platform::all()); // No new platform should be created

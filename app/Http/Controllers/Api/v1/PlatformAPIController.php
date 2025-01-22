@@ -39,8 +39,8 @@ class PlatformAPIController extends Controller
             function () use ($request) {
                 $validated = $request->safe()->toArray();
                 
-                // Check if a platform with the same name exists
-                $existingPlatform = Platform::where('name', $validated['name'])->first();
+                // Check if a platform with the same name exists (case insensitive)
+                $existingPlatform = Platform::whereRaw('LOWER(name) = ?', [strtolower($validated['name'])])->first();
                 
                 if (!$existingPlatform) {
                     // If no existing platform found, create a new one
