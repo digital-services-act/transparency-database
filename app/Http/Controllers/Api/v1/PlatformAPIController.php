@@ -38,8 +38,29 @@ class PlatformAPIController extends Controller
             $request,
             function () use ($request) {
                 $validated = $request->safe()->toArray();
-                $platform = Platform::create($validated);
-                return response()->json($platform, Response::HTTP_CREATED);
+                
+                // Check if a platform with the same name exists
+                $existingPlatform = Platform::where('name', $validated['name'])->first();
+                
+                if (!$existingPlatform) {
+                    // If no existing platform found, create a new one
+                    $platform = Platform::create($validated);
+                    return response()->json($platform, Response::HTTP_CREATED);
+                }
+                
+                // If platform exists and has a dsa_common_id, throw an exception
+                if ($existingPlatform->dsa_common_id !== null) {
+                    $validator = validator([], []);
+                    $validator->errors()->add('name', 'A platform with this name already exists and has a DSA Common ID');
+                    throw new \Illuminate\Validation\ValidationException($validator);
+                }
+                
+                // Update the existing platform with any new data, but keep original values if not provided
+                if (isset($validated['dsa_common_id'])) {
+                    $existingPlatform->dsa_common_id = $validated['dsa_common_id'];
+                    $existingPlatform->save();
+                }
+                return response()->json($existingPlatform, Response::HTTP_OK);
             },
             null
         );
