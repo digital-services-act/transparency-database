@@ -844,14 +844,16 @@ class StatementSearchService
 
     public function uuidToId(string $uuid): int
     {
-        $uuid = str_replace("-", " ", $uuid); // replace the - with ' '
         $query = [
             "size" => 1,
             "query" => [
-                "match" => [
-                    "uuid" => [
-                        "query" => $uuid,
-                        "operator" => "and",
+                "bool" => [
+                    "must" => [
+                        [
+                            "match_phrase" => [
+                                "uuid" => $uuid,
+                            ],
+                        ],
                     ],
                 ],
             ],
