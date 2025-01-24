@@ -17,7 +17,7 @@
                     <div class="ecl-site-header__action">
 
                         @if(config('dsa.webt.clientId'))
-                            <x-ecl.language-menu />
+                            <x-ecl.language-menu/>
                         @endif
                         {{--                        <x-ecl.search-site/>--}}
                         <x-ecl.login-menu/>
@@ -94,12 +94,58 @@
                                id="ecl-menu-home-link">Dashboard</a>
                         </li>
 
-                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
-                            <a href="{{ route('dayarchive.index') }}"
+                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
+                            data-ecl-has-children=""
+                            aria-expanded="false" id="ecl-menu-item-platforms">
+                            <a href="{{  route('explore-data.overview') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
-                               data-ecl-menu-link
-                               id="ecl-menu-home-link">Data Download</a>
+                               data-ecl-menu-link=""
+                               id="ecl-menu-item-platforms-link">Explore Data</a>
+                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
+                                    type="button"
+                                    data-ecl-menu-caret="" aria-label="Explore Data"
+                                    aria-expanded="false">
+                                        <span class="ecl-button__container">
+                                            <svg
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                focusable="false"
+                                                aria-hidden="true"
+                                                data-ecl-icon="">
+                                                <x-ecl.icon icon="corner-arrow"/>
+                                            </svg>
+                                        </span>
+                            </button>
+
+                            <div class="ecl-menu__mega" data-ecl-menu-mega="">
+                                <ul class="ecl-menu__sublist">
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('explore-data.overview') }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">
+                                            Overview
+                                        </a>
+                                    </li>
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('dayarchive.index') }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">
+                                            Download
+                                        </a>
+                                    </li>
+
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('explore-data.toolbox') }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">
+                                            Toolbox
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
                         </li>
+
+
 
                         <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
                             <a href="{{ route('statement.index') }}"
@@ -122,10 +168,10 @@
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
                                             <svg
-                                                    class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                                                    focusable="false"
-                                                    aria-hidden="true"
-                                                    data-ecl-icon="">
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                focusable="false"
+                                                aria-hidden="true"
+                                                data-ecl-icon="">
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </span>
@@ -133,14 +179,14 @@
 
                             <div class="ecl-menu__mega" data-ecl-menu-mega="">
                                 <ul class="ecl-menu__sublist">
-{{--                                    @can('create statements')--}}
-{{--                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
-{{--                                            <a href="{{ route('statement.create') }}"--}}
-{{--                                               class="ecl-link ecl-link--standalone ecl-menu__sublink">--}}
-{{--                                                Submit statements of reasons--}}
-{{--                                            </a>--}}
-{{--                                        </li>--}}
-{{--                                    @endcan--}}
+                                    {{--                                    @can('create statements')--}}
+                                    {{--                                        <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
+                                    {{--                                            <a href="{{ route('statement.create') }}"--}}
+                                    {{--                                               class="ecl-link ecl-link--standalone ecl-menu__sublink">--}}
+                                    {{--                                                Submit statements of reasons--}}
+                                    {{--                                            </a>--}}
+                                    {{--                                        </li>--}}
+                                    {{--                                    @endcan--}}
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['documentation']) }}"
@@ -151,15 +197,20 @@
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['onboarding-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Platform Onboarding</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Platform
+                                            Onboarding</a>
                                     </li>
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
                                         <a href="{{  route('page.show', ['api-documentation']) }}"
-                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Submission API and data format</a>
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">API and Schema</a>
                                     </li>
 
+                                    {{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
+                                    {{--                                        <a href="{{  route('page.show', ['migration-to-api-v-two']) }}"--}}
+                                    {{--                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Migration to API v2</a>--}}
+                                    {{--                                    </li>--}}
 
 
                                     <li class="ecl-menu__subitem" data-ecl-menu-subitem="">

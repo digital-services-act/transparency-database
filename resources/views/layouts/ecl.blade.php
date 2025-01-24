@@ -125,7 +125,6 @@
         WebsiteTranslator.Options.api.version = {{ config('dsa.webt.version') }};
         WebsiteTranslator.Options.ui.layout = "menu";
         WebsiteTranslator.Initialize();
-        console.log(WebsiteTranslator);
     </script>
 @endif
 </body>

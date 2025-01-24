@@ -2,24 +2,25 @@
 
 
 @if($platform)
-    @section('title', 'Data Download for ' . $platform->name)
+    @section('title', 'Download for ' . $platform->name)
 @else
-    @section('title', 'Data Download')
+    @section('title', 'Download')
 @endif
 
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Data Download"/>
+    <x-ecl.breadcrumb label="Explore Data"/>
+    <x-ecl.breadcrumb label="Download" more="true"/>
 @endsection
 
 
 @section('content')
 
     @if($platform)
-        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download for {{ $platform->name }}</h1>
+        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Download for {{ $platform->name }}</h1>
     @else
-        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Data Download</h1>
+        <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Download</h1>
     @endif
 
     <x-ecl.message type="warning" icon="warning" title="Work in progress"

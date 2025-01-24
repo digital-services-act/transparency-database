@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Exports;
+
 trait StatementExportTrait
 {
     /**
@@ -61,7 +62,7 @@ trait StatementExportTrait
 
             "platform_name",
             "platform_uid",
-            "created_at"
+            "created_at",
         ];
     }
 
@@ -122,7 +123,7 @@ trait StatementExportTrait
 
             "platform_name",
             "platform_uid",
-            "created_at"
+            "created_at",
         ];
     }
 
@@ -189,9 +190,11 @@ trait StatementExportTrait
             $statement->getRawOriginal('created_at'),
         ];
 
-        foreach ($out as $key => $value) {
+        foreach ($out as $key => $value)
+        {
             $value = trim($value);
             $value = preg_replace('~[\r\n]+~', ' ', $value);
+            $value = str_replace("\\\"", '"', $value);
             $out[$key] = $value;
         }
 
