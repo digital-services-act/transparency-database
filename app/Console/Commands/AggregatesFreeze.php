@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\StatementSearchService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use JsonException;
 
@@ -48,6 +49,39 @@ class AggregatesFreeze extends Command
             false
         );
 
+        Log::info('Number of aggregates in the aggregates freeze results: ' . count($results['aggregates']));
+
+        if (count($results['aggregates']) === 0)
+        {
+            Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 10 seconds and trying again');
+            sleep(10);
+            $results = $statement_search_service->processDateAggregate(
+                $date,
+                $attributes,
+                false
+            );
+            Log::info('Number of aggregates in the aggregates freeze results: ' . count($results['aggregates']));
+        }
+
+        if (count($results['aggregates']) === 0)
+        {
+            Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 20 seconds and trying again');
+            sleep(20);
+            $results = $statement_search_service->processDateAggregate(
+                $date,
+                $attributes,
+                false
+            );
+            Log::info('Number of aggregates in the aggregates freeze results: ' . count($results['aggregates']));
+        }
+
+
+        if (count($results['aggregates']) === 0)
+        {
+            Log::warning('The number of aggregates in the aggregates freeze results is still 0, exiting');
+            exit;
+        }
+
         // Make the CSV
         $headers = $statement_search_service->getAllowedAggregateAttributes();
         $headers[] = 'platform_name';
@@ -56,9 +90,11 @@ class AggregatesFreeze extends Command
 
         $out = fopen($path . $csv_file, 'wb');
         fputcsv($out, $headers);
-        foreach ($results['aggregates'] as $result) {
+        foreach ($results['aggregates'] as $result)
+        {
             $row = [];
-            foreach ($headers as $header) {
+            foreach ($headers as $header)
+            {
                 $row[] = $result[$header];
             }
 
