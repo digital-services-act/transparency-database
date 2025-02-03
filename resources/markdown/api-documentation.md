@@ -797,6 +797,7 @@ Replace ```<PUID>``` with the actual PUID you want to check.
 
 * HTTP Status: ```302 Found```.
 * Response Body
+
 ```javascript
 {
     "message": "statement of reason found", 
