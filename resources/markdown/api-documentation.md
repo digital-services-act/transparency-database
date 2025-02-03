@@ -760,20 +760,18 @@ No spaces, new-line or any other special characters are accepted.
 
 ## Existing PUID
 
-There is an endpoint that will allow you to get a SoR by PUID. Note that the SoR will usually be retrievable through
-this endpoint 24 hours after its submission.
+This endpoint allows you to determine whether a given PUID (Persistent Unique Identifier) is already associated with a Statement of Reason (SoR).
 
-To check if an existing PUID is alread used in a statement of reason using the API you will need to make a
+To check if an existing PUID is already used in a statement of reason using the API you will need to make a
 ```GET``` request to this endpoint.
 
 <pre>
     {{route('api.v'.config('app.api_latest').'.statement.existing-puid', ['puid' => '&lt;PUID&gt;'])}}
 </pre>
 
-Where ```<PUID>``` is the puid that you would like to check if it is existing already in the database.
+Replace ```<PUID>``` with the actual PUID you want to check.
 
-For this request you will need to provide authorization, accept, and content type
-headers of the request:
+### Required Headers
 
 <pre>
     Authorization: Bearer YOUR_TOKEN
@@ -781,149 +779,30 @@ headers of the request:
     Content-Type: application/json
 </pre>
 
-The response will either be ```404 Not Found``` or ```302 Found```.
+### Responses
 
-When there is no statement found the body will contain the message.
+#### 1. SoR Not Found
+
+* HTTP Status: ```404 Not Found```
+* Response Body
 
 ```javascript
 {
-    "message"
-:
-    "statement of reason not found"
+    "message": "statement of reason not found",
+    "puid": "YOUR_PUID"
 }
 ```
 
-When there is a statement found the existing statement will be returned in the body.
+#### 2. SoR Found
+
+* HTTP Status: ```302 Found```.
+* Response Body
 
 ```javascript
 {
-    "id"
-:
-    23908734597,
-        "uuid"
-:
-    "4b989c23-3736-4fd9-8612-a975b98d88d6",
-        "decision_visibility"
-:
-    [
-        "DECISION_VISIBILITY_CONTENT_DISABLED"
-    ],
-        "decision_visibility_other"
-:
-    null,
-        "decision_monetary"
-:
-    "DECISION_MONETARY_TERMINATION",
-        "decision_monetary_other"
-:
-    null,
-        "decision_provision"
-:
-    "DECISION_PROVISION_TOTAL_SUSPENSION",
-        "decision_account"
-:
-    "DECISION_ACCOUNT_SUSPENDED",
-        "account_type"
-:
-    "ACCOUNT_TYPE_BUSINESS",
-        "decision_ground"
-:
-    "DECISION_GROUND_INCOMPATIBLE_CONTENT",
-        "decision_ground_reference_url"
-:
-    "https://www.anurl.com",
-        "category"
-:
-    "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
-        "category_addition"
-:
-    [],
-        "category_specification"
-:
-    [],
-        "category_specification_other"
-:
-    null,
-        "content_type"
-:
-    [
-        "CONTENT_TYPE_AUDIO",
-        "CONTENT_TYPE_SYNTHETIC_MEDIA",
-        "CONTENT_TYPE_VIDEO"
-    ],
-        "content_type_other"
-:
-    null,
-        "illegal_content_legal_ground"
-:
-    null,
-        "illegal_content_explanation"
-:
-    null,
-        "incompatible_content_ground"
-:
-    "incompatible content grounds",
-        "incompatible_content_explanation"
-:
-    "incompatible content explanation",
-        "incompatible_content_illegal"
-:
-    "Yes",
-        "territorial_scope"
-:
-    [
-        "DE",
-        "ES",
-        "PT"
-    ],
-        "content_language"
-:
-    "EN",
-        "content_date"
-:
-    "2023-08-08",
-        "application_date"
-:
-    "2023-08-08",
-        "end_date_visibility_restriction"
-:
-    null,
-        "end_date_monetary_restriction"
-:
-    "2023-08-08",
-        "end_date_service_restriction"
-:
-    null,
-        "end_date_account_restriction"
-:
-    null,
-        "decision_facts"
-:
-    "facts about the decision",
-        "source_type"
-:
-    "SOURCE_TRUSTED_FLAGGER",
-        "source_identity"
-:
-    null,
-        "automated_detection"
-:
-    "No",
-        "automated_decision"
-:
-    "AUTOMATED_DECISION_PARTIALLY",
-        "created_at"
-:
-    "2024-11-25 09:16:55",
-        "platform_name"
-:
-    "The Platform",
-        "permalink"
-:
-    "https://.../statement/23908734597",
-        "self"
-:
-    "https://.../api/v1/statement/23908734597"
+    "message": "statement of reason found", 
+    "puid": "YOUR_PUID"
+}
 ```
 
 ## Errors

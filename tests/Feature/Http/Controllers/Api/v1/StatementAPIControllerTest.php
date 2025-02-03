@@ -6,6 +6,7 @@ use App\Models\Platform;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Models\User;
+use App\Services\PlatformUniqueIdService;
 use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -25,6 +26,8 @@ class StatementAPIControllerTest extends TestCase
     private array $required_fields;
 
     private Statement $statement;
+
+    protected PlatformUniqueIdService $platformUniqueIdService;
 
     /**
      * @return array
@@ -49,7 +52,7 @@ class StatementAPIControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
+        $this->platformUniqueIdService = app(PlatformUniqueIdService::class);
         $this->required_fields = [
             'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED', 'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
             'decision_monetary' => null,
@@ -117,15 +120,14 @@ class StatementAPIControllerTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_FOUND);
-        $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
-        $this->assertEquals($this->statement->uuid, $response->json('uuid'));
-        $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
+        $this->assertEquals('statement of reason found', $response->json('message'));
+        $this->assertEquals($this->statement->puid, $response->json('puid'));
     }
 
     /**
      * @test
      */
-    public function api_statement_existing_puid_gives_404_when_statement_not_in_db(): void
+    public function api_statement_existing_puid_works_with_record_in_cache(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -134,20 +136,23 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
+        $this->platformUniqueIdService->addPuidToCache($admin->platform_id, $this->statement->puid);
+
         $statement = $this->statement;
 
         $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
-            $mock->shouldReceive('PlatformIdPuidToId')->andReturn($statement->id);
+            $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
         });
-
-        $this->statement->forceDelete();
 
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
             'Accept' => 'application/json'
         ]);
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_FOUND);
+        $this->assertEquals('statement of reason found', $response->json('message'));
+        $this->assertEquals($this->statement->puid, $response->json('puid'));
     }
+
 
     /**
      * @test
@@ -169,6 +174,8 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $this->assertEquals('statement of reason not found', $response->json('message'));
+        $this->assertEquals('a-bad-puid', $response->json('puid'));
     }
 
     /**

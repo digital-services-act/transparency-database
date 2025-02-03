@@ -8,6 +8,7 @@ use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Controllers\Traits\StatementAPITrait;
 use App\Http\Requests\StatementStoreRequest;
+use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\PlatformUniqueIdService;
@@ -28,7 +29,6 @@ class StatementAPIController extends Controller
     use StatementAPITrait;
 
     protected EuropeanCountriesService $european_countries_service;
-
 
 
     public function __construct(
@@ -58,17 +58,21 @@ class StatementAPIController extends Controller
     {
         $platform_id = $this->getRequestUserPlatformId($request);
 
-        $id = $this->statement_search_service->PlatformIdPuidToId($platform_id, $puid);
-        if ($id === 0) {
-            return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
+        $found = false;
+        // First check if PUID exists in cache or in the PlatformPuid Table
+        if ($this->platform_unique_id_service->isPuidInCache($platform_id, $puid) || PlatformPuid::where('platform_id',
+                $platform_id)->where('puid', $puid)->exists()) {
+            $found = true;
         }
 
-        $statement = Statement::find($id);
-        if ($statement) {
-            return response()->json($statement, Response::HTTP_FOUND);
+        if ($found || $this->statement_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
+            // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
+            return response()->json(['message' => 'statement of reason found', 'puid' => $puid], Response::HTTP_FOUND);
         }
 
-        return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
+
+        return response()->json(['message' => 'statement of reason not found', 'puid' => $puid],
+            Response::HTTP_NOT_FOUND);
     }
 
     public function store(StatementStoreRequest $request): JsonResponse
@@ -89,9 +93,8 @@ class StatementAPIController extends Controller
         } catch (PuidNotUniqueSingleException $e) {
             return $e->getJsonResponse();
         }
-        
+
         $statement = Statement::create($validated);
-        
 
 
         $out = $statement->toArray();
