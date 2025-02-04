@@ -38,10 +38,11 @@ class DayArchiveService
 
         $platforms = Platform::NonDsa()->get();
 
-        foreach ($platforms as $platform) {
+        foreach ($platforms as $platform)
+        {
             $export = [
                 'slug' => $platform->slugifyName(),
-                'id' => $platform->id
+                'id' => $platform->id,
             ];
             $exports[$platform->id] = $export;
         }
@@ -55,7 +56,8 @@ class DayArchiveService
         $startOfMinute = $date->copy()->setTime(0, 0, 0);
         $firstId = false;
 
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 60; $i++)
+        {
             // For each iteration, add seconds to the starting point
             $currentSecond = $startOfMinute->copy()->addSeconds($i);
 
@@ -66,7 +68,8 @@ class DayArchiveService
                 ->first();
 
             // If a result is found, return the id
-            if ($first && $first->min) {
+            if ($first && $first->min)
+            {
                 return $first->min;
             }
         }
@@ -83,7 +86,8 @@ class DayArchiveService
         $lastId = false;
 
         // Loop through the last minute, going backwards from 23:59:59 to 23:59:00
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 60; $i++)
+        {
             // Subtract seconds to move backwards
             $currentSecond = $endOfDay->copy()->subSeconds($i);
 
@@ -94,7 +98,8 @@ class DayArchiveService
                 ->first();
 
             // If a result is found, return the id immediately
-            if ($last && $last->max) {
+            if ($last && $last->max)
+            {
                 return $last->max;
             }
         }
@@ -130,17 +135,22 @@ class DayArchiveService
         return DayArchive::query()->whereDate('date', $date);
     }
 
+    private function cleanTextField(string $fieldName): string
+    {
+        return "REPLACE(REPLACE({$fieldName}, '\n', ' '), '\\\\\"', '\"') AS {$fieldName}";
+    }
+
     public function getSelectRawString(): string
     {
         $selects = [];
         $selects[] = "id";
         $selects[] = "uuid";
         $selects[] = "decision_visibility";
-        $selects[] = "REPLACE(decision_visibility_other, '\n', ' ') AS decision_visibility_other";
+        $selects[] = $this->cleanTextField("decision_visibility_other");
         $selects[] = "end_date_visibility_restriction";
 
         $selects[] = "decision_monetary";
-        $selects[] = "REPLACE(decision_monetary_other, '\n', ' ') AS decision_monetary_other";
+        $selects[] = $this->cleanTextField("decision_monetary_other");
         $selects[] = "end_date_monetary_restriction";
 
         $selects[] = "decision_provision";
@@ -151,35 +161,35 @@ class DayArchiveService
         $selects[] = "account_type";
 
         $selects[] = "decision_ground";
-        $selects[] = "REPLACE(decision_ground_reference_url, '\n',' ') AS decision_ground_reference_url";
+        $selects[] = $this->cleanTextField("decision_ground_reference_url");
 
-        $selects[] = "REPLACE(illegal_content_legal_ground, '\n',' ') AS illegal_content_legal_ground";
-        $selects[] = "REPLACE(illegal_content_explanation, '\n',' ') AS illegal_content_explanation";
-        $selects[] = "REPLACE(incompatible_content_ground, '\n',' ') AS incompatible_content_ground";
-        $selects[] = "REPLACE(incompatible_content_explanation, '\n',' ') AS incompatible_content_explanation";
+        $selects[] = $this->cleanTextField("illegal_content_legal_ground");
+        $selects[] = $this->cleanTextField("illegal_content_explanation");
+        $selects[] = $this->cleanTextField("incompatible_content_ground");
+        $selects[] = $this->cleanTextField("incompatible_content_explanation");
         $selects[] = "incompatible_content_illegal";
 
         $selects[] = "category";
         $selects[] = "category_addition";
         $selects[] = "category_specification";
-        $selects[] = "REPLACE(category_specification_other, '\n',' ') AS category_specification_other";
+        $selects[] = $this->cleanTextField("category_specification_other");
 
         $selects[] = "content_type";
-        $selects[] = "REPLACE(content_type_other, '\n',' ') AS content_type_other";
+        $selects[] = $this->cleanTextField("content_type_other");
         $selects[] = "content_language";
         $selects[] = "content_date";
 
         $selects[] = "territorial_scope";
         $selects[] = "application_date";
-        $selects[] = "REPLACE(decision_facts, '\n',' ') AS decision_facts";
+        $selects[] = $this->cleanTextField("decision_facts");
 
         $selects[] = "source_type";
-        $selects[] = "REPLACE(source_identity, '\n',' ') AS source_identity";
+        $selects[] = $this->cleanTextField("source_identity");
 
         $selects[] = "automated_detection";
         $selects[] = "automated_decision";
 
-        $selects[] = "REPLACE(puid, '\n',' ') AS puid";
+        $selects[] = $this->cleanTextField("puid");
         $selects[] = "created_at";
         $selects[] = "platform_id";
 
