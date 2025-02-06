@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PuidNotUniqueSingleException;
 use App\Exports\StatementsExport;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Platform;
@@ -9,6 +10,7 @@ use App\Models\Statement;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use App\Services\PlatformUniqueIdService;
 use App\Services\StatementSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -34,6 +36,7 @@ class StatementController extends Controller
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
+        protected PlatformUniqueIdService $platform_unique_id_service
     )
     {
     }
@@ -180,8 +183,16 @@ class StatementController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
+        try {
+            $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
+            $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
+        } catch (PuidNotUniqueSingleException $e) {
+            return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
+        }
+
+
         $statement = Statement::create($validated);
-        
+
         return redirect()->route('statement.index')->with('success', 'The statement has been created. <a href="/statement/'.$statement->id.'">Click here to view it.</a>');
     }
 

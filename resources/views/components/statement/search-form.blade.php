@@ -53,7 +53,7 @@
                                select_all="All monetary restrictions" select_item="Select one or more monetary restrictions"
                                enter_keyword="Enter a monetary restriction" />
 
-        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
+        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_PROVISION"
                                name="decision_provision"
                                id="decision_provision"
                                justlabel="true"
@@ -61,7 +61,7 @@
                                select_all="All provision restrictions" select_item="Select one or more provision restrictions"
                                enter_keyword="Enter a provision restriction" />
 
-        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_MONETARY"
+        <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_ACCOUNT"
                                name="decision_account"
                                id="decision_account"
                                justlabel="true"
