@@ -74,7 +74,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-    
+
     /**
      * @test
      */
@@ -86,7 +86,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewIs('statement.search');
     }
 
-    
+
     /**
      * @test
      */
@@ -101,7 +101,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    
+
     /**
      * @test
      */
@@ -255,5 +255,32 @@ class StatementControllerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $statement->content_date);
 
         $response->assertRedirect(route('statement.index'));
+    }
+
+    /**
+     * @test
+     * @see StatementAPIControllerTest
+     */
+    public function store_fails_with_existing_puid(): void
+    {
+
+        // This is a basic test that the normal controller is working.
+        // For more advanced testing on the request and such, see the API testing.
+        $user = $this->signInAsAdmin();
+
+        // 10 from seeding.
+        $this->assertCount(10, Statement::all());
+
+        // When making statements via the FORM
+        // The dates come in as d-m-Y from the ECL datepicker.
+        $response = $this->post(route('statement.store'), $this->dummy_attributes);
+
+        $this->assertCount(11, Statement::all());
+
+        $response = $this->post(route('statement.store'), $this->dummy_attributes);
+
+
+        $response->assertRedirect(route('statement.index'));
+        $response->assertSessionHas('error','The PUID is not unique in the database');
     }
 }
