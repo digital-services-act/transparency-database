@@ -28,5 +28,9 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Gate::before(static fn($user, $ability) => $user->hasRole('Admin') ? true : null);
 
+        // Add the new gate for API Key generation
+        Gate::define('generate-api-key', function ($user) {
+            return $user->hasAnyPermission(['generate API Key', 'create statements']);
+        });
     }
 }

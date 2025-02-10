@@ -17,11 +17,13 @@
 
 
     <div class="ecl-row ecl-u-flex ecl-u-flex-wrap ecl-u-mb-xl-6xl" style="gap: 2rem; margin-left: 0;">
-        @can('create statements')
+        @can('generate-api-key')
             <div class="ecl-col ecl-u-flex-item-grow">
                 <a class="ecl-button ecl-button--primary"
                    href="{{ route('profile.api.index') }}">API Token Management</a>
             </div>
+        @endcan
+        @can('create statements')
             <div class="ecl-col ecl-u-flex-item-grow">
                 <a class="ecl-button ecl-button--primary"
                    href="{{ route('statement.create') }}">Submit statements of reasons</a>
