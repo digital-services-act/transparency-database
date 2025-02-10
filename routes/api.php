@@ -23,5 +23,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(static function () {
     Route::get('ping', static fn() => response()->json(["you_say" => "ping", "i_say" => "pong"]));
-    Route::get('user', static fn() => auth()->user())->can('create statements');
+    Route::get('user', static fn() => auth()->user())->can('generate-api-key');
 });

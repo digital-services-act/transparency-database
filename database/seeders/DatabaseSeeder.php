@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             PermissionsSeeder::class,
             StatementSeeder::class,
             OnboardingPermissionsSeeder::class,
-            ResearchersPermissionsSeeder::class
+            ResearchPermissionsSeeder::class
         ]);
     }
 }

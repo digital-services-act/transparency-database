@@ -3,11 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\PermissionRegistrar;
+use Spatie\Permission\Models\Role;
 
-class ResearchersPermissionsSeeder extends Seeder
+class ResearchPermissionsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,9 +19,10 @@ class ResearchersPermissionsSeeder extends Seeder
 
         // Create permissions
         $researchAPIPermission = Permission::create(['name' => 'research API']);
+        $generateAPIKeyPermission = Permission::create(['name' => 'generate API Key']);
 
         // Assign permissions to role
-        $researcherRole->syncPermissions([$researchAPIPermission]);
+        $researcherRole->syncPermissions([$researchAPIPermission, $generateAPIKeyPermission]);
 
     }
 }
