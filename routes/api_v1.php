@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
     });
 
-    Route::group(['prefix' => 'research', 'middleware' => ['can:research API']], static function () {
+    Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {
         Route::post('search', [OpenSearchAPIController::class, 'search']);
         Route::post('count', [OpenSearchAPIController::class, 'count']);
         Route::post('sql', [OpenSearchAPIController::class, 'sql']);
