@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('statement/existing-puid/{puid}', [StatementAPIController::class, 'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
     Route::post('statement', [StatementAPIController::class, 'store'])->name('api.v1.statement.store')->can('create statements');
     Route::post('statements', [StatementMultipleAPIController::class, 'store'])->name('api.v1.statements.store')->can('create statements');
-    Route::group(['prefix'=>'opensearch','middleware' => ['can:administrate']], static function () {
+    Route::group(['prefix' => 'opensearch', 'middleware' => ['can:administrate']], static function () {
         Route::post('search', [OpenSearchAPIController::class, 'search'])->name('api.v1.opensearch.search');
         Route::post('count', [OpenSearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
         Route::post('sql', [OpenSearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
@@ -45,10 +45,11 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
     });
 
-    Route::group(['prefix'=>'research','middleware' => ['can:research API']], static function () {
+    Route::group(['prefix' => 'research', 'middleware' => ['can:research API']], static function () {
         Route::post('search', [OpenSearchAPIController::class, 'search']);
         Route::post('count', [OpenSearchAPIController::class, 'count']);
         Route::post('sql', [OpenSearchAPIController::class, 'sql']);
+        Route::post('query', [OpenSearchAPIController::class, 'dql']);
         Route::get('aggregates/{date}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForDate']);
         Route::get('platforms', [OpenSearchAPIController::class, 'platforms']);
         Route::get('labels', [OpenSearchAPIController::class, 'labels']);
