@@ -29,16 +29,18 @@
                 </span>
             </button>
         </div>
-        <div class="ecl-site-header__language-content">
-            <div class="ecl-site-header__language-category" data-ecl-language-list-eu>
-                <div class="ecl-site-header__language-category-title">Official EU languages:</div>
-                <ul class="ecl-site-header__language-list">
+        <div class="website-translator">
+            <div class="ecl-site-header__language-content">
+                <div class="ecl-site-header__language-category" data-ecl-language-list-eu>
+                    <div class="ecl-site-header__language-category-title">Official EU languages:</div>
+                    <ul class="ecl-site-header__language-list">
 
-                    @foreach($languages as $lang => $label)
-                        <x-ecl.language-menu-item lang="{{$lang}}" label="{{$label}}"></x-ecl.language-menu-item>
-                    @endforeach
+                        @foreach($languages as $lang => $label)
+                            <x-ecl.language-menu-item lang="{{$lang}}" label="{{$label}}"></x-ecl.language-menu-item>
+                        @endforeach
 
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
