@@ -4,14 +4,6 @@ environments:
   production:
     firewall:
       rate-limit: 10000
-      bot-control:
-        - CategoryAdvertising
-        - CategoryArchiver
-        - CategoryContentFetcher
-        - CategoryLinkChecker
-        - CategoryMiscellaneous
-        - CategoryScrapingFramework
-        - SignalAutomatedBrowser
     queue-database-session-persist: true
     cache: redis-acc-small
     database: acc-serverless-db-eu

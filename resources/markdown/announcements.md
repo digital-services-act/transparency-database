@@ -2,14 +2,13 @@
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
-Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the global version with all the platforms included). You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from the dsa-tdb package documentation. We provide two types of aggregated data: the basic aggregation currently feeding the Dashboard and an advanced one aggregating the data on all the database’s non-free-text fields columns. 
+Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from the dsa-tdb package documentation. We provide two types of aggregated data: the basic aggregation currently feeding the Dashboard and an advanced one aggregating the data on all the database’s non-free-text fields columns.
 
 #### [Announcement – Access to data] Update to the data retention policy 
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
 Starting from 18th of February 2025, the data retention policy of the DSA Transparency Database (TDB) will be updated to extend the availability of the daily dumps files from 18 months to five years after their creation and to include additional file formats. After this period, they will be archived in a cold storage. The rest of the data retention policy remains unchanged. 
-
 
 #### [Announcement – Dashboard] New pages and filters for better separation between platforms
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published Published 19/12/2024</p>
@@ -21,7 +20,7 @@ On 19th December 2024, the [dashboard](/dashboard) of the DSA Transparency Datab
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 04/11/2024</p>
 
 
-Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations" class="ecl-link">published the Implementing Act on Transparency Reporting</a>, which standardizes the form, content and reporting periods of DSA transparency reports. To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database will be updated to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. As of 1 July 2025, statements of reasons that are submitted to the DSA Transparency Database therefore will have to comply with the updated schema. To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database in Q2 of 2025.
+Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations" class="ecl-link">published the Implementing Act on Transparency Reporting</a>, which standardizes the form, content and reporting periods of DSA transparency reports. To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database will be updated to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. As of 1 July 2025, statements of reasons that are submitted to the DSA Transparency Database therefore will have to comply with the updated schema. To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database from 2 April to 30 June 2025.
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
