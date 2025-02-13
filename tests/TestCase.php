@@ -7,6 +7,7 @@ use App\Models\User;
 use Database\Seeders\OnboardingPermissionsSeeder;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
+use Database\Seeders\ResearchPermissionsSeeder;
 use Database\Seeders\StatementSeeder;
 use Database\Seeders\SupportPermissionsSeeder;
 use Database\Seeders\UserSeeder;
@@ -85,6 +86,7 @@ abstract class TestCase extends BaseTestCase
         PermissionsSeeder::resetRolesAndPermissions();
         $this->seed(OnboardingPermissionsSeeder::class);
         $this->seed(SupportPermissionsSeeder::class);
+        $this->seed(ResearchPermissionsSeeder::class);
         StatementSeeder::resetStatements($statement_count);
     }
 

@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PermissionsSeeder::class,
             StatementSeeder::class,
-            OnboardingPermissionsSeeder::class
+            OnboardingPermissionsSeeder::class,
+            ResearchPermissionsSeeder::class
         ]);
     }
 }

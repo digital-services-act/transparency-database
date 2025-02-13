@@ -221,8 +221,13 @@ class StatementSearchService
 
     private function applyDecisionVisibilityFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-decision_visibility:?*';
+        }
+
+        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_visibility:' . $filter_value;
@@ -233,8 +238,13 @@ class StatementSearchService
 
     private function applyDecisionMonetaryFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-decision_monetary:?*';
+        }
+
+        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_monetary:' . $filter_value;
@@ -245,8 +255,13 @@ class StatementSearchService
 
     private function applyDecisionProvisionFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-decision_provision:?*';
+        }
+
+        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_provision:' . $filter_value;
@@ -257,8 +272,13 @@ class StatementSearchService
 
     private function applyTerritorialScopeFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-territorial_scope:?*';
+        }
+
+        $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'territorial_scope:' . $filter_value;
@@ -270,8 +290,13 @@ class StatementSearchService
 
     private function applyDecisionAccountFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-decision_account:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
+
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_account:' . $filter_value;
@@ -282,8 +307,12 @@ class StatementSearchService
 
     private function applyAccountTypeFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-account_type:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'account_type:' . $filter_value;
@@ -294,9 +323,13 @@ class StatementSearchService
 
     private function applyCategorySpecificationFilter(array $filter_values): string
     {
+        $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-category_specification:?*';
+        }
         $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
 
-        $ors = [];
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'category_specification:' . $filter_value;
@@ -307,8 +340,12 @@ class StatementSearchService
 
     private function applyDecisionGroundFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-decision_ground:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'decision_ground:' . $filter_value;
@@ -319,8 +356,12 @@ class StatementSearchService
 
     private function applyCategoryFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-category:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'category:' . $filter_value;
@@ -331,8 +372,12 @@ class StatementSearchService
 
     private function applyContentTypeFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-content_type:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'content_type:' . $filter_value;
@@ -349,6 +394,10 @@ class StatementSearchService
     private function applyContentLanguageFilter(array $filter_values): string
     {
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-content_language:?*';
+        }
         $all_isos = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
         $filter_values = array_intersect($filter_values, $all_isos);
         foreach ($filter_values as $filter_value)
@@ -361,8 +410,12 @@ class StatementSearchService
 
     private function applyAutomatedDetectionFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-automated_detection:?*';
+        }
+        $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'automated_detection:' . ($filter_value === Statement::AUTOMATED_DETECTION_YES ? 'true' : 'false');
@@ -373,8 +426,12 @@ class StatementSearchService
 
     private function applyAutomatedDecisionFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-automated_decision:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'automated_decision:' . $filter_value;
@@ -401,8 +458,13 @@ class StatementSearchService
 
     private function applySourceTypeFilter(array $filter_values): string
     {
-        $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
         $ors = [];
+        if (in_array('--noval--', $filter_values))
+        {
+            $ors[] = '-source_type:?*';
+        }
+        $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
+
         foreach ($filter_values as $filter_value)
         {
             $ors[] = 'source_type:' . $filter_value;
