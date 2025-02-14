@@ -2,13 +2,13 @@
 
 This documentation describes the DSA Transparency Database Research API. Its endpoints are designed to enable programmatic access to and queries of statements of reasons (SORs) for academic and policy research into platforms’ content moderation practices.
 
-By providing specialized access to search and analyse data within the statement_index of the DSA Transparency Database in OpenSearch, the Research API supports a wide range of technically advanced research and investigative applications. In enabling programmatic analysis, the DSA Transparency Database Research API complements the other analytical tools of the DSA Transparency Database, namely its public [dashboard](https://transparency.dsa.ec.europa.eu/dashboard) for quick exploration and visualisation of the data and the [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb) analytical package enabling advanced analysis of individually downloaded statements of reasons.
+By providing specialized access to search and analyse data within the statement_index of the DSA Transparency Database in OpenSearch, the Research API supports a wide range of technically advanced research and investigative applications. In enabling programmatic analysis, the DSA Transparency Database Research API complements the other analytical tools of the DSA Transparency Database, namely its public [dashboard](/dashboard) for quick exploration and visualisation of the data and the [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb) analytical package enabling advanced analysis of individually downloaded statements of reasons.
 
 ## Purpose and Scope
 
 The DSA Transparency Database Research API empowers interested stakeholders with the relevant technical knowledge to retrieve specific subsets of data within the OpenSearch statement_index of the DSA Transparency Database and to perform complex queries based on their research interests. As such, it lends itself in particular to facilitate longitudinal and cross-platform studies, i.e. to the systematic investigation of trends and patterns in the data.
 
-In line with the DSA Transparency Database [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy), the statement_index only contains statements of reasons submitted by platforms within the last 6 months. Older statements of reasons are not available through the Research API endpoints. The DSA Transparency Database Research API endpoints are specifically designed for programmatic statistical and pattern analysis, NOT for bulk data collection. You can find an overview of other tools to analyse the data in the DSA Transparency Database [here](https://transparency.dsa.ec.europa.eu/explore-data/overview).
+In line with the DSA Transparency Database [data retention policy](/page/data-retention-policy), the statement_index only contains statements of reasons submitted by platforms within the last 6 months. Older statements of reasons are not available through the Research API endpoints. The DSA Transparency Database Research API endpoints are specifically designed for programmatic statistical and pattern analysis, NOT for bulk data collection. You can find an overview of other tools to analyse the data in the DSA Transparency Database [here](/explore-data/overview).
 
 ## How to Get Access
 1.&nbsp;Create an EU Login Account. Please find the instructions to create an EU Login Account [here](https://trusted-digital-identity.europa.eu/eu-login-help/external-self-registered-account-faq/how-do-i-create-my-eu-login-account_en).
@@ -34,11 +34,11 @@ In line with the DSA Transparency Database [data retention policy](https://trans
 
 6.&nbsp;The maximum result size is 1000 rows per query and there is no pagination support.
 
-7.&nbsp;In line with the DSA Transparency Database [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy), the statement_index only contains statements of reasons submitted by platforms within the last 6 months. As such, older statements are not available through these API endpoints.
+7.&nbsp;In line with the DSA Transparency Database [data retention policy](/page/data-retention-policy), the statement_index only contains statements of reasons submitted by platforms within the last 6 months. As such, older statements are not available through these API endpoints.
 
 8.&nbsp;All endpoints are read-only. No modifications to the statement_index data are possible through these endpoints.
 
-9.&nbsp;The Research endpoints are NOT intended for downloading large volumes of individual statements of reasons. The [data download](https://transparency.dsa.ec.europa.eu/explore-data/download) section of the website enables bulk data download.
+9.&nbsp;The Research endpoints are NOT intended for downloading large volumes of individual statements of reasons. The [data download](/explore-data/download) section of the website enables bulk data download.
 
 ## Available Endpoints
 
@@ -188,7 +188,7 @@ This endpoint enables complex search using OpenSearch DSL. For detailed informat
 ### Endpoint-Specific Limitations
 - Results are limited to **1000 rows** per query.
 - Total hits are tracked accurately (`track_total_hits` is enabled).
-- For bulk downloads, please use the [data download](https://transparency.dsa.ec.europa.eu/explore-data/download) section of the website.
+- For bulk downloads, please use the [data download](/explore-data/download) section of the website.
 
 ### Example Use Cases
 
