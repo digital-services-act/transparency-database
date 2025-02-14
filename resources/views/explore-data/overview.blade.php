@@ -30,7 +30,7 @@
                         <th id="table-id-header-1" scope="col" class="ecl-table__header"></th>
                         <th id="table-id-header-2" scope="col" class="ecl-table__header"><a href="/dashboard">Public Dashboard</a></th>
                         <th id="table-id-header-3" scope="col" class="ecl-table__header"><a href="/explore-data/download">Download</a> of individual & aggregated SOR files</th>
-                        <th id="table-id-header-4" scope="col" class="ecl-table__header"><a href="/page/research-api-documentation">Research API</a></th>
+                        <th id="table-id-header-4" scope="col" class="ecl-table__header"><a href="/page/research-api">Research API</a></th>
                         <th id="table-id-header-5" scope="col" class="ecl-table__header"><a href="https://code.europa.eu/dsa/transparency-database/dsa-tdb">Dsa-tdb package</a></th>
                     </tr>
                     </thead>
