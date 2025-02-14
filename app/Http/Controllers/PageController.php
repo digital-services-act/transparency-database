@@ -12,11 +12,12 @@ use Parsedown;
 
 class PageController extends Controller
 {
-    public function show(string $page, bool $profile = false): \Illuminate\Foundation\Application|View|Factory|Redirector|Application|RedirectResponse
-    {
+    public function show(
+        string $page,
+        bool $profile = false
+    ): \Illuminate\Foundation\Application|View|Factory|Redirector|Application|RedirectResponse {
         // lower and disallow ../ and weird stuff.
         $page = (string)mb_strtolower($page);
-
 
 
         // sanitize
@@ -25,7 +26,7 @@ class PageController extends Controller
 //        dd($page);
 
         $redirects = [
-            'cookie-policy'  => 'https://commission.europa.eu/cookies-policy_en',
+            'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
             'latest-updates' => '/',
 //            'faq' => 'faq'
         ];
@@ -37,14 +38,15 @@ class PageController extends Controller
         $page_title = ucwords(str_replace("-", " ", (string)$page));
 
         $page_title_mods = [
-            'Api Documentation'        => 'API and Schema',
-            'Api Documentation Two'  => "API Documentation V2",
+            'Api Documentation' => 'API and Schema',
+            'Research Api Documentation' => 'Research API Documentation',
+            'Api Documentation Two' => "API Documentation V2",
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
-            'Legal Information'        => 'Legal Notice',
-            'Documentation'            => 'Overview Documentation',
-            'Webform Documentation'    => "Webform Documentation",
-            'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To API v2",
+            'Legal Information' => 'Legal Notice',
+            'Documentation' => 'Overview Documentation',
+            'Webform Documentation' => "Webform Documentation",
+            'Accessibility Statement' => "Accessibility Statement",
+            'Migration To Api V Two' => "Migration To API v2",
 
 
         ];
@@ -57,15 +59,16 @@ class PageController extends Controller
         $breadcrumb = ucwords(str_replace("-", " ", (string)$page));
 
         $breadcrumb_mods = [
-            'Home'                     => '',
+            'Home' => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
-            'Api Documentation'        => 'API and Schema',
-            'Api Documentation Two'  => "API Documentation V2",
-            'Documentation'            => 'Documentation',
-            'Webform Documentation'    => "Webform Documentation",
-            'Legal Information'        => 'Legal Notice',
-            'Accessibility Statement'  => "Accessibility Statement",
-            'Migration To Api V Two'  => "Migration To API v2",
+            'Api Documentation' => 'API and Schema',
+            'Research Api Documentation' => 'Research API Documentation',
+            'Api Documentation Two' => "API Documentation V2",
+            'Documentation' => 'Documentation',
+            'Webform Documentation' => "Webform Documentation",
+            'Legal Information' => 'Legal Notice',
+            'Accessibility Statement' => "Accessibility Statement",
+            'Migration To Api V Two' => "Migration To API v2",
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
@@ -73,13 +76,13 @@ class PageController extends Controller
         }
 
         $page_content = '';
-        $page         = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
+        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
 
         $view_data = [
-            'profile'            => $profile,
-            'page_title'         => $page_title,
-            'breadcrumb'         => $breadcrumb,
-            'baseurl'            => route('home'),
+            'profile' => $profile,
+            'page_title' => $page_title,
+            'breadcrumb' => $breadcrumb,
+            'baseurl' => route('home'),
         ];
 
 
@@ -108,8 +111,8 @@ class PageController extends Controller
         $parsedown = new Parsedown();
 
         return preg_replace_callback('/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', static function ($matches) {
-            if ( ! stripos((string)$matches[0], 'id=')) {
-                $id         = strtolower(str_replace(" ", "-", (string)$matches[3]));
+            if (!stripos((string)$matches[0], 'id=')) {
+                $id = strtolower(str_replace(" ", "-", (string)$matches[3]));
                 $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
             }
 
