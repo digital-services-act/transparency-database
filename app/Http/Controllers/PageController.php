@@ -39,7 +39,7 @@ class PageController extends Controller
 
         $page_title_mods = [
             'Api Documentation' => 'API and Schema',
-            'Research Api Documentation' => 'Research API Documentation',
+            'Research Api' => 'Research API',
             'Api Documentation Two' => "API Documentation V2",
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information' => 'Legal Notice',
@@ -62,7 +62,7 @@ class PageController extends Controller
             'Home' => '',
             'Onboarding Documentation' => 'Onboarding Documentation',
             'Api Documentation' => 'API and Schema',
-            'Research Api Documentation' => 'Research API Documentation',
+            'Research Api' => 'Research API',
             'Api Documentation Two' => "API Documentation V2",
             'Documentation' => 'Documentation',
             'Webform Documentation' => "Webform Documentation",
