@@ -4,7 +4,7 @@ The webform is made available as a submission method for the providers of online
 
 ## Requesting Webform access
 
-Please refer to the [Platform Onboarding page](/page/onboarding) for the process on how to be granted access to the DSA Transparency Database to create statements of reasons. Once you have created your account (as per the onboarding steps) you can access the webform and use it to submit statements of reasons:
+Please refer to the [Platform Onboarding page](/page/onboarding-documentation) for the process on how to be granted access to the DSA Transparency Database to create statements of reasons. Once you have created your account (as per the onboarding steps) you can access the webform and use it to submit statements of reasons:
 
 Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment where you can test your webform submissions to the DSA Transparency Database.
 

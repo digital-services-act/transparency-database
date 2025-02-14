@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Statement;
-use App\Services\EuropeanCountriesService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Carbon;
-use Symfony\Component\Intl\Countries;
 
 class Controller extends BaseController
 {
@@ -21,9 +18,14 @@ class Controller extends BaseController
      *
      * @return array
      */
-    protected function mapForSelectWithoutKeys($array): array
+    protected function mapForSelectWithoutKeys($array, bool $noval = false): array
     {
-        return array_map(static fn($value) => ['value' => $value, 'label' => $value], $array);
+        $result = array_map(static fn($value) => ['value' => $value, 'label' => $value], $array);
+        if ($noval)
+        {
+            array_unshift($result, ['value' => '--noval--', 'label' => 'None Specified']);
+        }
+        return $result;
     }
 
     protected function sanitizeDate($date): ?string
@@ -36,8 +38,13 @@ class Controller extends BaseController
      *
      * @return array
      */
-    protected function mapForSelectWithKeys($array): array
+    protected function mapForSelectWithKeys($array, bool $noval = false): array
     {
-        return array_map(static fn($key, $value) => ['value' => $key, 'label' => $value], array_keys($array), array_values($array));
+        $result = array_map(static fn($key, $value) => ['value' => $key, 'label' => $value], array_keys($array), array_values($array));
+        if ($noval)
+        {
+            array_unshift($result, ['value' => '--noval--', 'label' => 'None Specified']);
+        }
+        return $result;
     }
 }
