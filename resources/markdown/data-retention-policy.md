@@ -15,7 +15,7 @@
 
 **Storage and Security**: All data within the Transparency Database will be stored securely in accordance with the European Commission's standards for data protection. 
 
-**Policy Implementation and Review**: This Data Retention Policy will be implemented as of 18 February 2025, replacing its previous version in effect from 15 April 2024. Compared to the first version of the data retention policy, the retention period for the data download was extended in time (5 years instead of 18 months) and scope (additional formats). This policy may be reviewed and amended periodically where necessary. Any amendments to this policy will be communicated promptly to users of the Database in the dedicated [Announcements page](/announcements). 
+**Policy Implementation and Review**: This Data Retention Policy will be implemented as of 18 February 2025, replacing its previous version in effect from 15 April 2024. Compared to the first version of the data retention policy, the retention period for the data download was extended in time (5 years instead of 18 months) and scope (additional formats). This policy may be reviewed and amended periodically where necessary. Any amendments to this policy will be communicated promptly to users of the Database in the dedicated [Announcements page](/page/announcements). 
 
 **Policy Questions**: For any questions regarding this Data Retention Policy, please [write to us](https://digital-strategy.ec.europa.eu/en/write-us). 
 
