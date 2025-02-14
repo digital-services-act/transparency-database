@@ -36,7 +36,7 @@
 
 
             <x-ecl.expandable label="How Search works">
-                <p class="ecl-u-type-paragraph">
+                <p class="ecl-u-type-paragraph" style="max-width:none !important">
                     You can use the free-text search to look for specific words within the free text fields of each
                     statement of
                     reasons.
