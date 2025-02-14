@@ -4,7 +4,7 @@ This entails several changes to the reporting schema of the DSA Transparency Dat
 
 Additionally, to better enable companies to classify moderated content, an option to report unique content identifiers will be added to the DSA Transparency Database schema. Starting from 1 July 2025, the variable content_id will be available to report content identifiers which do not contain personal information, including existing identifiers of illegal content. The API will initially only accept the EAN13 product number as a content identifier.
 
-To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database in Q2 of 2025.
+To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database from 2 April to 30 June 2025.
 
 The full documentation of the APIv2 is available [here](/page/api-documentation-two)
 
