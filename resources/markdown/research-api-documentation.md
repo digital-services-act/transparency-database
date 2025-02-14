@@ -2,32 +2,43 @@
 
 This documentation describes the DSA Transparency Database Research API. Its endpoints are designed to enable programmatic access to and queries of statements of reasons (SORs) for academic and policy research into platforms’ content moderation practices.
 
-By providing specialized access to search and analyse data within the statement_index of the DSA Transparency Database in OpenSearch, the Research API supports a wide range of technically advanced research and investigative applications. In enabling programmatic analysis, the DSA Transparency Database Research API complements the other analytical tools of the DSA Transparency Database, namely its public dashboard for quick exploration and visualisation of the data and the dsa-tdb analytical package enabling advanced analysis of individually downloaded statements of reasons.
+By providing specialized access to search and analyse data within the statement_index of the DSA Transparency Database in OpenSearch, the Research API supports a wide range of technically advanced research and investigative applications. In enabling programmatic analysis, the DSA Transparency Database Research API complements the other analytical tools of the DSA Transparency Database, namely its public [dashboard](https://transparency.dsa.ec.europa.eu/dashboard) for quick exploration and visualisation of the data and the [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb) analytical package enabling advanced analysis of individually downloaded statements of reasons.
 
 ## Purpose and Scope
 
 The DSA Transparency Database Research API empowers interested stakeholders with the relevant technical knowledge to retrieve specific subsets of data within the OpenSearch statement_index of the DSA Transparency Database and to perform complex queries based on their research interests. As such, it lends itself in particular to facilitate longitudinal and cross-platform studies, i.e. to the systematic investigation of trends and patterns in the data.
 
-In line with the DSA Transparency Database data retention policy, the statement_index only contains statements of reasons submitted by platforms within the last 6 months. Older statements of reasons are not available through the Research API endpoints. The DSA Transparency Database Research API endpoints are specifically designed for programmatic statistical and pattern analysis, NOT for bulk data collection. You can find an overview of other tools to analyse the data in the DSA Transparency Database here.
+In line with the DSA Transparency Database [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy), the statement_index only contains statements of reasons submitted by platforms within the last 6 months. Older statements of reasons are not available through the Research API endpoints. The DSA Transparency Database Research API endpoints are specifically designed for programmatic statistical and pattern analysis, NOT for bulk data collection. You can find an overview of other tools to analyse the data in the DSA Transparency Database [here](https://transparency.dsa.ec.europa.eu/explore-data/overview).
 
 ## How to Get Access
-- Create an EU Login Account. Please find the instructions to create an EU Login Account here.
-- Visit the DSA Transparency Database Page by clicking here.
-- Contact the DSA Helpdesk at CNECT-DSA-HELPDESK@ec.europa.eu with your EU Login details and express your interest in obtaining an authentication token for the Research API. The DSA Helpdesk will process your request and update your account with the appropriate permissions.
-- Log into the DSA Transparency Database website with your EU Login Account and test your access with basic queries
+1.&nbsp;Create an EU Login Account. Please find the instructions to create an EU Login Account [here](https://trusted-digital-identity.europa.eu/eu-login-help/external-self-registered-account-faq/how-do-i-create-my-eu-login-account_en).
+
+2.&nbsp;Visit the DSA Transparency Database Page by clicking [here](https://transparency.dsa.ec.europa.eu/profile/start).
+
+3.&nbsp;Contact the DSA Helpdesk at [CNECT-DSA-HELPDESK@ec.europa.eu](mailto:CNECT-DSA-HELPDESK@ec.europa.eu) with your EU Login details and express your interest in obtaining an authentication token for the Research API. The DSA Helpdesk will process your request and update your account with the appropriate permissions.
+
+4.&nbsp;Log into the DSA Transparency Database website with your EU Login Account and test your access with basic queries
 
 
 ## Use Conditions & Limitations
 
-- By receiving your authentication token, you agree to use it responsibly & within the limitations specified in this documentation.
-- You must keep your authentication token confidential and not share it with any third party. You are solely and entirely responsible for all uses of your authentication token.
-- Limits are placed on the number of API requests you can make using your authentication token. You agree to, and will not attempt to circumvent, such limitations.  Exceeding these limits will lead to your authentication token being temporarily blocked from making further requests.
-- The maximum response size of an API request is 5MB.
-- The maximum execution time of an API request is 30 seconds.
-- The maximum result size is 1000 rows per query and there is no pagination support.
-- In line with the DSA Transparency Database data retention policy, the statement_index only contains statements of reasons submitted by platforms within the last 6 months. As such, older statements are not available through these API endpoints.
-- All endpoints are read-only. No modifications to the statement_index data are possible through these endpoints.
-- The Research endpoints are NOT intended for downloading large volumes of individual statements of reasons. The data download section of the website enables bulk data download.
+1.&nbsp;By receiving your authentication token, you agree to use it responsibly & within the limitations specified in this documentation.
+
+2.&nbsp;You must keep your authentication token confidential and not share it with any third party. You are solely and entirely responsible for all uses of your authentication token.
+
+3.&nbsp;Limits are placed on the number of API requests you can make using your authentication token. You agree to, and will not attempt to circumvent, such limitations.  Exceeding these limits will lead to your authentication token being temporarily blocked from making further requests.
+
+4.&nbsp;The maximum response size of an API request is 5MB.
+
+5.&nbsp;The maximum execution time of an API request is 30 seconds.
+
+6.&nbsp;The maximum result size is 1000 rows per query and there is no pagination support.
+
+7.&nbsp;In line with the DSA Transparency Database [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy), the statement_index only contains statements of reasons submitted by platforms within the last 6 months. As such, older statements are not available through these API endpoints.
+
+8.&nbsp;All endpoints are read-only. No modifications to the statement_index data are possible through these endpoints.
+
+9.&nbsp;The Research endpoints are NOT intended for downloading large volumes of individual statements of reasons. The [data download](https://transparency.dsa.ec.europa.eu/explore-data/download) section of the website enables bulk data download.
 
 ## Available Endpoints
 
@@ -88,7 +99,7 @@ In line with the DSA Transparency Database data retention policy, the statement
 
 ## Authentication
 
-All endpoints require authentication using a Bearer token. See How to get access for the process of obtaining an authentication token. All requests must use HTTPS.
+All endpoints require authentication using a Bearer token. See [How to get access](#how-to-get-access) for the process of obtaining an authentication token. All requests must use HTTPS.
 
 **Header Format:**
 ```http
@@ -100,7 +111,7 @@ All Research API endpoints are accessible under the base URL:
 ```http
 /api/v1/research
 ```
-For detailed information on how to construct OpenSearch DSL queries, refer to the OpenSearch Query DSL Documentation.
+For detailed information on how to construct OpenSearch DSL queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.org/docs/latest/query-dsl/).
 
 ## Statement Index Schema
 
@@ -109,74 +120,54 @@ The statement_index contains the following fields that can be used in your que
 <table class="ecl-table">
   <thead>
     <tr>
-      <th>Field</th>
-      <th>Type</th>
-      <th>Description</th>
+      <th scope="col">Field</th>
+      <th scope="col">Type</th>
+      <th scope="col">Description</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td><code>account_type</code></td>
-      <td><code>keyword</code></td>
-      <td>Type of account</td>
-    </tr>
-    <tr>
-      <td><code>application_date</code></td>
-      <td><code>date</code></td>
-      <td>Date of application of a moderation decision</td>
-    </tr>
-    <tr>
-      <td><code>automated_decision</code></td>
-      <td><code>keyword</code></td>
-      <td>Automated decision indicator</td>
-    </tr>
-    <tr>
-      <td><code>category</code></td>
-      <td><code>keyword</code></td>
-      <td>Statement category</td>
-    </tr>
-    <tr>
-      <td><code>content_date</code></td>
-      <td><code>date</code></td>
-      <td>Date of the content</td>
-    </tr>
-    <tr>
-      <td><code>content_language</code></td>
-      <td><code>keyword</code></td>
-      <td>Language of the content</td>
-    </tr>
-    <tr>
-      <td><code>decision_account</code></td>
-      <td><code>keyword</code></td>
-      <td>Account decision</td>
-    </tr>
-    <tr>
-      <td><code>decision_facts</code></td>
-      <td><code>text</code></td>
-      <td>Decision facts</td>
-    </tr>
-    <tr>
-      <td><code>decision_ground</code></td>
-      <td><code>keyword</code></td>
-      <td>Ground for decision</td>
-    </tr>
-    <tr>
-      <td><code>platform_name</code></td>
-      <td><code>text</code></td>
-      <td>Name of the platform</td>
-    </tr>
-    <tr>
-      <td><code>received_date</code></td>
-      <td><code>date</code></td>
-      <td>Date received</td>
-    </tr>
-    <tr>
-      <td><code>territorial_scope</code></td>
-      <td><code>text</code></td>
-      <td>Territorial scope</td>
-    </tr>
+    <tr><td>account_type</td><td>keyword</td><td>Type of account</td></tr>
+    <tr><td>application_date</td><td>date</td><td>Date of application of a moderation decision</td></tr>
+    <tr><td>automated_decision</td><td>keyword</td><td>Automated decision indicator</td></tr>
+    <tr><td>automated_detection</td><td>boolean</td><td>Whether detection was automated</td></tr>
+    <tr><td>category</td><td>keyword</td><td>Statement category</td></tr>
+    <tr><td>category_addition</td><td>text</td><td>Additional category information</td></tr>
+    <tr><td>category_specification</td><td>text</td><td>Category specification details</td></tr>
+    <tr><td>content_date</td><td>date</td><td>Date of the content</td></tr>
+    <tr><td>content_language</td><td>keyword</td><td>Language of the content</td></tr>
+    <tr><td>content_type</td><td>text</td><td>Type of content</td></tr>
+    <tr><td>content_type_other</td><td>text</td><td>Other content type details</td></tr>
+    <tr><td>content_type_single</td><td>keyword</td><td>Single content type identifier</td></tr>
+    <tr><td>created_at</td><td>date</td><td>Creation timestamp</td></tr>
+    <tr><td>decision_account</td><td>keyword</td><td>Account decision</td></tr>
+    <tr><td>decision_facts</td><td>text</td><td>Decision facts</td></tr>
+    <tr><td>decision_ground</td><td>keyword</td><td>Ground for decision</td></tr>
+    <tr><td>decision_monetary</td><td>keyword</td><td>Monetary decision</td></tr>
+    <tr><td>decision_monetary_other</td><td>text</td><td>Other monetary decision details</td></tr>
+    <tr><td>decision_provision</td><td>keyword</td><td>Decision provision</td></tr>
+    <tr><td>decision_visibility</td><td>text</td><td>Visibility decision</td></tr>
+    <tr><td>decision_visibility_other</td><td>text</td><td>Other visibility decision details</td></tr>
+    <tr><td>decision_visibility_single</td><td>keyword</td><td>Single visibility decision</td></tr>
+    <tr><td>id</td><td>long</td><td>Unique identifier</td></tr>
+    <tr><td>illegal_content_explanation</td><td>text</td><td>Explanation of illegal content</td></tr>
+    <tr><td>illegal_content_legal_ground</td><td>text</td><td>Legal ground for illegal content</td></tr>
+    <tr><td>incompatible_content_explanation</td><td>text</td><td>Explanation of incompatible content</td></tr>
+    <tr><td>incompatible_content_ground</td><td>text</td><td>Ground for incompatible content</td></tr>
+    <tr><td>method</td><td>keyword</td><td>Method used</td></tr>
+    <tr><td>platform_id</td><td>long</td><td>Platform identifier</td></tr>
+    <tr><td>platform_name</td><td>text</td><td>Name of the platform</td></tr>
+    <tr><td>platform_uuid</td><td>text</td><td>Platform UUID</td></tr>
+    <tr><td>platform_vlop</td><td>boolean</td><td>Platform VLOP status</td></tr>
+    <tr><td>puid</td><td>text</td><td>PUID identifier</td></tr>
+    <tr><td>received_date</td><td>date</td><td>Date received</td></tr>
+    <tr><td>source_identity</td><td>text</td><td>Identity of the source</td></tr>
+    <tr><td>source_type</td><td>keyword</td><td>Type of source</td></tr>
+    <tr><td>territorial_scope</td><td>text</td><td>Territorial scope</td></tr>
+    <tr><td>url</td><td>text</td><td>URL reference</td></tr>
+    <tr><td>uuid</td><td>text</td><td>UUID identifier</td></tr>
   </tbody>
 </table>
+
 
 
 #### Notes:
@@ -197,7 +188,7 @@ This endpoint enables complex search using OpenSearch DSL. For detailed informat
 ### Endpoint-Specific Limitations
 - Results are limited to **1000 rows** per query.
 - Total hits are tracked accurately (`track_total_hits` is enabled).
-- For bulk downloads, please use the data download section of the website.
+- For bulk downloads, please use the [data download](https://transparency.dsa.ec.europa.eu/explore-data/download) section of the website.
 
 ### Example Use Cases
 
@@ -662,7 +653,7 @@ This endpoint returns the count of documents matching the provided OpenSearch DS
 ```
 
 ## QUERY
-Performs searches using OpenSearch DQL (Dashboards Query Language). DQL is a simple text-based query language that uses field:value syntax to filter data. This query language resembles the Apache Lucene Query language.
+Performs searches using OpenSearch DQL ([Dashboards Query Language](https://opensearch.org/docs/latest/dashboards/dql/)). DQL is a simple text-based query language that uses field:value syntax to filter data. This query language resembles the Apache Lucene Query language.
 
 ### Endpoint Name
 **POST** `/api/v1/research/query`
@@ -902,12 +893,12 @@ These API endpoints are provided as-is and act as direct interfaces to the OpenS
   - Test your query against the OpenSearch documentation
   - Ensure the error is not due to malformed queries
   - Document reproducible test cases
-- Contact support (CNECT-DSA-HELPDESK@ec.europa.eu) only if you have strong evidence of a technical issue with one of the endpoints itself
+- Contact support ([CNECT-DSA-HELPDESK@ec.europa.eu](mailto:CNECT-DSA-HELPDESK@ec.europa.eu)) only if you have strong evidence of a technical issue with one of the endpoints itself
 
 For more detailed query guidance, refer to:
-- OpenSearch Query DSL Documentation  
-- OpenSearch SQL Documentation 
-- OpenSearch DQL Documentation
+- [OpenSearch Query DSL Documentation](https://opensearch.org/docs/latest/query-dsl/)
+- [OpenSearch SQL Documentation](https://opensearch.org/docs/latest/search-plugins/sql/sql/index/) 
+- [OpenSearch DQL Documentation](https://opensearch.org/docs/latest/dashboards/dql/)
 
 ## Error Handling
 ### Common error responses and their implications:
