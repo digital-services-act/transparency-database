@@ -188,7 +188,7 @@ class Statement extends Model
         'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER,
     ];
 
-    public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary payments suspension, termination or other restriction';
+    public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary restriction';
 
     public const DECISION_MONETARY_SUSPENSION = 'Suspension of monetary payments';
 
@@ -202,7 +202,7 @@ class Statement extends Model
         'DECISION_MONETARY_OTHER' => self::DECISION_MONETARY_OTHER,
     ];
 
-    public const LABEL_STATEMENT_DECISION_PROVISION = 'Suspension or termination of the provision of the service';
+    public const LABEL_STATEMENT_DECISION_PROVISION = 'Service restriction';
 
     public const DECISION_PROVISION_PARTIAL_SUSPENSION = 'Partial suspension of the provision of the service';
 
@@ -219,7 +219,7 @@ class Statement extends Model
         'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
-    public const LABEL_STATEMENT_DECISION_ACCOUNT = "Suspension or termination of the recipient of the service's account";
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = "Account Restriction";
 
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
 
