@@ -60,7 +60,7 @@
 
 
 
-    <div class="ecl-u-mt-l ecl-u-d-flex ecl-u-justify-content-between">
+    <div class="ecl-u-mt-l ecl-u-d-flex ecl-u-justify-content-between ecl-u-mt-l">
 
         <div class="item ecl-u-type-paragraph">
             @if (!$reindexing)
