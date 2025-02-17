@@ -31,7 +31,7 @@
                 statements of
                 reasons among those can be manually exported in .csv format.<br />
                 <br />
-                If you are interested in a programmatic search instead, you can our Search API.
+                If you are interested in a programmatic search instead, you can use our <a href="/page/research-api">Research API</a>.
             </div>
 
 
