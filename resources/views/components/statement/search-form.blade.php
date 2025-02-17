@@ -73,9 +73,9 @@
             <div class="ecl-col-m-6">
 
                 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_PROVISION" name="decision_provision" id="decision_provision"
-                    justlabel="true" :options="$options['decision_provisions']" select_all="All provision restrictions"
-                    select_item="Select one or more provision restrictions" :default="request()->get('decision_provision', [])"
-                    enter_keyword="Enter a provision restriction" />
+                    justlabel="true" :options="$options['decision_provisions']" select_all="All service provision restrictions"
+                    select_item="Select one or more service provision restrictions" :default="request()->get('decision_provision', [])"
+                    enter_keyword="Enter a service provision restriction" />
 
             </div>
             <div class="ecl-col-m-6">
