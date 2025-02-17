@@ -2,7 +2,7 @@
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
-Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from the dsa-tdb package documentation. We provide two types of aggregated data: the basic aggregation currently feeding the Dashboard and an advanced one aggregating the data on all the database’s non-free-text fields columns.
+Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). See [the dsa-tdb documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/data_sources.html) for more information on how to download these data. You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from [the dsa-tdb package documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/). We provide two types of aggregated data: the basic aggregation currently feeding the [Dashboard](https://transparency.dsa.ec.europa.eu/dashboard) and an advanced one aggregating the data on all the database’s non-free-text fields columns.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 #### [Announcement – Access to data] Update to the data retention policy 
 
