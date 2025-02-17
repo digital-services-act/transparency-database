@@ -28,14 +28,14 @@
                     <thead class="ecl-table__head">
                     <tr class="ecl-table__row">
                         <th id="table-id-header-1" scope="col" class="ecl-table__header"></th>
-                        <th id="table-id-header-2" scope="col" class="ecl-table__header"><a href="/dashboard">Public Dashboard</a></th>
-                        <th id="table-id-header-3" scope="col" class="ecl-table__header"><a href="/explore-data/download">Download</a> of individual & aggregated SOR files</th>
-                        <th id="table-id-header-4" scope="col" class="ecl-table__header"><a href="/page/research-api">Research API</a></th>
-                        <th id="table-id-header-5" scope="col" class="ecl-table__header"><a href="https://code.europa.eu/dsa/transparency-database/dsa-tdb">Dsa-tdb package</a></th>
+                        <th id="table-id-header-2" scope="col" class="ecl-table__header "><a href="/dashboard">Public Dashboard</a></th>
+                        <th id="table-id-header-3" scope="col" class="ecl-table__header "><a href="/explore-data/download">Download</a> of individual & aggregated SOR files</th>
+                        <th id="table-id-header-4" scope="col" class="ecl-table__header "><a href="/page/research-api">Research API</a></th>
+                        <th id="table-id-header-5" scope="col" class="ecl-table__header "><a href="https://code.europa.eu/dsa/transparency-database/dsa-tdb">Dsa-tdb package</a></th>
                     </tr>
                     </thead>
                     <tbody class="ecl-table__body">
-                    <tr class="ecl-table__row ecl-u-type-align-center">
+                    <tr class="ecl-table__row ">
                         <td data-ecl-table-header="Feature" class="ecl-table__cell">Technical know-how required</td>
                         <td data-ecl-table-header="Public Dashboard" class="ecl-table__cell">Low</td>
                         <td data-ecl-table-header="Download of individual & aggregated SOR files" class="ecl-table__cell">Medium
@@ -43,16 +43,16 @@
                         <td data-ecl-table-header="Research API" class="ecl-table__cell">High</td>
                         <td data-ecl-table-header="Dsa-tdb package" class="ecl-table__cell">High</td>
                     </tr>
-                    <tr class="ecl-table__row ecl-u-type-align-center">
+                    <tr class="ecl-table__row ">
                         <td data-ecl-table-header="Feature" class="ecl-table__cell">Temporal scope of data covered</td>
                         <td data-ecl-table-header="Public Dashboard" class="ecl-table__cell">5 years</td>
                         <td data-ecl-table-header="Download of individual & aggregated SOR files" class="ecl-table__cell">5 years</td>
                         <td data-ecl-table-header="Research API" class="ecl-table__cell">6 months</td>
                         <td data-ecl-table-header="Dsa-tdb package" class="ecl-table__cell">5 years</td>
                     </tr>
-                    <tr class="ecl-table__row ecl-u-type-align-center">
+                    <tr class="ecl-table__row ">
                         <td data-ecl-table-header="Feature" class="ecl-table__cell">In-depth analysis of individual statements of reasons</td>
-                        <td data-ecl-table-header="Public Dashboard" class="ecl-table__cell ecl-u-type-align-center">
+                        <td data-ecl-table-header="Public Dashboard" class="ecl-table__cell ">
                             <svg class="ecl-icon ecl-icon--xl ecl-u-type-color-error" focusable="false" aria-hidden="true">
                                 <x-ecl.icon icon="close" />
                             </svg></td>
@@ -67,7 +67,7 @@
                             </svg></td>
                     </tr>
                     <tr class="ecl-table__row">
-                        <td data-ecl-table-header="Feature" class="ecl-table__cell">Example Use Cases</td>
+                        <td data-ecl-table-header="Feature" class="ecl-table__cell ">Example Use Cases</td>
                         <td data-ecl-table-header="Public Dashboard" class="ecl-table__cell">
                             <ul class="ecl-unordered-list ecl-unordered-list--no-marker">
                                 <li class="ecl-unordered-list__item">
@@ -101,7 +101,7 @@
                                 <li class="ecl-unordered-list__item">Platform-specific analysis</li>
                             </ul>
                         </td>
-                    </tr><tr class="ecl-table__row ecl-u-type-align-center">
+                    </tr><tr class="ecl-table__row ">
                         <td data-ecl-table-header="Feature" class="ecl-table__cell">Storage Requirements</td>
                         <td data-ecl-table-header="Public Dashboard" class="ecl-table__cell">None</td>
                         <td data-ecl-table-header="Download of individual & aggregated SOR files" class="ecl-table__cell">Medium (5MB to 5GB per day depending on data files)</td>
