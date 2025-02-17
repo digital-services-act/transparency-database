@@ -31,6 +31,7 @@ class RouteProtectionTest extends TestCase
         $this->contributor = User::factory()->create()->assignRole('Contributor');
         $this->onboarding = User::factory()->create()->assignRole('Onboarding');
         $this->support = User::factory()->create()->assignRole('Support');
+        $this->researcher = User::factory()->create()->assignRole('Researcher');
     }
 
     /**
@@ -42,7 +43,7 @@ class RouteProtectionTest extends TestCase
         $this->withExceptionHandling();
 
         $rejected = [$this->visitor, $this->support];
-        $allowed = [$this->contributor, $this->onboarding];
+        $allowed = [$this->contributor, $this->onboarding, $this->researcher];
 
         $this->check_route('profile.api.index', $allowed, $rejected);
         $this->check_route_for_text('profile.start', $allowed, $rejected,'API Token');
@@ -58,7 +59,7 @@ class RouteProtectionTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $rejected = [$this->visitor, $this->contributor];
+        $rejected = [$this->visitor, $this->contributor, $this->researcher];
         $allowed = [$this->onboarding, $this->support];
 
         $this->check_route('platform.create', $allowed, $rejected);
@@ -73,7 +74,7 @@ class RouteProtectionTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $rejected = [$this->visitor, $this->contributor];
+        $rejected = [$this->visitor, $this->contributor, $this->researcher];
         $allowed = [$this->onboarding, $this->support];
 
         $this->check_route('user.create', $allowed, $rejected);
@@ -92,7 +93,7 @@ class RouteProtectionTest extends TestCase
 
         $route= 'onboarding.index';
 
-        $rejected = [$this->visitor, $this->contributor];
+        $rejected = [$this->visitor, $this->contributor, $this->researcher];
         $allowed = [$this->support, $this->onboarding];
 
         $this->check_route($route, $allowed, $rejected);
@@ -110,7 +111,7 @@ class RouteProtectionTest extends TestCase
 
         $route= 'log-messages.index';
 
-        $rejected = [$this->visitor, $this->contributor, $this->onboarding];
+        $rejected = [$this->visitor, $this->contributor, $this->onboarding, $this->researcher];
         $allowed = [$this->support];
 
         $this->check_route($route, $allowed, $rejected);

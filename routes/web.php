@@ -47,8 +47,8 @@ Route::middleware(['force.auth'])->group(static function () {
 
         Route::get('/profile/start', [ProfileController::class, 'profile'])->name('profile.start');
         Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
-        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('create statements');
-        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('create statements');
+        Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('generate-api-key');
+        Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('generate-api-key');
 
     });
 
@@ -61,12 +61,12 @@ Route::middleware(['force.auth'])->group(static function () {
         ->where('statement', '[0-9]+')  // Only accept digits for a statement
         ->name('statement.show');
     Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
-    
+
     Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index');
-    
+
     Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');
     Route::view('/explore-data/toolbox', 'explore-data.toolbox')->name('explore-data.toolbox');
-    
+
     Route::get('/daily-archives', static fn() => Redirect::to(route('dayarchive.index'), 301));
     Route::get('/data-download', static fn() => Redirect::to(route('dayarchive.index'), 301));
 

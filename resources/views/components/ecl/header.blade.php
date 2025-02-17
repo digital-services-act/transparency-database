@@ -139,7 +139,10 @@
                                             Toolbox
                                         </a>
                                     </li>
-
+                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">
+                                        <a href="{{  route('page.show', ['research-api']) }}"
+                                           class="ecl-link ecl-link--standalone ecl-menu__sublink">Research API</a>
+                                    </li>
 
                                 </ul>
                             </div>
@@ -206,6 +209,8 @@
                                         <a href="{{  route('page.show', ['api-documentation']) }}"
                                            class="ecl-link ecl-link--standalone ecl-menu__sublink">API and Schema</a>
                                     </li>
+
+
 
                                     {{--                                    <li class="ecl-menu__subitem" data-ecl-menu-subitem="">--}}
                                     {{--                                        <a href="{{  route('page.show', ['migration-to-api-v-two']) }}"--}}

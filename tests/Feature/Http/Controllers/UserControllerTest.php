@@ -38,7 +38,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create(['email' => 'searchme@test.com', 'platform_id' => $platform->id]);
 
         $url = route('user.index', ['uuid' => $platform->uuid->toString()]);
-        $response = $this->get($url);   
+        $response = $this->get($url);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewHas('users');
@@ -188,7 +188,7 @@ class UserControllerTest extends TestCase
 
         $roles = $controller->getAvailableRolesToDisplay();
 
-        $this->assertCount(2, $roles); // Only Contributor and Support roles should be visible
+        $this->assertCount(3, $roles); // Only Contributor, Support and Researcher roles should be visible
         $this->assertFalse($roles->contains('name', 'Admin'));
         $this->assertFalse($roles->contains('name', 'Onboarding'));
         $this->assertFalse($roles->contains('name', 'User'));

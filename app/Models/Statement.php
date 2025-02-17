@@ -27,7 +27,7 @@ class Statement extends Model
     public const METHODS = [
         'METHOD_FORM' => self::METHOD_FORM,
         'METHOD_API' => self::METHOD_API,
-        'METHOD_API_MULTI' => self::METHOD_API_MULTI
+        'METHOD_API_MULTI' => self::METHOD_API_MULTI,
     ];
 
     public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
@@ -38,7 +38,7 @@ class Statement extends Model
 
     public const ACCOUNT_TYPES = [
         'ACCOUNT_TYPE_BUSINESS' => self::ACCOUNT_TYPE_BUSINESS,
-        'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE
+        'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE,
     ];
 
 
@@ -114,7 +114,7 @@ class Statement extends Model
     public const AUTOMATED_DECISIONS = [
         'AUTOMATED_DECISION_FULLY' => self::AUTOMATED_DECISION_FULLY,
         'AUTOMATED_DECISION_PARTIALLY' => self::AUTOMATED_DECISION_PARTIALLY,
-        'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED
+        'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED,
     ];
 
 
@@ -128,7 +128,7 @@ class Statement extends Model
 
     public const DECISION_GROUNDS = [
         'DECISION_GROUND_ILLEGAL_CONTENT' => self::DECISION_GROUND_ILLEGAL_CONTENT,
-        'DECISION_GROUND_INCOMPATIBLE_CONTENT' => self::DECISION_GROUND_INCOMPATIBLE_CONTENT
+        'DECISION_GROUND_INCOMPATIBLE_CONTENT' => self::DECISION_GROUND_INCOMPATIBLE_CONTENT,
     ];
 
 
@@ -162,7 +162,7 @@ class Statement extends Model
         self::LABEL_STATEMENT_INCOMPATIBLE_CONTENT_ILLEGAL,
     ];
 
-    public const LABEL_STATEMENT_DECISION_VISIBILITY = 'Visibility restriction of specific items of information provided by the recipient of the service';
+    public const LABEL_STATEMENT_DECISION_VISIBILITY = 'Visibility restriction';
 
     public const DECISION_VISIBILITY_CONTENT_REMOVED = 'Removal of content';
 
@@ -185,10 +185,10 @@ class Statement extends Model
         'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED,
         'DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED' => self::DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED,
         'DECISION_VISIBILITY_CONTENT_LABELLED' => self::DECISION_VISIBILITY_CONTENT_LABELLED,
-        'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER
+        'DECISION_VISIBILITY_OTHER' => self::DECISION_VISIBILITY_OTHER,
     ];
 
-    public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary payments suspension, termination or other restriction';
+    public const LABEL_STATEMENT_DECISION_MONETARY = 'Monetary restriction';
 
     public const DECISION_MONETARY_SUSPENSION = 'Suspension of monetary payments';
 
@@ -199,10 +199,10 @@ class Statement extends Model
     public const DECISION_MONETARIES = [
         'DECISION_MONETARY_SUSPENSION' => self::DECISION_MONETARY_SUSPENSION,
         'DECISION_MONETARY_TERMINATION' => self::DECISION_MONETARY_TERMINATION,
-        'DECISION_MONETARY_OTHER' => self::DECISION_MONETARY_OTHER
+        'DECISION_MONETARY_OTHER' => self::DECISION_MONETARY_OTHER,
     ];
 
-    public const LABEL_STATEMENT_DECISION_PROVISION = 'Suspension or termination of the provision of the service';
+    public const LABEL_STATEMENT_DECISION_PROVISION = 'Service restriction';
 
     public const DECISION_PROVISION_PARTIAL_SUSPENSION = 'Partial suspension of the provision of the service';
 
@@ -219,7 +219,7 @@ class Statement extends Model
         'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
-    public const LABEL_STATEMENT_DECISION_ACCOUNT = "Suspension or termination of the recipient of the service's account";
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = "Account restriction";
 
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
 
@@ -227,7 +227,7 @@ class Statement extends Model
 
     public const DECISION_ACCOUNTS = [
         'DECISION_ACCOUNT_SUSPENDED' => self::DECISION_ACCOUNT_SUSPENDED,
-        'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED
+        'DECISION_ACCOUNT_TERMINATED' => self::DECISION_ACCOUNT_TERMINATED,
     ];
 
     public const LABEL_STATEMENT_TERRITORIAL_SCOPE = 'Territorial scope of the decision';
@@ -280,7 +280,7 @@ class Statement extends Model
         'STATEMENT_CATEGORY_SELF_HARM' => self::STATEMENT_CATEGORY_SELF_HARM,
         'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE' => self::STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE,
         'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS' => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS,
-        'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE
+        'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE,
     ];
 
     public const KEYWORD_ANIMAL_HARM = 'Animal harm';
@@ -486,7 +486,7 @@ class Statement extends Model
      */
     protected $guarded = [
         'id',
-        'uuid'
+        'uuid',
     ];
 
     /**
@@ -508,7 +508,7 @@ class Statement extends Model
         'content_type' => 'array',
         'decision_visibility' => 'array',
         'category_addition' => 'array',
-        'category_specification' => 'array'
+        'category_specification' => 'array',
     ];
 
     protected $hidden = [
@@ -518,7 +518,7 @@ class Statement extends Model
         'user_id',
         'platform',
         'platform_id',
-        'puid'
+        'puid',
     ];
 
     protected $appends = [
@@ -526,7 +526,7 @@ class Statement extends Model
         'content_type',
         'platform_name',
         'permalink',
-        'self'
+        'self',
     ];
 
     #[\Override]
@@ -552,20 +552,24 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        if (!is_null($this->platform)){
+        if (!is_null($this->platform))
+        {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
-        } else {
-            return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-'.$this->platform_id);
+        } else
+        {
+            return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
         }
 
     }
 
     public function platformUuidCached(): string
     {
-        if (!is_null($this->platform)){
+        if (!is_null($this->platform))
+        {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
-        } else {
-            return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-'.$this->platform_id);
+        } else
+        {
+            return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
         }
 
     }
@@ -614,7 +618,7 @@ class Statement extends Model
             'uuid' => $this->uuid,
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
-            'method' => $this->method
+            'method' => $this->method,
         ];
     }
 
@@ -757,19 +761,23 @@ class Statement extends Model
         $decisions = [];
 
 
-        if ($this->decision_visibility) {
+        if ($this->decision_visibility)
+        {
             $decisions[] = 'Visibility';
         }
 
-        if ($this->decision_monetary) {
+        if ($this->decision_monetary)
+        {
             $decisions[] = 'Monetary';
         }
 
-        if ($this->decision_provision) {
+        if ($this->decision_provision)
+        {
             $decisions[] = 'Provision';
         }
 
-        if ($this->decision_account) {
+        if ($this->decision_account)
+        {
             $decisions[] = 'Account';
         }
 
@@ -782,11 +790,14 @@ class Statement extends Model
         $enumValues = [];
         $keys = array_filter($keys);
 
-        foreach ($keys as $key) {
+        foreach ($keys as $key)
+        {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class . '::' . $key)) {
+            if (defined(self::class . '::' . $key))
+            {
                 $value = constant(self::class . '::' . $key);
-                if ($value !== null) {
+                if ($value !== null)
+                {
                     $enumValues[] = $value;
                 }
             }
@@ -804,23 +815,28 @@ class Statement extends Model
     public function getRawKeys($key): array
     {
         $raw_original = (string) $this->getRawOriginal($key);
-        if($raw_original === '') {
+        if ($raw_original === '')
+        {
             return [];
         }
 
         // Catch potential bad json here.
-        try {
+        try
+        {
             $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $exception) {
+        } catch (Exception $exception)
+        {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];
         }
 
 
-        if (is_array($out)) {
+        if (is_array($out))
+        {
             $out = array_unique($out);
             sort($out);
-        } else {
+        } else
+        {
             $out = [];
         }
 

@@ -26,23 +26,33 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('statement/existing-puid/{puid}', [StatementAPIController::class, 'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
     Route::post('statement', [StatementAPIController::class, 'store'])->name('api.v1.statement.store')->can('create statements');
     Route::post('statements', [StatementMultipleAPIController::class, 'store'])->name('api.v1.statements.store')->can('create statements');
-    Route::group(['middleware' => ['can:administrate']], static function () {
-        Route::post('opensearch/search', [OpenSearchAPIController::class, 'search'])->name('api.v1.opensearch.search');
-        Route::post('opensearch/count', [OpenSearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
-        Route::post('opensearch/sql', [OpenSearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
-        Route::post('opensearch/explain', [OpenSearchAPIController::class, 'explain'])->name('api.v1.opensearch.explain');
-        Route::post('opensearch/cacheclear', [OpenSearchAPIController::class, 'clearAggregateCache'])->name('api.v1.opensearch.cacheclear');
-        Route::get('opensearch/aggregates/{date}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForDate'])->name('api.v1.opensearch.aggregates.date');
-        Route::get('opensearch/aggregates-csv/{date}', [OpenSearchAPIController::class, 'aggregatesCsvForDate'])->name('api.v1.opensearch.aggregates.csv.date');
-        Route::get('opensearch/aggregates/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRange'])->name('api.v1.opensearch.aggregates.range');
-        Route::get('opensearch/aggregatesd/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRangeDates'])->name('api.v1.opensearch.aggregates.range.dates');
-        Route::get('opensearch/platforms', [OpenSearchAPIController::class, 'platforms'])->name('api.v1.opensearch.platforms');
-        Route::get('opensearch/labels', [OpenSearchAPIController::class, 'labels'])->name('api.v1.opensearch.labels');
-        Route::get('opensearch/total', [OpenSearchAPIController::class, 'total'])->name('api.v1.opensearch.total');
-        Route::get('opensearch/datetotal/{date}', [OpenSearchAPIController::class, 'dateTotal'])->name('api.v1.opensearch.datetotal');
-        Route::get('opensearch/platformdatetotal/{platform_id}/{date}', [OpenSearchAPIController::class, 'platformDateTotal'])->name('api.v1.opensearch.platformdatetotal');
-        Route::get('opensearch/datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
-        Route::get('opensearch/datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
+    Route::group(['prefix' => 'opensearch', 'middleware' => ['can:administrate']], static function () {
+        Route::post('search', [OpenSearchAPIController::class, 'search'])->name('api.v1.opensearch.search');
+        Route::post('count', [OpenSearchAPIController::class, 'count'])->name('api.v1.opensearch.count');
+        Route::post('sql', [OpenSearchAPIController::class, 'sql'])->name('api.v1.opensearch.sql');
+        Route::post('explain', [OpenSearchAPIController::class, 'explain'])->name('api.v1.opensearch.explain');
+        Route::post('cacheclear', [OpenSearchAPIController::class, 'clearAggregateCache'])->name('api.v1.opensearch.cacheclear');
+        Route::get('aggregates/{date}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForDate'])->name('api.v1.opensearch.aggregates.date');
+        Route::get('aggregates-csv/{date}', [OpenSearchAPIController::class, 'aggregatesCsvForDate'])->name('api.v1.opensearch.aggregates.csv.date');
+        Route::get('aggregates/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRange'])->name('api.v1.opensearch.aggregates.range');
+        Route::get('aggregatesd/{start}/{end}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForRangeDates'])->name('api.v1.opensearch.aggregates.range.dates');
+        Route::get('platforms', [OpenSearchAPIController::class, 'platforms'])->name('api.v1.opensearch.platforms');
+        Route::get('labels', [OpenSearchAPIController::class, 'labels'])->name('api.v1.opensearch.labels');
+        Route::get('total', [OpenSearchAPIController::class, 'total'])->name('api.v1.opensearch.total');
+        Route::get('datetotal/{date}', [OpenSearchAPIController::class, 'dateTotal'])->name('api.v1.opensearch.datetotal');
+        Route::get('platformdatetotal/{platform_id}/{date}', [OpenSearchAPIController::class, 'platformDateTotal'])->name('api.v1.opensearch.platformdatetotal');
+        Route::get('datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
+        Route::get('datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
+    });
+
+    Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {
+        Route::post('search', [OpenSearchAPIController::class, 'search']);
+        Route::post('count', [OpenSearchAPIController::class, 'count']);
+        Route::post('sql', [OpenSearchAPIController::class, 'sql']);
+        Route::post('query', [OpenSearchAPIController::class, 'dql']);
+        Route::get('aggregates/{date}/{attributes?}', [OpenSearchAPIController::class, 'aggregatesForDate']);
+        Route::get('platforms', [OpenSearchAPIController::class, 'platforms']);
+        Route::get('labels', [OpenSearchAPIController::class, 'labels']);
     });
     //Onboarding routes
     Route::get('platform/{platform:dsa_common_id}', static fn(\App\Models\Platform $platform) => (new \App\Http\Controllers\Api\v1\PlatformAPIController())->get($platform))->name('api.v1.platform.get')->can('view platforms');
