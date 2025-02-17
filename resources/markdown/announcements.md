@@ -2,7 +2,7 @@
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
-Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). See [the dsa-tdb documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/data_sources.html) for more information on how to download these data. You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from [the dsa-tdb package documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/). We provide two types of aggregated data: the basic aggregation currently feeding the [Dashboard](https://transparency.dsa.ec.europa.eu/dashboard) and an advanced one aggregating the data on all the database’s non-free-text fields columns.
+Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). See [the dsa-tdb documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/data_sources.html) for more information on how to download these data. You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from [the dsa-tdb package documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/). We provide two types of aggregated data: the basic aggregation currently feeding the [Dashboard](/dashboard) and an advanced one aggregating the data on all the database’s non-free-text fields columns.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 #### [Announcement – Access to data] Update to the data retention policy 
 
@@ -11,7 +11,7 @@ Today, two new formats for data download have been added to the DSA Transparency
 Starting from 18th of February 2025, the data retention policy of the DSA Transparency Database (TDB) will be updated to extend the availability of the daily dumps files from 18 months to five years after their creation and to include additional file formats. After this period, they will be archived in a cold storage. The rest of the data retention policy remains unchanged. 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 #### [Announcement – Dashboard] New pages and filters for better separation between platforms
-<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published Published 19/12/2024</p>
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/12/2024</p>
 
 On 19th December 2024, the [dashboard](/dashboard) of the DSA Transparency Database was updated to include a clearer separation between the Statements of Reasons submitted by Very Large Online Platforms (VLOPs)  and the rest (non-VLOP) platforms. The changes are particularly notable in the first and second pages of the dashboard; unified information for all platforms is available in page 6 (‘all platforms’). A new taxonomy was also added in the ‘Platforms’ filter that allows users to select with a single click all the VLOPs or all the non-VLOPs.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
