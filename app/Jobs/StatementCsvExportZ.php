@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Platform;
+use App\Models\Statement;
 use App\Services\DayArchiveService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -70,11 +71,11 @@ class StatementCsvExportZ implements ShouldQueue
 
 
             $current_end = min( ($current_start + $chunk), $this->end_id );
-            $statements = DB::connection('mysql::read')->table('statements', null)
+            $statements = Statement::on('mysql::read')
                             ->selectRaw($select_raw)
-                            ->where('statements.id', '>=', $current_start)
-                            ->where('statements.id', '<=', $current_end)
-                            ->orderBy('statements.id')
+                            ->where('id', '>=', $current_start)
+                            ->where('id', '<=', $current_end)
+                            ->orderBy('id')
                             ->get();
 
 
