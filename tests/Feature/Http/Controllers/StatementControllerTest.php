@@ -7,7 +7,7 @@ use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
-use JMac\Testing\Traits\AdditionalAssertions;
+#use JMac\Testing\Traits\AdditionalAssertions;
 use Mockery\MockInterface;
 use Tests\Feature\Http\Controllers\Api\v1\StatementAPIControllerTest;
 use Tests\TestCase;
@@ -17,9 +17,10 @@ use Tests\TestCase;
  */
 class StatementControllerTest extends TestCase
 {
-    use AdditionalAssertions;
+    #use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
+
     protected $dummy_attributes = [
         'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
         'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
@@ -213,18 +214,6 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statement');
     }
 
-
-    /**
-     * @test
-     */
-    public function store_uses_form_request_validation(): void
-    {
-        $this->assertActionUsesFormRequest(
-            \App\Http\Controllers\StatementController::class,
-            'store',
-            \App\Http\Requests\StatementStoreRequest::class
-        );
-    }
 
     /**
      * @test

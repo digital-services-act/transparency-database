@@ -166,7 +166,7 @@ class StatementQueryServiceTest extends TestCase
             'created_at_start' => "20-5-2021"
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements_beta" where "created_at" >= ? and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements_beta" where "created_at" >= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
     /**
@@ -178,7 +178,7 @@ class StatementQueryServiceTest extends TestCase
             'created_at_end' => "20-5-2021"
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
     /**
@@ -190,7 +190,7 @@ class StatementQueryServiceTest extends TestCase
             'platform_id' => [1]
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements_beta" where exists (select * from "platforms" where "statements"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements_beta" where exists (select * from "platforms" where "statements_beta"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements_beta"."deleted_at" is null', $sql);
     }
 
     /**

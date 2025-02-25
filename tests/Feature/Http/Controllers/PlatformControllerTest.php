@@ -6,12 +6,12 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use JMac\Testing\Traits\AdditionalAssertions;
+#use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 class PlatformControllerTest extends TestCase
 {
-    use AdditionalAssertions;
+    #use AdditionalAssertions;
     use RefreshDatabase;
 
     /**

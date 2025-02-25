@@ -14,13 +14,13 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use JMac\Testing\Traits\AdditionalAssertions;
+#use JMac\Testing\Traits\AdditionalAssertions;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
 class StatementAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions;
+    #use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
     private array $required_fields;

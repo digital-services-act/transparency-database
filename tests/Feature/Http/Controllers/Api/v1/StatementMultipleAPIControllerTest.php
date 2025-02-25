@@ -9,13 +9,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use JMac\Testing\Traits\AdditionalAssertions;
+#use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 
 class StatementMultipleAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions;
+    #use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
 
