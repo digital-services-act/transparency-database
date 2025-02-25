@@ -62,9 +62,9 @@ class DayArchiveService
             $currentSecond = $startOfMinute->copy()->addSeconds($i);
 
             // Query the database for the minimum ID created exactly at this second
-            $first = DB::table('statements')
+            $first = Statement::query()
                 ->selectRaw('min(id) as min')
-                ->where('statements.created_at', $currentSecond->format('Y-m-d H:i:s'))
+                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
                 ->first();
 
             // If a result is found, return the id
@@ -92,7 +92,7 @@ class DayArchiveService
             $currentSecond = $endOfDay->copy()->subSeconds($i);
 
             // Query the database for the maximum ID created exactly at this second
-            $last = DB::table('statements')
+            $last = Statement::query()
                 ->selectRaw('max(id) as max')
                 ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
                 ->first();

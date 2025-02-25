@@ -47,7 +47,7 @@ class StatementDeleteChunk implements ShouldQueue
         }
 
         $range = range($this->min, $end);
-        DB::table('statements')->whereIn('id', $range)->delete();
+        DB::table('statements_beta')->whereIn('id', $range)->delete();
 
 
         if ($end >= $this->max) {
