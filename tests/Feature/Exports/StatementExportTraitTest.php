@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Exports;
+namespace Tests\Feature\Exports;
 
 use App\Exports\StatementExportTrait;
 use App\Models\Platform;
