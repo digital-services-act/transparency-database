@@ -18,6 +18,9 @@ class Statement extends Model
     use HasFactory;
     use Searchable;
     use SoftDeletes;
+
+    protected $table = 'statements_beta';
+
     public const METHOD_FORM = 'FORM';
 
     public const METHOD_API = 'API';
