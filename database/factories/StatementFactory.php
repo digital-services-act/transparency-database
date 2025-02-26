@@ -119,7 +119,12 @@ class StatementFactory extends Factory
             'platform_id' => $user->platform_id,
             'user_id' => $user->id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
-            'created_at' => $create_date
+            'created_at' => $create_date,
+            
+            // Add content_id with EAN-13 code
+            'content_id' => $this->faker->boolean(30) ? [
+                Statement::CONTENT_ID_EAN13_KEY => $this->faker->numerify('#############')
+            ] : null
 
         ];
     }

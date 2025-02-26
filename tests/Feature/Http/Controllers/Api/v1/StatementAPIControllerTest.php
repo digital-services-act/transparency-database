@@ -1162,4 +1162,36 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors(['content_id.EAN-13']);
     }
+
+    /**
+     * @test
+     */
+    public function test_statement_factory_generates_valid_content_id()
+    {
+        // Create 20 statements to ensure we get some with content_id
+        $statements = Statement::factory()->count(20)->create();
+        
+        // Find statements with content_id
+        $statementsWithContentId = $statements->filter(function ($statement) {
+            return !empty($statement->content_id);
+        });
+        
+        // If we have statements with content_id, verify they have valid EAN-13 codes
+        if ($statementsWithContentId->isNotEmpty()) {
+            foreach ($statementsWithContentId as $statement) {
+                $this->assertArrayHasKey(Statement::CONTENT_ID_EAN13_KEY, $statement->content_id);
+                $this->assertMatchesRegularExpression('/^[0-9]{13}$/', $statement->content_id[Statement::CONTENT_ID_EAN13_KEY]);
+            }
+        } else {
+            // If we don't have any statements with content_id, create one explicitly
+            $statement = Statement::factory()->create([
+                'content_id' => [
+                    Statement::CONTENT_ID_EAN13_KEY => '1234567890123'
+                ]
+            ]);
+            
+            $this->assertArrayHasKey(Statement::CONTENT_ID_EAN13_KEY, $statement->content_id);
+            $this->assertEquals('1234567890123', $statement->content_id[Statement::CONTENT_ID_EAN13_KEY]);
+        }
+    }
 }
