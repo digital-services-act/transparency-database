@@ -529,6 +529,8 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
+    public const CONTENT_ID_EAN13_KEY = 'EAN-13';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -547,6 +549,7 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
+        'content_id' => 'array',
         'content_date' => 'datetime:Y-m-d',
         'application_date' => 'datetime:Y-m-d',
         'end_date_account_restriction' => 'datetime:Y-m-d',

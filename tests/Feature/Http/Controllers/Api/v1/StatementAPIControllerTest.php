@@ -1091,4 +1091,75 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_NOT_FOUND);
         $response->assertJson(['message' => 'statement of reason not found']);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function test_can_store_statement_with_valid_ean13_content_id()
+    {
+        $platform = Platform::factory()->create();
+        $user = User::factory()->create([
+            'platform_id' => $platform->id
+        ]);
+        
+        // Give the user permission to create statements
+        $user->givePermissionTo('create statements');
+
+        $this->actingAs($user);
+
+        $statement = $this->createFullStatements(1)[0];
+        $statement['content_id'] = [
+            Statement::CONTENT_ID_EAN13_KEY => '1234567890123'
+        ];
+
+        $response = $this->postJson('/api/v1/statement', $statement);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        
+        // Get the statement from the database
+        $dbStatement = \DB::table('statements_beta')
+            ->where('id', $response->json('id'))
+            ->first();
+            
+        $this->assertNotNull($dbStatement);
+        $this->assertEquals(
+            json_encode($statement['content_id']),
+            $dbStatement->content_id
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_rejects_invalid_ean13_content_id()
+    {
+        $platform = Platform::factory()->create();
+        $user = User::factory()->create([
+            'platform_id' => $platform->id
+        ]);
+        
+        // Give the user permission to create statements
+        $user->givePermissionTo('create statements');
+
+        $this->actingAs($user);
+
+        $statement = $this->createFullStatements(1)[0];
+        
+        // Test with invalid length
+        $statement['content_id'] = [
+            Statement::CONTENT_ID_EAN13_KEY => '123456789012' // 12 digits instead of 13
+        ];
+        $response = $this->postJson('/api/v1/statement', $statement);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonValidationErrors(['content_id.EAN-13']);
+
+        // Test with non-numeric characters
+        $statement['content_id'] = [
+            Statement::CONTENT_ID_EAN13_KEY => '12345678901AB'
+        ];
+        $response = $this->postJson('/api/v1/statement', $statement);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonValidationErrors(['content_id.EAN-13']);
+    }
 }
