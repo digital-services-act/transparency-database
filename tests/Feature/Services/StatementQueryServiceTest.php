@@ -137,11 +137,11 @@ class StatementQueryServiceTest extends TestCase
             'category_specification' => ['KEYWORD_HATE_SPEECH', 'KEYWORD_OTHER']
         ]);
         Statement::factory()->create([
-            'category_specification' => ['KEYWORD_DISINFORMATION', 'KEYWORD_HATE_SPEECH']
+            'category_specification' => ['KEYWORD_MISINFORMATION_DISINFORMATION', 'KEYWORD_HATE_SPEECH']
         ]);
         
         $filters = [
-            'category_specification' => ['KEYWORD_HATE_SPEECH', 'KEYWORD_DISINFORMATION', 'INVALID_KEYWORD']
+            'category_specification' => ['KEYWORD_HATE_SPEECH', 'KEYWORD_MISINFORMATION_DISINFORMATION', 'INVALID_KEYWORD']
         ];
         
         $result = $this->statement_query_service->query($filters);
@@ -151,7 +151,7 @@ class StatementQueryServiceTest extends TestCase
         // Check that we're using JSON extract and proper OR conditions
         $this->assertStringContainsString('json_extract', strtolower($sql));
         $this->assertCount(2, $bindings); // Should only have 2 bindings as INVALID_KEYWORD is filtered out
-        $this->assertEquals(['%"KEYWORD_HATE_SPEECH"%', '%"KEYWORD_DISINFORMATION"%'], array_values($bindings));
+        $this->assertEquals(['%"KEYWORD_HATE_SPEECH"%', '%"KEYWORD_MISINFORMATION_DISINFORMATION"%'], array_values($bindings));
         
         // Verify we get both statements that have either KEYWORD_HATE_SPEECH or KEYWORD_DISINFORMATION
         $this->assertEquals(2, $result->count());
