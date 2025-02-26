@@ -509,11 +509,6 @@ class Statement extends Model
         'KEYWORD_OTHER' => self::KEYWORD_OTHER,
     ];
 
-
-
-
-
-
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
 
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
