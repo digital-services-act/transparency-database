@@ -25,6 +25,9 @@ class StatementCsvExportZ implements ShouldQueue
     use Queueable;
     use SerializesModels;
     use Batchable;
+
+    public $statements_table = 'statements_beta';
+
     public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false)
     {
     }
@@ -71,7 +74,8 @@ class StatementCsvExportZ implements ShouldQueue
 
 
             $current_end = min( ($current_start + $chunk), $this->end_id );
-            $statements = Statement::on('mysql::read')
+            $statements = DB::connection('mysql::read')
+                            ->table($this->statements_table)
                             ->selectRaw($select_raw)
                             ->where('id', '>=', $current_start)
                             ->where('id', '<=', $current_end)
