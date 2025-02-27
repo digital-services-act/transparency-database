@@ -321,8 +321,10 @@ class OpenSearchAPIController extends Controller
             request(),
             function () {
                 try {
-                    $platforms = Platform::all(['id', 'name', 'dsa_common_id']);
-                    return response()->json($platforms);
+                    $platforms = Platform::NonDSA()->get()->toArray();
+                    $out = array_map(static fn($platform) => ['id' => $platform['id'], 'name' => $platform['name'], 'vlop' => $platform['vlop'] === 1], $platforms);
+
+                    return response()->json(['platforms' => $out]);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid platforms attempt: ' . $exception->getMessage()], $this->error_code);
                 }
