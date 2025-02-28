@@ -31,7 +31,7 @@ class RouteProtectionTest extends TestCase
         $this->contributor = User::factory()->create()->assignRole('Contributor');
         $this->onboarding = User::factory()->create()->assignRole('Onboarding');
         $this->support = User::factory()->create()->assignRole('Support');
-        $this->researcher = User::factory()->create()->assignRole('Researcher');
+        $this->researcher = User::factory()->create()->assignRole('EU ResearchAPI access');
     }
 
     /**

@@ -15,7 +15,7 @@ class ResearchPermissionsSeeder extends Seeder
     {
 
         // Create role
-        $researcherRole = Role::create(['name' => 'Researcher']);
+        $researcherRole = Role::create(['name' => 'EU ResearchAPI access']);
 
         // Create permissions
         $researchAPIPermission = Permission::create(['name' => 'research API']);
