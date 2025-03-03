@@ -99,7 +99,7 @@ class OnboardingController extends Controller
             unset($filters_copy['s']);
             $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
             $tags[] = [
-                'label' => 'matching term: "'. htmlentities($filters['s']) .'"',
+                'label' => 'matching term: "' . htmlentities($filters['s']) . '"',
                 'url' => $url,
                 'removable' => true
             ];
