@@ -219,7 +219,7 @@ class StatementController extends Controller
         $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES, $noval_on_select);
         $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS, $noval_on_select);
         $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS, $noval_on_select);
-        $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES, $noval_on_select);
+        $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES);
         $category_specifications = $this->mapForSelectWithKeys(Statement::KEYWORDS, $noval_on_select);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
