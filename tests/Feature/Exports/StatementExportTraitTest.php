@@ -5,6 +5,7 @@ namespace Tests\Feature\Exports;
 use App\Exports\StatementExportTrait;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\PlatformQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,13 +14,20 @@ class StatementExportTraitTest extends TestCase
     use StatementExportTrait;
     use RefreshDatabase;
 
+    protected PlatformQueryService $platformQueryService;
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->platformQueryService = app(PlatformQueryService::class);
+    }
+
     /** 
      * @test  
      */
     public function test_headings_returns_all_required_columns()
     {
         $headings = $this->headings();
-        
+
         $this->assertIsArray($headings);
         $this->assertContains('uuid', $headings);
         $this->assertContains('decision_visibility', $headings);
@@ -31,7 +39,7 @@ class StatementExportTraitTest extends TestCase
     public function test_headings_light_returns_subset_of_columns()
     {
         $headings = $this->headingsLight();
-        
+
         $this->assertIsArray($headings);
         $this->assertContains('uuid', $headings);
         $this->assertContains('decision_visibility', $headings);
@@ -40,47 +48,47 @@ class StatementExportTraitTest extends TestCase
         $this->assertNotContains('incompatible_content_explanation', $headings);
     }
 
-    
+
     /** @test */
     public function test_map_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);
-        
+
         $mapped = $this->map($statement);
-        
+
         $this->assertIsArray($mapped);
-        $this->assertTrue(in_array($statement->uuid, $mapped)); 
+        $this->assertTrue(in_array($statement->uuid, $mapped));
         $this->assertContains($platform->name, $mapped);
     }
 
-    
+
     /** @test */
     public function test_mapRaw_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);
 
-        $platforms = Platform::all()->pluck('name', 'id')->toArray();
-        
+        $platforms = $this->platformQueryService->getPlatformsById();
+
         $mapped = $this->mapRaw($statement, $platforms);
-        
+
         $this->assertIsArray($mapped);
-        $this->assertTrue(in_array($statement->uuid, $mapped)); 
+        $this->assertTrue(in_array($statement->uuid, $mapped));
         $this->assertContains($platform->name, $mapped);
     }
-    
+
     /** @test */
     public function test_mapRawLight_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);
-        $platforms = Platform::all()->pluck('name', 'id')->toArray();
+        $platforms = $this->platformQueryService->getPlatformsById();
 
         $mapped = $this->mapRawLight($statement, $platforms);
-        
+
         $this->assertIsArray($mapped);
-        $this->assertTrue(in_array($statement->uuid, $mapped)); 
+        $this->assertTrue(in_array($statement->uuid, $mapped));
         $this->assertContains($platform->name, $mapped);
     }
 }

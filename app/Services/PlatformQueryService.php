@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Platform;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use TypeError;
@@ -18,6 +19,8 @@ class PlatformQueryService
         'has_tokens',
         'has_statements',
     ];
+
+    public const ONE_HOUR = 3600;
 
     /**
      * @param array $filters
@@ -34,7 +37,7 @@ class PlatformQueryService
                     if (method_exists($this, $method)) {
                         $this->$method($query, $filters[$filter_key]);
                     }
-                } catch (TypeError|Exception $e) {
+                } catch (TypeError | Exception $e) {
                     Log::error("Platform Query Service Error", ['exception' => $e]);
                 }
             }
@@ -122,5 +125,37 @@ class PlatformQueryService
     public function updateHasStatements(array $platform_ids, int $has_statements = 1): void
     {
         Platform::query()->whereIn('id', $platform_ids)->update(['has_statements' => $has_statements]);
+    }
+
+    public function getPlatformDropDownOptions(): array
+    {
+        return Cache::remember('platform-dropdown-options', self::ONE_HOUR, callback: function () {
+            return Platform::nonDsa()
+                ->selectRaw('id as value, name as label')
+                ->orderBy('name', 'ASC')
+                ->get()
+                ->toArray();
+        });
+    }
+
+    public function getPlatformsById(): array
+    {
+        return Cache::remember('platforms-by-id', self::ONE_HOUR, function (): array {
+            return Platform::nonDsa()->pluck('name', 'id')->toArray();
+        });
+    }
+
+    public function getPlatformIds(): array
+    {
+        return Cache::remember('platform-ids', self::ONE_HOUR, function (): array {
+            return Platform::nonDsa()->pluck('id')->toArray();
+        });
+    }
+
+    public function getVlopPlatformIds(): array
+    {
+        return Cache::remember('vlop-ids', self::ONE_HOUR, function () {
+            return Platform::Vlops()->pluck('id')->toArray();
+        });
     }
 }

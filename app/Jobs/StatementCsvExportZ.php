@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DayArchiveService;
+use App\Services\PlatformQueryService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +33,7 @@ class StatementCsvExportZ implements ShouldQueue
     {
     }
 
-    private function csvstr(array $fields) : string
+    private function csvstr(array $fields): string
     {
         $f = fopen('php://memory', 'wb+');
         if (fputcsv($f, $fields) === false) {
@@ -44,9 +45,9 @@ class StatementCsvExportZ implements ShouldQueue
         return rtrim($csv_line);
     }
 
-    public function handle(DayArchiveService $day_archive_service): void
+    public function handle(DayArchiveService $day_archive_service, PlatformQueryService $platform_query_service): void
     {
-        $platforms = Platform::all()->pluck('name', 'id')->toArray();
+        $platforms = $platform_query_service->getPlatformsById();
 
         $exports = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
@@ -73,32 +74,32 @@ class StatementCsvExportZ implements ShouldQueue
             }
 
 
-            $current_end = min( ($current_start + $chunk), $this->end_id );
+            $current_end = min(($current_start + $chunk), $this->end_id);
             $statements = DB::connection('mysql::read')
-                            ->table($this->statements_table)
-                            ->selectRaw($select_raw)
-                            ->where('id', '>=', $current_start)
-                            ->where('id', '<=', $current_end)
-                            ->orderBy('id')
-                            ->get();
+                ->table($this->statements_table)
+                ->selectRaw($select_raw)
+                ->where('id', '>=', $current_start)
+                ->where('id', '<=', $current_end)
+                ->orderBy('id')
+                ->get();
 
 
 
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
-                $row      = $day_archive_service->mapRaw($statement, $platforms);
+                $row = $day_archive_service->mapRaw($statement, $platforms);
                 $row_light = $day_archive_service->mapRawLight($statement, $platforms);
 
                 $csv = $this->csvstr($row);
                 $csv_light = $this->csvstr($row_light);
 
                 // Always put it into global
-                $exports[0]['subparts']['full'][$subpart][]  = $csv;
+                $exports[0]['subparts']['full'][$subpart][] = $csv;
                 $exports[0]['subparts']['light'][$subpart][] = $csv_light;
 
                 // Maybe put it also in a lower.
                 if (isset($exports[$statement->platform_id])) {
-                    $exports[$statement->platform_id]['subparts']['full'][$subpart][]  = $csv;
+                    $exports[$statement->platform_id]['subparts']['full'][$subpart][] = $csv;
                     $exports[$statement->platform_id]['subparts']['light'][$subpart][] = $csv_light;
                 }
             }
@@ -110,7 +111,7 @@ class StatementCsvExportZ implements ShouldQueue
 
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip_file  = Storage::path('sor-' . $export['slug'] . '-' . $this->date . '-' . $version . '-' . $this->part . '.csv.zip');
+                $zip_file = Storage::path('sor-' . $export['slug'] . '-' . $this->date . '-' . $version . '-' . $this->part . '.csv.zip');
                 $zip = new \ZipArchive();
                 $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
                 foreach ($export['subparts'][$version] as $subpart => $rows) {

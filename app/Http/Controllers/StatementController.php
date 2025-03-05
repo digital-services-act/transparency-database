@@ -6,11 +6,11 @@ use App\Exceptions\PuidNotUniqueSingleException;
 use App\Exports\StatementsExport;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
-use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementQueryService;
 use App\Services\StatementSearchService;
@@ -33,7 +33,8 @@ class StatementController extends Controller
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
-        protected PlatformUniqueIdService $platform_unique_id_service
+        protected PlatformUniqueIdService $platform_unique_id_service,
+        protected PlatformQueryService $platform_query_service,
     ) {
     }
 
@@ -47,8 +48,7 @@ class StatementController extends Controller
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
         $max_pages = 200;
         $page = $request->get('page', 0);
-        if ($page > $max_pages)
-        {
+        if ($page > $max_pages) {
             $request->query->set('page', $max_pages);
         }
 
@@ -93,16 +93,14 @@ class StatementController extends Controller
     private function setupQuery(Request $request): array
     {
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
-        if (config('scout.driver') == 'opensearch')
-        {
+        if (config('scout.driver') == 'opensearch') {
             $statements = $this->statement_search_service->query($request->query());
             $total = $this->statement_search_service->query($request->query(), [
                 'size' => 1,
                 'from' => 0,
                 'track_total_hits' => true,
             ])->paginate(1)->total();
-        } else
-        {
+        } else {
             // This should never happen,
             // raw queries on the statement table is very bad
             // maybe ok for a local dev sure
@@ -131,8 +129,7 @@ class StatementController extends Controller
     public function create(Request $request): Factory|View|Application|RedirectResponse
     {
         // If you don't have a platform, we don't want you here.
-        if (!$request->user()->platform)
-        {
+        if (!$request->user()->platform) {
             return back()->withErrors('Your account is not associated with a platform.');
         }
         $statement = new Statement();
@@ -165,8 +162,7 @@ class StatementController extends Controller
     public function showUuid(string $uuid): Redirector|RedirectResponse|Application
     {
         $id = $this->statement_search_service->uuidToId($uuid);
-        if ($id === 0)
-        {
+        if ($id === 0) {
             abort(404);
         }
 
@@ -184,12 +180,10 @@ class StatementController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
-        try
-        {
+        try {
             $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
             $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
-        } catch (PuidNotUniqueSingleException $e)
-        {
+        } catch (PuidNotUniqueSingleException $e) {
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
 
@@ -202,7 +196,7 @@ class StatementController extends Controller
     /**
      * @return array
      */
-    private function prepareOptions(): array
+    private function prepareOptions($noval_on_select = false): array
     {
         // Prepare options for forms and selects and such.
         $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
@@ -214,20 +208,17 @@ class StatementController extends Controller
         $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
 
-        $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS, true);
-        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS, true);
-        $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS, true);
-        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES, true);
-        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(static fn($platform) => [
-            'value' => $platform->id,
-            'label' => $platform->name,
-        ])->toArray();
-        $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES, true);
-        $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES, true);
-        $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS, true);
-        $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS, true);
-        $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES, true);
-        $category_specifications = $this->mapForSelectWithKeys(Statement::KEYWORDS, true);
+        $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS, $noval_on_select);
+        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS, $noval_on_select);
+        $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS, $noval_on_select);
+        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES, $noval_on_select);
+        $platforms = $this->platform_query_service->getPlatformDropDownOptions();
+        $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES, $noval_on_select);
+        $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES, $noval_on_select);
+        $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS, $noval_on_select);
+        $decision_accounts = $this->mapForSelectWithKeys(Statement::DECISION_ACCOUNTS, $noval_on_select);
+        $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES, $noval_on_select);
+        $category_specifications = $this->mapForSelectWithKeys(Statement::KEYWORDS, $noval_on_select);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS, true);
         $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES, true);
