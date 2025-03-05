@@ -57,7 +57,7 @@ class StatementController extends Controller
         $pagination_per_page = 50;
 
         $statements = $setup['statements'];
-        $options = $this->prepareOptions();
+        $options = $this->prepareOptions(true);
         $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
         $total = $setup['total'];
 
@@ -119,7 +119,7 @@ class StatementController extends Controller
      */
     public function search(Request $request): View|Factory|Application
     {
-        $options = $this->prepareOptions();
+        $options = $this->prepareOptions(true);
         return view('statement.search', ['options' => $options]);
     }
 
