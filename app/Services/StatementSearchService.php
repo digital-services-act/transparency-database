@@ -209,7 +209,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-decision_visibility:?*';
+            $ors[] = '(-decision_visibility:?*)';
         }
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
@@ -224,7 +224,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-decision_monetary:?*';
+            $ors[] = '(-decision_monetary:?*)';
         }
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
@@ -239,7 +239,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-decision_provision:?*';
+            $ors[] = '(-decision_provision:?*)';
         }
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
@@ -254,7 +254,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-territorial_scope:?*';
+            $ors[] = '(-territorial_scope:?*)';
         }
 
         $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
@@ -270,7 +270,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-decision_account:?*';
+            $ors[] = '(-decision_account:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
 
@@ -285,7 +285,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-account_type:?*';
+            $ors[] = '(-account_type:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
         foreach ($filter_values as $filter_value) {
@@ -299,10 +299,9 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-category_specification:?*';
+            $ors[] = '(-category_specification:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
-
         foreach ($filter_values as $filter_value) {
             $ors[] = 'category_specification:' . $filter_value;
         }
@@ -314,7 +313,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-decision_ground:?*';
+            $ors[] = '(-decision_ground:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
         foreach ($filter_values as $filter_value) {
@@ -328,7 +327,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-category:?*';
+            $ors[] = '(-category:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
         foreach ($filter_values as $filter_value) {
@@ -342,7 +341,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-content_type:?*';
+            $ors[] = '(-content_type:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
         foreach ($filter_values as $filter_value) {
@@ -361,7 +360,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-content_language:?*';
+            $ors[] = '(-content_language:?*)';
         }
         $all_isos = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
         $filter_values = array_intersect($filter_values, $all_isos);
@@ -376,7 +375,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-automated_detection:?*';
+            $ors[] = '(-automated_detection:?*)';
         }
         $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
         foreach ($filter_values as $filter_value) {
@@ -390,7 +389,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-automated_decision:?*';
+            $ors[] = '(-automated_decision:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         foreach ($filter_values as $filter_value) {
@@ -419,7 +418,7 @@ class StatementSearchService
     {
         $ors = [];
         if (in_array('--noval--', $filter_values)) {
-            $ors[] = '-source_type:?*';
+            $ors[] = '(-source_type:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
 
