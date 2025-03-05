@@ -202,16 +202,16 @@ class StatementController extends Controller
         $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
         //dd($countries);
 
-        $languages = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true), true);
+        $languages = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true), $noval_on_select);
         $languages_grouped = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true, true));
 
         $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
 
-        $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS, $noval_on_select);
-        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS, $noval_on_select);
+        $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
+        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS, $noval_on_select);
-        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES, $noval_on_select);
+        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
         $platforms = $this->platform_query_service->getPlatformDropDownOptions();
         $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES, $noval_on_select);
         $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES, $noval_on_select);
@@ -220,14 +220,14 @@ class StatementController extends Controller
         $account_types = $this->mapForSelectWithKeys(Statement::ACCOUNT_TYPES, $noval_on_select);
         $category_specifications = $this->mapForSelectWithKeys(Statement::KEYWORDS, $noval_on_select);
 
-        $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS, true);
-        $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES, true);
-        $categories_addition = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES, true);
+        $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
+        $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
+        $categories_addition = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES, $noval_on_select);
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
 
-        $source_types = $this->mapForSelectWithKeys(Statement::SOURCE_TYPES, true);
+        $source_types = $this->mapForSelectWithKeys(Statement::SOURCE_TYPES);
 
         return ['countries' => $countries, 'languages' => $languages, 'languages_grouped' => $languages_grouped, 'eea_countries' => $eea_countries, 'eu_countries' => $eu_countries, 'automated_detections' => $automated_detections, 'automated_decisions' => $automated_decisions, 'incompatible_content_illegals' => $incompatible_content_illegals, 'decision_visibilities' => $decision_visibilities, 'decision_monetaries' => $decision_monetaries, 'decision_provisions' => $decision_provisions, 'decision_accounts' => $decision_accounts, 'account_types' => $account_types, 'decision_grounds' => $decision_grounds, 'categories' => $categories, 'categories_addition' => $categories_addition, 'illegal_content_fields' => $illegal_content_fields, 'incompatible_content_fields' => $incompatible_content_fields, 'source_types' => $source_types, 'content_types' => $content_types, 'platforms' => $platforms, 'category_specifications' => $category_specifications];
     }
