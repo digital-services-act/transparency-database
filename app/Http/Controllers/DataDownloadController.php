@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Platform;
 use App\Services\DayArchiveQueryService;
 use App\Services\DayArchiveService;
+use App\Services\PlatformQueryService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 
 class DataDownloadController extends Controller
 {
-    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service)
+    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service, protected PlatformQueryService $platform_query_service)
     {
     }
 
@@ -24,7 +25,7 @@ class DataDownloadController extends Controller
 
         $reindexing = Cache::get('reindexing', false);
         $platform = false;
-        $uuid     = trim((string) $request->get('uuid'));
+        $uuid = trim((string) $request->get('uuid'));
         if ($uuid !== '' && $uuid !== '0') {
             /** @var Platform $platform */
             $platform = Platform::query()->where('uuid', $uuid)->first();
@@ -42,10 +43,7 @@ class DataDownloadController extends Controller
 
     private function prepareOptions(): array
     {
-        $platforms = Platform::NonDsa()->orderBy('name')->get()->map(static fn($platform) => [
-            'value' => $platform->uuid,
-            'label' => $platform->name
-        ])->toArray();
+        $platforms = $this->platform_query_service->getPlatformDropDownOptions();
 
         array_unshift($platforms, [
             'value' => ' ',
