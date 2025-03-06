@@ -299,7 +299,7 @@ class Statement extends Model
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-specific restrictions concerning minors';
 
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-specific restrictions';
-    
+
     public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric data breach';
 
     public const KEYWORD_BULLYING_AGAINST_GIRLS = 'Cyber bullying and intimidation against girls';
@@ -377,17 +377,17 @@ class Statement extends Model
     public const KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS = 'Misleading information about the consumer\'s rights';
 
     public const KEYWORD_MISLEADING_INFO_GOODS_SERVICES = 'Misleading information about the characteristics of the goods and services';
-    
+
     public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing processing ground for data';
 
     public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors)';
 
     public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN = 'Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors)';
-    
+
     public const KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE = 'Non-consensual sharing of material containing deepfake or similar technology using a third party\'s features (excluding content depicting minors)';
 
     public const KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN = 'Non-consensual sharing of material containing deepfake or similar technology using a third party\'s features against women (excluding content depicting minors)';
-    
+
     public const KEYWORD_NONCOMPLIANCE_PRICING = 'Non-compliance with pricing regulations';
 
     public const KEYWORD_NUDITY = 'Nudity';
@@ -550,6 +550,7 @@ class Statement extends Model
         'id' => 'integer',
         'uuid' => 'string',
         'content_id' => 'array',
+        'content_id_ean' => 'string',
         'content_date' => 'datetime:Y-m-d',
         'application_date' => 'datetime:Y-m-d',
         'end_date_account_restriction' => 'datetime:Y-m-d',
@@ -672,6 +673,7 @@ class Statement extends Model
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
             'method' => $this->method,
+            'content_id_ean' => $this->content_id_ean
         ];
     }
 
@@ -722,6 +724,7 @@ class Statement extends Model
             'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
             'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
             'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
+            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
         ];
     }
 
