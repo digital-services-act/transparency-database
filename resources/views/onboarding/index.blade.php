@@ -116,7 +116,7 @@
 
             <div class="ecl-row ecl-u-mb-l" style="font-family: Arial, sans-serif;">
                 <div class="ecl-col-l-6">
-                    <strong>Statements</strong>
+                    <strong>Statements (<180days)</strong>
                     @if ($platform_ids_methods_data[$platform->id] ?? false)
                         <span class="ecl-u-ml-2xl ecl-u-mr-2xl">API: @aif($platform_ids_methods_data[$platform->id]['API'])</span>
                         <span class="ecl-u-mr-2xl">API MULTI: @aif($platform_ids_methods_data[$platform->id]['API_MULTI'])</span>
