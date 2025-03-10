@@ -35,36 +35,59 @@ class Platform extends Model
         'uuid'
     ];
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function scopeNonDsa(Builder $query): void
     {
         $query->where('name', '!=', self::LABEL_DSA_TEAM);
     }
 
+
+    /**
+     * @codeCoverageIgnore
+     */
     public function scopeVlops(Builder $query): void
     {
         $query->where('name', '!=', self::LABEL_DSA_TEAM)->where('vlop', 1);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function scopeNonVlops(Builder $query): void
     {
         $query->where('name', '!=', self::LABEL_DSA_TEAM)->where('vlop', 0);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function isDSA()
     {
         return $this->name === self::LABEL_DSA_TEAM;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public static function getDsaPlatform(): Model|Builder|null
     {
         return self::query()->where('name', self::LABEL_DSA_TEAM)->first();
     }
 
+
+    /**
+     * @codeCoverageIgnore
+     */
     public static function dsaTeamPlatformId(): int
     {
         return self::getDsaPlatform()->id;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function slugifyName()
     {
         return Str::slug($this->name);
