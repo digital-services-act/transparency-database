@@ -27,6 +27,20 @@ class PlatformTest extends TestCase
     }
 
     /**
+     * @test
+     * @return void
+     */
+    public function platofrm_slugify_is_working(): void
+    {
+        $platform = Platform::create([
+            'vlop' => 1,
+            'onboarded' => 1,
+            'name' => 'test platform'
+        ]);
+        $this->assertEquals('test-platform', $platform->slugifyName());
+    }
+
+    /**
      * @return void
      * @test
      */
