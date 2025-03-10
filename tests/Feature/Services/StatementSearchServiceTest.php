@@ -99,7 +99,7 @@ class StatementSearchServiceTest extends TestCase
         $search  = $this->statement_search_service->query($filters);
         $this->assertNotNull($search);
         $query = $search->query;
-        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example")',
+        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example" OR content_id_ean:"example")',
             $query);
     }
 

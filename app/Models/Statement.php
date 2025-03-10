@@ -666,14 +666,14 @@ class Statement extends Model
             'platform_name' => $this->platformNameCached(),
             'platform_uuid' => $this->platformUuidCached(),
             'content_date' => $this->content_date,
+            'content_id_ean' => $this->content_id_ean,
             'application_date' => $this->application_date,
             'created_at' => $this->created_at,
             'received_date' => $received_date,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
-            'method' => $this->method,
-            'content_id_ean' => $this->content_id_ean
+            'method' => $this->method
         ];
     }
 
@@ -696,6 +696,7 @@ class Statement extends Model
             'content_type_other' => $this->getRawOriginal('content_type_other'),
             'content_language' => $this->getRawOriginal('content_language'),
             'content_date' => $this->getRawOriginal('content_date'),
+            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
             'application_date' => $this->getRawOriginal('application_date'),
             'illegal_content_legal_ground' => $this->getRawOriginal('illegal_content_legal_ground'),
             'illegal_content_explanation' => $this->getRawOriginal('illegal_content_explanation'),
@@ -723,8 +724,7 @@ class Statement extends Model
             'end_date_visibility_restriction' => $this->getRawOriginal('end_date_visibility_restriction'),
             'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
             'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
-            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
-            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
+            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction')
         ];
     }
 

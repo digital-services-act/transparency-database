@@ -47,6 +47,7 @@ trait StatementExportTrait
             "content_type_other",
             "content_language",
             "content_date",
+            "content_id_ean",
 
             "territorial_scope",
 
@@ -108,6 +109,7 @@ trait StatementExportTrait
             "content_type_other",
             "content_language",
             "content_date",
+            "content_id_ean",
 
             //"territorial_scope",
 
@@ -171,6 +173,7 @@ trait StatementExportTrait
             $statement->getRawOriginal('content_type_other'),
             $statement->getRawOriginal('content_language'),
             $statement->getRawOriginal('content_date'),
+            $statement->getRawOriginal('content_id_ean'),
 
             $statement->getRawOriginal('territorial_scope'),
 
@@ -247,6 +250,7 @@ trait StatementExportTrait
             $statement->content_type_other,
             $statement->content_language,
             $statement->content_date,
+            $statement->content_id_ean,
 
             $statement->territorial_scope,
 
@@ -312,6 +316,7 @@ trait StatementExportTrait
             $statement->content_type_other,
             $statement->content_language,
             $statement->content_date,
+            $statement->content_id_ean,
 
             //$statement->territorial_scope,
 

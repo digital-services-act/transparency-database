@@ -173,6 +173,7 @@
                 :options="$options['content_types']" select_all="All content types" select_item="Select one or more content types"
                 enter_keyword="Enter a content type" :default="request()->get('content_type', [])" />
 
+
             <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_CONTENT_LANGUAGE" name="content_language" justlabel="true" id="content_language"
                 :default="request()->get('content_language', [])" :options="$options['languages']" select_all="All languages"
                 select_item="Select one or more languages" enter_keyword="Enter a language name" />
