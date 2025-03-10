@@ -299,7 +299,7 @@ class Statement extends Model
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-specific restrictions concerning minors';
 
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-specific restrictions';
-    
+
     public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric data breach';
 
     public const KEYWORD_BULLYING_AGAINST_GIRLS = 'Cyber bullying and intimidation against girls';
@@ -377,17 +377,17 @@ class Statement extends Model
     public const KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS = 'Misleading information about the consumer\'s rights';
 
     public const KEYWORD_MISLEADING_INFO_GOODS_SERVICES = 'Misleading information about the characteristics of the goods and services';
-    
+
     public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing processing ground for data';
 
     public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors)';
 
     public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN = 'Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors)';
-    
+
     public const KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE = 'Non-consensual sharing of material containing deepfake or similar technology using a third party\'s features (excluding content depicting minors)';
 
     public const KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN = 'Non-consensual sharing of material containing deepfake or similar technology using a third party\'s features against women (excluding content depicting minors)';
-    
+
     public const KEYWORD_NONCOMPLIANCE_PRICING = 'Non-compliance with pricing regulations';
 
     public const KEYWORD_NUDITY = 'Nudity';
@@ -529,7 +529,7 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
-    public const CONTENT_ID_EAN13_KEY = 'EAN-13';
+    public const CONTENT_ID_EAN13_KEY = 'Content ID (EAN-13)';
 
     /**
      * The attributes that are mass assignable.
@@ -550,6 +550,7 @@ class Statement extends Model
         'id' => 'integer',
         'uuid' => 'string',
         'content_id' => 'array',
+        'content_id_ean' => 'string',
         'content_date' => 'datetime:Y-m-d',
         'application_date' => 'datetime:Y-m-d',
         'end_date_account_restriction' => 'datetime:Y-m-d',
@@ -605,11 +606,9 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        if (!is_null($this->platform))
-        {
+        if (!is_null($this->platform)) {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
-        } else
-        {
+        } else {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
         }
 
@@ -617,11 +616,9 @@ class Statement extends Model
 
     public function platformUuidCached(): string
     {
-        if (!is_null($this->platform))
-        {
+        if (!is_null($this->platform)) {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
-        } else
-        {
+        } else {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
         }
 
@@ -672,6 +669,7 @@ class Statement extends Model
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
             'method' => $this->method,
+            'content_id_ean' => $this->content_id_ean,
         ];
     }
 
@@ -722,6 +720,7 @@ class Statement extends Model
             'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
             'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
             'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
+            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
         ];
     }
 
@@ -814,23 +813,19 @@ class Statement extends Model
         $decisions = [];
 
 
-        if ($this->decision_visibility)
-        {
+        if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
         }
 
-        if ($this->decision_monetary)
-        {
+        if ($this->decision_monetary) {
             $decisions[] = 'Monetary';
         }
 
-        if ($this->decision_provision)
-        {
+        if ($this->decision_provision) {
             $decisions[] = 'Provision';
         }
 
-        if ($this->decision_account)
-        {
+        if ($this->decision_account) {
             $decisions[] = 'Account';
         }
 
@@ -843,14 +838,11 @@ class Statement extends Model
         $enumValues = [];
         $keys = array_filter($keys);
 
-        foreach ($keys as $key)
-        {
+        foreach ($keys as $key) {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class . '::' . $key))
-            {
+            if (defined(self::class . '::' . $key)) {
                 $value = constant(self::class . '::' . $key);
-                if ($value !== null)
-                {
+                if ($value !== null) {
                     $enumValues[] = $value;
                 }
             }
@@ -868,28 +860,23 @@ class Statement extends Model
     public function getRawKeys($key): array
     {
         $raw_original = (string) $this->getRawOriginal($key);
-        if ($raw_original === '')
-        {
+        if ($raw_original === '') {
             return [];
         }
 
         // Catch potential bad json here.
-        try
-        {
+        try {
             $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];
         }
 
 
-        if (is_array($out))
-        {
+        if (is_array($out)) {
             $out = array_unique($out);
             sort($out);
-        } else
-        {
+        } else {
             $out = [];
         }
 

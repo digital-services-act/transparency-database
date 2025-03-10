@@ -168,6 +168,7 @@ class DayArchiveService
         $selects[] = $this->cleanTextField("content_type_other");
         $selects[] = "content_language";
         $selects[] = "content_date";
+        $selects[] = "content_id_ean";
 
         $selects[] = "territorial_scope";
         $selects[] = "application_date";

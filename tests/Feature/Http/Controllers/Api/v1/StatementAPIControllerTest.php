@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+
 #use JMac\Testing\Traits\AdditionalAssertions;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -23,6 +24,7 @@ class StatementAPIControllerTest extends TestCase
     #use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
+
     private array $required_fields;
 
     private Statement $statement;
@@ -39,6 +41,7 @@ class StatementAPIControllerTest extends TestCase
         foreach ($statements as &$statement) {
             $statement['puid'] = Str::uuid()->toString();
             $statement['content_type'] = $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), 2, false);
+            unset($statement['content_id_ean']);
             unset($statement['permalink']);
             unset($statement['platform_name']);
             unset($statement['self']);
@@ -54,7 +57,10 @@ class StatementAPIControllerTest extends TestCase
         parent::setUp();
         $this->platformUniqueIdService = app(PlatformUniqueIdService::class);
         $this->required_fields = [
-            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED', 'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
+            'decision_visibility' => [
+                'DECISION_VISIBILITY_CONTENT_DISABLED',
+                'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'
+            ],
             'decision_monetary' => null,
             'decision_provision' => null,
             'decision_account' => null,
@@ -234,7 +240,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->account_type);
         $this->assertNull($statement->content_language);
     }
-
 
 
     /**
@@ -648,7 +653,6 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_enforces_puid_uniqueness(): void
     {
-
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
 
@@ -665,7 +669,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($json['errors']);
         $this->assertNotNull($json['errors']['puid']);
         $this->assertEquals('The puid field is required.', $json['errors']['puid'][0]);
-        $this->assertDatabaseCount(PlatformPuid::class,0);
+        $this->assertDatabaseCount(PlatformPuid::class, 0);
 
         $fields = array_merge($this->required_fields, [
             'puid' => 'new-puid-123'
@@ -677,7 +681,7 @@ class StatementAPIControllerTest extends TestCase
             'Accept' => 'application/json'
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $this->assertDatabaseCount(PlatformPuid::class, 1);
         $count_before = Statement::all()->count();
 
         // Let's do it again
@@ -687,7 +691,7 @@ class StatementAPIControllerTest extends TestCase
 
         $response->assertUnprocessable();
         $response->assertJsonValidationErrors('puid');
-        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $this->assertDatabaseCount(PlatformPuid::class, 1);
         $this->assertArrayHasKey('existing', $response->json());
         $this->assertArrayHasKey('puid', $response->json('existing'));
 
@@ -720,9 +724,8 @@ class StatementAPIControllerTest extends TestCase
      */
     public function store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
     {
-
         $user = $this->signInAsAdmin();
-        $this->assertDatabaseCount(PlatformPuid::class,0);
+        $this->assertDatabaseCount(PlatformPuid::class, 0);
         $this->withoutExceptionHandling();
 
         $puid = 'new-puid-456';
@@ -732,7 +735,7 @@ class StatementAPIControllerTest extends TestCase
             'platform_id' => $user->platform->id
         ]);
 
-        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $this->assertDatabaseCount(PlatformPuid::class, 1);
 
         $fields = array_merge($this->required_fields, [
             'puid' => $puid
@@ -748,10 +751,9 @@ class StatementAPIControllerTest extends TestCase
         ]);
 
 
-        $this->assertDatabaseCount(PlatformPuid::class,1);
+        $this->assertDatabaseCount(PlatformPuid::class, 1);
         $this->assertTrue(Cache::has($key));
     }
-
 
 
     /**
@@ -795,7 +797,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($response->json('puid'));
         $content = $response->content();
         $this->assertStringNotContainsString('"puid":', $content);
-
     }
 
     /**
@@ -896,7 +897,6 @@ class StatementAPIControllerTest extends TestCase
     }
 
 
-
     /**
      * @test
      */
@@ -938,7 +938,11 @@ class StatementAPIControllerTest extends TestCase
         $user = $this->signInAsAdmin();
 
         $extra_fields = [
-            'category_specification' => ['KEYWORD_ADULT_SEXUAL_MATERIAL', 'KEYWORD_DESIGN_INFRINGEMENT', 'KEYWORD_OTHER'],
+            'category_specification' => [
+                'KEYWORD_ADULT_SEXUAL_MATERIAL',
+                'KEYWORD_DESIGN_INFRINGEMENT',
+                'KEYWORD_OTHER'
+            ],
             'category_specification_other' => 'foobar keyword',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
@@ -951,7 +955,6 @@ class StatementAPIControllerTest extends TestCase
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement->category_specification);
         $this->assertNotNull($statement->category_specification_other);
-
     }
 
     /**
@@ -977,7 +980,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->category);
         $this->assertNotNull($statement->category_addition);
         $this->assertCount(1, $statement->category_addition);
-
     }
 
     /**
@@ -1001,7 +1003,6 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertEquals([], $statement->category_addition);
-
     }
 
     /**
@@ -1029,7 +1030,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals([], $statement->decision_visibility);
         $this->assertNull($statement->decision_monetary);
         $this->assertNull($statement->decision_provision);
-
     }
 
     /**
@@ -1102,7 +1102,7 @@ class StatementAPIControllerTest extends TestCase
         $user = User::factory()->create([
             'platform_id' => $platform->id
         ]);
-        
+
         // Give the user permission to create statements
         $user->givePermissionTo('create statements');
 
@@ -1110,22 +1110,22 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = $this->createFullStatements(1)[0];
         $statement['content_id'] = [
-            Statement::CONTENT_ID_EAN13_KEY => '1234567890123'
+            'EAN-13' => '1234567890123'
         ];
 
         $response = $this->postJson('/api/v1/statement', $statement);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        
+
         // Get the statement from the database
         $dbStatement = \DB::table('statements_beta')
             ->where('id', $response->json('id'))
             ->first();
-            
+
         $this->assertNotNull($dbStatement);
         $this->assertEquals(
-            json_encode($statement['content_id']),
-            $dbStatement->content_id
+            '1234567890123',
+            $dbStatement->content_id_ean
         );
     }
 
@@ -1138,17 +1138,17 @@ class StatementAPIControllerTest extends TestCase
         $user = User::factory()->create([
             'platform_id' => $platform->id
         ]);
-        
+
         // Give the user permission to create statements
         $user->givePermissionTo('create statements');
 
         $this->actingAs($user);
 
         $statement = $this->createFullStatements(1)[0];
-        
+
         // Test with invalid length
         $statement['content_id'] = [
-            Statement::CONTENT_ID_EAN13_KEY => '123456789012' // 12 digits instead of 13
+            'EAN-13' => '123456789012' // 12 digits instead of 13
         ];
         $response = $this->postJson('/api/v1/statement', $statement);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -1156,42 +1156,11 @@ class StatementAPIControllerTest extends TestCase
 
         // Test with non-numeric characters
         $statement['content_id'] = [
-            Statement::CONTENT_ID_EAN13_KEY => '12345678901AB'
+            'EAN-13' => '12345678901AB'
         ];
         $response = $this->postJson('/api/v1/statement', $statement);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors(['content_id.EAN-13']);
     }
 
-    /**
-     * @test
-     */
-    public function test_statement_factory_generates_valid_content_id()
-    {
-        // Create 20 statements to ensure we get some with content_id
-        $statements = Statement::factory()->count(20)->create();
-        
-        // Find statements with content_id
-        $statementsWithContentId = $statements->filter(function ($statement) {
-            return !empty($statement->content_id);
-        });
-        
-        // If we have statements with content_id, verify they have valid EAN-13 codes
-        if ($statementsWithContentId->isNotEmpty()) {
-            foreach ($statementsWithContentId as $statement) {
-                $this->assertArrayHasKey(Statement::CONTENT_ID_EAN13_KEY, $statement->content_id);
-                $this->assertMatchesRegularExpression('/^[0-9]{13}$/', $statement->content_id[Statement::CONTENT_ID_EAN13_KEY]);
-            }
-        } else {
-            // If we don't have any statements with content_id, create one explicitly
-            $statement = Statement::factory()->create([
-                'content_id' => [
-                    Statement::CONTENT_ID_EAN13_KEY => '1234567890123'
-                ]
-            ]);
-            
-            $this->assertArrayHasKey(Statement::CONTENT_ID_EAN13_KEY, $statement->content_id);
-            $this->assertEquals('1234567890123', $statement->content_id[Statement::CONTENT_ID_EAN13_KEY]);
-        }
-    }
 }

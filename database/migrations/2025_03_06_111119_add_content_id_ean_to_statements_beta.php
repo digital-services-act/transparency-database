@@ -4,30 +4,25 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddContentIdToStatementsBeta extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('statements_beta', function (Blueprint $table) {
-            $table->json('content_id')->nullable()->after('puid')
-                ->comment('Optional key-value format content identifiers. Currently supports EAN-13 codes.');
+            $table->string('content_id_ean')->nullable()->after('content_id');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('statements_beta', function (Blueprint $table) {
-            $table->dropColumn('content_id');
+            $table->dropColumn('content_id_ean');
         });
     }
-}
+};

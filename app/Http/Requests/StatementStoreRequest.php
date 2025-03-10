@@ -35,6 +35,8 @@ class StatementStoreRequest extends FormRequest
         return [
             'content_id' => ['array', 'nullable'],
             'content_id.EAN-13' => ['string', 'regex:/^[0-9]{13}$/'],
+            'content_id_ean' => ['nullable', 'string', 'regex:/^[0-9]{13}$/'],
+
 
             'decision_visibility' => ['array', $this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
 

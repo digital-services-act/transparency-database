@@ -189,6 +189,7 @@ class StatementSearchService
             'source_identity',
             'uuid',
             'puid',
+            'content_id_ean'
         ];
 
         $ors = [];
@@ -1396,6 +1397,10 @@ JSON;
                     'method' =>
                         [
                             'type' => 'keyword',
+                        ],
+                    'content_id_ean' =>
+                        [
+                            'type' => 'long',
                         ],
                 ],
         ];
