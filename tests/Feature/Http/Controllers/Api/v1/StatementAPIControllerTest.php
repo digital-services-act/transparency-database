@@ -41,6 +41,7 @@ class StatementAPIControllerTest extends TestCase
         foreach ($statements as &$statement) {
             $statement['puid'] = Str::uuid()->toString();
             $statement['content_type'] = $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), 2, false);
+            unset($statement['content_id_ean']);
             unset($statement['permalink']);
             unset($statement['platform_name']);
             unset($statement['self']);
