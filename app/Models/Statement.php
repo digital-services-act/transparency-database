@@ -529,7 +529,7 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
-    public const CONTENT_ID_EAN13_KEY = 'EAN-13';
+    public const CONTENT_ID_EAN13_KEY = 'Content ID (EAN-13)';
 
     /**
      * The attributes that are mass assignable.

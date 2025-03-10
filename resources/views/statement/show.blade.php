@@ -120,6 +120,9 @@
                     :content="$statement_content_language"></x-infoline>
     @endif
 
+    <x-infoline :title="Statement::CONTENT_ID_EAN13_KEY"
+                :content="$statement->content_id_ean"></x-infoline>
+
     <x-infoline :title="Statement::LABEL_STATEMENT_CATEGORY"
                 :content="Statement::STATEMENT_CATEGORIES[$statement->category]"></x-infoline>
 
@@ -150,6 +153,8 @@
 
     <x-infoline :title="Statement::LABEL_STATEMENT_APPLICATION_DATE"
                 :content="$statement->application_date->format('Y-m-d')"></x-infoline>
+
+
 
     <x-report :url="url()->current()" title="Report an Issue"></x-report>
 
