@@ -34,7 +34,7 @@ class PlatformQueryService
                     if (method_exists($this, $method)) {
                         $this->$method($query, $filters[$filter_key]);
                     }
-                } catch (TypeError|Exception $e) {
+                } catch (TypeError | Exception $e) {
                     Log::error("Platform Query Service Error", ['exception' => $e]);
                 }
             }
@@ -122,5 +122,29 @@ class PlatformQueryService
     public function updateHasStatements(array $platform_ids, int $has_statements = 1): void
     {
         Platform::query()->whereIn('id', $platform_ids)->update(['has_statements' => $has_statements]);
+    }
+
+    public function getPlatformDropDownOptions(): array
+    {
+        return Platform::nonDsa()
+            ->selectRaw('id as value, name as label')
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->toArray();
+    }
+
+    public function getPlatformsById(): array
+    {
+        return Platform::nonDsa()->pluck('name', 'id')->toArray();
+    }
+
+    public function getPlatformIds(): array
+    {
+        return Platform::nonDsa()->pluck('id')->toArray();
+    }
+
+    public function getVlopPlatformIds(): array
+    {
+        return Platform::Vlops()->pluck('id')->toArray();
     }
 }

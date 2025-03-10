@@ -3,26 +3,19 @@
 namespace App\Services;
 
 use App\Exports\StatementExportTrait;
-use App\Models\ArchivedStatement;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Models\Statement;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use RuntimeException;
-use ZipArchive;
+use Illuminate\Support\Str;
 
 class DayArchiveService
 {
     use StatementExportTrait;
 
-    public function __construct(protected StatementSearchService $statement_search_service)
+    public function __construct(protected StatementSearchService $statement_search_service, protected PlatformQueryService $platform_query_service)
     {
     }
 
@@ -36,15 +29,14 @@ class DayArchiveService
         ];
         $exports[] = $global;
 
-        $platforms = Platform::NonDsa()->get();
+        $platforms = $this->platform_query_service->getPlatformsById();
 
-        foreach ($platforms as $platform)
-        {
+        foreach ($platforms as $id => $name) {
             $export = [
-                'slug' => $platform->slugifyName(),
-                'id' => $platform->id,
+                'slug' => Str::slug($name),
+                'id' => $id,
             ];
-            $exports[$platform->id] = $export;
+            $exports[$id] = $export;
         }
 
         return $exports;
@@ -56,20 +48,18 @@ class DayArchiveService
         $startOfMinute = $date->copy()->setTime(0, 0, 0);
         $firstId = false;
 
-        for ($i = 0; $i < 60; $i++)
-        {
+        for ($i = 0; $i < 60; $i++) {
             // For each iteration, add seconds to the starting point
             $currentSecond = $startOfMinute->copy()->addSeconds($i);
 
             // Query the database for the minimum ID created exactly at this second
-            $first = DB::table('statements')
+            $first = Statement::query()
                 ->selectRaw('min(id) as min')
-                ->where('statements.created_at', $currentSecond->format('Y-m-d H:i:s'))
+                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
                 ->first();
 
             // If a result is found, return the id
-            if ($first && $first->min)
-            {
+            if ($first && $first->min) {
                 return $first->min;
             }
         }
@@ -86,20 +76,18 @@ class DayArchiveService
         $lastId = false;
 
         // Loop through the last minute, going backwards from 23:59:59 to 23:59:00
-        for ($i = 0; $i < 60; $i++)
-        {
+        for ($i = 0; $i < 60; $i++) {
             // Subtract seconds to move backwards
             $currentSecond = $endOfDay->copy()->subSeconds($i);
 
             // Query the database for the maximum ID created exactly at this second
-            $last = DB::table('statements')
+            $last = Statement::query()
                 ->selectRaw('max(id) as max')
                 ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
                 ->first();
 
             // If a result is found, return the id immediately
-            if ($last && $last->max)
-            {
+            if ($last && $last->max) {
                 return $last->max;
             }
         }
@@ -116,8 +104,10 @@ class DayArchiveService
 
     public function platformList(Platform $platform): Builder
     {
-        return DayArchive::query()->where('platform_id', $platform->id)->whereNotNull('completed_at')->orderBy('date',
-            'DESC');
+        return DayArchive::query()->where('platform_id', $platform->id)->whereNotNull('completed_at')->orderBy(
+            'date',
+            'DESC'
+        );
     }
 
     public function getDayArchiveByDate(Carbon $date): DayArchive|Model|Builder|null
@@ -178,6 +168,7 @@ class DayArchiveService
         $selects[] = $this->cleanTextField("content_type_other");
         $selects[] = "content_language";
         $selects[] = "content_date";
+        $selects[] = "content_id_ean";
 
         $selects[] = "territorial_scope";
         $selects[] = "application_date";

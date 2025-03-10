@@ -111,9 +111,9 @@
               :options="$options['decision_grounds']"
               required="true"/>
 
-<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL" 
+<x-ecl.textfield :label="Statement::LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL"
               name="decision_ground_reference_url" id="decision_ground_reference_url"
-                 
+
 />
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND" name="illegal_content_legal_ground"
@@ -165,6 +165,7 @@
               :options="$options['languages_grouped']"
 />
 
+<x-ecl.textfield :label="Statement::CONTENT_ID_EAN13_KEY" name="content_id_ean" id="content_id_ean"/>
 
 <hr>
 
@@ -304,6 +305,8 @@
 <hr>
 
 <x-ecl.textfield :label="Statement::LABEL_STATEMENT_PUID" name="puid" id="puid" required="true"/>
+
+
 
 <hr>
 

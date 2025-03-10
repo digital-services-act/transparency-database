@@ -9,13 +9,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use JMac\Testing\Traits\AdditionalAssertions;
+#use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 
 class StatementMultipleAPIControllerTest extends TestCase
 {
-    use AdditionalAssertions;
+    #use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
 
@@ -854,6 +854,39 @@ class StatementMultipleAPIControllerTest extends TestCase
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_0']['puid'][0]);
         $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_1']['puid'][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function store_multiple_with_content_id(): void
+    {
+        $this->signInAsContributor();
+
+        $statements = $this->createFullStatements(3);
+
+        $statements[0]['content_id'] = [
+            'EAN-13' => '1111111111111'
+        ];
+        $statements[1]['content_id'] = [
+            'EAN-13' => '2222222222222'
+        ];
+        unset($statements[2]['content_id']);
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            "statements" => $statements
+        ], [
+            'Accept' => 'application/json'
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertCount(13, Statement::all());
+
+        $statementA = Statement::where('content_id_ean', '1111111111111')->first()->fresh();
+        $statementB = Statement::where('content_id_ean', '2222222222222')->first()->fresh();
+
+        $this->assertEquals('1111111111111', $statementA->content_id_ean);
+        $this->assertEquals('2222222222222', $statementB->content_id_ean);
     }
 
 
