@@ -1398,6 +1398,10 @@ JSON;
                         [
                             'type' => 'keyword',
                         ],
+                    'content_id_ean' =>
+                        [
+                            'type' => 'long',
+                        ],
                 ],
         ];
     }

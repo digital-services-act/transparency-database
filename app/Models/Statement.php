@@ -606,11 +606,9 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        if (!is_null($this->platform))
-        {
+        if (!is_null($this->platform)) {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
-        } else
-        {
+        } else {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
         }
 
@@ -618,11 +616,9 @@ class Statement extends Model
 
     public function platformUuidCached(): string
     {
-        if (!is_null($this->platform))
-        {
+        if (!is_null($this->platform)) {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
-        } else
-        {
+        } else {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
         }
 
@@ -666,14 +662,14 @@ class Statement extends Model
             'platform_name' => $this->platformNameCached(),
             'platform_uuid' => $this->platformUuidCached(),
             'content_date' => $this->content_date,
-            'content_id_ean' => $this->content_id_ean,
             'application_date' => $this->application_date,
             'created_at' => $this->created_at,
             'received_date' => $received_date,
             'uuid' => $this->uuid,
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
-            'method' => $this->method
+            'method' => $this->method,
+            'content_id_ean' => $this->content_id_ean,
         ];
     }
 
@@ -696,7 +692,6 @@ class Statement extends Model
             'content_type_other' => $this->getRawOriginal('content_type_other'),
             'content_language' => $this->getRawOriginal('content_language'),
             'content_date' => $this->getRawOriginal('content_date'),
-            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
             'application_date' => $this->getRawOriginal('application_date'),
             'illegal_content_legal_ground' => $this->getRawOriginal('illegal_content_legal_ground'),
             'illegal_content_explanation' => $this->getRawOriginal('illegal_content_explanation'),
@@ -724,7 +719,8 @@ class Statement extends Model
             'end_date_visibility_restriction' => $this->getRawOriginal('end_date_visibility_restriction'),
             'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
             'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
-            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction')
+            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
+            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
         ];
     }
 
@@ -817,23 +813,19 @@ class Statement extends Model
         $decisions = [];
 
 
-        if ($this->decision_visibility)
-        {
+        if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
         }
 
-        if ($this->decision_monetary)
-        {
+        if ($this->decision_monetary) {
             $decisions[] = 'Monetary';
         }
 
-        if ($this->decision_provision)
-        {
+        if ($this->decision_provision) {
             $decisions[] = 'Provision';
         }
 
-        if ($this->decision_account)
-        {
+        if ($this->decision_account) {
             $decisions[] = 'Account';
         }
 
@@ -846,14 +838,11 @@ class Statement extends Model
         $enumValues = [];
         $keys = array_filter($keys);
 
-        foreach ($keys as $key)
-        {
+        foreach ($keys as $key) {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class . '::' . $key))
-            {
+            if (defined(self::class . '::' . $key)) {
                 $value = constant(self::class . '::' . $key);
-                if ($value !== null)
-                {
+                if ($value !== null) {
                     $enumValues[] = $value;
                 }
             }
@@ -871,28 +860,23 @@ class Statement extends Model
     public function getRawKeys($key): array
     {
         $raw_original = (string) $this->getRawOriginal($key);
-        if ($raw_original === '')
-        {
+        if ($raw_original === '') {
             return [];
         }
 
         // Catch potential bad json here.
-        try
-        {
+        try {
             $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];
         }
 
 
-        if (is_array($out))
-        {
+        if (is_array($out)) {
             $out = array_unique($out);
             sort($out);
-        } else
-        {
+        } else {
             $out = [];
         }
 
