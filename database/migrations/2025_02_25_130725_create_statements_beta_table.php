@@ -18,7 +18,7 @@ class CreateStatementsBetaTable extends Migration
 
             $table->string('uuid', 36);
 
-            $table->string('decision_visibility',300)->nullable();
+            $table->string('decision_visibility', 300)->nullable();
             $table->string('decision_visibility_other', 500)->nullable();
 
             $table->string('decision_monetary', 100)->nullable();
@@ -37,7 +37,7 @@ class CreateStatementsBetaTable extends Migration
             $table->text('category_specification')->nullable();
             $table->string('category_specification_other', 500)->nullable();
 
-            $table->string('content_type',255);
+            $table->string('content_type', 255);
             $table->string('content_type_other', 500)->nullable();
 
             $table->string('illegal_content_legal_ground', 500)->nullable();
@@ -78,9 +78,9 @@ class CreateStatementsBetaTable extends Migration
 
             $table->timestamps();
             $table->softDeletes();
-
-
         });
+
+        DB::update("ALTER TABLE statements_beta AUTO_INCREMENT = 50000000000;");
     }
 
     /**
