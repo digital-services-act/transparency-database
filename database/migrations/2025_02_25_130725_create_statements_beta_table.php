@@ -14,7 +14,7 @@ class CreateStatementsBetaTable extends Migration
     public function up()
     {
         Schema::create('statements_beta', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(50000000000);
 
             $table->string('uuid', 36);
 
@@ -79,8 +79,6 @@ class CreateStatementsBetaTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        DB::update("ALTER TABLE statements_beta AUTO_INCREMENT = 50000000000;");
     }
 
     /**
