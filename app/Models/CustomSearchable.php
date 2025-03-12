@@ -14,6 +14,9 @@ use Illuminate\Support\Collection as BaseCollection;
 
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait CustomSearchable
 {
     /**
