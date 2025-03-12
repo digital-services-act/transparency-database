@@ -14,7 +14,7 @@ class CreateStatementsBetaTable extends Migration
     public function up()
     {
         Schema::create('statements_beta', function (Blueprint $table): void {
-            $table->id()->startingValue(50000000000);
+            $table->id()->startingValue(100000000000);
 
             $table->string('uuid', 36);
 

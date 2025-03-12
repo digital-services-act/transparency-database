@@ -21,6 +21,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel;
 
 class StatementController extends Controller
@@ -142,8 +143,15 @@ class StatementController extends Controller
         ]);
     }
 
-    public function show(Statement $statement): Factory|View|Application
+    public function show(int $statement): Factory|View|Application
     {
+
+        $statement = Statement::find($statement) ?? DB::table('statements')->where('id', $statement)->first();
+
+        if (!$statement) {
+            abort(404);
+        }
+
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         $statement_content_types = Statement::getEnumValues($statement->content_type);
 

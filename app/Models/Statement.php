@@ -11,12 +11,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
+use App\Models\CustomSearchable;
 
 class Statement extends Model
 {
     use HasFactory;
-    use Searchable;
+    use CustomSearchable;
     use SoftDeletes;
 
     protected $table = 'statements_beta';
