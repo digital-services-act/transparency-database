@@ -94,7 +94,6 @@
               id="account_type"
               :options="$options['account_types']"
               default="{{ $statement->account_type }}"
-              justlabel="true"
               :allow_null="true"
 />
 
