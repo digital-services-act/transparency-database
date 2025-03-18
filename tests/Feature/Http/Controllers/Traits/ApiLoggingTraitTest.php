@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Controllers\Traits;
+namespace Tests\Feature\Http\Controllers\Traits;
 
 use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Models\ApiLog;

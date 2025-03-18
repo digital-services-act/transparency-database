@@ -87,7 +87,8 @@ class StatementQueryService
               ->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%')
               ->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%')
               ->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%');
+              ->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%')
+              ->orWhere('content_id_ean', 'LIKE', '%' . $filter_value . '%');
         });
     }
 

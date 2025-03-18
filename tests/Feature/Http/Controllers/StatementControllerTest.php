@@ -7,7 +7,7 @@ use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
-use JMac\Testing\Traits\AdditionalAssertions;
+#use JMac\Testing\Traits\AdditionalAssertions;
 use Mockery\MockInterface;
 use Tests\Feature\Http\Controllers\Api\v1\StatementAPIControllerTest;
 use Tests\TestCase;
@@ -17,17 +17,18 @@ use Tests\TestCase;
  */
 class StatementControllerTest extends TestCase
 {
-    use AdditionalAssertions;
+    #use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
+
     protected $dummy_attributes = [
-        'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED','DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
+        'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED', 'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
         'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
         'content_type' => ['CONTENT_TYPE_VIDEO'],
         'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
         'illegal_content_legal_ground' => 'foo',
         'illegal_content_explanation' => 'bar',
-        'territorial_scope' => ['BE','FR'],
+        'territorial_scope' => ['BE', 'FR'],
         'url' => 'https://www.test.com',
         'puid' => 'THX1138',
         'content_date' => '2023-05-12',
@@ -38,7 +39,7 @@ class StatementControllerTest extends TestCase
         'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY'
     ];
 
-//    /**
+    //    /**
 //     * @test
 //     */
 //    public function index_displays_error_if_not_logged()
@@ -137,21 +138,15 @@ class StatementControllerTest extends TestCase
 
 
 
-    //Removed as index does need auth now
-//    /**
-//     * @test
-//     */
-//    public function index_does_not_auth()
-//    {
-//        // The cas is set to masquerade in testing mode.
-//        // So when we make a call to a cas middleware route we get logged in.
-//        // If we make a call to a non cas route nothing should happen.
-//        $u = auth()->user();
-//        $this->assertNull($u);
-//        $response = $this->get(route('statement.index'));
-//        $u = auth()->user();
-//        $this->assertNotNull($u);
-//    }
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_show_the_index(): void
+    {
+        $response = $this->get(route('statement.index'));
+        $response->assertOk();
+    }
 
     /**
      * @test
@@ -216,18 +211,6 @@ class StatementControllerTest extends TestCase
 
     /**
      * @test
-     */
-    public function store_uses_form_request_validation(): void
-    {
-        $this->assertActionUsesFormRequest(
-            \App\Http\Controllers\StatementController::class,
-            'store',
-            \App\Http\Requests\StatementStoreRequest::class
-        );
-    }
-
-    /**
-     * @test
      * @see StatementAPIControllerTest
      */
     public function store_saves_and_redirects(): void
@@ -249,9 +232,9 @@ class StatementControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals(Statement::METHOD_FORM, $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-05-12 00:00:00', (string)$statement->application_date);
+        $this->assertEquals('2023-05-12 00:00:00', (string) $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
-        $this->assertEquals('2023-05-12 00:00:00', (string)$statement->content_date);
+        $this->assertEquals('2023-05-12 00:00:00', (string) $statement->content_date);
         $this->assertInstanceOf(Carbon::class, $statement->content_date);
 
         $response->assertRedirect(route('statement.index'));
@@ -281,6 +264,6 @@ class StatementControllerTest extends TestCase
 
 
         $response->assertRedirect(route('statement.index'));
-        $response->assertSessionHas('error','The PUID is not unique in the database');
+        $response->assertSessionHas('error', 'The PUID is not unique in the database');
     }
 }

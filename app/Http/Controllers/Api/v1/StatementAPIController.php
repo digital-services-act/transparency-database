@@ -87,6 +87,14 @@ class StatementAPIController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
+
+        // Extract EAN-13 codes from content_id if present and no content_id_ean is present
+        if (!isset($validated['content_id_ean']) && isset($validated['content_id']) && isset($validated['content_id']['EAN-13'])) {
+            $validated['content_id_ean'] = $validated['content_id']['EAN-13'];
+        }
+
+
+
         try {
             $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
             $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);

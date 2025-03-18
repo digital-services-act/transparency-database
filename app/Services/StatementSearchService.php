@@ -72,7 +72,7 @@ class StatementSearchService
     public const ONE_HOUR = 1 * 60 * 60;
     public const FIVE_MINUTES = 5 * 60;
 
-    public function __construct(private readonly Client $client)
+    public function __construct(private readonly Client $client, protected PlatformQueryService $platformQueryService)
     {
     }
 
@@ -101,19 +101,15 @@ class StatementSearchService
         $queryAndParts = [];
         $query = '*';
 
-        foreach ($this->allowed_filters as $filter_key)
-        {
-            if (isset($filters[$filter_key]) && $filters[$filter_key])
-            {
+        foreach ($this->allowed_filters as $filter_key) {
+            if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
                 $part = false;
-                if (method_exists($this, $method))
-                {
+                if (method_exists($this, $method)) {
                     $part = $this->$method($filters[$filter_key]);
                 }
 
-                if ($part)
-                {
+                if ($part) {
                     $queryAndParts[] = $part;
                 }
             }
@@ -121,20 +117,17 @@ class StatementSearchService
 
         // handle the date filters as needed.
         $created_at_filter = $this->applyCreatedAtFilter($filters);
-        if ($created_at_filter !== '' && $created_at_filter !== '0')
-        {
+        if ($created_at_filter !== '' && $created_at_filter !== '0') {
             $queryAndParts[] = $created_at_filter;
         }
 
         // if we have parts, then glue them together with AND
-        if ($queryAndParts !== [])
-        {
+        if ($queryAndParts !== []) {
             $query = "(" . implode(") AND (", $queryAndParts) . ")";
         }
 
 
-        if (config('scout.driver', '') === 'database' && config('app.env') !== 'testing')
-        {
+        if (config('scout.driver', '') === 'database' && config('app.env') !== 'testing') {
             // @codeCoverageIgnoreStart
             $query = $filters['s'] ?? '';
             // @codeCoverageIgnoreEnd
@@ -145,11 +138,9 @@ class StatementSearchService
 
     private function applyCreatedAtFilter(array $filters): string
     {
-        try
-        {
+        try {
             // Start but no end.
-            if (($filters['created_at_start'] ?? false) && !($filters['created_at_end'] ?? false))
-            {
+            if (($filters['created_at_start'] ?? false) && !($filters['created_at_end'] ?? false)) {
                 $now = date('Y-m-d\TH:i:s');
                 $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
 
@@ -157,8 +148,7 @@ class StatementSearchService
             }
 
             // End but no start.
-            if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false))
-            {
+            if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false)) {
                 $beginning = date('Y-m-d\TH:i:s', strtotime('2020-01-01'));
                 $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
 
@@ -166,15 +156,13 @@ class StatementSearchService
             }
 
             // both start and end.
-            if (($filters['created_at_start'] ?? false) && ($filters['created_at_end'] ?? false))
-            {
+            if (($filters['created_at_start'] ?? false) && ($filters['created_at_end'] ?? false)) {
                 $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
                 $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
 
                 return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
             }
-        } catch (Exception)
-        {
+        } catch (Exception) {
             // Most likely the date supplied for the start or the end was bad.
             return '';
         }
@@ -201,16 +189,15 @@ class StatementSearchService
             'source_identity',
             'uuid',
             'puid',
+            'content_id_ean'
         ];
 
         $ors = [];
-        foreach ($textfields as $textfield)
-        {
+        foreach ($textfields as $textfield) {
             $ors[] = $textfield . ':"' . $filter_value . '"';
         }
 
-        if (config('scout.driver', '') === 'database' && config('app.env', '') !== 'testing')
-        {
+        if (config('scout.driver', '') === 'database' && config('app.env', '') !== 'testing') {
             // @codeCoverageIgnoreStart
             return $filter_value;
             // @codeCoverageIgnoreEnd
@@ -222,14 +209,12 @@ class StatementSearchService
     private function applyDecisionVisibilityFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-decision_visibility:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-decision_visibility:?*)';
         }
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'decision_visibility:' . $filter_value;
         }
 
@@ -239,14 +224,12 @@ class StatementSearchService
     private function applyDecisionMonetaryFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-decision_monetary:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-decision_monetary:?*)';
         }
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'decision_monetary:' . $filter_value;
         }
 
@@ -256,14 +239,12 @@ class StatementSearchService
     private function applyDecisionProvisionFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-decision_provision:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-decision_provision:?*)';
         }
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'decision_provision:' . $filter_value;
         }
 
@@ -273,14 +254,12 @@ class StatementSearchService
     private function applyTerritorialScopeFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-territorial_scope:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-territorial_scope:?*)';
         }
 
         $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'territorial_scope:' . $filter_value;
         }
 
@@ -291,14 +270,12 @@ class StatementSearchService
     private function applyDecisionAccountFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-decision_account:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-decision_account:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
 
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'decision_account:' . $filter_value;
         }
 
@@ -308,13 +285,11 @@ class StatementSearchService
     private function applyAccountTypeFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-account_type:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-account_type:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'account_type:' . $filter_value;
         }
 
@@ -324,14 +299,11 @@ class StatementSearchService
     private function applyCategorySpecificationFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-category_specification:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-category_specification:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
-
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'category_specification:' . $filter_value;
         }
 
@@ -341,13 +313,11 @@ class StatementSearchService
     private function applyDecisionGroundFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-decision_ground:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-decision_ground:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'decision_ground:' . $filter_value;
         }
 
@@ -357,13 +327,11 @@ class StatementSearchService
     private function applyCategoryFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-category:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-category:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'category:' . $filter_value;
         }
 
@@ -373,13 +341,11 @@ class StatementSearchService
     private function applyContentTypeFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-content_type:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-content_type:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'content_type:' . $filter_value;
         }
 
@@ -394,14 +360,12 @@ class StatementSearchService
     private function applyContentLanguageFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-content_language:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-content_language:?*)';
         }
         $all_isos = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
         $filter_values = array_intersect($filter_values, $all_isos);
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'content_language:"' . $filter_value . '"';
         }
 
@@ -411,13 +375,11 @@ class StatementSearchService
     private function applyAutomatedDetectionFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-automated_detection:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-automated_detection:?*)';
         }
         $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'automated_detection:' . ($filter_value === Statement::AUTOMATED_DETECTION_YES ? 'true' : 'false');
         }
 
@@ -427,13 +389,11 @@ class StatementSearchService
     private function applyAutomatedDecisionFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-automated_decision:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-automated_decision:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'automated_decision:' . $filter_value;
         }
 
@@ -446,10 +406,9 @@ class StatementSearchService
     private function applyPlatformIdFilter(array $filter_values): string
     {
         $ors = [];
-        $platform_ids = Platform::nonDsa()->pluck('id')->toArray();
+        $platform_ids = $this->platformQueryService->getPlatformIds();
         $filter_values = array_intersect($platform_ids, $filter_values);
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'platform_id:' . $filter_value;
         }
 
@@ -459,14 +418,12 @@ class StatementSearchService
     private function applySourceTypeFilter(array $filter_values): string
     {
         $ors = [];
-        if (in_array('--noval--', $filter_values))
-        {
-            $ors[] = '-source_type:?*';
+        if (in_array('--noval--', $filter_values)) {
+            $ors[] = '(-source_type:?*)';
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
 
-        foreach ($filter_values as $filter_value)
-        {
+        foreach ($filter_values as $filter_value) {
             $ors[] = 'source_type:' . $filter_value;
         }
 
@@ -481,12 +438,10 @@ class StatementSearchService
      */
     public function bulkIndexStatements(Collection $statements): void
     {
-        if ($statements->count() !== 0 && config('scout.driver') === 'opensearch')
-        {
+        if ($statements->count() !== 0 && config('scout.driver') === 'opensearch') {
             $bulk = [];
             /** @var Statement $statement */
-            foreach ($statements as $statement)
-            {
+            foreach ($statements as $statement) {
                 $doc = $statement->toSearchableArray();
                 $bulk[] = json_encode([
                     'index' => [
@@ -511,12 +466,9 @@ class StatementSearchService
         return Cache::remember('all_sending_platform_ids', self::ONE_HOUR, function () {
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_platform_ids = [];
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                foreach ($methods as $method => $total)
-                {
-                    if ($total)
-                    {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                foreach ($methods as $method => $total) {
+                    if ($total) {
                         $sending_platform_ids[] = $platform_id;
                         break;
                     }
@@ -532,14 +484,10 @@ class StatementSearchService
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_non_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                if (!in_array($platform_id, $vlop_ids, true))
-                {
-                    foreach ($methods as $method => $total)
-                    {
-                        if ($total)
-                        {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (!in_array($platform_id, $vlop_ids, true)) {
+                    foreach ($methods as $method => $total) {
+                        if ($total) {
                             $sending_non_vlop_platform_ids[] = $platform_id;
                             break;
                         }
@@ -556,10 +504,8 @@ class StatementSearchService
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_api_non_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && !in_array($platform_id, $vlop_ids, true))
-                {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && !in_array($platform_id, $vlop_ids, true)) {
                     $sending_api_non_vlop_platform_ids[] = $platform_id;
                 }
             }
@@ -573,10 +519,8 @@ class StatementSearchService
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_webform_non_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                if ($methods[Statement::METHOD_FORM] && !in_array($platform_id, $vlop_ids, true))
-                {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if ($methods[Statement::METHOD_FORM] && !in_array($platform_id, $vlop_ids, true)) {
                     $sending_webform_non_vlop_platform_ids[] = $platform_id;
                 }
             }
@@ -590,14 +534,10 @@ class StatementSearchService
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                if (in_array($platform_id, $vlop_ids, true))
-                {
-                    foreach ($methods as $method => $total)
-                    {
-                        if ($total)
-                        {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (in_array($platform_id, $vlop_ids, true)) {
+                    foreach ($methods as $method => $total) {
+                        if ($total) {
                             $sending_vlop_platform_ids[] = $platform_id;
                             break;
                         }
@@ -614,10 +554,8 @@ class StatementSearchService
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_api_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && in_array($platform_id, $vlop_ids, true))
-                {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && in_array($platform_id, $vlop_ids, true)) {
                     $sending_api_vlop_platform_ids[] = $platform_id;
                 }
             }
@@ -631,10 +569,8 @@ class StatementSearchService
             $platform_ids_methods_data = $this->methodsByPlatformAll();
             $sending_webform_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
-            foreach ($platform_ids_methods_data as $platform_id => $methods)
-            {
-                if ($methods[Statement::METHOD_FORM] && in_array($platform_id, $vlop_ids, true))
-                {
+            foreach ($platform_ids_methods_data as $platform_id => $methods) {
+                if ($methods[Statement::METHOD_FORM] && in_array($platform_id, $vlop_ids, true)) {
                     $sending_webform_vlop_platform_ids[] = $platform_id;
                 }
             }
@@ -644,9 +580,7 @@ class StatementSearchService
 
     private function vlopIds(): array
     {
-        return Cache::remember('vlop_ids', self::ONE_HOUR, function () {
-            return Platform::Vlops()->pluck('id')->toArray();
-        });
+        return $this->platformQueryService->getVlopPlatformIds();
     }
 
     public function startCountQuery(): string
@@ -656,8 +590,7 @@ class StatementSearchService
 
     public function buildWheres(array $conditions): string
     {
-        if ($conditions !== [])
-        {
+        if ($conditions !== []) {
             return " WHERE " . implode(" AND ", $conditions);
         }
 
@@ -671,8 +604,7 @@ class StatementSearchService
 
     public function runSql(string $sql): array
     {
-        if (config('scout.driver') === 'opensearch')
-        {
+        if (config('scout.driver') === 'opensearch') {
             return $this->client->sql()->query([
                 'query' => $sql,
             ]);
@@ -769,16 +701,13 @@ class StatementSearchService
         $results = $this->runSql($query);
         $rows = $results['datarows'];
         $out = [];
-        if (config('scout.driver') === 'opensearch')
-        {
-            foreach ($rows as [$total, $method, $platform_id])
-            {
+        if (config('scout.driver') === 'opensearch') {
+            foreach ($rows as [$total, $method, $platform_id]) {
                 $out[$platform_id][$method] = $total;
             }
         }
 
-        foreach ($out as $platform_id => $methods)
-        {
+        foreach ($out as $platform_id => $methods) {
             $out[$platform_id][Statement::METHOD_FORM] ??= 0;
             $out[$platform_id][Statement::METHOD_API] ??= 0;
             $out[$platform_id][Statement::METHOD_API_MULTI] ??= 0;
@@ -807,16 +736,14 @@ class StatementSearchService
     {
         $prepare = [];
         $current = $start->clone();
-        while ($current <= $end)
-        {
+        while ($current <= $end) {
             $prepare[$current->format('Y-m-d')] = 0;
             $current->addDay();
         }
 
         $results = $this->processRangeAggregate($start, $end, ['received_date']);
 
-        foreach ($results['aggregates'] as $aggregate)
-        {
+        foreach ($results['aggregates'] as $aggregate) {
             $prepare[$aggregate['received_date']] = $aggregate['total'];
         }
 
@@ -838,8 +765,7 @@ class StatementSearchService
     {
         $results = [];
         $categories = array_keys(Statement::STATEMENT_CATEGORIES);
-        foreach ($categories as $category)
-        {
+        foreach ($categories as $category) {
             $results[] = [
                 'value' => $category,
                 'total' => $this->getCountQueryResult(["category = '" . $category . "'"]),
@@ -863,8 +789,7 @@ class StatementSearchService
     {
         $results = [];
         $decision_visibilities = array_keys(Statement::DECISION_VISIBILITIES);
-        foreach ($decision_visibilities as $decision_visibility)
-        {
+        foreach ($decision_visibilities as $decision_visibility) {
             $results[] = [
                 'value' => $decision_visibility,
                 'total' => $this->getCountQueryResult(["decision_visibility_single = '" . $decision_visibility . "'"]),
@@ -981,8 +906,7 @@ class StatementSearchService
     public function clearOSACache(): void
     {
         $keys = Cache::get('osa_cache', []);
-        foreach ($keys as $key)
-        {
+        foreach ($keys as $key) {
             Cache::delete($key);
         }
 
@@ -996,8 +920,7 @@ class StatementSearchService
         $this->sanitizeAggregateAttributes($attributes);
         $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-        if (!$caching)
-        {
+        if (!$caching) {
             Cache::delete($key);
         }
 
@@ -1030,8 +953,7 @@ class StatementSearchService
         $this->sanitizeAggregateAttributes($attributes);
         $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
-        if (!$caching)
-        {
+        if (!$caching) {
             Cache::delete($key);
         }
 
@@ -1040,8 +962,7 @@ class StatementSearchService
             $days = [];
             $current = $end->clone();
 
-            while ($current >= $start)
-            {
+            while ($current >= $start) {
                 $days[] = $this->processDateAggregate($current, $attributes, $daycache);
                 $current->subDay();
             }
@@ -1075,13 +996,11 @@ class StatementSearchService
         $this->sanitizeAggregateAttributes($attributes);
         $key = 'osa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
 
-        if ($date > Carbon::yesterday())
-        {
+        if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
         }
 
-        if (!$caching)
-        {
+        if (!$caching) {
             Cache::delete($key);
         }
 
@@ -1109,8 +1028,7 @@ class StatementSearchService
     public function getAllowedAggregateAttributes(bool $remove_received_date = false): array
     {
         $out = $this->allowed_aggregate_attributes;
-        if ($remove_received_date)
-        {
+        if ($remove_received_date) {
             $out = array_diff($out, ['received_date']);
         }
 
@@ -1177,13 +1095,11 @@ JSON;
         $query->query->bool->filter[0]->range->created_at->to = $end->getTimestampMs();
 
         $sources = [];
-        foreach ($attributes as $attribute)
-        {
+        foreach ($attributes as $attribute) {
             $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
-        if ($sources === [])
-        {
+        if ($sources === []) {
             $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
@@ -1236,13 +1152,11 @@ JSON;
         $query->query->term->received_date->value = $date->getTimestampMs();
 
         $sources = [];
-        foreach ($attributes as $attribute)
-        {
+        foreach ($attributes as $attribute) {
             $sources[] = $this->aggregateQueryBucket($attribute);
         }
 
-        if ($sources === [])
-        {
+        if ($sources === []) {
             $sources[] = $this->aggregateQueryBucket('received_date');
         }
 
@@ -1277,33 +1191,28 @@ JSON;
 
         $platforms = [];
         // Do we need platforms
-        if ($buckets[0]['key']['platform_id'] ?? false)
-        {
-            $platforms = Platform::all()->pluck('name', 'id')->toArray();
+        if ($buckets[0]['key']['platform_id'] ?? false) {
+            $platforms = $this->platformQueryService->getPlatformsById();
         }
 
         $out = [];
         $total = 0;
         $total_aggregates = 0;
-        foreach ($buckets as $bucket)
-        {
+        foreach ($buckets as $bucket) {
             $item = [];
             $attributes = $bucket['key'];
 
             // Manipulate the results
-            if (isset($attributes['automated_detection']))
-            {
+            if (isset($attributes['automated_detection'])) {
                 $attributes['automated_detection'] = (int) $attributes['automated_detection'];
             }
 
-            if (isset($attributes['received_date']))
-            {
+            if (isset($attributes['received_date'])) {
                 $attributes['received_date'] = date('Y-m-d', ($attributes['received_date'] / 1000));
             }
 
             // Put the attributes on the root item
-            foreach ($attributes as $key => $value)
-            {
+            foreach ($attributes as $key => $value) {
                 $item[$key] = $value;
             }
 
@@ -1311,8 +1220,7 @@ JSON;
             $item['permutation'] = implode(',', array_map(static fn($key, $value) => $key . ":" . $value, array_keys($attributes), array_values($attributes)));
 
             // add the platform name on at the end if we need to.
-            if (isset($item['platform_id']))
-            {
+            if (isset($item['platform_id'])) {
                 // yes we will need it.
                 $item['platform_name'] = $platforms[$item['platform_id']] ?? '';
             }
@@ -1332,8 +1240,7 @@ JSON;
         sort($attributes);
         $attributes = array_intersect($attributes, $this->allowed_aggregate_attributes);
         $attributes = array_unique($attributes);
-        if ($attributes === [])
-        {
+        if ($attributes === []) {
             $attributes[] = 'received_date';
         }
     }
@@ -1450,6 +1357,12 @@ JSON;
                     'platform_name' =>
                         [
                             'type' => 'text',
+                            "fields" => [
+                                "keyword" => [
+                                    "type" => "keyword",
+                                    "ignore_above" => 256
+                                ]
+                            ]
                         ],
                     'platform_uuid' =>
                         [
@@ -1490,6 +1403,10 @@ JSON;
                     'method' =>
                         [
                             'type' => 'keyword',
+                        ],
+                    'content_id_ean' =>
+                        [
+                            'type' => 'long',
                         ],
                 ],
         ];

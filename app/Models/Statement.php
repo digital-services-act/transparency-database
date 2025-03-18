@@ -11,13 +11,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
+use App\Models\CustomSearchable;
 
 class Statement extends Model
 {
     use HasFactory;
-    use Searchable;
+    use CustomSearchable;
     use SoftDeletes;
+
+    protected $table = 'statements_beta';
+
     public const METHOD_FORM = 'FORM';
 
     public const METHOD_API = 'API';
@@ -239,6 +242,12 @@ class Statement extends Model
 
     public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
 
+    public const STATEMENT_CATEGORY_CONSUMER_INFORMATION = 'Consumer information infringements';
+
+    public const STATEMENT_CATEGORY_CYBER_VIOLENCE = 'Cyber violence';
+
+    public const STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN = 'Cyber violence against women';
+
     public const STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS = 'Data protection and privacy violations';
 
     public const STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH = 'Illegal or harmful speech';
@@ -247,9 +256,9 @@ class Statement extends Model
 
     public const STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS = 'Negative effects on civic discourse or elections';
 
-    public const STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR = 'Non-consensual behaviour';
+    public const STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE = 'Type of alleged illegal content not specified by the notifier';
 
-    public const STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT = 'Pornography or sexualized content';
+    public const STATEMENT_CATEGORY_OTHER_VIOLATION_TC = 'Other violation of provider’s terms and conditions';
 
     public const STATEMENT_CATEGORY_PROTECTION_OF_MINORS = 'Protection of minors';
 
@@ -259,27 +268,27 @@ class Statement extends Model
 
     public const STATEMENT_CATEGORY_SELF_HARM = 'Self-harm';
 
-    public const STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE = 'Scope of platform service';
-
-    public const STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS = 'Unsafe and/or illegal products';
+    public const STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS = 'Unsafe, non-compliant or prohibited products';
 
     public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
 
 
     public const STATEMENT_CATEGORIES = [
         'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
+        'STATEMENT_CATEGORY_CONSUMER_INFORMATION' => self::STATEMENT_CATEGORY_CONSUMER_INFORMATION,
+        'STATEMENT_CATEGORY_CYBER_VIOLENCE' => self::STATEMENT_CATEGORY_CYBER_VIOLENCE,
+        'STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN' => self::STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN,
         'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS' => self::STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS,
         'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH' => self::STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH,
         'STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS' => self::STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS,
         'STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS' => self::STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS,
-        'STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR' => self::STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR,
-        'STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT' => self::STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT,
+        'STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE' => self::STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE,
+        'STATEMENT_CATEGORY_OTHER_VIOLATION_TC' => self::STATEMENT_CATEGORY_OTHER_VIOLATION_TC,
         'STATEMENT_CATEGORY_PROTECTION_OF_MINORS' => self::STATEMENT_CATEGORY_PROTECTION_OF_MINORS,
         'STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY' => self::STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY,
         'STATEMENT_CATEGORY_SCAMS_AND_FRAUD' => self::STATEMENT_CATEGORY_SCAMS_AND_FRAUD,
         'STATEMENT_CATEGORY_SELF_HARM' => self::STATEMENT_CATEGORY_SELF_HARM,
-        'STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE' => self::STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE,
-        'STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS' => self::STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS,
+        'STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS' => self::STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS,
         'STATEMENT_CATEGORY_VIOLENCE' => self::STATEMENT_CATEGORY_VIOLENCE,
     ];
 
@@ -290,15 +299,32 @@ class Statement extends Model
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS = 'Age-specific restrictions concerning minors';
 
     public const KEYWORD_AGE_SPECIFIC_RESTRICTIONS = 'Age-specific restrictions';
+
     public const KEYWORD_BIOMETRIC_DATA_BREACH = 'Biometric data breach';
 
+    public const KEYWORD_BULLYING_AGAINST_GIRLS = 'Cyber bullying and intimidation against girls';
+
     public const KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL = 'Child sexual abuse material';
+
+    public const KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL_DEEPFAKE = 'Child sexual abuse material containing deepfake or similar technology';
 
     public const KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS = 'Content promoting eating disorders';
 
     public const KEYWORD_COORDINATED_HARM = 'Coordinated harm';
 
-    public const KEYWORD_COPYRIGHT_INFRINGEMENT = 'Copyright infringement';
+    public const KEYWORD_COPYRIGHT_INFRINGEMENT = 'Copyright infringements';
+
+    public const KEYWORD_CYBER_BULLYING_INTIMIDATION = 'Cyber bullying and intimidation';
+
+    public const KEYWORD_CYBER_HARASSMENT = 'Cyber harassment';
+
+    public const KEYWORD_CYBER_HARASSMENT_AGAINST_WOMEN = 'Cyber harassment against women';
+
+    public const KEYWORD_CYBER_INCITEMENT = 'Cyber incitement to hatred or violence';
+
+    public const KEYWORD_CYBER_STALKING = 'Cyber stalking';
+
+    public const KEYWORD_CYBER_STALKING_AGAINST_WOMEN = 'Cyber stalking against women';
 
     public const KEYWORD_DANGEROUS_TOYS = 'Dangerous toys';
 
@@ -306,15 +332,11 @@ class Statement extends Model
 
     public const KEYWORD_DEFAMATION = 'Defamation';
 
-    public const KEYWORD_DESIGN_INFRINGEMENT = 'Design infringement';
+    public const KEYWORD_DESIGN_INFRINGEMENT = 'Design infringements';
 
     public const KEYWORD_DISCRIMINATION = 'Discrimination';
 
-    public const KEYWORD_DISINFORMATION = 'Disinformation';
-
-    public const KEYWORD_FOREIGN_INFORMATION_MANIPULATION = 'Foreign information manipulation and interference';
-
-    public const KEYWORD_GENDER_BASED_VIOLENCE = 'Gender-based violence';
+    public const KEYWORD_FEMALE_GENDERED_DISINFORMATION = 'Gendered disinformation';
 
     public const KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT = 'Geographic indications infringements';
 
@@ -324,15 +346,15 @@ class Statement extends Model
 
     public const KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS = 'Grooming/sexual enticement of minors';
 
-    public const KEYWORD_HATE_SPEECH = 'Hate speech';
+    public const KEYWORD_HATE_SPEECH = 'Illegal incitement to violence and hatred based on protected characteristics (hate speech)';
+
+    public const KEYWORD_HIDDEN_ADVERTISEMENT = 'Hidden advertisement or commercial communication, including by influencers';
 
     public const KEYWORD_HUMAN_EXPLOITATION = 'Human exploitation';
 
     public const KEYWORD_HUMAN_TRAFFICKING = 'Human trafficking';
 
     public const KEYWORD_ILLEGAL_ORGANIZATIONS = 'Illegal organizations';
-
-    public const KEYWORD_IMAGE_BASED_SEXUAL_ABUSE = 'Image-based sexual abuse (excluding content depicting minors)';
 
     public const KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING = 'Impersonation or account hijacking';
 
@@ -342,31 +364,41 @@ class Statement extends Model
 
     public const KEYWORD_INAUTHENTIC_USER_REVIEWS = 'Inauthentic user reviews';
 
-    public const KEYWORD_INCITEMENT_VIOLENCE_HATRED = 'Incitement to violence and/or hatred';
+    public const KEYWORD_INCITEMENT_AGAINST_WOMEN = 'Illegal incitement to violence and hatred against women';
 
-    public const KEYWORD_INSUFFICIENT_INFORMATION_TRADERS = 'Insufficient information on traders';
+    public const KEYWORD_INCITEMENT_VIOLENCE_HATRED = 'General calls or incitement to violence and/or hatred';
+
+    public const KEYWORD_INSUFFICIENT_INFORMATION_ON_TRADERS = 'Insufficient information on traders';
 
     public const KEYWORD_LANGUAGE_REQUIREMENTS = 'Language requirements';
 
-    public const KEYWORD_MISINFORMATION = 'Misinformation';
+    public const KEYWORD_MISINFORMATION_DISINFORMATION = 'Misinformation, disinformation, foreign information manipulation and interference';
+
+    public const KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS = 'Misleading information about the consumer\'s rights';
+
+    public const KEYWORD_MISLEADING_INFO_GOODS_SERVICES = 'Misleading information about the characteristics of the goods and services';
 
     public const KEYWORD_MISSING_PROCESSING_GROUND = 'Missing processing ground for data';
 
-    public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-consensual image sharing';
+    public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING = 'Non-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors)';
 
-    public const KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE = 'Non-consensual items containing deepfake or similar technology using a third party’s features';
+    public const KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN = 'Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors)';
+
+    public const KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE = 'Non-consensual sharing of material containing deepfake or similar technology using a third party\'s features (excluding content depicting minors)';
+
+    public const KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN = 'Non-consensual sharing of material containing deepfake or similar technology using a third party\'s features against women (excluding content depicting minors)';
+
+    public const KEYWORD_NONCOMPLIANCE_PRICING = 'Non-compliance with pricing regulations';
 
     public const KEYWORD_NUDITY = 'Nudity';
 
-    public const KEYWORD_ONLINE_BULLYING_INTIMIDATION = 'Online bullying/intimidation';
-
-    public const KEYWORD_PATENT_INFRINGEMENT = 'Patent infringement';
+    public const KEYWORD_PATENT_INFRINGEMENT = 'Patent infringements';
 
     public const KEYWORD_PHISHING = 'Phishing';
 
-    public const KEYWORD_PYRAMID_SCHEMES = 'Pyramid schemes';
+    public const KEYWORD_PROHIBITED_PRODUCTS = 'Prohibited or restricted products';
 
-    public const KEYWORD_REGULATED_GOODS_SERVICES = 'Regulated goods and services';
+    public const KEYWORD_PYRAMID_SCHEMES = 'Pyramid schemes';
 
     public const KEYWORD_RIGHT_TO_BE_FORGOTTEN = 'Right to be forgotten';
 
@@ -380,66 +412,85 @@ class Statement extends Model
 
     public const KEYWORD_SUICIDE = 'Suicide';
 
+    public const KEYWORD_TRADE_SECRET_INFRINGEMENT = 'Trade secret infringements';
+
+    public const KEYWORD_TRADEMARK_INFRINGEMENT = 'Trademark infringements';
+
+    public const KEYWORD_TRAFFICKING_WOMEN_GIRLS = 'Trafficking in women and girls';
+
     public const KEYWORD_TERRORIST_CONTENT = 'Terrorist content';
-
-    public const KEYWORD_TRADE_SECRET_INFRINGEMENT = 'Trade secret infringement';
-
-    public const KEYWORD_TRADEMARK_INFRINGEMENT = 'Trademark infringement';
 
     public const KEYWORD_UNLAWFUL_SALE_ANIMALS = 'Unlawful sale of animals';
 
     public const KEYWORD_UNSAFE_CHALLENGES = 'Unsafe challenges';
 
-    public const KEYWORD_OTHER = 'Other';
+    public const KEYWORD_UNSAFE_PRODUCTS = 'Unsafe or non-compliant products';
+
+    public const KEYWORD_VIOLATION_EU_LAW = 'Violation of EU law relevant to civic discourse or elections';
+
+    public const KEYWORD_VIOLATION_NATIONAL_LAW = 'Violation of national law relevant to civic discourse or elections';
+
+    public const KEYWORD_OTHER = 'Not captured by any other keyword';
 
     public const LABEL_KEYWORDS = 'Keywords';
 
     public const LABEL_KEYWORDS_OTHER = 'Other keyword';
 
     public const KEYWORDS = [
-        'KEYWORD_ANIMAL_HARM' => self::KEYWORD_ANIMAL_HARM,
         'KEYWORD_ADULT_SEXUAL_MATERIAL' => self::KEYWORD_ADULT_SEXUAL_MATERIAL,
         'KEYWORD_AGE_SPECIFIC_RESTRICTIONS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS,
         'KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS' => self::KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS,
+        'KEYWORD_ANIMAL_HARM' => self::KEYWORD_ANIMAL_HARM,
         'KEYWORD_BIOMETRIC_DATA_BREACH' => self::KEYWORD_BIOMETRIC_DATA_BREACH,
+        'KEYWORD_BULLYING_AGAINST_GIRLS' => self::KEYWORD_BULLYING_AGAINST_GIRLS,
         'KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL' => self::KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL,
+        'KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL_DEEPFAKE' => self::KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL_DEEPFAKE,
         'KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS' => self::KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS,
         'KEYWORD_COORDINATED_HARM' => self::KEYWORD_COORDINATED_HARM,
         'KEYWORD_COPYRIGHT_INFRINGEMENT' => self::KEYWORD_COPYRIGHT_INFRINGEMENT,
+        'KEYWORD_CYBER_BULLYING_INTIMIDATION' => self::KEYWORD_CYBER_BULLYING_INTIMIDATION,
+        'KEYWORD_CYBER_HARASSMENT' => self::KEYWORD_CYBER_HARASSMENT,
+        'KEYWORD_CYBER_HARASSMENT_AGAINST_WOMEN' => self::KEYWORD_CYBER_HARASSMENT_AGAINST_WOMEN,
+        'KEYWORD_CYBER_INCITEMENT' => self::KEYWORD_CYBER_INCITEMENT,
+        'KEYWORD_CYBER_STALKING' => self::KEYWORD_CYBER_STALKING,
+        'KEYWORD_CYBER_STALKING_AGAINST_WOMEN' => self::KEYWORD_CYBER_STALKING_AGAINST_WOMEN,
         'KEYWORD_DANGEROUS_TOYS' => self::KEYWORD_DANGEROUS_TOYS,
         'KEYWORD_DATA_FALSIFICATION' => self::KEYWORD_DATA_FALSIFICATION,
         'KEYWORD_DEFAMATION' => self::KEYWORD_DEFAMATION,
         'KEYWORD_DESIGN_INFRINGEMENT' => self::KEYWORD_DESIGN_INFRINGEMENT,
         'KEYWORD_DISCRIMINATION' => self::KEYWORD_DISCRIMINATION,
-        'KEYWORD_DISINFORMATION' => self::KEYWORD_DISINFORMATION,
-        'KEYWORD_FOREIGN_INFORMATION_MANIPULATION' => self::KEYWORD_FOREIGN_INFORMATION_MANIPULATION,
-        'KEYWORD_GENDER_BASED_VIOLENCE' => self::KEYWORD_GENDER_BASED_VIOLENCE,
+        'KEYWORD_FEMALE_GENDERED_DISINFORMATION' => self::KEYWORD_FEMALE_GENDERED_DISINFORMATION,
         'KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT' => self::KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT,
         'KEYWORD_GEOGRAPHICAL_REQUIREMENTS' => self::KEYWORD_GEOGRAPHICAL_REQUIREMENTS,
         'KEYWORD_GOODS_SERVICES_NOT_PERMITTED' => self::KEYWORD_GOODS_SERVICES_NOT_PERMITTED,
         'KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS' => self::KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS,
         'KEYWORD_HATE_SPEECH' => self::KEYWORD_HATE_SPEECH,
+        'KEYWORD_HIDDEN_ADVERTISEMENT' => self::KEYWORD_HIDDEN_ADVERTISEMENT,
         'KEYWORD_HUMAN_EXPLOITATION' => self::KEYWORD_HUMAN_EXPLOITATION,
         'KEYWORD_HUMAN_TRAFFICKING' => self::KEYWORD_HUMAN_TRAFFICKING,
         'KEYWORD_ILLEGAL_ORGANIZATIONS' => self::KEYWORD_ILLEGAL_ORGANIZATIONS,
-        'KEYWORD_IMAGE_BASED_SEXUAL_ABUSE' => self::KEYWORD_IMAGE_BASED_SEXUAL_ABUSE,
         'KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING' => self::KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING,
         'KEYWORD_INAUTHENTIC_ACCOUNTS' => self::KEYWORD_INAUTHENTIC_ACCOUNTS,
         'KEYWORD_INAUTHENTIC_LISTINGS' => self::KEYWORD_INAUTHENTIC_LISTINGS,
         'KEYWORD_INAUTHENTIC_USER_REVIEWS' => self::KEYWORD_INAUTHENTIC_USER_REVIEWS,
+        'KEYWORD_INCITEMENT_AGAINST_WOMEN' => self::KEYWORD_INCITEMENT_AGAINST_WOMEN,
         'KEYWORD_INCITEMENT_VIOLENCE_HATRED' => self::KEYWORD_INCITEMENT_VIOLENCE_HATRED,
-        'KEYWORD_INSUFFICIENT_INFORMATION_TRADERS' => self::KEYWORD_INSUFFICIENT_INFORMATION_TRADERS,
+        'KEYWORD_INSUFFICIENT_INFORMATION_ON_TRADERS' => self::KEYWORD_INSUFFICIENT_INFORMATION_ON_TRADERS,
         'KEYWORD_LANGUAGE_REQUIREMENTS' => self::KEYWORD_LANGUAGE_REQUIREMENTS,
-        'KEYWORD_MISINFORMATION' => self::KEYWORD_MISINFORMATION,
+        'KEYWORD_MISINFORMATION_DISINFORMATION' => self::KEYWORD_MISINFORMATION_DISINFORMATION,
+        'KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS' => self::KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS,
+        'KEYWORD_MISLEADING_INFO_GOODS_SERVICES' => self::KEYWORD_MISLEADING_INFO_GOODS_SERVICES,
         'KEYWORD_MISSING_PROCESSING_GROUND' => self::KEYWORD_MISSING_PROCESSING_GROUND,
         'KEYWORD_NON_CONSENSUAL_IMAGE_SHARING' => self::KEYWORD_NON_CONSENSUAL_IMAGE_SHARING,
-        'KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE' => self::KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE,
+        'KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN' => self::KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN,
+        'KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE' => self::KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE,
+        'KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN' => self::KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN,
+        'KEYWORD_NONCOMPLIANCE_PRICING' => self::KEYWORD_NONCOMPLIANCE_PRICING,
         'KEYWORD_NUDITY' => self::KEYWORD_NUDITY,
-        'KEYWORD_ONLINE_BULLYING_INTIMIDATION' => self::KEYWORD_ONLINE_BULLYING_INTIMIDATION,
         'KEYWORD_PATENT_INFRINGEMENT' => self::KEYWORD_PATENT_INFRINGEMENT,
         'KEYWORD_PHISHING' => self::KEYWORD_PHISHING,
+        'KEYWORD_PROHIBITED_PRODUCTS' => self::KEYWORD_PROHIBITED_PRODUCTS,
         'KEYWORD_PYRAMID_SCHEMES' => self::KEYWORD_PYRAMID_SCHEMES,
-        'KEYWORD_REGULATED_GOODS_SERVICES' => self::KEYWORD_REGULATED_GOODS_SERVICES,
         'KEYWORD_RIGHT_TO_BE_FORGOTTEN' => self::KEYWORD_RIGHT_TO_BE_FORGOTTEN,
         'KEYWORD_RISK_ENVIRONMENTAL_DAMAGE' => self::KEYWORD_RISK_ENVIRONMENTAL_DAMAGE,
         'KEYWORD_RISK_PUBLIC_HEALTH' => self::KEYWORD_RISK_PUBLIC_HEALTH,
@@ -449,15 +500,14 @@ class Statement extends Model
         'KEYWORD_TERRORIST_CONTENT' => self::KEYWORD_TERRORIST_CONTENT,
         'KEYWORD_TRADE_SECRET_INFRINGEMENT' => self::KEYWORD_TRADE_SECRET_INFRINGEMENT,
         'KEYWORD_TRADEMARK_INFRINGEMENT' => self::KEYWORD_TRADEMARK_INFRINGEMENT,
+        'KEYWORD_TRAFFICKING_WOMEN_GIRLS' => self::KEYWORD_TRAFFICKING_WOMEN_GIRLS,
         'KEYWORD_UNLAWFUL_SALE_ANIMALS' => self::KEYWORD_UNLAWFUL_SALE_ANIMALS,
         'KEYWORD_UNSAFE_CHALLENGES' => self::KEYWORD_UNSAFE_CHALLENGES,
+        'KEYWORD_UNSAFE_PRODUCTS' => self::KEYWORD_UNSAFE_PRODUCTS,
+        'KEYWORD_VIOLATION_EU_LAW' => self::KEYWORD_VIOLATION_EU_LAW,
+        'KEYWORD_VIOLATION_NATIONAL_LAW' => self::KEYWORD_VIOLATION_NATIONAL_LAW,
         'KEYWORD_OTHER' => self::KEYWORD_OTHER,
     ];
-
-
-
-
-
 
     public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
 
@@ -479,6 +529,8 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_END_DATE_VISIBILITY_RESTRICTION = 'End date of the visibility restriction';
 
+    public const CONTENT_ID_EAN13_KEY = 'Content ID (EAN-13)';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -497,6 +549,8 @@ class Statement extends Model
     protected $casts = [
         'id' => 'integer',
         'uuid' => 'string',
+        'content_id' => 'array',
+        'content_id_ean' => 'string',
         'content_date' => 'datetime:Y-m-d',
         'application_date' => 'datetime:Y-m-d',
         'end_date_account_restriction' => 'datetime:Y-m-d',
@@ -552,11 +606,9 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        if (!is_null($this->platform))
-        {
+        if (!is_null($this->platform)) {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
-        } else
-        {
+        } else {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
         }
 
@@ -564,11 +616,9 @@ class Statement extends Model
 
     public function platformUuidCached(): string
     {
-        if (!is_null($this->platform))
-        {
+        if (!is_null($this->platform)) {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
-        } else
-        {
+        } else {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
         }
 
@@ -619,6 +669,7 @@ class Statement extends Model
             'puid' => $this->puid,
             'territorial_scope' => $this->territorial_scope,
             'method' => $this->method,
+            'content_id_ean' => $this->content_id_ean,
         ];
     }
 
@@ -669,6 +720,7 @@ class Statement extends Model
             'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
             'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
             'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
+            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
         ];
     }
 
@@ -761,23 +813,19 @@ class Statement extends Model
         $decisions = [];
 
 
-        if ($this->decision_visibility)
-        {
+        if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
         }
 
-        if ($this->decision_monetary)
-        {
+        if ($this->decision_monetary) {
             $decisions[] = 'Monetary';
         }
 
-        if ($this->decision_provision)
-        {
+        if ($this->decision_provision) {
             $decisions[] = 'Provision';
         }
 
-        if ($this->decision_account)
-        {
+        if ($this->decision_account) {
             $decisions[] = 'Account';
         }
 
@@ -790,14 +838,11 @@ class Statement extends Model
         $enumValues = [];
         $keys = array_filter($keys);
 
-        foreach ($keys as $key)
-        {
+        foreach ($keys as $key) {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class . '::' . $key))
-            {
+            if (defined(self::class . '::' . $key)) {
                 $value = constant(self::class . '::' . $key);
-                if ($value !== null)
-                {
+                if ($value !== null) {
                     $enumValues[] = $value;
                 }
             }
@@ -815,28 +860,23 @@ class Statement extends Model
     public function getRawKeys($key): array
     {
         $raw_original = (string) $this->getRawOriginal($key);
-        if ($raw_original === '')
-        {
+        if ($raw_original === '') {
             return [];
         }
 
         // Catch potential bad json here.
-        try
-        {
+        try {
             $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
             return [];
         }
 
 
-        if (is_array($out))
-        {
+        if (is_array($out)) {
             $out = array_unique($out);
             sort($out);
-        } else
-        {
+        } else {
             $out = [];
         }
 
