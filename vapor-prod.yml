@@ -9,7 +9,6 @@ environments:
         - CategoryArchiver
         - CategoryContentFetcher
         - CategoryLinkChecker
-        - CategoryMiscellaneous
         - CategoryScrapingFramework
         - SignalAutomatedBrowser
     warm: 100
