@@ -85,8 +85,8 @@
                     <div class="ecl-media-container__caption">
                         <picture class="ecl-picture ecl-media-container__picture"><img
                                 class="ecl-media-container__media"
-                                src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-image-2.jpeg"
-                                alt="Digital Services Act Logo"></picture>
+                                src="{{ asset('static/images/toolbox.png') }}"
+                                alt="Digital Services Act"></picture>
                     </div>
                 </figure>
             </div>
