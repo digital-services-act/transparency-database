@@ -42,8 +42,8 @@
         <br />
         1. Platform overview<br />
         2. Restrictions and violations overview<br />
-        3. Timelines<br />
-        4. Violations analysis<br />
+        3. Timelines (the date refers to the date of submission of the statement of reasons to the Database)<br />
+        4. Violations analysis (the date used is as above)<br />
         5. Restrictions analysis<br />
         6. Other analyses <br /><br />
         For additional guidance on making the best use of the tool, please refer to <strong>instructions below the
@@ -51,7 +51,11 @@
         <strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply
         filters to view data for other time periods.<br /><br />
 
-        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the dashboard can show aggregated data over a longer period of time in the past compared to the data available on the “<a href="{{route('statement.index')}}">Search for statements of reasons</a>” page. This might result in different numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering settings are applied.
+        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the dashboard
+        can show aggregated data over a longer period of time in the past compared to the data available on the “<a
+            href="{{route('statement.index')}}">Search for statements of reasons</a>” page. This might result in different
+        numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering
+        settings are applied.
 
     </p>
 
@@ -65,8 +69,8 @@
 
     <h2 class="ecl-u-type-heading-2">Instructions</h2>
     <div style="width:110%; !important;
-            margin-left: -20px;
-            max-height:100%">
+                            margin-left: -20px;
+                            max-height:100%">
 
         <div class="ecl-u-d-flex">
             <div
@@ -90,6 +94,15 @@
                     It also shows how the grounds for the restrictions imposed and the information source used relate to one
                     another as well as the relationship between automatic content moderation decisions and automatic
                     detection of content for moderation.
+                </div>
+
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">
+                    Unless otherwise specified, the date used to aggregate the data is the creation date of the statement of
+                    reasons (the
+                    <a class="ecl-link" href="/page/api-documentation#creating-a-statement">created_at</a>
+                    datetime field truncated at the day level), that is, the day on which the statement of reasons was
+                    submitted
+                    to the DSA Transparency Database by its provider)
                 </div>
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Data update</div>
