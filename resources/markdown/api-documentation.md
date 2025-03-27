@@ -12,7 +12,7 @@
   </div>
 </div>
 
-# How to use the API
+## How to use the API
 
 Specific users of this database are given the ability to create
 statements of reasons using an API endpoint. This greatly increases
