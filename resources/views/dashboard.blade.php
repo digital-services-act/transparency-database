@@ -69,8 +69,8 @@
 
     <h2 class="ecl-u-type-heading-2">Instructions</h2>
     <div style="width:110%; !important;
-                            margin-left: -20px;
-                            max-height:100%">
+                                margin-left: -20px;
+                                max-height:100%">
 
         <div class="ecl-u-d-flex">
             <div
@@ -102,7 +102,7 @@
                     <a class="ecl-link" href="/page/api-documentation#creating-a-statement">created_at</a>
                     datetime field truncated at the day level), that is, the day on which the statement of reasons was
                     submitted
-                    to the DSA Transparency Database by its provider)
+                    to the DSA Transparency Database by its provider).
                 </div>
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Data update</div>
