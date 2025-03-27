@@ -119,6 +119,17 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect(route('statement.show', ['statement' => $statement]));
     }
 
+    /**
+     * @test
+     */
+    public function show_throws_404_if_not_found(): void
+    {
+        $this->signInAsAdmin();
+        $statement = Statement::factory()->create();
+        $response = $this->get(route('statement.show', ['statement' => 0]));
+        $response->assertNotFound();
+    }
+
 
     /**
      * @test
