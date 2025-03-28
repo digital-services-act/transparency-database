@@ -8,6 +8,7 @@
         </svg></span></button>
 
     <div class="ecl-notification__description">Please note that starting from 1 July 2025 a new DSA Transparency Database and API schema will be adopted. This change will align the content of the DSA Transparency Database with the reporting templates mandated by the <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations">Transparency Reporting Implementing Act</a>, enhancing the consistency and comparability across the DSA transparency provisions. Read more about the forthcoming changes in the <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/DSA_Transparency_Database_API_v2_changelog.xlsx">table containing the full changelog on this page</a>.</div>
+    <div class="ecl-notification__description">Please note that starting from 1 July 2025 the updated DSA Transparency Database and API schema deployed in this test environment will be adapted also in the production environment of the DSA Transparency Database. We encourage you to make use use of this test environment until 30 June 2025 to test the new schema here before the switch in production. The full documentation of the updated schema can be found below. You can also find a full changelog <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/DSA_Transparency_Database_API_v2_changelog.xlsx">here</a>.</div>
 
   </div>
 </div>

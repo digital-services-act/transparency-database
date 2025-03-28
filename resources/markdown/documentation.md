@@ -434,7 +434,7 @@ specifications fall under the high-level categories as follows (listed in alphab
   - Prohibited or restricted products
   - Unsafe or non-compliant products
 - Violence
-- Coordinated harm
+  - Coordinated harm
   - General calls or incitement to violence and/or hatred
   - Human exploitation
   - Human trafficking
@@ -444,7 +444,7 @@ specifications fall under the high-level categories as follows (listed in alphab
 
 For example, if an unsafe product was removed from an online marketplace that was also a counterfeit good, the relevant statement of reasons could indicate either “Unsafe, non-compliant or prohibited products” or “Intellectual property infringements” as the main category, depending on which one was considered more relevant to the decision by the platform. The respective other option could be chosen in attribute_addition, and one or more of the relevant category_specification options (e.g. “Trademark infringement” and/or “Prohibited or restricted products ” or other category_specification options considered relevant by the platform) could be added to provide additional information. Platforms are encouraged to use as many options as they see fit to best describe their statements of reasons with these data points.
 
-#### 16.4. Field to add an open specification
+#### 16.1. Field to add an open specification
 
 For those statements of reasons where platforms feel that no existing specification properly
 reflects the grounds they used, this section allows for a free text submission to add

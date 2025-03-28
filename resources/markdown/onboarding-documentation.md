@@ -1,6 +1,6 @@
 ## Overview
 
-The obligation to submit statements of reasons applies to all providers of online platforms except those that qualify as micro or small enterprises, i.e. enterprises which employ fewer than 50 persons and whose annual turnover and/or annual balance sheet total does not exceed EUR 10 million.
+The obligation to submit statements of reasons applies to all providers of online platforms except those that qualify as micro or small enterprises, i.e. enterprises which employ fewer than 50 persons and whose annual turnover and/or annual balance sheet total does not exceed EUR 10 million. The exception for micro and small enterprises does not apply to providers of online platforms that have been designated as a very large online platform.
 
 Statements of reasons need to be submitted for each online platform, i.e. if a provider provides multiple online platforms, each online platform needs to be registered separately in the DSA Transparency Database.
 
