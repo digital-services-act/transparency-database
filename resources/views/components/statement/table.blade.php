@@ -30,7 +30,8 @@
       <td class="ecl-table__cell" data-ecl-table-header="Platform">{{Platform::find($statement->platform_id)->name}}
       </td>
     @endif
-      <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{$statement->restrictions()}}</td>
+      <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{Statement::restrictionsString($statement)}}
+      </td>
       <td class="ecl-table__cell" data-ecl-table-header="Category">
       {{Statement::STATEMENT_CATEGORIES[$statement->category]}}
       </td>

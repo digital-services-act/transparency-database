@@ -809,22 +809,27 @@ class Statement extends Model
      */
     public function restrictions(): string
     {
+        return self::restrictionString($this);
+    }
+
+    public static function restrictionString($model)
+    {
         $decisions = [];
 
 
-        if ($this->decision_visibility) {
+        if ($model->decision_visibility) {
             $decisions[] = 'Visibility';
         }
 
-        if ($this->decision_monetary) {
+        if ($model->decision_monetary) {
             $decisions[] = 'Monetary';
         }
 
-        if ($this->decision_provision) {
+        if ($model->decision_provision) {
             $decisions[] = 'Provision';
         }
 
-        if ($this->decision_account) {
+        if ($model->decision_account) {
             $decisions[] = 'Account';
         }
 
