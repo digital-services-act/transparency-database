@@ -115,6 +115,7 @@ class StatementSearchService
             }
         }
 
+        $queryAndParts[] = 'id >= 100000000000';
         // handle the date filters as needed.
         $created_at_filter = $this->applyCreatedAtFilter($filters);
         if ($created_at_filter !== '' && $created_at_filter !== '0') {

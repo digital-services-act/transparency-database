@@ -61,7 +61,6 @@
             "vendor/ecphp/laravel-cas/src/Controllers/LoginController.php"
         ],
         "files": [
-            "overrides/OpenSearchEngine.php",
             "overrides/CasGuard.php",
             "overrides/CasAuthenticator.php",
             "overrides/LoginController.php"

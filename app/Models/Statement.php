@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Models\CustomSearchable;
+use Laravel\Scout\Searchable;
+
 
 class Statement extends Model
 {
     use HasFactory;
-    use CustomSearchable;
+    use Searchable;
     use SoftDeletes;
 
     protected $table = 'statements_beta';
@@ -809,27 +810,22 @@ class Statement extends Model
      */
     public function restrictions(): string
     {
-        return self::restrictionString($this);
-    }
-
-    public static function restrictionsString($model)
-    {
         $decisions = [];
 
 
-        if ($model->decision_visibility) {
+        if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
         }
 
-        if ($model->decision_monetary) {
+        if ($this->decision_monetary) {
             $decisions[] = 'Monetary';
         }
 
-        if ($model->decision_provision) {
+        if ($this->decision_provision) {
             $decisions[] = 'Provision';
         }
 
-        if ($model->decision_account) {
+        if ($this->decision_account) {
             $decisions[] = 'Account';
         }
 
