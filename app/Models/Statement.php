@@ -812,7 +812,7 @@ class Statement extends Model
         return self::restrictionString($this);
     }
 
-    public static function restrictionString($model)
+    public static function restrictionsString($model)
     {
         $decisions = [];
 
