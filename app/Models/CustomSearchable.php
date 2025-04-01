@@ -260,7 +260,10 @@ trait CustomSearchable
         $query = static::usesSoftDelete()
             ? $this->withTrashed() : $this->newQuery();
 
-        if (max($ids) < 100000000000 && config('app.env_real') === 'production') {
+        $allowed_envs = ['production', 'sandbox'];
+        $current_env = config('app.env_real');
+
+        if (max($ids) < 100000000000 && in_array($current_env, $allowed_envs)) {
             $query = DB::table('statements', 'statements_beta')->select('*');
         }
 
