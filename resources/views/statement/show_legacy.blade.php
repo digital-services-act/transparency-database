@@ -1,4 +1,5 @@
 @php use App\Models\Statement; @endphp
+@php use App\Models\StatementAlpha; @endphp
 @extends('layouts/ecl')
 
 @section('title', 'Statement of Reasons Details - ' . $statement->title)
@@ -128,7 +129,8 @@
     <x-infoline :title="StatementAlpha::LABEL_STATEMENT_CATEGORY_ADDITION"
         content="{{ implode(', ', $statement_additional_categories) }}"></x-infoline>
 
-    <x-infoline :title="StatementAlpha::LABEL_KEYWORDS" content="{{ implode(', ', $category_specifications) }}"></x-infoline>
+    <x-infoline :title="StatementAlpha::LABEL_KEYWORDS"
+        content="{{ implode(', ', $category_specifications) }}"></x-infoline>
 
 
     <x-infoline :title="StatementAlpha::LABEL_KEYWORDS_OTHER"
