@@ -121,7 +121,7 @@
             :content="$statement_content_language"></x-infoline>
     @endif
 
-    <x-infoline :title="StatementAlpha::CONTENT_ID_EAN13_KEY" :content="$statement->content_id_ean"></x-infoline>
+
 
     <x-infoline :title="StatementAlpha::LABEL_STATEMENT_CATEGORY"
         :content="StatementAlpha::STATEMENT_CATEGORIES[$statement->category]"></x-infoline>
