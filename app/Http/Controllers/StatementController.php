@@ -7,6 +7,7 @@ use App\Exports\StatementsExport;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
+use App\Models\StatementAlpha;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
@@ -95,7 +96,19 @@ class StatementController extends Controller
     {
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
-            $statements = $this->statement_search_service->query($request->query());
+
+            $filters = $request->query();
+            $current_env = config('app.env_real', '');
+
+            if ($current_env === 'sandbox') {
+                $filters['received_date'] = '01-04-2025';
+            }
+
+            if ($current_env === 'production') {
+                $filters['received_date'] = '01-07-2025';
+            }
+
+            $statements = $this->statement_search_service->query($filters);
             $total = $this->statement_search_service->query($request->query(), [
                 'size' => 1,
                 'from' => 0,
@@ -146,24 +159,48 @@ class StatementController extends Controller
     public function show(int $statement): Factory|View|Application
     {
 
-        $statement = Statement::find($statement) ?? DB::table('statements')->where('id', $statement)->first();
+        $view = 'statement.show';
+
+        // Statement Alpha
+        if ($statement < 100000000000) {
+            $view = 'statement.show_legacy';
+
+            $statement = StatementAlpha::find($statement);
+            if (!$statement) {
+                abort(404);
+            }
+
+            $statement_content_types = StatementAlpha::getEnumValues($statement->content_type);
+            $statement_additional_categories = StatementAlpha::getEnumValues($statement->category_addition);
+            $statement_visibility_decisions = StatementAlpha::getEnumValues($statement->decision_visibility);
+            $category_specifications = StatementAlpha::getEnumValues($statement->category_specification);
+        }
+
+        // Statement Beta
+        $statement = Statement::find($statement);
 
         if (!$statement) {
             abort(404);
         }
 
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
-        $statement_content_types = Statement::getEnumValues($statement->content_type);
-
+        sort($statement_territorial_scope_country_names);
         $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
-        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
 
+        $statement_content_types = Statement::getEnumValues($statement->content_type);
+        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
         $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
         $category_specifications = Statement::getEnumValues($statement->category_specification);
 
-        sort($statement_territorial_scope_country_names);
-
-        return view('statement.show', ['statement' => $statement, 'statement_territorial_scope_country_names' => $statement_territorial_scope_country_names, 'statement_content_types' => $statement_content_types, 'statement_content_language' => $statement_content_language, 'statement_additional_categories' => $statement_additional_categories, 'statement_visibility_decisions' => $statement_visibility_decisions, 'category_specifications' => $category_specifications]);
+        return view($view, [
+            'statement' => $statement,
+            'statement_territorial_scope_country_names' => $statement_territorial_scope_country_names,
+            'statement_content_types' => $statement_content_types,
+            'statement_content_language' => $statement_content_language,
+            'statement_additional_categories' => $statement_additional_categories,
+            'statement_visibility_decisions' => $statement_visibility_decisions,
+            'category_specifications' => $category_specifications
+        ]);
 
     }
 
