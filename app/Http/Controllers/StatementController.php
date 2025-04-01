@@ -174,23 +174,25 @@ class StatementController extends Controller
             $statement_additional_categories = StatementAlpha::getEnumValues($statement->category_addition);
             $statement_visibility_decisions = StatementAlpha::getEnumValues($statement->decision_visibility);
             $category_specifications = StatementAlpha::getEnumValues($statement->category_specification);
-        }
 
-        // Statement Beta
-        $statement = Statement::find($statement);
+        } else {
+            // Statement Beta
+            $statement = Statement::find($statement);
 
-        if (!$statement) {
-            abort(404);
+            if (!$statement) {
+                abort(404);
+            }
+
+            $statement_content_types = Statement::getEnumValues($statement->content_type);
+            $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
+            $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
+            $category_specifications = Statement::getEnumValues($statement->category_specification);
+
         }
 
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         sort($statement_territorial_scope_country_names);
         $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
-
-        $statement_content_types = Statement::getEnumValues($statement->content_type);
-        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
-        $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
-        $category_specifications = Statement::getEnumValues($statement->category_specification);
 
         return view($view, [
             'statement' => $statement,
