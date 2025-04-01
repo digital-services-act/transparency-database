@@ -96,11 +96,15 @@ class StatementController extends Controller
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
             $statements = $this->statement_search_service->query($request->query());
-            $total = $this->statement_search_service->query($request->query(), [
+            $total = 10001
+            
+            /*
+            $this->statement_search_service->query($request->query(), [
                 'size' => 1,
                 'from' => 0,
                 'track_total_hits' => true,
             ])->paginate(1)->total();
+            */
         } else {
             // This should never happen,
             // raw queries on the statement table is very bad
