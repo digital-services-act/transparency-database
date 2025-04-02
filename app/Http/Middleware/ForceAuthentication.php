@@ -11,8 +11,8 @@ class ForceAuthentication
     {
         // Check if the application is in dev, acc or sandbox
         // Force authentication logic here
-//        if (in_array(strtolower((string) config('app.env_real')), ['dev', 'acc', 'sandbox']) && !auth()->check()) {
-        if (in_array(strtolower((string) config('app.env_real')), ['dev', 'sandbox']) && !auth()->check()) {
+        if (in_array(strtolower((string) config('app.env_real')), ['dev', 'acc', 'sandbox']) && !auth()->check()) {
+//        if (in_array(strtolower((string) config('app.env_real')), ['dev', 'sandbox']) && !auth()->check()) {
 
             // Redirect to the dashboard page for authentication logic
             return redirect('/profile/start');
