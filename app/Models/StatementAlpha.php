@@ -815,7 +815,7 @@ class StatementAlpha extends Model
         try {
             $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $exception) {
-            Log::error('Statement::getRawKeys', ['exception' => $exception]);
+            Log::error('StatementAlpha::getRawKeys', ['exception' => $exception]);
             return [];
         }
 

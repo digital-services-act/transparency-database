@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Platform;
-use App\Models\Statement;
+use App\Models\StatementAlpha;
 use App\Models\User;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
@@ -11,14 +11,14 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class StatementFactory extends Factory
+class StatementAlphaFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Statement::class;
+    protected $model = StatementAlpha::class;
 
     /**
      * Define the model's default state.
@@ -28,7 +28,8 @@ class StatementFactory extends Factory
      */
     public function definition()
     {
-        $id = $this->faker->numberBetween(100000000000, 100000000000 + 100000000000);
+
+        $id = $this->faker->numberBetween(1, 100000000000 - 1);
         $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
         $content_date = $create_date->clone();
         $application_date = $create_date->clone();
@@ -56,35 +57,35 @@ class StatementFactory extends Factory
         $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
         $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
 
-        $decision_ground = $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS));
+        $decision_ground = $this->faker->randomElement(array_keys(StatementAlpha::DECISION_GROUNDS));
 
         return [
 
             'id' => $id,
             'decision_visibility' => $this->faker->randomElements(
-                array_keys(Statement::DECISION_VISIBILITIES),
+                array_keys(StatementAlpha::DECISION_VISIBILITIES),
                 2,
                 false
             ),
             'decision_visibility_other' => $this->faker->text(100),
 
-            'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),
+            'decision_monetary' => $this->faker->randomElement(array_keys(StatementAlpha::DECISION_MONETARIES)),
             'decision_monetary_other' => $this->faker->text(100),
 
-            'decision_provision' => $this->faker->randomElement(array_keys(Statement::DECISION_PROVISIONS)),
-            'decision_account' => $this->faker->randomElement(array_keys(Statement::DECISION_ACCOUNTS)),
-            'account_type' => $this->faker->randomElement(array_keys(Statement::ACCOUNT_TYPES)),
+            'decision_provision' => $this->faker->randomElement(array_keys(StatementAlpha::DECISION_PROVISIONS)),
+            'decision_account' => $this->faker->randomElement(array_keys(StatementAlpha::DECISION_ACCOUNTS)),
+            'account_type' => $this->faker->randomElement(array_keys(StatementAlpha::ACCOUNT_TYPES)),
 
 
             'decision_ground' => $decision_ground,
             'decision_ground_reference_url' => $this->faker->url(),
 
-            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), 2, false),
+            'content_type' => $this->faker->randomElements(array_keys(StatementAlpha::CONTENT_TYPES), 2, false),
             'content_type_other' => $this->faker->text(100),
 
-            'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
-            'category_addition' => $this->faker->randomElements(array_keys(Statement::STATEMENT_CATEGORIES), 2, false),
-            'category_specification' => $this->faker->randomElements(array_keys(Statement::KEYWORDS), 2, false),
+            'category' => $this->faker->randomElement(array_keys(StatementAlpha::STATEMENT_CATEGORIES)),
+            'category_addition' => $this->faker->randomElements(array_keys(StatementAlpha::STATEMENT_CATEGORIES), 2, false),
+            'category_specification' => $this->faker->randomElements(array_keys(StatementAlpha::KEYWORDS), 2, false),
             'category_specification_other' => $this->faker->word(),
 
             'illegal_content_legal_ground' => $decision_ground === 'DECISION_GROUND_ILLEGAL_CONTENT' ? $this->faker->realText(100) : null,
@@ -93,7 +94,7 @@ class StatementFactory extends Factory
             'incompatible_content_ground' => $decision_ground === 'DECISION_GROUND_INCOMPATIBLE_CONTENT' ? $this->faker->realText(100) : null,
             'incompatible_content_explanation' => $decision_ground === 'DECISION_GROUND_INCOMPATIBLE_CONTENT' ? $this->faker->realText(500) : null,
 
-            'incompatible_content_illegal' => $this->faker->randomElement(Statement::INCOMPATIBLE_CONTENT_ILLEGALS),
+            'incompatible_content_illegal' => $this->faker->randomElement(StatementAlpha::INCOMPATIBLE_CONTENT_ILLEGALS),
 
 
             'puid' => $this->faker->uuid,
@@ -115,23 +116,18 @@ class StatementFactory extends Factory
             'end_date_service_restriction' => $end_date_service_restriction,
             'end_date_visibility_restriction' => $end_date_visibility_restriction,
 
-            'source_type' => $this->faker->randomElement(array_keys(Statement::SOURCE_TYPES)),
+            'source_type' => $this->faker->randomElement(array_keys(StatementAlpha::SOURCE_TYPES)),
             'source_identity' => $this->faker->text(100),
 
             'decision_facts' => $this->faker->realText(1000),
 
-            'automated_detection' => $this->faker->randomElement(Statement::AUTOMATED_DETECTIONS),
-            'automated_decision' => $this->faker->randomElement(array_keys(Statement::AUTOMATED_DECISIONS)),
+            'automated_detection' => $this->faker->randomElement(StatementAlpha::AUTOMATED_DETECTIONS),
+            'automated_decision' => $this->faker->randomElement(array_keys(StatementAlpha::AUTOMATED_DECISIONS)),
 
             'platform_id' => $user->platform_id,
             'user_id' => $user->id,
-            'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
-            'created_at' => $create_date,
-
-            // Add content_id with EAN-13 code
-            'content_id_ean' => $this->faker->boolean(30) ?
-                $this->faker->numerify('#############')
-                : null
+            'method' => $this->faker->randomElement([StatementAlpha::METHOD_API, StatementAlpha::METHOD_FORM]),
+            'created_at' => $create_date
 
         ];
     }
