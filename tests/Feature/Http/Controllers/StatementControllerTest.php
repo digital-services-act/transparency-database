@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Statement;
+use App\Models\StatementAlpha;
 use App\Services\StatementSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -119,6 +120,17 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect(route('statement.show', ['statement' => $statement]));
     }
 
+    /**
+     * @test
+     */
+    public function show_throws_404_if_not_found(): void
+    {
+        $this->signInAsAdmin();
+        $statement = Statement::factory()->create();
+        $response = $this->get(route('statement.show', ['statement' => 0]));
+        $response->assertNotFound();
+    }
+
 
     /**
      * @test
@@ -206,6 +218,45 @@ class StatementControllerTest extends TestCase
         $response->assertOk();
         $response->assertViewIs('statement.show');
         $response->assertViewHas('statement');
+    }
+
+    /**
+     * @test
+     */
+    public function show_legacy_displays_view(): void
+    {
+
+        $this->signInAsAdmin();
+
+        $statement = StatementAlpha::factory()->create();
+        $response = $this->get(route('statement.show', $statement));
+
+        $response->assertOk();
+        $response->assertViewIs('statement.show_legacy');
+        $response->assertViewHas('statement');
+    }
+
+    /**
+     * @test
+     */
+    public function show_beta_throws_404_if_not_found(): void
+    {
+        $this->signInAsAdmin();
+
+        $response = $this->get(route('statement.show', ['statement' => 100000000005]));
+        $response->assertNotFound();
+    }
+
+
+    /**
+     * @test
+     */
+    public function show_legacy_throws_404_if_not_found(): void
+    {
+        $this->signInAsAdmin();
+
+        $response = $this->get(route('statement.show', ['statement' => 100000000005]));
+        $response->assertNotFound();
     }
 
 

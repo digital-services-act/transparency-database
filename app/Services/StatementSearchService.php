@@ -101,6 +101,17 @@ class StatementSearchService
         $queryAndParts = [];
         $query = '*';
 
+        $current_env = config('app.env_real', '');
+
+        if ($current_env === 'sandbox') {
+            $filters['created_at_start'] = '01-04-2025';
+        }
+
+        if ($current_env === 'production') {
+            $filters['created_at_start'] = '01-07-2025';
+        }
+
+
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
@@ -114,6 +125,8 @@ class StatementSearchService
                 }
             }
         }
+
+        //dd($queryAndParts);
 
         // handle the date filters as needed.
         $created_at_filter = $this->applyCreatedAtFilter($filters);

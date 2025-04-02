@@ -2,36 +2,36 @@
 @props(['statements' => null])
 
 <style>
-    .statement-row:hover {
-        background-color: #EBEBEB !important;
-        cursor: pointer !important;
-    }
+  .statement-row:hover {
+    background-color: #EBEBEB !important;
+    cursor: pointer !important;
+  }
 </style>
 
 
 <table class="ecl-table ecl-table--zebra">
-    <thead class="ecl-table__head">
+  <thead class="ecl-table__head">
     <tr class="ecl-table__row">
-        <th class="ecl-table__header">Platform</th>
-        <th class="ecl-table__header">Restrictions</th>
-        <th class="ecl-table__header">Category</th>
-        <th class="ecl-table__header">Creation Date</th>
+      <th class="ecl-table__header">Platform</th>
+      <th class="ecl-table__header">Restrictions</th>
+      <th class="ecl-table__header">Category</th>
+      <th class="ecl-table__header">Creation Date</th>
     </tr>
-    </thead>
-    <tbody class="ecl-table__body">
+  </thead>
+  <tbody class="ecl-table__body">
     @foreach($statements as $statement)
 
-        <tr class="ecl-table__row statement-row" data-url="{{ route('statement.show', [$statement]) }}">
-            <td class="ecl-table__cell" data-ecl-table-header="Platform">{{$statement->platform_name}}</td>
-            <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{$statement->restrictions()}}</td>
-            <td class="ecl-table__cell"
-                data-ecl-table-header="Category">{{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
-            <td class="ecl-table__cell"
-                data-ecl-table-header="Creation Date">{{ $statement->created_at->format('Y-m-d') }}</td>
-        </tr>
+    <tr class="ecl-table__row statement-row" data-url="{{ route('statement.show', [$statement]) }}">
+      <td class="ecl-table__cell" data-ecl-table-header="Platform">{{$statement->platform_name}}</td>
+      <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{$statement->restrictions()}}</td>
+      <td class="ecl-table__cell" data-ecl-table-header="Category">
+      {{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
+      <td class="ecl-table__cell" data-ecl-table-header="Creation Date">{{ $statement->created_at->format('Y-m-d') }}
+      </td>
+    </tr>
 
-    @endforeach
-    </tbody>
+  @endforeach
+  </tbody>
 </table>
 
 
