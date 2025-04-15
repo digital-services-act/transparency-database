@@ -51,8 +51,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
-        RateLimiter::for('api', static fn(Request $request) => $request->user() ? Limit::perMinute(100000)->by($request->user()->id) : Limit::perMinute(50)->by($request->ip())
-            ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
+//        RateLimiter::for('api', static fn(Request $request) => $request->user() ? Limit::perMinute(100000)->by($request->user()->id) : Limit::perMinute(50)->by($request->ip())
+//            ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
 
         RateLimiter::for('web', static fn(Request $request) => $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
             ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the application', 429, $headers)));
