@@ -29,6 +29,12 @@
                    href="{{ route('statement.create') }}">Submit statements of reasons</a>
             </div>
         @endcan
+            @can('administrate')
+                <div class="ecl-col ecl-u-flex-item-grow">
+                    <a class="ecl-button ecl-button--primary"
+                       href="{{ route('admin.database-stats') }}">Database Stats</a>
+                </div>
+            @endcan
     </div>
 
     @canany(['create users','create platforms','view logs','view platforms',])

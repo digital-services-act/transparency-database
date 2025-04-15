@@ -39,6 +39,7 @@ Route::middleware(['force.auth'])->group(static function () {
             Route::group(['middleware' => ['can:administrate']], static function () {
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
                 Route::get('database-stats', [DatabaseStatsController::class, 'index'])->name('admin.database-stats');
+                Route::post('database-cleanup', [DatabaseStatsController::class, 'cleanup'])->name('admin.database-cleanup');
             });
             Route::get('onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
             Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');

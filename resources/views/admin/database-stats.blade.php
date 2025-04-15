@@ -4,6 +4,20 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
@@ -87,6 +101,18 @@
                         </div>
                     </div>
 
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h4>Database Cleanup</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Warning:</strong> This will delete all statements where ID > 1 and truncate the platform_puids table.</p>
+                            <form method="POST" action="{{ route('admin.database-cleanup') }}" onsubmit="return confirm('Are you sure you want to clean up the database? This action cannot be undone.');">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">Clean Database</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
