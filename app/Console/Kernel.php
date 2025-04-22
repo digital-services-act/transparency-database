@@ -25,21 +25,21 @@ class Kernel extends ConsoleKernel
     #[\Override]
     protected function schedule(Schedule $schedule): void
     {
-        // The main indexer run daily after midnight. Only on prod
-        if (strtolower((string)config('app.env_real')) === 'production') {
-            // $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
-            // We can do this on the big machine now.
-            // Home page caching
-            $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
-        } else {
-            // Home page caching
-            $schedule->command('enrich-home-page-cache --grandtotal')->everyMinute();
-        }
-
-        $schedule->command('enrich-home-page-cache --automateddecisionspercentage')->dailyAt(self::DAILY_NINE_O_ONE_AM);
-        $schedule->command('enrich-home-page-cache --topcategories')->dailyAt(self::DAILY_NINE_O_TWO_AM);
-        $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_NINE_O_THREE_AM);
-        $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_NINE_O_FOUR_AM);
+//        // The main indexer run daily after midnight. Only on prod
+//        if (strtolower((string)config('app.env_real')) === 'production') {
+//            // $schedule->command('statements:index-date')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+//            // We can do this on the big machine now.
+//            // Home page caching
+//            $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
+//        } else {
+//            // Home page caching
+//            $schedule->command('enrich-home-page-cache --grandtotal')->everyMinute();
+//        }
+//
+//        $schedule->command('enrich-home-page-cache --automateddecisionspercentage')->dailyAt(self::DAILY_NINE_O_ONE_AM);
+//        $schedule->command('enrich-home-page-cache --topcategories')->dailyAt(self::DAILY_NINE_O_TWO_AM);
+//        $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_NINE_O_THREE_AM);
+//        $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_NINE_O_FOUR_AM);
 
 
     }
