@@ -85,10 +85,19 @@ class DatabaseStatsController extends Controller
             // Start a transaction
             DB::beginTransaction();
 
-            // Delete statements where id > 1
-            $deletedCount = DB::table('statements')
-                ->where('id', '>', 1)
-                ->delete();
+            // Get the row with id = 1 (if exists)
+            $row = DB::table('statements')->where('id', 1)->first();
+
+            // Truncate statements table
+            DB::statement('TRUNCATE TABLE statements');
+
+            // Re-insert the row with id = 1 if it existed
+            if ($row) {
+                // Remove the id field if present, so it auto-increments
+                $data = (array) $row;
+                unset($data['id']);
+                DB::table('statements')->insert($data);
+            }
 
             // Truncate platform_puids table
             DB::statement('TRUNCATE TABLE platform_puids');
@@ -96,7 +105,7 @@ class DatabaseStatsController extends Controller
 
             return redirect()
                 ->route('admin.database-stats')
-                ->with('success', "Database cleaned up successfully. Deleted $deletedCount statements and truncated platform_puids table.");
+                ->with('success', "Database cleaned up successfully. Statements table truncated, row with id=1 re-inserted if existed, and platform_puids table truncated.");
 
         } catch (\Exception $e) {
             // If an error occurs, rollback the transaction
