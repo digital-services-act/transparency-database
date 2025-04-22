@@ -34,6 +34,15 @@
                     <a class="ecl-button ecl-button--primary"
                        href="{{ route('admin.database-stats') }}">Database Stats</a>
                 </div>
+
+                <div class="ecl-col ecl-u-flex-item-grow">
+
+                    <form method="POST" action="{{ route('admin.database-cleanup') }}" onsubmit="return confirm('Are you sure you want to clean up the database? This action cannot be undone.');">
+                        @csrf
+                        <button type="submit" class="ecl-button ecl-button--primary">Clean Database</button>
+                    </form>
+                </div>
+
             @endcan
     </div>
 
