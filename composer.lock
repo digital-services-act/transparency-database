@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c35278f2b0384795db134cbfa028336",
+    "content-hash": "6ed51b5fc5ee6792f15f526662914d42",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -659,6 +659,83 @@
                 "source": "https://github.com/cweagans/composer-patches/tree/1.7.3"
             },
             "time": "2022-12-20T22:53:13+00:00"
+        },
+        {
+            "name": "cybercog/laravel-clickhouse",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cybercog/laravel-clickhouse.git",
+                "reference": "2b76b16a849b048d245288086d00411a00e8f3b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cybercog/laravel-clickhouse/zipball/2b76b16a849b048d245288086d00411a00e8f3b6",
+                "reference": "2b76b16a849b048d245288086d00411a00e8f3b6",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.0|^9.0|^10.1.3|^11.0|^12.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.1.3|^11.0|^12.0",
+                "illuminate/filesystem": "^8.0|^9.0|^10.1.3|^11.0|^12.0",
+                "illuminate/support": "^8.0|^9.0|^10.1.3|^11.0|^12.0",
+                "php": "^7.4|^8.0",
+                "smi2/phpclickhouse": "^1.5.3"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.6|^10.5|^11.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Cog\\Laravel\\Clickhouse\\ClickhouseServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Cog\\Laravel\\Clickhouse\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Komarev",
+                    "email": "anton@komarev.com",
+                    "homepage": "https://komarev.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "ClickHouse migrations for Laravel",
+            "homepage": "https://komarev.com/sources/laravel-clickhouse",
+            "keywords": [
+                "clickhouse",
+                "cog",
+                "cybercog",
+                "database",
+                "db",
+                "laravel",
+                "migration"
+            ],
+            "support": {
+                "docs": "https://github.com/cybercog/laravel-clickhouse",
+                "email": "open@cybercog.su",
+                "issues": "https://github.com/cybercog/laravel-clickhouse/issues",
+                "source": "https://github.com/cybercog/laravel-clickhouse",
+                "wiki": "https://github.com/cybercog/laravel-clickhouse/wiki"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/antonkomarev",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-02-22T12:38:13+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -5815,6 +5892,65 @@
                 "source": "https://github.com/Riverline/multipart-parser/tree/2.1.2"
             },
             "time": "2024-03-12T16:46:05+00:00"
+        },
+        {
+            "name": "smi2/phpclickhouse",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smi2/phpClickHouse.git",
+                "reference": "f79dfb798df96185beff90891efda997b01eb51b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smi2/phpClickHouse/zipball/f79dfb798df96185beff90891efda997b01eb51b",
+                "reference": "f79dfb798df96185beff90891efda997b01eb51b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^8.2",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^9.5",
+                "sebastian/comparator": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ClickHouseDB\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Strykhar",
+                    "email": "isublimity@gmail.com",
+                    "homepage": "https://github.com/isublimity"
+                }
+            ],
+            "description": "PHP ClickHouse Client",
+            "homepage": "https://github.com/smi2/phpClickHouse",
+            "keywords": [
+                "clickhouse",
+                "client",
+                "curl",
+                "driver",
+                "http",
+                "http client",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/smi2/phpClickHouse/issues",
+                "source": "https://github.com/smi2/phpClickHouse/tree/1.6.0"
+            },
+            "time": "2025-01-15T07:04:59+00:00"
         },
         {
             "name": "spatie/laravel-honeypot",

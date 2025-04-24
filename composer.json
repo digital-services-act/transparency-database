@@ -12,6 +12,7 @@
         "ext-zip": "*",
         "consoletvs/charts": "6.*",
         "cweagans/composer-patches": "^1.7",
+        "cybercog/laravel-clickhouse": "^0.1.0",
         "ecphp/laravel-cas": "dev-main",
         "erusev/parsedown": "^1.7",
         "guzzlehttp/guzzle": "^7.2",
