@@ -55,12 +55,7 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
-            'sslmode' => 'require',
-            'options'   => array(
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-                PDO::MYSQL_ATTR_SSL_CA => resource_path('certificates/ca.pem'),
-            ),
+            'engine' => null
         ],
 
         'mysqlpreprod' => [
