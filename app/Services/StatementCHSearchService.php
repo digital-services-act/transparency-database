@@ -48,7 +48,6 @@ class StatementCHSearchService
         'decision_provision',
         'decision_visibility_single',
         'platform_id',
-        'received_date',
         'source_type',
     ];
 
@@ -114,6 +113,14 @@ class StatementCHSearchService
         return $this->getCountQueryResult([$this->receivedDateCondition($date)]);
     }
 
+    public function totalForPlatformDate(Platform $platform, Carbon $date): int
+    {
+        return $this->getCountQueryResult([
+            "platform_id = " . $platform->id,
+            $this->receivedDateCondition($date),
+        ]);
+    }
+
     public function methodsByPlatformAll(): array
     {
         return Cache::remember('methods_by_platform_all', self::ONE_HOUR, function () {
@@ -164,6 +171,33 @@ class StatementCHSearchService
             if (in_array($row['category'], $acceptable_categories)) {
                 $results[] = [
                     'value' => $row['category'],
+                    'total' => (int) $row['count'],
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+
+    public function topDecisionVisibilities(): array
+    {
+        return Cache::remember('top_decisions_visibility', self::ONE_DAY, fn() => $this->topDecisionVisibilitiesNoCache());
+    }
+
+    public function topDecisionVisibilitiesNoCache(): array
+    {
+        $query = "SELECT * FROM mv_decision_visibility_counts WHERE visibility_value != '' AND visibility_value IS NOT NULL ORDER BY count DESC";
+        $result = $this->client->select($query);
+        $rows = $result->rows();
+
+        $acceptable_visibilities = array_keys(Statement::DECISION_VISIBILITIES);
+
+        $results = [];
+        foreach ($rows as $row) {
+            if (in_array($row['visibility_value'], $acceptable_visibilities)) {
+                $results[] = [
+                    'value' => $row['visibility_value'],
                     'total' => (int) $row['count'],
                 ];
             }
@@ -355,5 +389,127 @@ class StatementCHSearchService
             $result = $this->client->select($query);
             return (int) $result->rows()[0]['count'];
         });
+    }
+
+    public function platformNames(): array
+    {
+        return Cache::remember('platform_names', self::ONE_HOUR, function () {
+            return $this->platformNamesNoCache();
+        });
+    }
+
+    public function platformNamesNoCache(): array
+    {
+        $query = "SELECT id, name FROM platforms";
+        $result = $this->client->select($query);
+        $rows = $result->rows();
+        return array_column($rows, 'name', 'id');
+    }
+
+    public function aggregatesForDate(Carbon $date): array
+    {
+        $date_condition = $this->receivedDateCondition($date);
+
+        // Build select clause with all allowed aggregate attributes
+        $select_parts = ["toUInt64(COUNT(*)) as total"];
+        $group_by_parts = [];
+
+        foreach ($this->allowed_aggregate_attributes as $attribute) {
+            if (str_ends_with($attribute, '_single')) {
+                // Extract base field name by removing '_single' suffix
+                $base_field = str_replace('_single', '', $attribute);
+                $select_parts[] = "arrayStringConcat({$base_field}, '__') as {$attribute}";
+            } else if ($attribute === 'automated_detection') {
+                // Cast automated_detection to integer value instead of Yes/No string
+                $select_parts[] = "toUInt8(automated_detection) as automated_detection";
+            } else {
+                $select_parts[] = $attribute;
+            }
+            $group_by_parts[] = $attribute;
+        }
+
+        $select_clause = implode(", ", $select_parts);
+        $group_by_clause = implode(", ", $group_by_parts);
+
+        $query = "SELECT {$select_clause}
+            FROM {$this->table}
+            WHERE {$date_condition}
+            GROUP BY {$group_by_clause}";
+
+
+
+        $result = $this->client->select($query);
+        $rows = $result->rows();
+
+        $total = 0;
+        // Process the rows to ensure proper integer casting
+        foreach ($rows as &$row) {
+            $row['total'] = (int) $row['total'];
+
+            // Ensure automated_detection is returned as integer
+            if (isset($row['automated_detection'])) {
+                $row['automated_detection'] = (int) $row['automated_detection'];
+            }
+
+            $row['platform_name'] = $this->platformNames()[$row['platform_id']] ?? 'Unknown';
+
+            $permutation = [];
+            foreach ($this->allowed_aggregate_attributes as $attribute) {
+                if (isset($row[$attribute])) {
+                    $permutation[] = "{$attribute}:{$row[$attribute]}";
+                }
+            }
+            $row['permutation'] = implode(',', $permutation);
+
+            $total += $row['total'];
+        }
+
+        $out = [];
+        $out['total'] = $total;
+        $out['aggregates'] = $rows;
+        $out['date'] = $date->format('Y-m-d');
+        $out['total_aggregates'] = count($rows);
+
+        return $out;
+    }
+
+    public function aggregatesForDateFromView(Carbon $date): array
+    {
+        $query = "SELECT * FROM mv_daily_statement_aggregates WHERE date = '{$date->format('Y-m-d')}'";
+
+        $result = $this->client->select($query);
+        $rows = $result->rows();
+
+        $total = 0;
+        // Process the rows to ensure proper integer casting
+        foreach ($rows as &$row) {
+            $row['total'] = (int) $row['total'];
+
+            // Ensure automated_detection is returned as integer
+            if (isset($row['automated_detection'])) {
+                $row['automated_detection'] = (int) $row['automated_detection'];
+            }
+
+            $row['platform_name'] = $this->platformNames()[$row['platform_id']] ?? 'Unknown';
+
+            $permutation = [];
+            foreach ($this->allowed_aggregate_attributes as $attribute) {
+                if (isset($row[$attribute])) {
+                    $permutation[] = "{$attribute}:{$row[$attribute]}";
+                }
+            }
+            $row['permutation'] = implode(',', $permutation);
+            unset($row['date']);
+
+            $total += $row['total'];
+        }
+
+        $out = [];
+        $out['total'] = $total;
+        $out['total_aggregates'] = count($rows);
+        $out['date'] = $date->format('Y-m-d');
+        $out['aggregates'] = $rows;
+
+        return $out;
     }
 }
