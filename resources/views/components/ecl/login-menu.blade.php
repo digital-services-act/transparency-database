@@ -25,7 +25,7 @@
                 </svg>
                 Logged In
                 <span>&nbsp;</span>
-                <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180"
+                <svg class="hidden-xs ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-site-header__icon"
                      focusable="false" aria-hidden="false">
                     <x-ecl.icon icon="corner-arrow"/>
                 </svg>
