@@ -28,7 +28,7 @@ class StatementCHSearchServiceProvider extends ServiceProvider implements Deferr
         $db->database(config('clickhouse.connection.options.database'));
         $db->setTimeout(config('clickhouse.connection.options.timeout'));       // 30 seconds
         $db->setConnectTimeOut(config('clickhouse.connection.options.connectTimeOut')); // 5 seconds
-        $db->ping(true); // if can`t connect throw exception  
+        //$db->ping(true); // if can`t connect throw exception  
 
         $this->app->singleton(StatementCHSearchService::class, static fn(Application $app) => new StatementCHSearchService($db, app(PlatformQueryService::class)));
     }

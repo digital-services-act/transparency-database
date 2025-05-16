@@ -251,6 +251,7 @@ class StatementCHSearchService
         });
     }
 
+    // Get all VLOP platform IDs
     private function vlopIds(): array
     {
         return Cache::remember('vlop_ids', self::ONE_HOUR, function () {
@@ -260,11 +261,6 @@ class StatementCHSearchService
             if (count($rows) === 0) {
                 return [];
             }
-            // Get the vlop ids from the platforms table
-            // and return them as an array of integers
-            // This is a bit of a hack, but it works.
-            // We could also use the platformQueryService to get the vlop ids
-            // but this is simpler.
             return array_map(function ($row) {
                 return (int) $row['id'];
             }, $rows);
@@ -405,6 +401,12 @@ class StatementCHSearchService
         $rows = $result->rows();
         return array_column($rows, 'name', 'id');
     }
+    // Get the platform name for a given platform ID
+    public function platformName(int $platform_id): string
+    {
+        $platform_names = $this->platformNames();
+        return $platform_names[$platform_id] ?? 'Unknown';
+    }
 
     public function aggregatesForDate(Carbon $date): array
     {
@@ -504,6 +506,7 @@ class StatementCHSearchService
             $total += $row['total'];
         }
 
+        // construct the output, including the date
         $out = [];
         $out['total'] = $total;
         $out['total_aggregates'] = count($rows);
@@ -513,3 +516,4 @@ class StatementCHSearchService
         return $out;
     }
 }
+
