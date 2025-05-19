@@ -143,6 +143,6 @@ class StatementCHAPIController extends Controller
 
         $validated['self'] = route('api.v2.chstatement.show', ['uuid' => $validated['uuid']]);
 
-        return $validated;
+        return response()->json($validated, Response::HTTP_CREATED);
     }
 }
