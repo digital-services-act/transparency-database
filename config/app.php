@@ -158,7 +158,7 @@ return [
     |-------------------------------------------
     | Specify which versions of the api should be enabled in the RSP.
     */
-    'api_versions' => [1],
+    'api_versions' => [1, 2],
 
     /*
     |-------------------------------------------
