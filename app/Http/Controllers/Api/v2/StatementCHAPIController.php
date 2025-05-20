@@ -138,7 +138,7 @@ class StatementCHAPIController extends Controller
         try {
             $this->client->write($sql);
         } catch (Exception $e) {
-            abort(500, 'clickhouse-insert: ' . $e->getMessage());
+            return response()->json(['message' => 'clickhouse-insert: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $validated['self'] = route('api.v2.chstatement.show', ['uuid' => $validated['uuid']]);
