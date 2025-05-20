@@ -82,10 +82,10 @@ class StatementCHAPIController extends Controller
     {
         $validated = $request->validated();
 
-        $existing_statement = $this->existingStatementFromPlatformIdAndPuid($request->user()->platform_id, $validated['puid']);
-        if ($existing_statement) {
-            return response()->json(['message' => 'statement of reason already exists'], Response::HTTP_CONFLICT);
-        }
+        // $existing_statement = $this->existingStatementFromPlatformIdAndPuid($request->user()->platform_id, $validated['puid']);
+        // if ($existing_statement) {
+        //     return response()->json(['message' => 'statement of reason already exists'], Response::HTTP_CONFLICT);
+        // }
 
         $validated['platform_id'] = $request->user()->platform_id;
         $validated['uuid'] = Str::uuid()->toString();
