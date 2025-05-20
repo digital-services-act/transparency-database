@@ -7,12 +7,12 @@
   <div class="ecl-notification__content"><button class="ecl-button ecl-button--tertiary ecl-notification__close ecl-button--icon-only" type="button" data-ecl-notification-close=""><span class="ecl-button__container"><span class="ecl-button__label" data-ecl-label="true">Close</span><svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon="">
         </svg></span></button>
 
-    <div class="ecl-notification__description">Please note that starting from 1 July 2025 a new DSA Transparency Database and API schema will be adopted. This change will align the content of the DSA Transparency Database with the reporting templates mandated by the <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations">Transparency Reporting Implementing Act</a>, enhancing the consistency and comparability across the DSA transparency provisions. Read more about the forthcoming changes in the <a href="/page/migration-to-api-v-two">dedicated documentation page</a>.</div>
+    <div class="ecl-notification__description">Please note that starting from 1 July 2025 the updated DSA Transparency Database and API schema deployed in this test environment will be adapted also in the production environment of the DSA Transparency Database. We encourage you to make use use of this test environment until 30 June 2025 to test the new schema here before the switch in production. The full documentation of the updated schema can be found below. You can also find a full changelog <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/DSA_Transparency_Database_API_v2_changelog.xlsx">here</a>.</div>
 
   </div>
 </div>
 
-# How to use the API
+## How to use the API
 
 Specific users of this database are given the ability to create
 statements of reasons using an API endpoint. This greatly increases
@@ -95,7 +95,7 @@ Example JSON payload body:
         "CONTENT_TYPE_AUDIO",
         "CONTENT_TYPE_SYNTHETIC_MEDIA"
     ],
-    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
+    "category": "STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN",
     "illegal_content_legal_ground": "illegal content legal grounds",
     "illegal_content_explanation": "illegal content explanation",
     "incompatible_content_ground": "incompatible content grounds",
@@ -108,6 +108,9 @@ Example JSON payload body:
     ],
     "content_language": "EN",
     "content_date": "2023-08-08",
+    "content_id": {
+        "EAN-13" : "0123456789123"
+    },
     "application_date": "2023-08-08",
     "decision_facts": "facts about the decision",
     "source_type": "SOURCE_TRUSTED_FLAGGER",
@@ -125,7 +128,10 @@ sent back.
 You will also receive a payload with the statement as created in the database:
 
 ```json
-{
+{    
+    "content_id": {
+        "EAN-13": "0123456789123"
+    },
     "decision_visibility": [
         "DECISION_VISIBILITY_CONTENT_DISABLED"
     ],
@@ -143,7 +149,7 @@ You will also receive a payload with the statement as created in the database:
         "CONTENT_TYPE_SYNTHETIC_MEDIA",
         "CONTENT_TYPE_VIDEO"
     ],
-    "category": "STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT",
+    "category": "STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN",
     "territorial_scope": [
         "DE",
         "ES",
@@ -553,31 +559,207 @@ This is a required attribute, and it tells us which category the statement belon
 The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_ANIMAL_WELFARE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Animal welfare</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_CONSUMER_INFORMATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Consumer information infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_CYBER_VIOLENCE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber violence</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber violence against women</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Data protection and privacy violations</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Illegal or harmful speech</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Intellectual property infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Negative effects on civic discourse or elections</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Type of alleged illegal content not specified by the notifier</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_OTHER_VIOLATION_TC
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Other violation of provider’s terms and conditions</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_PROTECTION_OF_MINORS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Protection of minors</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Risk for public security</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_SCAMS_AND_FRAUD
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Scams and/or fraud</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_SELF_HARM
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Self-harm</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Unsafe, non-compliant or prohibited products</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_VIOLENCE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Violence</li>
+    </ul>
+  </li>
 </ul>
 
 ### Additional Categories (category_addition)
 
 This is an optional attribute, and it tells us which additional categories the statement belongs to.
 
-The value provided must be an array with one or more of the following:
+The value provided must be one of the following:
 
 <ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::STATEMENT_CATEGORIES as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_ANIMAL_WELFARE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Animal welfare</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_CONSUMER_INFORMATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Consumer information infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_CYBER_VIOLENCE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber violence</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber violence against women</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Data protection and privacy violations</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Illegal or harmful speech</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_INTELLECTUAL_PROPERTY_INFRINGEMENTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Intellectual property infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_NEGATIVE_EFFECTS_ON_CIVIC_DISCOURSE_OR_ELECTIONS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Negative effects on civic discourse or elections</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Type of alleged illegal content not specified by the notifier</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_OTHER_VIOLATION_TC
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Other violation of provider’s terms and conditions</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_PROTECTION_OF_MINORS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Protection of minors</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_RISK_FOR_PUBLIC_SECURITY
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Risk for public security</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_SCAMS_AND_FRAUD
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Scams and/or fraud</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_SELF_HARM
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Self-harm</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Unsafe, non-compliant or prohibited products</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    STATEMENT_CATEGORY_VIOLENCE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Violence</li>
+    </ul>
+  </li>
 </ul>
 
 ### Category Specification (category_specification)
@@ -587,15 +769,439 @@ This is an optional attribute, and it tells us which additional keywords the sta
 The value provided must be an array with one or more of the following:
 
 <ul class='ecl-unordered-list'>
-@php
-    foreach (\App\Models\Statement::KEYWORDS as $key => $value) {
-        echo "<li class='ecl-unordered-list__item'>";
-        echo $key;
-        echo "<ul class='ecl-unordered-list'><li class='ecl-unordered-list__item'>" . $value . "</li></ul>";
-        echo "</li>\n";
-    }
-@endphp
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_ANIMAL_HARM
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Animal harm</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_ADULT_SEXUAL_MATERIAL
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Adult sexual material</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_AGE_SPECIFIC_RESTRICTIONS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Age-specific restrictions</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_AGE_SPECIFIC_RESTRICTIONS_MINORS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Age-specific restrictions concerning minors</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_BIOMETRIC_DATA_BREACH
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Biometric data breach</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_BULLYING_AGAINST_GIRLS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber bullying and intimidation against girls</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Child sexual abuse material</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL_DEEPFAKE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Child sexual abuse material containing deepfake or similar technology</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CONTENT_PROMOTING_EATING_DISORDERS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Content promoting eating disorders</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_COORDINATED_HARM
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Coordinated harm</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_COPYRIGHT_INFRINGEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Copyright infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CYBER_BULLYING_INTIMIDATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber bullying and intimidation</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CYBER_HARASSMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber harassment</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CYBER_HARASSMENT_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber harassment against women</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CYBER_INCITEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber incitement to hatred or violence</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CYBER_STALKING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber stalking</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_CYBER_STALKING_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Cyber stalking against women </li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_DATA_FALSIFICATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Data falsification</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_DEFAMATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Defamation</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_DESIGN_INFRINGEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Design infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_DISCRIMINATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Discrimination</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_MISINFORMATION_DISINFORMATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Misinformation, disinformation, foreign information manipulation and interference</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_FEMALE_GENDERED_DISINFORMATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Gendered disinformation</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_GEOGRAPHIC_INDICATIONS_INFRINGEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Geographic indications infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_GEOGRAPHICAL_REQUIREMENTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Geographical requirements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_GOODS_SERVICES_NOT_PERMITTED
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Goods/services not permitted to be offered on the platform</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_GROOMING_SEXUAL_ENTICEMENT_MINORS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Grooming/sexual enticement of minors</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_HATE_SPEECH
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Illegal incitement to violence and hatred based on protected characteristics (hate speech)</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_HIDDEN_ADVERTISEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Hidden advertisement or commercial communication, including by influencers</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_HUMAN_EXPLOITATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Human exploitation</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_HUMAN_TRAFFICKING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Human trafficking</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_ILLEGAL_ORGANIZATIONS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Illegal organizations</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_IMPERSONATION_ACCOUNT_HIJACKING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Impersonation or account hijacking</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_INAUTHENTIC_ACCOUNTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Inauthentic accounts</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_INAUTHENTIC_LISTINGS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Inauthentic listings</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_INAUTHENTIC_USER_REVIEWS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Inauthentic user reviews</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_INCITEMENT_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Illegal incitement to violence and hatred against women</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_INCITEMENT_VIOLENCE_HATRED
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>General calls or incitement to violence and/or hatred</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_INSUFFICIENT_INFORMATION_ON_TRADERS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Insufficient information on traders</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_LANGUAGE_REQUIREMENTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Language requirements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Misleading information about the consumer’s rights</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_MISLEADING_INFO_GOODS_SERVICES
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Misleading information about the characteristics of the goods and services</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_MISSING_PROCESSING_GROUND
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Missing processing ground for data</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_NON_CONSENSUAL_IMAGE_SHARING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Non-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors)</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors)</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Non-consensual sharing of material containing deepfake or similar technology using a third party's features (excluding content depicting minors)</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Non-consensual sharing of material containing deepfake or similar technology using a third party's features against women (excluding content depicting minors)</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_NONCOMPLIANCE_PRICING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Non-compliance with pricing regulations</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_NUDITY
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Nudity</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_PATENT_INFRINGEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Patent infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_PHISHING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Phishing</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_PROHIBITED_PRODUCTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Prohibited or restricted products</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_PYRAMID_SCHEMES
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Pyramid schemes</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_RIGHT_TO_BE_FORGOTTEN
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Right to be forgotten</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_OTHER
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Not captured by any other keyword</li>
+    </ul>
+  </li>
+
+
+
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_RISK_ENVIRONMENTAL_DAMAGE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Risk for environmental damage</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_RISK_PUBLIC_HEALTH
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Risk for public health</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_SELF_MUTILATION
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Self-mutilation</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_STALKING
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Stalking</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_SUICIDE
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Suicide</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_TERRORIST_CONTENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Terrorist content</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_TRADE_SECRET_INFRINGEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Trade secret infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_TRADEMARK_INFRINGEMENT
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Trademark infringements</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_TRAFFICKING_WOMEN_GIRLS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Trafficking in women and girls</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_UNLAWFUL_SALE_ANIMALS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Unlawful sale of animals</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_UNSAFE_CHALLENGES
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Unsafe challenges</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_UNSAFE_PRODUCTS
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Unsafe or non-compliant products</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_VIOLATION_EU_LAW
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Violation of EU law relevant to civic discourse or elections</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_VIOLATION_NATIONAL_LAW
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Violation of national law relevant to civic discourse or elections</li>
+    </ul>
+  </li>
+  <li class='ecl-unordered-list__item'>
+    KEYWORD_OTHER
+    <ul class='ecl-unordered-list'>
+      <li class='ecl-unordered-list__item'>Not captured by any other keyword</li>
+    </ul>
+  </li>
 </ul>
+
+### Content identifier (content_id)
+
+This is an optional attribute, which allows to track existing identifiers of illegal content in key-value format.
+
+The attribute must be provided in key-value format.
+
+Currently, the only foreseen key that will be accepted is “EAN-13”, with which a product identifier in the form of an
+EAN-13 code can be submitted as a value.
 
 ### Other Keyword (category_specification_other)
 
@@ -789,7 +1395,7 @@ Replace ```<PUID>``` with the actual PUID you want to check.
 ```javascript
 {
     "message": "statement of reason not found",
-    "puid": "YOUR_PUID"
+        "puid": "YOUR_PUID"
 }
 ```
 
@@ -800,8 +1406,8 @@ Replace ```<PUID>``` with the actual PUID you want to check.
 
 ```javascript
 {
-    "message": "statement of reason found", 
-    "puid": "YOUR_PUID"
+    "message": "statement of reason found",
+        "puid": "YOUR_PUID"
 }
 ```
 

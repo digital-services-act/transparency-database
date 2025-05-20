@@ -150,7 +150,7 @@ return [
     |-------------------------------------------
     | That is the default API version of your API (Last version).
     */
-    'api_latest'  => '1',
+    'api_latest' => '1',
 
     /*
     |-------------------------------------------
@@ -158,7 +158,7 @@ return [
     |-------------------------------------------
     | Specify which versions of the api should be enabled in the RSP.
     */
-    'api_versions' => [1],
+    'api_versions' => [1, 2],
 
     /*
     |-------------------------------------------
@@ -228,6 +228,7 @@ return [
         App\Providers\LogMessageQueryServiceProvider::class,
         App\Providers\PlatformQueryServiceProvider::class,
         App\Providers\StatementSearchServiceProvider::class,
+        App\Providers\StatementCHSearchServiceProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,
         App\Providers\EuropeanLanguagesServiceProvider::class,
         App\Providers\DayArchiveServiceProvider::class,

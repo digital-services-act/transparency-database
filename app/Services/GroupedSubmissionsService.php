@@ -20,6 +20,7 @@ class GroupedSubmissionsService
     public function sanitizePayloadStatement(&$payload_statement): void
     {
         $this->initAllFields($payload_statement);
+        $this->initContentIdFields($payload_statement);
         $this->handleOtherFieldWithinArray($payload_statement, 'category_specification', 'KEYWORD_OTHER');
         $this->handleOtherFieldWithinArray($payload_statement, 'content_type', 'CONTENT_TYPE_OTHER');
         $this->handleOtherFieldWithinArray($payload_statement, 'decision_visibility', 'DECISION_VISIBILITY_OTHER');
@@ -161,6 +162,18 @@ class GroupedSubmissionsService
         return [$errors, $payload];
     }
 
+    private function initContentIdFields(&$statement): void
+    {
+        if (isset($statement['content_id']['EAN-13'])) {
+            $statement['content_id_ean'] = $statement['content_id']['EAN-13'];
+        } else {
+            $statement['content_id_ean'] = null;
+        }
+
+        unset($statement['content_id']);
+
+    }
+
     private function initArrayFields(&$statement): void
     {
         $array_fields = [
@@ -186,6 +199,7 @@ class GroupedSubmissionsService
             'user_id',
             'platform',
             'platform_id'
+
         ];
 
         foreach ($hidden_fields as $hidden) {
@@ -265,6 +279,7 @@ class GroupedSubmissionsService
             "decision_ground_reference_url",
             "illegal_content_explanation",
             "incompatible_content_illegal"
+
         ];
 
         foreach ($optional_fields as $optional_field) {
@@ -380,6 +395,8 @@ class GroupedSubmissionsService
             'automated_detection' => ['required', $this->rule_in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->rule_in(array_keys(Statement::AUTOMATED_DECISIONS))],
             'puid' => ['required', 'max:500', 'regex:/^[a-zA-Z0-9-_]+$/D'],
+            'content_id' => ['array', 'nullable'],
+            'content_id.EAN-13' => ['string', 'regex:/^[0-9]{13}$/']
         ];
     }
 
@@ -419,6 +436,7 @@ class GroupedSubmissionsService
     ): array {
         $original = $payload_statement;
 
+        $this->initContentIdFields($original);
         $this->initArrayFields($original);
         $this->initOptionalFields($original);
         $this->removeHiddenFields($original);

@@ -85,7 +85,7 @@ class StatementMultipleAPIController extends Controller
             $user_id, $method);
 
         $this->insertAndAddPuidsToCacheAndDatabase($payload);
-        
+
         return response()->json(['statements' => $out], Response::HTTP_CREATED);
 
     }
@@ -103,6 +103,7 @@ class StatementMultipleAPIController extends Controller
         } else {
             // Not production, we index at the moment.
             $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
+
             Statement::insert($payload['statements']);
             $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
 

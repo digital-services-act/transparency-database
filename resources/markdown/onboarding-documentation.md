@@ -1,32 +1,33 @@
 ## Overview
 
+The obligation to submit statements of reasons applies to all providers of online platforms except those that qualify as micro or small enterprises, i.e. enterprises which employ fewer than 50 persons and whose annual turnover and/or annual balance sheet total does not exceed EUR 10 million. The exception for micro and small enterprises does not apply to providers of online platforms that have been designated as a very large online platform.
+
+Statements of reasons need to be submitted for each online platform, i.e. if a provider provides multiple online platforms, each online platform needs to be registered separately in the DSA Transparency Database.
+
 To set up your statements of reasons submission process, you can:
+<div style="margin-left:20px">
+<p class="ecl-u-type-paragraph" style="max-width:none !important;">
+• a) contact the Digital Service Coordinator of your Member State directly in order to commence the onboarding process. The current list of Digital Service Coordinators is available <a href="https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation">here</a>.<br/>
+• b) <a href="https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons">register on EU survey</a> regarding your obligations under Article 24(5) of the Digital Services Act (DSA). After receiving your registration form, the Digital Service Coordinator of your Member State will contact you, providing the details on how to complete the onboarding of your online platform or online platforms.
+</p>
+</div>
 
-a) [register on EU survey](https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons) regarding your obligations under Article 24(5) of the Digital Services Act
-(DSA). After receiving your registration form, the Digital Service Coordinator of your Member State
-will contact you, providing the details on how to complete the onboarding of your online platform
 
-or
 
-b) contact the Digital Service Coordinator of your Member State directly in order to commence the
-onboarding process. The current list of Digital Service Coordinators is available [here](https://digital-strategy.ec.europa.eu/en/policies/dsa-cooperation).
+Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your submissions to the DSA Transparency Database, which you can perform via either the webform or the API, according to your technical capabilities and/or the volume of your statements of reasons submissions.
 
-Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox
-environment to test your submissions to the DSA Transparency Database, which you can perform via
-either the webform or the API, according to your technical capabilities and/or the volume of your
-statements of reasons submissions.
-
-More information on the webform submission is provided in the [webform documentation](/page/webform-documentation).<br/>
+More information on the webform submission is provided in the [webform documentation](/page/webform-documentation).
 More information on the API submission is provided in the [API documentation](/page/api-documentation).
 
-Once the testing phase is completed, you will be able to move to the production environment of the
-DSA Transparency Database, where you can start submitting your statements of reasons.
+Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency Database, where you can start submitting your statements of reasons.
+
+If you provide multiple online platforms, the onboarding process has to be completed for each online platform.
 
 ## Detailed steps
 
 ##### 1. Creation of EU login accounts
 
-You will need two separate EU Login accounts: one will be used in the sandbox environment and the other in the production environment. You can find an introduction to EU Login [here](https://webgate.ec.europa.eu/cas/help.html#:~:text=How%20do%20I%20create%20my%20EU%20Login%20account%3F).
+You will need two separate EU Login accounts per online platform: one will be used in the sandbox environment and the other in the production environment. You can find an introduction to EU Login [here](https://webgate.ec.europa.eu/cas/help.html#:~:text=How%20do%20I%20create%20my%20EU%20Login%20account%3F).
 <div class="ecl-u-type-m ecl-u-type-underline">Please note</div>
 <div style="margin-left:20px">
 <p class="ecl-u-type-paragraph" style="max-width:none !important;">
