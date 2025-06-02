@@ -8,7 +8,7 @@ return [
     'ssl' => [
         'key_location' => env('KAFKA_SSL_KEY_LOCATION', __DIR__ . '/../kafka-service.key'),
         'ca_location' => env('KAFKA_SSL_CA_LOCATION', __DIR__ . '/../kafka-service.cert'),
-        'certificate_location' => env('KAFKA_SSL_CERTIFICATE_LOCATION', __DIR__ . '/../public/certs/kafka-service.cert'),
+        'certificate_location' => env('KAFKA_SSL_CERTIFICATE_LOCATION', __DIR__ . '/../kafka-service.cert'),
         'enable_ssl_certificate_verification' => env('KAFKA_ENABLE_SSL_CERTIFICATE_VERIFICATION', 'false'), // Default to false
     ],
     'group_id' => env('KAFKA_GROUP_ID', 'php-group'), // Default group ID
