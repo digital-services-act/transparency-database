@@ -1,6 +1,6 @@
 #### [Announcement – DB] Update to the submissions by Google Shopping
 
-<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 02/06/2025</p>
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 03/06/2025</p>
 
 Starting from 30 May 2025, statements of reasons submissions to the DSA Transparency Database from Google Shopping no longer include automated notifications to merchants about additional grounds for a restriction they are already subject to.
 
