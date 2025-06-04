@@ -15,6 +15,8 @@ use ClickHouseDB\Quote\FormatLine;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 
@@ -126,39 +128,14 @@ class StatementCHAPIController extends Controller
 
         $validated['self'] = route('api.v2.chstatement.show', ['uuid' => $validated['uuid']]);
 
+        // WRITE THIS TO A OBJECT STORAGE
+        $jsonContent = json_encode($validated);
         try {
-
-            // Send the validated data to Kafka
-            $conf = new \RdKafka\Conf();
-
-            // Set broker list
-            $conf->set('metadata.broker.list', config('rdkafka.brokers'));
-
-            // Set SSL configuration
-            $conf->set('security.protocol', config('rdkafka.security.protocol'));
-            $conf->set('ssl.ca.location', config('rdkafka.ssl.ca_location'));
-            $conf->set('ssl.certificate.location', config('rdkafka.ssl.certificate_location'));
-            $conf->set('ssl.key.location', config('rdkafka.ssl.key_location'));
-            $conf->set('enable.ssl.certificate.verification', config('rdkafka.ssl.enable_ssl_certificate_verification'));
-
-            // Connection settings
-            $conf->set('socket.timeout.ms', '10000');
-            $conf->set('socket.keepalive.enable', 'true');
-
-            $producer = new \RdKafka\Producer($conf);
-            $metadata = $producer->getMetadata(true, null, 10000);
-
-            $message = json_encode($validated, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $topic = $producer->newTopic(config('rdkafka.topic'));
-            $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
-            $producer->poll(0);
-
-            $result = $producer->flush(5000);
-
+            Storage::disk('ovh')->put('incoming/' . $validated['uuid'] . '.json', $jsonContent);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Failed to send message to Kafka: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error('Failed to store statement of reason in OVH storage: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to store statement of reason, please attempt again later.'], Response::HTTP_SERVICE_UNAVAILABLE);
         }
-
 
         return response()->json($validated, Response::HTTP_CREATED);
     }
