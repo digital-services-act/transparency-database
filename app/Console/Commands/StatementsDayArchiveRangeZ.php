@@ -78,7 +78,7 @@ class StatementsDayArchiveRangeZ extends Command
                 $dateString = $current->format('Y-m-d');
 
                 try {
-                    $this->info("\nProcessing archive for: {$dateString}");
+                    $this->info("\nProcessing date: {$dateString}");
 
                     $exitCode = Artisan::call('statements:day-archive-z', [
                         'date' => $dateString
@@ -86,11 +86,11 @@ class StatementsDayArchiveRangeZ extends Command
 
                     if ($exitCode === 0) {
                         $processed++;
-                        $this->info("✓ Archive completed for {$dateString}");
+                        $this->info("✓ Archiving added to queue for {$dateString}");
                     } else {
                         $failed++;
-                        $this->error("✗ Archive failed for {$dateString} (exit code: {$exitCode})");
-                        Log::error("Archive failed for date: {$dateString}", [
+                        $this->error("✗ Archiving failed for {$dateString} (exit code: {$exitCode})");
+                        Log::error("Archiving failed for date: {$dateString}", [
                             'command' => 'statements:day-archive-range',
                             'exit_code' => $exitCode
                         ]);
