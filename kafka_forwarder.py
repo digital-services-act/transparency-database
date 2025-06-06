@@ -50,6 +50,12 @@ def create_producer():
     global producer
     
     try:
+        # Create a context with certificate verification disabled
+        import ssl
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        
         new_producer = KafkaProducer(
             bootstrap_servers=KAFKA_BROKERS,
             security_protocol="SSL",
@@ -57,6 +63,7 @@ def create_producer():
             ssl_keyfile=KEY_PATH,
             # Disable SSL certificate verification
             ssl_check_hostname=False,
+            ssl_context=ssl_context,  # Use our custom SSL context that disables verification
             # Add retry configuration
             retries=5,
             retry_backoff_ms=500
