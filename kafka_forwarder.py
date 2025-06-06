@@ -50,39 +50,70 @@ def create_producer():
     global producer
     
     try:
-        import ssl
+        # First, check that certificate files exist
+        logger.info(f"Using certificate file: {CERT_PATH}")
+        logger.info(f"Using key file: {KEY_PATH}")
         
-        # Create an SSL context that doesn't verify certificates
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
+        if not os.path.exists(CERT_PATH):
+            logger.error(f"Certificate file not found: {CERT_PATH}")
+            return None
+            
+        if not os.path.exists(KEY_PATH):
+            logger.error(f"Key file not found: {KEY_PATH}")
+            return None
         
-        # SSL configuration options
+        # SSL configuration options - simpler approach without custom context
         ssl_config = {
             'security_protocol': 'SSL',
             'ssl_certfile': CERT_PATH,
             'ssl_keyfile': KEY_PATH,
+            # For connecting to servers with self-signed certs
             'ssl_check_hostname': False,
-            'ssl_context': context,
-            # Add equivalent of enable.ssl.certificate.verification=false
-            'ssl_cafile': None
         }
+        
+        # Try to configure additional SSL parameters if needed
+        try:
+            import ssl
+            # Log the available SSL protocols for debugging
+            logger.info(f"Available SSL protocols: {ssl.OPENSSL_VERSION}")
+            
+            # Some Kafka servers require specific SSL protocol versions
+            # Try to use the highest protocol version available
+            if hasattr(ssl, 'PROTOCOL_TLS'):
+                ssl_config['ssl_context'] = ssl.create_default_context()
+                ssl_config['ssl_context'].check_hostname = False
+                ssl_config['ssl_context'].verify_mode = ssl.CERT_NONE
+                logger.info("Using PROTOCOL_TLS")
+        except Exception as ssl_ex:
+            logger.warning(f"Failed to configure custom SSL context: {str(ssl_ex)}")
+        
+        logger.info(f"Connecting to Kafka brokers: {KAFKA_BROKERS}")
         
         new_producer = KafkaProducer(
             bootstrap_servers=KAFKA_BROKERS,
+            # Retry configuration
             retries=5,
             retry_backoff_ms=500,
-            # Increase timeout to allow for slow SSL handshakes
+            # Longer timeouts for SSL handshake
             request_timeout_ms=30000,
-            # Add version to avoid protocol negotiation issues
-            api_version=(0, 10, 0),
+            connections_max_idle_ms=60000,
+            # Force API version to avoid negotiation errors
+            api_version=(0, 10, 2),
             **ssl_config
         )
+        
+        # Test connection by getting metadata
+        new_producer.list_topics(timeout_ms=10000)
+        
         logger.info(f"Successfully connected to Kafka brokers: {KAFKA_BROKERS}")
         logger.info(f"Using Kafka topic: {KAFKA_TOPIC}")
         return new_producer
     except Exception as e:
-        logger.error(f"Failed to connect to Kafka: {str(e)} ({type(e).__name__})")
+        logger.error(f"Failed to connect to Kafka: {str(e)}")
+        logger.error(f"Exception type: {type(e).__name__}")
+        # Print full traceback for debugging
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return None
 
 def ensure_producer():
