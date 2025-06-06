@@ -55,6 +55,8 @@ def create_producer():
             security_protocol="SSL",
             ssl_certfile=CERT_PATH,
             ssl_keyfile=KEY_PATH,
+            # Disable SSL certificate verification
+            ssl_check_hostname=False,
             # Add retry configuration
             retries=5,
             retry_backoff_ms=500
