@@ -129,7 +129,9 @@ class StatementCHAPIController extends Controller
 
         // Send to Kafka forwarder
         try {
-            $kafkaResponse = Http::timeout(5)->post('http://localhost:6666/send', $jsonContent);
+            $kafkaResponse = Http::timeout(5)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post('http://127.0.0.1:6666/send', $jsonContent);
             if (!$kafkaResponse->successful()) {
                 Log::error('Failed to forward message to Kafka: ' . $kafkaResponse->body());
                 // return with error response

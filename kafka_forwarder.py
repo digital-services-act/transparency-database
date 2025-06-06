@@ -43,12 +43,12 @@ app = Flask(__name__)
 
 # Create a thread lock to synchronize access to the Kafka producer
 producer_lock = threading.Lock()
+
+# Initialize the producer variable globally before use
 producer = None
 
 def create_producer():
     """Create and return a Kafka producer"""
-    global producer
-    
     try:
         # First, check that certificate files exist
         logger.info(f"Using certificate file: {CERT_PATH}")
@@ -62,30 +62,33 @@ def create_producer():
             logger.error(f"Key file not found: {KEY_PATH}")
             return None
         
-        # SSL configuration options - simpler approach without custom context
+        import ssl
+        
+        # Create an SSL context using the recommended protocol
+        try:
+            # For newer Python versions
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        except AttributeError:
+            # Fall back for older Python versions
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+            logger.warning("Using deprecated ssl.PROTOCOL_TLS - consider upgrading Python")
+            
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        
+        # Load cert and key into the context
+        try:
+            context.load_cert_chain(certfile=CERT_PATH, keyfile=KEY_PATH)
+            logger.info("Successfully loaded certificate and key into SSL context")
+        except Exception as cert_ex:
+            logger.error(f"Failed to load certificate and key: {str(cert_ex)}")
+            return None
+            
+        # SSL configuration options using our custom context
         ssl_config = {
             'security_protocol': 'SSL',
-            'ssl_certfile': CERT_PATH,
-            'ssl_keyfile': KEY_PATH,
-            # For connecting to servers with self-signed certs
-            'ssl_check_hostname': False,
+            'ssl_context': context
         }
-        
-        # Try to configure additional SSL parameters if needed
-        try:
-            import ssl
-            # Log the available SSL protocols for debugging
-            logger.info(f"Available SSL protocols: {ssl.OPENSSL_VERSION}")
-            
-            # Some Kafka servers require specific SSL protocol versions
-            # Try to use the highest protocol version available
-            if hasattr(ssl, 'PROTOCOL_TLS'):
-                ssl_config['ssl_context'] = ssl.create_default_context()
-                ssl_config['ssl_context'].check_hostname = False
-                ssl_config['ssl_context'].verify_mode = ssl.CERT_NONE
-                logger.info("Using PROTOCOL_TLS")
-        except Exception as ssl_ex:
-            logger.warning(f"Failed to configure custom SSL context: {str(ssl_ex)}")
         
         logger.info(f"Connecting to Kafka brokers: {KAFKA_BROKERS}")
         
@@ -97,13 +100,9 @@ def create_producer():
             # Longer timeouts for SSL handshake
             request_timeout_ms=30000,
             connections_max_idle_ms=60000,
-            # Force API version to avoid negotiation errors
-            api_version=(0, 10, 2),
+            # SSL configuration using our custom context
             **ssl_config
         )
-        
-        # Test connection by getting metadata
-        new_producer.list_topics(timeout_ms=10000)
         
         logger.info(f"Successfully connected to Kafka brokers: {KAFKA_BROKERS}")
         logger.info(f"Using Kafka topic: {KAFKA_TOPIC}")
@@ -130,6 +129,7 @@ ensure_producer()
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
+    global producer
     health_status = {
         'status': 'healthy' if ensure_producer() else 'unhealthy',
         'kafka_connected': producer is not None,
@@ -143,7 +143,7 @@ def health_check():
 @app.route('/send', methods=['POST'])
 def send_to_kafka():
     """Handle POST requests and forward raw payload to Kafka"""
-    global message_count, error_count
+    global producer, message_count, error_count
     
     try:
         # Get raw data from the request
@@ -153,28 +153,38 @@ def send_to_kafka():
             error_count += 1
             return jsonify({'status': 'error', 'message': 'Empty request body'}), 400
         
+        # Use a copy of the producer to avoid race conditions
+        current_producer = None
+        
         # Acquire lock to safely use the producer
         with producer_lock:
             if not ensure_producer():
                 error_count += 1
                 return jsonify({'status': 'error', 'message': 'Kafka producer not available'}), 500
             
-            # Send the raw message to Kafka
-            future = producer.send(KAFKA_TOPIC, value=raw_data)
+            # Make a reference to the current producer
+            current_producer = producer
+        
+        if current_producer is None:
+            error_count += 1
+            return jsonify({'status': 'error', 'message': 'Kafka producer not available after lock'}), 500
             
-            # Wait for the message to be sent
-            record_metadata = future.get(timeout=KAFKA_TIMEOUT)
-            
-            message_count += 1
-            logger.info(f"Message sent to Kafka: topic={KAFKA_TOPIC}, partition={record_metadata.partition}, offset={record_metadata.offset}")
-            
-            # Return success response
-            return jsonify({
-                'status': 'success',
-                'topic': KAFKA_TOPIC,
-                'partition': record_metadata.partition,
-                'offset': record_metadata.offset
-            }), 200
+        # Send the raw message to Kafka
+        future = current_producer.send(KAFKA_TOPIC, value=raw_data)
+        
+        # Wait for the message to be sent
+        record_metadata = future.get(timeout=KAFKA_TIMEOUT)
+        
+        message_count += 1
+        logger.info(f"Message sent to Kafka: topic={KAFKA_TOPIC}, partition={record_metadata.partition}, offset={record_metadata.offset}")
+        
+        # Return success response
+        return jsonify({
+            'status': 'success',
+            'topic': KAFKA_TOPIC,
+            'partition': record_metadata.partition,
+            'offset': record_metadata.offset
+        }), 200
     
     except KafkaError as ke:
         error_count += 1
@@ -199,24 +209,32 @@ def send_to_kafka():
 
 # Watchdog thread to ensure Kafka connection stays alive
 def connection_watchdog():
+    global producer
     while True:
-        time.sleep(60)  # Check every 60 seconds
-        with producer_lock:
-            ensure_producer()
+        try:
+            time.sleep(60)  # Check every 60 seconds
+            with producer_lock:
+                ensure_producer()
+        except Exception as e:
+            logger.error(f"Error in watchdog: {str(e)}")
 
 # Graceful shutdown to close Kafka connection
 def shutdown_producer():
     """Close the Kafka producer connection properly"""
     global producer
-    if producer is not None:
-        logger.info("Closing Kafka producer connection...")
-        try:
-            producer.flush()
-            producer.close()
-        except Exception as e:
-            logger.error(f"Error closing Kafka producer: {str(e)}")
-        logger.info("Kafka producer connection closed.")
-        producer = None
+    try:
+        with producer_lock:
+            if producer is not None:
+                logger.info("Closing Kafka producer connection...")
+                try:
+                    producer.flush()
+                    producer.close()
+                except Exception as e:
+                    logger.error(f"Error closing Kafka producer: {str(e)}")
+                logger.info("Kafka producer connection closed.")
+                producer = None
+    except Exception as e:
+        logger.error(f"Error during shutdown: {str(e)}")
 
 if __name__ == "__main__":
     # Start watchdog thread
@@ -225,6 +243,7 @@ if __name__ == "__main__":
     
     try:
         logger.info(f"Starting Kafka forwarder server on port {PORT}...")
-        app.run(host='0.0.0.0', port=PORT, threaded=True)
+        # Listen only on localhost
+        app.run(host='127.0.0.1', port=PORT, threaded=True)
     finally:
         shutdown_producer()
