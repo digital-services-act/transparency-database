@@ -50,27 +50,39 @@ def create_producer():
     global producer
     
     try:
+        import ssl
+        
+        # Create an SSL context that doesn't verify certificates
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        
         # SSL configuration options
         ssl_config = {
             'security_protocol': 'SSL',
             'ssl_certfile': CERT_PATH,
             'ssl_keyfile': KEY_PATH,
-            # Explicitly disable certificate verification
             'ssl_check_hostname': False,
-            'ssl_cafile': None  # Don't use a CA file for verification
+            'ssl_context': context,
+            # Add equivalent of enable.ssl.certificate.verification=false
+            'ssl_cafile': None
         }
         
         new_producer = KafkaProducer(
             bootstrap_servers=KAFKA_BROKERS,
             retries=5,
             retry_backoff_ms=500,
+            # Increase timeout to allow for slow SSL handshakes
+            request_timeout_ms=30000,
+            # Add version to avoid protocol negotiation issues
+            api_version=(0, 10, 0),
             **ssl_config
         )
         logger.info(f"Successfully connected to Kafka brokers: {KAFKA_BROKERS}")
         logger.info(f"Using Kafka topic: {KAFKA_TOPIC}")
         return new_producer
     except Exception as e:
-        logger.error(f"Failed to connect to Kafka: {str(e)}")
+        logger.error(f"Failed to connect to Kafka: {str(e)} ({type(e).__name__})")
         return None
 
 def ensure_producer():
@@ -183,7 +195,5 @@ if __name__ == "__main__":
     try:
         logger.info(f"Starting Kafka forwarder server on port {PORT}...")
         app.run(host='0.0.0.0', port=PORT, threaded=True)
-    finally:
-        shutdown_producer()
     finally:
         shutdown_producer()
