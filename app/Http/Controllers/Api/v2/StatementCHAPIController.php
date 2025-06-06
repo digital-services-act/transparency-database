@@ -18,16 +18,13 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
-
+use Illuminate\Support\Facades\Http;
 
 class StatementCHAPIController extends Controller
 {
     use Sanitizer;
     use ExceptionHandlingTrait;
     use StatementAPITrait;
-
-
 
     public function __construct(
         protected Client $client,
@@ -128,15 +125,23 @@ class StatementCHAPIController extends Controller
 
         $validated['self'] = route('api.v2.chstatement.show', ['uuid' => $validated['uuid']]);
 
-        // WRITE THIS TO A OBJECT STORAGE
         $jsonContent = json_encode($validated);
+
+        // Send to Kafka forwarder
         try {
-            Storage::disk('ovh')->put('incoming/' . $validated['uuid'] . '.json', $jsonContent);
+            $kafkaResponse = Http::timeout(5)->post('http://localhost:6666/send', $jsonContent);
+            if (!$kafkaResponse->successful()) {
+                Log::error('Failed to forward message to Kafka: ' . $kafkaResponse->body());
+                // return with error response
+                return response()->json(['message' => 'Statement not saved try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         } catch (Exception $e) {
-            Log::error('Failed to store statement of reason in OVH storage: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to store statement of reason, please attempt again later.'], Response::HTTP_SERVICE_UNAVAILABLE);
+            Log::error('Exception when forwarding to Kafka: ' . $e->getMessage());
+            // return with error response
+            return response()->json(['message' => 'Statement not saved try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        // Everything was ok, it's now in the kafka queue and will be in the clickhouse very soon.
         return response()->json($validated, Response::HTTP_CREATED);
     }
 }
