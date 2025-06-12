@@ -4,6 +4,7 @@ import os
 import logging
 import threading
 import time
+import atexit
 from logging.handlers import RotatingFileHandler
 from flask import Flask, request, jsonify
 from kafka import KafkaProducer
@@ -46,6 +47,7 @@ producer_lock = threading.Lock()
 
 # Initialize the producer variable globally before use
 producer = None
+watchdog_thread = None
 
 def create_producer():
     """Create and return a Kafka producer"""
@@ -236,13 +238,32 @@ def shutdown_producer():
     except Exception as e:
         logger.error(f"Error during shutdown: {str(e)}")
 
+# Register shutdown function to ensure clean shutdown with WSGI servers
+atexit.register(shutdown_producer)
+
+def init_app():
+    """Initialize the application - to be called from WSGI entry point"""
+    global watchdog_thread
+    
+    # Start watchdog thread if it's not already running
+    if watchdog_thread is None or not watchdog_thread.is_alive():
+        watchdog_thread = threading.Thread(target=connection_watchdog, daemon=True)
+        watchdog_thread.start()
+    
+    # Ensure we have a producer
+    with producer_lock:
+        ensure_producer()
+    
+    logger.info("Kafka forwarder application initialized")
+    return app
+
 if __name__ == "__main__":
-    # Start watchdog thread
-    watchdog_thread = threading.Thread(target=connection_watchdog, daemon=True)
-    watchdog_thread.start()
+    # Initialize app
+    init_app()
     
     try:
-        logger.info(f"Starting Kafka forwarder server on port {PORT}...")
+        logger.info(f"Starting Kafka forwarder development server on port {PORT}...")
+        logger.warning("This is a development server. Do not use it in production.")
         # Listen only on localhost
         app.run(host='127.0.0.1', port=PORT, threaded=True)
     finally:

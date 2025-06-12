@@ -1,0 +1,5 @@
+# Existing requirements would be here
+flask
+kafka-python
+python-dotenv
+gunicorn>=20.1.0

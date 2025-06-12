@@ -1,204 +1,248 @@
-# Kafka Forwarder Installation Guide
+# Kafka Forwarder Service
 
-This document describes how to install and run the Kafka Forwarder as a systemd daemon on Ubuntu.
+The Kafka Forwarder is a lightweight HTTP service that accepts incoming HTTP requests and forwards them to a Kafka topic. It's designed to be reliable, secure, and production-ready.
 
-## Overview
+## Setup Instructions for Ubuntu Server
 
-The Kafka Forwarder is a Python service that receives HTTP POST requests and forwards them to Kafka. It acts as a bridge between Laravel PHP applications and Kafka, maintaining a persistent connection to reduce overhead.
+This guide explains how to set up the Kafka Forwarder service on an Ubuntu server using Gunicorn WSGI server for production deployment.
 
-## Prerequisites
+### Prerequisites
 
-- Ubuntu 18.04 or later
-- Python 3.8 or later
-- pip (Python package manager)
-- Access to Kafka broker(s)
-- SSL certificates for Kafka (kafka-service.cert and kafka-service.key)
+- Ubuntu Server (18.04 LTS or newer)
+- Python 3.6+ 
+- Kafka broker(s) accessible from the server
 
-## Local Development and Testing
+### Installation Steps
 
-For local development or testing, you can run the service directly:
+1. **Update your system**
+
+   ```bash
+   sudo apt update
+   sudo apt upgrade -y
+   ```
+
+2. **Install required system packages**
+
+   ```bash
+   sudo apt install -y python3 python3-pip python3-dev python3-venv
+   ```
+
+3. **Create a dedicated user for the service (optional but recommended)**
+
+   ```bash
+   sudo useradd -m -s /bin/bash kafka_forwarder
+   sudo su kafka_forwarder
+   cd /home/kafka_forwarder
+   ```
+
+4. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/your-repo/transparency-database.git
+   cd transparency-database
+   ```
+
+5. **Create and activate a virtual environment**
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+6. **Install required Python packages**
+
+   ```bash
+   pip install -U pip
+   pip install flask kafka-python python-dotenv gunicorn
+   ```
+   
+   Or if you have a requirements.txt file:
+   
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+7. **Configure the environment**
+
+   Create a `.env` file:
+
+   ```bash
+   touch .env
+   ```
+
+   Add the following configurations to the `.env` file (modify as needed):
+
+   ```
+   KAFKA_FORWARDER_PORT=6666
+   KAFKA_BROKERS=kafka1.example.com:9092,kafka2.example.com:9092
+   KAFKA_TOPIC=transparency_statements
+   KAFKA_CERT_PATH=/path/to/kafka-service.cert
+   KAFKA_KEY_PATH=/path/to/kafka-service.key
+   KAFKA_TIMEOUT=10
+   GUNICORN_WORKERS=4
+   ```
+
+8. **Set up Kafka SSL certificates**
+
+   Place your Kafka certificates in the appropriate location:
+   
+   ```bash
+   mkdir -p certs
+   # Copy your certificate files to this directory
+   # cp /path/to/source/kafka-service.cert certs/
+   # cp /path/to/source/kafka-service.key certs/
+   ```
+
+9. **Create necessary directories**
+
+   ```bash
+   mkdir -p storage/logs
+   ```
+
+10. **Make the startup script executable**
+
+    ```bash
+    chmod +x start_server.sh
+    ```
+
+### Setting Up as a Systemd Service
+
+1. **Create a systemd service file**
+
+   ```bash
+   sudo nano /etc/systemd/system/kafka-forwarder.service
+   ```
+
+   Add the following content:
+
+   ```ini
+   [Unit]
+   Description=Kafka Forwarder Service
+   After=network.target
+
+   [Service]
+   User=kafka_forwarder
+   Group=kafka_forwarder
+   WorkingDirectory=/home/kafka_forwarder/transparency-database
+   ExecStart=/home/kafka_forwarder/transparency-database/venv/bin/gunicorn --bind 127.0.0.1:6666 --workers 4 wsgi:app
+   Restart=always
+   RestartSec=10
+
+   # Optional: Configure resource limits
+   # LimitNOFILE=65535
+
+   Environment="PATH=/home/kafka_forwarder/transparency-database/venv/bin"
+   EnvironmentFile=/home/kafka_forwarder/transparency-database/.env
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+2. **Enable and start the service**
+
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable kafka-forwarder
+   sudo systemctl start kafka-forwarder
+   ```
+
+3. **Check service status**
+
+   ```bash
+   sudo systemctl status kafka-forwarder
+   ```
+
+### Setting Up Nginx as a Reverse Proxy (Optional)
+
+1. **Install Nginx**
+
+   ```bash
+   sudo apt install -y nginx
+   ```
+
+2. **Create a new site configuration**
+
+   ```bash
+   sudo nano /etc/nginx/sites-available/kafka-forwarder
+   ```
+
+   Add the following configuration:
+
+   ```nginx
+   server {
+       listen 80;
+       server_name yourserver.example.com;
+
+       access_log /var/log/nginx/kafka-forwarder-access.log;
+       error_log /var/log/nginx/kafka-forwarder-error.log;
+
+       location / {
+           proxy_pass http://127.0.0.1:6666;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       }
+   }
+   ```
+
+3. **Enable the site**
+
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/kafka-forwarder /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl restart nginx
+   ```
+
+4. **Set up SSL with Certbot (recommended)**
+
+   ```bash
+   sudo apt install -y certbot python3-certbot-nginx
+   sudo certbot --nginx -d yourserver.example.com
+   ```
+
+## Managing the Service
+
+### Checking logs
 
 ```bash
-# Install required packages
-pip install flask kafka-python python-dotenv
-
-# Create a .env file in the same directory as the script
-# with your Kafka configuration:
-#   KAFKA_BROKERS=your-broker:9092
-#   KAFKA_TOPIC=your-topic
-#   KAFKA_CERT_PATH=/path/to/kafka-service.cert
-#   KAFKA_KEY_PATH=/path/to/kafka-service.key
-
-# Run the script
-python kafka_forwarder.py
-```
-
-This will start the service on port 6666 (default) and connect to your Kafka server. All logs will be printed to the console and also saved in the `logs` directory.
-
-## Installation Steps
-
-### 1. Install Required Packages
-
-```bash
-sudo apt update
-sudo apt install -y python3 python3-pip python3-venv
-```
-
-### 2. Create a Service User
-
-```bash
-sudo useradd -r -s /bin/false kafka_forwarder
-```
-
-### 3. Create Directory Structure
-
-```bash
-sudo mkdir -p /opt/kafka_forwarder
-sudo mkdir -p /opt/kafka_forwarder/logs
-sudo mkdir -p /etc/kafka_forwarder
-```
-
-### 4. Set Up Virtual Environment
-
-```bash
-cd /opt/kafka_forwarder
-sudo python3 -m venv venv
-sudo /opt/kafka_forwarder/venv/bin/pip install flask kafka-python python-dotenv
-```
-
-### 5. Copy the Application Files
-
-Copy the `kafka_forwarder.py` script to the application directory:
-
-```bash
-sudo cp /path/to/your/kafka_forwarder.py /opt/kafka_forwarder/
-```
-
-### 6. Set Up SSL Certificates
-
-Copy your Kafka SSL certificates to the configuration directory:
-
-```bash
-sudo cp /path/to/your/kafka-service.cert /etc/kafka_forwarder/
-sudo cp /path/to/your/kafka-service.key /etc/kafka_forwarder/
-```
-
-### 7. Create Environment Configuration
-
-Create a `.env` file with your configuration:
-
-```bash
-sudo nano /opt/kafka_forwarder/.env
-```
-
-Add the following content (adjust as needed):
-
-```
-FORWARDER_PORT=6666
-KAFKA_BROKERS=kafka-broker1:9092,kafka-broker2:9092
-KAFKA_TOPIC=your_topic_name
-KAFKA_CERT_PATH=/etc/kafka_forwarder/kafka-service.cert
-KAFKA_KEY_PATH=/etc/kafka_forwarder/kafka-service.key
-KAFKA_TIMEOUT=10
-```
-
-### 8. Set Permissions
-
-```bash
-sudo chown -R kafka_forwarder:kafka_forwarder /opt/kafka_forwarder
-sudo chown -R kafka_forwarder:kafka_forwarder /etc/kafka_forwarder
-sudo chmod 600 /etc/kafka_forwarder/kafka-service.*
-```
-
-## Setting Up the Systemd Service
-
-### 1. Create a Systemd Service File
-
-```bash
-sudo nano /etc/systemd/system/kafka-forwarder.service
-```
-
-Add the following content:
-
-```ini
-[Unit]
-Description=Kafka Forwarder Service
-After=network.target
-
-[Service]
-User=kafka_forwarder
-Group=kafka_forwarder
-WorkingDirectory=/opt/kafka_forwarder
-ExecStart=/opt/kafka_forwarder/venv/bin/python /opt/kafka_forwarder/kafka_forwarder.py
-Restart=always
-RestartSec=5
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=kafka-forwarder
-Environment=PYTHONUNBUFFERED=1
-
-[Install]
-WantedBy=multi-user.target
-```
-
-### 2. Enable and Start the Service
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable kafka-forwarder
-sudo systemctl start kafka-forwarder
-```
-
-### 3. Check Service Status
-
-```bash
-sudo systemctl status kafka-forwarder
-```
-
-## Monitoring and Troubleshooting
-
-### View Logs
-
-View systemd service logs:
-
-```bash
+# Application logs
+tail -f /home/kafka_forwarder/transparency-database/storage/logs/kafka_forwarder.log
+# Gunicorn logs
+tail -f /home/kafka_forwarder/transparency-database/storage/logs/gunicorn-*.log
+# Systemd service logs
 sudo journalctl -u kafka-forwarder -f
 ```
 
-View application logs:
+### Starting and stopping the service
 
 ```bash
-sudo tail -f /opt/kafka_forwarder/logs/kafka_forwarder.log
+sudo systemctl start kafka-forwarder
+sudo systemctl stop kafka-forwarder
+sudo systemctl restart kafka-forwarder
 ```
 
-### Health Check
-
-The service provides a health endpoint. You can check its status with:
+### Checking service health
 
 ```bash
 curl http://localhost:6666/health
 ```
 
-### Restarting the Service
+## How It Works
 
-After configuration changes:
+This service has been converted from a Flask development server to a production-ready deployment using Gunicorn WSGI server. The key components include:
 
-```bash
-sudo systemctl restart kafka-forwarder
-```
+1. **wsgi.py**: The WSGI entry point for the application
+2. **kafka_forwarder.py**: The main application code
+3. **start_server.sh**: A helper script to start the Gunicorn server
+4. **Systemd service**: For automatic startup and management
 
-## Security Considerations
+The WSGI server (Gunicorn) offers several advantages over the Flask development server:
+- Improved performance and concurrency with multiple worker processes
+- Better resource usage and stability
+- Proper handling of signals and graceful shutdowns
+- Production-grade error handling and logging
 
-- Consider adding firewall rules to restrict access to port 6666
-- Ensure SSL certificates have appropriate permissions
-- Consider implementing authentication for the HTTP endpoint if needed
+## API Endpoints
 
-## Performance Tuning
-
-For high-volume environments, you may want to:
-
-1. Increase the number of worker threads in the Flask configuration
-2. Monitor memory usage and adjust resource limits as needed
-3. Consider using a production WSGI server like Gunicorn
-
-For extremely high throughput, consider replacing Flask with a more performant async framework like FastAPI
+- `POST /send` - Send a message to Kafka
+- `GET /health` - Health check endpoint
