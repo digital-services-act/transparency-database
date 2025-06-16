@@ -115,27 +115,37 @@ This guide explains how to set up the Kafka Forwarder service on an Ubuntu serve
 
    Add the following content:
 
-   ```ini
+   ```ini 
+   #!/bin/bash
+   set -e
+   
+   SERVICE_NAME="kafka_forwarder"
+   USER_NAME="forge"
+   WORKING_DIR="/home/$USER_NAME/m2-load.cnect.eu"
+   PYTHON_EXEC="$WORKING_DIR/venv/bin/gunicorn"
+   SCRIPT_ENTRY="wsgi:app"
+   SCRIPT_NAME="kafka_forwarder.py"
+   SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
+   ENV_FILE="$WORKING_DIR/.env"
+
+
+   cat > "$SERVICE_FILE" <<EOF
    [Unit]
-   Description=Kafka Forwarder Service
+   Description=Kafka Forwarder Python Service
    After=network.target
 
    [Service]
-   User=kafka_forwarder
-   Group=kafka_forwarder
-   WorkingDirectory=/home/kafka_forwarder/transparency-database
-   ExecStart=/home/kafka_forwarder/transparency-database/venv/bin/gunicorn --bind 127.0.0.1:6666 --workers 4 wsgi:app
-   Restart=always
-   RestartSec=10
-
-   # Optional: Configure resource limits
-   # LimitNOFILE=65535
-
-   Environment="PATH=/home/kafka_forwarder/transparency-database/venv/bin"
-   EnvironmentFile=/home/kafka_forwarder/transparency-database/.env
+   Type=simple
+   User=$USER_NAME
+   WorkingDirectory=$WORKING_DIR
+   ExecStart=$PYTHON_EXEC --bind 127.0.0.1:6666 --workers 4 $SCRIPT_ENTRY
+   Restart=on-failure
+   Environment="PATH=$WORKING_DIR/venv/bin"
+   EnvironmentFile=$ENV_FILE
 
    [Install]
    WantedBy=multi-user.target
+   EOF
    ```
 
 2. **Enable and start the service**
