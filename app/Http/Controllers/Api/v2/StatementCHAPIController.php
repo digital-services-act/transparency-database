@@ -88,10 +88,10 @@ class StatementCHAPIController extends Controller
         //     return response()->json(['message' => 'statement of reason already exists'], Response::HTTP_CONFLICT);
         // }
 
-        $validated['platform_id'] = $request->user()->platform_id;
+        $validated['platform_id'] = 20; //$request->user()->platform_id;
         $validated['uuid'] = Str::uuid()->toString();
         $validated['created_at'] = date('Y-m-d H:i:s');
-        $validated['user_id'] = $request->user()->id;
+        $validated['user_id'] = 20; //$request->user()->id;
         $validated['method'] = Statement::METHOD_API;
 
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
@@ -125,25 +125,27 @@ class StatementCHAPIController extends Controller
 
         $validated['self'] = route('api.v2.chstatement.show', ['uuid' => $validated['uuid']]);
 
+        // Temporary isolate out the Kafka forwarding logic
+        // Uncomment the following lines to enable Kafka forwarding
         // Send data as direct JSON body (not wrapped in another object)
-        try {
-            // Match curl command format exactly by sending the JSON string directly
-            $kafkaResponse = Http::timeout(5)
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->withBody(json_encode($validated, JSON_UNESCAPED_SLASHES), 'application/json')
-                ->post('http://127.0.0.1:6666/send');
+        // try {
+        //     // Match curl command format exactly by sending the JSON string directly
+        //     $kafkaResponse = Http::timeout(5)
+        //         ->withHeaders(['Content-Type' => 'application/json'])
+        //         ->withBody(json_encode($validated, JSON_UNESCAPED_SLASHES), 'application/json')
+        //         ->post('http://127.0.0.1:6666/send');
 
-            if (!$kafkaResponse->successful()) {
-                Log::error('Failed to forward message to Kafka: ' . $kafkaResponse->body());
-                Log::error('Sent payload: ' . json_encode($validated, JSON_UNESCAPED_SLASHES));
-                // return with error response
-                return response()->json(['message' => 'Statement not saved try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception $e) {
-            Log::error('Exception when forwarding to Kafka: ' . $e->getMessage());
-            // return with error response
-            return response()->json(['message' => 'Statement not saved try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        //     if (!$kafkaResponse->successful()) {
+        //         Log::error('Failed to forward message to Kafka: ' . $kafkaResponse->body());
+        //         Log::error('Sent payload: ' . json_encode($validated, JSON_UNESCAPED_SLASHES));
+        //         // return with error response
+        //         return response()->json(['message' => 'Statement not saved try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        //     }
+        // } catch (Exception $e) {
+        //     Log::error('Exception when forwarding to Kafka: ' . $e->getMessage());
+        //     // return with error response
+        //     return response()->json(['message' => 'Statement not saved try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
 
         // Everything was ok, it's now in the kafka queue and will be in the clickhouse very soon.
         return response()->json($validated, Response::HTTP_CREATED);
