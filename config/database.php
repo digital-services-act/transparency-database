@@ -47,16 +47,7 @@ return [
             'sticky' => true,
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'read' => [
-                'host' => [
-                    env('MYSQL_ADDON_HOST', env('DB_HOST', '127.0.0.1')),
-                ],
-            ],
-            'write' => [
-                'host' => [
-                    env('MYSQL_ADDON_HOST', '127.0.0.1'),
-                ],
-            ],
+            'host' => env('MYSQL_ADDON_HOST', '127.0.0.1'),
             'port' => env('MYSQL_ADDON_PORT', '3306'),
             'database' => env('MYSQL_ADDON_DB', 'forge'),
             'username' => env('MYSQL_ADDON_USER', 'forge'),
