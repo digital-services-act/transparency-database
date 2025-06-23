@@ -21,7 +21,7 @@ return new class extends Migration
             $table->bigInteger('size')->default(0)->unsigned();
             $table->bigInteger('sizelight')->default(0)->unsigned();
             $table->timestamps();
-            $table->unique(['date'], 'date_index');
+            //$table->unique(['date'], 'date_index');
         });
     }
 
