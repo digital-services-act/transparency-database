@@ -148,6 +148,10 @@ class StatementCHAPIController extends Controller
         // }
 
         // Everything was ok, it's now in the kafka queue and will be in the clickhouse very soon.
+
+        $statement = Statement::create($validated);
+
+
         return response()->json($validated, Response::HTTP_CREATED);
     }
 }
