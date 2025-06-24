@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             Psr17Interface::class,
-            static function (Application $app) : Psr17Interface {
+            static function (Application $app): Psr17Interface {
                 $psr17Factory = new Psr17Factory();
                 //or whatever psr17 you want
                 return new Psr17(
@@ -58,9 +58,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (strtolower((string) config('app.env_real')) === 'production') {
-            Statement::disableSearchSyncing();
-        }
+        //if (strtolower((string) config('app.env_real')) === 'production') {
+        Statement::disableSearchSyncing();
+        //}
 
         Sanctum::usePersonalAccessTokenModel(
             PersonalAccessToken::class
