@@ -88,10 +88,11 @@ class StatementCHAPIController extends Controller
         //     return response()->json(['message' => 'statement of reason already exists'], Response::HTTP_CONFLICT);
         // }
 
-        $validated['platform_id'] = 20; //$request->user()->platform_id;
+        $validated['platform_id'] = $request->user()->platform_id;
         $validated['uuid'] = Str::uuid()->toString();
         $validated['created_at'] = date('Y-m-d H:i:s');
-        $validated['user_id'] = 20; //$request->user()->id;
+        $validated['user_id'] = 20;
+        $request->user()->id;
         $validated['method'] = Statement::METHOD_API;
 
         $validated['territorial_scope'] = $this->european_countries_service->filterSortEuropeanCountries($validated['territorial_scope'] ?? []);
