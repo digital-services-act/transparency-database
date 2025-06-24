@@ -31,9 +31,19 @@
                     :options="$options['platforms']" :default="request()->get('platform_id', [])" select_all="All platforms"
                     select_item="Select one or more platforms" enter_keyword="Enter a platform name" />
             </div>
-        </div>
 
-        <div class="ecl-row">
+            <div class="ecl-col-m-6">
+                <!-- @todo -->
+                <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_GROUND"
+                    name="decision_ground"
+                    id="decision_ground"
+                    justlabel="true"
+                    :default="request()->get('decision_ground', [])"
+                    :options="$options['decision_grounds']"
+                    select_all="All decisions grounds" select_item="Select one or more decision grounds"
+                    enter_keyword="Enter a decision ground" />
+            </div>
+
             <div class="ecl-col-m-6">
 
                 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_SOURCE_TYPE" name="source_type" id="source_type" justlabel="true"
@@ -48,9 +58,7 @@
                     select_item="Select one or more categories" enter_keyword="Enter a category" />
 
             </div>
-        </div>
 
-        <div class="ecl-row">
             <div class="ecl-col-m-6">
 
                 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY" name="decision_visibility" id="decision_visibility"
@@ -67,9 +75,7 @@
                     enter_keyword="Enter a monetary restriction" />
 
             </div>
-        </div>
 
-        <div class="ecl-row">
             <div class="ecl-col-m-6">
 
                 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_PROVISION" name="decision_provision" id="decision_provision"
