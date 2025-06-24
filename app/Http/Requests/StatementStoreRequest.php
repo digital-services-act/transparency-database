@@ -22,8 +22,7 @@ class StatementStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-        //$this->user()->can('create statements') && $this->user()->platform;
+        return $this->user()->can('create statements') && $this->user()->platform;
     }
 
     /**
