@@ -60,6 +60,20 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
+            'host' => env('POSTGRESQL_ADDON_DIRECT_HOST', '127.0.0.1'),
+            'port' => env('POSTGRESQL_ADDON_DIRECT_PORT', '5432'),
+            'database' => env('POSTGRESQL_ADDON_DB', 'forge'),
+            'username' => env('POSTGRESQL_ADDON_USER', 'forge'),
+            'password' => env('POSTGRESQL_ADDON_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
+        'pgsql_regular' => [
+            'driver' => 'pgsql',
             'host' => env('POSTGRESQL_ADDON_HOST', '127.0.0.1'),
             'port' => env('POSTGRESQL_ADDON_PORT', '5432'),
             'database' => env('POSTGRESQL_ADDON_DB', 'forge'),
