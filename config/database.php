@@ -58,7 +58,7 @@ return [
             'engine' => null
         ],
 
-        'pgsql' => [
+        'pgsql_direct' => [
             'driver' => 'pgsql',
             'host' => env('POSTGRESQL_ADDON_DIRECT_HOST', '127.0.0.1'),
             'port' => env('POSTGRESQL_ADDON_DIRECT_PORT', '5432'),
@@ -72,7 +72,7 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'pgsql_regular' => [
+        'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('POSTGRESQL_ADDON_HOST', '127.0.0.1'),
             'port' => env('POSTGRESQL_ADDON_PORT', '5432'),
