@@ -1,3 +1,10 @@
+#### [Announcement – DB] Schema update of the DSA Transparency Database completed
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 01/07/2025</p>
+
+To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database has been updated to reflect the requirements laid down in the [Implementing Regulation on Transparency Reporting](https://eur-lex.europa.eu/eli/reg_impl/2024/2835/oj/eng). As of today, all statements of reasons need to be submitted to the DSA Transparency Database in line with the updated schema, documented [here](/page/api-documentation). Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 remain available according to the old schema in line with the [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy) of the DSA Transparency Database.
+
+
 #### [Announcement – Access to data] New file formats available for download 
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
