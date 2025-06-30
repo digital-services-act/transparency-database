@@ -1,17 +1,3 @@
-<div class="ecl-notification ecl-notification--info" data-ecl-notification="" role="alert" data-ecl-auto-init="Notification" data-ecl-auto-initialized="true">
-
-<svg class="ecl-icon ecl-icon--l ecl-notification__icon" focusable="false" aria-hidden="false" role="img">
-    <title>Information</title>
-    <use xlink:href="/static/ecl/images/icons/sprites/icons.svg#information"></use>
-  </svg>
-  <div class="ecl-notification__content"><button class="ecl-button ecl-button--tertiary ecl-notification__close ecl-button--icon-only" type="button" data-ecl-notification-close=""><span class="ecl-button__container"><span class="ecl-button__label" data-ecl-label="true">Close</span><svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true" data-ecl-icon="">
-        </svg></span></button>
-
-    <div class="ecl-notification__description">Please note that starting from 1 July 2025 the updated DSA Transparency Database and API schema deployed in this test environment will be adapted also in the production environment of the DSA Transparency Database. We encourage you to make use use of this test environment until 30 June 2025 to test the new schema here before the switch in production. The full documentation of the updated schema can be found below. You can also find a full changelog <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/DSA_Transparency_Database_API_v2_changelog.xlsx">here</a>.</div>
-
-  </div>
-</div>
-
 ## How to use the API
 
 Specific users of this database are given the ability to create
