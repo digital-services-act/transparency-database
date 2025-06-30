@@ -122,7 +122,7 @@ class Statement extends Model
     ];
 
 
-    public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
+    public const LABEL_STATEMENT_DECISION_GROUND = 'Decision Ground';
 
     public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
 

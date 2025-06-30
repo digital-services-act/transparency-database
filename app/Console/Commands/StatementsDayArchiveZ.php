@@ -8,6 +8,7 @@ use App\Jobs\StatementCsvExportGroupParts;
 use App\Jobs\StatementCsvExportSha1;
 use App\Jobs\StatementCsvExportZ;
 use App\Services\DayArchiveService;
+use App\Services\StatementSearchService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -42,7 +43,7 @@ class StatementsDayArchiveZ extends Command
      * @throws Exception
      * @throws Throwable
      */
-    public function handle(DayArchiveService $day_archive_service): void
+    public function handle(DayArchiveService $day_archive_service, StatementSearchService $statementSearchService): void
     {
         if ( ! config('filesystems.disks.s3ds.bucket')) {
             Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
@@ -58,10 +59,31 @@ class StatementsDayArchiveZ extends Command
         $exports  = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
 
+        $first_id = null;
+        $last_id = null;
 
-        $first_id = $day_archive_service->getFirstIdOfDate($date);
-        $last_id  = $day_archive_service->getLastIdOfDate($date);
+        if ((string) config("app.env_real") === 'production') {
+            $first_id = $day_archive_service->getFirstIdOfDate($date);
+            $last_id  = $day_archive_service->getLastIdOfDate($date);
+        } elseif ((string) config("app.env_real") === 'sandbox') {
+            // $ss = app(StatementSearchService::class);
+            $sql = "SELECT min(id), max(id) FROM statement_index WHERE received_date = '$date' AND id >= 1000000000";
+            $result = $statementSearchService->runSql($sql);
+            $first_id = $result['datarows'][0][0];
+            $last_id = $result['datarows'][0][1];
+        }
 
+        if (! $first_id) {
+            $this->error('No first_id found. Aborting...');
+            Log::error('StatementsDayArchiveZ: No first_id found. Aborting...');
+            return;
+        }
+
+        if (! $last_id) {
+            $this->error('No last_id found. Aborting...');
+            Log::error('StatementsDayArchiveZ: No last_id found. Aborting...');
+            return;
+        }
 
         // One Mill
         $chunk = 1000000;

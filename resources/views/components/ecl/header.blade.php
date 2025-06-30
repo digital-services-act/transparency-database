@@ -8,7 +8,9 @@
                        aria-label="European Commission">
                         <picture class="ecl-picture ecl-site-header__picture" title="European Commission">
                             <source srcset="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
-                                    media="(min-width: 996px)">
+                                media="(min-width: 576px)">
+                            <source srcset="{{asset('static/ecl/images/logo/logo-ec--mute.svg')}}"
+                                media="(min-width: 1px)">
                             <img class="ecl-site-header__logo-image"
                                  src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                  alt="European Commission logo"/>
