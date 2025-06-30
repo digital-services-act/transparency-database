@@ -201,8 +201,8 @@ The statement_index contains the following fields that can be used in your queri
 
 #### Notes:
 
-- Fields of type keyword are not analysed and can be used for exact matches and aggregations
-- Fields of type text are analysed and better suited for full-text search
+- Fields of type keyword can be used for exact matches and/or as keys for aggregations (as in an SQL group-by).
+- Fields of type text are indexed and can be queried with text search (for instance, filtering with an SQL LIKE - statement)
 - Fields of type date accept ISO 8601 format
 - Fields of type boolean accept true/false values
 - Fields of type long are numeric identifiers
@@ -1061,5 +1061,5 @@ For more detailed query guidance, refer to:
 
 - Response exceeds 5MB limit
 - Reduce query scope
-- Use pagination or date partitioning  
+- Use pagination or date partitioning
 

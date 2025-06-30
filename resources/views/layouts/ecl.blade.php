@@ -47,7 +47,7 @@
         media="print"
     >
 
-
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
 
     @section('extra-head')
