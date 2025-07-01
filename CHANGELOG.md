@@ -78,3 +78,5 @@
 ### Fixed
 - Corrected a typo in the Statement.php file, which was causing incorrect value return.
 
+### Schema Update
+- Updated the schema to version 0.1.1

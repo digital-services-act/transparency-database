@@ -40,10 +40,10 @@ class StatementsIndexRangeSeq extends Command
         if ($this->argument('min') === 'opensearch') {
             $min = $statement_search_service->highestId();
         } else {
-            $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
+            $min = $this->argument('min') === 'default' ? DB::table('statements_beta')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
         }
 
-        $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
+        $max = $this->argument('max') === 'default' ? DB::table('statements_beta')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
 
         if ($min && $max && $min < $max) {
             Log::info('Indexing started for range: ' . $min . ' :: ' . $max . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));

@@ -6,11 +6,12 @@ use App\Exceptions\PuidNotUniqueSingleException;
 use App\Exports\StatementsExport;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
-use App\Models\Platform;
 use App\Models\Statement;
+use App\Models\StatementAlpha;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementQueryService;
 use App\Services\StatementSearchService;
@@ -21,6 +22,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel;
 
 class StatementController extends Controller
@@ -33,7 +35,8 @@ class StatementController extends Controller
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
-        protected PlatformUniqueIdService $platform_unique_id_service
+        protected PlatformUniqueIdService $platform_unique_id_service,
+        protected PlatformQueryService $platform_query_service,
     ) {
     }
 
@@ -93,7 +96,19 @@ class StatementController extends Controller
     {
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
-            $statements = $this->statement_search_service->query($request->query());
+
+            $filters = $request->query();
+            $current_env = config('app.env_real', '');
+
+            if ($current_env === 'sandbox') {
+                $filters['received_date'] = '01-04-2025';
+            }
+
+            if ($current_env === 'production') {
+                $filters['received_date'] = '01-07-2025';
+            }
+
+            $statements = $this->statement_search_service->query($filters);
             $total = $this->statement_search_service->query($request->query(), [
                 'size' => 1,
                 'from' => 0,
@@ -141,20 +156,53 @@ class StatementController extends Controller
         ]);
     }
 
-    public function show(Statement $statement): Factory|View|Application
+    public function show(int $statement): Factory|View|Application
     {
+
+        $view = 'statement.show';
+
+        // Statement Alpha
+        if ($statement < 100000000000) {
+            $view = 'statement.show_legacy';
+
+            $statement = StatementAlpha::find($statement);
+            if (!$statement) {
+                abort(404);
+            }
+
+            $statement_content_types = StatementAlpha::getEnumValues($statement->content_type);
+            $statement_additional_categories = StatementAlpha::getEnumValues($statement->category_addition);
+            $statement_visibility_decisions = StatementAlpha::getEnumValues($statement->decision_visibility);
+            $category_specifications = StatementAlpha::getEnumValues($statement->category_specification);
+
+        } else {
+            // Statement Beta
+            $statement = Statement::find($statement);
+
+            if (!$statement) {
+                abort(404);
+            }
+
+            $statement_content_types = Statement::getEnumValues($statement->content_type);
+            $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
+            $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
+            $category_specifications = Statement::getEnumValues($statement->category_specification);
+
+        }
+
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
-        $statement_content_types = Statement::getEnumValues($statement->content_type);
-
-        $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
-        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
-
-        $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
-        $category_specifications = Statement::getEnumValues($statement->category_specification);
-
         sort($statement_territorial_scope_country_names);
+        $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
 
-        return view('statement.show', ['statement' => $statement, 'statement_territorial_scope_country_names' => $statement_territorial_scope_country_names, 'statement_content_types' => $statement_content_types, 'statement_content_language' => $statement_content_language, 'statement_additional_categories' => $statement_additional_categories, 'statement_visibility_decisions' => $statement_visibility_decisions, 'category_specifications' => $category_specifications]);
+        return view($view, [
+            'statement' => $statement,
+            'statement_territorial_scope_country_names' => $statement_territorial_scope_country_names,
+            'statement_content_types' => $statement_content_types,
+            'statement_content_language' => $statement_content_language,
+            'statement_additional_categories' => $statement_additional_categories,
+            'statement_visibility_decisions' => $statement_visibility_decisions,
+            'category_specifications' => $category_specifications
+        ]);
 
     }
 
@@ -207,14 +255,11 @@ class StatementController extends Controller
         $eu_countries = EuropeanCountriesService::EUROPEAN_UNION_COUNTRY_CODES;
         $eea_countries = EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES;
 
-        $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS, $noval_on_select);
-        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS, $noval_on_select);
+        $automated_detections = $this->mapForSelectWithoutKeys(Statement::AUTOMATED_DETECTIONS);
+        $automated_decisions = $this->mapForSelectWithKeys(Statement::AUTOMATED_DECISIONS);
         $incompatible_content_illegals = $this->mapForSelectWithoutKeys(Statement::INCOMPATIBLE_CONTENT_ILLEGALS, $noval_on_select);
-        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES, $noval_on_select);
-        $platforms = Platform::nonDsa()->orderBy('name', 'ASC')->get()->map(static fn($platform) => [
-            'value' => $platform->id,
-            'label' => $platform->name,
-        ])->toArray();
+        $content_types = $this->mapForSelectWithKeys(Statement::CONTENT_TYPES);
+        $platforms = $this->platform_query_service->getPlatformDropDownOptions();
         $decision_visibilities = $this->mapForSelectWithKeys(Statement::DECISION_VISIBILITIES, $noval_on_select);
         $decision_monetaries = $this->mapForSelectWithKeys(Statement::DECISION_MONETARIES, $noval_on_select);
         $decision_provisions = $this->mapForSelectWithKeys(Statement::DECISION_PROVISIONS, $noval_on_select);
@@ -223,13 +268,13 @@ class StatementController extends Controller
         $category_specifications = $this->mapForSelectWithKeys(Statement::KEYWORDS, $noval_on_select);
 
         $decision_grounds = $this->mapForSelectWithKeys(Statement::DECISION_GROUNDS);
-        $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES, $noval_on_select);
+        $categories = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES);
         $categories_addition = $this->mapForSelectWithKeys(Statement::STATEMENT_CATEGORIES, $noval_on_select);
 
         $illegal_content_fields = Statement::ILLEGAL_CONTENT_FIELDS;
         $incompatible_content_fields = Statement::INCOMPATIBLE_CONTENT_FIELDS;
 
-        $source_types = $this->mapForSelectWithKeys(Statement::SOURCE_TYPES, $noval_on_select);
+        $source_types = $this->mapForSelectWithKeys(Statement::SOURCE_TYPES);
 
         return ['countries' => $countries, 'languages' => $languages, 'languages_grouped' => $languages_grouped, 'eea_countries' => $eea_countries, 'eu_countries' => $eu_countries, 'automated_detections' => $automated_detections, 'automated_decisions' => $automated_decisions, 'incompatible_content_illegals' => $incompatible_content_illegals, 'decision_visibilities' => $decision_visibilities, 'decision_monetaries' => $decision_monetaries, 'decision_provisions' => $decision_provisions, 'decision_accounts' => $decision_accounts, 'account_types' => $account_types, 'decision_grounds' => $decision_grounds, 'categories' => $categories, 'categories_addition' => $categories_addition, 'illegal_content_fields' => $illegal_content_fields, 'incompatible_content_fields' => $incompatible_content_fields, 'source_types' => $source_types, 'content_types' => $content_types, 'platforms' => $platforms, 'category_specifications' => $category_specifications];
     }

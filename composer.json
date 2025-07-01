@@ -40,7 +40,6 @@
         "brianium/paratest": "^7.0",
         "driftingly/rector-laravel": "^1.0",
         "fakerphp/faker": "^1.9.1",
-        "jasonmccreary/laravel-test-assertions": "dev-master",
         "laravel-shift/blueprint": "^2.4",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
@@ -56,8 +55,16 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "exclude-from-classmap": ["vendor/ecphp/laravel-cas/src/Auth/CasGuard.php","vendor/ecphp/laravel-cas/src/Middleware/CasAuthenticator.php","vendor/ecphp/laravel-cas/src/Controllers/LoginController.php"],
-        "files": ["overrides/CasGuard.php","overrides/CasAuthenticator.php","overrides/LoginController.php"]
+        "exclude-from-classmap": [
+            "vendor/ecphp/laravel-cas/src/Auth/CasGuard.php",
+            "vendor/ecphp/laravel-cas/src/Middleware/CasAuthenticator.php",
+            "vendor/ecphp/laravel-cas/src/Controllers/LoginController.php"
+        ],
+        "files": [
+            "overrides/CasGuard.php",
+            "overrides/CasAuthenticator.php",
+            "overrides/LoginController.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -9,6 +9,7 @@ use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ResearchPermissionsSeeder;
 use Database\Seeders\StatementSeeder;
+use Database\Seeders\StatementAlphaSeeder;
 use Database\Seeders\SupportPermissionsSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -25,7 +26,8 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
 
-    protected function signInAsAdmin($user = null) {
+    protected function signInAsAdmin($user = null)
+    {
         $user = $this->signIn($user);
         $user->assignRole('Admin');
 
@@ -34,7 +36,8 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    protected function signInAsOnboarding($user = null) {
+    protected function signInAsOnboarding($user = null)
+    {
         $user = $this->signIn($user);
         $user->assignRole('Onboarding');
 
@@ -43,7 +46,8 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    protected function signInAsSupport($user = null) {
+    protected function signInAsSupport($user = null)
+    {
         $user = $this->signIn($user);
         $user->assignRole('Support');
 
@@ -52,7 +56,8 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    protected function signInAsContributor($user = null) {
+    protected function signInAsContributor($user = null)
+    {
         $user = $this->signIn($user);
         $user->assignRole('Contributor');
 
@@ -88,6 +93,7 @@ abstract class TestCase extends BaseTestCase
         $this->seed(SupportPermissionsSeeder::class);
         $this->seed(ResearchPermissionsSeeder::class);
         StatementSeeder::resetStatements($statement_count);
+        StatementAlphaSeeder::resetStatements($statement_count);
     }
 
 }

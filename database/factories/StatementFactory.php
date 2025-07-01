@@ -28,7 +28,7 @@ class StatementFactory extends Factory
      */
     public function definition()
     {
-        $id = $this->faker->numberBetween(1,100000000);
+        $id = $this->faker->numberBetween(100000000000, 100000000000 + 100000000000);
         $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
         $content_date = $create_date->clone();
         $application_date = $create_date->clone();
@@ -61,7 +61,11 @@ class StatementFactory extends Factory
         return [
 
             'id' => $id,
-            'decision_visibility' => $this->faker->randomElements(array_keys(Statement::DECISION_VISIBILITIES), 2, false),
+            'decision_visibility' => $this->faker->randomElements(
+                array_keys(Statement::DECISION_VISIBILITIES),
+                2,
+                false
+            ),
             'decision_visibility_other' => $this->faker->text(100),
 
             'decision_monetary' => $this->faker->randomElement(array_keys(Statement::DECISION_MONETARIES)),
@@ -72,11 +76,10 @@ class StatementFactory extends Factory
             'account_type' => $this->faker->randomElement(array_keys(Statement::ACCOUNT_TYPES)),
 
 
-
             'decision_ground' => $decision_ground,
             'decision_ground_reference_url' => $this->faker->url(),
 
-            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES),2, false),
+            'content_type' => $this->faker->randomElements(array_keys(Statement::CONTENT_TYPES), 2, false),
             'content_type_other' => $this->faker->text(100),
 
             'category' => $this->faker->randomElement(array_keys(Statement::STATEMENT_CATEGORIES)),
@@ -96,7 +99,11 @@ class StatementFactory extends Factory
             'puid' => $this->faker->uuid,
             'uuid' => $this->faker->uuid,
 
-            'territorial_scope' => $this->faker->randomElements(EuropeanCountriesService::EUROPEAN_COUNTRY_CODES, 2, false),
+            'territorial_scope' => $this->faker->randomElements(
+                EuropeanCountriesService::EUROPEAN_COUNTRY_CODES,
+                2,
+                false
+            ),
 
             'content_language' => $this->faker->randomElement(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES),
 
@@ -119,7 +126,12 @@ class StatementFactory extends Factory
             'platform_id' => $user->platform_id,
             'user_id' => $user->id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
-            'created_at' => $create_date
+            'created_at' => $create_date,
+
+            // Add content_id with EAN-13 code
+            'content_id_ean' => $this->faker->boolean(30) ?
+                $this->faker->numerify('#############')
+                : null
 
         ];
     }

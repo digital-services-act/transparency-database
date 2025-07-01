@@ -34,8 +34,8 @@ class StatementsIndexRange extends Command
     {
 
         $chunk = $this->intifyArgument('chunk');
-        $min = $this->argument('min') === 'default' ? DB::table('statements')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
-        $max = $this->argument('max') === 'default' ? DB::table('statements')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
+        $min = $this->argument('min') === 'default' ? DB::table('statements_beta')->selectRaw('MIN(id) AS min')->first()->min : (int)$this->argument('min');
+        $max = $this->argument('max') === 'default' ? DB::table('statements_beta')->selectRaw('MAX(id) AS max')->first()->max : (int)$this->argument('max');
 
         StatementIndexRange::dispatch($max, $min, $chunk);
     }

@@ -137,11 +137,11 @@ class StatementQueryServiceTest extends TestCase
             'category_specification' => ['KEYWORD_HATE_SPEECH', 'KEYWORD_OTHER']
         ]);
         Statement::factory()->create([
-            'category_specification' => ['KEYWORD_DISINFORMATION', 'KEYWORD_HATE_SPEECH']
+            'category_specification' => ['KEYWORD_MISINFORMATION_DISINFORMATION', 'KEYWORD_HATE_SPEECH']
         ]);
         
         $filters = [
-            'category_specification' => ['KEYWORD_HATE_SPEECH', 'KEYWORD_DISINFORMATION', 'INVALID_KEYWORD']
+            'category_specification' => ['KEYWORD_HATE_SPEECH', 'KEYWORD_MISINFORMATION_DISINFORMATION', 'INVALID_KEYWORD']
         ];
         
         $result = $this->statement_query_service->query($filters);
@@ -151,7 +151,7 @@ class StatementQueryServiceTest extends TestCase
         // Check that we're using JSON extract and proper OR conditions
         $this->assertStringContainsString('json_extract', strtolower($sql));
         $this->assertCount(2, $bindings); // Should only have 2 bindings as INVALID_KEYWORD is filtered out
-        $this->assertEquals(['%"KEYWORD_HATE_SPEECH"%', '%"KEYWORD_DISINFORMATION"%'], array_values($bindings));
+        $this->assertEquals(['%"KEYWORD_HATE_SPEECH"%', '%"KEYWORD_MISINFORMATION_DISINFORMATION"%'], array_values($bindings));
         
         // Verify we get both statements that have either KEYWORD_HATE_SPEECH or KEYWORD_DISINFORMATION
         $this->assertEquals(2, $result->count());
@@ -166,7 +166,7 @@ class StatementQueryServiceTest extends TestCase
             'created_at_start' => "20-5-2021"
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "created_at" >= ? and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements_beta" where "created_at" >= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
     /**
@@ -178,7 +178,7 @@ class StatementQueryServiceTest extends TestCase
             'created_at_end' => "20-5-2021"
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where "created_at" <= ? and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
     /**
@@ -190,7 +190,7 @@ class StatementQueryServiceTest extends TestCase
             'platform_id' => [1]
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertEquals('select * from "statements" where exists (select * from "platforms" where "statements"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements"."deleted_at" is null', $sql);
+        $this->assertEquals('select * from "statements_beta" where exists (select * from "platforms" where "statements_beta"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements_beta"."deleted_at" is null', $sql);
     }
 
     /**
@@ -202,7 +202,7 @@ class StatementQueryServiceTest extends TestCase
             'decision_ground' => array_keys(Statement::DECISION_GROUNDS)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" where "decision_ground" in (?', $sql);
+        $this->assertStringContainsString('select * from "statements_beta" where "decision_ground" in (?', $sql);
     }
 
     /**
@@ -214,7 +214,7 @@ class StatementQueryServiceTest extends TestCase
             'source_type' => array_keys(Statement::SOURCE_TYPES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" where "source_type" in (?', $sql);
+        $this->assertStringContainsString('select * from "statements_beta" where "source_type" in (?', $sql);
     }
 
     /**
@@ -226,7 +226,7 @@ class StatementQueryServiceTest extends TestCase
             'category' => array_keys(Statement::STATEMENT_CATEGORIES)
         ];
         $sql = $this->statement_query_service->query($filters)->toSql();
-        $this->assertStringContainsString('select * from "statements" where "category" in (?', $sql);
+        $this->assertStringContainsString('select * from "statements_beta" where "category" in (?', $sql);
     }
 
     /**
@@ -289,7 +289,7 @@ class StatementQueryServiceTest extends TestCase
         $uuid = $statement->uuid;
         
         // Verify test data was created
-        $this->assertDatabaseHas('statements', ['uuid' => $uuid]);
+        $this->assertDatabaseHas('statements_beta', ['uuid' => $uuid]);
         
         // Test each searchable field
         $searchTerms = [

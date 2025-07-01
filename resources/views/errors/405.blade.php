@@ -34,7 +34,7 @@
         <div class="ecl-col-l-12" id="content-wrapper">
             <div id="content-area">
                 <p class="ecl-u-type-paragraph">
-                    Sincere apologies, the method not allowed.
+                    Sincere apologies, the method is not allowed.
                 </p>
             </div>
         </div>

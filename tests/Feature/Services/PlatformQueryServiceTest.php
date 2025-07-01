@@ -137,4 +137,45 @@ class PlatformQueryServiceTest extends TestCase
         $sql = $query->toRawSql();
         $this->assertStringNotContainsString('"onboarded"', $sql);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_gets_platform_dropdown_options(): void
+    {
+        $options = $this->platformQueryService->getPlatformDropDownOptions();
+        $this->assertIsArray($options);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_gets_platforms_by_id(): void
+    {
+        $platforms_by_id = $this->platformQueryService->getPlatformsById();
+        $this->assertIsArray($platforms_by_id);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_gets_platform_ids(): void
+    {
+        $platform_ids = $this->platformQueryService->getPlatformIds();
+        $this->assertIsArray($platform_ids);
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function it_gets_platform_vlop_ids(): void
+    {
+        $platform_ids = $this->platformQueryService->getVlopPlatformIds();
+        $this->assertIsArray($platform_ids);
+    }
+
 }

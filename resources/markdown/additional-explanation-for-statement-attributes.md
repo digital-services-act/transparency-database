@@ -64,6 +64,12 @@ posted.
 If ‘other’ was chosen as content_language, this field allows to specify the exact language. 
 Please only indicate a language that is not included in the list provided under content_language.
 
+#### 2.6 Content identifier (content_id) 
+
+This attribute allows to track existing content identifiers in key-value format for the identification of content according to existing content taxonomies, making it easier to systematically track illegal content, for example illegal products.   
+
+Currently, the only accepted key-value combination is a product identifier, namely the EAN-13 code. When “EAN-13” is submitted as a key, an EAN-13 code can be submitted as a value. 
+
 ---
 
 ## Information on the type of restriction(s) imposed, on the territorial scope, and the duration of the restriction
@@ -378,9 +384,13 @@ alleged illegality of information. An example of the direct reference to the DSA
 
 ### 16. Category & Specification (category, category_addition, category_specification)
 
-A list of categories and specifications are included to codify the type of illegality and/or the 
-type of TOS incompatibility that led to the restriction of the information. The category and 
-specifications section consists of three attributes:
+A list of categories and specifications are included to codify the type of illegality and/or the type of 
+incompatibility with terms and conditions that led to the restriction of the information. The 
+available categories and specifications correspond to those set out in the [implementing regulation 
+laying down templates concerning the transparency reporting obligations of providers of online 
+platforms](https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations) to ensure 
+consistency between the transparency tools of the DSA. The category and specifications 
+section consists of three attributes: 
 
 Firstly, a high-level category classification must be indicated. The high-level classification 
 indicates the main category under which the grounds relied on in a statement of reasons fall. 
@@ -400,118 +410,94 @@ listings concern the high-level classifications, and the sub-categories concern 
 specifications. The category_specification options also contain an option to select “Other”:
 
 
-- Animal welfare
-  - Animal harm
-  - Unlawful sale of animals
-
-
-- Data protection and privacy violations
-  - Biometric data breach
-  - Missing processing ground for data
-  - Right to be forgotten
-  - Data falsification
-
-
-- Illegal or harmful speech
-  - Defamation
-  - Discrimination
-  - Hate speech
-
-
-- Intellectual property infringements
-  - Copyright infringement
+- Animal welfare 
+  - Animal harm 
+  - Unlawful sale of animals 
+- Consumer information infringements 
+  - Hidden advertisement or commercial communication, including by influencers 
+  - Insufficient information on traders 
+  - Misleading information about the characteristics of the goods and services 
+  - Misleading information about the consumer’s rights 
+  - Non-compliance with pricing regulations 
+- Cyber violence 
+  - Cyber bullying and intimidation 
+  - Cyber harassment 
+  - Cyber incitement to hatred or violence 
+  - Cyber stalking 
+  - Non-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors) 
+  - Non-consensual sharing of material containing deepfake or similar technology using a third party's features (excluding content depicting minors) 
+- Cyber violence against women 
+  - Cyber bullying and intimidation against girls 
+  - Cyber harassment against women 
+  - Cyber stalking against women 
+  - Gendered disinformation 
+  - Illegal incitement to violence and hatred against women 
+  - Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors) 
+  - Non-consensual sharing of material containing deepfake or similar technology using a third party's features against women (excluding content depicting minors) 
+- Data protection and privacy violations 
+  - Biometric data breach 
+  - Data falsification 
+  - Missing processing ground for data 
+  - Right to be forgotten 
+- Illegal or harmful speech 
+  - Defamation 
+  - Discrimination 
+  - Illegal incitement to violence and hatred based on protected characteristics (hate speech) 
+- Intellectual property infringements 
+  - Copyright infringement 
   - Design infringement 
   - Geographical indications infringements 
   - Patent infringement 
   - Trade secret infringement 
-  - Trademark infringement
-
-
-- Negative effects on civic discourse or elections
-  - Disinformation
-  - Foreign information manipulation and interference
-  - Misinformation
-
-
-- Non-consensual behaviour 
-  - Non-consensual image sharing
-  - Non-consensual items containing deepfake or similar technology using a third party’s features
-
-
-- Online bullying/intimidation 
-  - Stalking
-
-
-- Pornography or sexualized content 
+  - Trademark infringement 
+- Negative effects on civic discourse or elections 
+  - Misinformation, disinformation, foreign information manipulation and interference 
+  - Violation of EU law relevant to civic discourse or elections 
+  - Violation of national law relevant to civic discourse or elections 
+- Other violation of provider's terms and conditions 
   - Adult sexual material 
-  - Image-based sexual abuse (excluding content depicting minors)
-
-
-- Protection of minors 
-  - Age-specific restrictions concerning minors 
-  - Child sexual abuse material 
-  - Grooming/sexual enticement of minors 
-  - Unsafe challenges
-
-
-- Risk for public security 
-  - Illegal organizations 
-  - Risk for environmental damage 
-  - Risk for public health 
-  - Terrorist content
-
-  
-- Scams and/or fraud 
-  - Inauthentic accounts 
-  - Inauthentic listings 
-  - Inauthentic user reviews 
-  - Impersonation or account hijacking 
-  - Phishing 
-  - Pyramid schemes
-
-
-- Self-harm 
-  - Content promoting eating disorders 
-  - Self-mutilation 
-  - Suicide
-
-
-- Scope of platform service 
   - Age-specific restrictions 
   - Geographical requirements 
   - Goods/services not permitted to be offered on the platform 
   - Language requirements 
-  - Nudity
-
-    
-- Unsafe and/or illegal products 
-  - Insufficient information on traders 
-  - Regulated goods and services 
-  - Dangerous toys
-
-    
+  - Nudity 
+- Protection of minors 
+  - Age-specific restrictions concerning minors 
+  - Child sexual abuse material 
+  - Child sexual abuse material containing deepfake or similar technology 
+  - Grooming/sexual enticement of minors 
+  - Unsafe challenges 
+- Risk for public security 
+  - Illegal organizations 
+  - Risk for environmental damage 
+  - Risk for public health 
+  - Terrorist content 
+- Scams and/or fraud 
+  - Impersonation or account hijacking 
+  - Inauthentic accounts 
+  - Inauthentic listings 
+  - Inauthentic user reviews 
+  - Phishing 
+  - Pyramid schemes 
+- Self-harm 
+  - Content promoting eating disorders 
+  - Self-mutilation 
+  - Suicide 
+- Type of alleged illegal content not specified by the notifier 
+- Unsafe, non-compliant or prohibited products 
+  - Prohibited or restricted products 
+  - Unsafe or non-compliant products 
 - Violence 
   - Coordinated harm 
-  - Gender-based violence 
+  - General calls or incitement to violence and/or hatred 
   - Human exploitation 
   - Human trafficking 
-  - Incitement to violence and/or hatred
-
-Not captured by any high-level category
-
-- Other
+  - Trafficking in women and girls 
+- Not captured by any high-level category 
+  - Not captured by any other keyword 
 
 
-For example, if an unsafe product was removed from an online marketplace that was also a 
-counterfeit good, the relevant statement of reasons could indicate either “Unsafe and/or 
-illegal products” or “Intellectual property infringements” as the main category, depending 
-on which one was considered more relevant to the decision by the platform. The respective other 
-option could be chosen in category_addition and one or more of the relevant 
-category_specification options (e.g. “Trademark infringement” and/or “Dangerous toys” or 
-other category_specification options considered relevant by the platform) could be added 
-to provide additional information. Platforms are encouraged to use as many options as they 
-see fit to best describe their statements of reason in category_addition and
-category_specification.
+For example, if an unsafe product was removed from an online marketplace that was also a counterfeit good, the relevant statement of reasons could indicate either “Unsafe, non-compliant or prohibited products” or “Intellectual property infringements” as the main category, depending on which one was considered more relevant to the decision by the platform. The respective other option could be chosen in attribute_addition, and one or more of the relevant category_specification options (e.g. “Trademark infringement” and/or “Prohibited or restricted products ” or other category_specification options considered relevant by the platform) could be added to provide additional information. Platforms are encouraged to use as many options as they see fit to best describe their statements of reasons with these data points. 
 
 #### 16.4.	Field to add an open specification (category_specification_other)
 

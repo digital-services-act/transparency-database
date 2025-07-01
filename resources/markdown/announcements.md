@@ -1,3 +1,11 @@
+#### [Announcement – DB] Schema update of the DSA Transparency Database completed
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 01/07/2025</p>
+
+To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database has been updated to reflect the requirements laid down in the [Implementing Regulation on Transparency Reporting](https://eur-lex.europa.eu/eli/reg_impl/2024/2835/oj/eng). As of today, all statements of reasons need to be submitted to the DSA Transparency Database in line with the updated schema, documented [here](/page/api-documentation). Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 remain available according to the old schema in line with the [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy) of the DSA Transparency Database.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – DB] Update to the submissions by Google Shopping
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 03/06/2025</p>
@@ -7,6 +15,7 @@ Starting from 30 May 2025, statements of reasons submissions to the DSA Transpar
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
 #### [Announcement – Access to data] New file formats available for download
+
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
@@ -112,7 +121,7 @@ The [daily dumps files](/data-download) will be available for 18 months (540 day
 Lastly, the [Dashboard](/dashboard) will contain the aggregated statistics for the last 5 years of data.
 
 <p class="ecl-u-type-paragraph" style="font-style: italic">
-<img width="100%" src="{{asset('/static/images/dsa-retention-policy_v2.png')}}">
+<img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png">
 </p>
 <p class="ecl-u-type-paragraph" style="width:100%; text-align:center; font-style: italic !important; margin-top:-20px"><span style="font-size: smaller">The Data Retention Policy of the DSA Transparency Database.</span></p>
 
