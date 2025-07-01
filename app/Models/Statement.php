@@ -606,22 +606,18 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        if (!is_null($this->platform)) {
-            return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
-        } else {
-            return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
-        }
-
+        return Cache::remember('platform-' . $this->platform_id . '-name', 3600, function () {
+            $platform = Platform::find($this->platform_id);
+            return $platform->name ?? 'deleted-name-' . $this->platform_id;
+        });
     }
 
     public function platformUuidCached(): string
     {
-        if (!is_null($this->platform)) {
-            return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
-        } else {
-            return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
-        }
-
+        return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, function () {
+            $platform = Platform::find($this->platform_id);
+            return $platform->uuid ?? 'deleted-uuid-' . $this->platform_id;
+        });
     }
 
     public function toSearchableArray(): array
@@ -745,9 +741,9 @@ class Statement extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function platform(): HasOne
+    public function platform(): BelongsTo
     {
-        return $this->hasOne(Platform::class, 'id', 'platform_id');
+        return $this->belongsTo(Platform::class, 'platform_id');
     }
 
     /**
