@@ -16,7 +16,8 @@ class DayArchiveQueryService
     private array $allowed_filters = [
         'platform_id',
         'from_date',
-        'to_date'
+        'to_date',
+        'uuid'
     ];
 
     /**
