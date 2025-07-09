@@ -24,11 +24,11 @@ class DayArchiveQueryServiceTest extends TestCase
     }
 
     /**
-     * 
+     *
      * @test
      * @return void
      */
-    public function it_builds_query(): void 
+    public function it_builds_query(): void
     {
         $query = $this->day_archive_query_service->query([]);
         $this->assertNotNull($query);
@@ -37,15 +37,15 @@ class DayArchiveQueryServiceTest extends TestCase
     }
 
     /**
-     * 
+     *
      * @test
      * @return void
      */
-    public function it_filters_on_the_filters(): void 
+    public function it_filters_on_the_filters(): void
     {
         $platform = Platform::first();
         $query = $this->day_archive_query_service->query([
-            'uuid' => $platform->uuid,
+            'platform_id' => $platform->id,
             'from_date' => '16-12-2020',
             'to_date' => '16-12-2021',
         ]);
@@ -56,15 +56,15 @@ class DayArchiveQueryServiceTest extends TestCase
 
 
     /**
-     * 
+     *
      * @test
      * @return void
      */
-    public function it_throws_an_error_on_bad_dates_and_skips(): void 
+    public function it_throws_an_error_on_bad_dates_and_skips(): void
     {
         $platform = Platform::first();
         $query = $this->day_archive_query_service->query([
-            'uuid' => $platform->uuid,
+            'platform_id' => $platform->id,
             'from_date' => '1632-2020',
             'to_date' => '99-12021',
         ]);
