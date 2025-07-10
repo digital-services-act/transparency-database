@@ -31,7 +31,12 @@ class Locale
         }
 
         if (isset($request->lang)) {
-            $lang = strtolower($request->lang);
+            $lang = $request->input('lang');
+
+            if (is_array($lang)) {
+                $lang = "en";
+            } else $lang = strtolower($request->input('lang'));
+
             if (in_array($lang, config('app.locales'))) {
                 session(['locale' => $lang]);
             }
