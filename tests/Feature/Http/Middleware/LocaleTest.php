@@ -163,4 +163,17 @@ class LocaleTest extends TestCase
         $this->assertEquals('en', App::getLocale());
         $this->assertEquals('en', session('locale'));
     }
+
+    /** @test */
+    public function it_falls_back_to_en_for_array_as_parameter()
+    {
+        $request = Request::create('/', 'GET', ['lang' => ['ro', 'en', 'it']]);
+
+        $response = $this->middleware->handle($request, function ($request) {
+            return response()->noContent();
+        });
+
+        $this->assertEquals('en', App::getLocale());
+        $this->assertEquals('en', session('locale'));
+    }
 }
