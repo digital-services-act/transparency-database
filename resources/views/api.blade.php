@@ -95,7 +95,7 @@
                         </li>
                         <li class="ecl-u-mb-s">
                             📚
-                            <a href="#" class="ecl-link" target="_blank">
+                            <a href="{{ route('page.show', ['research-api']) }}" class="ecl-link" target="_blank">
                                 Full API documentation for in-depth reference
                             </a>
                         </li>
