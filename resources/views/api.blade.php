@@ -67,11 +67,42 @@
 
             @can('research API')
                 <h2 class="ecl-u-type-heading-2">How to use the research API</h2>
-                <p class="ecl-u-type-paragraph">
-                    <a href="{{ route('page.show', ['research-api']) }}" class="ecl-button ecl-button--primary">
-                        Research API Documentation
-                    </a>
-                </p>
+{{--                <p class="ecl-u-type-paragraph">--}}
+{{--                    <a href="{{ route('page.show', ['research-api']) }}" class="ecl-button ecl-button--primary">--}}
+{{--                        Research API Documentation--}}
+{{--                    </a>--}}
+{{--                </p>--}}
+
+                <section class="ecl-u-mb-l">
+
+
+                    <p class="ecl-u-type-paragraph">
+                        To help you get started quickly, we've prepared a few resources:
+                    </p>
+
+                    <ul class="ecl-list ecl-list--unordered ecl-u-mb-l">
+                        <li class="ecl-u-mb-s">
+                            📄
+                            <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/Transparency+Database+Reasearch+API+-+HOWTO.pdf" class="ecl-link" target="_blank">
+                                Step-by-step guide for using the Research API
+                            </a>
+                        </li>
+                        <li class="ecl-u-mb-s">
+                            📦
+                            <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/DSA+Transparency+Database+starter+pack.zip" class="ecl-link" target="_blank">
+                                Starter pack with example files for popular API development tools
+                            </a>
+                        </li>
+                        <li class="ecl-u-mb-s">
+                            📚
+                            <a href="#" class="ecl-link" target="_blank">
+                                Full API documentation for in-depth reference
+                            </a>
+                        </li>
+                    </ul>
+
+                </section>
+
             @endcan
 
         </div>
