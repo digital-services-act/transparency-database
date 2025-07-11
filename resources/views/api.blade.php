@@ -80,7 +80,7 @@
                         To help you get started quickly, we've prepared a few resources:
                     </p>
 
-                    <ul class="ecl-list ecl-list--unordered ecl-u-mb-l">
+                    <ul class="ecl-list ecl-list--unordered ecl-u-mb-l" style="list-style-type: none;">
                         <li class="ecl-u-mb-s">
                             📄
                             <a href="https://dsa-files.s3.eu-central-1.amazonaws.com/Transparency+Database+Reasearch+API+-+HOWTO.pdf" class="ecl-link" target="_blank">
@@ -93,9 +93,9 @@
                                 Starter pack with example files for popular API development tools
                             </a>
                         </li>
-                        <li class="ecl-u-mb-s">
+                        <li class="ecl-u-mb-s" >
                             📚
-                            <a href="#" class="ecl-link" target="_blank">
+                            <a href="{{ route('page.show', ['research-api']) }}" class="ecl-link" target="_blank">
                                 Full API documentation for in-depth reference
                             </a>
                         </li>
