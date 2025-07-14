@@ -12,6 +12,7 @@ use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redis;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,5 +74,14 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    Route::get('/ping-redis', function () {
+        try {
+            Redis::ping();
+            return 'Successfully connected to Redis!';
+        } catch (\Exception $e) {
+            return 'Failed to connect to Redis: ' . $e->getMessage();
+        }
+    });
 
 });
