@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-//Route::middleware('auth:sanctum')->group(static function () {
-//    Route::get('chstatement/{uuid}', [StatementCHAPIController::class, 'show'])->name('api.v2.chstatement.show')->can('view statements');
-//    Route::get('chstatement/existing-puid/{puid}', [StatementCHAPIController::class, 'existingPuid'])->name('api.v2.statement.existing-puid')->can('view statements');
+Route::middleware('auth:sanctum')->group(static function () {
+    Route::get('chstatement/{uuid}', [StatementCHAPIController::class, 'show'])->name('api.v2.chstatement.show')->can('view statements');
+    Route::get('chstatement/existing-puid/{puid}', [StatementCHAPIController::class, 'existingPuid'])->name('api.v2.statement.existing-puid')->can('view statements');
 //    Route::post('chstatement', [StatementCHAPIController::class, 'store'])->name('api.v2.chstatement.store')->can('create statements');
-//});
+});
 
