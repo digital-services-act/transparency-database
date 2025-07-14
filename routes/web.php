@@ -78,7 +78,8 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/ping-redis', function () {
         try {
             Redis::ping();
-            return 'Successfully connected to Redis!';
+            $keys = Redis::command('DBSIZE');
+            return 'Successfully connected to Redis! Number of records: ' . $keys;
         } catch (\Exception $e) {
             return 'Failed to connect to Redis: ' . $e->getMessage();
         }
