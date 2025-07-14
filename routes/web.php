@@ -77,12 +77,14 @@ Route::middleware(['force.auth'])->group(static function () {
 
     Route::get('/ping-redis', function () {
         try {
+            $cacheDriver = config('cache.default');
             Redis::ping();
             $dbsize = Redis::command('DBSIZE');
             $counter = Redis::incr('ping-redis-counter');
-            return "Successfully connected to Redis! DB Size: {$dbsize}. This page has been viewed {$counter} times.";
+            return "Successfully connected to Redis! Cache driver: {$cacheDriver}. DB Size: {$dbsize}. This page has been viewed {$counter} times.";
         } catch (\Exception $e) {
-            return 'Failed to connect to Redis: ' . $e->getMessage();
+            $cacheDriver = config('cache.default');
+            return "Failed to connect to Redis: " . $e->getMessage() . ". Cache driver is '{$cacheDriver}'.";
         }
     });
 
