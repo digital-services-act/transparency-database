@@ -695,7 +695,7 @@ class StatementSearchService
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
-        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
+        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method LIMIT 5000";
         return $this->extractMethodAggregateFromQuery($query);
     }
 
@@ -703,7 +703,7 @@ class StatementSearchService
     {
         return Cache::remember('methods_by_platform_all', self::ONE_HOUR, function () {
             $dsa_team_platform_id = Platform::dsaTeamPlatformId();
-            $query = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " WHERE platform_id <> " . $dsa_team_platform_id . " GROUP BY platform_id, method";
+            $query = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " WHERE platform_id <> " . $dsa_team_platform_id . " GROUP BY platform_id, method LIMIT 5000";
             return $this->extractMethodAggregateFromQuery($query);
         });
 
