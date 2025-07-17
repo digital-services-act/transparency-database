@@ -147,8 +147,11 @@ return [
     ],
 
     'elasticsearch' => [
-        'hosts' => [env('ES_ADDON_HOST', 'localhost:9200')],
-        'basicAuthentication' => [env('ES_ADDON_USER', 'admin'), env('ES_ADDON_PASSWORD', 'admin')],
+        'hosts' => env('ES_ADDON_HOST', 'localhost:9200'),
+        'basicAuthentication' => [
+            'username' => env('ES_ADDON_USER', 'admin'), 
+            'password' => env('ES_ADDON_PASSWORD', 'admin')
+        ],
         'retries' => env('ES_ADDON_RETRIES', 2),
     ],
 
