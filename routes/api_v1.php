@@ -69,4 +69,3 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::post('platform/{platform:dsa_common_id}/users', static fn(\App\Http\Requests\PlatformUsersStoreRequest $request, \App\Models\Platform $platform): \Illuminate\Http\JsonResponse => (new \App\Http\Controllers\Api\v1\PlatformUserAPIController())->store($request, $platform))->name('api.v1.platform-users.store')->can('create users');
 
 });
-
