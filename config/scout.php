@@ -152,7 +152,7 @@ return [
             'username' => env('ES_ADDON_USER', 'admin'), 
             'password' => env('ES_ADDON_PASSWORD', 'admin')
         ],
-        'apiToken' => env('ES_ADDON_API_TOKEN', null),
+        'apiKey' => env('ES_ADDON_API_KEY', null),
         'retries' => env('ES_ADDON_RETRIES', 2),
     ],
 
