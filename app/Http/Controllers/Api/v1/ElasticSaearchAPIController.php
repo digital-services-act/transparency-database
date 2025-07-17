@@ -44,7 +44,7 @@ class ElasticSaearchAPIController extends Controller
             $request,
             function () {
                 try {
-                    $response = ['test' => 'helloworld'];
+                    $response = $this->client->cat()->indices(['format' => 'json', 'index' => '*']);
                     return response()->json($response);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid indexes attempt: ' . $exception->getMessage()], $this->error_code);
