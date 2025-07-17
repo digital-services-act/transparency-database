@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\ElasticSaearchAPIController;
 use App\Http\Controllers\Api\v1\OpenSearchAPIController;
 use App\Http\Controllers\Api\v1\PlatformAPIController;
 use App\Http\Controllers\Api\v1\PlatformUserAPIController;
@@ -43,6 +44,11 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('platformdatetotal/{platform_id}/{date}', [OpenSearchAPIController::class, 'platformDateTotal'])->name('api.v1.opensearch.platformdatetotal');
         Route::get('datetotalrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalRange'])->name('api.v1.opensearch.datetotalrange');
         Route::get('datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
+    });
+
+    Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
+        Route::get('indices', [ElasticSaearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
+        Route::post('search', [ElasticSaearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
     });
 
     Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {

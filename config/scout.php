@@ -146,4 +146,10 @@ return [
         'retries' => env('OPENSEARCH_RETRYS', 2),
     ],
 
+    'elasticsearch' => [
+        'hosts' => [env('ES_ADDON_HOST', 'localhost:9200')],
+        'basicAuthentication' => [env('ES_ADDON_USER', 'admin'), env('ES_ADDON_PASSWORD', 'admin')],
+        'retries' => env('ES_ADDON_RETRIES', 2),
+    ],
+
 ];
