@@ -37,11 +37,11 @@ class ElasticSaearchAPIController extends Controller
 
     public function indices(Request $request): JsonResponse
     {
-        $promise = $this->client->cat()->indices([
+        $response = $this->client->cat()->indices([
             'index' => '*',
             'format' => 'json'
-        ]);
-        $response = $promise->wait();
+        ])->asObject();
+        
 
         return response()->json($response);
     }   
