@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('elastic/indices', [ElasticSaearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
+Route::post('elastic/search', [ElasticSaearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
+
 Route::middleware('auth:sanctum')->group(static function () {
     Route::get('statement/{statement}', [StatementAPIController::class, 'show'])->name('api.v1.statement.show')->can('view statements');
     Route::get('statement/uuid/{uuid}', [StatementAPIController::class, 'showUuid'])->name('api.v1.statement.show.uuid')->can('view statements');
@@ -46,10 +49,10 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('datetotalsrange/{start}/{end}', [OpenSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.opensearch.datetotalsrange');
     });
 
-    Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
-        Route::get('indices', [ElasticSaearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
-        Route::post('search', [ElasticSaearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
-    });
+    // Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
+        // Route::get('indices', [ElasticSaearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
+        // Route::post('search', [ElasticSaearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
+    // });
 
     Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {
         Route::post('search', [OpenSearchAPIController::class, 'search']);
