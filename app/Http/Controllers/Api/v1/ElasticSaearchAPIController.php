@@ -17,7 +17,9 @@ use Illuminate\Http\Response;
 class ElasticSaearchAPIController extends Controller
 {
     
-
+    use ApiLoggingTrait;
+    use ExceptionHandlingTrait;
+    
     private Client $client;
 
     private string $index_name = 'search-statements-index';
@@ -28,34 +30,27 @@ class ElasticSaearchAPIController extends Controller
 
     public function __construct()
     {
-        // $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-        //     ->setHosts(explode(',', config('scout.elasticsearch.hosts')))
-        //     //->setApiKey(config('scout.elasticsearch.apiKey'))
-        //     ->setBasicAuthentication(
-        //         config('scout.elasticsearch.basicAuthentication.username'),
-        //         config('scout.elasticsearch.basicAuthentication.password')
-        //     )
-        //     ->build();
-        
+        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
+            ->setHosts(config('scout.elasticsearch.uri'))
+            ->build();
     }
 
-    public function indices(Request $request)
+    public function indices(Request $request): JsonResponse
     {
-        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            
-            // ->setHosts(config('scout.elasticsearch.hosts'))
-            // ->setApiKey(config('scout.elasticsearch.apiKey'))
-            // // ->setBasicAuthentication(
-            // //     config('scout.elasticsearch.basicAuthentication.username'),
-            // //     config('scout.elasticsearch.basicAuthentication.password')
-            // // )
-            ->setHosts(config('scout.elasticsearch.uri'))
-            ->build();   
-
-            return $this->client->cat()->indices([
-                'format' => 'json',
-                'index' => '*',
-            ]);
+        return $this->handleApiOperation(
+            $request,
+            function () use ($request) {
+                try {
+                    return response()->json($this->client->cat()->indices([
+                        'index' => '*',
+                        'format' => 'json',
+                        'h' => ['index', 'health', 'status', 'docs.count', 'docs.deleted', 'store.size'],
+                    ]));
+                } catch (Exception $exception) {
+                    return response()->json(['error' => 'invalid indices attempt: ' . $exception->getMessage()], $this->error_code);
+                }
+            }
+        );
     }
 
     /**
