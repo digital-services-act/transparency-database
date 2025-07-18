@@ -19,7 +19,7 @@ class ElasticSaearchAPIController extends Controller
     
     use ApiLoggingTrait;
     use ExceptionHandlingTrait;
-    
+
     private Client $client;
 
     private string $index_name = 'search-statements-index';
@@ -43,8 +43,7 @@ class ElasticSaearchAPIController extends Controller
                 try {
                     return response()->json($this->client->cat()->indices([
                         'index' => '*',
-                        'format' => 'json',
-                        'h' => ['index', 'health', 'status', 'docs.count', 'docs.deleted', 'store.size'],
+                        'format' => 'json'
                     ]));
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid indices attempt: ' . $exception->getMessage()], $this->error_code);
