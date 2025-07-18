@@ -148,6 +148,7 @@ return [
 
     'elasticsearch' => [
         'hosts' => ['https://' . env('ES_ADDON_HOST', 'localhost:9200') . ':9200'],
+        'uri' => env('ES_ADDON_URI', 'https://localhost:9200'),
         'basicAuthentication' => [
             'username' => env('ES_ADDON_USER', 'admin'), 
             'password' => env('ES_ADDON_PASSWORD', 'admin')
