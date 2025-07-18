@@ -67,7 +67,7 @@ class ElasticSaearchAPIController extends Controller
                     return response()->json($this->client->search([
                         'index' => $this->index_name,
                         'body' => $request->toArray(),
-                    ]));
+                    ])->asArray());
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
                 }
