@@ -42,7 +42,7 @@ class ElasticSaearchAPIController extends Controller
     public function indices(Request $request)
     {
         $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(['localhost:9200'])
+            ->setHosts(['https://localhost:9200'])
             ->setApiKey(config('scout.elasticsearch.apiKey'))
             // ->setBasicAuthentication(
             //     config('scout.elasticsearch.basicAuthentication.username'),
