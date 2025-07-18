@@ -33,15 +33,15 @@ class ElasticSaearchAPIController extends Controller
         $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
             ->setHosts(config('scout.elasticsearch.uri'))
             ->build();
-        $this->client->setAsync(false);
     }
 
     public function indices(Request $request): JsonResponse
     {
-        $response = $this->client->cat()->indices([
+        $promise = $this->client->cat()->indices([
             'index' => '*',
             'format' => 'json'
         ]);
+        $response = $promise->wait();
 
         return response()->json($response);
     }   
