@@ -16,7 +16,7 @@ use Illuminate\Http\Response;
  */
 class ElasticSaearchAPIController extends Controller
 {
-    use ExceptionHandlingTrait, ApiLoggingTrait;
+    
 
     private Client $client;
 
@@ -39,15 +39,9 @@ class ElasticSaearchAPIController extends Controller
         
     }
 
-    public function indices(Request $request): JsonResponse
+    public function indices(Request $request)
     {
-        try {
-            
-
-            return response()->json( $this->client->info() );
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid indices attempt: ' . $exception->getMessage()], $this->error_code);
-        }   
+        return $this->client->info();   
     }
 
     /**
