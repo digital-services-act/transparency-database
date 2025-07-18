@@ -49,7 +49,10 @@ class ElasticSaearchAPIController extends Controller
             //     config('scout.elasticsearch.basicAuthentication.password')
             // )
             ->build();   
-            return $this->client->info();
+            return $this->client->cat()->indices([
+                'format' => 'json',
+                'index' => '*',
+            ]);
     }
 
     /**
