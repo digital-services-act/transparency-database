@@ -141,7 +141,7 @@ return [
 
 
     'opensearch' => [
-        'hosts' => [env('ES_ADDON_HOST', 'localhost:9200') . ':9200'],
+        'hosts' => [env('ES_ADDON_HOST', 'localhost:9200')],
         'basicAuthentication' => [env('ES_ADDON_USER', 'admin'), env('ES_ADDON_PASSWORD', 'admin')],
         'retries' => env('OPENSEARCH_RETRYS', 2),
     ],
