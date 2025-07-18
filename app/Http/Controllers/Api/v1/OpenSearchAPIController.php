@@ -23,7 +23,7 @@ class OpenSearchAPIController extends Controller
 {
     use ExceptionHandlingTrait, ApiLoggingTrait;
 
-    private string $index_name = 'statement_index';
+    private string $index_name = 'search-statements-index';
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
