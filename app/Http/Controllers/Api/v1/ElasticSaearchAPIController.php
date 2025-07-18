@@ -55,6 +55,8 @@ class ElasticSaearchAPIController extends Controller
     
      
 
+
+    
     /**
      * @return JsonResponse
      */
@@ -70,6 +72,26 @@ class ElasticSaearchAPIController extends Controller
                     ])->asArray());
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
+                }
+            }
+        );
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function count(Request $request): JsonResponse
+    {
+        return $this->handleApiOperation(
+            $request,
+            function () use ($request) {
+                try {
+                    return response()->json($this->client->count([
+                        'index' => $this->index_name,
+                        'body' => $request->toArray(),
+                    ])->asArray());
+                } catch (Exception $exception) {
+                    return response()->json(['error' => 'invalid count attempt: ' . $exception->getMessage()], $this->error_code);
                 }
             }
         );
