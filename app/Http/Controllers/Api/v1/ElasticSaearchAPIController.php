@@ -40,7 +40,7 @@ class ElasticSaearchAPIController extends Controller
         $data = $this->client->cat()->indices([
             'index' => '*',
             'format' => 'json'
-        ]);
+        ])->wait();
 
         return response()->json($data);
     }   
