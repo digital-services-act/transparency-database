@@ -30,11 +30,11 @@ class ElasticSaearchAPIController extends Controller
     {
         $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
             ->setHosts(explode(',', config('scout.elasticsearch.hosts')))
-            ->setApiKey(config('scout.elasticsearch.apiKey'))
-            // ->setBasicAuthentication(
-            //     config('scout.elasticsearch.basicAuthentication.username'),
-            //     config('scout.elasticsearch.basicAuthentication.password')
-            // )
+            //->setApiKey(config('scout.elasticsearch.apiKey'))
+            ->setBasicAuthentication(
+                config('scout.elasticsearch.basicAuthentication.username'),
+                config('scout.elasticsearch.basicAuthentication.password')
+            )
             ->build();
         
     }
