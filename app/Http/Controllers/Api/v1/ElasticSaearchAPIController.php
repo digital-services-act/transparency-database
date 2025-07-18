@@ -28,20 +28,20 @@ class ElasticSaearchAPIController extends Controller
 
     public function __construct()
     {
-        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(explode(',', config('scout.elasticsearch.hosts')))
-            //->setApiKey(config('scout.elasticsearch.apiKey'))
-            ->setBasicAuthentication(
-                config('scout.elasticsearch.basicAuthentication.username'),
-                config('scout.elasticsearch.basicAuthentication.password')
-            )
-            ->build();
+        // $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
+        //     ->setHosts(explode(',', config('scout.elasticsearch.hosts')))
+        //     //->setApiKey(config('scout.elasticsearch.apiKey'))
+        //     ->setBasicAuthentication(
+        //         config('scout.elasticsearch.basicAuthentication.username'),
+        //         config('scout.elasticsearch.basicAuthentication.password')
+        //     )
+        //     ->build();
         
     }
 
     public function indices(Request $request)
     {
-        return $this->client->info();   
+        return "hello";   
     }
 
     /**
