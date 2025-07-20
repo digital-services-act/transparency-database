@@ -7,32 +7,61 @@ use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Models\Platform;
 use App\Models\Statement;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
+use Elastic\Elasticsearch\Client;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use OpenSearch\Client;
 use RuntimeException;
 
 /**
  * @codeCoverageIgnore This is an admin WIP route and thus we are not going to worry about coverage
  */
-class OpenSearchAPIController extends Controller
+class ElasticSearchAPIController extends Controller
 {
-    use ExceptionHandlingTrait, ApiLoggingTrait;
+    
+    use ApiLoggingTrait;
+    use ExceptionHandlingTrait;
 
-    private string $index_name = 'statement_index';
+    private Client $client;
+
+    private string $index_name = 'search-statements-index';
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
     private int $response_size_limit = 5242880;
 
-    public function __construct(private readonly Client $client, private readonly StatementSearchService $statement_search_service)
+    public function __construct(private readonly StatementElasticSearchService $statement_elastic_search_service)
     {
+        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
+            ->setHosts(config('scout.elasticsearch.uri'))
+            ->build();
     }
 
+    public function indices(Request $request): JsonResponse
+    {
+        return $this->handleApiOperation(
+            $request,
+            function () use ($request) {
+                try {
+                    $response = $this->client->cat()->indices([
+                        'index' => '*',
+                        'format' => 'json'
+                    ])->asArray();
+                    return response()->json($response);
+                } catch (Exception $exception) {
+                    return response()->json(['error' => 'failed to retrieve indices: ' . $exception->getMessage()], $this->error_code);
+                }
+            }
+        );        
+    }   
+    
+     
+
+
+    
     /**
      * @return JsonResponse
      */
@@ -45,7 +74,7 @@ class OpenSearchAPIController extends Controller
                     return response()->json($this->client->search([
                         'index' => $this->index_name,
                         'body' => $request->toArray(),
-                    ]));
+                    ])->asArray());
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
                 }
@@ -65,13 +94,14 @@ class OpenSearchAPIController extends Controller
                     return response()->json($this->client->count([
                         'index' => $this->index_name,
                         'body' => $request->toArray(),
-                    ]));
+                    ])->asArray());
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid count attempt: ' . $exception->getMessage()], $this->error_code);
                 }
             }
         );
     }
+
 
     /**
      * @return JsonResponse
@@ -145,7 +175,7 @@ class OpenSearchAPIController extends Controller
 
     public function clearAggregateCache(): string
     {
-        $this->statement_search_service->clearOSACache();
+        $this->statement_elastic_search_service->clearOSACache();
 
         return 'ok';
     }
@@ -164,13 +194,13 @@ class OpenSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes('all', false);
 
-            $results = $this->statement_search_service->processDateAggregate(
+            $results = $this->statement_elastic_search_service->processDateAggregate(
                 $date,
                 $attributes,
                 $this->booleanizeQueryParam('cache')
             );
 
-            $headers = $this->statement_search_service->getAllowedAggregateAttributes(false);
+            $headers = $this->statement_elastic_search_service->getAllowedAggregateAttributes(false);
             $headers[] = 'platform_name';
             $headers[] = 'total';
             $headers = array_diff($headers, ['platform_id']);
@@ -221,7 +251,7 @@ class OpenSearchAPIController extends Controller
 
                     $attributes = $this->sanitizeAttributes($attributes_in, true);
 
-                    $results = $this->statement_search_service->processDateAggregate(
+                    $results = $this->statement_elastic_search_service->processDateAggregate(
                         $date,
                         $attributes,
                         $this->booleanizeQueryParam('cache')
@@ -255,7 +285,7 @@ class OpenSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_search_service->processRangeAggregate(
+            $results = $this->statement_elastic_search_service->processRangeAggregate(
                 $dates['start'],
                 $dates['end'],
                 $attributes,
@@ -289,7 +319,7 @@ class OpenSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_search_service->processDatesAggregate(
+            $results = $this->statement_elastic_search_service->processDatesAggregate(
                 $dates['start'],
                 $dates['end'],
                 $attributes,
@@ -361,7 +391,7 @@ class OpenSearchAPIController extends Controller
 
     public function total(): JsonResponse
     {
-        return response()->json($this->statement_search_service->grandTotal());
+        return response()->json($this->statement_elastic_search_service->grandTotal());
     }
 
     public function dateTotal(string $date_in): JsonResponse
@@ -369,7 +399,7 @@ class OpenSearchAPIController extends Controller
         try {
             $date = $this->sanitizeDateString($date_in);
 
-            return response()->json($this->statement_search_service->totalForDate($date));
+            return response()->json($this->statement_elastic_search_service->totalForDate($date));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date total attempt: ' . $exception->getMessage()], $this->error_code);
         }
@@ -386,7 +416,7 @@ class OpenSearchAPIController extends Controller
                 throw new RuntimeException('Platform not found');
             }
 
-            return response()->json($this->statement_search_service->totalForPlatformDate($platform, $date));
+            return response()->json($this->statement_elastic_search_service->totalForPlatformDate($platform, $date));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date total platform attempt: ' . $exception->getMessage()], $this->error_code);
         }
@@ -397,7 +427,7 @@ class OpenSearchAPIController extends Controller
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            return response()->json($this->statement_search_service->totalForDateRange($dates['start'], $dates['end']));
+            return response()->json($this->statement_elastic_search_service->totalForDateRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date total range attempt: ' . $exception->getMessage()], $this->error_code);
         }
@@ -408,7 +438,7 @@ class OpenSearchAPIController extends Controller
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            return response()->json($this->statement_search_service->datesTotalsForRange($dates['start'], $dates['end']));
+            return response()->json($this->statement_elastic_search_service->datesTotalsForRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date totals range attempt: ' . $exception->getMessage()], $this->error_code);
         }
@@ -460,7 +490,7 @@ class OpenSearchAPIController extends Controller
     {
         $attributes = explode("__", $attributes_in);
         if ($attributes[0] === 'all') {
-            $attributes = $this->statement_search_service->getAllowedAggregateAttributes($remove_received_date);
+            $attributes = $this->statement_elastic_search_service->getAllowedAggregateAttributes($remove_received_date);
         }
 
         return $attributes;

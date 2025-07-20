@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\v1\ElasticSaearchAPIController;
+use App\Http\Controllers\Api\v1\ElasticSearchAPIController;
 use App\Http\Controllers\Api\v1\OpenSearchAPIController;
 use App\Http\Controllers\Api\v1\PlatformAPIController;
 use App\Http\Controllers\Api\v1\PlatformUserAPIController;
@@ -46,8 +46,23 @@ Route::middleware('auth:sanctum')->group(static function () {
     });
 
     Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
-        Route::get('indices', [ElasticSaearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
-        Route::post('search', [ElasticSaearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
+        Route::get('indices', [ElasticSearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
+        Route::post('search', [ElasticSearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
+        Route::post('count', [ElasticSearchAPIController::class, 'count'])->name('api.v1.elasticsearch.count');
+        Route::post('sql', [ElasticSearchAPIController::class, 'sql'])->name('api.v1.elasticsearch.sql');
+        Route::post('explain', [ElasticSearchAPIController::class, 'explain'])->name('api.v1.elasticsearch.explain');
+        Route::post('cacheclear', [ElasticSearchAPIController::class, 'clearAggregateCache'])->name('api.v1.elasticsearch.cacheclear');
+        Route::get('aggregates/{date}/{attributes?}', [ElasticSearchAPIController::class, 'aggregatesForDate'])->name('api.v1.elasticsearch.aggregates.date');
+        Route::get('aggregates-csv/{date}', [ElasticSearchAPIController::class, 'aggregatesCsvForDate'])->name('api.v1.elasticsearch.aggregates.csv.date');
+        Route::get('aggregates/{start}/{end}/{attributes?}', [ElasticSearchAPIController::class, 'aggregatesForRange'])->name('api.v1.elasticsearch.aggregates.range');
+        Route::get('aggregatesd/{start}/{end}/{attributes?}', [ElasticSearchAPIController::class, 'aggregatesForRangeDates'])->name('api.v1.elasticsearch.aggregates.range.dates');
+        Route::get('platforms', [ElasticSearchAPIController::class, 'platforms'])->name('api.v1.elasticsearch.platforms');
+        Route::get('labels', [ElasticSearchAPIController::class, 'labels'])->name('api.v1.elasticsearch.labels');
+        Route::get('total', [ElasticSearchAPIController::class, 'total'])->name('api.v1.elasticsearch.total');
+        Route::get('datetotal/{date}', [ElasticSearchAPIController::class, 'dateTotal'])->name('api.v1.elasticsearch.datetotal');
+        Route::get('platformdatetotal/{platform_id}/{date}', [ElasticSearchAPIController::class, 'platformDateTotal'])->name('api.v1.elasticsearch.platformdatetotal');
+        Route::get('datetotalrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalRange'])->name('api.v1.elasticsearch.datetotalrange');
+        Route::get('datetotalsrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.elasticsearch.datetotalsrange');
     });
 
     Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {
