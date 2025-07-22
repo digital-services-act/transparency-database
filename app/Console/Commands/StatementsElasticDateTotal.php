@@ -55,7 +55,7 @@ class StatementsElasticDateTotal extends Command
             $source_percentage = floor(($es_total / $db_diff) * 100);
             $this->info('Source Percentage: ' . $source_percentage . '%');
             $this->info('Source Difference DB Percentage: ' . floor(($source_diff / $db_diff) * 100) . '%');
-            $this->info('Source Difference ES Percentage: ' . floor(($source_diff / $os_total) * 100) . '%');
+            $this->info('Source Difference ES Percentage: ' . floor(($source_diff / $es_total) * 100) . '%');
             $this->info('statements:index-date ' . $date_string);
             $totals = $statement_elastic_search_service->totalsForPlatformsDate($date);
             $methods = $statement_elastic_search_service->methodsByPlatformsDate($date);
