@@ -476,7 +476,7 @@ class StatementElasticSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
+            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk) . "\n"]);
         }
     }
 
