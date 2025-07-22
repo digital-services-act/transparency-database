@@ -111,7 +111,7 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    $response = $this->client->sql()->query($request->toArray());
+                    $response = $this->client->sql()->query($request->toArray())->asArray();
                     return response()->json($response);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
