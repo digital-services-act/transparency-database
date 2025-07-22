@@ -81,6 +81,11 @@ class StatementElasticSearchService
             ->build();
     }
 
+    public function client(): Client
+    {
+        return $this->client;
+    }
+
     /**
      *
      * @param array $filters

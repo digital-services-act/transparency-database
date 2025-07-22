@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "app_id": "app_55174b80-0d57-40a5-88fb-2f6e377675ea",
+      "org_id": "orga_f58a8aff-d393-4e03-af0d-a78f991e0972",
+      "deploy_url": "https://github.com/digital-services-act/transparency-database.git",
+      "git_ssh_url": "https://github.com/digital-services-act/transparency-database.git",
+      "name": "transparency-paris",
+      "alias": "transparency-paris"
+    }
+  ]
+}
