@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\DayArchiveService;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Exception;
 use Illuminate\Console\Command;
 use Throwable;
@@ -34,7 +34,7 @@ class StatementsElasticDateTotal extends Command
      * @throws Exception
      * @throws Throwable
      */
-    public function handle(DayArchiveService $day_archive_service, StatementSearchService $statement_search_service): void
+    public function handle(DayArchiveService $day_archive_service, StatementElasticSearchService $statement_elastic_search_service): void
     {
         $date        = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
@@ -48,17 +48,17 @@ class StatementsElasticDateTotal extends Command
             $this->info('Last ID: ' . $last_id);
             $db_diff = $last_id - $first_id;
             $this->info('Difference in IDs: ' . $db_diff);
-            $os_total = $statement_search_service->totalForDate($date);
-            $this->info('Elastic Total: ' . $statement_search_service->totalForDate($date));
-            $source_diff = $db_diff - $os_total;
+            $es_total = $statement_elastic_search_service->totalForDate($date);
+            $this->info('Elastic Total: ' . $es_total);
+            $source_diff = $db_diff - $es_total;
             $this->info('Source Difference: ' . $source_diff);
-            $source_percentage = floor(($os_total / $db_diff) * 100);
+            $source_percentage = floor(($es_total / $db_diff) * 100);
             $this->info('Source Percentage: ' . $source_percentage . '%');
             $this->info('Source Difference DB Percentage: ' . floor(($source_diff / $db_diff) * 100) . '%');
             $this->info('Source Difference ES Percentage: ' . floor(($source_diff / $os_total) * 100) . '%');
             $this->info('statements:index-date ' . $date_string);
-            $totals = $statement_search_service->totalsForPlatformsDate($date);
-            $methods = $statement_search_service->methodsByPlatformsDate($date);
+            $totals = $statement_elastic_search_service->totalsForPlatformsDate($date);
+            $methods = $statement_elastic_search_service->methodsByPlatformsDate($date);
             foreach ($totals as $index => $total) {
                 $totals[$index]['API'] = $methods[$total['platform_id']]['API'] ?? 0;
                 $totals[$index]['API_MULTI'] = $methods[$total['platform_id']]['API_MULTI'] ?? 0;
