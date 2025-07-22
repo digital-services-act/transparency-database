@@ -38,6 +38,7 @@ class ElasticSearchAPIController extends Controller
         $this->client = $this->statement_elastic_search_service->client();
     }
 
+
     public function indices(Request $request): JsonResponse
     {
         return $this->handleApiOperation(
@@ -110,10 +111,7 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    $response = $this->client->sql()->query([
-                        'query' => $request->toArray()['query'] ?? '',
-                        'fetch_size' => $request->toArray()['fetch_size'] ?? 1000
-                    ]);
+                    $response = $this->client->sql()->query($request->toArray());
                     return response()->json($response);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
