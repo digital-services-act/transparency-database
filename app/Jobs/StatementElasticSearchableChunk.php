@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Statement;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,7 +18,7 @@ use JsonException;
  * 
  * @codeCoverageIgnore
  */
-class   StatementSearchableChunk implements ShouldQueue
+class   StatementElasticSearchableChunk implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -35,7 +35,7 @@ class   StatementSearchableChunk implements ShouldQueue
      * Execute the job.
      * @throws JsonException
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
     {
         // Set this in cache, to emergency stop reindexing.
         $stop = Cache::get('stop_reindexing', false);
@@ -56,11 +56,11 @@ class   StatementSearchableChunk implements ShouldQueue
 
             $range = range($this->min, $end);
             // Bulk indexing.
-            $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
-            $statement_search_service->bulkIndexStatements($statements);
+            $statements = Statement::query()->whereIn('id', $range)->get();
+            $statement_elastic_search_service->bulkIndexStatements($statements);
 
             if ($end >= $this->max) {
-                Log::info('StatementSearchableChunk Max Reached at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                Log::info('StatementElasticSearchableChunk Max Reached at ' . Carbon::now()->format('Y-m-d H:i:s'));
             }
         }
     }
