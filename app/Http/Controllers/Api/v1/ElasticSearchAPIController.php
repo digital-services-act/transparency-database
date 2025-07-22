@@ -444,6 +444,26 @@ class ElasticSearchAPIController extends Controller
         }
     }
 
+    public function createStatementIndex(): JsonResponse
+    {
+        try {
+            $this->statement_elastic_search_service->createStatementIndex();
+            return response()->json(['message' => 'Statement index created successfully.']);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'Failed to create statement index: ' . $exception->getMessage()], $this->error_code);
+        }
+    }
+
+    public function deleteStatementIndex(): JsonResponse
+    {
+        try {
+            $this->statement_elastic_search_service->deleteStatementIndex();
+            return response()->json(['message' => 'Statement index deleted successfully.']);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'Failed to delete statement index: ' . $exception->getMessage()], $this->error_code);
+        }
+    }
+
     private function sanitizeDateString(string $date_in): bool|Carbon
     {
         try {

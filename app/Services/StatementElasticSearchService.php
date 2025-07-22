@@ -1263,6 +1263,35 @@ JSON;
         }
     }
 
+    public function createStatementIndex(): void
+    {
+
+        $index = $this->index_name;
+        $shards = 64;
+        $replicas = 2;
+
+        $properties = $this->statementIndexProperties();
+
+        $body = [
+            'mappings' => $properties,
+            'settings' => [
+                'number_of_shards' => $shards,
+                'number_of_replicas' => $replicas
+            ]
+        ];
+
+        $this->client->indices()->create(['index' => $index, 'body' => $body]);
+    }
+
+    public function deleteStatementIndex(): void
+    {
+        $index = $this->index_name;
+
+        if ($this->client->indices()->exists(['index' => $index])) {
+            $this->client->indices()->delete(['index' => $index]);
+        } 
+    }
+
     public function statementIndexProperties(): array
     {
         return [
