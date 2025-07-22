@@ -629,10 +629,13 @@ class StatementElasticSearchService
     {
         if (config('scout.driver') === 'elasticsearch') {
             return $this->client->sql()->query([
-                'query' => $sql,
+                'body' => [
+                    'query' => $sql,
+                ],
+                'format' => 'json',
             ])->asArray();
         }
-
+        
         return $this->mockCountQueryResult();
     }
 
