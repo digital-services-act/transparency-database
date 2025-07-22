@@ -63,8 +63,6 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('platformdatetotal/{platform_id}/{date}', [ElasticSearchAPIController::class, 'platformDateTotal'])->name('api.v1.elasticsearch.platformdatetotal');
         Route::get('datetotalrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalRange'])->name('api.v1.elasticsearch.datetotalrange');
         Route::get('datetotalsrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.elasticsearch.datetotalsrange');
-        Route::post('create-index', [ElasticSearchAPIController::class, 'createStatementIndex'])->name('api.v1.elasticsearch.create-index');
-        Route::post('delete-index', [ElasticSearchAPIController::class, 'deleteStatementIndex'])->name('api.v1.elasticsearch.delete-index');
     });
 
     Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {

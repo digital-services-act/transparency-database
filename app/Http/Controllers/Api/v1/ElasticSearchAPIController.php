@@ -27,7 +27,7 @@ class ElasticSearchAPIController extends Controller
 
     private Client $client;
 
-    private string $index_name = 'search-statements-index';
+    private string $index_name = 'statement_index';
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
@@ -35,9 +35,7 @@ class ElasticSearchAPIController extends Controller
 
     public function __construct(private readonly StatementElasticSearchService $statement_elastic_search_service)
     {
-        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(config('scout.elasticsearch.uri'))
-            ->build();
+        $this->client = $this->statement_elastic_search_service->client();
     }
 
     public function indices(Request $request): JsonResponse
@@ -441,26 +439,6 @@ class ElasticSearchAPIController extends Controller
             return response()->json($this->statement_elastic_search_service->datesTotalsForRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date totals range attempt: ' . $exception->getMessage()], $this->error_code);
-        }
-    }
-
-    public function createStatementIndex(): JsonResponse
-    {
-        try {
-            $this->statement_elastic_search_service->createStatementIndex();
-            return response()->json(['message' => 'Statement index created successfully.']);
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'Failed to create statement index: ' . $exception->getMessage()], $this->error_code);
-        }
-    }
-
-    public function deleteStatementIndex(): JsonResponse
-    {
-        try {
-            $this->statement_elastic_search_service->deleteStatementIndex();
-            return response()->json(['message' => 'Statement index deleted successfully.']);
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'Failed to delete statement index: ' . $exception->getMessage()], $this->error_code);
         }
     }
 

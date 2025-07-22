@@ -21,7 +21,7 @@ use stdClass;
 class StatementElasticSearchService
 {
 
-    private string $index_name = 'search-statements-index';
+    private string $index_name = 'statement_index';
 
     private Client $client;
 
