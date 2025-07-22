@@ -75,7 +75,7 @@ class ElasticSearchIndexInfo extends Command
 
         $this->table(['Field', 'Type'], $fields);
 
-        $shards = $client->cat()->shards(['index' => $index])->asArray();
+        $shards = $client->cat()->shards(['index' => $index, 'format' => 'json'])->asArray();
 
         $shards_report = [];
         foreach ($shards as $shard) {
