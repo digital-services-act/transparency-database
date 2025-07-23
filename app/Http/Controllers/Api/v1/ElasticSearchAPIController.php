@@ -132,13 +132,7 @@ class ElasticSearchAPIController extends Controller
                 try {
                     $response = $this->client->search([
                         'index' => $this->index_name,
-                        'body' => [
-                            'query' => [
-                                'query_string' => [
-                                    'query' => $request->input('query')
-                                ]
-                            ]
-                        ]
+                        'q' => $request->input('query')
                     ])->asArray();
                     return response()->json($response);
                 } catch (Exception $exception) {
