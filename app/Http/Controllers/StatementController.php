@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class StatementController extends Controller
 {
@@ -50,21 +51,27 @@ class StatementController extends Controller
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
         $max_pages = 200;
+        $pagination_per_page = 50;
         $page = (int)$request->get('page', 0);
         if ($page > $max_pages) {
             $request->query->set('page', $max_pages);
         }
 
         $options = $this->prepareOptions(true);
-        $pagination_per_page = 50;
-        $setup = $this->setupQuery($request);
+        
+        $setup = $this->setupQuery($request, $page, $pagination_per_page);
         $statements = $setup['statements'];
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
+        $statements = $statements->orderBy('created_at', 'DESC')->get();
         $total = $setup['total'];
         $similarity_results = null;
         $reindexing = Cache::get('reindexing', false);
+        $paginator = new LengthAwarePaginator($statements, $total, $pagination_per_page, $page);
 
         /*
+        Old way with opensearch
+
+
+
         $setup = $this->setupQuery($request);
 
         $pagination_per_page = 50;
@@ -82,7 +89,14 @@ class StatementController extends Controller
         $reindexing = Cache::get('reindexing', false);
         */
 
-        return view('statement.index', ['statements' => $statements, 'options' => $options, 'total' => $total, 'similarity_results' => $similarity_results, 'reindexing' => $reindexing]);
+        return view('statement.index', [
+            'statements' => $statements, 
+            'options' => $options, 
+            'total' => $total, 
+            'similarity_results' => $similarity_results, 
+            'reindexing' => $reindexing, 
+            'paginator' => $paginator
+        ]);
     }
 
     public function exportCsv(Request $request)
@@ -104,7 +118,7 @@ class StatementController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    private function setupQuery(Request $request): array
+    private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
@@ -131,9 +145,9 @@ class StatementController extends Controller
 
             $filters = $request->query();
 
-            $elastic_results = $this->statement_elastic_search_service->query($filters);
-            $statements = $elastic_results['statements'] ?? [];
-            $total = $elastic_results['total'] ?? 0;
+            $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
+            $statements = $elastic_results['statements'];
+            $total = $elastic_results['total'];
 
 
         } else {

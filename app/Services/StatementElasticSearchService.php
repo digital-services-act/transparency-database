@@ -86,14 +86,14 @@ class StatementElasticSearchService
         return $this->client;
     }
 
-    public function query(array $filters, array $options = []): array
+    public function query(array $filters, array $options = [], $page = 0, $perPage = 50): array
     {
         $query = $this->buildQuery($filters);
 
         $results = $this->client->search([
                         'index' => $this->index_name,
-                        'from' => 0,
-                        'size' => 1000,
+                        'from' => $page * $perPage,
+                        'size' => $perPage,
                         'track_total_hits' => true,
                         'q' => $query
                     ])->asArray();

@@ -47,4 +47,4 @@
   })
 </script>
 
-{{ $statements->links('paginator') }}
+{{ $paginator->links('paginator') }}

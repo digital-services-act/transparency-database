@@ -92,6 +92,6 @@
     </div>
 
 
-    <x-statement.table :statements="$statements" />
+    <x-statement.table :statements="$statements" :paginator="$paginator" />
 
 @endsection
