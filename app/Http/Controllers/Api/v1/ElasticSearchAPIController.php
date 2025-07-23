@@ -124,6 +124,30 @@ class ElasticSearchAPIController extends Controller
         );
     }
 
+    public function lucene(Request $request): JsonResponse
+    {
+        return $this->handleApiOperation(
+            $request,
+            function () use ($request) {
+                try {
+                    $response = $this->client->search([
+                        'index' => $this->index_name,
+                        'body' => [
+                            'query' => [
+                                'query_string' => [
+                                    'query' => $request->input('query')
+                                ]
+                            ]
+                        ]
+                    ])->asArray();
+                    return response()->json($response);
+                } catch (Exception $exception) {
+                    return response()->json(['error' => 'invalid lucene query attempt: ' . $exception->getMessage()], $this->error_code);
+                }
+            }
+        );
+    }
+
     
 
     
