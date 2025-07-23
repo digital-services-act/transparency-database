@@ -86,7 +86,7 @@ class StatementElasticSearchService
         return $this->client;
     }
 
-    public function query(array $filters, array $options = []): Builder
+    public function query(array $filters, array $options = []): array
     {
         $query = $this->buildQuery($filters);
 
@@ -104,7 +104,10 @@ class StatementElasticSearchService
         }
 
         $statement_ids = array_unique($statement_ids);
-        return Statement::query()->whereIn('id', $statement_ids);
+        return [
+            'statements' => Statement::query()->whereIn('id', $statement_ids),
+            'total' => $results['hits']['total']['value'] ?? 0,
+        ];
     }
 
     private function buildQuery(array $filters): string

@@ -13,17 +13,15 @@ use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
 use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
+use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
 use App\Services\StatementSearchService;
-use App\Services\StatementElasticSearchService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel;
 
 class StatementController extends Controller
