@@ -111,7 +111,11 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    $response = $this->client->sql()->query($request->toArray())->asArray();
+                    $response = $this->client->sql()->query([
+                        'body' => [
+                            'query' => $request->input('query')
+                        ]
+                    ])->asArray();
                     return response()->json($response);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
@@ -120,54 +124,9 @@ class ElasticSearchAPIController extends Controller
         );
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function dql(Request $request): JsonResponse
-    {
-        return $this->handleApiOperation(
-            $request,
-            function () use ($request) {
-                try {
-                    $options = [
-                        'track_total_hits' => true,
-                        'from' => 0,
-                        'size' => 1000,
-                    ];
-                    $results = Statement::search($request->toArray()['query'])->options($options);
-                    $total = $results->paginate(1)->total();
-                    $statements = $results->get();
-                    $total_sample = $statements->count();
+    
 
-                    return response()->json([
-                        'total' => $total,
-                        'total_sample' => $total_sample,
-                        'statements' => $statements,
-                    ]);
-                } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid dql attempt: ' . $exception->getMessage()], $this->error_code);
-                }
-            }
-        );
-    }
-
-    /**
-     * @return array|JsonResponse
-     */
-    public function explain(Request $request): array|JsonResponse
-    {
-        try {
-            $results = $this->client->sql()->explain($request->toArray());
-            $query = $results['root']['children'][0]['description']['request'] ?? false;
-            $query = '{' . ltrim(strstr((string) $query, '{'), '{');
-            $query = substr($query, 0, strrpos($query, '}')) . '}';
-            $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
-
-            return $results;
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
-        }
-    }
+    
 
     public function clearAggregateCache(): string
     {

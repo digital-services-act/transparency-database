@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::post('search', [ElasticSearchAPIController::class, 'search'])->name('api.v1.elasticsearch.search');
         Route::post('count', [ElasticSearchAPIController::class, 'count'])->name('api.v1.elasticsearch.count');
         Route::post('sql', [ElasticSearchAPIController::class, 'sql'])->name('api.v1.elasticsearch.sql');
-        Route::post('explain', [ElasticSearchAPIController::class, 'explain'])->name('api.v1.elasticsearch.explain');
+        Route::post('lucene', [ElasticSearchAPIController::class, 'lucene'])->name('api.v1.elasticsearch.lucene');
         Route::post('cacheclear', [ElasticSearchAPIController::class, 'clearAggregateCache'])->name('api.v1.elasticsearch.cacheclear');
         Route::get('aggregates/{date}/{attributes?}', [ElasticSearchAPIController::class, 'aggregatesForDate'])->name('api.v1.elasticsearch.aggregates.date');
         Route::get('aggregates-csv/{date}', [ElasticSearchAPIController::class, 'aggregatesCsvForDate'])->name('api.v1.elasticsearch.aggregates.csv.date');
