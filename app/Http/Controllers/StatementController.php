@@ -22,6 +22,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Excel;
 
 class StatementController extends Controller
@@ -60,6 +61,8 @@ class StatementController extends Controller
         $statements = $setup['statements'];
         $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
         $total = $setup['total'];
+        $similarity_results = null;
+        $reindexing = Cache::get('reindexing', false);
 
         /*
         $setup = $this->setupQuery($request);
