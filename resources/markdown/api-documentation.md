@@ -114,7 +114,7 @@ sent back.
 You will also receive a payload with the statement as created in the database:
 
 ```json
-{    
+{
     "content_id": {
         "EAN-13": "0123456789123"
     },
@@ -1648,4 +1648,60 @@ The source code for this application can be viewed here:
 Using the repository code you can even setup and run a local replica development testing area.
 
 Within the github environment you are also more than welcome to give pull requests and
-reviews concerning the source code. 
+reviews concerning the source code.
+
+
+## Changelog
+
+To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database has been updated on 1 July 2025 to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 remain available according to the old schema in line with the data retention policy of the DSA Transparency Database. For attributes which have undergone a change, the correspondence table below lists the data labels used under the old schema as well as their corresponding updates.
+
+
+| Attribute | Attribute option API v1 <br> (description in webform) | Attribute option API v2 <br> (description in webform) |
+| :---------: | :------------------------------------------------: | :------------------------------------------------: |
+| category | | STATEMENT_CATEGORY_CONSUMER_INFORMATION <br> (Consumer information infringements) |
+| category | | STATEMENT_CATEGORY_CYBER_VIOLENCE <br> (Cyber violence) |
+| category | | STATEMENT_CATEGORY_CYBER_VIOLENCE_AGAINST_WOMEN <br> (Cyber violence against women) |
+| category | STATEMENT_CATEGORY_UNSAFE_AND_ILLEGAL_PRODUCTS <br> (Unsafe and/or illegal products) | STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS <br> (Unsafe, non-compliant or prohibited products) |
+| category | STATEMENT_CATEGORY_SCOPE_OF_PLATFORM_SERVICE <br> (Scope of platform service) | STATEMENT_CATEGORY_OTHER_VIOLATION_TC (Other violation of provider’s terms and conditions)  |
+| category | STATEMENT_CATEGORY_NON_CONSENSUAL_BEHAVIOUR <br> (Non-consensual behaviour) | |
+| category | STATEMENT_CATEGORY_PORNOGRAPHY_OR_SEXUALIZED_CONTENT <br> (Pornography or sexualized content) | |
+| category | | STATEMENT_CATEGORY_NOT_SPECIFIED_NOTICE <br> (Type of alleged illegal content not specified by the notifier) |
+| category_specification | | KEYWORD_BULLYING_AGAINST_GIRLS <br> (Cyber bullying and intimidation against girls) |
+| category_specification | | KEYWORD_CHILD_SEXUAL_ABUSE_MATERIAL_DEEPFAKE <br> (Child sexual abuse material containing deepfake or similar technology) |
+| category_specification | KEYWORD_ONLINE_BULLYING_INTIMIDATION <br> (Online Bullying/Intimidation) | KEYWORD_CYBER_BULLYING_INTIMIDATION <br> (Cyber bullying and intimidation) |
+| category_specification | | KEYWORD_CYBER_HARASSMENT <br> (Cyber harassment) |
+| category_specification | | KEYWORD_CYBER_HARASSMENT_AGAINST_WOMEN <br> (Cyber harassment against women) |
+| category_specification | | KEYWORD_CYBER_INCITEMENT <br> (Cyber incitement to hatred or violence) |
+| category_specification | | KEYWORD_CYBER_STALKING <br> (Cyber stalking) |
+| category_specification | | KEYWORD_CYBER_STALKING_AGAINST_WOMEN <br> (Cyber stalking against women) |
+| category_specification | | KEYWORD_FEMALE_GENDERED_DISINFORMATION <br> (Gendered disinformation) |
+| category_specification | | KEYWORD_HIDDEN_ADVERTISEMENT <br> (Hidden advertisement or commercial communication, including by influencers) |
+| category_specification | | KEYWORD_INCITEMENT_AGAINST_WOMEN <br> (Illegal incitement to violence and hatred against women) |
+| category_specification | KEYWORD_INSUFFICIENT_INFORMATION_TRADERS <br> (Insufficient Information on Traders) | KEYWORD_INSUFFICIENT_INFORMATION_ON_TRADERS <br> (Insufficient information on traders) |
+| category_specification | KEYWORD_DISINFORMATION <br> (Disinformation) | KEYWORD_MISINFORMATION_DISINFORMATION <br> (Misinformation, disinformation, foreign information manipulation and interference) |
+| category_specification | | KEYWORD_MISLEADING_INFO_CONSUMER_RIGHTS <br> (Misleading information about the consumer's rights) |
+| category_specification | | KEYWORD_MISLEADING_INFO_GOODS_SERVICES <br> (Misleading information about the characteristics of the goods and services) |
+| category_specification | KEYWORD_NON_CONSENSUAL_IMAGE_SHARING <br> (Non-consensual image sharing) | KEYWORD_NON_CONSENSUAL_IMAGE_SHARING <br> (Non-consensual (intimate) material sharing, including (image-based) sexual abuse (excluding content depicting minors)) |
+| category_specification | | KEYWORD_NON_CONSENSUAL_IMAGE_SHARING_AGAINST_WOMEN <br> (Non-consensual (intimate) material sharing against women, including (image-based) sexual abuse against women (excluding content depicting minors)) |
+| category_specification | KEYWORD_NON_CONSENSUAL_ITEMS_DEEPFAKE <br> (Non-consensual items containing deepfake or similar technology using a third party's features) | KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE <br> (Non-consensual sharing of material containing deepfake or similar technology using a third party's features (excluding content depicting minors)) |
+| category_specification | | KEYWORD_NON_CONSENSUAL_MATERIAL_DEEPFAKE_AGAINST_WOMEN <br> (Non-consensual sharing of material containing deepfake or similar technology using a third party's features against women (excluding content depicting minors)) |
+| category_specification | | KEYWORD_NONCOMPLIANCE_PRICING <br> (Non-compliance with pricing regulations) |
+| category_specification | | KEYWORD_PROHIBITED_PRODUCTS <br> (Prohibited or restricted products) |
+| category_specification | | KEYWORD_TRAFFICKING_WOMEN_GIRLS <br> (Trafficking in women and girls) |
+| category_specification | | KEYWORD_UNSAFE_PRODUCTS <br> (Unsafe or non-compliant products) |
+| category_specification | | KEYWORD_VIOLATION_EU_LAW <br> (Violation of EU law relevant to civic discourse or elections) |
+| category_specification | | KEYWORD_VIOLATION_NATIONAL_LAW <br> (Violation of national law relevant to civic discourse or elections) |
+| category_specification | KEYWORD_OTHER <br> (Other) | KEYWORD_OTHER <br> (Not captured by any other keyword) |
+| category_specification | KEYWORD_HATE_SPEECH <br> (Hate speech) | KEYWORD_HATE_SPEECH <br> (Illegal incitement to violence and hatred based on protected characteristics <br> (hate speech)) |
+| category_specification | KEYWORD_COPYRIGHT_INFRINGEMENT <br> (Copyright infringement) | KEYWORD_COPYRIGHT_INFRINGEMENT <br> (Copyright infringements) |
+| category_specification | KEYWORD_DESIGN_INFRINGEMENT <br> (Design infringement) | KEYWORD_DESIGN_INFRINGEMENT <br> (Design infringements) |
+| category_specification | KEYWORD_PATENT_INFRINGEMENT <br> (Patent infringement) | KEYWORD_PATENT_INFRINGEMENT <br> (Patent infringements) |
+| category_specification | KEYWORD_TRADE_SECRET_INFRINGEMENT <br> (Trade secret infringement) | KEYWORD_TRADE_SECRET_INFRINGEMENT <br> (Trade secret infringements) |
+| category_specification | KEYWORD_TRADEMARK_INFRINGEMENT <br> (Trademark infringement) | KEYWORD_TRADEMARK_INFRINGEMENT <br> (Trademark infringements) |
+| category_specification | KEYWORD_INCITEMENT_VIOLENCE_HATRED <br> (Incitement to violence and/or hatred) | KEYWORD_INCITEMENT_VIOLENCE_HATRED <br> (General calls or incitement to violence and/or hatred) |
+| category_specification | KEYWORD_MISINFORMATION <br> (Misinformation) | |
+| category_specification | KEYWORD_FOREIGN_INFORMATION_MANIPULATION <br> (Foreign information manipulation and interference) | |
+| category_specification | KEYWORD_REGULATED_GOODS_SERVICES <br> (Regulated goods and services) | |
+| category_specification | KEYWORD_DANGEROUS_TOYS <br> (Dangerous toys) | |
+| category_specification | KEYWORD_GENDER_BASED_VIOLENCE <br> (Gender-based violence) | |
+| category_specification | KEYWORD_IMAGE_BASED_SEXUAL_ABUSE <br> (Image-based sexual abuse (excluding content depicting minors)) | |
