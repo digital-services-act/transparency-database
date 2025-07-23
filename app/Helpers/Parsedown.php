@@ -5,6 +5,9 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\Log;
 use Parsedown as ParsedownOriginal;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Parsedown extends ParsedownOriginal {
 
     protected function blockTable($Line, ?array $Block = null)
