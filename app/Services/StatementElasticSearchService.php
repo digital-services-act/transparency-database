@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JsonException;
-use Illuminate\Database\Eloquent\Builder
+use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use stdClass;
 
