@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JsonException;
-use Laravel\Scout\Builder;
+use Illuminate\Database\Eloquent\Builder
 use RuntimeException;
 use stdClass;
 
@@ -86,41 +86,31 @@ class StatementElasticSearchService
         return $this->client;
     }
 
-    /**
-     *
-     * @param array $filters
-     * @param array $options
-     *
-     * @return Builder
-     */
     public function query(array $filters, array $options = []): Builder
     {
         $query = $this->buildQuery($filters);
 
-        return $this->basicQuery($query, $options);
-    }
+        $results = $this->client->search([
+                        'index' => $this->index_name,
+                        'from' => 0,
+                        'size' => 1000,
+                        'track_total_hits' => true,
+                        'q' => $query
+                    ])->asArray();
 
-    private function basicQuery(string $query, array $options = []): Builder
-    {
-        return Statement::search($query)->options($options);
-    }
+        $statement_ids = [];
+        foreach ($results['hits']['hits'] as $result) {
+            $statement_ids[] = $result['_id'];
+        }
 
+        $statement_ids = array_unique($statement_ids);
+        return Statement::query()->whereIn('id', $statement_ids);
+    }
 
     private function buildQuery(array $filters): string
     {
         $queryAndParts = [];
         $query = '*';
-
-        $current_env = config('app.env_real', '');
-
-        if ($current_env === 'sandbox') {
-            $filters['created_at_start'] = '01-04-2025';
-        }
-
-        if ($current_env === 'production') {
-            $filters['created_at_start'] = '01-07-2025';
-        }
-
 
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {

@@ -15,6 +15,7 @@ use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementQueryService;
 use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -32,6 +33,7 @@ class StatementController extends Controller
     public function __construct(
         protected StatementQueryService $statement_query_service,
         protected StatementSearchService $statement_search_service,
+        protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
@@ -49,11 +51,19 @@ class StatementController extends Controller
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
         $max_pages = 200;
-        $page = $request->get('page', 0);
+        $page = (int)$request->get('page', 0);
         if ($page > $max_pages) {
             $request->query->set('page', $max_pages);
         }
 
+        $options = $this->prepareOptions(true);
+        $pagination_per_page = 50;
+        $setup = $this->setupQuery($request);
+        $statements = $setup['statements'];
+        $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
+        $total = $setup['total'];
+
+        /*
         $setup = $this->setupQuery($request);
 
         $pagination_per_page = 50;
@@ -69,6 +79,7 @@ class StatementController extends Controller
         // }
 
         $reindexing = Cache::get('reindexing', false);
+        */
 
         return view('statement.index', ['statements' => $statements, 'options' => $options, 'total' => $total, 'similarity_results' => $similarity_results, 'reindexing' => $reindexing]);
     }
@@ -114,6 +125,16 @@ class StatementController extends Controller
                 'from' => 0,
                 'track_total_hits' => true,
             ])->paginate(1)->total();
+
+        } elseif (config('scout.driver') == 'elasticsearch') {
+
+            $filters = $request->query();
+
+            $elastic_results = $this->statement_elastic_search_service->query($filters);
+            $statements = $elastic_results['statements'] ?? [];
+            $total = $elastic_results['total'] ?? 0;
+
+
         } else {
             // This should never happen,
             // raw queries on the statement table is very bad
