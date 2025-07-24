@@ -66,6 +66,11 @@ class StatementController extends Controller
         $similarity_results = null;
         $reindexing = Cache::get('reindexing', false);
         $paginator = new LengthAwarePaginator($statements, $total, $pagination_per_page, $page);
+        $parameters = $request->query();
+        unset($parameters['page']);
+        $paginator->setPath(route('statement.index', $parameters));
+    
+
 
         /*
         Old way with opensearch
