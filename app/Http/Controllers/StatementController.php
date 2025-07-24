@@ -50,16 +50,14 @@ class StatementController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
-        $max_pages = 200;
+        
         $pagination_per_page = 50;
-        $page = (int)$request->get('page', 0);
-        if ($page > $max_pages) {
-            $request->query->set('page', $max_pages);
-        }
+        $page = (int)$request->get('page', 1);
+        
 
         $options = $this->prepareOptions(true);
         
-        $setup = $this->setupQuery($request, $page, $pagination_per_page);
+        $setup = $this->setupQuery($request, $page - 1, $pagination_per_page);
         $statements = $setup['statements'];
         $statements = $statements->orderBy('created_at', 'DESC')->get();
         $total = $setup['total'];
@@ -106,7 +104,7 @@ class StatementController extends Controller
 
     public function exportCsv(Request $request)
     {
-        $setup = $this->setupQuery($request);
+        $setup = $this->setupQuery($request, 0, 1000);
 
         $statements = $setup['statements'];
         $statements->limit = 1000;
