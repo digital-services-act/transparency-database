@@ -77,7 +77,11 @@ class StatementElasticSearchService
     public function __construct(protected PlatformQueryService $platformQueryService)
     {
         $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(config('scout.elasticsearch.uri'))
+            ->setHosts(config('scout.elasticsearch.hosts'))
+            ->setBasicAuthentication(
+                config('scout.elasticsearch.basicAuthentication.username'), 
+                config('scout.elasticsearch.basicAuthentication.password')
+            )
             ->build();
     }
 
