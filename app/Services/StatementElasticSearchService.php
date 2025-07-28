@@ -841,11 +841,11 @@ class StatementElasticSearchService
      *
      * @return void
      */
-    public function pushOSAKey($key): void
+    public function pushESAKey($key): void
     {
-        $keys = Cache::get('osa_cache', []);
+        $keys = Cache::get('esa_cache', []);
         $keys[] = $key;
-        Cache::forever('osa_cache', array_unique($keys));
+        Cache::forever('esa_cache', array_unique($keys));
     }
 
     public function uuidToId(string $uuid): int
@@ -922,14 +922,14 @@ class StatementElasticSearchService
     }
 
 
-    public function clearOSACache(): void
+    public function clearESACache(): void
     {
-        $keys = Cache::get('osa_cache', []);
+        $keys = Cache::get('esa_cache', []);
         foreach ($keys as $key) {
             Cache::delete($key);
         }
 
-        Cache::delete('osa_cache');
+        Cache::delete('esa_cache');
     }
 
     public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true): array
@@ -937,7 +937,7 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if (!$caching) {
             Cache::delete($key);
@@ -947,7 +947,7 @@ class StatementElasticSearchService
         $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, $key, &$cache) {
             $query = $this->aggregateQueryRange($start, $end, $attributes);
             $cache = 'miss';
-            $this->pushOSAKey($key);
+            $this->pushESAKey($key);
 
             return $this->processAggregateQuery($query);
         });
@@ -970,7 +970,7 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if (!$caching) {
             Cache::delete($key);
@@ -987,7 +987,7 @@ class StatementElasticSearchService
             }
 
             $cache = 'miss';
-            $this->pushOSAKey($key);
+            $this->pushESAKey($key);
 
             return $days;
         });
@@ -1013,7 +1013,7 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'osa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
@@ -1027,7 +1027,7 @@ class StatementElasticSearchService
         $results = Cache::rememberForever($key, function () use ($date, $attributes, $key, &$cache) {
             $query = $this->aggregateQuerySingleDate($date, $attributes);
             $cache = 'miss';
-            $this->pushOSAKey($key);
+            $this->pushESAKey($key);
 
             return $this->processAggregateQuery($query);
         });
