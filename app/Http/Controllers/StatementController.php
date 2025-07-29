@@ -60,7 +60,8 @@ class StatementController extends Controller
         $setup = $this->setupQuery($request, $page - 1, $pagination_per_page);
         $statements = $setup['statements'];
         $statements = $statements->orderBy('created_at', 'DESC')->get();
-        $pagination_max = $total = min($setup['total'], 10000);
+        $total = $setup['total'];
+        $pagination_max = min($total, 10000);
         $similarity_results = null;
         $reindexing = Cache::get('reindexing', false);
         $paginator = new LengthAwarePaginator($statements, $pagination_max, $pagination_per_page, $page);
