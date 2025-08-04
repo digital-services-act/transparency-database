@@ -44,11 +44,11 @@ class StatementsDayArchiveZ extends Command
      */
     public function handle(DayArchiveService $day_archive_service): void
     {
-        if ( ! config('filesystems.disks.s3ds.bucket')) {
-            Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
+        // if ( ! config('filesystems.disks.s3ds.bucket')) {
+        //     Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
 
-            return;
-        }
+        //     return;
+        // }
 
 
 
