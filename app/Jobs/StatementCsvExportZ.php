@@ -75,7 +75,8 @@ class StatementCsvExportZ implements ShouldQueue
 
 
             $current_end = min(($current_start + $chunk), $this->end_id);
-            $statements = DB::connection('mysql::read')
+            // $statements = DB::connection('mysql::read')
+            $statements = DB::connection('pgsql')
                 ->table($this->statements_table)
                 ->selectRaw($select_raw)
                 ->where('id', '>=', $current_start)
