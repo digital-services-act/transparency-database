@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Services\DayArchiveService;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,10 +47,11 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         return $totalSize;
     }
 
-    public function handle(StatementSearchService $statement_search_service, DayArchiveService $day_archive_service): void
+    public function handle(StatementElasticSearchService $statement_elastic_search_service, DayArchiveService $day_archive_service): void
     {
         $path = Storage::path('');
-        $base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
+        //$base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
+        $base_s3_url = 'https://' . config('filesystems.disks.s3ds.url') . '/' . config('filesystems.disks.s3ds.bucket') . '/';
         $date = Carbon::createFromFormat('Y-m-d', $this->date);
         $platform = Platform::find($this->platform_id);
 
@@ -81,7 +82,7 @@ class StatementCsvExportArchiveZ implements ShouldQueue
 
         DayArchive::create([
             'date'         => $this->date,
-            'total'        => $this->platform_slug === 'global' ? $statement_search_service->totalForDate($date) : $statement_search_service->totalForPlatformDate($platform, $date),
+            'total'        => $this->platform_slug === 'global' ? $statement_elastic_search_service->totalForDate($date) : $statement_elastic_search_service->totalForPlatformDate($platform, $date),
             'platform_id'  => $this->platform_id,
             'url'          => $base_s3_url . basename($zipfile),
             'urllight'     => $base_s3_url . basename($zipfilelight),
