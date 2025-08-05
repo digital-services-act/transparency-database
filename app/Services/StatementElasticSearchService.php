@@ -11,7 +11,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JsonException;
-use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use stdClass;
 
@@ -615,7 +614,7 @@ class StatementElasticSearchService
 
     public function extractCountQueryResult($result): int
     {
-        return (int) ($result['datarows'][0][0] ?? 0);
+        return (int) ($result['rows'][0][0] ?? 0);
     }
 
     public function runSql(string $sql): array
@@ -640,7 +639,7 @@ class StatementElasticSearchService
     public function mockCountQueryResult(): array
     {
         return [
-            'datarows' => [
+            'rows' => [
                 [
                     $this->mockCountQueryAnswer,
                 ],
@@ -662,7 +661,7 @@ class StatementElasticSearchService
     {
         $sql = "SELECT max(id) AS max_id FROM " . $this->index_name;
         $result = $this->runSql($sql);
-        return (int) ($result['datarows'][0][0] ?? 0);
+        return (int) ($result['rows'][0][0] ?? 0);
     }
 
     public function grandTotal(): int
@@ -718,7 +717,7 @@ class StatementElasticSearchService
     private function extractMethodAggregateFromQuery(string $query): array
     {
         $results = $this->runSql($query);
-        $rows = $results['datarows'];
+        $rows = $results['rows'];
         $out = [];
         if (config('scout.driver') === 'opensearch') {
             foreach ($rows as [$total, $method, $platform_id]) {
