@@ -51,7 +51,7 @@ class StatementCsvExportArchiveZ implements ShouldQueue
     {
         $path = Storage::path('');
         //$base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
-        $base_s3_url = 'https://' . config('filesystems.disks.s3ds.url') . '/' . config('filesystems.disks.s3ds.bucket') . '/';
+        $base_s3_url = config('filesystems.disks.s3ds.url') . '/' . config('filesystems.disks.s3ds.bucket') . '/';
         $date = Carbon::createFromFormat('Y-m-d', $this->date);
         $platform = Platform::find($this->platform_id);
 
