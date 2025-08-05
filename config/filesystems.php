@@ -63,7 +63,7 @@ return [
             'region' => env('CELLAR_ADDON_DEFAULT_REGION', 'eu-central-1'),
             'bucket' => env('CELLAR_ADDON_DS_BUCKET', 'dsa-sor-data-dumps'),
             'url' => 'https://' . env('CELLAR_ADDON_HOST', ''),
-            'endpoint' => env('CELLAR_ADDON_HOST', ''),
+            'endpoint' => 'https://' . env('CELLAR_ADDON_HOST', ''),
             'use_path_style_endpoint' => env('CELLAR_ADDON_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'visibility' => 'public'
