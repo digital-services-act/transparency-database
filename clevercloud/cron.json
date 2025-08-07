@@ -1,1 +1,4 @@
-"* * * * * $ROOT/clevercloud/cron.sh"
+[
+    "* * * * * $ROOT/clevercloud/cron.sh",
+    "0 * * * * $ROOT/cron/run.sh"
+]
