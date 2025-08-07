@@ -700,7 +700,7 @@ class StatementElasticSearchService
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
-        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
+        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . "' GROUP BY platform_id, method";
         return $this->extractMethodAggregateFromQuery($query);
     }
 
