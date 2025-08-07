@@ -78,6 +78,10 @@ class CreateStatementsBetaTable extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index(['created_at'], 'created_at_index');
+            $table->index(['uuid'], 'uuid_index');
+            
         });
     }
 
