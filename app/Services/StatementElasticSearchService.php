@@ -94,7 +94,14 @@ class StatementElasticSearchService
                         'from' => $page * $perPage,
                         'size' => $perPage,
                         'track_total_hits' => true,
-                        'q' => $query
+                        'q' => $query,
+                        'sort' => [
+                            [
+                                'created_at' => [
+                                    'order' => 'desc',
+                                ],
+                            ]
+                        ]
                     ])->asArray();
 
         $statement_ids = [];
