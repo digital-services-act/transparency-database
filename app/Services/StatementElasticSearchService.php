@@ -11,17 +11,16 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use JsonException;
-use Laravel\Scout\Builder;
 use RuntimeException;
 use stdClass;
 
 /**
- * @codeCoverageIgnore This whole service does many opensearch calls. Mocking the returns is not possible
+ * @codeCoverageIgnore This whole service does many elasticsearch calls. Mocking the returns is not possible
  */
 class StatementElasticSearchService
 {
 
-    private string $index_name = 'search-statements-index';
+    private string $index_name = 'statement_index';
 
     private Client $client;
 
@@ -86,41 +85,35 @@ class StatementElasticSearchService
         return $this->client;
     }
 
-    /**
-     *
-     * @param array $filters
-     * @param array $options
-     *
-     * @return Builder
-     */
-    public function query(array $filters, array $options = []): Builder
+    public function query(array $filters, array $options = [], $page = 0, $perPage = 50): array
     {
         $query = $this->buildQuery($filters);
 
-        return $this->basicQuery($query, $options);
-    }
+        $results = $this->client->search([
+                        'index' => $this->index_name,
+                        'from' => $page * $perPage,
+                        'size' => $perPage,
+                        'track_total_hits' => true,
+                        'q' => $query,
+                        'sort' => 'id:desc'
+                    ])->asArray();
 
-    private function basicQuery(string $query, array $options = []): Builder
-    {
-        return Statement::search($query)->options($options);
-    }
+        $statement_ids = [];
+        foreach ($results['hits']['hits'] as $result) {
+            $statement_ids[] = $result['_id'];
+        }
 
+        $statement_ids = array_unique($statement_ids);
+        return [
+            'statements' => Statement::query()->whereIn('id', $statement_ids),
+            'total' => $results['hits']['total']['value'] ?? 0,
+        ];
+    }
 
     private function buildQuery(array $filters): string
     {
         $queryAndParts = [];
         $query = '*';
-
-        $current_env = config('app.env_real', '');
-
-        if ($current_env === 'sandbox') {
-            $filters['created_at_start'] = '01-04-2025';
-        }
-
-        if ($current_env === 'production') {
-            $filters['created_at_start'] = '01-07-2025';
-        }
-
 
         foreach ($this->allowed_filters as $filter_key) {
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
@@ -455,7 +448,7 @@ class StatementElasticSearchService
 
 
     /**
-     * @codeCoverageIgnore This is calling opensearch directly
+     * @codeCoverageIgnore This is calling elasticsearch directly
      * @param \Illuminate\Database\Eloquent\Collection $statements
      * @return void
      */
@@ -476,7 +469,7 @@ class StatementElasticSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
+            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk) . "\n"]);
         }
     }
 
@@ -622,17 +615,20 @@ class StatementElasticSearchService
 
     public function extractCountQueryResult($result): int
     {
-        return (int) ($result['datarows'][0][0] ?? 0);
+        return (int) ($result['rows'][0][0] ?? 0);
     }
 
     public function runSql(string $sql): array
     {
         if (config('scout.driver') === 'elasticsearch') {
             return $this->client->sql()->query([
-                'query' => $sql,
+                'body' => [
+                    'query' => $sql,
+                ],
+                'format' => 'json',
             ])->asArray();
         }
-
+        
         return $this->mockCountQueryResult();
     }
 
@@ -644,7 +640,7 @@ class StatementElasticSearchService
     public function mockCountQueryResult(): array
     {
         return [
-            'datarows' => [
+            'rows' => [
                 [
                     $this->mockCountQueryAnswer,
                 ],
@@ -666,7 +662,7 @@ class StatementElasticSearchService
     {
         $sql = "SELECT max(id) AS max_id FROM " . $this->index_name;
         $result = $this->runSql($sql);
-        return (int) ($result['datarows'][0][0] ?? 0);
+        return (int) ($result['rows'][0][0] ?? 0);
     }
 
     public function grandTotal(): int
@@ -705,7 +701,7 @@ class StatementElasticSearchService
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
-        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . " 00:00:00' GROUP BY platform_id, method";
+        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . "' GROUP BY platform_id, method";
         return $this->extractMethodAggregateFromQuery($query);
     }
 
@@ -722,9 +718,9 @@ class StatementElasticSearchService
     private function extractMethodAggregateFromQuery(string $query): array
     {
         $results = $this->runSql($query);
-        $rows = $results['datarows'];
+        $rows = $results['rows'];
         $out = [];
-        if (config('scout.driver') === 'opensearch') {
+        if (config('scout.driver') === 'elasticsearch') {
             foreach ($rows as [$total, $method, $platform_id]) {
                 $out[$platform_id][$method] = $total;
             }
@@ -845,11 +841,11 @@ class StatementElasticSearchService
      *
      * @return void
      */
-    public function pushOSAKey($key): void
+    public function pushESAKey($key): void
     {
-        $keys = Cache::get('osa_cache', []);
+        $keys = Cache::get('esa_cache', []);
         $keys[] = $key;
-        Cache::forever('osa_cache', array_unique($keys));
+        Cache::forever('esa_cache', array_unique($keys));
     }
 
     public function uuidToId(string $uuid): int
@@ -926,14 +922,14 @@ class StatementElasticSearchService
     }
 
 
-    public function clearOSACache(): void
+    public function clearESACache(): void
     {
-        $keys = Cache::get('osa_cache', []);
+        $keys = Cache::get('esa_cache', []);
         foreach ($keys as $key) {
             Cache::delete($key);
         }
 
-        Cache::delete('osa_cache');
+        Cache::delete('esa_cache');
     }
 
     public function processRangeAggregate(Carbon $start, Carbon $end, array $attributes, bool $caching = true): array
@@ -941,7 +937,7 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'osar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if (!$caching) {
             Cache::delete($key);
@@ -951,7 +947,7 @@ class StatementElasticSearchService
         $results = Cache::rememberForever($key, function () use ($start, $end, $attributes, $key, &$cache) {
             $query = $this->aggregateQueryRange($start, $end, $attributes);
             $cache = 'miss';
-            $this->pushOSAKey($key);
+            $this->pushESAKey($key);
 
             return $this->processAggregateQuery($query);
         });
@@ -974,7 +970,7 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'osad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if (!$caching) {
             Cache::delete($key);
@@ -991,7 +987,7 @@ class StatementElasticSearchService
             }
 
             $cache = 'miss';
-            $this->pushOSAKey($key);
+            $this->pushESAKey($key);
 
             return $days;
         });
@@ -1017,7 +1013,7 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'osa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
 
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
@@ -1031,7 +1027,7 @@ class StatementElasticSearchService
         $results = Cache::rememberForever($key, function () use ($date, $attributes, $key, &$cache) {
             $query = $this->aggregateQuerySingleDate($date, $attributes);
             $cache = 'miss';
-            $this->pushOSAKey($key);
+            $this->pushESAKey($key);
 
             return $this->processAggregateQuery($query);
         });

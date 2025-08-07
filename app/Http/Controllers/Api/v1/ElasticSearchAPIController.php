@@ -27,7 +27,7 @@ class ElasticSearchAPIController extends Controller
 
     private Client $client;
 
-    private string $index_name = 'search-statements-index';
+    private string $index_name = 'statement_index';
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
@@ -35,10 +35,9 @@ class ElasticSearchAPIController extends Controller
 
     public function __construct(private readonly StatementElasticSearchService $statement_elastic_search_service)
     {
-        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(config('scout.elasticsearch.uri'))
-            ->build();
+        $this->client = $this->statement_elastic_search_service->client();
     }
+
 
     public function indices(Request $request): JsonResponse
     {
@@ -113,9 +112,10 @@ class ElasticSearchAPIController extends Controller
             function () use ($request) {
                 try {
                     $response = $this->client->sql()->query([
-                        'query' => $request->toArray()['query'] ?? '',
-                        'fetch_size' => $request->toArray()['fetch_size'] ?? 1000
-                    ]);
+                        'body' => [
+                            'query' => $request->input('query')
+                        ]
+                    ])->asArray();
                     return response()->json($response);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
@@ -124,54 +124,27 @@ class ElasticSearchAPIController extends Controller
         );
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function dql(Request $request): JsonResponse
+    public function lucene(Request $request): JsonResponse
     {
         return $this->handleApiOperation(
             $request,
             function () use ($request) {
                 try {
-                    $options = [
-                        'track_total_hits' => true,
-                        'from' => 0,
-                        'size' => 1000,
-                    ];
-                    $results = Statement::search($request->toArray()['query'])->options($options);
-                    $total = $results->paginate(1)->total();
-                    $statements = $results->get();
-                    $total_sample = $statements->count();
-
-                    return response()->json([
-                        'total' => $total,
-                        'total_sample' => $total_sample,
-                        'statements' => $statements,
-                    ]);
+                    $response = $this->client->search([
+                        'index' => $this->index_name,
+                        'q' => $request->input('query')
+                    ])->asArray();
+                    return response()->json($response);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid dql attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid lucene query attempt: ' . $exception->getMessage()], $this->error_code);
                 }
             }
         );
     }
 
-    /**
-     * @return array|JsonResponse
-     */
-    public function explain(Request $request): array|JsonResponse
-    {
-        try {
-            $results = $this->client->sql()->explain($request->toArray());
-            $query = $results['root']['children'][0]['description']['request'] ?? false;
-            $query = '{' . ltrim(strstr((string) $query, '{'), '{');
-            $query = substr($query, 0, strrpos($query, '}')) . '}';
-            $results['query'] = json_decode($query, true, 512, JSON_THROW_ON_ERROR);
+    
 
-            return $results;
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
-        }
-    }
+    
 
     public function clearAggregateCache(): string
     {
@@ -441,26 +414,6 @@ class ElasticSearchAPIController extends Controller
             return response()->json($this->statement_elastic_search_service->datesTotalsForRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date totals range attempt: ' . $exception->getMessage()], $this->error_code);
-        }
-    }
-
-    public function createStatementIndex(): JsonResponse
-    {
-        try {
-            $this->statement_elastic_search_service->createStatementIndex();
-            return response()->json(['message' => 'Statement index created successfully.']);
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'Failed to create statement index: ' . $exception->getMessage()], $this->error_code);
-        }
-    }
-
-    public function deleteStatementIndex(): JsonResponse
-    {
-        try {
-            $this->statement_elastic_search_service->deleteStatementIndex();
-            return response()->json(['message' => 'Statement index deleted successfully.']);
-        } catch (Exception $exception) {
-            return response()->json(['error' => 'Failed to delete statement index: ' . $exception->getMessage()], $this->error_code);
         }
     }
 

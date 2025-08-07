@@ -13,6 +13,7 @@ use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
 use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
+use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
 use App\Services\StatementSearchService;
 use Illuminate\Contracts\Foundation\Application;
@@ -22,8 +23,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class StatementController extends Controller
 {
@@ -32,6 +33,7 @@ class StatementController extends Controller
     public function __construct(
         protected StatementQueryService $statement_query_service,
         protected StatementSearchService $statement_search_service,
+        protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
@@ -48,11 +50,32 @@ class StatementController extends Controller
     public function index(Request $request): View|Factory|Application
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
-        $max_pages = 200;
-        $page = $request->get('page', 0);
-        if ($page > $max_pages) {
-            $request->query->set('page', $max_pages);
-        }
+        
+        $pagination_per_page = 50;
+        $page = (int)$request->get('page', 1);
+        
+
+        $options = $this->prepareOptions(true);
+        
+        $setup = $this->setupQuery($request, $page - 1, $pagination_per_page);
+        $statements = $setup['statements'];
+        $total = $setup['total'];
+
+        $statements = $statements->orderBy('created_at', 'DESC')->get();
+        $pagination_max = min(10000, $total);
+        $similarity_results = null;
+        $reindexing = Cache::get('reindexing', false);
+        $paginator = new LengthAwarePaginator($statements, $pagination_max, $pagination_per_page, $page);
+        $parameters = $request->query();
+        unset($parameters['page']);
+        $paginator->setPath(route('statement.index', $parameters));
+    
+
+
+        /*
+        Old way with opensearch
+
+
 
         $setup = $this->setupQuery($request);
 
@@ -69,13 +92,21 @@ class StatementController extends Controller
         // }
 
         $reindexing = Cache::get('reindexing', false);
+        */
 
-        return view('statement.index', ['statements' => $statements, 'options' => $options, 'total' => $total, 'similarity_results' => $similarity_results, 'reindexing' => $reindexing]);
+        return view('statement.index', [
+            'statements' => $statements, 
+            'options' => $options, 
+            'total' => $total, 
+            'similarity_results' => $similarity_results, 
+            'reindexing' => $reindexing, 
+            'paginator' => $paginator
+        ]);
     }
 
     public function exportCsv(Request $request)
     {
-        $setup = $this->setupQuery($request);
+        $setup = $this->setupQuery($request, 0, 1000);
 
         $statements = $setup['statements'];
         $statements->limit = 1000;
@@ -92,7 +123,7 @@ class StatementController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    private function setupQuery(Request $request): array
+    private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
         if (config('scout.driver') == 'opensearch') {
@@ -114,6 +145,16 @@ class StatementController extends Controller
                 'from' => 0,
                 'track_total_hits' => true,
             ])->paginate(1)->total();
+
+        } elseif (config('scout.driver') == 'elasticsearch') {
+
+            $filters = $request->query();
+
+            $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
+            $statements = $elastic_results['statements'];
+            $total = $elastic_results['total'];
+
+
         } else {
             // This should never happen,
             // raw queries on the statement table is very bad
