@@ -15,7 +15,7 @@ use RuntimeException;
 use stdClass;
 
 /**
- * @codeCoverageIgnore This whole service does many opensearch calls. Mocking the returns is not possible
+ * @codeCoverageIgnore This whole service does many elasticsearch calls. Mocking the returns is not possible
  */
 class StatementElasticSearchService
 {
@@ -448,7 +448,7 @@ class StatementElasticSearchService
 
 
     /**
-     * @codeCoverageIgnore This is calling opensearch directly
+     * @codeCoverageIgnore This is calling elasticsearch directly
      * @param \Illuminate\Database\Eloquent\Collection $statements
      * @return void
      */
@@ -720,7 +720,7 @@ class StatementElasticSearchService
         $results = $this->runSql($query);
         $rows = $results['rows'];
         $out = [];
-        if (config('scout.driver') === 'opensearch') {
+        if (config('scout.driver') === 'elasticsearch') {
             foreach ($rows as [$total, $method, $platform_id]) {
                 $out[$platform_id][$method] = $total;
             }
