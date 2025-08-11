@@ -24,7 +24,7 @@ class DayArchiveTotals extends Command
      *
      * @var string
      */
-    protected $description = 'Create archives entries for platforms and exports.';
+    protected $description = 'Updates the totals for day archives for a given date.';
 
     /**
      * Execute the console command.
