@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -32,18 +32,18 @@ class AggregatesFreeze extends Command
      * Execute the console command.
      * @throws JsonException
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
     {
         $date = $this->sanitizeDateArgument();
 
-        $attributes = $statement_search_service->getAllowedAggregateAttributes();
+        $attributes = $statement_elastic_search_service->getAllowedAggregateAttributes();
 
         $disk = Storage::disk('s3ds');
         $path = Storage::path('');
         $json_file = 'aggregates-' . $date->format('Y-m-d') . '.json';
         $csv_file = 'aggregates-' . $date->format('Y-m-d') . '.csv';
 
-        $results = $statement_search_service->processDateAggregate(
+        $results = $statement_elastic_search_service->processDateAggregate(
             $date,
             $attributes,
             false
@@ -55,7 +55,7 @@ class AggregatesFreeze extends Command
         {
             Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 10 seconds and trying again');
             sleep(10);
-            $results = $statement_search_service->processDateAggregate(
+            $results = $statement_elastic_search_service->processDateAggregate(
                 $date,
                 $attributes,
                 false
@@ -67,7 +67,7 @@ class AggregatesFreeze extends Command
         {
             Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 20 seconds and trying again');
             sleep(20);
-            $results = $statement_search_service->processDateAggregate(
+            $results = $statement_elastic_search_service->processDateAggregate(
                 $date,
                 $attributes,
                 false
@@ -83,7 +83,7 @@ class AggregatesFreeze extends Command
         }
 
         // Make the CSV
-        $headers = $statement_search_service->getAllowedAggregateAttributes();
+        $headers = $statement_elastic_search_service->getAllowedAggregateAttributes();
         $headers[] = 'platform_name';
         $headers[] = 'total';
         $headers = array_diff($headers, ['platform_id']);
