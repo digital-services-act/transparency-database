@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\DayArchive;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 
 /**
@@ -29,14 +29,14 @@ class DayArchiveTotals extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
     {
         $date = $this->sanitizeDateArgument();
         $day_archives = DayArchive::query()->whereDate('date', $date)->get();
 
         foreach ($day_archives as $day_archive) {
 
-            $total = $day_archive->platform ? $statement_search_service->totalForPlatformDate($day_archive->platform, $day_archive->date) : $statement_search_service->totalForDate($day_archive->date);
+            $total = $day_archive->platform ? $statement_elastic_search_service->totalForPlatformDate($day_archive->platform, $day_archive->date) : $statement_elastic_search_service->totalForDate($day_archive->date);
             $this->info($day_archive->date . ' :: ' . ($day_archive->platform->name ?? 'Global')  . ' :: ' . $total);
             $day_archive->total = $total;
             if (!$this->option('nosave')) {
