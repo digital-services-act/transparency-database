@@ -110,7 +110,7 @@ class StatementElasticSearchService
         ];
     }
 
-    private function buildQuery(array $filters): string
+    public function buildQuery(array $filters): string
     {
         $queryAndParts = [];
         $query = '*';

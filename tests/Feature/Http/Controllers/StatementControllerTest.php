@@ -139,7 +139,7 @@ class StatementControllerTest extends TestCase
     {
         $this->signInAsAdmin();
         $statement = Statement::factory()->create();
-        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
+        $statement_elastic_search_service = $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) use ($statement) {
             $mock->shouldReceive('uuidToId')
                 ->with($statement->uuid)
                 ->andReturn(0);

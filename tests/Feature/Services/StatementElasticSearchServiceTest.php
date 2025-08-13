@@ -32,9 +32,8 @@ class StatementElasticSearchServiceTest extends TestCase
     public function it_can_do_a_basic_query(): void
     {
         $filters = [];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertIsString($query);
         $this->assertEquals('*', $query);
     }
 
@@ -46,17 +45,15 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'automated_detection' => [Statement::AUTOMATED_DETECTION_YES]
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertIsString($query);
         $this->assertEquals('(automated_detection:true)', $query);
 
         $filters = [
             'automated_detection' => [Statement::AUTOMATED_DETECTION_YES, Statement::AUTOMATED_DETECTION_NO]
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(automated_detection:true OR automated_detection:false)', $query);
     }
 
@@ -68,9 +65,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'automated_decision' => array_keys(Statement::AUTOMATED_DECISIONS),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(automated_decision:AUTOMATED_DECISION_FULLY OR automated_decision:AUTOMATED_DECISION_PARTIALLY OR automated_decision:AUTOMATED_DECISION_NOT_AUTOMATED)', $query);
     }
 
@@ -82,9 +78,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'source_type' => array_keys(Statement::SOURCE_TYPES),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(source_type:SOURCE_ARTICLE_16 OR source_type:SOURCE_TRUSTED_FLAGGER OR source_type:SOURCE_TYPE_OTHER_NOTIFICATION OR source_type:SOURCE_VOLUNTARY)', $query);
     }
 
@@ -96,9 +91,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             's' => 'example'
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example" OR content_id_ean:"example")',
             $query);
     }
@@ -111,9 +105,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'decision_visibility' => array_keys(Statement::DECISION_VISIBILITIES),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(decision_visibility:DECISION_VISIBILITY_CONTENT_REMOVED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DISABLED OR decision_visibility:DECISION_VISIBILITY_CONTENT_DEMOTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_INTERACTION_RESTRICTED OR decision_visibility:DECISION_VISIBILITY_CONTENT_LABELLED OR decision_visibility:DECISION_VISIBILITY_OTHER)',
             $query);
     }
@@ -126,9 +119,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'category_specification' => array_keys(Statement::KEYWORDS),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringContainsString('category_specification:KEYWORD_ANIMAL_HARM OR category_specification:', $query);
     }
 
@@ -140,9 +132,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'decision_monetary' => array_keys(Statement::DECISION_MONETARIES),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(decision_monetary:DECISION_MONETARY_SUSPENSION OR decision_monetary:DECISION_MONETARY_TERMINATION OR decision_monetary:DECISION_MONETARY_OTHER)', $query);
     }
 
@@ -154,9 +145,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'decision_provision' => array_keys(Statement::DECISION_PROVISIONS),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(decision_provision:DECISION_PROVISION_PARTIAL_SUSPENSION OR decision_provision:DECISION_PROVISION_TOTAL_SUSPENSION OR decision_provision:DECISION_PROVISION_PARTIAL_TERMINATION OR decision_provision:DECISION_PROVISION_TOTAL_TERMINATION)',
             $query);
     }
@@ -169,9 +159,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'decision_account' => array_keys(Statement::DECISION_ACCOUNTS),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(decision_account:DECISION_ACCOUNT_SUSPENDED OR decision_account:DECISION_ACCOUNT_TERMINATED)', $query);
     }
 
@@ -183,9 +172,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'account_type' => array_keys(Statement::ACCOUNT_TYPES),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(account_type:ACCOUNT_TYPE_BUSINESS OR account_type:ACCOUNT_TYPE_PRIVATE)', $query);
     }
 
@@ -197,9 +185,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'decision_ground' => array_keys(Statement::DECISION_GROUNDS),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(decision_ground:DECISION_GROUND_ILLEGAL_CONTENT OR decision_ground:DECISION_GROUND_INCOMPATIBLE_CONTENT)', $query);
     }
 
@@ -211,9 +198,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'category' => array_keys(Statement::STATEMENT_CATEGORIES),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringContainsString('category:STATEMENT_CATEGORY_ANIMAL_WELFARE OR', $query);
     }
 
@@ -225,9 +211,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'content_type' => array_keys(Statement::CONTENT_TYPES),
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringContainsString('content_type:CONTENT_TYPE_TEXT OR ', $query);
     }
 
@@ -239,9 +224,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'platform_id' => [99, 100],
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertNotEquals('(platform_id:99 OR platform_id:100)', $query);
     }
 
@@ -259,9 +243,8 @@ class StatementElasticSearchServiceTest extends TestCase
         ];
 
 
-        $search = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(platform_id:' . $platform_id_one . ' OR platform_id:' . $platform_id_two . ')', $query);
     }
 
@@ -273,9 +256,8 @@ class StatementElasticSearchServiceTest extends TestCase
         $filters = [
             'territorial_scope' => ['BG', 'NL'],
         ];
-        $search  = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query  = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertEquals('(territorial_scope:BG OR territorial_scope:NL)', $query);
     }
 
@@ -285,23 +267,20 @@ class StatementElasticSearchServiceTest extends TestCase
     public function it_filters_on_created_at(): void
     {
         $filters['created_at_start'] = '15-12-2020';
-        $search                      = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query                      = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringContainsString('created_at:[2020-12-15T00:00:00 TO', $query);
 
         unset($filters['created_at_start']);
         $filters['created_at_end'] = '15-12-2020';
-        $search                    = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query                    = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringContainsString('TO 2020-12-15T23:59:59]', $query);
 
         $filters['created_at_start'] = '20-12-2020';
         $filters['created_at_end']   = '21-12-2020';
-        $search                      = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query                      = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringContainsString('2020-12-20T00:00:00 TO 2020-12-21T23:59:59]', $query);
     }
 
@@ -311,23 +290,20 @@ class StatementElasticSearchServiceTest extends TestCase
     public function start_and_end_dates_must_be_valid(): void
     {
         $filters['created_at_start'] = 'not a good date';
-        $search                      = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query                      = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringNotContainsString('created_at', $query);
 
         unset($filters['created_at_start']);
         $filters['created_at_end'] = 'holy cow a bad date';
-        $search                    = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query                    = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringNotContainsString('created_at', $query);
 
         $filters['created_at_start'] = 'seriously bad date';
         $filters['created_at_end']   = 'nothing good here';
-        $search                      = $this->statement_elastic_search_service->query($filters);
-        $this->assertNotNull($search);
-        $query = $search['statements']->query;
+        $query                      = $this->statement_elastic_search_service->buildQuery($filters);
+        $this->assertNotNull($query);
         $this->assertStringNotContainsString('created_at', $query);
     }
 
@@ -348,7 +324,7 @@ class StatementElasticSearchServiceTest extends TestCase
     public function it_extracts_a_count_query_result(): void
     {
         $fake_result = [
-            'datarows' => [
+            'rows' => [
                 [
                     0 => 666
                 ]
