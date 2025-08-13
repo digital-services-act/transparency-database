@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Platform;
 use App\Models\User;
 use App\Services\PlatformQueryService;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use App\Services\TokenService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -18,13 +18,13 @@ use Laravel\Sanctum\PersonalAccessToken;
 class ProfileController extends Controller
 {
     protected TokenService $tokenService;
-    protected StatementSearchService $statement_search_service;
+    protected StatementElasticSearchService $statement_elastic_search_service;
     protected PlatformQueryService $platform_query_service;
 
-    public function __construct(PlatformQueryService $platform_query_service, StatementSearchService $statement_search_service, TokenService $tokenService)
+    public function __construct(PlatformQueryService $platform_query_service, StatementElasticSearchService $statement_elastic_search_service, TokenService $tokenService)
     {
         $this->platform_query_service = $platform_query_service;
-        $this->statement_search_service = $statement_search_service;
+        $this->statement_elastic_search_service = $statement_elastic_search_service;
         $this->tokenService = $tokenService;
     }
 
@@ -36,11 +36,11 @@ class ProfileController extends Controller
     public function profile(Request $request): Factory|View|Application
     {
         // Get and cache the global platform method data.
-        $platform_ids_methods_data = $this->statement_search_service->methodsByPlatformAll();
+        $platform_ids_methods_data = $this->statement_elastic_search_service->methodsByPlatformAll();
 
         // All calls after this one should be using the cached data.
 
-        $all_sending_platform_ids = $this->statement_search_service->allSendingPlatformIds();
+        $all_sending_platform_ids = $this->statement_elastic_search_service->allSendingPlatformIds();
         $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
 
         // Establish the counts.
@@ -48,12 +48,12 @@ class ProfileController extends Controller
         $non_vlop_count = Platform::nonVlops()->count();
 
         // Should be coming from the cached opensearch result.
-        $total_vlop_platforms_sending = $this->statement_search_service->totalVlopPlatformsSending();
-        $total_vlop_platforms_sending_api = $this->statement_search_service->totalVlopPlatformsSendingApi();
-        $total_vlop_platforms_sending_webform = $this->statement_search_service->totalVlopPlatformsSendingWebform();
-        $total_non_vlop_platforms_sending = $this->statement_search_service->totalNonVlopPlatformsSending();
-        $total_non_vlop_platforms_sending_api = $this->statement_search_service->totalNonVlopPlatformsSendingApi();
-        $total_non_vlop_platforms_sending_webform = $this->statement_search_service->totalNonVlopPlatformsSendingWebform();
+        $total_vlop_platforms_sending = $this->statement_elastic_search_service->totalVlopPlatformsSending();
+        $total_vlop_platforms_sending_api = $this->statement_elastic_search_service->totalVlopPlatformsSendingApi();
+        $total_vlop_platforms_sending_webform = $this->statement_elastic_search_service->totalVlopPlatformsSendingWebform();
+        $total_non_vlop_platforms_sending = $this->statement_elastic_search_service->totalNonVlopPlatformsSending();
+        $total_non_vlop_platforms_sending_api = $this->statement_elastic_search_service->totalNonVlopPlatformsSendingApi();
+        $total_non_vlop_platforms_sending_webform = $this->statement_elastic_search_service->totalNonVlopPlatformsSendingWebform();
 
         $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
         $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
