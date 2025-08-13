@@ -15,7 +15,6 @@ use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
-use App\Services\StatementSearchService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -32,7 +31,6 @@ class StatementController extends Controller
 
     public function __construct(
         protected StatementQueryService $statement_query_service,
-        protected StatementSearchService $statement_search_service,
         protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
@@ -69,30 +67,6 @@ class StatementController extends Controller
         $parameters = $request->query();
         unset($parameters['page']);
         $paginator->setPath(route('statement.index', $parameters));
-    
-
-
-        /*
-        Old way with opensearch
-
-
-
-        $setup = $this->setupQuery($request);
-
-        $pagination_per_page = 50;
-
-        $statements = $setup['statements'];
-        $options = $this->prepareOptions(true);
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
-        $total = $setup['total'];
-
-        $similarity_results = null;
-        // if ($request->get('s')) {
-        //     $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
-        // }
-
-        $reindexing = Cache::get('reindexing', false);
-        */
 
         return view('statement.index', [
             'statements' => $statements, 
@@ -125,28 +99,8 @@ class StatementController extends Controller
      */
     private function setupQuery(Request $request, int $page, int $perPage): array
     {
-        // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
-        if (config('scout.driver') == 'opensearch') {
-
-            $filters = $request->query();
-            $current_env = config('app.env_real', '');
-
-            if ($current_env === 'sandbox') {
-                $filters['received_date'] = '01-04-2025';
-            }
-
-            if ($current_env === 'production') {
-                $filters['received_date'] = '01-07-2025';
-            }
-
-            $statements = $this->statement_search_service->query($filters);
-            $total = $this->statement_search_service->query($request->query(), [
-                'size' => 1,
-                'from' => 0,
-                'track_total_hits' => true,
-            ])->paginate(1)->total();
-
-        } elseif (config('scout.driver') == 'elasticsearch') {
+        // We have to ignore this in code coverage because the elastic is not available in the unit tests
+        if (config('scout.driver') == 'elasticsearch') {
 
             $filters = $request->query();
 
@@ -249,7 +203,7 @@ class StatementController extends Controller
 
     public function showUuid(string $uuid): Redirector|RedirectResponse|Application
     {
-        $id = $this->statement_search_service->uuidToId($uuid);
+        $id = $this->statement_elastic_search_service->uuidToId($uuid);
         if ($id === 0) {
             abort(404);
         }
