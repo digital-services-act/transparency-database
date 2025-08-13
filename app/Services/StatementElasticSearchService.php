@@ -473,6 +473,20 @@ class StatementElasticSearchService
         }
     }
 
+    public function deleteStatementsForDate(Carbon $date): void
+    {
+        $this->client->deleteByQuery([
+            'index' => $this->index_name,
+            'body' => [
+                'query' => [
+                    'match' => [
+                        'received_date' => $date->getTimestampMs()
+                    ]
+                ]
+            ]
+        ]);
+    }
+
     /**
      * @codeCoverageIgnore
      * @return array

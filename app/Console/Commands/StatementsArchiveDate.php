@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Services\DayArchiveService;
+use App\Services\StatementElasticSearchService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use OpenSearch\Client;
 
 /**
  * @codeCoverageIgnore
@@ -26,13 +26,14 @@ class StatementsArchiveDate extends Command
      *
      * @var string
      */
-    protected $description = 'Archive statements for a day';
+    protected $description = 'Archive (delete) statements for a day';
 
     /**
      * Execute the console command.
      */
-    public function handle(DayArchiveService $day_archive_service, Client $client): void
+    public function handle(DayArchiveService $day_archive_service, StatementElasticSearchService $statement_elastic_search_service): void
     {
+
         $chunk = $this->intifyArgument('chunk');
         $date = $this->sanitizeDateArgument();
 
@@ -41,16 +42,8 @@ class StatementsArchiveDate extends Command
 
         if ($min && $max) {
             Log::info('Statement Archiving Started', ['date' => $date->format('Y-m-d'), 'at' => Carbon::now()->format('Y-m-d H:i:s')]);
-            $client->deleteByQuery([
-                'index' => 'statement_index',
-                'body' => [
-                    'query' => [
-                        'match' => [
-                            'received_date' => $date->getTimestampMs()
-                        ]
-                    ]
-                ]
-            ]);
+            
+            $statement_elastic_search_service->deleteStatementsForDate($date);
 
             // Normally at this point we would start the process of removing
             // statements from the DB and "archiving" them.
