@@ -7,7 +7,7 @@ use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -117,7 +117,7 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = $this->statement;
 
-        $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
+        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) use ($statement) {
             $mock->shouldReceive('PlatformIdPuidToId')->andReturn($statement->id);
         });
 
@@ -146,7 +146,7 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = $this->statement;
 
-        $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
+        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) use ($statement) {
             $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
         });
 
@@ -172,7 +172,7 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
-        $this->mock(StatementSearchService::class, static function (MockInterface $mock) {
+        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) {
             $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
         });
 
@@ -1064,7 +1064,7 @@ class StatementAPIControllerTest extends TestCase
 
         $uuid = $this->statement->uuid;
 
-        $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($uuid) {
+        $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) use ($uuid) {
             $mock->shouldReceive('uuidToId')
                 ->with($uuid)
                 ->andReturn($this->statement->id);
@@ -1082,7 +1082,7 @@ class StatementAPIControllerTest extends TestCase
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
 
-        $this->mock(StatementSearchService::class, function (MockInterface $mock) {
+        $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) {
             $mock->shouldReceive('uuidToId')
                 ->andReturn(0);
         });
