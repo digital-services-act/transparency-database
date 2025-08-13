@@ -12,8 +12,7 @@ use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\GroupedSubmissionsService;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementSearchService;
-use Illuminate\Database\QueryException;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,7 +29,7 @@ class StatementMultipleAPIController extends Controller
     public function __construct(
         protected PlatformUniqueIdService $platform_unique_id_service,
         protected GroupedSubmissionsService $grouped_submissions_service,
-        protected StatementSearchService $statement_search_service,
+        protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service
     ) {
     }
@@ -108,7 +107,7 @@ class StatementMultipleAPIController extends Controller
             $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
 
             $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
-            $this->statement_search_service->bulkIndexStatements($statements);
+            $this->statement_elastic_search_service->bulkIndexStatements($statements);
         }
 
 
