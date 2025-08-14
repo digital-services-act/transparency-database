@@ -6,14 +6,14 @@ WORKERS_PER_QUEUE="${WORKERS_PER_QUEUE:-4}"
 QUEUES=("zip" "s3copy" "csv" "default")
 
 # Monitor tuning
-QUIET_CHECKS="${QUIET_CHECKS:-3}"     # consecutive checks with 0 jobs before shutdown
-CHECK_INTERVAL="${CHECK_INTERVAL:-10}" # seconds between checks
+QUIET_CHECKS="${QUIET_CHECKS:-3}"        # consecutive checks with 0 jobs before shutdown
+CHECK_INTERVAL="${CHECK_INTERVAL:-10}"   # seconds between checks
 
 # Resilience
 MAX_RESTARTS="${MAX_RESTARTS:-5}"
 RESTART_BACKOFF="${RESTART_BACKOFF:-5}"  # base backoff; increases per crash, capped at 60s
 
-# Optional seed dispatch (put your recursive dispatcher here)
+# Optional seed dispatch (your recursive dispatcher)
 DISPATCH_CMD="${DISPATCH_CMD:-php artisan statements:day-archive-z}"
 # ------------------------
 
@@ -26,21 +26,62 @@ cleanup() {
   for pid in "${PIDS[@]:-}"; do kill "$pid" 2>/dev/null || true; done
   for pid in "${PIDS[@]:-}"; do wait "$pid" 2>/dev/null || true; done
 }
+
 trap cleanup TERM INT
 
-# --- DB monitor: count all jobs (pending + delayed + reserved) for the target queues ---
-queue_count() {
-  local IFS=,
-  local qlist="${QUEUES[*]}"
+# ---- Monitor helpers (use SAME connection+table as queue:work database) ----
+queue_total() {
+  local IFS=,; local qlist="${QUEUES[*]}"
   php -r '
     require __DIR__."/vendor/autoload.php";
     $app = require __DIR__."/bootstrap/app.php";
     $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    $qc = config("queue.connections.database");
+    $table = $qc["table"] ?? "jobs";
+    $conn  = $qc["connection"] ?? null;
+
     $queues = explode(",", getenv("QLIST"));
-    $count = Illuminate\Support\Facades\DB::table("jobs")->whereIn("queue", $queues)->count();
-    echo $count, PHP_EOL;
+    $db = $conn ? Illuminate\Support\Facades\DB::connection($conn)
+                : Illuminate\Support\Facades\DB::connection();
+
+    $total = $db->table($table)->whereIn("queue", $queues)->count();
+    echo $total, PHP_EOL;
   ' QLIST="$qlist"
 }
+
+queue_breakdown() {
+  local IFS=,; local qlist="${QUEUES[*]}"
+  php -r '
+    require __DIR__."/vendor/autoload.php";
+    $app = require __DIR__."/bootstrap/app.php";
+    $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    $qc = config("queue.connections.database");
+    $table = $qc["table"] ?? "jobs";
+    $conn  = $qc["connection"] ?? null;
+
+    $queues = explode(",", getenv("QLIST"));
+    $db = $conn ? Illuminate\Support\Facades\DB::connection($conn)
+                : Illuminate\Support\Facades\DB::connection();
+
+    $rows = $db->table($table)
+               ->selectRaw("queue, COUNT(*) as c")
+               ->whereIn("queue", $queues)
+               ->groupBy("queue")
+               ->pluck("c", "queue")
+               ->all();
+
+    $total = 0;
+    foreach ($queues as $q) {
+      $c = (int)($rows[$q] ?? 0);
+      $total += $c;
+      echo $q, "=", $c, " ";
+    }
+    echo "total=", $total, PHP_EOL;
+  ' QLIST="$qlist"
+}
+# ---------------------------------------------------------------------------
 
 # Optional: dispatch initial recursive jobs
 $DISPATCH_CMD || true
@@ -58,11 +99,10 @@ start_workers() {
             --quiet \
             --timeout=7200 \
             --delay=10 \
-            --memory=16384 \
+            --memory=4096 \
             --tries=3 \
             --queue="$queue_name"
         then
-          # Normal exit only happens on SIGTERM/SIGINT; just break to stop the loop
           log "[$queue_name][$i] exited cleanly."
           break
         else
@@ -90,15 +130,14 @@ done
 # --- Drain monitor: only stop when queues are really empty for a while ---
 consecutive_zero=0
 while true; do
-  total="$(queue_count)"
-  if [[ "$total" =~ ^[0-9]+$ ]]; then
-    log "[monitor] jobs remaining across {${QUEUES[*]}}: $total"
-  else
-    log "[monitor] unable to read job count (got: $total). Keeping workers up."
-    consecutive_zero=0
-  fi
+  # Detailed, per-queue snapshot
+  breakdown="$(queue_breakdown || echo "unavailable")"
+  log "[monitor] $breakdown"
 
-  if [[ "${total:-1}" -eq 0 ]]; then
+  # Numeric total for exit logic
+  total="$(queue_total || echo __ERR__)"
+
+  if [[ "$total" =~ ^[0-9]+$ && "$total" -eq 0 ]]; then
     ((consecutive_zero+=1))
     if (( consecutive_zero >= QUIET_CHECKS )); then
       log "No jobs for ${QUIET_CHECKS} consecutive checks. Shutting down workers..."
