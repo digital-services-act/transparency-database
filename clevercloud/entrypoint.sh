@@ -32,36 +32,58 @@ trap cleanup TERM INT
 # ---- Monitor helpers (use SAME connection+table as queue:work database) ----
 queue_total() {
   local IFS=,; local qlist="${QUEUES[*]}"
-  php -r '
+  QLIST="$qlist" php -r '
     require __DIR__."/vendor/autoload.php";
     $app = require __DIR__."/bootstrap/app.php";
     $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    $env = getenv("QLIST");
+    if ($env === false || $env === "") {
+      fwrite(STDERR, "[monitor] QLIST is empty\n");
+      exit(2);
+    }
 
     $qc = config("queue.connections.database");
     $table = $qc["table"] ?? "jobs";
     $conn  = $qc["connection"] ?? null;
 
-    $queues = explode(",", getenv("QLIST"));
+    $queues = array_values(array_filter(array_map("trim", explode(",", $env)), "strlen"));
+    if (empty($queues)) {
+      fwrite(STDERR, "[monitor] No queues parsed from QLIST\n");
+      exit(2);
+    }
+
     $db = $conn ? Illuminate\Support\Facades\DB::connection($conn)
                 : Illuminate\Support\Facades\DB::connection();
 
     $total = $db->table($table)->whereIn("queue", $queues)->count();
     echo $total, PHP_EOL;
-  ' QLIST="$qlist"
+  '
 }
 
 queue_breakdown() {
   local IFS=,; local qlist="${QUEUES[*]}"
-  php -r '
+  QLIST="$qlist" php -r '
     require __DIR__."/vendor/autoload.php";
     $app = require __DIR__."/bootstrap/app.php";
     $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    $env = getenv("QLIST");
+    if ($env === false || $env === "") {
+      echo "queues=<empty> total=?\n";
+      exit(2);
+    }
 
     $qc = config("queue.connections.database");
     $table = $qc["table"] ?? "jobs";
     $conn  = $qc["connection"] ?? null;
 
-    $queues = explode(",", getenv("QLIST"));
+    $queues = array_values(array_filter(array_map("trim", explode(",", $env)), "strlen"));
+    if (empty($queues)) {
+      echo "queues=<none> total=?\n";
+      exit(2);
+    }
+
     $db = $conn ? Illuminate\Support\Facades\DB::connection($conn)
                 : Illuminate\Support\Facades\DB::connection();
 
@@ -79,7 +101,7 @@ queue_breakdown() {
       echo $q, "=", $c, " ";
     }
     echo "total=", $total, PHP_EOL;
-  ' QLIST="$qlist"
+  '
 }
 # ---------------------------------------------------------------------------
 
@@ -151,4 +173,4 @@ while true; do
   sleep "$CHECK_INTERVAL"
 done
 
-log "All queue workers have stopped. Queues drained. Version 0.4"
+log "All queue workers have stopped. Queues drained. Version 0.5"
