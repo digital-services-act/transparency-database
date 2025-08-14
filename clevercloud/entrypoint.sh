@@ -151,4 +151,4 @@ while true; do
   sleep "$CHECK_INTERVAL"
 done
 
-log "All queue workers have stopped. Queues drained."
+log "All queue workers have stopped. Queues drained. Version 0.4"
