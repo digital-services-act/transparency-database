@@ -13,6 +13,11 @@ DISPATCH_PHASE1=(
 DISPATCH_PHASE2=(
   "php artisan statements:day-archive-z"
 )
+DISPATCH_PHASE3=(
+  "php artisan aggregates-freeze 160"
+  "php artisan aggregates-freeze 20"
+  "php artisan aggregates-freeze yesterday"
+)
 
 
 # Monitor tuning
@@ -198,7 +203,9 @@ run_phase() {
 run_phase "1" "${DISPATCH_PHASE1[@]}"
 # Phase 2 (only starts after phase 1 drained)
 run_phase "2" "${DISPATCH_PHASE2[@]}"
+# Phase 3 (only starts after phase 2 drained)
+run_phase "3" "${DISPATCH_PHASE3[@]}"
 
 # All done: stop workers and exit
 cleanup
-log "All queue workers have stopped. All phases complete. Version 0.7"
+log "All queue workers have stopped. All phases complete. Version 0.8"
