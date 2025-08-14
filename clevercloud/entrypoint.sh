@@ -8,11 +8,12 @@ QUEUES=("zip" "s3copy" "csv" "default")
 # Phases: commands that enqueue async jobs
 # Phase 1 runs first; only when queues drain do we run Phase 2.
 DISPATCH_PHASE1=(
-  "php artisan statements:day-archive-z"
+  "php artisan statements:elastic-index-date-seq yesterday 2000"
 )
 DISPATCH_PHASE2=(
-  "php artisan statements:index-date-seq yesterday 2000"
+  "php artisan statements:day-archive-z"
 )
+
 
 # Monitor tuning
 QUIET_CHECKS="${QUIET_CHECKS:-3}"        # stop after N consecutive zero-count checks
@@ -200,4 +201,4 @@ run_phase "2" "${DISPATCH_PHASE2[@]}"
 
 # All done: stop workers and exit
 cleanup
-log "All queue workers have stopped. All phases complete. Version 0.6"
+log "All queue workers have stopped. All phases complete. Version 0.7"
