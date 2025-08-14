@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -21,7 +21,7 @@ class HomeControllerTest extends TestCase
     public function test_index_displays_view(): void
     {
         // Arrange
-        $mockSearchService = $this->mock(StatementSearchService::class);
+        $mockSearchService = $this->mock(StatementElasticSearchService::class);
         $mockSearchService->shouldReceive('grandTotal')->once()->andReturn(100);
         $mockSearchService->shouldReceive('topCategories')->once()->andReturn([
             ['value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'count' => 50],
@@ -76,7 +76,7 @@ class HomeControllerTest extends TestCase
     public function test_platforms_total_is_cached(): void
     {
         // Arrange
-        $mockSearchService = $this->mock(StatementSearchService::class);
+        $mockSearchService = $this->mock(StatementElasticSearchService::class);
         $mockSearchService->shouldReceive('grandTotal')->andReturn(100);
         $mockSearchService->shouldReceive('topCategories')->andReturn([]);
         $mockSearchService->shouldReceive('topDecisionVisibilities')->andReturn([]);
@@ -105,7 +105,7 @@ class HomeControllerTest extends TestCase
     public function test_minimum_platform_total_is_one(): void
     {
         // Arrange
-        $mockSearchService = $this->mock(StatementSearchService::class);
+        $mockSearchService = $this->mock(StatementElasticSearchService::class);
         $mockSearchService->shouldReceive('grandTotal')->andReturn(100);
         $mockSearchService->shouldReceive('topCategories')->andReturn([]);
         $mockSearchService->shouldReceive('topDecisionVisibilities')->andReturn([]);

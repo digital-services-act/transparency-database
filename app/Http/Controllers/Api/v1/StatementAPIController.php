@@ -12,8 +12,7 @@ use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementSearchService;
-use Illuminate\Database\QueryException;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +32,7 @@ class StatementAPIController extends Controller
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
-        protected StatementSearchService $statement_search_service,
+        protected StatementElasticSearchService $statement_elastic_search_service,
         protected PlatformUniqueIdService $platform_unique_id_service
     ) {
         $this->european_countries_service = $european_countries_service;
@@ -46,7 +45,7 @@ class StatementAPIController extends Controller
 
     public function showUuid(string $uuid
     ): \Illuminate\Contracts\Foundation\Application|Application|RedirectResponse|Redirector|JsonResponse {
-        $id = $this->statement_search_service->uuidToId($uuid);
+        $id = $this->statement_elastic_search_service->uuidToId($uuid);
         if ($id === 0) {
             return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
         }
@@ -65,7 +64,7 @@ class StatementAPIController extends Controller
             $found = true;
         }
 
-        if ($found || $this->statement_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
+        if ($found || $this->statement_elastic_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
             // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
             return response()->json(['message' => 'statement of reason found', 'puid' => $puid], Response::HTTP_FOUND);
         }
@@ -110,6 +109,4 @@ class StatementAPIController extends Controller
 
         return response()->json($out, Response::HTTP_CREATED);
     }
-
-
 }

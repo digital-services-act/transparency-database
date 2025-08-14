@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 
 /**
@@ -28,9 +28,9 @@ class UuidToId extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
     {
         $uuid = $this->argument('uuid');
-        $this->info('ID: ' . $statement_search_service->uuidToId($uuid));
+        $this->info('ID: ' . $statement_elastic_search_service->uuidToId($uuid));
     }
 }

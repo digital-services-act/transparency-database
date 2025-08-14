@@ -108,7 +108,7 @@ class StatementTest extends TestCase
         $statement = Statement::factory()->create();
         
         $this->assertInstanceOf(BelongsTo::class, $statement->user());
-        $this->assertInstanceOf(HasOne::class, $statement->platform());
+        $this->assertInstanceOf(BelongsTo::class, $statement->platform());
     }
 
     /**

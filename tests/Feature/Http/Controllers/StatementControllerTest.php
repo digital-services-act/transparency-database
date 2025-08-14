@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Statement;
 use App\Models\StatementAlpha;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
@@ -111,7 +111,7 @@ class StatementControllerTest extends TestCase
     {
         $this->signInAsAdmin();
         $statement = Statement::factory()->create();
-        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
+        $statement_elastic_search_service = $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) use ($statement) {
             $mock->shouldReceive('uuidToId')
                 ->with($statement->uuid)
                 ->andReturn($statement->id);
@@ -139,7 +139,7 @@ class StatementControllerTest extends TestCase
     {
         $this->signInAsAdmin();
         $statement = Statement::factory()->create();
-        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
+        $statement_elastic_search_service = $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) use ($statement) {
             $mock->shouldReceive('uuidToId')
                 ->with($statement->uuid)
                 ->andReturn(0);

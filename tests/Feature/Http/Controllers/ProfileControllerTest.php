@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Platform;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use App\Services\TokenService;
 
 class ProfileControllerTest extends TestCase
@@ -41,8 +41,8 @@ class ProfileControllerTest extends TestCase
         $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
         $user = $this->createUserWithPlatform();
 
-        // Mock the StatementSearchService
-        $this->mock(StatementSearchService::class, function ($mock) {
+        // Mock the StatementElasticSearchService
+        $this->mock(StatementElasticSearchService::class, function ($mock) {
             $mock->shouldReceive('methodsByPlatformAll')->once()->andReturn(['platform1' => ['api']]);
             $mock->shouldReceive('allSendingPlatformIds')->once()->andReturn([1, 2]);
             $mock->shouldReceive('totalVlopPlatformsSending')->once()->andReturn(1);

@@ -110,7 +110,7 @@ class StatementElasticSearchService
         ];
     }
 
-    private function buildQuery(array $filters): string
+    public function buildQuery(array $filters): string
     {
         $queryAndParts = [];
         $query = '*';
@@ -471,6 +471,20 @@ class StatementElasticSearchService
             // Call the bulk and make them searchable.
             $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk) . "\n"]);
         }
+    }
+
+    public function deleteStatementsForDate(Carbon $date): void
+    {
+        $this->client->deleteByQuery([
+            'index' => $this->index_name,
+            'body' => [
+                'query' => [
+                    'match' => [
+                        'received_date' => $date->getTimestampMs()
+                    ]
+                ]
+            ]
+        ]);
     }
 
     /**

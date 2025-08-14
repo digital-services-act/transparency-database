@@ -227,7 +227,6 @@ return [
         App\Providers\StatementQueryServiceProvider::class,
         App\Providers\LogMessageQueryServiceProvider::class,
         App\Providers\PlatformQueryServiceProvider::class,
-        App\Providers\StatementSearchServiceProvider::class,
         App\Providers\StatementElasticSearchServiceProvider::class,
         App\Providers\StatementCHSearchServiceProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,

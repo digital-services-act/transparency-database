@@ -15,7 +15,7 @@ class DayArchiveService
 {
     use StatementExportTrait;
 
-    public function __construct(protected StatementSearchService $statement_search_service, protected PlatformQueryService $platform_query_service)
+    public function __construct(protected PlatformQueryService $platform_query_service)
     {
     }
 
