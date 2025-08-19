@@ -137,7 +137,7 @@ start_workers() {
         if php artisan queue:work database \
             --sleep=10 \
             --quiet \
-            --timeout=7200 \
+            --timeout=60 \
             --delay=10 \
             --memory=16384 \
             --tries=3 \
