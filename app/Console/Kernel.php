@@ -26,10 +26,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // The main indexer run daily after midnight. Only on prod
-        if (strtolower((string)config('app.env_real')) === 'production') {
+        if (strtolower((string) config('app.env_real')) === 'production') {
             // Index the statements each night for the previous day.
-            $schedule->command('statements:index-date-seq')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
-            
+            // $schedule->command('statements:index-date-seq')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+
             // Home page caching
             $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
         } else {
@@ -42,15 +42,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_NINE_O_THREE_AM);
         $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_NINE_O_FOUR_AM);
 
-
     }
 
     // Existing `commands` method remains unchanged.
     #[\Override]
     protected function commands(): void
     {
-        $this->load(__DIR__ . '/Commands');
-        //$this->load(__DIR__ . '/Commands/Setup');
+        $this->load(__DIR__.'/Commands');
+        // $this->load(__DIR__ . '/Commands/Setup');
         require base_path('routes/console.php');
     }
 }
