@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
             $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
         } else {
             // Home page caching
-            $schedule->command('enrich-home-page-cache --grandtotal')->everyMinute();
+            $schedule->command('enrich-home-page-cache --grandtotal')->everyFiveMinutes();
         }
 
         $schedule->command('enrich-home-page-cache --automateddecisionspercentage')->dailyAt(self::DAILY_NINE_O_ONE_AM);
