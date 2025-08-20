@@ -136,8 +136,7 @@ start_workers() {
         log "[$queue_name][$i] starting worker..."
         if php artisan queue:work database \
             --sleep=10 \
-            --quiet \
-            --timeout=60 \
+            --timeout=120 \
             --delay=10 \
             --memory=16384 \
             --tries=3 \
