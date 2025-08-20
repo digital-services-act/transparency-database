@@ -39,6 +39,7 @@ class StatementsDayArchiveZ extends Command
 
     /**
      * Execute the console command.
+     *
      * @throws Exception
      * @throws Throwable
      */
@@ -50,38 +51,32 @@ class StatementsDayArchiveZ extends Command
         //     return;
         // }
 
-
-
-        $date        = $this->sanitizeDateArgument();
+        $date = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
 
-        $exports  = $day_archive_service->buildBasicExportsArray();
+        $exports = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
 
-
         $first_id = $day_archive_service->getFirstIdOfDate($date);
-        $last_id  = $day_archive_service->getLastIdOfDate($date);
-
+        $last_id = $day_archive_service->getLastIdOfDate($date);
 
         // One Mill
         $chunk = 1000000;
 
-        $current  = $first_id;
-        $part     = 0;
+        $current = $first_id;
+        $part = 0;
 
         // Get the SOR from the DB into csv chunks
         $csv_export_jobs = [];
         while ($current <= $last_id) {
             $till = ($current + $chunk);
             $till = min($till, $last_id);
-            //$csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
+            // $csv_export_jobs[] = new StatementCsvExport($date_string, sprintf('%05d', $part), $current, $till, $part === 0);
             // Always headers
             $csv_export_jobs[] = new StatementCsvExportZ($date_string, sprintf('%05d', $part), $current, $till, true);
-            ++$part;
+            $part++;
             $current += $chunk + 1;
         }
-
-
 
         // This will store with no compression the zips into one zip.
         $group_zip_jobs = [];
@@ -103,8 +98,8 @@ class StatementsDayArchiveZ extends Command
         $copys3_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip           = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.zip';
-                $sha1          = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.zip.sha1';
+                $zip = 'sor-'.$export['slug'].'-'.$date_string.'-'.$version.'.zip';
+                $sha1 = 'sor-'.$export['slug'].'-'.$date_string.'-'.$version.'.zip.sha1';
                 $copys3_jobs[] = new StatementCsvExportCopyS3($zip, $sha1);
             }
         }
@@ -117,23 +112,23 @@ class StatementsDayArchiveZ extends Command
 
         // Hold and carry all the possible jobs.
         $luggage = [
-            'date_string'     => $date_string,
-            'archive_jobs'    => $archive_jobs,
-            'group_zip_jobs'  => $group_zip_jobs,
+            'date_string' => $date_string,
+            'archive_jobs' => $archive_jobs,
+            'group_zip_jobs' => $group_zip_jobs,
             'csv_export_jobs' => $csv_export_jobs,
-            'sha1_jobs'       => $sha1_jobs,
-            'copys3_jobs'     => $copys3_jobs,
+            'sha1_jobs' => $sha1_jobs,
+            'copys3_jobs' => $copys3_jobs,
         ];
 
-        Log::info('Day Archiving Started for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-        File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
+        Log::info('Day Archiving Started for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
+        File::delete(File::glob(storage_path('app').'/*'.$date_string.'*'));
         Bus::batch($luggage['csv_export_jobs'])->onQueue('csv')->finally(static function () use ($luggage) {
             Bus::batch($luggage['group_zip_jobs'])->onQueue('zip')->finally(static function () use ($luggage) {
-                Bus::batch($luggage['sha1_jobs'])->finally(static function () use ($luggage) {
+                Bus::batch($luggage['sha1_jobs'])->onQueue('sha1')->finally(static function () use ($luggage) {
                     Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
-                        Bus::batch($luggage['archive_jobs'])->finally(static function () use ($luggage) {
-                            File::delete(File::glob(storage_path('app') . '/*' . $luggage['date_string'] . '*'));
-                            Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                        Bus::batch($luggage['archive_jobs'])->onQueue('archive')->finally(static function () use ($luggage) {
+                            File::delete(File::glob(storage_path('app').'/*'.$luggage['date_string'].'*'));
+                            Log::info('Day Archiving Ended for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
                         })->dispatch();
                     })->dispatch();
                 })->dispatch();
