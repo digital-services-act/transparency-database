@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # -------- Config --------
-WORKERS_PER_QUEUE="${WORKERS_PER_QUEUE:-4}"
-QUEUES=("zip" "s3copy" "csv" "default")
+WORKERS_PER_QUEUE="${WORKERS_PER_QUEUE:-8}"
+QUEUES=("zip" "s3copy" "csv","archive", "sha1" )
 
 # Phases: commands that enqueue async jobs
 # Phase 1 runs first; only when queues drain do we run Phase 2.
@@ -139,7 +139,6 @@ start_workers() {
             --timeout=120 \
             --delay=10 \
             --memory=16384 \
-            --tries=3 \
             --queue="$queue_name"
         then
           log "[$queue_name][$i] exited cleanly."
