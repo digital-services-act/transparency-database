@@ -3,7 +3,7 @@ set -euo pipefail
 
 # -------- Config --------
 WORKERS_PER_QUEUE="${WORKERS_PER_QUEUE:-8}"
-QUEUES=("zip" "s3copy" "csv","archive", "sha1" )
+QUEUES=("zip" "s3copy" "csv" "archive" "sha1" )
 
 # Phases: commands that enqueue async jobs
 # Phase 1 runs first; only when queues drain do we run Phase 2.
