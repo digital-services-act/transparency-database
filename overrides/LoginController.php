@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace EcPhp\LaravelCas\Controllers;
+namespace EcDoris\LaravelCas\Controllers;
 
 use EcPhp\CasLib\Contract\CasInterface;
 use Illuminate\Http\RedirectResponse;
@@ -25,14 +25,15 @@ final class LoginController extends Controller
         CasInterface $cas,
         ServerRequestInterface $serverRequest,
     ): Redirector|RedirectResponse|ResponseInterface {
-        if (strtolower((string)config('app.env_real')) !== 'production' && !is_null(config('cas.cas_masquerade'))) {
+        if (strtolower((string) config('app.env_real')) !== 'production' && ! is_null(config('cas.cas_masquerade'))) {
             auth('web')->masquerade();
+
             return redirect('/profile/start');
         }
 
         $parameters = $request->query->all() + [
-                'renew' => null !== auth()->guard()->user(),
-            ];
+            'renew' => auth()->guard()->user() !== null,
+        ];
 
         return $cas->login($serverRequest->withQueryParams($parameters));
     }

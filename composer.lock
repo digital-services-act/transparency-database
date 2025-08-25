@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91c2f7fe54aa7e0f647af612e93415e5",
+    "content-hash": "232f1be12437523f3a0b8b0c4c85d1e7",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -259,82 +259,6 @@
                 }
             ],
             "time": "2025-03-29T13:50:30+00:00"
-        },
-        {
-            "name": "brownrl/laravel-cas",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/brownrl/laravel-cas.git",
-                "reference": "a48dcf6c2097ff194bdd5dc2ede2b44a8c75faf2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/brownrl/laravel-cas/zipball/a48dcf6c2097ff194bdd5dc2ede2b44a8c75faf2",
-                "reference": "a48dcf6c2097ff194bdd5dc2ede2b44a8c75faf2",
-                "shasum": ""
-            },
-            "require": {
-                "ecphp/cas-lib": "^3.0",
-                "ext-dom": "*",
-                "ext-simplexml": "*",
-                "laravel/framework": "^9 || ^10 || ^11 || ^12",
-                "php": ">= 8.1"
-            },
-            "require-dev": {
-                "guzzlehttp/guzzle": "^7.9",
-                "nyholm/psr7": "^1.8",
-                "orchestra/testbench": "^8.26 || ^9.4",
-                "roave/security-advisories": "dev-latest",
-                "symfony/cache": "^6.4 || ^7.1",
-                "symfony/psr-http-message-bridge": "^6.4 || ^7.1"
-            },
-            "suggest": {
-                "symfony/psr-http-message-bridge": "To bridge between Laravel and PSR HTTP Message"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "EcPhp\\LaravelCas\\Providers\\AppServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "EcPhp\\LaravelCas\\": "src/",
-                    "EcPhp\\LaravelCas\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "changelog-unreleased": [
-                    "auto-changelog -c .auto-changelog -u"
-                ],
-                "changelog-version": [
-                    "auto-changelog -c .auto-changelog -v"
-                ],
-                "phpunit": [
-                    "vendor/bin/phpunit"
-                ]
-            },
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "A bundle for Laravel, providing authentication against a Central Authentication Service (CAS) server.",
-            "homepage": "https://github.com/brownrl/laravel-cas",
-            "keywords": [
-                "authentication",
-                "cas",
-                "central authentication service",
-                "single sign-on",
-                "sso"
-            ],
-            "support": {
-                "source": "https://github.com/brownrl/laravel-cas/tree/main",
-                "issues": "https://github.com/brownrl/laravel-cas/issues"
-            },
-            "time": "2025-08-22T08:09:14+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -1114,6 +1038,76 @@
                 }
             ],
             "time": "2024-10-09T13:47:03+00:00"
+        },
+        {
+            "name": "ec-doris/laravel-cas",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ec-doris/laravel-cas.git",
+                "reference": "3e882c0b82ae7b7d6ac6c2ad81a935e3390fc9ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ec-doris/laravel-cas/zipball/3e882c0b82ae7b7d6ac6c2ad81a935e3390fc9ac",
+                "reference": "3e882c0b82ae7b7d6ac6c2ad81a935e3390fc9ac",
+                "shasum": ""
+            },
+            "require": {
+                "ecphp/cas-lib": "^3.0",
+                "ext-dom": "*",
+                "ext-simplexml": "*",
+                "laravel/framework": "^9 || ^10 || ^11 || ^12",
+                "php": ">= 8.1"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.9",
+                "nyholm/psr7": "^1.8",
+                "orchestra/testbench": "^8.26 || ^9.4",
+                "roave/security-advisories": "dev-latest",
+                "symfony/cache": "^6.4 || ^7.1",
+                "symfony/psr-http-message-bridge": "^6.4 || ^7.1"
+            },
+            "suggest": {
+                "symfony/psr-http-message-bridge": "To bridge between Laravel and PSR HTTP Message"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "EcDoris\\LaravelCas\\Providers\\AppServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EcDoris\\LaravelCas\\": "src/",
+                    "EcDoris\\LaravelCas\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "phpunit": [
+                    "vendor/bin/phpunit"
+                ]
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A bundle for Laravel, providing authentication against a Central Authentication Service (CAS) server.",
+            "homepage": "https://github.com/ec-doris/laravel-cas",
+            "keywords": [
+                "authentication",
+                "cas",
+                "central authentication service",
+                "single sign-on",
+                "sso"
+            ],
+            "support": {
+                "source": "https://github.com/ec-doris/laravel-cas/tree/main",
+                "issues": "https://github.com/ec-doris/laravel-cas/issues"
+            },
+            "time": "2025-08-25T07:52:37+00:00"
         },
         {
             "name": "ecphp/cas-lib",
@@ -13541,7 +13535,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "brownrl/laravel-cas": 20
+        "ec-doris/laravel-cas": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

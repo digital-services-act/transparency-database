@@ -39,12 +39,12 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             'throttle:web',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \EcPhp\LaravelCas\Middleware\CasAuthenticator::class,
+            \EcDoris\LaravelCas\Middleware\CasAuthenticator::class,
             \App\Http\Middleware\Locale::class,
         ],
 
         'api' => [
-            //\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
