@@ -222,8 +222,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\VaporUiServiceProvider::class,
 
-
-
         App\Providers\StatementQueryServiceProvider::class,
         App\Providers\LogMessageQueryServiceProvider::class,
         App\Providers\PlatformQueryServiceProvider::class,
@@ -237,7 +235,7 @@ return [
         Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
-        EcPhp\LaravelCas\Providers\AppServiceProvider::class,
+        EcDoris\LaravelCas\Providers\AppServiceProvider::class,
 
     ],
 

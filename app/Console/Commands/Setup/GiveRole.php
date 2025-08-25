@@ -34,6 +34,7 @@ class GiveRole extends Command
             $role = Role::findByName($this->argument('role'));
         } catch (\Exception) {
             $this->error('The role was not found.');
+
             return;
         }
 

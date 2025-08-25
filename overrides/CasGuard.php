@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace EcPhp\LaravelCas\Auth;
+namespace EcDoris\LaravelCas\Auth;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -32,22 +32,23 @@ final class CasGuard implements AuthGuard
         private readonly ?UserProvider $provider,
         private readonly Request $request,
         private readonly Session $session
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function masquerade(){
-        if (strtolower((string)config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
+    public function masquerade()
+    {
+        if (strtolower((string) config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
             throw new \Exception('Masquerade cannot be used in a production environment.');
-        };
+        }
         $attributes = [
-            "email" => config('cas.cas_masquerade')
+            'email' => config('cas.cas_masquerade'),
         ];
         $user = User::firstOrCreateByAttributes($attributes);
         $this->setUser($user);
+
         return $user;
     }
 
@@ -56,7 +57,7 @@ final class CasGuard implements AuthGuard
 
         $user = User::firstOrCreateByAttributes($credentials['attributes']);
 
-        if (null === $user) {
+        if ($user === null) {
             return null;
         }
 
@@ -68,7 +69,7 @@ final class CasGuard implements AuthGuard
     #[\Override]
     public function check()
     {
-        return null !== $this->user();
+        return $this->user() !== null;
     }
 
     public function getJsonParams()
@@ -84,13 +85,13 @@ final class CasGuard implements AuthGuard
     #[\Override]
     public function guest()
     {
-        return !$this->check();
+        return ! $this->check();
     }
 
     #[\Override]
     public function hasUser()
     {
-        return null !== $this->user();
+        return $this->user() !== null;
     }
 
     #[\Override]
@@ -129,12 +130,12 @@ final class CasGuard implements AuthGuard
         }
 
         return $this->session->get(auth()->guard('web')->getName());
-//        return $this->provider->retrieveCasUser();
+        //        return $this->provider->retrieveCasUser();
     }
 
     #[\Override]
     public function validate(array $credentials = [])
     {
-        return [] !== $credentials;
+        return $credentials !== [];
     }
 }
