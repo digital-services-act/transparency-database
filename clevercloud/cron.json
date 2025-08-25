@@ -1,4 +1,3 @@
 [
-    "* * * * * $ROOT/clevercloud/cron.sh",
-    "0 1 * * * $ROOT/clevercloud/wake-task-server.sh"
+    "* * * * * $ROOT/clevercloud/cron.sh"
 ]
