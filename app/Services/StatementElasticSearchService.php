@@ -19,7 +19,6 @@ use stdClass;
  */
 class StatementElasticSearchService
 {
-
     private string $index_name = 'statement_index';
 
     private Client $client;
@@ -70,7 +69,9 @@ class StatementElasticSearchService
 
     // When caching, go for 25 hours. Just so that there is a overlap.
     public const ONE_DAY = 25 * 60 * 60;
+
     public const ONE_HOUR = 1 * 60 * 60;
+
     public const FIVE_MINUTES = 5 * 60;
 
     public function __construct(protected PlatformQueryService $platformQueryService)
@@ -90,13 +91,13 @@ class StatementElasticSearchService
         $query = $this->buildQuery($filters);
 
         $results = $this->client->search([
-                        'index' => $this->index_name,
-                        'from' => $page * $perPage,
-                        'size' => $perPage,
-                        'track_total_hits' => true,
-                        'q' => $query,
-                        'sort' => 'id:desc'
-                    ])->asArray();
+            'index' => $this->index_name,
+            'from' => $page * $perPage,
+            'size' => $perPage,
+            'track_total_hits' => true,
+            'q' => $query,
+            'sort' => 'id:desc',
+        ])->asArray();
 
         $statement_ids = [];
         foreach ($results['hits']['hits'] as $result) {
@@ -104,6 +105,7 @@ class StatementElasticSearchService
         }
 
         $statement_ids = array_unique($statement_ids);
+
         return [
             'statements' => Statement::query()->whereIn('id', $statement_ids),
             'total' => $results['hits']['total']['value'] ?? 0,
@@ -129,7 +131,7 @@ class StatementElasticSearchService
             }
         }
 
-        //dd($queryAndParts);
+        // dd($queryAndParts);
 
         // handle the date filters as needed.
         $created_at_filter = $this->applyCreatedAtFilter($filters);
@@ -139,9 +141,8 @@ class StatementElasticSearchService
 
         // if we have parts, then glue them together with AND
         if ($queryAndParts !== []) {
-            $query = "(" . implode(") AND (", $queryAndParts) . ")";
+            $query = '('.implode(') AND (', $queryAndParts).')';
         }
-
 
         if (config('scout.driver', '') === 'database' && config('app.env') !== 'testing') {
             // @codeCoverageIgnoreStart
@@ -156,27 +157,27 @@ class StatementElasticSearchService
     {
         try {
             // Start but no end.
-            if (($filters['created_at_start'] ?? false) && !($filters['created_at_end'] ?? false)) {
+            if (($filters['created_at_start'] ?? false) && ! ($filters['created_at_end'] ?? false)) {
                 $now = date('Y-m-d\TH:i:s');
-                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
+                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'].' 00:00:00');
 
-                return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $now . ']';
+                return 'created_at:['.$start->format('Y-m-d\TH:i:s').' TO '.$now.']';
             }
 
             // End but no start.
-            if (($filters['created_at_end'] ?? false) && !($filters['created_at_start'] ?? false)) {
+            if (($filters['created_at_end'] ?? false) && ! ($filters['created_at_start'] ?? false)) {
                 $beginning = date('Y-m-d\TH:i:s', strtotime('2020-01-01'));
-                $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
+                $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'].' 23:59:59');
 
-                return 'created_at:[' . $beginning . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
+                return 'created_at:['.$beginning.' TO '.$end->format('Y-m-d\TH:i:s').']';
             }
 
             // both start and end.
             if (($filters['created_at_start'] ?? false) && ($filters['created_at_end'] ?? false)) {
-                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'] . ' 00:00:00');
-                $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'] . ' 23:59:59');
+                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'].' 00:00:00');
+                $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'].' 23:59:59');
 
-                return 'created_at:[' . $start->format('Y-m-d\TH:i:s') . ' TO ' . $end->format('Y-m-d\TH:i:s') . ']';
+                return 'created_at:['.$start->format('Y-m-d\TH:i:s').' TO '.$end->format('Y-m-d\TH:i:s').']';
             }
         } catch (Exception) {
             // Most likely the date supplied for the start or the end was bad.
@@ -187,12 +188,9 @@ class StatementElasticSearchService
         return '';
     }
 
-    /**
-     * @return string
-     */
     private function applySFilter(string $filter_value): string
     {
-        $filter_value = preg_replace("/[^a-zA-Z0-9\ \-\_]+/", "", $filter_value);
+        $filter_value = preg_replace("/[^a-zA-Z0-9\ \-\_]+/", '', $filter_value);
         $textfields = [
             'decision_visibility_other',
             'decision_monetary_other',
@@ -205,12 +203,12 @@ class StatementElasticSearchService
             'source_identity',
             'uuid',
             'puid',
-            'content_id_ean'
+            'content_id_ean',
         ];
 
         $ors = [];
         foreach ($textfields as $textfield) {
-            $ors[] = $textfield . ':"' . $filter_value . '"';
+            $ors[] = $textfield.':"'.$filter_value.'"';
         }
 
         if (config('scout.driver', '') === 'database' && config('app.env', '') !== 'testing') {
@@ -231,7 +229,7 @@ class StatementElasticSearchService
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_VISIBILITIES));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'decision_visibility:' . $filter_value;
+            $ors[] = 'decision_visibility:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -246,7 +244,7 @@ class StatementElasticSearchService
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_MONETARIES));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'decision_monetary:' . $filter_value;
+            $ors[] = 'decision_monetary:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -261,7 +259,7 @@ class StatementElasticSearchService
 
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_PROVISIONS));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'decision_provision:' . $filter_value;
+            $ors[] = 'decision_provision:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -276,12 +274,11 @@ class StatementElasticSearchService
 
         $filter_values = array_intersect($filter_values, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'territorial_scope:' . $filter_value;
+            $ors[] = 'territorial_scope:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
     }
-
 
     private function applyDecisionAccountFilter(array $filter_values): string
     {
@@ -292,7 +289,7 @@ class StatementElasticSearchService
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_ACCOUNTS));
 
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'decision_account:' . $filter_value;
+            $ors[] = 'decision_account:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -306,7 +303,7 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::ACCOUNT_TYPES));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'account_type:' . $filter_value;
+            $ors[] = 'account_type:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -320,7 +317,7 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::KEYWORDS));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'category_specification:' . $filter_value;
+            $ors[] = 'category_specification:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -334,7 +331,7 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::DECISION_GROUNDS));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'decision_ground:' . $filter_value;
+            $ors[] = 'decision_ground:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -348,7 +345,7 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::STATEMENT_CATEGORIES));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'category:' . $filter_value;
+            $ors[] = 'category:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -362,7 +359,7 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::CONTENT_TYPES));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'content_type:' . $filter_value;
+            $ors[] = 'content_type:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -370,8 +367,6 @@ class StatementElasticSearchService
 
     /**
      * @codeCoverageIgnore
-     * @param array $filter_values
-     * @return string
      */
     private function applyContentLanguageFilter(array $filter_values): string
     {
@@ -382,7 +377,7 @@ class StatementElasticSearchService
         $all_isos = array_keys(EuropeanLanguagesService::ALL_LANGUAGES);
         $filter_values = array_intersect($filter_values, $all_isos);
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'content_language:"' . $filter_value . '"';
+            $ors[] = 'content_language:"'.$filter_value.'"';
         }
 
         return implode(' OR ', $ors);
@@ -396,7 +391,7 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, Statement::AUTOMATED_DETECTIONS);
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'automated_detection:' . ($filter_value === Statement::AUTOMATED_DETECTION_YES ? 'true' : 'false');
+            $ors[] = 'automated_detection:'.($filter_value === Statement::AUTOMATED_DETECTION_YES ? 'true' : 'false');
         }
 
         return implode(' OR ', $ors);
@@ -410,22 +405,19 @@ class StatementElasticSearchService
         }
         $filter_values = array_intersect($filter_values, array_keys(Statement::AUTOMATED_DECISIONS));
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'automated_decision:' . $filter_value;
+            $ors[] = 'automated_decision:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
     }
 
-    /**
-     * @return string
-     */
     private function applyPlatformIdFilter(array $filter_values): string
     {
         $ors = [];
         $platform_ids = $this->platformQueryService->getPlatformIds();
         $filter_values = array_intersect($platform_ids, $filter_values);
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'platform_id:' . $filter_value;
+            $ors[] = 'platform_id:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
@@ -440,17 +432,14 @@ class StatementElasticSearchService
         $filter_values = array_intersect($filter_values, array_keys(Statement::SOURCE_TYPES));
 
         foreach ($filter_values as $filter_value) {
-            $ors[] = 'source_type:' . $filter_value;
+            $ors[] = 'source_type:'.$filter_value;
         }
 
         return implode(' OR ', $ors);
     }
 
-
     /**
      * @codeCoverageIgnore This is calling elasticsearch directly
-     * @param \Illuminate\Database\Eloquent\Collection $statements
-     * @return void
      */
     public function bulkIndexStatements(Collection $statements): void
     {
@@ -469,7 +458,7 @@ class StatementElasticSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk) . "\n"]);
+            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)."\n"]);
         }
     }
 
@@ -480,16 +469,16 @@ class StatementElasticSearchService
             'body' => [
                 'query' => [
                     'match' => [
-                        'received_date' => $date->getTimestampMs()
-                    ]
-                ]
-            ]
+                        'received_date' => $date->getTimestampMs(),
+                    ],
+                ],
+            ],
+            'wait_for_completion' => false,
         ]);
     }
 
     /**
      * @codeCoverageIgnore
-     * @return array
      */
     public function allSendingPlatformIds(): array
     {
@@ -504,6 +493,7 @@ class StatementElasticSearchService
                     }
                 }
             }
+
             return $sending_platform_ids;
         });
     }
@@ -515,7 +505,7 @@ class StatementElasticSearchService
             $sending_non_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
             foreach ($platform_ids_methods_data as $platform_id => $methods) {
-                if (!in_array($platform_id, $vlop_ids, true)) {
+                if (! in_array($platform_id, $vlop_ids, true)) {
                     foreach ($methods as $method => $total) {
                         if ($total) {
                             $sending_non_vlop_platform_ids[] = $platform_id;
@@ -524,6 +514,7 @@ class StatementElasticSearchService
                     }
                 }
             }
+
             return count($sending_non_vlop_platform_ids);
         });
     }
@@ -535,10 +526,11 @@ class StatementElasticSearchService
             $sending_api_non_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
             foreach ($platform_ids_methods_data as $platform_id => $methods) {
-                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && !in_array($platform_id, $vlop_ids, true)) {
+                if (($methods[Statement::METHOD_API] || $methods[Statement::METHOD_API_MULTI]) && ! in_array($platform_id, $vlop_ids, true)) {
                     $sending_api_non_vlop_platform_ids[] = $platform_id;
                 }
             }
+
             return count($sending_api_non_vlop_platform_ids);
         });
     }
@@ -550,10 +542,11 @@ class StatementElasticSearchService
             $sending_webform_non_vlop_platform_ids = [];
             $vlop_ids = $this->vlopIds();
             foreach ($platform_ids_methods_data as $platform_id => $methods) {
-                if ($methods[Statement::METHOD_FORM] && !in_array($platform_id, $vlop_ids, true)) {
+                if ($methods[Statement::METHOD_FORM] && ! in_array($platform_id, $vlop_ids, true)) {
                     $sending_webform_non_vlop_platform_ids[] = $platform_id;
                 }
             }
+
             return count($sending_webform_non_vlop_platform_ids);
         });
     }
@@ -574,6 +567,7 @@ class StatementElasticSearchService
                     }
                 }
             }
+
             return count($sending_vlop_platform_ids);
         });
     }
@@ -589,6 +583,7 @@ class StatementElasticSearchService
                     $sending_api_vlop_platform_ids[] = $platform_id;
                 }
             }
+
             return count($sending_api_vlop_platform_ids);
         });
     }
@@ -604,6 +599,7 @@ class StatementElasticSearchService
                     $sending_webform_vlop_platform_ids[] = $platform_id;
                 }
             }
+
             return count($sending_webform_vlop_platform_ids);
         });
     }
@@ -615,13 +611,13 @@ class StatementElasticSearchService
 
     public function startCountQuery(): string
     {
-        return "SELECT CAST(count(*) AS BIGINT) as count FROM " . $this->index_name;
+        return 'SELECT CAST(count(*) AS BIGINT) as count FROM '.$this->index_name;
     }
 
     public function buildWheres(array $conditions): string
     {
         if ($conditions !== []) {
-            return " WHERE " . implode(" AND ", $conditions);
+            return ' WHERE '.implode(' AND ', $conditions);
         }
 
         return '';
@@ -642,7 +638,7 @@ class StatementElasticSearchService
                 'format' => 'json',
             ])->asArray();
         }
-        
+
         return $this->mockCountQueryResult();
     }
 
@@ -669,19 +665,20 @@ class StatementElasticSearchService
 
     public function getCountQueryResult(array $conditions = []): int
     {
-        return $this->extractCountQueryResult($this->runSql($this->startCountQuery() . $this->buildWheres($conditions)));
+        return $this->extractCountQueryResult($this->runSql($this->startCountQuery().$this->buildWheres($conditions)));
     }
 
     public function highestId(): int
     {
-        $sql = "SELECT max(id) AS max_id FROM " . $this->index_name;
+        $sql = 'SELECT max(id) AS max_id FROM '.$this->index_name;
         $result = $this->runSql($sql);
+
         return (int) ($result['rows'][0][0] ?? 0);
     }
 
     public function grandTotal(): int
     {
-        return Cache::remember('grand_total', self::ONE_DAY, fn() => $this->grandTotalNoCache());
+        return Cache::remember('grand_total', self::ONE_DAY, fn () => $this->grandTotalNoCache());
     }
 
     public function grandTotalNoCache(): int
@@ -691,7 +688,7 @@ class StatementElasticSearchService
 
     public function receivedDateCondition(Carbon $date): string
     {
-        return "received_date = '" . $date->format('Y-m-d') . "'";
+        return "received_date = '".$date->format('Y-m-d')."'";
     }
 
     public function totalForDate(Carbon $date): int
@@ -702,7 +699,7 @@ class StatementElasticSearchService
     public function totalForPlatformDate(Platform $platform, Carbon $date): int
     {
         return $this->getCountQueryResult([
-            "platform_id = " . $platform->id,
+            'platform_id = '.$platform->id,
             $this->receivedDateCondition($date),
         ]);
     }
@@ -710,12 +707,14 @@ class StatementElasticSearchService
     public function totalsForPlatformsDate(Carbon $date): array
     {
         $aggregates = $this->processDateAggregate($date, ['platform_id']);
+
         return $aggregates['aggregates'];
     }
 
     public function methodsByPlatformsDate(Carbon $date): array
     {
-        $query = "SELECT COUNT(*), method, platform_id FROM " . $this->index_name . " WHERE received_date = '" . $date->format('Y-m-d') . "' GROUP BY platform_id, method";
+        $query = 'SELECT COUNT(*), method, platform_id FROM '.$this->index_name." WHERE received_date = '".$date->format('Y-m-d')."' GROUP BY platform_id, method";
+
         return $this->extractMethodAggregateFromQuery($query);
     }
 
@@ -723,7 +722,8 @@ class StatementElasticSearchService
     {
         return Cache::remember('methods_by_platform_all', self::ONE_HOUR, function () {
             $dsa_team_platform_id = Platform::dsaTeamPlatformId();
-            $query = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " WHERE platform_id <> " . $dsa_team_platform_id . " GROUP BY platform_id, method";
+            $query = 'SELECT CAST(count(*) AS BIGINT), method, platform_id FROM '.$this->index_name.' WHERE platform_id <> '.$dsa_team_platform_id.' GROUP BY platform_id, method';
+
             return $this->extractMethodAggregateFromQuery($query);
         });
 
@@ -752,12 +752,13 @@ class StatementElasticSearchService
     public function totalForPlatformIdAndMethod(int $platform_id, string $method): int
     {
         $totals = $this->methodsByPlatformAll();
+
         return $totals[$platform_id][$method] ?? 0;
     }
 
     public function receivedDateRangeCondition(Carbon $start, Carbon $end): string
     {
-        return "received_date BETWEEN '" . $start->format('Y-m-d') . "' AND '" . $end->format('Y-m-d') . "'";
+        return "received_date BETWEEN '".$start->format('Y-m-d')."' AND '".$end->format('Y-m-d')."'";
     }
 
     public function totalForDateRange(Carbon $start, Carbon $end): int
@@ -780,18 +781,15 @@ class StatementElasticSearchService
             $prepare[$aggregate['received_date']] = $aggregate['total'];
         }
 
-        return array_map(static fn($date, $total) => [
+        return array_map(static fn ($date, $total) => [
             'date' => $date,
             'total' => $total,
         ], array_keys($prepare), array_values($prepare));
     }
 
-    /**
-     * @return array
-     */
     public function topCategories(): array
     {
-        return Cache::remember('top_categories', self::ONE_DAY, fn() => $this->topCategoriesNoCache());
+        return Cache::remember('top_categories', self::ONE_DAY, fn () => $this->topCategoriesNoCache());
     }
 
     public function topCategoriesNoCache(): array
@@ -801,21 +799,18 @@ class StatementElasticSearchService
         foreach ($categories as $category) {
             $results[] = [
                 'value' => $category,
-                'total' => $this->getCountQueryResult(["category = '" . $category . "'"]),
+                'total' => $this->getCountQueryResult(["category = '".$category."'"]),
             ];
         }
 
-        uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
+        uasort($results, static fn ($a, $b) => ($a['total'] <=> $b['total']) * -1);
 
         return $results;
     }
 
-    /**
-     * @return array
-     */
     public function topDecisionVisibilities(): array
     {
-        return Cache::remember('top_decisions_visibility', self::ONE_DAY, fn() => $this->topDecisionVisibilitiesNoCache());
+        return Cache::remember('top_decisions_visibility', self::ONE_DAY, fn () => $this->topDecisionVisibilitiesNoCache());
     }
 
     public function topDecisionVisibilitiesNoCache(): array
@@ -825,21 +820,18 @@ class StatementElasticSearchService
         foreach ($decision_visibilities as $decision_visibility) {
             $results[] = [
                 'value' => $decision_visibility,
-                'total' => $this->getCountQueryResult(["decision_visibility_single = '" . $decision_visibility . "'"]),
+                'total' => $this->getCountQueryResult(["decision_visibility_single = '".$decision_visibility."'"]),
             ];
         }
 
-        uasort($results, static fn($a, $b) => ($a['total'] <=> $b['total']) * -1);
+        uasort($results, static fn ($a, $b) => ($a['total'] <=> $b['total']) * -1);
 
         return $results;
     }
 
-    /**
-     * @return int
-     */
     public function fullyAutomatedDecisionPercentage(): int
     {
-        return Cache::remember('automated_decisions_percentage', self::ONE_DAY, fn() => $this->fullyAutomatedDecisionPercentageNoCache());
+        return Cache::remember('automated_decisions_percentage', self::ONE_DAY, fn () => $this->fullyAutomatedDecisionPercentageNoCache());
     }
 
     public function fullyAutomatedDecisionPercentageNoCache(): int
@@ -850,11 +842,6 @@ class StatementElasticSearchService
         return round((($automated_decision_count / max(1, $total)) * 100));
     }
 
-    /**
-     * @param $key
-     *
-     * @return void
-     */
     public function pushESAKey($key): void
     {
         $keys = Cache::get('esa_cache', []);
@@ -865,23 +852,23 @@ class StatementElasticSearchService
     public function uuidToId(string $uuid): int
     {
         $query = [
-            "size" => 1,
-            "query" => [
-                "bool" => [
-                    "must" => [
+            'size' => 1,
+            'query' => [
+                'bool' => [
+                    'must' => [
                         [
-                            "match_phrase" => [
-                                "uuid" => $uuid,
+                            'match_phrase' => [
+                                'uuid' => $uuid,
                             ],
                         ],
                     ],
                 ],
             ],
-            "_source" => [
-                "includes" => [
-                    "id",
+            '_source' => [
+                'includes' => [
+                    'id',
                 ],
-                "excludes" => [],
+                'excludes' => [],
             ],
         ];
 
@@ -900,30 +887,30 @@ class StatementElasticSearchService
 
     public function PlatformIdPuidToIds(int $platform_id, string $puid): array
     {
-        $puid = str_replace("=", ".", $puid);
+        $puid = str_replace('=', '.', $puid);
         $query = [
-            "size" => 1000,
-            "query" => [
-                "bool" => [
-                    "must" => [
+            'size' => 1000,
+            'query' => [
+                'bool' => [
+                    'must' => [
                         [
-                            "match_phrase" => [
-                                "puid" => $puid,
+                            'match_phrase' => [
+                                'puid' => $puid,
                             ],
                         ],
                         [
-                            "match" => [
-                                "platform_id" => $platform_id,
+                            'match' => [
+                                'platform_id' => $platform_id,
                             ],
                         ],
                     ],
                 ],
             ],
-            "_source" => [
-                "includes" => [
-                    "id",
+            '_source' => [
+                'includes' => [
+                    'id',
                 ],
-                "excludes" => [],
+                'excludes' => [],
             ],
         ];
 
@@ -932,9 +919,8 @@ class StatementElasticSearchService
             'body' => $query,
         ])->asArray();
 
-        return array_map(static fn($hit) => $hit['_id'], $result['hits']['hits'] ?? []);
+        return array_map(static fn ($hit) => $hit['_id'], $result['hits']['hits'] ?? []);
     }
-
 
     public function clearESACache(): void
     {
@@ -951,9 +937,9 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'esar__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esar__'.$start->format('Y-m-d').'__'.$end->format('Y-m-d').'__'.implode('__', $attributes);
 
-        if (!$caching) {
+        if (! $caching) {
             Cache::delete($key);
         }
 
@@ -969,7 +955,6 @@ class StatementElasticSearchService
         $timeend = microtime(true);
         $timediff = $timeend - $timestart;
 
-
         $results['dates'] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
         $results['attributes'] = $attributes;
         $results['key'] = $key;
@@ -984,9 +969,9 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'esad__' . $start->format('Y-m-d') . '__' . $end->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esad__'.$start->format('Y-m-d').'__'.$end->format('Y-m-d').'__'.implode('__', $attributes);
 
-        if (!$caching) {
+        if (! $caching) {
             Cache::delete($key);
         }
 
@@ -1006,7 +991,7 @@ class StatementElasticSearchService
             return $days;
         });
 
-        $total = array_sum(array_map(static fn($day) => $day['total'], $days));
+        $total = array_sum(array_map(static fn ($day) => $day['total'], $days));
 
         $timeend = microtime(true);
         $timediff = $timeend - $timestart;
@@ -1027,13 +1012,13 @@ class StatementElasticSearchService
         $timestart = microtime(true);
 
         $this->sanitizeAggregateAttributes($attributes);
-        $key = 'esa__' . $date->format('Y-m-d') . '__' . implode('__', $attributes);
+        $key = 'esa__'.$date->format('Y-m-d').'__'.implode('__', $attributes);
 
         if ($date > Carbon::yesterday()) {
             throw new RuntimeException('aggregates must done on dates in the past');
         }
 
-        if (!$caching) {
+        if (! $caching) {
             Cache::delete($key);
         }
 
@@ -1073,7 +1058,7 @@ class StatementElasticSearchService
      */
     private function aggregateQueryRange(Carbon $start, Carbon $end, $attributes)
     {
-        $query_string = <<<JSON
+        $query_string = <<<'JSON'
 {
   "from": 0,
   "size": 0,
@@ -1146,7 +1131,7 @@ JSON;
      */
     private function aggregateQuerySingleDate(Carbon $date, $attributes)
     {
-        $query_string = <<<JSON
+        $query_string = <<<'JSON'
 {
   "from": 0,
   "size": 0,
@@ -1200,20 +1185,17 @@ JSON;
 
     private function aggregateQueryBucket($attribute): stdClass
     {
-        $source = new stdClass();
-        $source->$attribute = new stdClass();
-        $source->$attribute->terms = new stdClass();
+        $source = new stdClass;
+        $source->$attribute = new stdClass;
+        $source->$attribute->terms = new stdClass;
         $source->$attribute->terms->field = $attribute;
         $source->$attribute->terms->missing_bucket = true;
-        $source->$attribute->terms->missing_order = "first";
-        $source->$attribute->terms->order = "asc";
+        $source->$attribute->terms->missing_order = 'first';
+        $source->$attribute->terms->order = 'asc';
 
         return $source;
     }
 
-    /**
-     * @return array
-     */
     public function processAggregateQuery(stdClass $query): array
     {
         $result = $this->client->search([
@@ -1250,7 +1232,7 @@ JSON;
             }
 
             // build a permutation string
-            $item['permutation'] = implode(',', array_map(static fn($key, $value) => $key . ":" . $value, array_keys($attributes), array_values($attributes)));
+            $item['permutation'] = implode(',', array_map(static fn ($key, $value) => $key.':'.$value, array_keys($attributes), array_values($attributes)));
 
             // add the platform name on at the end if we need to.
             if (isset($item['platform_id'])) {
@@ -1258,10 +1240,9 @@ JSON;
                 $item['platform_name'] = $platforms[$item['platform_id']] ?? '';
             }
 
-
             $item['total'] = $bucket['doc_count'];
             $total += $bucket['doc_count'];
-            ++$total_aggregates;
+            $total_aggregates++;
             $out[] = $item;
         }
 
@@ -1291,8 +1272,8 @@ JSON;
             'mappings' => $properties,
             'settings' => [
                 'number_of_shards' => $shards,
-                'number_of_replicas' => $replicas
-            ]
+                'number_of_replicas' => $replicas,
+            ],
         ];
 
         $this->client->indices()->create(['index' => $index, 'body' => $body]);
@@ -1304,173 +1285,134 @@ JSON;
 
         if ($this->client->indices()->exists(['index' => $index])) {
             $this->client->indices()->delete(['index' => $index]);
-        } 
+        }
     }
 
     public function statementIndexProperties(): array
     {
         return [
-            'properties' =>
-                [
-                    'automated_decision' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'automated_detection' =>
-                        [
-                            'type' => 'boolean',
-                        ],
-                    'category' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'category_specification' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'content_type' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'content_type_single' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'content_type_other' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'content_language' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'created_at' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'received_date' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'content_date' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'application_date' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'decision_account' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'account_type' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_facts' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_ground' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_monetary' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_provision' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_visibility' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_visibility_single' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'id' =>
-                        [
-                            'type' => 'long',
-                        ],
-                    'illegal_content_explanation' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'illegal_content_legal_ground' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'incompatible_content_explanation' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'incompatible_content_ground' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'platform_id' =>
-                        [
-                            'type' => 'long',
-                        ],
-                    'platform_name' =>
-                        [
-                            'type' => 'text',
-                            "fields" => [
-                                "keyword" => [
-                                    "type" => "keyword",
-                                    "ignore_above" => 256
-                                ]
-                            ]
-                        ],
-                    'platform_uuid' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'source_identity' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'source_type' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'url' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'uuid' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'puid' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_visibility_other' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_monetary_other' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'territorial_scope' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'method' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'content_id_ean' =>
-                        [
-                            'type' => 'long',
-                        ],
+            'properties' => [
+                'automated_decision' => [
+                    'type' => 'keyword',
                 ],
+                'automated_detection' => [
+                    'type' => 'boolean',
+                ],
+                'category' => [
+                    'type' => 'keyword',
+                ],
+                'category_specification' => [
+                    'type' => 'text',
+                ],
+                'content_type' => [
+                    'type' => 'text',
+                ],
+                'content_type_single' => [
+                    'type' => 'keyword',
+                ],
+                'content_type_other' => [
+                    'type' => 'text',
+                ],
+                'content_language' => [
+                    'type' => 'keyword',
+                ],
+                'created_at' => [
+                    'type' => 'date',
+                ],
+                'received_date' => [
+                    'type' => 'date',
+                ],
+                'content_date' => [
+                    'type' => 'date',
+                ],
+                'application_date' => [
+                    'type' => 'date',
+                ],
+                'decision_account' => [
+                    'type' => 'keyword',
+                ],
+                'account_type' => [
+                    'type' => 'keyword',
+                ],
+                'decision_facts' => [
+                    'type' => 'text',
+                ],
+                'decision_ground' => [
+                    'type' => 'keyword',
+                ],
+                'decision_monetary' => [
+                    'type' => 'keyword',
+                ],
+                'decision_provision' => [
+                    'type' => 'keyword',
+                ],
+                'decision_visibility' => [
+                    'type' => 'text',
+                ],
+                'decision_visibility_single' => [
+                    'type' => 'keyword',
+                ],
+                'id' => [
+                    'type' => 'long',
+                ],
+                'illegal_content_explanation' => [
+                    'type' => 'text',
+                ],
+                'illegal_content_legal_ground' => [
+                    'type' => 'text',
+                ],
+                'incompatible_content_explanation' => [
+                    'type' => 'text',
+                ],
+                'incompatible_content_ground' => [
+                    'type' => 'text',
+                ],
+                'platform_id' => [
+                    'type' => 'long',
+                ],
+                'platform_name' => [
+                    'type' => 'text',
+                    'fields' => [
+                        'keyword' => [
+                            'type' => 'keyword',
+                            'ignore_above' => 256,
+                        ],
+                    ],
+                ],
+                'platform_uuid' => [
+                    'type' => 'text',
+                ],
+                'source_identity' => [
+                    'type' => 'text',
+                ],
+                'source_type' => [
+                    'type' => 'keyword',
+                ],
+                'url' => [
+                    'type' => 'text',
+                ],
+                'uuid' => [
+                    'type' => 'text',
+                ],
+                'puid' => [
+                    'type' => 'text',
+                ],
+                'decision_visibility_other' => [
+                    'type' => 'text',
+                ],
+                'decision_monetary_other' => [
+                    'type' => 'text',
+                ],
+                'territorial_scope' => [
+                    'type' => 'text',
+                ],
+                'method' => [
+                    'type' => 'keyword',
+                ],
+                'content_id_ean' => [
+                    'type' => 'long',
+                ],
+            ],
         ];
     }
 }
