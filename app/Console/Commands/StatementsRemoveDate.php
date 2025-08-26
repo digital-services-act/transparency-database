@@ -42,14 +42,14 @@ class StatementsRemoveDate extends Command
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
 
+        // Delete the sors in the elastic, this is based on received_date
+        $statement_elastic_search_service->deleteStatementsForDate($date);
+
         if ($min && $max) {
             Log::info('Statement Archiving Started', ['date' => $date->format('Y-m-d'), 'at' => Carbon::now()->format('Y-m-d H:i:s')]);
 
-            // Kick off the job to start deleting the sors in the DB.
+            // Kick off the job to start deleting the sors in the DB. This is based on ids.
             StatementDeleteChunk::dispatch($min, $max, $chunk);
-
-            // Then delete the sors in the elastic
-            $statement_elastic_search_service->deleteStatementsForDate($date);
 
             return;
         }
