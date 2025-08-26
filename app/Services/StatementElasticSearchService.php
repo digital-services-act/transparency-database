@@ -462,9 +462,9 @@ class StatementElasticSearchService
         }
     }
 
-    public function deleteStatementsForDate(Carbon $date): void
+    public function deleteStatementsForDate(Carbon $date): array
     {
-        $this->client->deleteByQuery([
+        return $this->client->deleteByQuery([
             'index' => $this->index_name,
             'body' => [
                 'query' => [
@@ -474,7 +474,7 @@ class StatementElasticSearchService
                 ],
             ],
             'wait_for_completion' => false,
-        ]);
+        ])->asArray();
     }
 
     /**
