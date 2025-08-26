@@ -83,7 +83,9 @@ return [
     */
 
     'locale' => 'en',
-    'locales' => explode(',', env('LOCALES') ?? 'en'),
+    'locales' => ['en','fr','mt','bg','pl','hr','pt','cs','ro','da','sk','nl','sl','et','es','fi','sv','de','el','hu','ga','it','lv','lt'],
+
+
 
     /*
     |--------------------------------------------------------------------------

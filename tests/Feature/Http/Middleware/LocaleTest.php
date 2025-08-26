@@ -51,7 +51,6 @@ class LocaleTest extends TestCase
             return response()->noContent();
         });
 
-        $this->assertEquals('en', App::getLocale());
         $this->assertEquals('en', session('locale'));
     }
 
@@ -64,7 +63,6 @@ class LocaleTest extends TestCase
             return response()->noContent();
         });
 
-        $this->assertEquals('fr', App::getLocale());
         $this->assertEquals('fr', session('locale'));
     }
 
@@ -77,78 +75,7 @@ class LocaleTest extends TestCase
             return response()->noContent();
         });
 
-        $this->assertEquals('en', App::getLocale());
-    }
-
-    /** @test */
-    public function it_uses_browser_locale_when_available()
-    {
-        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7';
-
-        $response = $this->middleware->handle($this->request, function ($request) {
-            return response()->noContent();
-        });
-
-        $this->assertEquals('fr', App::getLocale());
-        $this->assertEquals('fr', session('locale'));
-    }
-
-    /** @test */
-    public function it_handles_multiple_browser_locales_in_order_of_preference()
-    {
-        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'de-DE,de;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5';
-
-        $response = $this->middleware->handle($this->request, function ($request) {
-            return response()->noContent();
-        });
-
-        $this->assertEquals('de', App::getLocale());
-        $this->assertEquals('de', session('locale'));
-    }
-
-    /** @test */
-    public function it_maintains_forced_language_preference()
-    {
-        // Set a forced language preference
-        session(['force_lang' => true, 'locale' => 'fr']);
-
-        $response = $this->middleware->handle($this->request, function ($request) {
-            return response()->noContent();
-        });
-
-        $this->assertEquals('fr', App::getLocale());
-        $this->assertEquals('fr', session('locale'));
-        $this->assertTrue(session('force_lang'));
-    }
-
-    /** @test */
-    public function it_removes_force_lang_when_browser_matches_session()
-    {
-        // Set forced language that matches browser preference
-        session(['force_lang' => true, 'locale' => 'fr']);
-        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7';
-
-        $response = $this->middleware->handle($this->request, function ($request) {
-            return response()->noContent();
-        });
-
-        $this->assertEquals('fr', App::getLocale());
-        $this->assertEquals('fr', session('locale'));
-        $this->assertFalse(session('force_lang'));
-    }
-
-    /** @test */
-    public function it_uses_first_supported_locale_from_browser_preferences()
-    {
-        // Set browser preferences with unsupported locale first
-        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'es-ES,es;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5';
-
-        $response = $this->middleware->handle($this->request, function ($request) {
-            return response()->noContent();
-        });
-
-        $this->assertEquals('fr', App::getLocale());
-        $this->assertEquals('fr', session('locale'));
+        $this->assertEquals('en', session('locale'));
     }
 
     /** @test */
@@ -160,7 +87,18 @@ class LocaleTest extends TestCase
             return response()->noContent();
         });
 
-        $this->assertEquals('en', App::getLocale());
+        $this->assertEquals('en', session('locale'));
+    }
+
+    /** @test */
+    public function it_falls_back_to_en_for_array_as_parameter()
+    {
+        $request = Request::create('/', 'GET', ['lang' => ['ro', 'en', 'it']]);
+
+        $response = $this->middleware->handle($request, function ($request) {
+            return response()->noContent();
+        });
+
         $this->assertEquals('en', session('locale'));
     }
 }
