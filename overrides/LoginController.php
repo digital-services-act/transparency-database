@@ -25,7 +25,7 @@ final class LoginController extends Controller
         CasInterface $cas,
         ServerRequestInterface $serverRequest,
     ): Redirector|RedirectResponse|ResponseInterface {
-        if (strtolower((string) config('app.env_real')) !== 'production' && ! is_null(config('cas.cas_masquerade'))) {
+        if (strtolower((string) config('app.env')) !== 'production' && ! is_null(config('cas.cas_masquerade'))) {
             auth('web')->masquerade();
 
             return redirect('/profile/start');

@@ -40,7 +40,7 @@ final class CasGuard implements AuthGuard
      */
     public function masquerade()
     {
-        if (strtolower((string) config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
+        if (strtolower((string) config('app.env')) === 'production' && config('cas.cas_masquerade')) {
             throw new \Exception('Masquerade cannot be used in a production environment.');
         }
         $attributes = [

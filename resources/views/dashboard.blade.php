@@ -60,7 +60,7 @@
     </p>
 
     <div class="responsive-iframe-container">
-        <iframe title="Transparency Database Dashboard - {{ config('app.env_real') }}" class="responsive-iframe"
+        <iframe title="Transparency Database Dashboard - {{ config('app.env') }}" class="responsive-iframe"
             src="{{ config('dsa.POWERBI') }}" frameborder="0" allowfullscreen="true">
         </iframe>
     </div>

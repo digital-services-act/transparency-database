@@ -22,8 +22,8 @@ use JsonException;
 
 class StatementMultipleAPIController extends Controller
 {
-    use Sanitizer;
     use ExceptionHandlingTrait;
+    use Sanitizer;
     use StatementAPITrait;
 
     public function __construct(
@@ -31,9 +31,7 @@ class StatementMultipleAPIController extends Controller
         protected GroupedSubmissionsService $grouped_submissions_service,
         protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service
-    ) {
-    }
-
+    ) {}
 
     /**
      * @throws PuidNotUniqueMultipleException|PuidNotUniqueSingleException|JsonException
@@ -58,7 +56,7 @@ class StatementMultipleAPIController extends Controller
                     'errors' => $errors,
                     'user' => auth()->user()->id ?? -1,
                     'user_email' => auth()->user()->email ?? 'n/a',
-                    'platform' => auth()->user()->platform->name ?? 'no platform'
+                    'platform' => auth()->user()->platform->name ?? 'no platform',
                 ]);
             }
 
@@ -66,7 +64,7 @@ class StatementMultipleAPIController extends Controller
         }
 
         // Check if PUIDs are unique in the Request made by the client
-        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'],
+        $puids_to_check = array_map(static fn ($potential_statement) => $potential_statement['puid'],
             $payload['statements']);
 
         try {
@@ -77,6 +75,7 @@ class StatementMultipleAPIController extends Controller
             // If the cache expired, and we got a new duplicate, we add it again to the cache
             $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(),
                 $platform_id);
+
             return $puidNotUniqueMultipleException->getJsonResponse();
         }
 
@@ -91,12 +90,12 @@ class StatementMultipleAPIController extends Controller
 
     /**
      * @codeCoverageIgnore We are ccovering this elsewhere
-     * @param array $payload
+     *
      * @return void
      */
     private function insertAndAddPuidsToCacheAndDatabase(array $payload)
     {
-        if (strtolower((string)config('app.env_real')) === 'production') {
+        if (strtolower((string) config('app.env')) === 'production') {
             // Bulk insert on production, the cron will index later.
             Statement::insert($payload['statements']);
         } else {
@@ -110,15 +109,14 @@ class StatementMultipleAPIController extends Controller
             $this->statement_elastic_search_service->bulkIndexStatements($statements);
         }
 
-
-        //No error, add the platform unique ids into the cache and database
+        // No error, add the platform unique ids into the cache and database
         foreach ($payload['statements'] as $statement) {
             try {
                 $this->platform_unique_id_service->addPuidToCache($statement['platform_id'], $statement['puid']);
             } catch (PuidNotUniqueSingleException $puidNotUniqueSingleException) {
                 Log::info('PUID Not Unique in Cache Exception thrown in Multiple Statements', [
                     'platform_id' => $statement['platform_id'],
-                    'puid' => $statement['puid']
+                    'puid' => $statement['puid'],
                 ]);
             }
 
@@ -127,7 +125,7 @@ class StatementMultipleAPIController extends Controller
             } catch (PuidNotUniqueSingleException $puidNotUniqueSingleException) {
                 Log::info('PUID Not Unique in Database Exception thrown in Multiple Statements', [
                     'platform_id' => $statement['platform_id'],
-                    'puid' => $statement['puid']
+                    'puid' => $statement['puid'],
                 ]);
             }
         }

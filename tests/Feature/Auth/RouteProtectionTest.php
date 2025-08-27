@@ -9,8 +9,6 @@ use Tests\TestCase;
 
 class RouteProtectionTest extends TestCase
 {
-
-
     use RefreshDatabase;
 
     private $visitor;
@@ -35,7 +33,6 @@ class RouteProtectionTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function generate_api_key(): void
@@ -46,13 +43,11 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->contributor, $this->onboarding, $this->researcher];
 
         $this->check_route('profile.api.index', $allowed, $rejected);
-        $this->check_route_for_text('profile.start', $allowed, $rejected,'API Token');
+        $this->check_route_for_text('profile.start', $allowed, $rejected, 'API Token');
 
     }
 
-
     /**
-     * @return void
      * @test
      */
     public function manage_platforms(): void
@@ -63,11 +58,10 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->onboarding, $this->support];
 
         $this->check_route('platform.create', $allowed, $rejected);
-        $this->check_route_for_text('profile.start', $allowed, $rejected,'Manage Platforms');
+        $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage Platforms');
     }
 
     /**
-     * @return void
      * @test
      */
     public function manage_users(): void
@@ -78,20 +72,17 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->onboarding, $this->support];
 
         $this->check_route('user.create', $allowed, $rejected);
-        $this->check_route_for_text('profile.start', $allowed, $rejected,'Manage Users');
+        $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage Users');
     }
 
-
-
     /**
-     * @return void
      * @test
      */
     public function onboarding_dashboard(): void
     {
         $this->withExceptionHandling();
 
-        $route= 'onboarding.index';
+        $route = 'onboarding.index';
 
         $rejected = [$this->visitor, $this->contributor, $this->researcher];
         $allowed = [$this->support, $this->onboarding];
@@ -102,29 +93,27 @@ class RouteProtectionTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function view_log_files(): void
     {
         $this->withExceptionHandling();
 
-        $route= 'log-messages.index';
+        $route = 'log-messages.index';
 
         $rejected = [$this->visitor, $this->contributor, $this->onboarding, $this->researcher];
         $allowed = [$this->support];
 
         $this->check_route($route, $allowed, $rejected);
-//        $this->check_route_for_text($route, $allowed, $rejected, 'Log Messages');
+        //        $this->check_route_for_text($route, $allowed, $rejected, 'Log Messages');
 
     }
 
     public function test_ensure_that_force_authentication_is_working(): void
     {
-        Config::set('app.env_real', 'dev');
+        Config::set('app.env', 'dev');
         $this->get('/')->assertRedirect();
     }
-
 
     private function check_route($route, $allowed, $restricted): void
     {
@@ -151,6 +140,4 @@ class RouteProtectionTest extends TestCase
             $this->get(route($route))->assertSeeText($text);
         }
     }
-
-
 }

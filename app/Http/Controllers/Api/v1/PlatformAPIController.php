@@ -13,16 +13,17 @@ use Illuminate\Http\Response;
 
 class PlatformAPIController extends Controller
 {
-    use ExceptionHandlingTrait, ApiLoggingTrait;
+    use ApiLoggingTrait, ExceptionHandlingTrait;
 
     public function get(Platform $platform): JsonResponse
     {
         return $this->handleApiOperation(
             request(),
             function () use ($platform) {
-                if (strtolower((string) config('app.env_real')) !== 'production') {
+                if (strtolower((string) config('app.env')) !== 'production') {
                     $platform = Platform::withCount(['form_statements', 'api_statements', 'api_multi_statements'])->find($platform->id);
                 }
+
                 return response()->json($platform, Response::HTTP_OK);
             },
             $platform->id
@@ -35,28 +36,30 @@ class PlatformAPIController extends Controller
             $request,
             function () use ($request) {
                 $validated = $request->safe()->toArray();
-                
+
                 // Check if a platform with the same name exists (case insensitive)
                 $existingPlatform = Platform::whereRaw('LOWER(name) = ?', [strtolower($validated['name'])])->first();
-                
-                if (!$existingPlatform) {
+
+                if (! $existingPlatform) {
                     // If no existing platform found, create a new one
                     $platform = Platform::create($validated);
+
                     return response()->json($platform, Response::HTTP_CREATED);
                 }
-                
+
                 // If platform exists and has a dsa_common_id, throw an exception
                 if ($existingPlatform->dsa_common_id !== null) {
                     $validator = validator([], []);
                     $validator->errors()->add('name', 'A platform with this name already exists and has a DSA Common ID');
                     throw new \Illuminate\Validation\ValidationException($validator);
                 }
-                
+
                 // Update the existing platform with any new data, but keep original values if not provided
                 if (isset($validated['dsa_common_id'])) {
                     $existingPlatform->dsa_common_id = $validated['dsa_common_id'];
                     $existingPlatform->save();
                 }
+
                 return response()->json($existingPlatform, Response::HTTP_OK);
             },
             null
@@ -72,6 +75,7 @@ class PlatformAPIController extends Controller
                 $platform->name = $validated['name'];
                 $platform->vlop = $validated['vlop'];
                 $platform->save();
+
                 return response()->json($platform, Response::HTTP_OK);
             },
             $platform->id
