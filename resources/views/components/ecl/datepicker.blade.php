@@ -8,6 +8,7 @@
     'id' => 'id',
     'value' => null,
     'justlabel' => false,
+    'disableFuture' => false,
 ])
 <div class="ecl-form-group ecl-u-mb-2xl">
     <x-ecl.label :label=$label :required=$required :name=$name :for=$id :justlabel="$justlabel" />
@@ -41,7 +42,10 @@
                 },
                 setDefaultDate: false,
                 defaultDate: null,
-                minDate: null
+                minDate: null,
+                @if ($disableFuture)
+                maxDate: new Date(),
+                @endif
             });
         }
     });

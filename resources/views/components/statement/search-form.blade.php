@@ -211,9 +211,9 @@
 
 
             <x-ecl.datepicker label="Created Starting" id="created_at_start" justlabel="true"
-                name="created_at_start" :value="request()->get('created_at_start', '')" />
+                name="created_at_start" :value="request()->get('created_at_start', '')" disableFuture="true" />
 
-            <x-ecl.datepicker label="Created Ending" id="created_at_end" justlabel="true" name="created_at_end"
+            <x-ecl.datepicker label="Created Ending" id="created_at_end" justlabel="true" name="created_at_end" disableFuture="true"
                 :value="request()->get('created_at_end', '')" />
 
         </x-ecl.accordion>
