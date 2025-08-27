@@ -12,6 +12,8 @@ class Kernel extends ConsoleKernel
 {
     private const string DAILY_AFTER_MIDNIGHT = '00:10';
 
+    private const string DAILY_TEST = '07:30';
+
     private const string DAILY_NINE_AM = '09:00';
 
     private const string DAILY_NINE_O_ONE_AM = '09:01';
@@ -28,7 +30,8 @@ class Kernel extends ConsoleKernel
         // The main indexer run daily after midnight. Only on prod
         if (strtolower((string) config('app.env')) === 'production') {
             // Index the statements each night for the previous day.
-            $schedule->command('statements:day-archive-z')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
+
+            $schedule->command('statements:day-archive-z')->dailyAt(self::DAILY_TEST);
 
             // Home page caching
             $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
