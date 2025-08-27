@@ -11,7 +11,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     private const string DAILY_AFTER_MIDNIGHT = '00:10';
-
     private const string DAILY_TEST = '07:30';
 
     private const string DAILY_NINE_AM = '09:00';
@@ -31,7 +30,29 @@ class Kernel extends ConsoleKernel
         if (strtolower((string) config('app.env')) === 'production') {
             // Index the statements each night for the previous day.
 
-            $schedule->command('statements:day-archive-z')->dailyAt(self::DAILY_TEST);
+            // 5 0 * * * php artisan statements:index-date-seq yesterday 2000
+            $schedule->command('statements:elastic-index-date-seq yesterday 2000')
+                ->dailyAt('00:05');
+
+            // 0 5 * * * php artisan statements:archive-date
+            $schedule->command('statements:remove-date')
+                ->dailyAt('05:00');
+
+            // 0 6 * * * php artisan statements:day-archive-z
+            $schedule->command('statements:day-archive-z')
+                ->dailyAt('06:00');
+
+            // 0 6 * * * php artisan aggregates-freeze 160
+            $schedule->command('aggregates-freeze 160')
+                ->dailyAt('06:00');
+
+            // 5 6 * * * php artisan aggregates-freeze 20
+            $schedule->command('aggregates-freeze 20')
+                ->dailyAt('06:05');
+
+            // 10 6 * * * php artisan aggregates-freeze yesterday
+            $schedule->command('aggregates-freeze yesterday')
+                ->dailyAt('06:10');
 
             // Home page caching
             $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
