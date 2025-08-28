@@ -28,6 +28,4 @@ vapor.yml
 .env.docker-env
 auth.json
 transparency.sqlite
-kafka-service.cert
-kafka-service.key
 database.sqlite

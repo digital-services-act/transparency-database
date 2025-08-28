@@ -12,7 +12,6 @@
         "ext-zip": "*",
         "consoletvs/charts": "6.*",
         "cweagans/composer-patches": "^1.7",
-        "cybercog/laravel-clickhouse": "^0.1.0",
         "ec-doris/laravel-cas": "dev-main",
         "elasticsearch/elasticsearch": "^8.18",
         "erusev/parsedown": "^1.7",
