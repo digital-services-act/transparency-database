@@ -9,8 +9,6 @@ class PlatformSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run(): void
     {
@@ -25,8 +23,7 @@ class PlatformSeeder extends Seeder
         // Create the generic DSA platform for the DSA Team
         Platform::create([
             'name' => Platform::LABEL_DSA_TEAM,
-            'vlop' => 1
+            'vlop' => 1,
         ]);
     }
-
 }

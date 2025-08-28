@@ -76,10 +76,8 @@ class CreateStatementsTable extends Migration
 
             $table->string('puid', 500);
 
-
             $table->timestamps();
             $table->softDeletes();
-
 
         });
     }

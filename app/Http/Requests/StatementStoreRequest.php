@@ -9,16 +9,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
 class StatementStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -27,8 +23,6 @@ class StatementStoreRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -37,13 +31,12 @@ class StatementStoreRequest extends FormRequest
             'content_id.EAN-13' => ['string', 'regex:/^[0-9]{13}$/'],
             'content_id_ean' => ['nullable', 'string', 'regex:/^[0-9]{13}$/'],
 
-
             'decision_visibility' => ['array', $this->in(array_keys(Statement::DECISION_VISIBILITIES), true), 'required_without_all:decision_monetary,decision_provision,decision_account', 'nullable'],
 
             'decision_visibility_other' => [
                 'max:500',
                 Rule::requiredIf($this->checkForDecisionVisibilityOther()),
-                Rule::excludeIf(!$this->checkForDecisionVisibilityOther()),
+                Rule::excludeIf(! $this->checkForDecisionVisibilityOther()),
             ],
 
             'decision_monetary' => [$this->in(array_keys(Statement::DECISION_MONETARIES), true), 'required_without_all:decision_visibility,decision_provision,decision_account', 'nullable'],
@@ -68,7 +61,7 @@ class StatementStoreRequest extends FormRequest
             'content_type_other' => [
                 'max:500',
                 Rule::requiredIf($this->checkForContentTypeOther()),
-                Rule::excludeIf(!$this->checkForContentTypeOther()),
+                Rule::excludeIf(! $this->checkForContentTypeOther()),
             ],
 
             'category' => ['required', $this->in(array_keys(Statement::STATEMENT_CATEGORIES))],
@@ -89,7 +82,7 @@ class StatementStoreRequest extends FormRequest
             'source_type' => ['required', $this->in(array_keys(Statement::SOURCE_TYPES))],
             'source_identity' => [
                 'max:500',
-                Rule::excludeIf($this->checkForSourceVoluntary())
+                Rule::excludeIf($this->checkForSourceVoluntary()),
             ],
             'automated_detection' => ['required', $this->in(Statement::AUTOMATED_DETECTIONS)],
             'automated_decision' => ['required', $this->in(array_keys(Statement::AUTOMATED_DECISIONS))],
@@ -99,7 +92,7 @@ class StatementStoreRequest extends FormRequest
 
     private function in($array, $nullable = false): string
     {
-        return ($nullable ? 'in:null,' : 'in:') . implode(',', $array);
+        return ($nullable ? 'in:null,' : 'in:').implode(',', $array);
     }
 
     /**
@@ -124,10 +117,9 @@ class StatementStoreRequest extends FormRequest
             'end_date_monetary_restriction.date_format' => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
             'end_date_service_restriction.date_format' => 'The end date of service restriction does not match the format YYYY-MM-DD.',
             'end_date_visibility_restriction.date_format' => 'The end date of visibility restriction does not match the format YYYY-MM-DD.',
-            'puid.regex' => 'The puid format is invalid.'
+            'puid.regex' => 'The puid format is invalid.',
         ];
     }
-
 
     private function checkForContentTypeOther(): bool
     {
@@ -159,7 +151,7 @@ class StatementStoreRequest extends FormRequest
                 'errors' => $validator->errors(),
                 'user' => auth()->user()->id ?? -1,
                 'user_email' => auth()->user()->email ?? 'n/a',
-                'platform' => auth()->user()->platform->name ?? 'no platform'
+                'platform' => auth()->user()->platform->name ?? 'no platform',
             ]);
         }
 

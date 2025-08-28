@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
 use Elastic\Elasticsearch\Client;
-use Exception;
 use Illuminate\Console\Command;
 
 /**
@@ -32,32 +31,34 @@ class ElasticSearchIndexReindex extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client     = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
         $target = $this->argument('target');
 
-        if (!$client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->warn('Source index does not exist!');
+
             return;
         }
 
-        if (!$client->indices()->exists(['index' => $target])->asBool()) {
+        if (! $client->indices()->exists(['index' => $target])->asBool()) {
             $this->warn('Target index does not exist!');
+
             return;
         }
 
         $result = $client->reindex([
             'wait_for_completion' => false,
             'body' => [
-                'conflicts' => "proceed",
-                'source'    => [
+                'conflicts' => 'proceed',
+                'source' => [
                     'index' => $index,
                 ],
-                'dest'      => [
-                    'index'   => $target,
-                    'op_type' => 'create'
-                ]
-            ]
+                'dest' => [
+                    'index' => $target,
+                    'op_type' => 'create',
+                ],
+            ],
         ]);
     }
 }

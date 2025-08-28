@@ -12,7 +12,9 @@ use Tests\TestCase;
 class LocaleTest extends TestCase
 {
     private Locale $middleware;
+
     private Request $request;
+
     protected bool $seed = false;
 
     #[\Override]
@@ -26,7 +28,7 @@ class LocaleTest extends TestCase
         parent::setUp();
 
         // Create middleware instance
-        $this->middleware = new Locale();
+        $this->middleware = new Locale;
 
         // Create base request
         $this->request = Request::create('/', 'GET');

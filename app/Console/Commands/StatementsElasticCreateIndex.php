@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 class StatementsElasticCreateIndex extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -32,14 +33,15 @@ class StatementsElasticCreateIndex extends Command
     public function handle(StatementElasticSearchService $statement_search_service): void
     {
         /** @var Client $client */
-        $client     = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
         $shards = $this->intifyArgument('shards');
         $replicas = $this->intifyArgument('replicas');
 
         if ($client->indices()->exists(['index' => $index])->asBool()) {
-           $this->warn('Index with that name already exists!');
-           return;
+            $this->warn('Index with that name already exists!');
+
+            return;
         }
 
         $properties = $statement_search_service->statementIndexProperties();
@@ -48,11 +50,10 @@ class StatementsElasticCreateIndex extends Command
             'mappings' => $properties,
             'settings' => [
                 'number_of_shards' => $shards,
-                'number_of_replicas' => $replicas
-            ]
+                'number_of_replicas' => $replicas,
+            ],
         ];
 
         $client->indices()->create(['index' => $this->argument('index'), 'body' => $body]);
     }
-
 }

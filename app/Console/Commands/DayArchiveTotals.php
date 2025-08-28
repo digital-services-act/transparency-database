@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 class DayArchiveTotals extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -37,9 +38,9 @@ class DayArchiveTotals extends Command
         foreach ($day_archives as $day_archive) {
 
             $total = $day_archive->platform ? $statement_elastic_search_service->totalForPlatformDate($day_archive->platform, $day_archive->date) : $statement_elastic_search_service->totalForDate($day_archive->date);
-            $this->info($day_archive->date . ' :: ' . ($day_archive->platform->name ?? 'Global')  . ' :: ' . $total);
+            $this->info($day_archive->date.' :: '.($day_archive->platform->name ?? 'Global').' :: '.$total);
             $day_archive->total = $total;
-            if (!$this->option('nosave')) {
+            if (! $this->option('nosave')) {
                 $day_archive->save();
             }
         }

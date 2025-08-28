@@ -8,12 +8,12 @@ use Tests\TestCase;
 
 class EuropeanCountriesServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected EuropeanCountriesService $european_countries_service;
 
-    #[\Override]protected function setUp(): void
+    #[\Override]
+    protected function setUp(): void
     {
         $this->european_countries_service = app(EuropeanCountriesService::class);
         $this->assertNotNull($this->european_countries_service);
@@ -21,7 +21,6 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_gets_all_the_options(): void
@@ -32,7 +31,6 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_condenses_european_union_countries(): void
@@ -43,19 +41,16 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_condenses_countries_uniquely(): void
     {
         $country_codes = ['SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'SK', 'BE', 'AU', 'AU', 'AU', 'AU'];
         $result = $this->european_countries_service->filterSortEuropeanCountries($country_codes);
-        $this->assertEquals(["BE", "SK"], $result);
+        $this->assertEquals(['BE', 'SK'], $result);
     }
 
-
     /**
-     * @return void
      * @test
      */
     public function it_condenses_european_economic_area_countries(): void
@@ -66,7 +61,6 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_does_not_condense_european_union_countries(): void
@@ -78,7 +72,6 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_filters_out_non_european_countries(): void
@@ -99,7 +92,6 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_does_not_break_on_empty(): void
@@ -110,7 +102,6 @@ class EuropeanCountriesServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function ensure_that_country_codes_arrays_are_in_alphabetical_order(): void
@@ -133,6 +124,7 @@ class EuropeanCountriesServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @throws \JsonException
      */
     public function the_char_length_is_ok(): void
@@ -148,7 +140,6 @@ class EuropeanCountriesServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_throws_an_error_and_returns_false(): void
     {
@@ -159,7 +150,6 @@ class EuropeanCountriesServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_returns_nothing_on_nothing(): void
     {

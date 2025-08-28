@@ -15,10 +15,10 @@ return [
     'To' => 'To',
     'Select a Platform' => 'Select a Platform',
     'Search' => 'Search',
-    "Date" => "Date",
-    "Statements of Reasons" => "Statements of Reasons",
-    "Full" => "Full",
-    "Size" => "Size",
-    "Light" => "Light"
+    'Date' => 'Date',
+    'Statements of Reasons' => 'Statements of Reasons',
+    'Full' => 'Full',
+    'Size' => 'Size',
+    'Light' => 'Light',
 
 ];

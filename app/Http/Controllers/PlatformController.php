@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PlatformRegisterStoreRequest;
 use App\Http\Requests\PlatformStoreRequest;
 use App\Http\Requests\PlatformUpdateRequest;
 use App\Models\Platform;
@@ -13,50 +12,42 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-
 class PlatformController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     *
-     * @return Application|Factory|View
      */
     public function index(Request $request): View|Factory|Application
     {
         $platforms = Platform::query();
         if ($request->get('s')) {
-            $platforms = Platform::where('name', 'like', '%' . $request->get('s') . '%');
+            $platforms = Platform::where('name', 'like', '%'.$request->get('s').'%');
         }
 
         $platforms->orderBy('name');
         $platforms = $platforms->paginate(50)->withQueryString();
 
         return view('platform.index', [
-            'platforms' => $platforms
+            'platforms' => $platforms,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View
      */
     public function create(): View|Factory|Application
     {
-        $platform = new Platform();
+        $platform = new Platform;
         $options = $this->prepareOptions();
+
         return view('platform.create', [
             'platform' => $platform,
-            'options' => $options
+            'options' => $options,
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     *
-     * @return RedirectResponse
      */
     public function store(PlatformStoreRequest $request): RedirectResponse
     {
@@ -64,8 +55,7 @@ class PlatformController extends Controller
 
         ])->toArray();
 
-        if ($validated['name'] == Platform::LABEL_DSA_TEAM)
-        {
+        if ($validated['name'] == Platform::LABEL_DSA_TEAM) {
             return redirect()->route('platform.index')->with('error', 'You can not create a platform with the name "'.Platform::LABEL_DSA_TEAM.'"');
         }
 
@@ -76,16 +66,14 @@ class PlatformController extends Controller
             'vlop' => $validated['vlop'],
             'onboarded' => $validated['onboarded'] ?? 0,
             'has_tokens' => 0,
-            'has_statements' => 0
+            'has_statements' => 0,
         ]);
+
         return redirect()->route('platform.index')->with('success', 'The platform has been created');
     }
 
     /**
      * Display the specified resource.
-     *
-     *
-     * @return RedirectResponse
      */
     public function show(Platform $platform): RedirectResponse
     {
@@ -94,9 +82,6 @@ class PlatformController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     *
-     * @return Application|Factory|View
      */
     public function edit(Platform $platform): View|Factory|Application
     {
@@ -106,18 +91,16 @@ class PlatformController extends Controller
         if ($request && $request->query('returnto')) {
             Session::put('returnto', $request->query('returnto'));
         }
+
         return view('platform.edit', [
             'platform' => $platform,
-            'options' => $options
+            'options' => $options,
         ]);
 
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     *
-     * @return RedirectResponse
      */
     public function update(PlatformUpdateRequest $request, Platform $platform): RedirectResponse
     {
@@ -141,8 +124,9 @@ class PlatformController extends Controller
         $platform->save();
 
         $returnto = Session::get('returnto');
-        if($returnto) {
+        if ($returnto) {
             Session::remove('returnto');
+
             return redirect()->to($returnto)->with('success', 'The platform has been saved');
         }
 
@@ -151,9 +135,6 @@ class PlatformController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     *
-     * @return RedirectResponse
      */
     public function destroy(Request $request, Platform $platform): RedirectResponse
     {
@@ -181,43 +162,44 @@ class PlatformController extends Controller
         $vlops = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
-            ]
+                'value' => 0,
+            ],
         ];
         $onboardeds = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
-            ]
+                'value' => 0,
+            ],
         ];
         $has_tokens = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
-            ]
+                'value' => 0,
+            ],
         ];
         $has_statements = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
-            ]
+                'value' => 0,
+            ],
         ];
+
         return [
             'vlops' => $vlops,
             'onboardeds' => $onboardeds,
@@ -225,6 +207,4 @@ class PlatformController extends Controller
             'has_statements' => $has_statements,
         ];
     }
-
-
 }

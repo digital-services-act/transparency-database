@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Foundation\Testing\TestCase;
-use Tests\CreatesApplication;
 use App\Console\Commands\Heartbeat;
+use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Tests\CreatesApplication;
 
 class HeartbeatTest extends TestCase
 {
@@ -26,7 +26,7 @@ class HeartbeatTest extends TestCase
 
         // Register the Heartbeat command
         $this->app->singleton('command.heartbeat', function ($app) {
-            return new Heartbeat();
+            return new Heartbeat;
         });
         $this->app->make(\Illuminate\Contracts\Console\Kernel::class)
             ->registerCommand($this->app->make('command.heartbeat'));

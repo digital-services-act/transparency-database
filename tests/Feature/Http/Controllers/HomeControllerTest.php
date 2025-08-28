@@ -27,13 +27,13 @@ class HomeControllerTest extends TestCase
             ['value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'count' => 50],
             ['value' => 'STATEMENT_CATEGORY_VIOLENCE', 'count' => 30],
             ['value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE', 'count' => 20],
-            ['value' => 'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS', 'count' => 10]
+            ['value' => 'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS', 'count' => 10],
         ]);
         $mockSearchService->shouldReceive('topDecisionVisibilities')->once()->andReturn([
             ['value' => 'DECISION_VISIBILITY_CONTENT_REMOVED', 'count' => 40],
             ['value' => 'DECISION_VISIBILITY_CONTENT_DISABLED', 'count' => 30],
             ['value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED', 'count' => 20],
-            ['value' => 'DECISION_VISIBILITY_CONTENT_LABELLED', 'count' => 10]
+            ['value' => 'DECISION_VISIBILITY_CONTENT_LABELLED', 'count' => 10],
         ]);
         $mockSearchService->shouldReceive('fullyAutomatedDecisionPercentage')->once()->andReturn(75);
 
@@ -48,13 +48,13 @@ class HomeControllerTest extends TestCase
         // Assert
         $response->assertStatus(200);
         $response->assertViewIs('home');
-        
+
         $viewData = $response->viewData('total');
         $this->assertEquals(100, $viewData);
-        
+
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(3, $viewData);
-        
+
         // Check only top 3 categories are passed
         $viewData = $response->viewData('top_categories');
         $this->assertCount(3, $viewData);
@@ -96,7 +96,7 @@ class HomeControllerTest extends TestCase
 
         // Act - Second request
         $response = $this->get('/');
-        
+
         // Assert - Should still show 3 from cache
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(3, $viewData);
@@ -113,10 +113,10 @@ class HomeControllerTest extends TestCase
 
         // Clear any existing platforms
         Platform::query()->delete();
-        
+
         // Act
         $response = $this->get('/');
-        
+
         // Assert - Even with no platforms, minimum should be 1
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(1, $viewData);

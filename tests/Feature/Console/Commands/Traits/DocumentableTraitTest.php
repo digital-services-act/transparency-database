@@ -13,17 +13,21 @@ class DocumentableTraitTest extends TraitTestCase
     protected function setUp(): void
     {
         $this->createApplication();
-        
+
         // Create a test command that uses the DocumentableTrait
-        $this->command = new class extends Command {
+        $this->command = new class extends Command
+        {
             use DocumentableTrait;
 
             protected $signature = 'test:command {arg1} {arg2}';
+
             protected $description = 'Test command description';
+
             protected $arguments = [
                 'arg1' => 'First argument description',
                 'arg2' => 'Second argument description',
             ];
+
             protected $examples = [
                 'test:command value1 value2',
                 'test:command foo bar',
@@ -31,7 +35,7 @@ class DocumentableTraitTest extends TraitTestCase
         };
     }
 
-    public function testGetDetailedDescriptionIncludesBasicInfo(): void
+    public function test_get_detailed_description_includes_basic_info(): void
     {
         $description = $this->command->getDetailedDescription();
 
@@ -40,7 +44,7 @@ class DocumentableTraitTest extends TraitTestCase
         $this->assertStringContainsString('test:command {arg1} {arg2}', $description);
     }
 
-    public function testGetDetailedDescriptionIncludesArguments(): void
+    public function test_get_detailed_description_includes_arguments(): void
     {
         $description = $this->command->getDetailedDescription();
 
@@ -49,7 +53,7 @@ class DocumentableTraitTest extends TraitTestCase
         $this->assertStringContainsString('arg2: Second argument description', $description);
     }
 
-    public function testGetDetailedDescriptionIncludesExamples(): void
+    public function test_get_detailed_description_includes_examples(): void
     {
         $description = $this->command->getDetailedDescription();
 
@@ -58,14 +62,17 @@ class DocumentableTraitTest extends TraitTestCase
         $this->assertStringContainsString('test:command foo bar', $description);
     }
 
-    public function testGetDetailedDescriptionWithoutArguments(): void
+    public function test_get_detailed_description_without_arguments(): void
     {
         // Create a command without arguments property
-        $command = new class extends Command {
+        $command = new class extends Command
+        {
             use DocumentableTrait;
 
             protected $signature = 'test:noargs';
+
             protected $description = 'Test command without arguments';
+
             protected $examples = ['test:noargs'];
         };
 
@@ -75,14 +82,17 @@ class DocumentableTraitTest extends TraitTestCase
         $this->assertStringContainsString('Examples:', $description);
     }
 
-    public function testGetDetailedDescriptionWithoutExamples(): void
+    public function test_get_detailed_description_without_examples(): void
     {
         // Create a command without examples property
-        $command = new class extends Command {
+        $command = new class extends Command
+        {
             use DocumentableTrait;
 
             protected $signature = 'test:noexamples';
+
             protected $description = 'Test command without examples';
+
             protected $arguments = ['arg' => 'Argument description'];
         };
 
@@ -92,15 +102,19 @@ class DocumentableTraitTest extends TraitTestCase
         $this->assertStringNotContainsString('Examples:', $description);
     }
 
-    public function testGetDetailedDescriptionWithEmptyArrays(): void
+    public function test_get_detailed_description_with_empty_arrays(): void
     {
         // Create a command with empty arrays
-        $command = new class extends Command {
+        $command = new class extends Command
+        {
             use DocumentableTrait;
 
             protected $signature = 'test:empty';
+
             protected $description = 'Test command with empty arrays';
+
             protected $arguments = [];
+
             protected $examples = [];
         };
 

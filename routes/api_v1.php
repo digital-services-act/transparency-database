@@ -20,11 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware('auth:sanctum')->group(static function () {
     Route::get('statement/{statement:uuid}', [StatementAPIController::class, 'show'])->name('api.v1.statement.show')->can('view statements');
-    
+
     Route::get('statement/existing-puid/{puid}', [StatementAPIController::class, 'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
     Route::post('statement', [StatementAPIController::class, 'store'])->name('api.v1.statement.store')->can('create statements');
     Route::post('statements', [StatementMultipleAPIController::class, 'store'])->name('api.v1.statements.store')->can('create statements');
-    
 
     Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
         Route::get('indices', [ElasticSearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
@@ -46,12 +45,12 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('datetotalsrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.elasticsearch.datetotalsrange');
     });
 
-    //Onboarding routes
-    Route::get('platform/{platform:dsa_common_id}', static fn(\App\Models\Platform $platform) => (new PlatformAPIController())->get($platform))->name('api.v1.platform.get')->can('view platforms');
-    Route::put('platform/{platform:dsa_common_id}', static fn(\App\Models\Platform $platform, \App\Http\Requests\PlatformUpdateRequest $request): \Illuminate\Http\JsonResponse => (new PlatformAPIController())->update($platform, $request))->name('api.v1.platform.update')->can('create platforms');
-    Route::post('platform', static fn(\App\Http\Requests\PlatformStoreRequest $request): \Illuminate\Http\JsonResponse => (new PlatformAPIController())->store($request))->name('api.v1.platform.store')->can('create platforms');
-    Route::get('user/{email}', static fn($email) => (new UserAPIController())->get($email))->name('api.v1.user.get')->can('view users');
-    Route::delete('user/{email}', static fn($email) => (new UserAPIController())->delete($email))->name('api.v1.user.delete')->can('create users');
-    Route::post('platform/{platform:dsa_common_id}/users', static fn(\App\Http\Requests\PlatformUsersStoreRequest $request, \App\Models\Platform $platform): \Illuminate\Http\JsonResponse => (new PlatformUserAPIController())->store($request, $platform))->name('api.v1.platform-users.store')->can('create users');
+    // Onboarding routes
+    Route::get('platform/{platform:dsa_common_id}', static fn (\App\Models\Platform $platform) => (new PlatformAPIController)->get($platform))->name('api.v1.platform.get')->can('view platforms');
+    Route::put('platform/{platform:dsa_common_id}', static fn (\App\Models\Platform $platform, \App\Http\Requests\PlatformUpdateRequest $request): \Illuminate\Http\JsonResponse => (new PlatformAPIController)->update($platform, $request))->name('api.v1.platform.update')->can('create platforms');
+    Route::post('platform', static fn (\App\Http\Requests\PlatformStoreRequest $request): \Illuminate\Http\JsonResponse => (new PlatformAPIController)->store($request))->name('api.v1.platform.store')->can('create platforms');
+    Route::get('user/{email}', static fn ($email) => (new UserAPIController)->get($email))->name('api.v1.user.get')->can('view users');
+    Route::delete('user/{email}', static fn ($email) => (new UserAPIController)->delete($email))->name('api.v1.user.delete')->can('create users');
+    Route::post('platform/{platform:dsa_common_id}/users', static fn (\App\Http\Requests\PlatformUsersStoreRequest $request, \App\Models\Platform $platform): \Illuminate\Http\JsonResponse => (new PlatformUserAPIController)->store($request, $platform))->name('api.v1.platform-users.store')->can('create users');
 
 });

@@ -17,7 +17,7 @@ trait CommandTrait
         } elseif ($date === 'today') {
             $date = Carbon::today();
         } elseif (preg_match('/^\d+$/', (string) $date)) {
-            $date = Carbon::now()->subDays((int)$date);
+            $date = Carbon::now()->subDays((int) $date);
         } else {
             try {
                 $date = Carbon::createFromFormat('Y-m-d', $date);
@@ -32,7 +32,7 @@ trait CommandTrait
 
     public function intifyArgument(string $argument): int
     {
-        return (int)$this->argument($argument);
+        return (int) $this->argument($argument);
     }
 
     public function boolifyArgument(string $argument): bool

@@ -58,10 +58,10 @@ class EnrichHomePageCache extends Command
     public function doGrandTotal(StatementElasticSearchService $statement_elastic_search_service): void
     {
         $reindexing = Cache::get('reindexing', false);
-        if (!$reindexing) {
+        if (! $reindexing) {
             Cache::put('grand_total', $statement_elastic_search_service->grandTotalNoCache(), $this->one_day);
         } else {
-            $old = (int)Cache::get('grand_total');
+            $old = (int) Cache::get('grand_total');
             $yesterday = $statement_elastic_search_service->totalForDate(Carbon::yesterday());
             $new = $old + $yesterday;
             Cache::put('grand_total', $new, $this->one_day);

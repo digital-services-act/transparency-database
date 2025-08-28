@@ -9,8 +9,6 @@ class PlatformUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -19,8 +17,6 @@ class PlatformUpdateRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -36,12 +32,12 @@ class PlatformUpdateRequest extends FormRequest
                 'string',
                 'nullable',
                 Rule::unique('platforms')->ignore($platform->id),
-            ]
+            ],
         ];
     }
 
     private function in($array): string
     {
-        return 'in:' . implode(',', $array);
+        return 'in:'.implode(',', $array);
     }
 }

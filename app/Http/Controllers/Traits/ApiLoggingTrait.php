@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Traits;
 use App\Models\ApiLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Throwable;
 
 trait ApiLoggingTrait
@@ -31,6 +30,7 @@ trait ApiLoggingTrait
     {
         $response = $operation();
         $this->logApiCall($request, $response, $platformId);
+
         return $response;
     }
 }

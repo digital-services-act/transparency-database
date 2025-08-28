@@ -12,6 +12,4 @@ return [
     'Assistance' => 'Assistance',
     'For any type of issues please contact:' => '',
 
-
-
 ];

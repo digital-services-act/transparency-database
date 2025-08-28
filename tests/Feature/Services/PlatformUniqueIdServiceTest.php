@@ -11,12 +11,12 @@ use Tests\TestCase;
 
 class PlatformUniqueIdServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected PlatformUniqueIdService $platformUniqueIdService;
 
-    #[Override] protected function setUp(): void
+    #[Override]
+    protected function setUp(): void
     {
         parent::setUp();
         $this->platformUniqueIdService = app(PlatformUniqueIdService::class);
@@ -25,11 +25,12 @@ class PlatformUniqueIdServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @throws PuidNotUniqueSingleException
      */
     public function it_should_store_and_check_cache(): void
     {
-        $puid        = "foo-bar-puid";
+        $puid = 'foo-bar-puid';
         $platform_id = 1;
 
         $this->assertFalse($this->platformUniqueIdService->isPuidInCache($platform_id, $puid));
@@ -39,11 +40,12 @@ class PlatformUniqueIdServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @throws PuidNotUniqueSingleException
      */
     public function it_should_store_and_check_database_only_once(): void
     {
-        $puid        = "foo-bar-puid";
+        $puid = 'foo-bar-puid';
         $platform_id = 1;
 
         $this->assertDatabaseCount(PlatformPuid::class, 0);
@@ -57,6 +59,7 @@ class PlatformUniqueIdServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @throws PuidNotUniqueSingleException
      */
     public function it_should_refresh_the_cache(): void

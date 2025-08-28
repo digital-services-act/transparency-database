@@ -6,7 +6,6 @@ use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class PersonalAccessTokenTest extends TestCase
@@ -76,7 +75,7 @@ class PersonalAccessTokenTest extends TestCase
         // Set some cache values
         $lastUsedCacheKey = sprintf('personal-access-token:%s:last_used_at', $token->id);
         $tokenableCacheKey = sprintf('personal-access-token:%s:tokenable', $token->id);
-        $tokenCacheKey = 'personal-access-token:' . $token->id;
+        $tokenCacheKey = 'personal-access-token:'.$token->id;
 
         Cache::put($lastUsedCacheKey, now(), 3600);
         Cache::put($tokenableCacheKey, $user, 3600);
@@ -126,7 +125,7 @@ class PersonalAccessTokenTest extends TestCase
         // Verify database was updated
         $this->assertDatabaseHas('personal_access_tokens', [
             'id' => $token->id,
-            'last_used_at' => $newLastUsedAt
+            'last_used_at' => $newLastUsedAt,
         ]);
     }
 }

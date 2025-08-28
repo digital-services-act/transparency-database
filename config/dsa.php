@@ -16,6 +16,6 @@ return [
         'clientId' => env('WEBT_CLIENTID', false),
         'url' => env('WEBT_URL', false),
         'version' => env('WEBT_VERSION', 2),
-    ]
+    ],
 
 ];

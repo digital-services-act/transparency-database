@@ -15,6 +15,7 @@ class PlatformStoreRequestTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private PlatformStoreRequest $request;
 
     protected function setUp(): void
@@ -30,7 +31,7 @@ class PlatformStoreRequestTest extends TestCase
         })->middleware('web')->name('test-platform-store');
 
         // Create the request
-        $this->request = new PlatformStoreRequest();
+        $this->request = new PlatformStoreRequest;
         $this->request->setContainer($this->app);
         $this->request->setRedirector($this->app->make('redirect'));
         $this->request->setRouteResolver(function () {
@@ -42,7 +43,7 @@ class PlatformStoreRequestTest extends TestCase
     public function authorized_users_can_create_platform()
     {
         $this->actingAs($this->user);
-        
+
         // Allow the permission
         Gate::define('create platforms', function ($user) {
             return true;
@@ -51,7 +52,7 @@ class PlatformStoreRequestTest extends TestCase
         $response = $this->postJson('test-platform-store', [
             'name' => 'New Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'test-id'
+            'dsa_common_id' => 'test-id',
         ]);
 
         $response->assertStatus(200);
@@ -61,7 +62,7 @@ class PlatformStoreRequestTest extends TestCase
     public function unauthorized_users_cannot_create_platform()
     {
         $this->actingAs($this->user);
-        
+
         // Deny the permission
         Gate::define('create platforms', function ($user) {
             return false;
@@ -69,7 +70,7 @@ class PlatformStoreRequestTest extends TestCase
 
         $response = $this->postJson('test-platform-store', [
             'name' => 'New Platform',
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertStatus(403);
@@ -79,10 +80,10 @@ class PlatformStoreRequestTest extends TestCase
     public function name_is_required()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->postJson('test-platform-store', [
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertStatus(422)
@@ -93,11 +94,11 @@ class PlatformStoreRequestTest extends TestCase
     public function name_must_be_string()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->postJson('test-platform-store', [
             'name' => 123,
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertStatus(422)
@@ -108,11 +109,11 @@ class PlatformStoreRequestTest extends TestCase
     public function name_must_not_exceed_max_length()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->postJson('test-platform-store', [
             'name' => str_repeat('a', 256),
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertStatus(422)
@@ -123,10 +124,10 @@ class PlatformStoreRequestTest extends TestCase
     public function vlop_is_required()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->postJson('test-platform-store', [
-            'name' => 'New Platform'
+            'name' => 'New Platform',
         ]);
 
         $response->assertStatus(422)
@@ -137,11 +138,11 @@ class PlatformStoreRequestTest extends TestCase
     public function vlop_must_be_integer()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->postJson('test-platform-store', [
             'name' => 'New Platform',
-            'vlop' => 'not-an-integer'
+            'vlop' => 'not-an-integer',
         ]);
 
         $response->assertStatus(422)
@@ -152,7 +153,7 @@ class PlatformStoreRequestTest extends TestCase
     public function optional_fields_can_be_null()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->postJson('test-platform-store', [
             'name' => 'New Platform',
@@ -160,7 +161,7 @@ class PlatformStoreRequestTest extends TestCase
             'onboarded' => null,
             'has_tokens' => null,
             'has_statements' => null,
-            'dsa_common_id' => null
+            'dsa_common_id' => null,
         ]);
 
         $response->assertStatus(200);
@@ -170,7 +171,7 @@ class PlatformStoreRequestTest extends TestCase
     public function dsa_common_id_must_be_unique()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         // Create a platform with a DSA common ID
         Platform::factory()->create(['dsa_common_id' => 'existing-id']);
@@ -178,7 +179,7 @@ class PlatformStoreRequestTest extends TestCase
         $response = $this->postJson('test-platform-store', [
             'name' => 'New Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'existing-id'
+            'dsa_common_id' => 'existing-id',
         ]);
 
         $response->assertStatus(422)
@@ -189,8 +190,8 @@ class PlatformStoreRequestTest extends TestCase
     public function in_method_builds_validation_rule_correctly()
     {
         // Create a request instance
-        $request = new PlatformStoreRequest();
-        
+        $request = new PlatformStoreRequest;
+
         // Use reflection to access private method
         $reflectionClass = new \ReflectionClass($request);
         $method = $reflectionClass->getMethod('in');

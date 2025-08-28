@@ -31,7 +31,7 @@ class ElasticSearchIndexDelete extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client     = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
 
         if ($client->indices()->exists(['index' => $index])->asBool()) {

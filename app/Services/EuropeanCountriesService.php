@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Exception;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\Intl\Countries;
 
 class EuropeanCountriesService
@@ -38,7 +36,7 @@ class EuropeanCountriesService
         'RO',
         'SE',
         'SI',
-        'SK'
+        'SK',
     ];
 
     public const EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES = [
@@ -71,7 +69,7 @@ class EuropeanCountriesService
         'RO',
         'SE',
         'SI',
-        'SK'
+        'SK',
     ];
 
     public const EUROPEAN_UNION_COUNTRY_CODES = [
@@ -101,14 +99,15 @@ class EuropeanCountriesService
         'RO',
         'SE',
         'SI',
-        'SK'
+        'SK',
     ];
 
-    public function getCountryName(string $iso): bool | string
+    public function getCountryName(string $iso): bool|string
     {
         if (in_array($iso, self::EUROPEAN_COUNTRY_CODES)) {
             return Countries::getName($iso);
         }
+
         return false;
     }
 
@@ -151,6 +150,7 @@ class EuropeanCountriesService
     {
         $options = array_combine(self::EUROPEAN_COUNTRY_CODES, $this->getCountryNames(self::EUROPEAN_COUNTRY_CODES, false));
         asort($options);
+
         return $options;
     }
 
@@ -159,6 +159,7 @@ class EuropeanCountriesService
         $intersection = array_intersect($countries, self::EUROPEAN_COUNTRY_CODES) ?? [];
         $filtered = array_unique(array_values($intersection));
         sort($filtered);
+
         return $filtered;
     }
 }

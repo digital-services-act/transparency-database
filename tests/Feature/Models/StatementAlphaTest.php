@@ -17,7 +17,6 @@ class StatementAlphaTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * @return void
      * @test
      */
     public function territorial_scope_is_always_an_array(): void
@@ -42,7 +41,6 @@ class StatementAlphaTest extends TestCase
         $this->assertIsArray($statement->territorial_scope);
         $this->assertCount(0, $statement->territorial_scope);
 
-
         // very bad json
         $statement->territorial_scope = 'hello mr. fox';
         $statement->save();
@@ -53,7 +51,6 @@ class StatementAlphaTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function territorial_scope_is_always_sorted(): void
@@ -68,11 +65,10 @@ class StatementAlphaTest extends TestCase
 
         // Get it back in alpha order
         $territorial_scope = $statement->territorial_scope;
-        $this->assertEquals(["AU", "BE", "SK"], $territorial_scope);
+        $this->assertEquals(['AU', 'BE', 'SK'], $territorial_scope);
     }
 
     /**
-     * @return void
      * @test
      */
     public function territorial_scope_is_always_unique(): void
@@ -84,10 +80,9 @@ class StatementAlphaTest extends TestCase
         $statement->save();
         $statement->refresh();
 
-
         // Get it back in alpha order
         $territorial_scope = $statement->territorial_scope;
-        $this->assertEquals(["AU", "BE", "SK"], $territorial_scope);
+        $this->assertEquals(['AU', 'BE', 'SK'], $territorial_scope);
     }
 
     /**
@@ -127,7 +122,7 @@ class StatementAlphaTest extends TestCase
             'content_type' => ['TEXT', 'IMAGE'],
             'decision_visibility' => ['REMOVED'],
             'category_addition' => ['EXTRA'],
-            'category_specification' => ['SPEC']
+            'category_specification' => ['SPEC'],
         ]);
 
         $this->assertIsString($statement->uuid);
@@ -175,7 +170,7 @@ class StatementAlphaTest extends TestCase
         );
 
         $this->assertEquals(
-            route('api.v' . config('app.api_latest') . '.statement.show', [$statement]),
+            route('api.v'.config('app.api_latest').'.statement.show', [$statement]),
             $statement->self
         );
     }
@@ -190,7 +185,7 @@ class StatementAlphaTest extends TestCase
             'decision_monetary' => 'DECISION_MONETARY_SUSPENSION',
             'decision_provision' => null,
             'decision_account' => null,
-            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES
+            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES,
         ]);
 
         $statement->refresh();
@@ -207,7 +202,7 @@ class StatementAlphaTest extends TestCase
             'decision_monetary' => 'DECISION_MONETARY_SUSPENSION',
             'decision_provision' => 'DECISION_PROVISION_TOTAL_SUSPENSION',
             'decision_account' => 'DECISION_ACCOUNT_TERMINATED',
-            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES
+            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES,
         ]);
 
         $statement->refresh();
@@ -237,22 +232,22 @@ class StatementAlphaTest extends TestCase
         // Test valid keys
         $values = StatementAlpha::getEnumValues([
             'AUTOMATED_DETECTION_YES',
-            'AUTOMATED_DETECTION_NO'
+            'AUTOMATED_DETECTION_NO',
         ]);
 
         $this->assertEquals([
             StatementAlpha::AUTOMATED_DETECTION_NO,
-            StatementAlpha::AUTOMATED_DETECTION_YES
+            StatementAlpha::AUTOMATED_DETECTION_YES,
         ], $values);
 
         // Test with invalid key - should be silently ignored due to try-catch
         $values = StatementAlpha::getEnumValues([
             'AUTOMATED_DETECTION_YES',
-            'DOES_NOT_EXIST'
+            'DOES_NOT_EXIST',
         ]);
 
         $this->assertEquals([
-            StatementAlpha::AUTOMATED_DETECTION_YES
+            StatementAlpha::AUTOMATED_DETECTION_YES,
         ], $values);
 
         // Test with empty array
@@ -262,7 +257,7 @@ class StatementAlphaTest extends TestCase
         // Test with null values in array
         $values = StatementAlpha::getEnumValues([null, 'AUTOMATED_DETECTION_YES', null]);
         $this->assertEquals([
-            StatementAlpha::AUTOMATED_DETECTION_YES
+            StatementAlpha::AUTOMATED_DETECTION_YES,
         ], $values);
     }
 
@@ -274,7 +269,7 @@ class StatementAlphaTest extends TestCase
         $statement = StatementAlpha::factory()->create([
             'decision_visibility' => ['REMOVED'],
             'content_type' => ['TEXT', 'IMAGE'],
-            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES
+            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES,
         ]);
 
         $searchable = $statement->toSearchableArray();
@@ -312,7 +307,7 @@ class StatementAlphaTest extends TestCase
         $statement = StatementAlpha::factory()->create([
             'decision_visibility' => ['REMOVED'],
             'content_type' => ['TEXT', 'IMAGE'],
-            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES
+            'automated_detection' => StatementAlpha::AUTOMATED_DETECTION_YES,
         ]);
 
         $syncable = $statement->toSyncableArray();

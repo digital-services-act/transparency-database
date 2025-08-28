@@ -71,7 +71,7 @@ class UserControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewHas('user');
-        $response->assertSee('value="' . $platform->id . '"', false);
+        $response->assertSee('value="'.$platform->id.'"', false);
     }
 
     /**
@@ -86,7 +86,7 @@ class UserControllerTest extends TestCase
         $response = $this->post(route('user.store'), [
             'email' => 'test@example.com',
             'roles' => [1],
-            'platform_id' => 1
+            'platform_id' => 1,
         ]);
 
         $response->assertRedirect($returnTo);
@@ -105,14 +105,14 @@ class UserControllerTest extends TestCase
         $response = $this->put(route('user.update', $user), [
             'email' => 'updated@example.com',
             'platform_id' => $newPlatform->id,
-            'roles' => [1]
+            'roles' => [1],
         ]);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'email' => 'updated@example.com',
-            'platform_id' => $newPlatform->id
+            'platform_id' => $newPlatform->id,
         ]);
     }
 
@@ -129,7 +129,7 @@ class UserControllerTest extends TestCase
         $response = $this->put(route('user.update', $user), [
             'email' => 'test@example.com',
             'platform_id' => 1,
-            'roles' => [1]
+            'roles' => [1],
         ]);
 
         $response->assertRedirect($returnTo);
@@ -184,7 +184,7 @@ class UserControllerTest extends TestCase
     public function non_admin_cannot_see_restricted_roles(): void
     {
         $user = $this->signInAsSupport();
-        $controller = new \App\Http\Controllers\UserController();
+        $controller = new \App\Http\Controllers\UserController;
 
         $roles = $controller->getAvailableRolesToDisplay();
 
@@ -226,10 +226,10 @@ class UserControllerTest extends TestCase
 
         $response = $this->post(route('user.store'), [
             'email' => 'foo@bar.com',
-            'roles' => [1,2],
-            'platform_id' => 1
+            'roles' => [1, 2],
+            'platform_id' => 1,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $this->assertCount($user_count + 1, User::all());

@@ -215,12 +215,13 @@ class EuropeanLanguagesService
         'YI' => 'Yiddish',
         'YO' => 'Yoruba',
         'ZA' => 'Zhuang, Chuang',
-        'ZU' => 'Zulu'
+        'ZU' => 'Zulu',
     ];
 
-    public function getName(string $iso) : string|bool
+    public function getName(string $iso): string|bool
     {
         $iso = strtoupper($iso);
+
         return self::ALL_LANGUAGES[$iso] ?? false;
     }
 
@@ -234,12 +235,11 @@ class EuropeanLanguagesService
         return $out;
     }
 
-    public function getNonEuropeanLanguages() : array
+    public function getNonEuropeanLanguages(): array
     {
         $out = [];
-        foreach (self::ALL_LANGUAGES as $iso => $name)
-        {
-            if (!in_array($iso, self::EUROPEAN_LANGUAGE_CODES)) {
+        foreach (self::ALL_LANGUAGES as $iso => $name) {
+            if (! in_array($iso, self::EUROPEAN_LANGUAGE_CODES)) {
                 $out[$iso] = $name;
             }
         }
@@ -247,22 +247,20 @@ class EuropeanLanguagesService
         return $out;
     }
 
-    public function getAllLanguages(bool $euro_centric = false, bool $with_breakers = false) : array
+    public function getAllLanguages(bool $euro_centric = false, bool $with_breakers = false): array
     {
-        if ($euro_centric && $with_breakers)
-        {
-            return  //[' ' => ' '] +
+        if ($euro_centric && $with_breakers) {
+            return // [' ' => ' '] +
                     ['  ' => '-- European Languages --'] +
-                    //['   ' => ' '] +
+                    // ['   ' => ' '] +
                     $this->getEuropeanLanguages() +
-                    ['    ' => ' ' ] +
+                    ['    ' => ' '] +
                     ['     ' => '-- Other Languages --'] +
-                    //['      ' => ' ' ] +
+                    // ['      ' => ' ' ] +
                     $this->getNonEuropeanLanguages();
         }
 
-        if ($euro_centric)
-        {
+        if ($euro_centric) {
             return $this->getEuropeanLanguages() + $this->getNonEuropeanLanguages();
         }
 

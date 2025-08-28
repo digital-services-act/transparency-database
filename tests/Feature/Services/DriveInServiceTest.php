@@ -9,12 +9,12 @@ use Tests\TestCase;
 
 class DriveInServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected DriveInService $drive_in_service;
 
-    #[\Override]protected function setUp(): void
+    #[\Override]
+    protected function setUp(): void
     {
         $this->drive_in_service = app(DriveInService::class);
         $this->assertNotNull($this->drive_in_service);
@@ -22,15 +22,14 @@ class DriveInServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_calls_out_for_similar_words(): void
     {
-        $mock_result_array = ["alex","http_fake","laravel","is","awesome"];
-        $mock_similar_result_array = ["alex","http fake","laravel","is","awesome"]; // http_fake -> http fake
+        $mock_result_array = ['alex', 'http_fake', 'laravel', 'is', 'awesome'];
+        $mock_similar_result_array = ['alex', 'http fake', 'laravel', 'is', 'awesome']; // http_fake -> http fake
         Http::fake([
-            '*' => Http::response(["message" =>"ok","result" => $mock_result_array], 200)
+            '*' => Http::response(['message' => 'ok', 'result' => $mock_result_array], 200),
         ]);
 
         $similar_words = $this->drive_in_service->getSimilarityWords('alice');
@@ -38,7 +37,6 @@ class DriveInServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_returns_blank_array_on_issue(): void
@@ -46,7 +44,7 @@ class DriveInServiceTest extends TestCase
         $mock_result = false; // bogus return from the service.
         $mock_similar_result_array = [];
         Http::fake([
-            '*' => Http::response(["message" =>"ok","result" => $mock_result], 200)
+            '*' => Http::response(['message' => 'ok', 'result' => $mock_result], 200),
         ]);
 
         $similar_words = $this->drive_in_service->getSimilarityWords('alice');

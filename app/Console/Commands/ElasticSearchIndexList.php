@@ -31,12 +31,11 @@ class ElasticSearchIndexList extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client  = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
 
         $indexes = array_keys($client->indices()->stats()->asArray()['indices']);
         $rows = [];
-        foreach ($indexes as $index)
-        {
+        foreach ($indexes as $index) {
             $rows[] = [$index];
         }
 

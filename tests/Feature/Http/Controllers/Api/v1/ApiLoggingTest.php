@@ -2,19 +2,21 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Models\ApiLog;
 use App\Models\Platform;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Models\ApiLog;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class ApiLoggingTest extends TestCase
 {
     use RefreshDatabase;
 
     private Platform $platform;
+
     private User $user;
+
     private User $existingUser;
 
     protected function setUp(): void
@@ -30,13 +32,13 @@ class ApiLoggingTest extends TestCase
         $this->platform = Platform::factory()->create([
             'name' => 'Test Platform',
             'vlop' => true,
-            'dsa_common_id' => 'test-platform'
+            'dsa_common_id' => 'test-platform',
         ]);
 
         // Create an existing user for this platform
         $this->existingUser = User::factory()->create([
             'email' => 'existing@example.com',
-            'platform_id' => $this->platform->id
+            'platform_id' => $this->platform->id,
         ]);
     }
 
@@ -44,7 +46,7 @@ class ApiLoggingTest extends TestCase
     {
         // Try to add a user that already exists for this platform
         $response = $this->postJson("/api/v1/platform/{$this->platform->dsa_common_id}/users", [
-            'emails' => ['existing@example.com']
+            'emails' => ['existing@example.com'],
         ]);
 
         $this->assertEquals(422, $response->status());
@@ -70,12 +72,12 @@ class ApiLoggingTest extends TestCase
         // Create another existing user
         User::factory()->create([
             'email' => 'another@example.com',
-            'platform_id' => $this->platform->id
+            'platform_id' => $this->platform->id,
         ]);
 
         // Try to add multiple users that already exist for this platform
         $response = $this->postJson("/api/v1/platform/{$this->platform->dsa_common_id}/users", [
-            'emails' => ['existing@example.com', 'another@example.com']
+            'emails' => ['existing@example.com', 'another@example.com'],
         ]);
 
         $this->assertEquals(422, $response->status());

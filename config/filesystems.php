@@ -39,7 +39,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -62,11 +62,11 @@ return [
             'secret' => env('CELLAR_ADDON_KEY_SECRET'),
             'region' => env('CELLAR_ADDON_DEFAULT_REGION', 'eu-central-1'),
             'bucket' => env('CELLAR_ADDON_DS_BUCKET', 'dsa-sor-data-dumps'),
-            'url' => 'https://' . env('CELLAR_ADDON_HOST', ''),
-            'endpoint' => 'https://' . env('CELLAR_ADDON_HOST', ''),
+            'url' => 'https://'.env('CELLAR_ADDON_HOST', ''),
+            'endpoint' => 'https://'.env('CELLAR_ADDON_HOST', ''),
             'use_path_style_endpoint' => env('CELLAR_ADDON_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'visibility' => 'public'
+            'visibility' => 'public',
         ],
 
         'ovh' => [
@@ -79,7 +79,7 @@ return [
             'endpoint' => env('AWS_OVH_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_OVH_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => true,
-            'visibility' => 'private'
+            'visibility' => 'private',
         ],
 
     ],

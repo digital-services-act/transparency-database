@@ -13,14 +13,14 @@ use Tests\TestCase;
 
 class DayArchiveServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected DayArchiveService $day_archive_service;
 
     private array $required_fields;
 
-    #[\Override] protected function setUp(): void
+    #[\Override]
+    protected function setUp(): void
     {
         parent::setUp();
         $this->day_archive_service = app(DayArchiveService::class);
@@ -41,13 +41,12 @@ class DayArchiveServiceTest extends TestCase
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
             'application_date' => '2023-05-18',
-            'content_date' => '2023-05-18'
+            'content_date' => '2023-05-18',
         ];
     }
 
     /**
      * @test
-     * @return void
      */
     public function it_builds_an_exports_array(): void
     {
@@ -65,14 +64,13 @@ class DayArchiveServiceTest extends TestCase
         DayArchive::create([
             'date' => '2023-10-02',
             'total' => 1,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
         DayArchive::create([
             'date' => '2023-10-01',
             'total' => 2,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
-
 
         $list = $this->day_archive_service->globalList()->get();
         $this->assertCount(2, $list);
@@ -93,18 +91,16 @@ class DayArchiveServiceTest extends TestCase
     {
         DayArchive::create([
             'date' => '2023-10-02',
-            'total' => 1
+            'total' => 1,
         ]);
         DayArchive::create([
             'date' => '2023-10-01',
-            'total' => 2
+            'total' => 2,
         ]);
-
 
         $list = $this->day_archive_service->globalList()->get();
         $this->assertCount(0, $list);
     }
-
 
     /**
      * @test
@@ -113,18 +109,18 @@ class DayArchiveServiceTest extends TestCase
     {
         DayArchive::create([
             'date' => '2023-10-02',
-            'total' => 1
+            'total' => 1,
         ]);
 
         DayArchive::create([
             'date' => '2023-10-02',
             'total' => 5,
-            'platform_id' => 5
+            'platform_id' => 5,
         ]);
 
         DayArchive::create([
             'date' => '2023-10-01',
-            'total' => 1
+            'total' => 1,
         ]);
 
         $dayarchive = $this->day_archive_service->getDayArchiveByDate(Carbon::createFromFormat('Y-m-d', '2023-10-02'));
@@ -133,10 +129,8 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals(1, $dayarchive->total);
     }
 
-
     /**
      * @test
-     * @return void
      */
     public function it_gets_the_first_id_from_date(): void
     {
@@ -166,7 +160,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_false_on_first(): void
     {
@@ -175,10 +168,8 @@ class DayArchiveServiceTest extends TestCase
         $this->assertFalse($first_id);
     }
 
-
     /**
      * @test
-     * @return void
      */
     public function it_gets_the_first_id_from_date_in_the_first_minute(): void
     {
@@ -206,7 +197,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_the_last_id_from_date(): void
     {
@@ -234,7 +224,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_the_last_id_from_date_in_the_last_minute(): void
     {
@@ -262,7 +251,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_zero_on_last(): void
     {
@@ -273,7 +261,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_a_query_by_platform(): void
     {
@@ -287,7 +274,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_a_day_archive_by_platform_date(): void
     {
@@ -296,7 +282,7 @@ class DayArchiveServiceTest extends TestCase
 
         $day_archive = DayArchive::create([
             'date' => $date,
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         $result = $this->day_archive_service->getDayArchiveByPlatformDate($platform, $date);
@@ -313,7 +299,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_a_query_for_a_date(): void
     {
@@ -328,7 +313,6 @@ class DayArchiveServiceTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_gets_a_big_raw_select_string(): void
     {
@@ -336,5 +320,4 @@ class DayArchiveServiceTest extends TestCase
         $this->assertNotNull($result);
         $this->assertIsString($result);
     }
-
 }

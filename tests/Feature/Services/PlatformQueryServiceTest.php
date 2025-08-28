@@ -2,31 +2,26 @@
 
 namespace Tests\Feature\Services;
 
-use App\Exceptions\PuidNotUniqueSingleException;
-use App\Models\PlatformPuid;
 use App\Services\PlatformQueryService;
-use App\Services\PlatformUniqueIdService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
 use Tests\TestCase;
 
 class PlatformQueryServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected PlatformQueryService $platformQueryService;
 
-    #[Override] protected function setUp(): void
+    #[Override]
+    protected function setUp(): void
     {
         parent::setUp();
         $this->platformQueryService = app(PlatformQueryService::class);
         $this->assertNotNull($this->platformQueryService);
     }
 
-
     /**
-     * @return void
      * @test
      */
     public function it_queries_on_s(): void
@@ -39,7 +34,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_queries_on_has_tokens(): void
@@ -64,7 +58,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_queries_on_has_statements(): void
@@ -89,7 +82,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_queries_on_vlop(): void
@@ -114,7 +106,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_queries_on_onboarded(): void
@@ -139,7 +130,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_gets_platform_dropdown_options(): void
@@ -149,7 +139,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_gets_platforms_by_id(): void
@@ -159,7 +148,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_gets_platform_ids(): void
@@ -169,7 +157,6 @@ class PlatformQueryServiceTest extends TestCase
     }
 
     /**
-     * @return void
      * @test
      */
     public function it_gets_platform_vlop_ids(): void
@@ -177,5 +164,4 @@ class PlatformQueryServiceTest extends TestCase
         $platform_ids = $this->platformQueryService->getVlopPlatformIds();
         $this->assertIsArray($platform_ids);
     }
-
 }

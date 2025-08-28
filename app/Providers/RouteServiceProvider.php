@@ -19,13 +19,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
 
-
     protected $apiNamespace = 'App\Http\Controllers\Api';
 
     /**
      * Define your route model bindings, pattern filters, etc.
-     *
-     * @return void
      */
     #[\Override]
     public function boot(): void
@@ -54,11 +51,11 @@ class RouteServiceProvider extends ServiceProvider
         // RateLimiter::for('api', static fn(Request $request) => $request->user() ? Limit::perMinute(100000)->by($request->user()->id) : Limit::perMinute(50)->by($request->ip())
         //     ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
 
-        RateLimiter::for('api', static fn(Request $request) => $request->user() ? Limit::perMinute(100000)->by($request->user()->id) : Limit::perMinute(100000)->by($request->ip())
-            ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
+        RateLimiter::for('api', static fn (Request $request) => $request->user() ? Limit::perMinute(100000)->by($request->user()->id) : Limit::perMinute(100000)->by($request->ip())
+            ->response(static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
 
-        RateLimiter::for('web', static fn(Request $request) => $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
-            ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the application', 429, $headers)));
+        RateLimiter::for('web', static fn (Request $request) => $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
+            ->response(static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the application', 429, $headers)));
     }
 
     /**v
@@ -74,11 +71,11 @@ class RouteServiceProvider extends ServiceProvider
 
         foreach ($versions as $v) {
             Route::group([
-                'middleware' => ['api', 'api_version:v' . $v],
-                'namespace' => $this->apiNamespace . '\v' . $v,
-                'prefix' => 'api/v' . $v,
+                'middleware' => ['api', 'api_version:v'.$v],
+                'namespace' => $this->apiNamespace.'\v'.$v,
+                'prefix' => 'api/v'.$v,
             ], static function ($router) use ($v) {
-                require base_path('routes/api_v' . $v . '.php');
+                require base_path('routes/api_v'.$v.'.php');
             });
         }
     }

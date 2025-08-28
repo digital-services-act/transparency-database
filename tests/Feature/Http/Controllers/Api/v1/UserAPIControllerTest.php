@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
-use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,6 +12,7 @@ class UserAPIControllerTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+
     /**
      * @test
      */
@@ -21,11 +21,9 @@ class UserAPIControllerTest extends TestCase
 
         $this->signInAsOnboarding();
 
-
         $response = $this->get(route('api.v1.user.get', ['email' => 'foo@bar.com']), [
             'Accept' => 'application/json',
         ]);
-
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 
@@ -39,7 +37,6 @@ class UserAPIControllerTest extends TestCase
 
         $this->signInAsOnboarding();
 
-
         User::factory()
             ->create(
                 ['email' => 'foo@bar.com']
@@ -48,7 +45,6 @@ class UserAPIControllerTest extends TestCase
         $response = $this->get(route('api.v1.user.get', ['email' => 'foo@bar.com']), [
             'Accept' => 'application/json',
         ]);
-
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -72,7 +68,6 @@ class UserAPIControllerTest extends TestCase
         $response = $this->get(route('api.v1.user.get', ['email' => 'foo@bar.com']), [
             'Accept' => 'application/json',
         ]);
-
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -99,7 +94,6 @@ class UserAPIControllerTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
-
         $response->assertStatus(Response::HTTP_OK);
 
         $this->assertTrue($response->json('active'));
@@ -121,18 +115,15 @@ class UserAPIControllerTest extends TestCase
 
         $user->createToken(User::API_TOKEN_KEY)->plainTextToken;
 
-        $this->assertNotNull(User::firstWhere('email','foo@bar.com'));
+        $this->assertNotNull(User::firstWhere('email', 'foo@bar.com'));
 
         $response = $this->delete(route('api.v1.user.delete', ['email' => 'foo@bar.com']), [
             'Accept' => 'application/json',
         ]);
 
-
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertNull(User::firstWhere('email','foo@bar.com'));
+        $this->assertNull(User::firstWhere('email', 'foo@bar.com'));
 
     }
-
-
 }

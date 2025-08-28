@@ -15,37 +15,35 @@ use Illuminate\Support\Facades\Log;
 use JsonException;
 
 /**
- * 
  * @codeCoverageIgnore
  */
-class   StatementElasticSearchableChunk implements ShouldQueue
+class StatementElasticSearchableChunk implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $min, public int $max, public int $chunk)
-    {
-    }
+    public function __construct(public int $min, public int $max, public int $chunk) {}
 
     /**
      * Execute the job.
+     *
      * @throws JsonException
      */
     public function handle(StatementElasticSearchService $statement_elastic_search_service): void
     {
         // Set this in cache, to emergency stop reindexing.
         $stop = Cache::get('stop_reindexing', false);
-        if (!$stop) {
+        if (! $stop) {
             $end = $this->min + $this->chunk;
 
             if ($end > $this->max) {
                 $end = $this->max;
             }
-
 
             // Dispatch the next one
             if ($end < $this->max) {
@@ -60,7 +58,7 @@ class   StatementElasticSearchableChunk implements ShouldQueue
             $statement_elastic_search_service->bulkIndexStatements($statements);
 
             if ($end >= $this->max) {
-                Log::info('StatementElasticSearchableChunk Max Reached at ' . Carbon::now()->format('Y-m-d H:i:s'));
+                Log::info('StatementElasticSearchableChunk Max Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
             }
         }
     }

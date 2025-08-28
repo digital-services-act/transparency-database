@@ -9,8 +9,8 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Auth;
-use Tests\CreatesApplication;
 use Mockery;
+use Tests\CreatesApplication;
 
 class FeedbackMailTest extends BaseTestCase
 {
@@ -93,7 +93,7 @@ class FeedbackMailTest extends BaseTestCase
     public function it_is_queueable()
     {
         $mail = new FeedbackMail('Test feedback');
-        
+
         $this->assertTrue(
             in_array('Illuminate\Bus\Queueable', class_uses_recursive($mail)),
             'FeedbackMail should use Queueable trait'
@@ -104,7 +104,7 @@ class FeedbackMailTest extends BaseTestCase
     public function it_serializes_models()
     {
         $mail = new FeedbackMail('Test feedback');
-        
+
         $this->assertTrue(
             in_array('Illuminate\Queue\SerializesModels', class_uses_recursive($mail)),
             'FeedbackMail should use SerializesModels trait'

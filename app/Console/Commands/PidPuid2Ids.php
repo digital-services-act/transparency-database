@@ -12,6 +12,7 @@ use Symfony\Component\VarDumper\VarDumper;
 class PidPuid2Ids extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *

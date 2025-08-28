@@ -34,14 +34,15 @@ class ElasticSearchIndexSettings extends Command
         /** @var Client $client */
         $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
-        if (!$index)
-        {
+        if (! $index) {
             $this->error('index argument required');
+
             return;
         }
 
-        if (!$client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->error('index does not exist');
+
             return;
         }
 
@@ -49,5 +50,4 @@ class ElasticSearchIndexSettings extends Command
 
         VarDumper::dump($index_settings);
     }
-
 }

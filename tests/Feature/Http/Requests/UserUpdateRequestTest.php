@@ -8,14 +8,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
-use Illuminate\Validation\Rule;
 
 class UserUpdateRequestTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $user;
+
     private User $targetUser;
+
     private UserUpdateRequest $request;
 
     protected function setUp(): void
@@ -32,7 +33,7 @@ class UserUpdateRequestTest extends TestCase
         })->middleware('web');
 
         // Create the request
-        $this->request = new UserUpdateRequest();
+        $this->request = new UserUpdateRequest;
         $this->request->setContainer($this->app);
         $this->request->setRedirector($this->app->make('redirect'));
         $this->request->setRouteResolver(function () {
@@ -44,7 +45,7 @@ class UserUpdateRequestTest extends TestCase
     public function authorized_users_can_update_users()
     {
         $this->actingAs($this->user);
-        
+
         // Allow the permission
         Gate::define('create users', function ($user) {
             return true;
@@ -53,7 +54,7 @@ class UserUpdateRequestTest extends TestCase
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'new@example.com',
             'platform_id' => 1,
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(200);
@@ -63,7 +64,7 @@ class UserUpdateRequestTest extends TestCase
     public function unauthorized_users_cannot_update_users()
     {
         $this->actingAs($this->user);
-        
+
         // Deny the permission
         Gate::define('create users', function ($user) {
             return false;
@@ -72,7 +73,7 @@ class UserUpdateRequestTest extends TestCase
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'new@example.com',
             'platform_id' => 1,
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(403);
@@ -82,11 +83,11 @@ class UserUpdateRequestTest extends TestCase
     public function email_must_be_valid()
     {
         $this->actingAs($this->user);
-        Gate::define('create users', fn() => true);
+        Gate::define('create users', fn () => true);
 
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'not-an-email',
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(422)
@@ -97,7 +98,7 @@ class UserUpdateRequestTest extends TestCase
     public function email_must_be_unique_except_for_current_user()
     {
         $this->actingAs($this->user);
-        Gate::define('create users', fn() => true);
+        Gate::define('create users', fn () => true);
 
         // Create another user with a known email
         $existingUser = User::factory()->create(['email' => 'existing@example.com']);
@@ -105,7 +106,7 @@ class UserUpdateRequestTest extends TestCase
         // Try to update target user with existing email
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'existing@example.com',
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(422)
@@ -114,7 +115,7 @@ class UserUpdateRequestTest extends TestCase
         // Should allow using the same email for the same user
         $response = $this->putJson("/test-user-update/{$existingUser->id}", [
             'email' => 'existing@example.com',
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(200);
@@ -124,12 +125,12 @@ class UserUpdateRequestTest extends TestCase
     public function platform_id_must_be_integer_if_provided()
     {
         $this->actingAs($this->user);
-        Gate::define('create users', fn() => true);
+        Gate::define('create users', fn () => true);
 
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'valid@example.com',
             'platform_id' => 'not-an-integer',
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(422)
@@ -140,12 +141,12 @@ class UserUpdateRequestTest extends TestCase
     public function platform_id_can_be_null()
     {
         $this->actingAs($this->user);
-        Gate::define('create users', fn() => true);
+        Gate::define('create users', fn () => true);
 
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'valid@example.com',
             'platform_id' => null,
-            'roles' => ['admin']
+            'roles' => ['admin'],
         ]);
 
         $response->assertStatus(200);
@@ -155,11 +156,11 @@ class UserUpdateRequestTest extends TestCase
     public function roles_must_be_an_array()
     {
         $this->actingAs($this->user);
-        Gate::define('create users', fn() => true);
+        Gate::define('create users', fn () => true);
 
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
             'email' => 'valid@example.com',
-            'roles' => 'not-an-array'
+            'roles' => 'not-an-array',
         ]);
 
         $response->assertStatus(422)
@@ -170,10 +171,10 @@ class UserUpdateRequestTest extends TestCase
     public function roles_are_required()
     {
         $this->actingAs($this->user);
-        Gate::define('create users', fn() => true);
+        Gate::define('create users', fn () => true);
 
         $response = $this->putJson("/test-user-update/{$this->targetUser->id}", [
-            'email' => 'valid@example.com'
+            'email' => 'valid@example.com',
         ]);
 
         $response->assertStatus(422)

@@ -2,21 +2,21 @@
 
 namespace Tests\Feature\Services;
 
-use App\Services\DayArchiveQueryService;
 use App\Models\Platform;
+use App\Services\DayArchiveQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DayArchiveQueryServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected DayArchiveQueryService $day_archive_query_service;
 
     private array $required_fields;
 
-    #[\Override]protected function setUp(): void
+    #[\Override]
+    protected function setUp(): void
     {
         parent::setUp();
         $this->day_archive_query_service = app(DayArchiveQueryService::class);
@@ -24,11 +24,9 @@ class DayArchiveQueryServiceTest extends TestCase
     }
 
     /**
-     * 
      * @test
-     * @return void
      */
-    public function it_builds_query(): void 
+    public function it_builds_query(): void
     {
         $query = $this->day_archive_query_service->query([]);
         $this->assertNotNull($query);
@@ -37,11 +35,9 @@ class DayArchiveQueryServiceTest extends TestCase
     }
 
     /**
-     * 
      * @test
-     * @return void
      */
-    public function it_filters_on_the_filters(): void 
+    public function it_filters_on_the_filters(): void
     {
         $platform = Platform::first();
         $query = $this->day_archive_query_service->query([
@@ -54,13 +50,10 @@ class DayArchiveQueryServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ? and strftime(\'%Y-%m-%d\', "date") >= cast(? as text) and strftime(\'%Y-%m-%d\', "date") <= cast(? as text)', $sql);
     }
 
-
     /**
-     * 
      * @test
-     * @return void
      */
-    public function it_throws_an_error_on_bad_dates_and_skips(): void 
+    public function it_throws_an_error_on_bad_dates_and_skips(): void
     {
         $platform = Platform::first();
         $query = $this->day_archive_query_service->query([
@@ -72,5 +65,4 @@ class DayArchiveQueryServiceTest extends TestCase
         $sql = $query->toSql();
         $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ?', $sql);
     }
-
 }

@@ -21,6 +21,7 @@ class DayArchiveFactory extends Factory
     public function definition(): array
     {
         $date = $this->faker->date();
+
         return [
             'date' => $date,
             'url' => $this->faker->url(),
@@ -52,7 +53,7 @@ class DayArchiveFactory extends Factory
     /**
      * Indicate that the archive belongs to a specific platform.
      */
-    public function forPlatform(Platform $platform = null): static
+    public function forPlatform(?Platform $platform = null): static
     {
         return $this->state(fn (array $attributes) => [
             'platform_id' => $platform?->id ?? Platform::factory(),

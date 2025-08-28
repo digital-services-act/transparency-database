@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Middleware;
 
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,11 +12,13 @@ use Tests\TestCase;
 class RedirectIfAuthenticatedTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     protected bool $seed = false;
 
     private RedirectIfAuthenticated $middleware;
+
     private Request $request;
+
     private string $baseUrl;
 
     #[\Override]
@@ -36,7 +37,7 @@ class RedirectIfAuthenticatedTest extends TestCase
         config(['auth.defaults.guard' => 'web']);
         config(['auth.providers.users.model' => \App\Models\User::class]);
 
-        $this->middleware = new RedirectIfAuthenticated();
+        $this->middleware = new RedirectIfAuthenticated;
         $this->request = Request::create('/login', 'GET');
         $this->baseUrl = config('app.url');
     }
@@ -62,9 +63,9 @@ class RedirectIfAuthenticatedTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => bcrypt('password'),
-            'platform_id' => null
+            'platform_id' => null,
         ]);
-        
+
         Auth::login($user);
         $this->assertTrue(Auth::check());
 
@@ -91,9 +92,9 @@ class RedirectIfAuthenticatedTest extends TestCase
             'name' => 'Test User 2',
             'email' => 'test2@example.com',
             'password' => bcrypt('password'),
-            'platform_id' => null
+            'platform_id' => null,
         ]);
-        
+
         Auth::login($user);
         $this->assertTrue(Auth::check());
 
@@ -122,9 +123,9 @@ class RedirectIfAuthenticatedTest extends TestCase
             'name' => 'Test User 3',
             'email' => 'test3@example.com',
             'password' => bcrypt('password'),
-            'platform_id' => null
+            'platform_id' => null,
         ]);
-        
+
         Auth::login($user);
         $this->assertTrue(Auth::check());
 

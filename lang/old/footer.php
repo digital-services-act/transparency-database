@@ -12,5 +12,5 @@ return [
     'Policies' => 'Policies',
     'Privacy Policy' => 'Privacy Policy',
     'Legal Notice' => 'Legal Notice',
-    'Data Retention Policy' => 'Data Retention Policy'
+    'Data Retention Policy' => 'Data Retention Policy',
 ];

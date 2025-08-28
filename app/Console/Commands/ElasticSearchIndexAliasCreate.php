@@ -31,12 +31,12 @@ class ElasticSearchIndexAliasCreate extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client     = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
         $alias = $this->argument('alias');
 
         if ($client->indices()->exists(['index' => $index])->asBool()) {
-            if (!$client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
+            if (! $client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
                 $client->indices()->putAlias(['index' => $index, 'name' => $alias]);
             } else {
                 $this->warn('Alias already exists on this index!');

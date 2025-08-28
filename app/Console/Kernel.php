@@ -11,6 +11,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     private const string DAILY_AFTER_MIDNIGHT = '00:10';
+
     private const string DAILY_TEST = '07:30';
 
     private const string DAILY_NINE_AM = '09:00';

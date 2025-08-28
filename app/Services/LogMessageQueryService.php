@@ -2,24 +2,16 @@
 
 namespace App\Services;
 
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use TypeError;
 use Yoeriboven\LaravelLogDb\Models\LogMessage;
 
 class LogMessageQueryService
 {
     private array $allowed_filters = [
-        's'
+        's',
     ];
 
-    /**
-     * @param array $filters
-     *
-     * @return Builder
-     */
     public function query(array $filters): Builder
     {
         $query = LogMessage::query();
@@ -35,20 +27,14 @@ class LogMessageQueryService
         return $query;
     }
 
-    /**
-     * @param Builder $query
-     * @param string $filter_value
-     *
-     * @return void
-     */
     private function applySFilter(Builder $query, string $filter_value): void
     {
         if (filter_var($filter_value, FILTER_VALIDATE_INT)) {
-            $filter_value = (int)$filter_value;
+            $filter_value = (int) $filter_value;
             $query->where('id', $filter_value);
         } else {
-            $query->orWhere('message', 'LIKE', '%' . $filter_value . '%');
-            $query->orWhere('context', 'LIKE', '%' . $filter_value . '%');
+            $query->orWhere('message', 'LIKE', '%'.$filter_value.'%');
+            $query->orWhere('context', 'LIKE', '%'.$filter_value.'%');
         }
     }
 }

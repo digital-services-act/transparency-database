@@ -22,7 +22,8 @@ class ApiLoggingTraitTest extends TestCase
         parent::setUp();
 
         // Create a test controller class using the trait
-        $this->controller = new class {
+        $this->controller = new class
+        {
             use ApiLoggingTrait;
 
             // Make the method public for testing
@@ -35,7 +36,7 @@ class ApiLoggingTraitTest extends TestCase
 
     public function test_logs_successful_api_call()
     {
-        $request = new Request();
+        $request = new Request;
         $request->server->set('REQUEST_METHOD', 'POST');
         $request->server->set('REQUEST_URI', '/api/v1/platform');
 
@@ -64,7 +65,7 @@ class ApiLoggingTraitTest extends TestCase
 
     public function test_logs_failed_api_call()
     {
-        $request = new Request();
+        $request = new Request;
         $request->server->set('REQUEST_METHOD', 'POST');
         $request->server->set('REQUEST_URI', '/api/v1/platform');
 
@@ -93,7 +94,7 @@ class ApiLoggingTraitTest extends TestCase
 
     public function test_logs_api_call_with_empty_response_data()
     {
-        $request = new Request();
+        $request = new Request;
         $request->server->set('REQUEST_METHOD', 'DELETE');
         $request->server->set('REQUEST_URI', '/api/v1/platform/1');
 
@@ -114,7 +115,7 @@ class ApiLoggingTraitTest extends TestCase
 
     public function test_logs_api_call_with_array_response_data()
     {
-        $request = new Request();
+        $request = new Request;
         $request->server->set('REQUEST_METHOD', 'GET');
         $request->server->set('REQUEST_URI', '/api/v1/platform');
 

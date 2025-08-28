@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
 use Elastic\Elasticsearch\Client;
-use Exception;
 use Illuminate\Console\Command;
 
 /**
@@ -35,18 +34,18 @@ class ElasticSearchIndexReindexRange extends Command
     {
         /** @var Client $client */
         $client = app(StatementElasticSearchService::class)->client();
-        $index  = $this->argument('index');
+        $index = $this->argument('index');
         $target = $this->argument('target');
-        $first  = $this->intifyArgument('first');
-        $last   = $this->intifyArgument('last');
+        $first = $this->intifyArgument('first');
+        $last = $this->intifyArgument('last');
 
-        if ( ! $client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->warn('Source index does not exist!');
 
             return;
         }
 
-        if ( ! $client->indices()->exists(['index' => $target])->asBool()) {
+        if (! $client->indices()->exists(['index' => $target])->asBool()) {
             $this->warn('Target index does not exist!');
 
             return;
@@ -54,35 +53,35 @@ class ElasticSearchIndexReindexRange extends Command
 
         $result = $client->reindex([
             'wait_for_completion' => false,
-            'body'                => [
-                'conflicts' => "proceed",
-                'source'    => [
+            'body' => [
+                'conflicts' => 'proceed',
+                'source' => [
                     'index' => $index,
-                    "query" => [
-                        "bool" => [
-                            "filter"               => [
+                    'query' => [
+                        'bool' => [
+                            'filter' => [
                                 [
-                                    "range" => [
-                                        "id" => [
-                                            "from"          => $first,
-                                            "to"            => $last,
-                                            "include_lower" => true,
-                                            "include_upper" => true,
-                                            "boost"         => 1.0
-                                        ]
-                                    ]
-                                ]
+                                    'range' => [
+                                        'id' => [
+                                            'from' => $first,
+                                            'to' => $last,
+                                            'include_lower' => true,
+                                            'include_upper' => true,
+                                            'boost' => 1.0,
+                                        ],
+                                    ],
+                                ],
                             ],
-                            "adjust_pure_negative" => true,
-                            "boost"                => 1.0
-                        ]
-                    ]
+                            'adjust_pure_negative' => true,
+                            'boost' => 1.0,
+                        ],
+                    ],
                 ],
-                'dest'      => [
-                    'index'   => $target,
-                    'op_type' => 'create'
-                ]
-            ]
+                'dest' => [
+                    'index' => $target,
+                    'op_type' => 'create',
+                ],
+            ],
         ]);
     }
 }

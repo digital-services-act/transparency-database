@@ -31,34 +31,35 @@ class ElasticSearchIndexInfo extends Command
     public function handle(): void
     {
         $index = $this->argument('index');
-        if (!$index)
-        {
+        if (! $index) {
             $this->error('index argument required');
+
             return;
         }
 
         /** @var Client $client */
-        $client  = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
 
-        if (!$client->indices()->exists(['index' => $index])->asBool())
-        {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->error('index does not exist');
+
             return;
         }
 
         $stats = $client->indices()->stats()->asArray();
         $indices = $stats['indices'];
 
-        if (!isset($indices[$index])) {
+        if (! isset($indices[$index])) {
             $this->warn('The index is not in the indices stats, probably you used an alias?');
+
             return;
         }
 
         $index_stats = $indices[$index];
 
-        $this->info('UUID: ' . $index_stats['uuid']);
-        $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
-        $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
+        $this->info('UUID: '.$index_stats['uuid']);
+        $this->info('Documents: '.$index_stats['primaries']['docs']['count']);
+        $this->info('Size: '.$this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
 
         $mapping = $client->indices()->getMapping(['index' => $index])->asArray();
 
@@ -66,11 +67,9 @@ class ElasticSearchIndexInfo extends Command
 
         $this->info('Field Information:');
 
-
         $fields = [];
-        foreach ($mapping[$index]['mappings']['properties'] as $field => $field_info)
-        {
-            $fields[] = [$field,$field_info['type']];
+        foreach ($mapping[$index]['mappings']['properties'] as $field => $field_info) {
+            $fields[] = [$field, $field_info['type']];
         }
 
         $this->table(['Field', 'Type'], $fields);
@@ -80,7 +79,7 @@ class ElasticSearchIndexInfo extends Command
         $shards_report = [];
         foreach ($shards as $shard) {
             if ($shard['prirep'] === 'p') {
-                $shards_report[$shard['shard']]= [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
+                $shards_report[$shard['shard']] = [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
             }
         }
 
@@ -90,13 +89,12 @@ class ElasticSearchIndexInfo extends Command
         $this->info('Shards:');
         $this->table(['Shard', 'State', 'Docs', 'Store'], $shards_report);
 
-
         $alias = $client->indices()->getAlias(['index' => $index])->asArray();
         $aliases = array_keys($alias[$index]['aliases']);
         $out = [];
         foreach ($aliases as $alias) {
             $out[] = [
-                'alias' => $alias
+                'alias' => $alias,
             ];
         }
 
@@ -106,25 +104,26 @@ class ElasticSearchIndexInfo extends Command
 
         $this->newLine();
 
-        $this->info('UUID: ' . $index_stats['uuid']);
-        $this->info('Documents: ' . $index_stats['primaries']['docs']['count']);
-        $this->info('Size: ' . $this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
+        $this->info('UUID: '.$index_stats['uuid']);
+        $this->info('Documents: '.$index_stats['primaries']['docs']['count']);
+        $this->info('Size: '.$this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
 
     }
 
-    private function humanFileSize($size,$unit="") {
-        if ((!$unit && $size >= 1<<30) || $unit == "GB") {
-            return number_format($size/(1<<30),2)."GB";
+    private function humanFileSize($size, $unit = '')
+    {
+        if ((! $unit && $size >= 1 << 30) || $unit == 'GB') {
+            return number_format($size / (1 << 30), 2).'GB';
         }
 
-        if ((!$unit && $size >= 1<<20) || $unit == "MB") {
-            return number_format($size/(1<<20),2)."MB";
+        if ((! $unit && $size >= 1 << 20) || $unit == 'MB') {
+            return number_format($size / (1 << 20), 2).'MB';
         }
 
-        if ((!$unit && $size >= 1<<10) || $unit == "KB") {
-            return number_format($size/(1<<10),2)."KB";
+        if ((! $unit && $size >= 1 << 10) || $unit == 'KB') {
+            return number_format($size / (1 << 10), 2).'KB';
         }
 
-        return number_format($size)." bytes";
+        return number_format($size).' bytes';
     }
 }

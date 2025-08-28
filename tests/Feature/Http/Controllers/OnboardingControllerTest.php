@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -43,7 +42,7 @@ class OnboardingControllerTest extends TestCase
         $this->signInAsOnboarding();
         $initialCount = Platform::nonDSA()->count();
         Platform::factory()->count(3)->create();
-        
+
         $response = $this->get(route('onboarding.index'));
         $response->assertViewHas('all_platforms_count', $initialCount + 3);
     }
@@ -54,13 +53,13 @@ class OnboardingControllerTest extends TestCase
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
         Platform::where('name', '!=', Platform::LABEL_DSA_TEAM)->delete();
-        
+
         $vlopPlatform = Platform::factory()->create(['vlop' => true]);
         $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
 
         $response = $this->get(route('onboarding.index', ['vlop' => 1]));
         $platforms = $response->viewData('platforms');
-        
+
         $this->assertTrue($platforms->contains($vlopPlatform));
         $this->assertFalse($platforms->contains($nonVlopPlatform));
     }
@@ -71,14 +70,14 @@ class OnboardingControllerTest extends TestCase
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
         Platform::where('name', '!=', Platform::LABEL_DSA_TEAM)->delete();
-        
+
         $platformB = Platform::factory()->create(['name' => 'B Platform']);
         $platformA = Platform::factory()->create(['name' => 'A Platform']);
         $platformC = Platform::factory()->create(['name' => 'C Platform']);
 
         $response = $this->get(route('onboarding.index', ['sorting' => 'name:asc']));
         $platforms = $response->viewData('platforms');
-        
+
         $this->assertEquals('A Platform', $platforms->first()->name);
         $this->assertEquals('C Platform', $platforms->last()->name);
     }
@@ -89,13 +88,13 @@ class OnboardingControllerTest extends TestCase
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
         Platform::where('name', '!=', Platform::LABEL_DSA_TEAM)->delete();
-        
+
         $oldPlatform = Platform::factory()->create(['created_at' => now()->subDays(2)]);
         $newPlatform = Platform::factory()->create(['created_at' => now()]);
 
         $response = $this->get(route('onboarding.index', ['sorting' => 'created_at:desc']));
         $platforms = $response->viewData('platforms');
-        
+
         $this->assertTrue($platforms->first()->is($newPlatform));
         $this->assertTrue($platforms->last()->is($oldPlatform));
     }
@@ -109,7 +108,7 @@ class OnboardingControllerTest extends TestCase
 
         $response = $this->get(route('onboarding.index', ['s' => 'Test']));
         $platforms = $response->viewData('platforms');
-        
+
         $this->assertTrue($platforms->contains($matchingPlatform));
         $this->assertFalse($platforms->contains($nonMatchingPlatform));
     }
@@ -120,13 +119,13 @@ class OnboardingControllerTest extends TestCase
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
         Platform::where('name', '!=', Platform::LABEL_DSA_TEAM)->delete();
-        
+
         $platformB = Platform::factory()->create(['name' => 'B Platform']);
         $platformA = Platform::factory()->create(['name' => 'A Platform']);
 
         $response = $this->get(route('onboarding.index', ['sorting' => 'invalid:invalid']));
         $platforms = $response->viewData('platforms');
-        
+
         $this->assertEquals('A Platform', $platforms->first()->name);
         $this->assertEquals('B Platform', $platforms->last()->name);
     }
@@ -136,9 +135,9 @@ class OnboardingControllerTest extends TestCase
     {
         $this->signInAsOnboarding();
         $response = $this->get(route('onboarding.index'));
-        
+
         $options = $response->viewData('options');
-        
+
         $this->assertArrayHasKey('vlops', $options);
         $this->assertArrayHasKey('onboardeds', $options);
         $this->assertArrayHasKey('has_tokens', $options);

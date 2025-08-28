@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\v2\StatementCHAPIController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->group(function(){
+// Route::middleware('auth:sanctum')->group(function(){
 //    Route::get('statement/{statement:uuid}', [StatementAPIController::class,'show'])->name('api.v2.statement.show')->can('view statements');
 //    Route::post('statement', [StatementAPIController::class,'store'])->name('api.v2.statement.store')->can('create statements');
-//});
+// });

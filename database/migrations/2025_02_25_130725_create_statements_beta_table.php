@@ -75,13 +75,12 @@ class CreateStatementsBetaTable extends Migration
 
             $table->string('puid', 500);
 
-
             $table->timestamps();
             $table->softDeletes();
 
             $table->index(['created_at'], 'created_at_index');
             $table->index(['uuid'], 'uuid_index');
-            
+
         });
     }
 

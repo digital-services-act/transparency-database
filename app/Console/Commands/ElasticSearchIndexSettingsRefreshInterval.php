@@ -13,6 +13,7 @@ use Symfony\Component\VarDumper\VarDumper;
 class ElasticSearchIndexSettingsRefreshInterval extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -37,14 +38,15 @@ class ElasticSearchIndexSettingsRefreshInterval extends Command
         $index = $this->argument('index');
         $interval = $this->intifyArgument('interval');
 
-        if (!$index)
-        {
+        if (! $index) {
             $this->error('index argument required');
+
             return;
         }
 
-        if (!$client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->error('index does not exist');
+
             return;
         }
 
@@ -54,12 +56,11 @@ class ElasticSearchIndexSettingsRefreshInterval extends Command
         $client->indices()->putSettings([
             'index' => $index,
             'body' => [
-                'refresh_interval' => $interval . 's'
-            ]
+                'refresh_interval' => $interval.'s',
+            ],
         ]);
 
         $index_settings = $client->indices()->getSettings(['index' => $index])->asArray();
         VarDumper::dump($index_settings);
     }
-
 }

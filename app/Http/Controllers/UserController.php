@@ -18,17 +18,11 @@ use Spatie\Permission\Models\Role;
 
 /**
  * Class UserController
- * @package App\Http\Controllers
  */
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     *
-     * @param Request $request
-     *
-     * @return Application|Factory|View
      */
     public function index(Request $request): View|Factory|Application
     {
@@ -37,7 +31,7 @@ class UserController extends Controller
         $uuid = $request->query('uuid');
 
         if ($s) {
-            $users->where('email', 'like', '%' . $s . '%');
+            $users->where('email', 'like', '%'.$s.'%');
         }
 
         if ($uuid) {
@@ -49,25 +43,23 @@ class UserController extends Controller
         $users->orderBy('email');
         $users = $users->paginate(50)->withQueryString();
 
-        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(static fn($name, $uuid) => [
+        $platforms = Platform::query()->orderBy('name', 'asc')->pluck('name', 'uuid')->map(static fn ($name, $uuid) => [
             'value' => $uuid,
-            'label' => $name
+            'label' => $name,
         ])->toArray();
 
         return view('user.index', [
             'users' => $users,
-            'platforms' => $platforms
+            'platforms' => $platforms,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View
      */
     public function create(): View|Factory|Application
     {
-        $user = new User();
+        $user = new User;
         $options = $this->prepareOptions();
         $request = request();
 
@@ -90,9 +82,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      *
-     * @param UserStoreRequest $request
      *
-     * @return RedirectResponse
      * @throws RandomException
      */
     public function store(UserStoreRequest $request): RedirectResponse
@@ -105,15 +95,16 @@ class UserController extends Controller
         $user = User::create([
             'email' => $validated['email'],
             'password' => bcrypt(random_int(0, mt_getrandmax())),
-            'platform_id' => $validated['platform_id']
+            'platform_id' => $validated['platform_id'],
         ]);
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
         }
 
         $returnto = Session::get('returnto');
-        if($returnto) {
+        if ($returnto) {
             Session::remove('returnto');
+
             return redirect()->to($returnto)->with('success', 'The user has been created');
         }
 
@@ -122,11 +113,6 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     *
-     * @param User $user
-     *
-     * @return RedirectResponse
      */
     public function show(User $user): RedirectResponse
     {
@@ -135,11 +121,6 @@ class UserController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     *
-     * @param User $user
-     *
-     * @return Application|Factory|View
      */
     public function edit(User $user): View|Factory|Application
     {
@@ -150,6 +131,7 @@ class UserController extends Controller
         if ($request && $request->query('returnto')) {
             Session::put('returnto', $request->query('returnto'));
         }
+
         return view('user.edit', [
             'user' => $user,
             'options' => $options,
@@ -158,29 +140,24 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     *
-     * @param UserUpdateRequest $request
-     * @param User $user
-     *
-     * @return RedirectResponse
      */
     public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
         $validated = $request->safe()->merge([])->toArray();
-        
+
         $user->email = $validated['email'];
         $user->platform_id = $validated['platform_id'];
         $user->save();
-        
+
         $user->roles()->detach();
         foreach ($validated['roles'] as $id) {
             $user->roles()->attach($id);
         }
 
         $returnto = Session::get('returnto');
-        if($returnto) {
+        if ($returnto) {
             Session::remove('returnto');
+
             return redirect()->to($returnto)->with('success', 'The user has been updated');
         }
 
@@ -189,11 +166,6 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     *
-     * @param User $user
-     *
-     * @return RedirectResponse
      */
     public function destroy(User $user): RedirectResponse
     {
@@ -202,7 +174,6 @@ class UserController extends Controller
         $user->delete();
 
         $request = request();
-
 
         if ($request && $request->query('returnto')) {
             return redirect()->to($request->query('returnto'))->with('success', 'The user has been deleted');
@@ -213,14 +184,13 @@ class UserController extends Controller
 
     private function prepareOptions(): array
     {
-        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(static fn($platform) => [
+        $platforms = Platform::query()->orderBy('name', 'ASC')->get()->map(static fn ($platform) => [
             'value' => $platform->id,
-            'label' => $platform->name
+            'label' => $platform->name,
         ])->toArray();
         array_unshift($platforms, ['value' => '', 'label' => 'Choose a platform']);
 
         $roles = $this->getAvailableRolesToDisplay();
-
 
         return ['platforms' => $platforms, 'roles' => $roles];
     }
@@ -239,6 +209,7 @@ class UserController extends Controller
 
         return $roles->reject(static function ($role) {
             $names_to_remove = ['Admin', 'Onboarding', 'User'];
+
             return in_array($role->name, $names_to_remove, true);
         });
     }

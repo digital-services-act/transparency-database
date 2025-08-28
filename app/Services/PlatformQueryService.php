@@ -19,11 +19,6 @@ class PlatformQueryService
         'has_statements',
     ];
 
-    /**
-     * @param array $filters
-     *
-     * @return Builder
-     */
     public function query(array $filters): Builder
     {
         $query = Platform::NonDsa();
@@ -34,32 +29,24 @@ class PlatformQueryService
                     if (method_exists($this, $method)) {
                         $this->$method($query, $filters[$filter_key]);
                     }
-                } catch (TypeError | Exception $e) {
-                    Log::error("Platform Query Service Error", ['exception' => $e]);
+                } catch (TypeError|Exception $e) {
+                    Log::error('Platform Query Service Error', ['exception' => $e]);
                 }
             }
         }
+
         return $query;
     }
 
-    /**
-     * @param Builder $query
-     * @param string $filter_value
-     *
-     * @return void
-     */
     private function applySFilter(Builder $query, string $filter_value): void
     {
         if ($filter_value) {
-            $query->where('name', 'LIKE', '%' . $filter_value . '%');
+            $query->where('name', 'LIKE', '%'.$filter_value.'%');
         }
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
-     *
-     * @return void
+     * @param  string  $filter_value
      */
     private function applyVlopFilter(Builder $query, int $filter_value): void
     {
@@ -72,10 +59,7 @@ class PlatformQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
-     *
-     * @return void
+     * @param  string  $filter_value
      */
     private function applyOnboardedFilter(Builder $query, int $filter_value): void
     {
@@ -88,10 +72,7 @@ class PlatformQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
-     *
-     * @return void
+     * @param  string  $filter_value
      */
     private function applyHasTokensFilter(Builder $query, int $filter_value): void
     {
@@ -104,10 +85,7 @@ class PlatformQueryService
     }
 
     /**
-     * @param Builder $query
-     * @param string $filter_value
-     *
-     * @return void
+     * @param  string  $filter_value
      */
     private function applyHasStatementsFilter(Builder $query, int $filter_value): void
     {

@@ -26,7 +26,6 @@ class QueueNuke extends Command
      */
     protected $description = 'Truncate all queue tables and restart queue';
 
-
     public function handle(): void
     {
         DB::table('jobs')->truncate();

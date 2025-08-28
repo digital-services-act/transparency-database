@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 /**
  * @codeCoverageIgnore
  */
-class StatementDeleteChunk implements ShouldQueue
+class PlatformPuidDeleteChunk implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -45,10 +45,10 @@ class StatementDeleteChunk implements ShouldQueue
         }
 
         $range = range($this->min, $end);
-        DB::table('statements_beta')->whereIn('id', $range)->delete();
+        DB::table('platform_puids')->whereIn('id', $range)->delete();
 
         if ($end >= $this->max) {
-            Log::info('StatementDeleteChunk Max Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
+            Log::info('PlatformPuidDeleteChunk Max Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
         }
     }
 }

@@ -9,13 +9,12 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-#use JMac\Testing\Traits\AdditionalAssertions;
+// use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
-
 
 class StatementMultipleAPIControllerTest extends TestCase
 {
-    #use AdditionalAssertions;
+    // use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
 
@@ -24,9 +23,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     private Statement $statement;
 
     /**
-     * @param int $count
-     *
-     * @return array
+     * @param  int  $count
      */
     public function createFullStatements($count = 5): array
     {
@@ -43,7 +40,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         return $statements;
     }
 
-
     #[\Override]
     protected function setUp(): void
     {
@@ -52,7 +48,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->required_fields = [
             'decision_visibility' => [
                 'DECISION_VISIBILITY_CONTENT_DISABLED',
-                'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'
+                'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED',
             ],
             'decision_monetary' => null,
             'decision_provision' => null,
@@ -70,10 +66,9 @@ class StatementMultipleAPIControllerTest extends TestCase
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
             'application_date' => '2023-05-18',
-            'content_date' => '2023-05-18'
+            'content_date' => '2023-05-18',
         ];
     }
-
 
     /**
      * @test
@@ -83,11 +78,10 @@ class StatementMultipleAPIControllerTest extends TestCase
         // Not signing in.
         $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statements.store'), [$this->required_fields], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
-
 
     /**
      * @test
@@ -110,13 +104,12 @@ class StatementMultipleAPIControllerTest extends TestCase
         }
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(20, Statement::all());
     }
-
 
     /**
      * @test
@@ -141,7 +134,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $sors[3]['content_language'] = 'XX';
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -174,7 +167,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $sors[0]['puid'] = $sors[5]['puid'];
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -205,7 +198,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertFalse(Cache::has($key));
 
         $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $this->assertTrue(Cache::has($key));
@@ -213,7 +206,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(11, Statement::all());
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -241,7 +234,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertDatabaseCount(PlatformPuid::class, 0);
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -249,7 +242,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertDatabaseCount(Statement::class, 20);
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertArrayHasKey('existing_puids', $response->json('errors'));
@@ -268,7 +261,6 @@ class StatementMultipleAPIControllerTest extends TestCase
             'application_date' => '2023-12-20',
         ]);
 
-
         $sors = [];
         $fields['puid'] = 'foo-bar-sor-in-database';
         $sors[] = $fields;
@@ -284,15 +276,14 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         PlatformPuid::factory([
             'puid' => 'foo-bar-sor-in-database',
-            'platform_id' => $user->platform->id
+            'platform_id' => $user->platform->id,
         ])->create();
-
 
         $this->assertDatabaseCount(Statement::class, 10);
         $this->assertDatabaseCount(PlatformPuid::class, 1);
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertArrayHasKey('existing_puids', $response->json('errors'));
@@ -301,7 +292,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
         $this->assertTrue(Cache::has($key));
     }
-
 
     /**
      * @test
@@ -313,9 +303,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements = $this->createFullStatements(5);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -330,19 +320,19 @@ class StatementMultipleAPIControllerTest extends TestCase
         $user = $this->signInAsContributor();
 
         $statements = $this->createFullStatements(5);
-        $statements[4]['territorial_scope'] = ['DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT','DE', 'ES', 'PT'];
+        $statements[4]['territorial_scope'] = ['DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT', 'DE', 'ES', 'PT'];
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertCount(15, Statement::all());
         $last = Statement::orderBy('id', 'desc')->first();
         $territorial_scope = $last->territorial_scope;
-        $this->assertEquals(["DE", "ES", "PT"], $territorial_scope);
+        $this->assertEquals(['DE', 'ES', 'PT'], $territorial_scope);
     }
 
     /**
@@ -366,9 +356,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[4]['decision_visibility_other'] = null;
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(3, $response->json('errors'));
@@ -393,9 +383,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[0]['content_type'] = 'CONTENT_TYPE_OTHER';
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(1, $response->json('errors'));
@@ -414,9 +404,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[0]['content_type'] = 'DECISION_VISIBILITY_CONTENT_REMOVED';
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(1, $response->json('errors'));
@@ -444,9 +434,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[4]['content_type_other'] = null;
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(3, $response->json('errors'));
@@ -470,7 +460,7 @@ class StatementMultipleAPIControllerTest extends TestCase
 
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
-            'source_type' => 'SOURCE_VOLUNTARY'
+            'source_type' => 'SOURCE_VOLUNTARY',
         ]);
 
         $create = 1;
@@ -481,7 +471,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         }
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $sors], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -507,9 +497,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         unset($statements[1]['content_type_other']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(12, Statement::all());
@@ -541,9 +531,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         unset($statements[2]['source_identity']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(13, Statement::all());
@@ -577,11 +567,10 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements[2]['decision_monetary'] = 'DECISION_MONETARY_SUSPENSION';
         unset($statements[2]['decision_monetary_other']);
 
-
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(13, Statement::all());
@@ -619,9 +608,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         unset($statements[2]['category_specification_other']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(13, Statement::all());
@@ -661,9 +650,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         unset($statements[1]['illegal_content_explanation']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(12, Statement::all());
@@ -703,9 +692,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         unset($statements[1]['decision_visibility_other']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(12, Statement::all());
@@ -727,11 +716,11 @@ class StatementMultipleAPIControllerTest extends TestCase
     {
         $this->signInAsContributor();
 
-        //$this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $sors = [];
 
-        //Create the light one and add it to the sors array
+        // Create the light one and add it to the sors array
         $sors[] = [
             'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
@@ -753,30 +742,27 @@ class StatementMultipleAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
         ]);
-        $fields['puid'] = "sorFull";
+        $fields['puid'] = 'sorFull';
         $sors[] = $fields;
 
-
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $sors
+            'statements' => $sors,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(12, Statement::all());
 
-
-
         $statementA = Statement::where('puid', $response->json('statements.0.puid'))->first()->fresh();
         $statementB = Statement::where('puid', $response->json('statements.1.puid'))->first()->fresh();
 
-        //Check that both can be displayed without errors
+        // Check that both can be displayed without errors
         $this->get(route('api.v1.statement.show', [$statementA]), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ])->assertStatus(Response::HTTP_OK);
 
         $this->get(route('api.v1.statement.show', [$statementB]), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ])->assertStatus(Response::HTTP_OK);
     }
 
@@ -795,9 +781,9 @@ class StatementMultipleAPIControllerTest extends TestCase
         unset($statements[1]['category_addition']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(12, Statement::all());
@@ -809,7 +795,6 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals([], $statementB->category_addition);
     }
 
-
     /**
      * @test
      */
@@ -817,11 +802,11 @@ class StatementMultipleAPIControllerTest extends TestCase
     {
         $this->signInAsContributor();
 
-        //$this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $sors = [];
 
-        //Create the light one and add it to the sors array
+        // Create the light one and add it to the sors array
         $sors[] = [
             'decision_monetary' => 'DECISION_MONETARY_TERMINATION',
             'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
@@ -843,14 +828,13 @@ class StatementMultipleAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
         ]);
-        $fields['puid'] = "very bad + â pu+id !";
+        $fields['puid'] = 'very bad + â pu+id !';
         $sors[] = $fields;
 
-
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $sors
+            'statements' => $sors,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_0']['puid'][0]);
         $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_1']['puid'][0]);
@@ -866,17 +850,17 @@ class StatementMultipleAPIControllerTest extends TestCase
         $statements = $this->createFullStatements(3);
 
         $statements[0]['content_id'] = [
-            'EAN-13' => '1111111111111'
+            'EAN-13' => '1111111111111',
         ];
         $statements[1]['content_id'] = [
-            'EAN-13' => '2222222222222'
+            'EAN-13' => '2222222222222',
         ];
         unset($statements[2]['content_id']);
 
         $response = $this->post(route('api.v1.statements.store'), [
-            "statements" => $statements
+            'statements' => $statements,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -888,7 +872,4 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('1111111111111', $statementA->content_id_ean);
         $this->assertEquals('2222222222222', $statementB->content_id_ean);
     }
-
-
 }
-

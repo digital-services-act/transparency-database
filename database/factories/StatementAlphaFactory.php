@@ -24,6 +24,7 @@ class StatementAlphaFactory extends Factory
      * Define the model's default state.
      *
      * @return array
+     *
      * @throws Exception
      */
     public function definition()
@@ -38,7 +39,6 @@ class StatementAlphaFactory extends Factory
         $end_date_service_restriction = $create_date->clone();
         $end_date_visibility_restriction = $create_date->clone();
 
-
         $content_date->subDays(5);
         $application_date->subDays(4);
         $end_date_account_restriction->addDays(33);
@@ -46,13 +46,13 @@ class StatementAlphaFactory extends Factory
         $end_date_service_restriction->addDays(55);
         $end_date_visibility_restriction->addDays(66);
 
-        $create_date = $create_date->format('Y-n-j') . ' 00:00:00';
-        $content_date = $content_date->format('Y-n-j') . ' 00:00:00';
-        $application_date = $application_date->format('Y-n-j') . ' 00:00:00';
-        $end_date_account_restriction = $end_date_account_restriction->format('Y-n-j') . ' 00:00:00';
-        $end_date_monetary_restriction = $end_date_monetary_restriction->format('Y-n-j') . ' 00:00:00';
-        $end_date_service_restriction = $end_date_service_restriction->format('Y-n-j') . ' 00:00:00';
-        $end_date_visibility_restriction = $end_date_visibility_restriction->format('Y-n-j') . ' 00:00:00';
+        $create_date = $create_date->format('Y-n-j').' 00:00:00';
+        $content_date = $content_date->format('Y-n-j').' 00:00:00';
+        $application_date = $application_date->format('Y-n-j').' 00:00:00';
+        $end_date_account_restriction = $end_date_account_restriction->format('Y-n-j').' 00:00:00';
+        $end_date_monetary_restriction = $end_date_monetary_restriction->format('Y-n-j').' 00:00:00';
+        $end_date_service_restriction = $end_date_service_restriction->format('Y-n-j').' 00:00:00';
+        $end_date_visibility_restriction = $end_date_visibility_restriction->format('Y-n-j').' 00:00:00';
 
         $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
         $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
@@ -76,7 +76,6 @@ class StatementAlphaFactory extends Factory
             'decision_account' => $this->faker->randomElement(array_keys(StatementAlpha::DECISION_ACCOUNTS)),
             'account_type' => $this->faker->randomElement(array_keys(StatementAlpha::ACCOUNT_TYPES)),
 
-
             'decision_ground' => $decision_ground,
             'decision_ground_reference_url' => $this->faker->url(),
 
@@ -95,7 +94,6 @@ class StatementAlphaFactory extends Factory
             'incompatible_content_explanation' => $decision_ground === 'DECISION_GROUND_INCOMPATIBLE_CONTENT' ? $this->faker->realText(500) : null,
 
             'incompatible_content_illegal' => $this->faker->randomElement(StatementAlpha::INCOMPATIBLE_CONTENT_ILLEGALS),
-
 
             'puid' => $this->faker->uuid,
             'uuid' => $this->faker->uuid,
@@ -127,10 +125,8 @@ class StatementAlphaFactory extends Factory
             'platform_id' => $user->platform_id,
             'user_id' => $user->id,
             'method' => $this->faker->randomElement([StatementAlpha::METHOD_API, StatementAlpha::METHOD_FORM]),
-            'created_at' => $create_date
+            'created_at' => $create_date,
 
         ];
     }
-
-
 }

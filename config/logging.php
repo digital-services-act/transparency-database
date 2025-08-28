@@ -118,7 +118,7 @@ return [
 
         'db' => [
             'driver' => 'custom',
-            'via'    => DatabaseLogger::class,
+            'via' => DatabaseLogger::class,
         ],
     ],
 ];

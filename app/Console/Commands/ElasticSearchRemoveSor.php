@@ -13,6 +13,7 @@ use Illuminate\Console\Command;
 class ElasticSearchRemoveSor extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -37,8 +38,9 @@ class ElasticSearchRemoveSor extends Command
         $id = $this->intifyArgument('id');
         $index = $this->argument('index');
 
-        if (!$client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->error('Source index does not exist!');
+
             return;
         }
 
@@ -46,7 +48,7 @@ class ElasticSearchRemoveSor extends Command
             try {
                 $client->delete([
                     'index' => $index,
-                    'id'    => $id
+                    'id' => $id,
                 ]);
             } catch (Exception $e) {
                 $this->info($e->getMessage());

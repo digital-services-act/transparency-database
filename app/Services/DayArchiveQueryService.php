@@ -16,12 +16,9 @@ class DayArchiveQueryService
     private array $allowed_filters = [
         'uuid',
         'from_date',
-        'to_date'
+        'to_date',
     ];
 
-    /**
-     * @return Builder
-     */
     public function query(array $filters): Builder
     {
         // Only completed archives.
@@ -35,47 +32,33 @@ class DayArchiveQueryService
                         $this->$method($query, $filters[$filter_key]);
                     }
                 } catch (TypeError|Exception $e) {
-                    Log::error("Day Archive Query Service Error", ['exception' => $e]);
+                    Log::error('Day Archive Query Service Error', ['exception' => $e]);
                 }
             }
         }
 
         // if there was no uuid filter then lock it into the global archives
-        if (!isset($filters['uuid']) || !$filters['uuid']) {
+        if (! isset($filters['uuid']) || ! $filters['uuid']) {
             $query->whereNull('platform_id');
         }
 
         return $query;
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyUuidFilter(Builder $query, string $filter_value): void
     {
         $platform = Platform::query()->where('uuid', $filter_value)->first();
-        if ($platform){
+        if ($platform) {
             $query->where('platform_id', $platform->id);
         }
     }
 
-    /**
-     *
-     *
-     * @return void
-     */
     private function applyFromDateFilter(Builder $query, string $filter_value): void
     {
         $date = Carbon::createFromFormat('d-m-Y', $filter_value);
         $query->whereDate('date', '>=', $date);
     }
 
-    /**
-     *
-     *
-     * @return void
-     */
     private function applyToDateFilter(Builder $query, string $filter_value): void
     {
         $date = Carbon::createFromFormat('d-m-Y', $filter_value);

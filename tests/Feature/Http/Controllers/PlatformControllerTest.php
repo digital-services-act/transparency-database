@@ -6,12 +6,12 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-#use JMac\Testing\Traits\AdditionalAssertions;
+// use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 class PlatformControllerTest extends TestCase
 {
-    #use AdditionalAssertions;
+    // use AdditionalAssertions;
     use RefreshDatabase;
 
     /**
@@ -71,13 +71,13 @@ class PlatformControllerTest extends TestCase
             'name' => 'New Platform',
             'dsa_common_id' => 'DSA123',
             'vlop' => 1,
-            'onboarded' => 1
+            'onboarded' => 1,
         ]);
 
         $response->assertRedirect(route('platform.index'));
         $this->assertDatabaseHas('platforms', [
             'name' => 'New Platform',
-            'dsa_common_id' => 'DSA123'
+            'dsa_common_id' => 'DSA123',
         ]);
     }
 
@@ -90,7 +90,7 @@ class PlatformControllerTest extends TestCase
 
         $response = $this->post(route('platform.store'), [
             'name' => Platform::LABEL_DSA_TEAM,
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertRedirect(route('platform.index'));
@@ -135,7 +135,7 @@ class PlatformControllerTest extends TestCase
 
         $response = $this->get(route('platform.edit', [
             'platform' => $platform,
-            'returnto' => '/some/path'
+            'returnto' => '/some/path',
         ]));
 
         $response->assertOk();
@@ -156,14 +156,14 @@ class PlatformControllerTest extends TestCase
             'vlop' => 0,
             'onboarded' => 1,
             'has_tokens' => 1,
-            'has_statements' => 1
+            'has_statements' => 1,
         ]);
 
         $response->assertRedirect(route('platform.index'));
         $this->assertDatabaseHas('platforms', [
             'id' => $platform->id,
             'name' => 'Updated Platform',
-            'dsa_common_id' => 'DSA456'
+            'dsa_common_id' => 'DSA456',
         ]);
     }
 
@@ -179,7 +179,7 @@ class PlatformControllerTest extends TestCase
         $response = $this->put(route('platform.update', $platform), [
             'name' => 'Updated Platform',
             'dsa_common_id' => 'DSA456',
-            'vlop' => 0
+            'vlop' => 0,
         ]);
 
         $response->assertRedirect('/some/path');
@@ -196,14 +196,14 @@ class PlatformControllerTest extends TestCase
         $response = $this->put(route('platform.update', $dsa_platform), [
             'name' => 'Changed DSA',
             'dsa_common_id' => 'DSA789',
-            'vlop' => 0
+            'vlop' => 0,
         ]);
 
         $response->assertRedirect(route('platform.index'));
         $response->assertSessionHas('error');
         $this->assertDatabaseMissing('platforms', [
             'id' => $dsa_platform->id,
-            'name' => 'Changed DSA'
+            'name' => 'Changed DSA',
         ]);
     }
 

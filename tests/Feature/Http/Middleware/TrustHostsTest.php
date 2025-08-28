@@ -9,6 +9,7 @@ use Tests\TestCase;
 class TrustHostsTest extends TestCase
 {
     protected bool $seed = false;
+
     protected bool $runMigrations = false;
 
     private TrustHosts $middleware;

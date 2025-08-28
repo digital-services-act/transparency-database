@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PlatformFactory extends Factory
 {
-    private function generatePlatformNames() {
-
-    }
+    private function generatePlatformNames() {}
 
     /**
      * Define the model's default state.
@@ -22,7 +20,7 @@ class PlatformFactory extends Factory
     {
         $platform_names = [];
         for ($i = 1; $i <= 50; $i++) {
-            $platform_names[] = 'Platform ' . $i;
+            $platform_names[] = 'Platform '.$i;
         }
 
         return [

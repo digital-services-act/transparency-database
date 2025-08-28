@@ -18,7 +18,9 @@ use Laravel\Sanctum\PersonalAccessToken;
 class ProfileController extends Controller
 {
     protected TokenService $tokenService;
+
     protected StatementElasticSearchService $statement_elastic_search_service;
+
     protected PlatformQueryService $platform_query_service;
 
     public function __construct(PlatformQueryService $platform_query_service, StatementElasticSearchService $statement_elastic_search_service, TokenService $tokenService)
@@ -28,11 +30,6 @@ class ProfileController extends Controller
         $this->tokenService = $tokenService;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Factory|View|Application
-     */
     public function profile(Request $request): Factory|View|Application
     {
         // Get and cache the global platform method data.
@@ -58,8 +55,8 @@ class ProfileController extends Controller
         $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
         $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();
 
-        return view('profile',[
-            'has_platform' => (bool)$request->user()->platform,
+        return view('profile', [
+            'has_platform' => (bool) $request->user()->platform,
             'platform_name' => $request->user()->platform->name ?? '',
             'platform_ids_methods_data' => $platform_ids_methods_data,
             'vlop_count' => $vlop_count,
@@ -75,20 +72,14 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Factory|View|Application
-     */
     public function apiIndex(Request $request): Factory|View|Application
     {
 
         $token_plain_text = null;
         /** @var PersonalAccessToken $token */
-
         $user = $request->user();
 
-        if (!$user->hasValidApiToken()) {
+        if (! $user->hasValidApiToken()) {
             /** @var PersonalAccessToken $token */
             $token_plain_text = $user->createToken(User::API_TOKEN_KEY)->plainTextToken;
             if ($user->platform) {
@@ -98,18 +89,14 @@ class ProfileController extends Controller
         }
 
         return view('api', [
-            'token_plain_text' => $token_plain_text
+            'token_plain_text' => $token_plain_text,
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Redirector|Application|RedirectResponse
-     */
     public function newToken(Request $request): Redirector|Application|RedirectResponse
     {
         $request->user()->tokens()->delete();
+
         return redirect(route('profile.api.index'));
     }
 }

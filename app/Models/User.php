@@ -21,8 +21,8 @@ class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
-    use Notifiable;
     use HasRoles;
+    use Notifiable;
     use SoftDeletes;
 
     public const API_TOKEN_KEY = 'api-token';
@@ -35,7 +35,7 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
-        'platform_id'
+        'platform_id',
     ];
 
     /**
@@ -63,8 +63,8 @@ class User extends Authenticatable
      */
     public static function firstOrCreateByAttributes(array $attributes): Model|User
     {
-        if (!isset ($attributes['email'])) {
-            throw new Exception("Fatal Error: CAS callback did not contain an email");
+        if (! isset($attributes['email'])) {
+            throw new Exception('Fatal Error: CAS callback did not contain an email');
         }
 
         $attributes['password'] = Str::random(16);
@@ -84,6 +84,7 @@ class User extends Authenticatable
                 return true;
             }
         }
+
         return false;
     }
 
@@ -91,7 +92,6 @@ class User extends Authenticatable
     {
         return $this->hasValidApiToken() ? 'Yes' : 'No';
     }
-
 
     public function platform(): HasOne
     {
@@ -102,5 +102,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Statement::class, 'user_id', 'id');
     }
-
 }

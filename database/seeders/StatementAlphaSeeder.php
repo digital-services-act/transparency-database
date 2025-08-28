@@ -9,8 +9,6 @@ use Illuminate\Database\Seeder;
 
 class StatementAlphaSeeder extends Seeder
 {
-
-
     protected $faker;
 
     /**

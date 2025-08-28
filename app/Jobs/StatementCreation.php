@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 
 /**
- * 
  * @codeCoverageIgnore
  */
 class StatementCreation implements ShouldQueue
@@ -20,12 +19,11 @@ class StatementCreation implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $when = 0)
-    {
-    }
+    public function __construct(public int $when = 0) {}
 
     /**
      * Execute the job.

@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Cache;
 
 class DataDownloadController extends Controller
 {
-    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service, protected PlatformQueryService $platform_query_service)
-    {
-    }
+    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service, protected PlatformQueryService $platform_query_service) {}
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
@@ -37,7 +35,7 @@ class DataDownloadController extends Controller
             'dayarchives' => $dayarchives,
             'options' => $options,
             'platform' => $platform,
-            'reindexing' => $reindexing
+            'reindexing' => $reindexing,
         ]);
     }
 
@@ -47,7 +45,7 @@ class DataDownloadController extends Controller
 
         array_unshift($platforms, [
             'value' => ' ',
-            'label' => 'All Platforms'
+            'label' => 'All Platforms',
         ]);
 
         return ['platforms' => $platforms];

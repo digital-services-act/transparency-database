@@ -9,12 +9,10 @@ class PlatformRegisterStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
-        return ! ((bool)$this->user()->platform && $this->user()->platform->name !== Platform::LABEL_DSA_TEAM);
+        return ! ((bool) $this->user()->platform && $this->user()->platform->name !== Platform::LABEL_DSA_TEAM);
     }
 
     /**
@@ -32,6 +30,6 @@ class PlatformRegisterStoreRequest extends FormRequest
 
     private function in(array $array): string
     {
-        return 'in:' . implode(',', $array);
+        return 'in:'.implode(',', $array);
     }
 }

@@ -31,28 +31,32 @@ class ElasticSearchIndexAliasSwap extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client     = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
         $target = $this->argument('target');
         $alias = $this->argument('alias');
 
-        if (!$client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $client->indices()->exists(['index' => $index])->asBool()) {
             $this->warn('Index does not exist!');
+
             return;
         }
 
-        if (!$client->indices()->exists(['index' => $target])->asBool()) {
+        if (! $client->indices()->exists(['index' => $target])->asBool()) {
             $this->warn('Target Index does not exist!');
+
             return;
         }
 
-        if (!$client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
+        if (! $client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
             $this->warn('Alias is not on the index!');
+
             return;
         }
 
         if ($client->indices()->existsAlias(['index' => $target, 'name' => $alias])->asBool()) {
             $this->warn('Alias is already on the target index!');
+
             return;
         }
 
@@ -61,19 +65,19 @@ class ElasticSearchIndexAliasSwap extends Command
                 [
                     'remove' => [
                         'index' => $index,
-                        'alias' => $alias
-                    ]
+                        'alias' => $alias,
+                    ],
                 ],
                 [
                     'add' => [
                         'index' => $target,
-                        'alias' => $alias
-                    ]
-                ]
-            ]
+                        'alias' => $alias,
+                    ],
+                ],
+            ],
         ];
         $client->indices()->updateAliases([
-            'body' => $body
+            'body' => $body,
         ]);
     }
 }

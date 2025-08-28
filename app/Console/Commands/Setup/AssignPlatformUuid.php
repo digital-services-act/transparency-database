@@ -31,8 +31,7 @@ class AssignPlatformUuid extends Command
     public function handle(): void
     {
         $platforms = Platform::query()->where('uuid', '-')->get();
-        foreach ($platforms as $platform)
-        {
+        foreach ($platforms as $platform) {
             $platform->uuid = Str::uuid();
             $platform->save();
         }

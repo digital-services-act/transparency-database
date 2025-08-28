@@ -2,14 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Platform;
-use App\Rules\UniquePlatformAndUser;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Models\ApiLog;
+use App\Models\Platform;
+use App\Rules\UniquePlatformAndUser;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -25,7 +23,7 @@ class PlatformUsersStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->canAny(['create users','view users']);
+        return $this->user()->canAny(['create users', 'view users']);
     }
 
     /**
@@ -39,7 +37,7 @@ class PlatformUsersStoreRequest extends FormRequest
             'emails' => ['required', 'array'],
             'emails.*' => [
                 'email',
-                new UniquePlatformAndUser()
+                new UniquePlatformAndUser,
             ],
         ];
     }
@@ -55,7 +53,6 @@ class PlatformUsersStoreRequest extends FormRequest
     /**
      * Handle a failed validation attempt.
      *
-     * @param Validator $validator
      * @return void
      *
      * @throws ValidationException
@@ -65,15 +62,15 @@ class PlatformUsersStoreRequest extends FormRequest
         $errors = $validator->errors();
         $firstError = $errors->first();
         $errorCount = count($errors->all()) - 1;
-        
+
         $message = $firstError;
         if ($errorCount > 0) {
-            $message .= " (and {$errorCount} more error" . ($errorCount > 1 ? 's' : '') . ")";
+            $message .= " (and {$errorCount} more error".($errorCount > 1 ? 's' : '').')';
         }
 
         $responseData = [
             'message' => $message,
-            'errors' => $errors->toArray()
+            'errors' => $errors->toArray(),
         ];
 
         $response = response()->json($responseData, Response::HTTP_UNPROCESSABLE_ENTITY);

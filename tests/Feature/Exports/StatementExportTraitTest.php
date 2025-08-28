@@ -11,18 +11,19 @@ use Tests\TestCase;
 
 class StatementExportTraitTest extends TestCase
 {
-    use StatementExportTrait;
     use RefreshDatabase;
+    use StatementExportTrait;
 
     protected PlatformQueryService $platformQueryService;
-    public function setUp(): void
+
+    protected function setUp(): void
     {
         parent::setUp();
         $this->platformQueryService = app(PlatformQueryService::class);
     }
 
-    /** 
-     * @test  
+    /**
+     * @test
      */
     public function test_headings_returns_all_required_columns()
     {
@@ -48,7 +49,6 @@ class StatementExportTraitTest extends TestCase
         $this->assertNotContains('incompatible_content_explanation', $headings);
     }
 
-
     /** @test */
     public function test_map_function_maps_statements_correctly()
     {
@@ -62,9 +62,8 @@ class StatementExportTraitTest extends TestCase
         $this->assertContains($platform->name, $mapped);
     }
 
-
     /** @test */
-    public function test_mapRaw_function_maps_statements_correctly()
+    public function test_map_raw_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);
@@ -79,7 +78,7 @@ class StatementExportTraitTest extends TestCase
     }
 
     /** @test */
-    public function test_mapRawLight_function_maps_statements_correctly()
+    public function test_map_raw_light_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);

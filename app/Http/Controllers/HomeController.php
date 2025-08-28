@@ -12,16 +12,14 @@ use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
-    public function __construct(protected StatementElasticSearchService $statement_elastic_search_service)
-    {
-    }
+    public function __construct(protected StatementElasticSearchService $statement_elastic_search_service) {}
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $one_day = 60 * 60 * 25;
 
         $total = $this->statement_elastic_search_service->grandTotal();
-        $platforms_total = Cache::remember('platforms_total', $one_day, static fn() => max(1, Platform::nonDsa()->count()));
+        $platforms_total = Cache::remember('platforms_total', $one_day, static fn () => max(1, Platform::nonDsa()->count()));
 
         $top_x = 3;
 
@@ -38,7 +36,7 @@ class HomeController extends Controller
             'platforms_total' => $platforms_total,
             'top_categories' => $top_categories,
             'top_decisions_visibility' => $top_decisions_visibility,
-            'automated_decision_percentage' => $automated_decision_percentage
+            'automated_decision_percentage' => $automated_decision_percentage,
         ]);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Platform;
-use App\Models\Statement;
 use App\Services\DayArchiveService;
 use App\Services\PlatformQueryService;
 use Illuminate\Bus\Batchable;
@@ -16,22 +14,19 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * 
  * @codeCoverageIgnore
  */
 class StatementCsvExportZ implements ShouldQueue
 {
+    use Batchable;
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use Batchable;
 
     public $statements_table = 'statements_beta';
 
-    public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false)
-    {
-    }
+    public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false) {}
 
     private function csvstr(array $fields): string
     {
@@ -42,6 +37,7 @@ class StatementCsvExportZ implements ShouldQueue
 
         rewind($f);
         $csv_line = stream_get_contents($f);
+
         return rtrim($csv_line);
     }
 
@@ -73,7 +69,6 @@ class StatementCsvExportZ implements ShouldQueue
                 $exports[$index]['subparts']['light'][$subpart] = [];
             }
 
-
             $current_end = min(($current_start + $chunk), $this->end_id);
             // $statements = DB::connection('mysql::read')
             $statements = DB::connection('pgsql')
@@ -83,8 +78,6 @@ class StatementCsvExportZ implements ShouldQueue
                 ->where('id', '<=', $current_end)
                 ->orderBy('id')
                 ->get();
-
-
 
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
@@ -105,20 +98,19 @@ class StatementCsvExportZ implements ShouldQueue
                 }
             }
 
-            ++$subpart;
+            $subpart++;
             $current_start += $chunk + 1;
         }
 
-
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip_file = Storage::path('sor-' . $export['slug'] . '-' . $this->date . '-' . $version . '-' . $this->part . '.csv.zip');
-                $zip = new \ZipArchive();
+                $zip_file = Storage::path('sor-'.$export['slug'].'-'.$this->date.'-'.$version.'-'.$this->part.'.csv.zip');
+                $zip = new \ZipArchive;
                 $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
                 foreach ($export['subparts'][$version] as $subpart => $rows) {
                     if ($subpart === 0 || count($rows)) {
-                        $csv_file = 'sor-' . $export['slug'] . '-' . $this->date . '-' . $version . '-' . $this->part . '-' . sprintf('%05d', $subpart) . '.csv';
-                        $zip->addFromString($csv_file, $headings[$version] . "\n" . implode("\n", $rows));
+                        $csv_file = 'sor-'.$export['slug'].'-'.$this->date.'-'.$version.'-'.$this->part.'-'.sprintf('%05d', $subpart).'.csv';
+                        $zip->addFromString($csv_file, $headings[$version]."\n".implode("\n", $rows));
                     }
                 }
 

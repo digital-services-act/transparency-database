@@ -27,14 +27,13 @@ class LogMessagesControllerTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_removes_log_messages_redirects_to_index(): void
     {
         // We should be at 0
         $log_messages = LogMessage::all();
         $this->assertCount(0, $log_messages);
-        
+
         // Create One
         Log::info('this is a test');
         $log_messages = LogMessage::all();
@@ -51,7 +50,6 @@ class LogMessagesControllerTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_should_block_non_admins_from_truncating(): void
     {
@@ -62,7 +60,6 @@ class LogMessagesControllerTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function it_should_block_non_admins_from_viewing(): void
     {

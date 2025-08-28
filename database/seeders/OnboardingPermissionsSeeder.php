@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\PermissionRegistrar;
+use Spatie\Permission\Models\Role;
 
 class OnboardingPermissionsSeeder extends Seeder
 {
@@ -23,7 +22,6 @@ class OnboardingPermissionsSeeder extends Seeder
         $viewPlatformPermission = Permission::create(['name' => 'view platforms']);
         $createUserPermission = Permission::create(['name' => 'create users']);
         $viewUserPermission = Permission::create(['name' => 'view users']);
-
 
         // Assign permissions to role
         $onboardingRole->syncPermissions(['view dashboard', 'create statements', $viewPlatformPermission, $createUserPermission, $viewUserPermission, $createPlatformPermission]);

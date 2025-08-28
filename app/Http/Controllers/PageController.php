@@ -17,25 +17,24 @@ class PageController extends Controller
         bool $profile = false
     ): \Illuminate\Foundation\Application|View|Factory|Redirector|Application|RedirectResponse {
         // lower and disallow ../ and weird stuff.
-        $page = (string)mb_strtolower($page);
-
+        $page = (string) mb_strtolower($page);
 
         // sanitize
-        $page = preg_replace("/[^a-z-]/", "", $page);
+        $page = preg_replace('/[^a-z-]/', '', $page);
 
-//        dd($page);
+        //        dd($page);
 
         $redirects = [
             'cookie-policy' => 'https://commission.europa.eu/cookies-policy_en',
             'latest-updates' => '/',
-//            'faq' => 'faq'
+            //            'faq' => 'faq'
         ];
 
         if (isset($redirects[$page])) {
             return redirect($redirects[$page]);
         }
 
-        $page_title = ucwords(str_replace("-", " ", (string)$page));
+        $page_title = ucwords(str_replace('-', ' ', (string) $page));
 
         $page_title_mods = [
             'Api Documentation' => 'API and Schema',
@@ -43,18 +42,16 @@ class PageController extends Controller
             'Onboarding Documentation' => 'Platform Onboarding Documentation',
             'Legal Information' => 'Legal Notice',
             'Documentation' => 'Overview Documentation',
-            'Webform Documentation' => "Webform Documentation",
-            'Accessibility Statement' => "Accessibility Statement",
-
+            'Webform Documentation' => 'Webform Documentation',
+            'Accessibility Statement' => 'Accessibility Statement',
 
         ];
-
 
         if (isset($page_title_mods[$page_title])) {
             $page_title = $page_title_mods[$page_title];
         }
 
-        $breadcrumb = ucwords(str_replace("-", " ", (string)$page));
+        $breadcrumb = ucwords(str_replace('-', ' ', (string) $page));
 
         $breadcrumb_mods = [
             'Home' => '',
@@ -62,9 +59,9 @@ class PageController extends Controller
             'Api Documentation' => 'API and Schema',
             'Research Api' => 'Research API',
             'Documentation' => 'Documentation',
-            'Webform Documentation' => "Webform Documentation",
+            'Webform Documentation' => 'Webform Documentation',
             'Legal Information' => 'Legal Notice',
-            'Accessibility Statement' => "Accessibility Statement"
+            'Accessibility Statement' => 'Accessibility Statement',
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {
@@ -72,7 +69,7 @@ class PageController extends Controller
         }
 
         $page_content = '';
-        $page = __DIR__ . '/../../../resources/markdown/' . $page . '.md';
+        $page = __DIR__.'/../../../resources/markdown/'.$page.'.md';
 
         $view_data = [
             'profile' => $profile,
@@ -80,7 +77,6 @@ class PageController extends Controller
             'breadcrumb' => $breadcrumb,
             'baseurl' => route('home'),
         ];
-
 
         if (file_exists($page)) {
             $page_content = $this->convertMdFile($page);
@@ -95,21 +91,19 @@ class PageController extends Controller
         return view('page', $view_data);
     }
 
-
     public function profileShow(string $page): Factory|View|Application
     {
         return $this->show($page, true);
     }
 
-
     private function convertMdFile(string $file): string
     {
-        $parsedown = new Parsedown();
+        $parsedown = new Parsedown;
 
         return preg_replace_callback('/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i', static function ($matches) {
-            if (!stripos((string)$matches[0], 'id=')) {
-                $id = strtolower(str_replace(" ", "-", (string)$matches[3]));
-                $matches[0] = $matches[1] . $matches[2] . ' id="' . $id . '">' . $matches[3] . $matches[4];
+            if (! stripos((string) $matches[0], 'id=')) {
+                $id = strtolower(str_replace(' ', '-', (string) $matches[3]));
+                $matches[0] = $matches[1].$matches[2].' id="'.$id.'">'.$matches[3].$matches[4];
             }
 
             return $matches[0];

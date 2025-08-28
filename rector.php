@@ -10,20 +10,20 @@ use RectorLaravel\Set\LaravelLevelSetList;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/app',
-        //__DIR__ . '/bootstrap',
-        __DIR__ . '/config',
-        __DIR__ . '/lang',
-        __DIR__ . '/public',
-        __DIR__ . '/resources',
-        __DIR__ . '/routes',
-        __DIR__ . '/tests',
+        __DIR__.'/app',
+        // __DIR__ . '/bootstrap',
+        __DIR__.'/config',
+        __DIR__.'/lang',
+        __DIR__.'/public',
+        __DIR__.'/resources',
+        __DIR__.'/routes',
+        __DIR__.'/tests',
     ])
     ->withRules([
-        AddVoidReturnTypeWhereNoReturnRector::class
+        AddVoidReturnTypeWhereNoReturnRector::class,
     ])->withSets([
         LaravelLevelSetList::UP_TO_LARAVEL_100,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
-        LevelSetList::UP_TO_PHP_83
+        LevelSetList::UP_TO_PHP_83,
     ]);

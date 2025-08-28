@@ -5,7 +5,7 @@ return [
     'content' => [
         '',
         '',
-        ''
+        '',
 
     ],
     'More questions? Check our FAQ' => 'More questions? Check our FAQ',
@@ -16,5 +16,5 @@ return [
     'Most Reported Violations' => 'Most Reported Violations',
     'Top Restriction Types' => 'Top Restriction Types',
     'Number of active platforms' => 'Number of active platforms',
-    'of fully automated decisions' => 'of fully automated decisions'
+    'of fully automated decisions' => 'of fully automated decisions',
 ];

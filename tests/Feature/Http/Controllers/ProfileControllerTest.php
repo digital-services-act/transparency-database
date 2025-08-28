@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Platform;
-use Laravel\Sanctum\PersonalAccessToken;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use App\Services\StatementElasticSearchService;
 use App\Services\TokenService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ProfileControllerTest extends TestCase
 {
@@ -25,6 +24,7 @@ class ProfileControllerTest extends TestCase
         $platform = Platform::factory()->create(['vlop' => $isVlop]);
         $user = User::factory()->create(['platform_id' => $platform->id]);
         $user->givePermissionTo('create statements');
+
         return $user;
     }
 
@@ -89,7 +89,7 @@ class ProfileControllerTest extends TestCase
     public function test_api_index_requires_create_statements_permission(): void
     {
         $user = User::factory()->create();
-        
+
         $response = $this->actingAs($user)->get(route('profile.api.index'));
         $response->assertForbidden();
     }
@@ -97,23 +97,23 @@ class ProfileControllerTest extends TestCase
     public function test_api_index_creates_token_if_none_exists(): void
     {
         $user = $this->createUserWithPlatform();
-        
+
         $response = $this->actingAs($user)->get(route('profile.api.index'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('api');
         $response->assertViewHas('token_plain_text');
-        
+
         // Verify token was created
         $this->assertDatabaseHas('personal_access_tokens', [
             'tokenable_id' => $user->id,
-            'name' => User::API_TOKEN_KEY
+            'name' => User::API_TOKEN_KEY,
         ]);
 
         // Verify platform has_tokens was updated
         $this->assertDatabaseHas('platforms', [
             'id' => $user->platform->id,
-            'has_tokens' => 1
+            'has_tokens' => 1,
         ]);
     }
 
@@ -121,13 +121,13 @@ class ProfileControllerTest extends TestCase
     {
         $user = $this->createUserWithPlatform();
         $token = $user->createToken(User::API_TOKEN_KEY);
-        
+
         $response = $this->actingAs($user)->get(route('profile.api.index'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('api');
         $response->assertViewHas('token_plain_text', null);
-        
+
         // Verify no new token was created
         $this->assertDatabaseCount('personal_access_tokens', 1);
     }
@@ -141,7 +141,7 @@ class ProfileControllerTest extends TestCase
     public function test_new_token_requires_create_statements_permission(): void
     {
         $user = User::factory()->create();
-        
+
         $response = $this->actingAs($user)->post(route('profile.api.new-token'));
         $response->assertForbidden();
     }
@@ -150,15 +150,15 @@ class ProfileControllerTest extends TestCase
     {
         $user = $this->createUserWithPlatform();
         $oldToken = $user->createToken(User::API_TOKEN_KEY);
-        
+
         $response = $this->actingAs($user)
             ->post(route('profile.api.new-token'));
-        
+
         $response->assertRedirect(route('profile.api.index'));
-        
+
         // Verify old token was deleted
         $this->assertDatabaseMissing('personal_access_tokens', [
-            'id' => $oldToken->accessToken->id
+            'id' => $oldToken->accessToken->id,
         ]);
     }
 }

@@ -22,7 +22,7 @@ class FeedbackSendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'feedback' => ['string', 'max:500','required']
+            'feedback' => ['string', 'max:500', 'required'],
         ];
     }
 }

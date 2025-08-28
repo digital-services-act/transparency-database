@@ -40,7 +40,7 @@ class CommandTraitTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->command = new TestCommand();
+        $this->command = new TestCommand;
     }
 
     private function setCommandArgument(string $value): void
@@ -49,8 +49,8 @@ class CommandTraitTest extends TestCase
             ['date' => $value, 'number' => '0', 'flag' => 'false'],
             $this->command->getDefinition()
         );
-        $output = new OutputStyle($input, new BufferedOutput());
-        
+        $output = new OutputStyle($input, new BufferedOutput);
+
         $this->command->setInput($input);
         $this->command->setOutput($output);
     }
@@ -102,11 +102,11 @@ class CommandTraitTest extends TestCase
             ['date' => 'today', 'number' => '42', 'flag' => 'false'],
             $this->command->getDefinition()
         );
-        $output = new OutputStyle($input, new BufferedOutput());
-        
+        $output = new OutputStyle($input, new BufferedOutput);
+
         $this->command->setInput($input);
         $this->command->setOutput($output);
-        
+
         $result = $this->command->intifyArgument('number');
         $this->assertSame(42, $result);
     }
@@ -118,11 +118,11 @@ class CommandTraitTest extends TestCase
             ['date' => 'today', 'number' => '0', 'flag' => 'true'],
             $this->command->getDefinition()
         );
-        $output = new OutputStyle($input, new BufferedOutput());
-        
+        $output = new OutputStyle($input, new BufferedOutput);
+
         $this->command->setInput($input);
         $this->command->setOutput($output);
-        
+
         $result = $this->command->boolifyArgument('flag');
         $this->assertTrue($result);
 
@@ -130,11 +130,11 @@ class CommandTraitTest extends TestCase
             ['date' => 'today', 'number' => '0', 'flag' => 'false'],
             $this->command->getDefinition()
         );
-        $output = new OutputStyle($input, new BufferedOutput());
-        
+        $output = new OutputStyle($input, new BufferedOutput);
+
         $this->command->setInput($input);
         $this->command->setOutput($output);
-        
+
         $result = $this->command->boolifyArgument('flag');
         $this->assertFalse($result);
     }
