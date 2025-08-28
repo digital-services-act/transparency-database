@@ -13,22 +13,17 @@ use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementElasticSearchService;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Redirector;
-
 
 class StatementAPIController extends Controller
 {
-    use Sanitizer;
     use ExceptionHandlingTrait;
+    use Sanitizer;
     use StatementAPITrait;
 
     protected EuropeanCountriesService $european_countries_service;
-
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
@@ -43,16 +38,6 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function showUuid(string $uuid
-    ): \Illuminate\Contracts\Foundation\Application|Application|RedirectResponse|Redirector|JsonResponse {
-        $id = $this->statement_elastic_search_service->uuidToId($uuid);
-        if ($id === 0) {
-            return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        return redirect(route('api.v1.statement.show', [$id]));
-    }
-
     public function existingPuid(Request $request, string $puid): Statement|JsonResponse
     {
         $platform_id = $this->getRequestUserPlatformId($request);
@@ -60,7 +45,7 @@ class StatementAPIController extends Controller
         $found = false;
         // First check if PUID exists in cache or in the PlatformPuid Table
         if ($this->platform_unique_id_service->isPuidInCache($platform_id, $puid) || PlatformPuid::where('platform_id',
-                $platform_id)->where('puid', $puid)->exists()) {
+            $platform_id)->where('puid', $puid)->exists()) {
             $found = true;
         }
 
@@ -68,7 +53,6 @@ class StatementAPIController extends Controller
             // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
             return response()->json(['message' => 'statement of reason found', 'puid' => $puid], Response::HTTP_FOUND);
         }
-
 
         return response()->json(['message' => 'statement of reason not found', 'puid' => $puid],
             Response::HTTP_NOT_FOUND);
@@ -86,13 +70,10 @@ class StatementAPIController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
-
         // Extract EAN-13 codes from content_id if present and no content_id_ean is present
-        if (!isset($validated['content_id_ean']) && isset($validated['content_id']) && isset($validated['content_id']['EAN-13'])) {
+        if (! isset($validated['content_id_ean']) && isset($validated['content_id']) && isset($validated['content_id']['EAN-13'])) {
             $validated['content_id_ean'] = $validated['content_id']['EAN-13'];
         }
-
-
 
         try {
             $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
@@ -102,10 +83,8 @@ class StatementAPIController extends Controller
         }
 
         $statement = Statement::create($validated);
-
-
         $out = $statement->toArray();
-        $out['puid'] = $statement->puid; // Show the puid on a store.
+        $out['puid'] = $statement->puid;
 
         return response()->json($out, Response::HTTP_CREATED);
     }

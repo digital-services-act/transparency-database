@@ -218,13 +218,11 @@ return [
         App\Providers\LogMessageQueryServiceProvider::class,
         App\Providers\PlatformQueryServiceProvider::class,
         App\Providers\StatementElasticSearchServiceProvider::class,
-        App\Providers\StatementCHSearchServiceProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,
         App\Providers\EuropeanLanguagesServiceProvider::class,
         App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
         App\Providers\DayArchiveQueryServiceProvider::class,
-        Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         EcDoris\LaravelCas\Providers\AppServiceProvider::class,

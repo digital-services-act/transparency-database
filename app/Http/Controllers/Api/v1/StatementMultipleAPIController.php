@@ -106,7 +106,10 @@ class StatementMultipleAPIController extends Controller
             $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
 
             $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
-            $this->statement_elastic_search_service->bulkIndexStatements($statements);
+            if (config('elasticsearch.apiKey')) {
+                // If we have Elasticsearch configured, we index the statements now.
+                $this->statement_elastic_search_service->bulkIndexStatements($statements);
+            }
         }
 
         // No error, add the platform unique ids into the cache and database

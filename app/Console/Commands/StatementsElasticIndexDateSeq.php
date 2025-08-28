@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class StatementsElasticIndexDateSeq extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -40,10 +41,10 @@ class StatementsElasticIndexDateSeq extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
-            Log::info('Indexing started for date: ' . $date->format('Y-m-d') . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+            Log::info('Indexing started for date: '.$date->format('Y-m-d').' at '.Carbon::now()->format('Y-m-d H:i:s'));
             StatementElasticSearchableChunk::dispatch($min, $max, $chunk);
         } else {
-            Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
+            Log::warning('Not able to obtain the highest or lowest ID for the day: '.$date->format('Y-m-d'));
         }
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
-use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PlatformController;
@@ -11,8 +11,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Redis;
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
-        Route::get('feedback',[FeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
         Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
         Route::group(['middleware' => ['can:create statements']], static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
@@ -53,23 +53,21 @@ Route::middleware(['force.auth'])->group(static function () {
 
     });
 
-
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
 
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
     Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
-    Route::get('/statement/{statement}', [StatementController::class, 'show'])
-        ->where('statement', '[0-9]+')  // Only accept digits for a statement
+
+    Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])
         ->name('statement.show');
-    Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
 
     Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index');
 
     Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');
     Route::view('/explore-data/toolbox', 'explore-data.toolbox')->name('explore-data.toolbox');
 
-    Route::get('/daily-archives', static fn() => Redirect::to(route('dayarchive.index'), 301));
-    Route::get('/data-download', static fn() => Redirect::to(route('dayarchive.index'), 301));
+    Route::get('/daily-archives', static fn () => Redirect::to(route('dayarchive.index'), 301));
+    Route::get('/data-download', static fn () => Redirect::to(route('dayarchive.index'), 301));
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
@@ -81,10 +79,12 @@ Route::middleware(['force.auth'])->group(static function () {
             Redis::ping();
             $dbsize = Redis::command('DBSIZE');
             $counter = Redis::incr('ping-redis-counter');
+
             return "Successfully connected to Redis! Cache driver: {$cacheDriver}. DB Size: {$dbsize}. This page has been viewed {$counter} times.";
         } catch (\Exception $e) {
             $cacheDriver = config('cache.default');
-            return "Failed to connect to Redis: " . $e->getMessage() . ". Cache driver is '{$cacheDriver}'.";
+
+            return 'Failed to connect to Redis: '.$e->getMessage().". Cache driver is '{$cacheDriver}'.";
         }
     });
 

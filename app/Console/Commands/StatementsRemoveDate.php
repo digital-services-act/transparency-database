@@ -46,7 +46,7 @@ class StatementsRemoveDate extends Command
         $statement_elastic_search_service->deleteStatementsForDate($date);
 
         if ($min && $max) {
-            Log::info('Statement Archiving Started', ['date' => $date->format('Y-m-d'), 'at' => Carbon::now()->format('Y-m-d H:i:s')]);
+            Log::info('Statement Removing Started', ['date' => $date->format('Y-m-d'), 'at' => Carbon::now()->format('Y-m-d H:i:s')]);
 
             // Kick off the job to start deleting the sors in the DB. This is based on ids.
             StatementDeleteChunk::dispatch($min, $max, $chunk);

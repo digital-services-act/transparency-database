@@ -77,7 +77,7 @@ class StatementElasticSearchService
     public function __construct(protected PlatformQueryService $platformQueryService)
     {
         $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(config('scout.elasticsearch.uri'))
+            ->setHosts(config('elasticsearch.uri'))
             ->build();
     }
 
@@ -144,7 +144,7 @@ class StatementElasticSearchService
             $query = '('.implode(') AND (', $queryAndParts).')';
         }
 
-        if (config('scout.driver', '') === 'database' && config('app.env') !== 'testing') {
+        if (config('app.env') !== 'testing') {
             // @codeCoverageIgnoreStart
             $query = $filters['s'] ?? '';
             // @codeCoverageIgnoreEnd
@@ -211,7 +211,7 @@ class StatementElasticSearchService
             $ors[] = $textfield.':"'.$filter_value.'"';
         }
 
-        if (config('scout.driver', '') === 'database' && config('app.env', '') !== 'testing') {
+        if (config('app.env', '') !== 'testing') {
             // @codeCoverageIgnoreStart
             return $filter_value;
             // @codeCoverageIgnoreEnd
@@ -443,7 +443,7 @@ class StatementElasticSearchService
      */
     public function bulkIndexStatements(Collection $statements): void
     {
-        if ($statements->count() !== 0 && config('scout.driver') === 'elasticsearch') {
+        if ($statements->count() !== 0) {
             $bulk = [];
             /** @var Statement $statement */
             foreach ($statements as $statement) {
@@ -630,7 +630,7 @@ class StatementElasticSearchService
 
     public function runSql(string $sql): array
     {
-        if (config('scout.driver') === 'elasticsearch') {
+        if (config('elasticsearch.apiKey')) {
             return $this->client->sql()->query([
                 'body' => [
                     'query' => $sql,
@@ -731,10 +731,11 @@ class StatementElasticSearchService
 
     private function extractMethodAggregateFromQuery(string $query): array
     {
-        $results = $this->runSql($query);
-        $rows = $results['rows'];
+
         $out = [];
-        if (config('scout.driver') === 'elasticsearch') {
+        if (config('elasticsearch.apiKey')) {
+            $results = $this->runSql($query);
+            $rows = $results['rows'];
             foreach ($rows as [$total, $method, $platform_id]) {
                 $out[$platform_id][$method] = $total;
             }

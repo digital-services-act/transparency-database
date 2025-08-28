@@ -7,7 +7,6 @@ use App\Exports\StatementsExport;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
-use App\Models\StatementAlpha;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
@@ -20,10 +19,9 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Excel;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class StatementController extends Controller
 {
@@ -37,24 +35,17 @@ class StatementController extends Controller
         protected DriveInService $drive_in_service,
         protected PlatformUniqueIdService $platform_unique_id_service,
         protected PlatformQueryService $platform_query_service,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param Request $request
-     *
-     * @return View|Factory|Application
-     */
     public function index(Request $request): View|Factory|Application
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
-        
+
         $pagination_per_page = 50;
-        $page = (int)$request->get('page', 1);
-        
+        $page = (int) $request->get('page', 1);
 
         $options = $this->prepareOptions(true);
-        
+
         $setup = $this->setupQuery($request, $page - 1, $pagination_per_page);
         $statements = $setup['statements'];
         $total = $setup['total'];
@@ -69,12 +60,12 @@ class StatementController extends Controller
         $paginator->setPath(route('statement.index', $parameters));
 
         return view('statement.index', [
-            'statements' => $statements, 
-            'options' => $options, 
-            'total' => $total, 
-            'similarity_results' => $similarity_results, 
-            'reindexing' => $reindexing, 
-            'paginator' => $paginator
+            'statements' => $statements,
+            'options' => $options,
+            'total' => $total,
+            'similarity_results' => $similarity_results,
+            'reindexing' => $reindexing,
+            'paginator' => $paginator,
         ]);
     }
 
@@ -85,29 +76,25 @@ class StatementController extends Controller
         $statements = $setup['statements'];
         $statements->limit = 1000;
 
-        $export = new StatementsExport();
+        $export = new StatementsExport;
         $export->setCollection($statements->orderBy('created_at', 'DESC')->get());
 
         return $export->download('statements-of-reason.csv', Excel::CSV);
     }
 
-
     /**
      * @codeCoverageIgnore
-     * @param \Illuminate\Http\Request $request
-     * @return array
      */
     private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the elastic is not available in the unit tests
-        if (config('scout.driver') == 'elasticsearch') {
+        if (config('elasticsearch.apiKey')) {
 
             $filters = $request->query();
 
             $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
             $statements = $elastic_results['statements'];
             $total = $elastic_results['total'];
-
 
         } else {
             // This should never happen,
@@ -123,67 +110,41 @@ class StatementController extends Controller
         ];
     }
 
-    /**
-     * @return View|Factory|Application
-     */
     public function search(Request $request): View|Factory|Application
     {
         $options = $this->prepareOptions(true);
+
         return view('statement.search', ['options' => $options]);
     }
 
-    /**
-     * @return Factory|View|Application|RedirectResponse
-     */
     public function create(Request $request): Factory|View|Application|RedirectResponse
     {
         // If you don't have a platform, we don't want you here.
-        if (!$request->user()->platform) {
+        if (! $request->user()->platform) {
             return back()->withErrors('Your account is not associated with a platform.');
         }
-        $statement = new Statement();
+        $statement = new Statement;
         $statement->territorial_scope = [];
 
         $options = $this->prepareOptions();
+
         return view('statement.create', [
             'statement' => $statement,
             'options' => $options,
         ]);
     }
 
-    public function show(int $statement): Factory|View|Application
+    public function show(Statement $statement): Factory|View|Application
     {
 
         $view = 'statement.show';
 
         // Statement Alpha
-        if ($statement < 100000000000) {
-            $view = 'statement.show_legacy';
 
-            $statement = StatementAlpha::find($statement);
-            if (!$statement) {
-                abort(404);
-            }
-
-            $statement_content_types = StatementAlpha::getEnumValues($statement->content_type);
-            $statement_additional_categories = StatementAlpha::getEnumValues($statement->category_addition);
-            $statement_visibility_decisions = StatementAlpha::getEnumValues($statement->decision_visibility);
-            $category_specifications = StatementAlpha::getEnumValues($statement->category_specification);
-
-        } else {
-            // Statement Beta
-            $statement = Statement::find($statement);
-
-            if (!$statement) {
-                abort(404);
-            }
-
-            $statement_content_types = Statement::getEnumValues($statement->content_type);
-            $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
-            $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
-            $category_specifications = Statement::getEnumValues($statement->category_specification);
-
-        }
+        $statement_content_types = Statement::getEnumValues($statement->content_type);
+        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
+        $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
+        $category_specifications = Statement::getEnumValues($statement->category_specification);
 
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         sort($statement_territorial_scope_country_names);
@@ -196,19 +157,9 @@ class StatementController extends Controller
             'statement_content_language' => $statement_content_language,
             'statement_additional_categories' => $statement_additional_categories,
             'statement_visibility_decisions' => $statement_visibility_decisions,
-            'category_specifications' => $category_specifications
+            'category_specifications' => $category_specifications,
         ]);
 
-    }
-
-    public function showUuid(string $uuid): Redirector|RedirectResponse|Application
-    {
-        $id = $this->statement_elastic_search_service->uuidToId($uuid);
-        if ($id === 0) {
-            abort(404);
-        }
-
-        return redirect(route('statement.show', [$id]));
     }
 
     public function store(StatementStoreRequest $request): RedirectResponse
@@ -229,20 +180,16 @@ class StatementController extends Controller
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
 
-
         $statement = Statement::create($validated);
 
-        return redirect()->route('statement.index')->with('success', 'The statement has been created. <a href="/statement/' . $statement->id . '">Click here to view it.</a>');
+        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->id.'">Click here to view it.</a>');
     }
 
-    /**
-     * @return array
-     */
     private function prepareOptions($noval_on_select = false): array
     {
         // Prepare options for forms and selects and such.
         $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
-        //dd($countries);
+        // dd($countries);
 
         $languages = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true), $noval_on_select);
         $languages_grouped = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true, true));

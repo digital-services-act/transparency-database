@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
-use App\Models\Statement;
 use App\Services\EuropeanLanguagesService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
@@ -52,9 +51,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Disable automatic syncing to Elasticsearch
-        Statement::disableSearchSyncing();
-
         Sanctum::usePersonalAccessTokenModel(
             PersonalAccessToken::class
         );

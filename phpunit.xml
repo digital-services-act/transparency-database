@@ -11,7 +11,6 @@
     <env name="DB_CONNECTION" value="sqlite"/>
     <env name="DB_DATABASE" value=":memory:"/>
     <env name="CACHE_DRIVER" value="array"/>
-    <env name="SCOUT_DRIVER" value="database"/>
     <env name="SESSION_DRIVER" value="array"/>
     <env name="QUEUE_DRIVER" value="sync"/>
     <env name="QUEUE_CONNECTION" value="sync"/>

@@ -11,7 +11,6 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - php - 8.4.11
 - laravel/framework (LARAVEL) - v12
 - laravel/prompts (PROMPTS) - v0
-- laravel/scout (SCOUT) - v10
 - tightenco/ziggy (ZIGGY) - v2
 - laravel/pint (PINT) - v1
 - rector/rector (RECTOR) - v1

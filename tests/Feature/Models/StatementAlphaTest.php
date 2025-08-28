@@ -328,17 +328,6 @@ class StatementAlphaTest extends TestCase
     /**
      * @test
      */
-    public function it_handles_scout_key_methods(): void
-    {
-        $statement = StatementAlpha::factory()->create();
-
-        $this->assertEquals($statement->id, $statement->getScoutKey());
-        $this->assertEquals('id', $statement->getScoutKeyName());
-    }
-
-    /**
-     * @test
-     */
     public function it_handles_platform_attributes_when_platform_missing(): void
     {
         // Create a statement without platform_id

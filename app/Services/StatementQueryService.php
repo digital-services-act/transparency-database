@@ -44,12 +44,9 @@ class StatementQueryService
         'content_type',
         'content_language',
         'territorial_scope',
-        'source_type'
+        'source_type',
     ];
 
-    /**
-     * @return Builder
-     */
     public function query(array $filters): Builder
     {
         $statements = Statement::query();
@@ -57,11 +54,11 @@ class StatementQueryService
             if (isset($filters[$filter_key]) && $filters[$filter_key]) {
                 $method = sprintf('apply%sFilter', ucfirst(Str::camel($filter_key)));
                 try {
-                    if( method_exists($this,$method)) {
+                    if (method_exists($this, $method)) {
                         $this->$method($statements, $filters[$filter_key]);
                     }
                 } catch (\TypeError|\Exception $e) {
-                    Log::error("Statement Query Service Error", ['exception' => $e]);
+                    Log::error('Statement Query Service Error', ['exception' => $e]);
                 }
             }
         }
@@ -69,33 +66,24 @@ class StatementQueryService
         return $statements;
     }
 
-
-    /**
-     *
-     * @return void
-     */
     private function applySFilter(Builder $query, string $filter_value): void
     {
-        $query->where(function($q) use ($filter_value) {
-            $q->orWhere('incompatible_content_ground', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('incompatible_content_explanation', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('illegal_content_legal_ground', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('illegal_content_explanation', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('decision_facts', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('uuid', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('puid', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('decision_visibility_other', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('decision_monetary_other', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('content_type_other', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('source_identity', 'LIKE', '%' . $filter_value . '%')
-              ->orWhere('content_id_ean', 'LIKE', '%' . $filter_value . '%');
+        $query->where(function ($q) use ($filter_value) {
+            $q->orWhere('incompatible_content_ground', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('incompatible_content_explanation', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('illegal_content_legal_ground', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('illegal_content_explanation', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('decision_facts', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('uuid', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('puid', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('decision_visibility_other', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('decision_monetary_other', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('content_type_other', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('source_identity', 'LIKE', '%'.$filter_value.'%')
+                ->orWhere('content_id_ean', 'LIKE', '%'.$filter_value.'%');
         });
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyPlatformIdFilter(Builder $query, array $filter_value): void
     {
         $query->whereHas('platform', static function ($inner_query) use ($filter_value) {
@@ -103,11 +91,6 @@ class StatementQueryService
         });
     }
 
-
-    /**
-     *
-     * @return void
-     */
     private function applySourceTypeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::SOURCE_TYPES));
@@ -116,10 +99,6 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyAutomatedDetectionFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, Statement::AUTOMATED_DETECTIONS);
@@ -128,10 +107,6 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyAutomatedDecisionFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::AUTOMATED_DECISIONS));
@@ -140,10 +115,6 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyDecisionGroundFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_GROUNDS));
@@ -152,26 +123,18 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyDecisionVisibilityFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_VISIBILITIES));
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(decision_visibility, "$") LIKE ?', ['%"' . $value . '"%']);
+                    $query->orWhereRaw('json_extract(decision_visibility, "$") LIKE ?', ['%"'.$value.'"%']);
                 }
             });
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyDecisionMonetaryFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_MONETARIES));
@@ -180,10 +143,6 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyDecisionProvisionFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_PROVISIONS));
@@ -192,10 +151,6 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyDecisionAccountFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::DECISION_ACCOUNTS));
@@ -218,42 +173,29 @@ class StatementQueryService
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(category_specification, "$") LIKE ?', ['%"' . $value . '"%']);
+                    $query->orWhereRaw('json_extract(category_specification, "$") LIKE ?', ['%"'.$value.'"%']);
                 }
             });
         }
     }
 
-
-    /**
-     *
-     * @return void
-     */
     private function applyContentTypeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::CONTENT_TYPES));
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(content_type, "$") LIKE ?', ['%"' . $value . '"%']);
+                    $query->orWhereRaw('json_extract(content_type, "$") LIKE ?', ['%"'.$value.'"%']);
                 }
             });
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyContentLanguageFilter(Builder $query, array $filter_value): void
     {
         $query->whereIn('content_language', $filter_value);
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyCategoryFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, array_keys(Statement::STATEMENT_CATEGORIES));
@@ -262,40 +204,27 @@ class StatementQueryService
         }
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyCreatedAtStartFilter(Builder $query, string $filter_value): void
     {
-        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value . ' 00:00:00');
+        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value.' 00:00:00');
         $query->where('created_at', '>=', $date);
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyCreatedAtEndFilter(Builder $query, string $filter_value): void
     {
-        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value . ' 23:59:59');
+        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value.' 23:59:59');
         $query->where('created_at', '<=', $date);
     }
 
-    /**
-     *
-     * @return void
-     */
     private function applyTerritorialScopeFilter(Builder $query, array $filter_value): void
     {
         $filter_values_validated = array_intersect($filter_value, EuropeanCountriesService::EUROPEAN_COUNTRY_CODES);
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(territorial_scope, "$") LIKE ?', ['%"' . $value . '"%']);
+                    $query->orWhereRaw('json_extract(territorial_scope, "$") LIKE ?', ['%"'.$value.'"%']);
                 }
             });
         }
     }
-
 }

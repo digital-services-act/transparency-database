@@ -19,7 +19,6 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
-        "laravel/scout": "^10.1",
         "laravel/tinker": "^2.8",
         "laravel/vapor-core": "^2.26",
         "league/flysystem-aws-s3-v3": "^3.19",
@@ -34,8 +33,7 @@
         "symfony/psr-http-message-bridge": "^7.0",
         "tightenco/ziggy": "^2.0",
         "timwassenburg/laravel-pivot-table-generator": "^1.0",
-        "yoeriboven/laravel-log-db": "^1.2",
-        "zing/laravel-scout-opensearch": "^3.2"
+        "yoeriboven/laravel-log-db": "^1.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
