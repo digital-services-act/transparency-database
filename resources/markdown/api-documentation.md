@@ -170,8 +170,8 @@ You will also receive a payload with the statement as created in the database:
     "created_at": "2024-11-25 09:16:55",
     "id": 34509873504987,
     "platform_name": "The Platform",
-    "permalink": "https://.../statement/34509873504987",
-    "self": "https://.../api/v1/statement/34509873504987",
+    "permalink": "https://.../statement/4b989c23-3736-4fd9-8612-a975b98d88d6",
+    "self": "https://.../api/v1/statement/4b989c23-3736-4fd9-8612-a975b98d88d6",
     "puid": "TK421"
 }
 ```
@@ -257,82 +257,53 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
 
 ```javascript
 {
-    "statements"
-:
-    [
-        {
-            "decision_visibility": [
-                "DECISION_VISIBILITY_CONTENT_DEMOTED"
-            ],
-            "decision_monetary": "DECISION_MONETARY_OTHER",
-            ...
-            ...
-            ...
-                "uuid"
-:
-    "bf92a941-c77a-4b9d-a236-38956ae79cc5",
-        "created_at"
-:
-    "2023-11-07 07:53:43",
-        "platform_name"
-:
-    "The Platform",
-        "puid"
-:
-    "b5ec958d-892a-4c11-a3f2-6a3ad597eeb1"
-},
+  "statements":
+  [
     {
-        "decision_visibility"
-    :
-        [
-            "DECISION_VISIBILITY_CONTENT_DEMOTED"
-        ],
-    ...
-    ...
-    ...
-        "uuid"
-    :
-        "174a1921-0d9e-4864-b095-6774fb0237da",
-            "created_at"
-    :
-        "2023-11-07 07:53:44",
-            "platform_name"
-    :
-        "The Platform",
-            "puid"
-    :
-        "a12b436a-33b1-4403-99b2-8c16e3c5502f"
-    }
-,
+      "decision_visibility": [
+          "DECISION_VISIBILITY_CONTENT_DEMOTED"
+      ],
+      "decision_monetary": "DECISION_MONETARY_OTHER",
+      ...
+      ...
+      ...
+      "uuid": "bf92a941-c77a-4b9d-a236-38956ae79cc5",
+      "created_at": "2023-11-07 07:53:43",
+      "platform_name": "The Platform",
+      "puid": "b5ec958d-892a-4c11-a3f2-6a3ad597eeb1",
+      "permalink": "https://.../statement/bf92a941-c77a-4b9d-a236-38956ae79cc5",
+      "self": "https://.../api/v1/statement/bf92a941-c77a-4b9d-a236-38956ae79cc5",
+    },
     {
-        "decision_account"
-    :
-        "DECISION_ACCOUNT_SUSPENDED",
-            "account_type"
-    :
-        "ACCOUNT_TYPE_PRIVATE",
-            "decision_ground"
-    :
-        "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+      "decision_visibility": [
+        "DECISION_VISIBILITY_CONTENT_DEMOTED"
+      ],
+      ...
+      ...
+      ...
+      "uuid": "174a1921-0d9e-4864-b095-6774fb0237da",
+      "created_at": "2023-11-07 07:53:44",
+      "platform_name": "The Platform",
+      "puid": "a12b436a-33b1-4403-99b2-8c16e3c5502f"
+      "permalink": "https://.../statement/174a1921-0d9e-4864-b095-6774fb0237da",
+      "self": "https://.../api/v1/statement/174a1921-0d9e-4864-b095-6774fb0237da",
+    },
+    {
+      "decision_account": "DECISION_ACCOUNT_SUSPENDED",
+      "account_type": "ACCOUNT_TYPE_PRIVATE",
+      "decision_ground": "DECISION_GROUND_INCOMPATIBLE_CONTENT",
+      ...
+      ...
+      ...
+      "uuid": "b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
+      "created_at": "2023-11-07 07:53:45",
+      "platform_name": "The Platform",
+      "puid": "649c58f6-8412-4100-b10c-010b76f5a41a"
+      "permalink": "https://.../statement/649c58f6-8412-4100-b10c-010b76f5a41a",
+      "self": "https://.../api/v1/statement/649c58f6-8412-4100-b10c-010b76f5a41a",
+    },
     ...
-    ...
-    ...
-        "uuid"
-    :
-        "b8f03bf5-b8fd-4987-ac56-6fe6ab155e9e",
-            "created_at"
-    :
-        "2023-11-07 07:53:45",
-            "platform_name"
-    :
-        "The Platform",
-            "puid"
-    :
-        "649c58f6-8412-4100-b10c-010b76f5a41a"
-    }
-,
-...
-]
+  ]
 }
 ```
 
