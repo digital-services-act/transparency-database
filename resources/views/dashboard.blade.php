@@ -123,6 +123,11 @@
                     Database.
                     Kindly note that “violations” refer to the variable “category” of the API documentation.
                 </div>
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">
+                    Please note that the terminology used to describe the violations has been updated on 1 July 2025 to <a href="https://digital-strategy.ec.europa.eu/en/news/harmonised-transparency-reporting-rules-under-digital-services-act-now-effect" target="_blank"> harmonize the transparency reporting rules under the Digital Services Act</a>.
+                    Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 are displayed in the dashboard with the old terminology.
+                    A correspondence table between the old and the new terminology is available <a href="{{ route('page.show', ['api-documentation']) }}#changelog" target="_blank">here</a>.
+                </div>
 
             </div>
             <div
