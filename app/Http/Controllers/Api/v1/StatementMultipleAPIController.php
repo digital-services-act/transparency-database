@@ -106,7 +106,8 @@ class StatementMultipleAPIController extends Controller
             $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
 
             $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
-            if (config('elasticsearch.apiKey')) {
+            $uri = config('elasticsearch.uri');
+            if (is_array($uri) && $uri[0]) {
                 // If we have Elasticsearch configured, we index the statements now.
                 $this->statement_elastic_search_service->bulkIndexStatements($statements);
             }

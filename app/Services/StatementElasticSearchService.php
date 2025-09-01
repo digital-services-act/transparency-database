@@ -76,9 +76,12 @@ class StatementElasticSearchService
 
     public function __construct(protected PlatformQueryService $platformQueryService)
     {
-        $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-            ->setHosts(config('elasticsearch.uri'))
-            ->build();
+        $uri = config('elasticsearch.uri');
+        if (is_array($uri) && $uri[0]) {
+            $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
+                ->setHosts($uri)
+                ->build();
+        }
     }
 
     public function client(): Client
@@ -630,7 +633,8 @@ class StatementElasticSearchService
 
     public function runSql(string $sql): array
     {
-        if (config('elasticsearch.apiKey')) {
+        $uri = config('elasticsearch.uri');
+        if (is_array($uri) && $uri[0]) {
             return $this->client->sql()->query([
                 'body' => [
                     'query' => $sql,
@@ -733,7 +737,8 @@ class StatementElasticSearchService
     {
 
         $out = [];
-        if (config('elasticsearch.apiKey')) {
+        $uri = config('elasticsearch.uri');
+        if (is_array($uri) && $uri[0]) {
             $results = $this->runSql($query);
             $rows = $results['rows'];
             foreach ($rows as [$total, $method, $platform_id]) {

@@ -88,7 +88,8 @@ class StatementController extends Controller
     private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the elastic is not available in the unit tests
-        if (config('elasticsearch.apiKey')) {
+        $uri = config('elasticsearch.uri');
+        if (is_array($uri) && $uri[0]) {
 
             $filters = $request->query();
 
