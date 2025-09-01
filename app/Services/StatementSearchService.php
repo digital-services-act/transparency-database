@@ -420,10 +420,12 @@ class StatementSearchService
     {
         $ors = [];
         $platform_ids = $this->platformQueryService->getPlatformIds();
+        $filter_values = array_filter($filter_values, 'is_scalar');
         $filter_values = array_intersect($platform_ids, $filter_values);
         foreach ($filter_values as $filter_value) {
             $ors[] = 'platform_id:' . $filter_value;
         }
+
 
         return implode(' OR ', $ors);
     }
