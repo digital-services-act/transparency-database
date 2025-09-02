@@ -968,12 +968,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ec-doris/laravel-cas.git",
-                "reference": "3e882c0b82ae7b7d6ac6c2ad81a935e3390fc9ac"
+                "reference": "4a41db08e443700b9db612b085214f7a17bbf9bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ec-doris/laravel-cas/zipball/3e882c0b82ae7b7d6ac6c2ad81a935e3390fc9ac",
-                "reference": "3e882c0b82ae7b7d6ac6c2ad81a935e3390fc9ac",
+                "url": "https://api.github.com/repos/ec-doris/laravel-cas/zipball/4a41db08e443700b9db612b085214f7a17bbf9bb",
+                "reference": "4a41db08e443700b9db612b085214f7a17bbf9bb",
                 "shasum": ""
             },
             "require": {
@@ -1030,7 +1030,7 @@
                 "source": "https://github.com/ec-doris/laravel-cas/tree/main",
                 "issues": "https://github.com/ec-doris/laravel-cas/issues"
             },
-            "time": "2025-08-25T07:52:37+00:00"
+            "time": "2025-09-01T14:45:59+00:00"
         },
         {
             "name": "ecphp/cas-lib",
