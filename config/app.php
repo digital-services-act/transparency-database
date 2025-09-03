@@ -32,6 +32,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Is Task Server
+    |--------------------------------------------------------------------------
+    | This value determines if this instance is a task server that should
+    | run scheduled tasks. Set this in your ".env" file.
+    |
+    */
+    'is_task_server' => env('APP_IS_TASK_SERVER', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |
