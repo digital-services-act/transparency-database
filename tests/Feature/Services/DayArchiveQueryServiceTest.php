@@ -73,15 +73,19 @@ class DayArchiveQueryServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ?', $sql);
     }
 
-    public function it_filters_on_uuid(): void
-    {
-        $platform = Platform::first();
-        $query = $this->day_archive_query_service->query([
-            'uuid' => $platform->uuid
-        ]);
-        $this->assertNotNull($query);
-        $sql = $query->toSql();
-        $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ?', $sql);
-    }
+    // /**
+    //  * @test
+    //  * @return void
+    //  */
+    // public function it_filters_on_uuid(): void
+    // {
+    //     $platform = Platform::first();
+    //     $query = $this->day_archive_query_service->query([
+    //         'uuid' => $platform->uuid
+    //     ]);
+    //     $this->assertNotNull($query);
+    //     $sql = $query->toSql();
+    //     $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ?', $sql);
+    // }
 
 }

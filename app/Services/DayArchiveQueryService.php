@@ -49,17 +49,17 @@ class DayArchiveQueryService
         return $query;
     }
 
-    /**
-     *
-     * @return void
-     */
-    private function applyUuidFilter(Builder $query, string $filter_value): void
-    {
-        $platform = Platform::query()->where('uuid', $filter_value)->first();
-        if ($platform){
-            $query->where('platform_id', $platform->id);
-        }
-    }
+    // /**
+    //  *
+    //  * @return void
+    //  */
+    // private function applyUuidFilter(Builder $query, string $filter_value): void
+    // {
+    //     $platform = Platform::query()->where('uuid', $filter_value)->first();
+    //     if ($platform){
+    //         $query->where('platform_id', $platform->id);
+    //     }
+    // }
 
     /**
      *
@@ -85,7 +85,7 @@ class DayArchiveQueryService
 
     private function applyPlatformIdFilter(Builder $query, $value): void
     {
-        $platform = Platform::query()->where('id', $value)->count();
+        $platform = Platform::find($value);
         if ($platform) {
             $query->where('platform_id', $value);
         }
