@@ -20,16 +20,26 @@ class DataDownloadController extends Controller
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $dayarchives = $this->day_archive_query_service->query($request->query());
+        $platform = null;
+        $query = $request->query();
+
+        if ($request->has('platform_id') && $request->get('platform_id')) {
+            $platform = Platform::find($request->get('platform_id'));
+
+            if (
+                !$platform
+                // Temporary fix to exclude Discord from the dropdown
+                || ($platform && $platform->name === 'Discord Netherlands B.V.')
+            ) {
+                unset($query['platform_id']);
+                $platform = null;
+            }
+        }
+
+        $dayarchives = $this->day_archive_query_service->query($query);
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
         $reindexing = Cache::get('reindexing', false);
-        $platform = false;
-        $uuid = trim((string) $request->get('uuid'));
-        if ($uuid !== '' && $uuid !== '0') {
-            /** @var Platform $platform */
-            $platform = Platform::query()->where('uuid', $uuid)->first();
-        }
 
         $options = $this->prepareOptions();
 
@@ -44,6 +54,8 @@ class DataDownloadController extends Controller
     private function prepareOptions(): array
     {
         $platforms = $this->platform_query_service->getPlatformDropDownOptions();
+        // Temporary fix to exclude Discord from the dropdown
+        $platforms = array_filter($platforms, fn ($platform) => $platform['label'] !== 'Discord Netherlands B.V.');
 
         array_unshift($platforms, [
             'value' => ' ',

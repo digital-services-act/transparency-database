@@ -85,7 +85,7 @@ class DayArchiveQueryService
 
     private function applyPlatformIdFilter(Builder $query, $value): void
     {
-        $platform = Platform::query()->where('id', $value)->count();
+        $platform = Platform::find($value);
         if ($platform) {
             $query->where('platform_id', $value);
         }
