@@ -512,4 +512,28 @@ class StatementSearchServiceTest extends TestCase
         $result = $this->statement_search_service->fullyAutomatedDecisionPercentage();
         $this->assertEquals(77, $result);
     }
+
+    /** @test */
+    public function stress_test_platform_id_filter()
+    {
+        $platform_id_one = Platform::first()->id;
+        $platform_id_two = Platform::nonDsa()->whereNotIn('id', [$platform_id_one])->inRandomOrder()->first()->id;
+
+        $filters = [
+            ['platform_id' => [$platform_id_one, $platform_id_two]],
+            ['platform_id' => [$platform_id_one, $platform_id_two, 'aaaaa']],
+            ['platform_id' => ['1', '2']],
+            ['platform_id' => [false, null]],
+            ['platform_id' => ['xxxx']],
+        ];
+
+        foreach ($filters as $filter) {
+            $search = $this->statement_search_service->query($filter);
+            $this->assertNotNull($search);
+            $query = $search->query;
+            // $this->assertEquals('(platform_id:' . $platform_id_one . ' OR platform_id:' . $platform_id_two . ')', $query);
+        }
+
+
+    }
 }
