@@ -195,7 +195,7 @@ class StatementController extends Controller
 
         }
 
-        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->id.'">Click here to view it.</a>');
+        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->uuid.'">Click here to view it.</a>');
     }
 
     private function prepareOptions($noval_on_select = false): array
