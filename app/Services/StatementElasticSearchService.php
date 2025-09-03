@@ -147,12 +147,6 @@ class StatementElasticSearchService
             $query = '('.implode(') AND (', $queryAndParts).')';
         }
 
-        if (config('app.env') !== 'testing') {
-            // @codeCoverageIgnoreStart
-            $query = $filters['s'] ?? '';
-            // @codeCoverageIgnoreEnd
-        }
-
         return $query;
     }
 
