@@ -84,6 +84,19 @@ class StatementMultipleAPIController extends Controller
 
         $this->insertAndAddPuidsToCacheAndDatabase($payload);
 
+        $uri = config('elasticsearch.uri');
+        $env = config('app.env');
+        if ($env !== 'production' && $uri && $uri[0]) {
+            // If we are not production and
+            // If we have elasticsearch configured, we want to index the new statements
+            // right away so they appear in search results immediately.
+            // @codeCoverageIgnoreStart
+            $uuids = array_map(static fn ($statement) => $statement['uuid'], $payload['statements']);
+            $statements = Statement::query()->whereIn('uuid', $uuids)->get();
+            $this->statement_elastic_search_service->bulkIndexStatements($statements);
+            // @codeCoverageIgnoreEnd
+        }
+
         return response()->json(['statements' => $out], Response::HTTP_CREATED);
 
     }
@@ -95,23 +108,9 @@ class StatementMultipleAPIController extends Controller
      */
     private function insertAndAddPuidsToCacheAndDatabase(array $payload)
     {
-        if (strtolower((string) config('app.env')) === 'production') {
-            // Bulk insert on production, the cron will index later.
-            Statement::insert($payload['statements']);
-        } else {
-            // Not production, we index at the moment.
-            $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
 
-            Statement::insert($payload['statements']);
-            $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
-
-            $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
-            $uri = config('elasticsearch.uri');
-            if (is_array($uri) && $uri[0]) {
-                // If we have Elasticsearch configured, we index the statements now.
-                $this->statement_elastic_search_service->bulkIndexStatements($statements);
-            }
-        }
+        // Bulk insert on production, the cron will index later.
+        Statement::insert($payload['statements']);
 
         // No error, add the platform unique ids into the cache and database
         foreach ($payload['statements'] as $statement) {

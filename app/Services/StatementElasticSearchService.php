@@ -441,6 +441,24 @@ class StatementElasticSearchService
         return implode(' OR ', $ors);
     }
 
+    public function indexStatement(Statement $statement): string
+    {
+        $doc = $statement->toSearchableArray();
+
+        $response = $this->client->index([
+            'index' => $this->index_name,
+            'id' => $statement->id,
+            'body' => $doc,
+            'require_alias' => true,
+        ])->asArray();
+
+        if (isset($response['result']) && in_array($response['result'], ['created', 'updated'], true)) {
+            return $response['result'];
+        }
+
+        throw new RuntimeException('Elasticsearch index error');
+    }
+
     /**
      * @codeCoverageIgnore This is calling elasticsearch directly
      */
