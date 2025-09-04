@@ -5,11 +5,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-/**
- * @codeCoverageIgnore
- */
 class QueueView extends Command
 {
+    use CommandTrait;
+
     protected $signature = 'queue:view';
 
     protected $description = 'Show a report of the queue right now.';
@@ -57,6 +56,9 @@ class QueueView extends Command
             $data['pending'] = $data['total'] - $data['reserved'];
         }
 
+        // Sort stats by queue name for predictable output
+        ksort($stats);
+
         $headers = ['Queue', 'Total', 'Reserved', 'Pending', 'Multi-attempts'];
         $this->info('Queues:');
         $rows = [];
@@ -70,6 +72,7 @@ class QueueView extends Command
             if (! empty($data['jobs'])) {
                 $this->info("\nJobs in '{$queue}' queue:");
                 $jobCounts = array_count_values($data['jobs']);
+                ksort($jobCounts); // Sort jobs alphabetically
                 foreach ($jobCounts as $jobName => $count) {
                     $this->line("  - {$jobName}: {$count}");
                 }
