@@ -82,9 +82,6 @@ class StatementController extends Controller
         return $export->download('statements-of-reason.csv', Excel::CSV);
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
     private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the elastic is not available in the unit tests

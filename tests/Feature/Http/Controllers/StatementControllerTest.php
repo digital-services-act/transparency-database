@@ -244,4 +244,43 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect(route('statement.index'));
         $response->assertSessionHas('error', 'The PUID is not unique in the database');
     }
+
+    /**
+     * @test
+     */
+    public function index_uses_elasticsearch_when_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('query')->once()->andReturn([
+            'statements' => Statement::query(),
+            'total' => 0,
+        ]);
+
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        $response = $this->get(route('statement.index'));
+        $response->assertOk();
+    }
+
+    /**
+     * @test
+     */
+    public function index_uses_database_when_elasticsearch_is_not_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Mock the statement query service
+        $mock = $this->mock(\App\Services\StatementQueryService::class);
+        $mock->shouldReceive('query')->twice()->andReturn(Statement::query());
+
+        // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.uri', [null]);
+
+        $response = $this->get(route('statement.index'));
+        $response->assertOk();
+    }
 }
