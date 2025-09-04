@@ -10,9 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-/**
- * @codeCoverageIgnore
- */
 class StatementsRemoveDate extends Command
 {
     use CommandTrait;
