@@ -186,9 +186,7 @@ class StatementController extends Controller
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statement
             // right away so it appears in search results immediately.
-            // @codeCoverageIgnoreStart
             $this->statement_elastic_search_service->indexStatement($statement);
-            // @codeCoverageIgnoreEnd
 
         }
 

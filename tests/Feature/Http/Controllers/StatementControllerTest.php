@@ -283,4 +283,61 @@ class StatementControllerTest extends TestCase
         $response = $this->get(route('statement.index'));
         $response->assertOk();
     }
+
+    /**
+     * @test
+     */
+    public function store_indexes_statement_in_non_production_with_elastic(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('indexStatement')->once();
+
+        $this->post(route('statement.store'), $this->dummy_attributes);
+    }
+
+    /**
+     * @test
+     */
+    public function store_does_not_index_statement_in_production(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to production
+        config()->set('app.env', 'production');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('indexStatement')->never();
+
+        $this->post(route('statement.store'), $this->dummy_attributes);
+    }
+
+    /**
+     * @test
+     */
+    public function store_does_not_index_statement_when_elastic_is_not_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.uri', [null]);
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('indexStatement')->never();
+
+        $this->post(route('statement.store'), $this->dummy_attributes);
+    }
 }
