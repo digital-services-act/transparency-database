@@ -935,4 +935,60 @@ class StatementMultipleAPIControllerTest extends TestCase
             'Accept' => 'application/json',
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function store_handles_cache_exception_gracefully(): void
+    {
+        $this->signInAsAdmin();
+
+        $mock = $this->mock(\App\Services\PlatformUniqueIdService::class);
+        // We need to mock all the check methods to pass the initial validation
+        $mock->shouldReceive('checkDuplicatesInRequest')->andReturn();
+        $mock->shouldReceive('checkDuplicatesInCache')->andReturn();
+        $mock->shouldReceive('checkDuplicatesInPlatformPuids')->andReturn();
+        // Then, we make the addPuidToCache throw the exception
+        $mock->shouldReceive('addPuidToCache')->andThrow(new \App\Exceptions\PuidNotUniqueSingleException('test'));
+        // We also need to mock the database call to avoid it throwing a real error
+        $mock->shouldReceive('addPuidToDatabase')->andReturn();
+
+        \Illuminate\Support\Facades\Log::shouldReceive('info')
+            ->once()
+            ->with('PUID Not Unique in Cache Exception thrown in Multiple Statements', \Mockery::any());
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(1)], [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    /**
+     * @test
+     */
+    public function store_handles_database_exception_gracefully(): void
+    {
+        $this->signInAsAdmin();
+
+        $mock = $this->mock(\App\Services\PlatformUniqueIdService::class);
+        // We need to mock all the check methods to pass the initial validation
+        $mock->shouldReceive('checkDuplicatesInRequest')->andReturn();
+        $mock->shouldReceive('checkDuplicatesInCache')->andReturn();
+        $mock->shouldReceive('checkDuplicatesInPlatformPuids')->andReturn();
+        // Mock the cache call to succeed
+        $mock->shouldReceive('addPuidToCache')->andReturn();
+        // Then, we make the addPuidToDatabase throw the exception
+        $mock->shouldReceive('addPuidToDatabase')->andThrow(new \App\Exceptions\PuidNotUniqueSingleException('test'));
+
+        \Illuminate\Support\Facades\Log::shouldReceive('info')
+            ->once()
+            ->with('PUID Not Unique in Database Exception thrown in Multiple Statements', \Mockery::any());
+
+        $response = $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(1)], [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
 }

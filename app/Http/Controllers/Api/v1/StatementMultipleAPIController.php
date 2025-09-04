@@ -100,8 +100,6 @@ class StatementMultipleAPIController extends Controller
     }
 
     /**
-     * @codeCoverageIgnore We are ccovering this elsewhere
-     *
      * @return void
      */
     private function insertAndAddPuidsToCacheAndDatabase(array $payload)
