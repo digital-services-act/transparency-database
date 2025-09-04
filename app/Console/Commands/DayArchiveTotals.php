@@ -6,9 +6,6 @@ use App\Models\DayArchive;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class DayArchiveTotals extends Command
 {
     use CommandTrait;
