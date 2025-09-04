@@ -5,9 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-/**
- * @codeCoverageIgnore
- */
 class QueueNuke extends Command
 {
     use CommandTrait;
@@ -31,6 +28,7 @@ class QueueNuke extends Command
         DB::table('jobs')->truncate();
         DB::table('failed_jobs')->truncate();
         DB::table('job_batches')->truncate();
+
         $this->call('queue:restart');
     }
 }
