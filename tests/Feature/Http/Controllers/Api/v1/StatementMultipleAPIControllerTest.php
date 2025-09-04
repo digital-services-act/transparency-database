@@ -872,4 +872,67 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('1111111111111', $statementA->content_id_ean);
         $this->assertEquals('2222222222222', $statementB->content_id_ean);
     }
+
+    /**
+     * @test
+     */
+    public function store_bulk_indexes_statement_in_non_production_with_elastic(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('bulkIndexStatements')->once();
+
+        $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
+            'Accept' => 'application/json',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function store_bulk_does_not_index_statement_in_production(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to production
+        config()->set('app.env', 'production');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('bulkIndexStatements')->never();
+
+        $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
+            'Accept' => 'application/json',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function store_bulk_does_not_index_statement_when_elastic_is_not_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.uri', [null]);
+
+        // Mock the elastic search service
+        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock->shouldReceive('bulkIndexStatements')->never();
+
+        $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
+            'Accept' => 'application/json',
+        ]);
+    }
 }

@@ -90,11 +90,9 @@ class StatementMultipleAPIController extends Controller
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statements
             // right away so they appear in search results immediately.
-            // @codeCoverageIgnoreStart
             $uuids = array_map(static fn ($statement) => $statement['uuid'], $payload['statements']);
             $statements = Statement::query()->whereIn('uuid', $uuids)->get();
             $this->statement_elastic_search_service->bulkIndexStatements($statements);
-            // @codeCoverageIgnoreEnd
         }
 
         return response()->json(['statements' => $out], Response::HTTP_CREATED);
