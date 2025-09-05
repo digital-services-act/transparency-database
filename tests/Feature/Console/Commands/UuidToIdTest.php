@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\Console\Commands\UuidToId;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
