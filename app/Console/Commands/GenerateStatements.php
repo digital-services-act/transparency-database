@@ -5,9 +5,6 @@ namespace App\Console\Commands;
 use App\Jobs\StatementCreation;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class GenerateStatements extends Command
 {
     use CommandTrait;
