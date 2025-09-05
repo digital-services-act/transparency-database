@@ -5,9 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @codeCoverageIgnore
- */
 class ApiLog extends Model
 {
     protected $fillable = [
