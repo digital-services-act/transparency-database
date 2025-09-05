@@ -5,9 +5,6 @@ namespace App\Console\Commands;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class UuidToId extends Command
 {
     use CommandTrait;
