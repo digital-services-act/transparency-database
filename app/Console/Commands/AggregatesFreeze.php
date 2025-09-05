@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use JsonException;
 
-/**
- * @codeCoverageIgnore
- */
 class AggregatesFreeze extends Command
 {
     use CommandTrait;
@@ -54,30 +51,8 @@ class AggregatesFreeze extends Command
         Log::info('Number of aggregates in the aggregates freeze results: '.count($results['aggregates']));
 
         if (count($results['aggregates']) === 0) {
-            Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 10 seconds and trying again');
-            sleep(10);
-            $results = $statement_elastic_search_service->processDateAggregate(
-                $date,
-                $attributes,
-                false
-            );
-            Log::info('Number of aggregates in the aggregates freeze results: '.count($results['aggregates']));
-        }
-
-        if (count($results['aggregates']) === 0) {
-            Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 20 seconds and trying again');
-            sleep(20);
-            $results = $statement_elastic_search_service->processDateAggregate(
-                $date,
-                $attributes,
-                false
-            );
-            Log::info('Number of aggregates in the aggregates freeze results: '.count($results['aggregates']));
-        }
-
-        if (count($results['aggregates']) === 0) {
-            Log::warning('The number of aggregates in the aggregates freeze results is still 0, exiting');
-            exit;
+            Log::error('The number of aggregates in the aggregates freeze results is 0');
+            return;
         }
 
         // Make the CSV
