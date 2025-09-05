@@ -6,9 +6,6 @@ use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * @codeCoverageIgnore
- */
 class PidPuid2Ids extends Command
 {
     use CommandTrait;

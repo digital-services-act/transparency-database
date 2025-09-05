@@ -84,7 +84,7 @@ class PlatformPuidDeleteChunkTest extends TestCase
     {
         Queue::fake();
         Log::shouldReceive('info')->once()->with(\Mockery::pattern('/PlatformPuidDeleteChunk Max Reached at/'));
-        
+
         // Test case: min=95, max=100, chunk=10
         // Should only delete [95,96,97,98,99,100] - exactly 6 records, not 10
         DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
@@ -104,7 +104,7 @@ class PlatformPuidDeleteChunkTest extends TestCase
     public function it_ensures_complete_coverage_of_range(): void
     {
         Queue::fake();
-        
+
         // Test the full sequence to ensure complete coverage
         // First chunk: min=1, max=10, chunk=3 should delete [1,2,3,4] and dispatch next with min=5
         DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
