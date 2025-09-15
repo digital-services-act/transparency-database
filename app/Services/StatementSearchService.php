@@ -451,7 +451,7 @@ class StatementSearchService
      * @param \Illuminate\Database\Eloquent\Collection $statements
      * @return void
      */
-    public function bulkIndexStatements(Collection $statements): void
+    public function bulkIndexStatements(Collection $statements, bool $replace = false): void
     {
         if ($statements->count() !== 0 && config('scout.driver') === 'opensearch') {
             $bulk = [];
@@ -468,7 +468,7 @@ class StatementSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)]);
+            $this->client->bulk(['require_alias' => !$replace, 'body' => implode("\n", $bulk)]);
         }
     }
 
