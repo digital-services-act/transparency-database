@@ -3,12 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchIndexInfo extends Command
 {
     /**
@@ -28,86 +24,42 @@ class ElasticSearchIndexInfo extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
         $index = $this->argument('index');
-        if (! $index) {
-            $this->error('index argument required');
+
+        try {
+            $indexInfo = $elasticSearchService->getIndexInfo($index);
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'does not exist')) {
+                $this->error('index does not exist');
+            } else {
+                $this->warn('The index is not in the indices stats, probably you used an alias?');
+            }
 
             return;
         }
 
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
-
-        if (! $client->indices()->exists(['index' => $index])->asBool()) {
-            $this->error('index does not exist');
-
-            return;
-        }
-
-        $stats = $client->indices()->stats()->asArray();
-        $indices = $stats['indices'];
-
-        if (! isset($indices[$index])) {
-            $this->warn('The index is not in the indices stats, probably you used an alias?');
-
-            return;
-        }
-
-        $index_stats = $indices[$index];
-
-        $this->info('UUID: '.$index_stats['uuid']);
-        $this->info('Documents: '.$index_stats['primaries']['docs']['count']);
-        $this->info('Size: '.$this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
-
-        $mapping = $client->indices()->getMapping(['index' => $index])->asArray();
+        $this->info('UUID: '.$indexInfo['uuid']);
+        $this->info('Documents: '.$indexInfo['documents']);
+        $this->info('Size: '.$this->humanFileSize($indexInfo['size_bytes']));
 
         $this->newLine();
-
         $this->info('Field Information:');
-
-        $fields = [];
-        foreach ($mapping[$index]['mappings']['properties'] as $field => $field_info) {
-            $fields[] = [$field, $field_info['type']];
-        }
-
-        $this->table(['Field', 'Type'], $fields);
-
-        $shards = $client->cat()->shards(['index' => $index, 'format' => 'json'])->asArray();
-
-        $shards_report = [];
-        foreach ($shards as $shard) {
-            if ($shard['prirep'] === 'p') {
-                $shards_report[$shard['shard']] = [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
-            }
-        }
-
-        ksort($shards_report);
+        $this->table(['Field', 'Type'], $indexInfo['fields']);
 
         $this->newLine();
         $this->info('Shards:');
-        $this->table(['Shard', 'State', 'Docs', 'Store'], $shards_report);
-
-        $alias = $client->indices()->getAlias(['index' => $index])->asArray();
-        $aliases = array_keys($alias[$index]['aliases']);
-        $out = [];
-        foreach ($aliases as $alias) {
-            $out[] = [
-                'alias' => $alias,
-            ];
-        }
+        $this->table(['Shard', 'State', 'Docs', 'Store'], $indexInfo['shards']);
 
         $this->newLine();
         $this->info('Aliases:');
-        $this->table(['Alias'], $out);
+        $this->table(['Alias'], $indexInfo['aliases']);
 
         $this->newLine();
-
-        $this->info('UUID: '.$index_stats['uuid']);
-        $this->info('Documents: '.$index_stats['primaries']['docs']['count']);
-        $this->info('Size: '.$this->humanFileSize($index_stats['total']['store']['size_in_bytes']));
-
+        $this->info('UUID: '.$indexInfo['uuid']);
+        $this->info('Documents: '.$indexInfo['documents']);
+        $this->info('Size: '.$this->humanFileSize($indexInfo['size_bytes']));
     }
 
     private function humanFileSize($size, $unit = '')

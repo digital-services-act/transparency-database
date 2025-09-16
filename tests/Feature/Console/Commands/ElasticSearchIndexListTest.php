@@ -17,8 +17,8 @@ class ElasticSearchIndexListTest extends TestCase
      */
     public function it_can_be_instantiated(): void
     {
-        $command = new ElasticSearchIndexList();
-        
+        $command = new ElasticSearchIndexList;
+
         $this->assertInstanceOf(ElasticSearchIndexList::class, $command);
         $this->assertEquals('elasticsearch:index-list', $command->getName());
         $this->assertEquals('Get some info about the elasticsearch.', $command->getDescription());
@@ -30,14 +30,14 @@ class ElasticSearchIndexListTest extends TestCase
     public function it_lists_elasticsearch_indices_with_dependency_injection(): void
     {
         // Now with business logic in the service, testing is much simpler!
-        
+
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
         $serviceMock->shouldReceive('getIndexList')
             ->once()
             ->andReturn([
                 'statements-2025-09-16',
                 'statements-2025-09-15',
-                'test-index'
+                'test-index',
             ]);
 
         $this->app->instance(StatementElasticSearchService::class, $serviceMock);

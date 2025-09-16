@@ -27,7 +27,7 @@ class ElasticSearchIndexList extends Command
     public function handle(StatementElasticSearchService $elasticSearchService): void
     {
         $indexes = $elasticSearchService->getIndexList();
-        
+
         $rows = [];
         foreach ($indexes as $index) {
             $rows[] = [$index];

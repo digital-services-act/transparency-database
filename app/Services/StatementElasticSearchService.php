@@ -92,7 +92,83 @@ class StatementElasticSearchService
     public function getIndexList(): array
     {
         $stats = $this->client->indices()->stats()->asArray();
+
         return array_keys($stats['indices'] ?? []);
+    }
+
+    public function getIndexInfo(string $index): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Get index stats
+        $stats = $this->client->indices()->stats()->asArray();
+        $indices = $stats['indices'];
+
+        if (! isset($indices[$index])) {
+            throw new RuntimeException('Index is not in the indices stats, probably you used an alias?');
+        }
+
+        $index_stats = $indices[$index];
+
+        // Get mapping
+        $mapping = $this->client->indices()->getMapping(['index' => $index])->asArray();
+
+        // Get shards
+        $shards = $this->client->cat()->shards(['index' => $index, 'format' => 'json'])->asArray();
+
+        // Get aliases
+        $alias = $this->client->indices()->getAlias(['index' => $index])->asArray();
+
+        // Process fields from mapping
+        $fields = [];
+        foreach ($mapping[$index]['mappings']['properties'] as $field => $field_info) {
+            $fields[] = [$field, $field_info['type']];
+        }
+
+        // Process shards (only primary shards)
+        $shards_report = [];
+        foreach ($shards as $shard) {
+            if ($shard['prirep'] === 'p') {
+                $shards_report[$shard['shard']] = [$shard['shard'], $shard['state'], $shard['docs'], $shard['store']];
+            }
+        }
+        ksort($shards_report);
+
+        // Process aliases
+        $aliases = array_keys($alias[$index]['aliases']);
+        $aliases_formatted = [];
+        foreach ($aliases as $alias_name) {
+            $aliases_formatted[] = ['alias' => $alias_name];
+        }
+
+        return [
+            'uuid' => $index_stats['uuid'],
+            'documents' => $index_stats['primaries']['docs']['count'],
+            'size_bytes' => $index_stats['total']['store']['size_in_bytes'],
+            'fields' => $fields,
+            'shards' => array_values($shards_report),
+            'aliases' => $aliases_formatted,
+        ];
+    }
+
+    public function deleteIndex(string $index): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Delete the index
+        $response = $this->client->indices()->delete(['index' => $index])->asArray();
+
+        return [
+            'index' => $index,
+            'deleted' => true,
+            'acknowledged' => $response['acknowledged'] ?? false,
+        ];
     }
 
     public function query(array $filters, array $options = [], $page = 0, $perPage = 50): array
