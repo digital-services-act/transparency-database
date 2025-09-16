@@ -10,9 +10,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * @codeCoverageIgnore
- */
 class StatementCsvExportCopyS3 implements ShouldQueue
 {
     use Batchable;
