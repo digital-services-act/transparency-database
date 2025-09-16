@@ -207,6 +207,25 @@ class StatementElasticSearchService
         ];
     }
 
+    public function cancelAllTasks(): array
+    {
+        // Get current cancellable tasks before cancelling
+        $tasksInfo = $this->getTasks();
+        $cancellableCount = $tasksInfo['cancellable_tasks'];
+
+        // Cancel all cancellable tasks
+        $response = $this->client->tasks()->cancel()->asArray();
+
+        return [
+            'cancelled_tasks' => $cancellableCount,
+            'acknowledged' => true,
+            'response' => $response,
+        ];
+    }
+
+    /**
+     * Get ElasticSearch indexing job statistics from the database
+     */
     public function query(array $filters, array $options = [], $page = 0, $perPage = 50): array
     {
         $query = $this->buildQuery($filters);

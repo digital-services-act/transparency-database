@@ -3,12 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchTasksCancel extends Command
 {
     /**
@@ -28,11 +24,22 @@ class ElasticSearchTasksCancel extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
+        try {
+            $result = $elasticSearchService->cancelAllTasks();
 
-        $client->tasks()->cancel();
+            if ($result['cancelled_tasks'] > 0) {
+                $this->info("Successfully cancelled {$result['cancelled_tasks']} cancellable task(s).");
+            } else {
+                $this->info('No cancellable tasks found to cancel.');
+            }
+
+            if (! $result['acknowledged']) {
+                $this->warn('Task cancellation was not acknowledged by Elasticsearch.');
+            }
+        } catch (\Exception $e) {
+            $this->error('Failed to cancel tasks: '.$e->getMessage());
+        }
     }
 }
