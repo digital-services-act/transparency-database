@@ -3,13 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
-use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchTasks extends Command
 {
     /**
@@ -29,21 +24,43 @@ class ElasticSearchTasks extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
+        try {
+            $tasksInfo = $elasticSearchService->getTasks();
 
-        $tasklist = $client->tasks()->list()->asArray();
-        $cancellable = [];
-        foreach ($tasklist['nodes'] as $node => $node_info) {
-            foreach ($node_info['tasks'] as $ask => $task_info) {
-                if ($task_info['cancellable']) {
-                    $cancellable[] = $task_info;
+            $this->info("Total tasks: {$tasksInfo['total_tasks']}");
+            $this->info("Cancellable tasks: {$tasksInfo['cancellable_tasks']}");
+
+            if ($tasksInfo['cancellable_tasks'] > 0) {
+                $this->newLine();
+                $this->info('Cancellable Tasks:');
+
+                $tableData = [];
+                foreach ($tasksInfo['cancellable'] as $task) {
+                    $tableData[] = [
+                        $task['id'],
+                        $task['node'],
+                        $task['type'],
+                        $task['action'],
+                        substr($task['description'], 0, 50).(strlen($task['description']) > 50 ? '...' : ''),
+                        number_format($task['running_time'] / 1000000).'ms',
+                    ];
                 }
-            }
-        }
 
-        VarDumper::dump($cancellable);
+                $this->table([
+                    'Task ID',
+                    'Node',
+                    'Type',
+                    'Action',
+                    'Description',
+                    'Runtime',
+                ], $tableData);
+            } else {
+                $this->info('No cancellable tasks found.');
+            }
+        } catch (\Exception $e) {
+            $this->error('Failed to retrieve tasks: '.$e->getMessage());
+        }
     }
 }

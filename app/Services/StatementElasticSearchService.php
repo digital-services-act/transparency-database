@@ -171,6 +171,42 @@ class StatementElasticSearchService
         ];
     }
 
+    public function getTasks(): array
+    {
+        $tasklist = $this->client->tasks()->list()->asArray();
+
+        $cancellable = [];
+        $all_tasks = [];
+
+        foreach ($tasklist['nodes'] as $node => $node_info) {
+            foreach ($node_info['tasks'] as $task_id => $task_info) {
+                $processed_task = [
+                    'id' => $task_id,
+                    'node' => $node,
+                    'type' => $task_info['type'] ?? 'unknown',
+                    'action' => $task_info['action'] ?? 'unknown',
+                    'description' => $task_info['description'] ?? '',
+                    'start_time' => $task_info['start_time_in_millis'] ?? 0,
+                    'running_time' => $task_info['running_time_in_nanos'] ?? 0,
+                    'cancellable' => $task_info['cancellable'] ?? false,
+                ];
+
+                $all_tasks[] = $processed_task;
+
+                if ($task_info['cancellable']) {
+                    $cancellable[] = $processed_task;
+                }
+            }
+        }
+
+        return [
+            'total_tasks' => count($all_tasks),
+            'cancellable_tasks' => count($cancellable),
+            'cancellable' => $cancellable,
+            'all_tasks' => $all_tasks,
+        ];
+    }
+
     public function query(array $filters, array $options = [], $page = 0, $perPage = 50): array
     {
         $query = $this->buildQuery($filters);
