@@ -89,6 +89,12 @@ class StatementElasticSearchService
         return $this->client;
     }
 
+    public function getIndexList(): array
+    {
+        $stats = $this->client->indices()->stats()->asArray();
+        return array_keys($stats['indices'] ?? []);
+    }
+
     public function query(array $filters, array $options = [], $page = 0, $perPage = 50): array
     {
         $query = $this->buildQuery($filters);

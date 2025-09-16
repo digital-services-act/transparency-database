@@ -3,12 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchIndexList extends Command
 {
     /**
@@ -28,12 +24,10 @@ class ElasticSearchIndexList extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
-
-        $indexes = array_keys($client->indices()->stats()->asArray()['indices']);
+        $indexes = $elasticSearchService->getIndexList();
+        
         $rows = [];
         foreach ($indexes as $index) {
             $rows[] = [$index];
