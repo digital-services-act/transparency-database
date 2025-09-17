@@ -253,6 +253,94 @@ class StatementElasticSearchService
         ];
     }
 
+    public function getIndexSettings(string $index): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Get index settings
+        $response = $this->client->indices()->getSettings(['index' => $index])->asArray();
+        $settings = $response[$index]['settings'] ?? [];
+
+        // Process settings into readable format
+        $processedSettings = $this->processIndexSettings($settings);
+
+        return [
+            'index' => $index,
+            'settings' => $processedSettings,
+            'raw_settings' => $settings,
+        ];
+    }
+
+    private function processIndexSettings(array $settings): array
+    {
+        $processed = [];
+
+        // Index-level settings
+        if (isset($settings['index'])) {
+            $indexSettings = $settings['index'];
+
+            // Basic index settings
+            $processed['Basic'] = [
+                ['Number of Shards', $indexSettings['number_of_shards'] ?? 'N/A'],
+                ['Number of Replicas', $indexSettings['number_of_replicas'] ?? 'N/A'],
+                ['Creation Date', isset($indexSettings['creation_date']) ? date('Y-m-d H:i:s', $indexSettings['creation_date'] / 1000) : 'N/A'],
+                ['UUID', $indexSettings['uuid'] ?? 'N/A'],
+                ['Version Created', $indexSettings['version']['created'] ?? 'N/A'],
+            ];
+
+            // Refresh settings
+            if (isset($indexSettings['refresh_interval'])) {
+                $processed['Refresh'] = [
+                    ['Refresh Interval', $indexSettings['refresh_interval']],
+                ];
+            }
+
+            // Analysis settings
+            if (isset($indexSettings['analysis'])) {
+                $analysisInfo = [];
+                if (isset($indexSettings['analysis']['analyzer'])) {
+                    $analysisInfo[] = ['Analyzers', count($indexSettings['analysis']['analyzer']).' configured'];
+                }
+                if (isset($indexSettings['analysis']['tokenizer'])) {
+                    $analysisInfo[] = ['Tokenizers', count($indexSettings['analysis']['tokenizer']).' configured'];
+                }
+                if (isset($indexSettings['analysis']['filter'])) {
+                    $analysisInfo[] = ['Filters', count($indexSettings['analysis']['filter']).' configured'];
+                }
+                if (! empty($analysisInfo)) {
+                    $processed['Analysis'] = $analysisInfo;
+                }
+            }
+
+            // Routing settings
+            if (isset($indexSettings['routing'])) {
+                $processed['Routing'] = [
+                    ['Allocation Include', $indexSettings['routing']['allocation']['include']['_tier_preference'] ?? 'N/A'],
+                ];
+            }
+
+            // Other important settings
+            $otherSettings = [];
+            if (isset($indexSettings['max_result_window'])) {
+                $otherSettings[] = ['Max Result Window', number_format($indexSettings['max_result_window'])];
+            }
+            if (isset($indexSettings['max_inner_result_window'])) {
+                $otherSettings[] = ['Max Inner Result Window', number_format($indexSettings['max_inner_result_window'])];
+            }
+            if (isset($indexSettings['max_rescore_window'])) {
+                $otherSettings[] = ['Max Rescore Window', number_format($indexSettings['max_rescore_window'])];
+            }
+            if (! empty($otherSettings)) {
+                $processed['Advanced'] = $otherSettings;
+            }
+        }
+
+        return $processed;
+    }
+
     public function cancelAllTasks(): array
     {
         // Get current cancellable tasks before cancelling

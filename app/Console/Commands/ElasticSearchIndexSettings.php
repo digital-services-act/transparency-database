@@ -3,13 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
-use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchIndexSettings extends Command
 {
     /**
@@ -24,30 +19,37 @@ class ElasticSearchIndexSettings extends Command
      *
      * @var string
      */
-    protected $description = 'Get some info about the elasticsearch.';
+    protected $description = 'Get settings information about an Elasticsearch index.';
 
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
-        if (! $index) {
-            $this->error('index argument required');
 
-            return;
+        try {
+            $settingsInfo = $elasticSearchService->getIndexSettings($index);
+
+            $this->info("Settings for index: {$settingsInfo['index']}");
+            $this->line(str_repeat('=', 50));
+
+            foreach ($settingsInfo['settings'] as $category => $settings) {
+                $this->newLine();
+                $this->info("{$category} Settings:");
+                $this->table(['Setting', 'Value'], $settings);
+            }
+
+            if (empty($settingsInfo['settings'])) {
+                $this->warn('No processed settings found. Index may have minimal configuration.');
+            }
+
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'does not exist')) {
+                $this->error("Index '{$index}' does not exist.");
+            } else {
+                $this->error("Failed to retrieve settings for index '{$index}': ".$e->getMessage());
+            }
         }
-
-        if (! $client->indices()->exists(['index' => $index])->asBool()) {
-            $this->error('index does not exist');
-
-            return;
-        }
-
-        $index_settings = $client->indices()->getSettings(['index' => $index])->asArray();
-
-        VarDumper::dump($index_settings);
     }
 }
