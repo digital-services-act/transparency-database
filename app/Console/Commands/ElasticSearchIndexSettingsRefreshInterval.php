@@ -3,13 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
-use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchIndexSettingsRefreshInterval extends Command
 {
     use CommandTrait;
@@ -26,41 +21,32 @@ class ElasticSearchIndexSettingsRefreshInterval extends Command
      *
      * @var string
      */
-    protected $description = 'Set the refreshing interval for an index.';
+    protected $description = 'Set the refresh interval for an Elasticsearch index.';
 
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
         $interval = $this->intifyArgument('interval');
 
-        if (! $index) {
-            $this->error('index argument required');
+        try {
+            $result = $elasticSearchService->updateIndexRefreshInterval($index, $interval);
 
-            return;
+            if ($result['acknowledged']) {
+                $this->info("Refresh interval for index '{$result['index']}' has been updated.");
+                $this->line("Previous interval: {$result['previous_interval']}");
+                $this->line("New interval: {$result['new_interval']}");
+            } else {
+                $this->warn('Refresh interval update was not acknowledged by Elasticsearch.');
+            }
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'does not exist')) {
+                $this->error("Index '{$index}' does not exist.");
+            } else {
+                $this->error("Failed to update refresh interval for index '{$index}': ".$e->getMessage());
+            }
         }
-
-        if (! $client->indices()->exists(['index' => $index])->asBool()) {
-            $this->error('index does not exist');
-
-            return;
-        }
-
-        $index_settings = $client->indices()->getSettings(['index' => $index])->asArray();
-        VarDumper::dump($index_settings);
-
-        $client->indices()->putSettings([
-            'index' => $index,
-            'body' => [
-                'refresh_interval' => $interval.'s',
-            ],
-        ]);
-
-        $index_settings = $client->indices()->getSettings(['index' => $index])->asArray();
-        VarDumper::dump($index_settings);
     }
 }

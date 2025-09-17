@@ -341,6 +341,119 @@ class StatementElasticSearchService
         return $processed;
     }
 
+    public function updateIndexRefreshInterval(string $index, int $interval): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Get current settings for comparison
+        $currentResponse = $this->client->indices()->getSettings(['index' => $index])->asArray();
+        $currentInterval = $currentResponse[$index]['settings']['index']['refresh_interval'] ?? 'N/A';
+
+        // Update refresh interval
+        $response = $this->client->indices()->putSettings([
+            'index' => $index,
+            'body' => [
+                'refresh_interval' => $interval.'s',
+            ],
+        ])->asArray();
+
+        return [
+            'index' => $index,
+            'previous_interval' => $currentInterval,
+            'new_interval' => $interval.'s',
+            'updated' => true,
+            'acknowledged' => $response['acknowledged'] ?? false,
+        ];
+    }
+
+    public function swapIndexAlias(string $fromIndex, string $toIndex, string $alias): array
+    {
+        // Check if both indices exist
+        if (! $this->client->indices()->exists(['index' => $fromIndex])->asBool()) {
+            throw new RuntimeException('Source index does not exist');
+        }
+
+        if (! $this->client->indices()->exists(['index' => $toIndex])->asBool()) {
+            throw new RuntimeException('Target index does not exist');
+        }
+
+        // Check if alias exists on source index
+        if (! $this->client->indices()->existsAlias(['index' => $fromIndex, 'name' => $alias])->asBool()) {
+            throw new RuntimeException('Alias does not exist on source index');
+        }
+
+        // Check if alias already exists on target index
+        if ($this->client->indices()->existsAlias(['index' => $toIndex, 'name' => $alias])->asBool()) {
+            throw new RuntimeException('Alias already exists on target index');
+        }
+
+        // Perform atomic alias swap
+        $body = [
+            'actions' => [
+                [
+                    'remove' => [
+                        'index' => $fromIndex,
+                        'alias' => $alias,
+                    ],
+                ],
+                [
+                    'add' => [
+                        'index' => $toIndex,
+                        'alias' => $alias,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->client->indices()->updateAliases(['body' => $body])->asArray();
+
+        return [
+            'from_index' => $fromIndex,
+            'to_index' => $toIndex,
+            'alias' => $alias,
+            'swapped' => true,
+            'acknowledged' => $response['acknowledged'] ?? false,
+        ];
+    }
+
+    public function removeDocumentFromIndex(string $index, int $documentId): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Validate document ID
+        if ($documentId <= 0) {
+            throw new RuntimeException('Invalid document ID');
+        }
+
+        try {
+            // Attempt to delete the document
+            $response = $this->client->delete([
+                'index' => $index,
+                'id' => $documentId,
+            ])->asArray();
+
+            return [
+                'index' => $index,
+                'document_id' => $documentId,
+                'deleted' => true,
+                'result' => $response['result'] ?? 'unknown',
+                'version' => $response['_version'] ?? null,
+            ];
+        } catch (\Exception $e) {
+            // Document might not exist - this is often not a fatal error
+            if (str_contains($e->getMessage(), 'not_found')) {
+                throw new RuntimeException('Document not found in index');
+            }
+            throw new RuntimeException('Failed to delete document: '.$e->getMessage());
+        }
+    }
+
     public function cancelAllTasks(): array
     {
         // Get current cancellable tasks before cancelling

@@ -3,13 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
-use Exception;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchRemoveSor extends Command
 {
     use CommandTrait;
@@ -26,32 +21,33 @@ class ElasticSearchRemoveSor extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Remove a statement document from an Elasticsearch index';
 
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
-        $id = $this->intifyArgument('id');
         $index = $this->argument('index');
+        $documentId = $this->intifyArgument('id');
 
-        if (! $client->indices()->exists(['index' => $index])->asBool()) {
-            $this->error('Source index does not exist!');
+        try {
+            $result = $elasticSearchService->removeDocumentFromIndex($index, $documentId);
 
-            return;
-        }
-
-        if ($id !== 0) {
-            try {
-                $client->delete([
-                    'index' => $index,
-                    'id' => $id,
-                ]);
-            } catch (Exception $e) {
-                $this->info($e->getMessage());
+            $this->info("Document {$result['document_id']} has been successfully removed from index '{$result['index']}'.");
+            $this->line("Result: {$result['result']}");
+            if ($result['version']) {
+                $this->line("Version: {$result['version']}");
+            }
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'Index does not exist')) {
+                $this->error("Index '{$index}' does not exist.");
+            } elseif (str_contains($e->getMessage(), 'Invalid document ID')) {
+                $this->error("Invalid document ID: {$documentId}. Must be a positive integer.");
+            } elseif (str_contains($e->getMessage(), 'Document not found')) {
+                $this->warn("Document {$documentId} was not found in index '{$index}'.");
+            } else {
+                $this->error("Failed to remove document {$documentId} from index '{$index}': ".$e->getMessage());
             }
         }
     }

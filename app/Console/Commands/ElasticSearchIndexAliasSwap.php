@@ -3,12 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchIndexAliasSwap extends Command
 {
     /**
@@ -23,61 +19,39 @@ class ElasticSearchIndexAliasSwap extends Command
      *
      * @var string
      */
-    protected $description = 'Swap an alias on an Elasticsearch index to another index';
+    protected $description = 'Swap an alias from one Elasticsearch index to another index atomically';
 
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
-        $index = $this->argument('index');
-        $target = $this->argument('target');
+        $fromIndex = $this->argument('index');
+        $toIndex = $this->argument('target');
         $alias = $this->argument('alias');
 
-        if (! $client->indices()->exists(['index' => $index])->asBool()) {
-            $this->warn('Index does not exist!');
+        try {
+            $result = $elasticSearchService->swapIndexAlias($fromIndex, $toIndex, $alias);
 
-            return;
+            if ($result['acknowledged']) {
+                $this->info("Alias '{$result['alias']}' has been successfully swapped.");
+                $this->line("From index: {$result['from_index']}");
+                $this->line("To index: {$result['to_index']}");
+            } else {
+                $this->warn('Alias swap was not acknowledged by Elasticsearch.');
+            }
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'Source index does not exist')) {
+                $this->error("Source index '{$fromIndex}' does not exist.");
+            } elseif (str_contains($e->getMessage(), 'Target index does not exist')) {
+                $this->error("Target index '{$toIndex}' does not exist.");
+            } elseif (str_contains($e->getMessage(), 'does not exist on source')) {
+                $this->warn("Alias '{$alias}' does not exist on source index '{$fromIndex}'.");
+            } elseif (str_contains($e->getMessage(), 'already exists on target')) {
+                $this->warn("Alias '{$alias}' already exists on target index '{$toIndex}'.");
+            } else {
+                $this->error("Failed to swap alias '{$alias}': ".$e->getMessage());
+            }
         }
-
-        if (! $client->indices()->exists(['index' => $target])->asBool()) {
-            $this->warn('Target Index does not exist!');
-
-            return;
-        }
-
-        if (! $client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
-            $this->warn('Alias is not on the index!');
-
-            return;
-        }
-
-        if ($client->indices()->existsAlias(['index' => $target, 'name' => $alias])->asBool()) {
-            $this->warn('Alias is already on the target index!');
-
-            return;
-        }
-
-        $body = [
-            'actions' => [
-                [
-                    'remove' => [
-                        'index' => $index,
-                        'alias' => $alias,
-                    ],
-                ],
-                [
-                    'add' => [
-                        'index' => $target,
-                        'alias' => $alias,
-                    ],
-                ],
-            ],
-        ];
-        $client->indices()->updateAliases([
-            'body' => $body,
-        ]);
     }
 }

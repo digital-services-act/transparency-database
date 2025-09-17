@@ -52,6 +52,7 @@ class AggregatesFreeze extends Command
 
         if (count($results['aggregates']) === 0) {
             Log::error('The number of aggregates in the aggregates freeze results is 0');
+
             return;
         }
 
