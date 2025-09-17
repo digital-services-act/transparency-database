@@ -44,23 +44,28 @@ class StatementFixPuidBatch implements ShouldQueue
             WHERE id in ({$idsStr})
         SQL;
 
-        DB::unprepared($query);
+        try {
+            DB::connection('mysql::read')->unprepared($query);
 
-        // Reload updated statements for OpenSearch
-        $updatedStatements = $this->table === 'statements'
-            ? StatementAlpha::whereIn('id', $this->ids)->get()->makeVisible('puid')
-            : Statement::whereIn('id', $this->ids)->get()->makeVisible('puid');
+            // Reload updated statements for OpenSearch
+            $updatedStatements = $this->table === 'statements'
+                ? StatementAlpha::whereIn('id', $this->ids)->get()->makeVisible('puid')
+                : Statement::whereIn('id', $this->ids)->get()->makeVisible('puid');
 
-        $opensearch->bulkIndexStatements($updatedStatements, true);
+            $opensearch->bulkIndexStatements($updatedStatements, true);
 
-        // Mark in faulty_ids
-        DB::table('faulty_ids')
-            ->whereIn('id', $this->ids)
-            ->update([
-                'updated_db_at' => now(),
-                'updated_os_at' => now(),
-            ]);
+            // Mark in faulty_ids
+            DB::connection('mysql::read')
+                ->table('faulty_ids')
+                ->whereIn('id', $this->ids)
+                ->update([
+                    'updated_db_at' => now(),
+                    'updated_os_at' => now(),
+                ]);
 
-        Log::info("Finished batch {$this->batchNr} for {$this->table}. Duration: " . Carbon::now()->diffForHumans($start));
+            Log::info("Finished batch {$this->batchNr} for {$this->table}. Duration: " . Carbon::now()->diffForHumans($start));
+        } catch (\Exception $e) {
+            Log::error("Error in batch {$this->batchNr} for {$this->table}: " . $e->getMessage());
+        }
     }
 }
