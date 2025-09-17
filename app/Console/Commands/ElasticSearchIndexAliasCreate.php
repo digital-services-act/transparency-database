@@ -3,12 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
-use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class ElasticSearchIndexAliasCreate extends Command
 {
     /**
@@ -28,21 +24,27 @@ class ElasticSearchIndexAliasCreate extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StatementElasticSearchService $elasticSearchService): void
     {
-        /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
         $index = $this->argument('index');
         $alias = $this->argument('alias');
 
-        if ($client->indices()->exists(['index' => $index])->asBool()) {
-            if (! $client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
-                $client->indices()->putAlias(['index' => $index, 'name' => $alias]);
+        try {
+            $result = $elasticSearchService->createIndexAlias($index, $alias);
+
+            if ($result['acknowledged']) {
+                $this->info("Alias '{$result['alias']}' has been successfully created on index '{$result['index']}'.");
             } else {
-                $this->warn('Alias already exists on this index!');
+                $this->warn("Alias '{$result['alias']}' creation was not acknowledged by Elasticsearch.");
             }
-        } else {
-            $this->warn('Index does not exist!');
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'does not exist')) {
+                $this->error("Index '{$index}' does not exist.");
+            } elseif (str_contains($e->getMessage(), 'already exists')) {
+                $this->warn("Alias '{$alias}' already exists on index '{$index}'.");
+            } else {
+                $this->error("Failed to create alias '{$alias}' on index '{$index}': ".$e->getMessage());
+            }
         }
     }
 }

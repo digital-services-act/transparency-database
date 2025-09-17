@@ -207,6 +207,52 @@ class StatementElasticSearchService
         ];
     }
 
+    public function createIndexAlias(string $index, string $alias): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Check if alias already exists on this index
+        if ($this->client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
+            throw new RuntimeException('Alias already exists on this index');
+        }
+
+        // Create the alias
+        $response = $this->client->indices()->putAlias(['index' => $index, 'name' => $alias])->asArray();
+
+        return [
+            'index' => $index,
+            'alias' => $alias,
+            'created' => true,
+            'acknowledged' => $response['acknowledged'] ?? false,
+        ];
+    }
+
+    public function deleteIndexAlias(string $index, string $alias): array
+    {
+        // Check if index exists
+        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        // Check if alias exists on this index
+        if (! $this->client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
+            throw new RuntimeException('Alias does not exist on this index');
+        }
+
+        // Delete the alias
+        $response = $this->client->indices()->deleteAlias(['index' => $index, 'name' => $alias])->asArray();
+
+        return [
+            'index' => $index,
+            'alias' => $alias,
+            'deleted' => true,
+            'acknowledged' => $response['acknowledged'] ?? false,
+        ];
+    }
+
     public function cancelAllTasks(): array
     {
         // Get current cancellable tasks before cancelling
