@@ -34,11 +34,11 @@ class StatementsFixPuids extends Command
         $batchSize = (int) $this->option('batch');
 
         collect(['statements', 'statements_beta'])->each(function ($table) use ($batchSize) {
-            DB::table('faulty_ids')
+            DB::connection('mysql::read')
+                ->table('faulty_ids')
                 ->whereNull('updated_db_at')
                 ->whereNull('updated_os_at')
                 ->where('source_table', $table)
-                ->orderBy('created_at')
                 ->chunkById($batchSize, function ($batch, $nr) use ($table) {
                     StatementFixPuidBatch::dispatch($table, $batch->pluck('id')->toArray(), $nr)->onQueue('default');
                     Log::info("Dispatched batch {$nr} for {$table}");
