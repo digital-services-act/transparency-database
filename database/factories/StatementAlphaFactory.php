@@ -61,7 +61,7 @@ class StatementAlphaFactory extends Factory
 
         return [
 
-            'id' => $id,
+            // 'id' => $id,
             'decision_visibility' => $this->faker->randomElements(
                 array_keys(StatementAlpha::DECISION_VISIBILITIES),
                 2,

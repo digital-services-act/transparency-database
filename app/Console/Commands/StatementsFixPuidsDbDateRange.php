@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementFixPuidDbDate;
+use App\Jobs\StatementFixPuidDbIdChunk;
 use App\Models\Platform;
 use Carbon\Carbon;
 use OpenSearch\Client as OpenSearch;
@@ -34,9 +34,6 @@ class StatementsFixPuidsDbDateRange extends Command
         $startDate = $this->parseDateArgument($this->argument('start_date'));
         $endDate = $this->parseDateArgument($this->argument('end_date'));
 
-        // primesc un range de dates
-        // pentru fiecare data din range, dispatch update job
-        // in update job: update $table where created_at between set ...
         $platform = $this->argument('platform') ?? 'Discord Netherlands B.V.';
         $platform = Platform::where('name', $platform)->first();
 
@@ -46,8 +43,18 @@ class StatementsFixPuidsDbDateRange extends Command
         }
 
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-            StatementFixPuidDbDate::dispatch($platform->id, $date->format('Y-m-d'));
-            $this->info("Dispatched job for {$date->toDateString()}");
+            $start = Carbon::parse($date)->startOfDay();
+            $end   = Carbon::parse($date)->endOfDay();
+
+            $table = $date->lt('2025-07-01 00:00:00') ? 'statements' : 'statements_beta';
+            $query = DB::connection('mysql::read')
+                ->table($table)
+                ->whereBetween('created_at', [$start, $end]);
+            $minId = $query->min('id');
+            $maxId = $query->max('id');
+
+            StatementFixPuidDbIdChunk::dispatch($platform->id, $minId, $maxId, $table);
+            $this->info("Dispatched job for {$date->toDateString()}: {$table} with IDs from {$minId} to {$maxId}");
         }
     }
 

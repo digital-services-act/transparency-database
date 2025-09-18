@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Platform;
+use Carbon\Carbon;
 use OpenSearch\Client as OpenSearch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -70,7 +71,9 @@ class StatementsFetchFaultyIds extends Command
             $rows = array_map(fn ($row) => [
                 'id'         => $row[0],
                 'created_at' => $row[1],
-                'source_table' => $row[1] < '2025-07-01' ? 'statements' : 'statements_beta',
+                'source_table' => Carbon::parse($row[1])->lt('2025-07-01 00:00:00')
+                                    ? 'statements'
+                                    : 'statements_beta',
             ], $response['datarows']);
 
             DB::table('faulty_ids')->insert($rows);
