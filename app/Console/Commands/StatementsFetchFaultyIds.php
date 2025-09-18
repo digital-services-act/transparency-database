@@ -35,7 +35,6 @@ class StatementsFetchFaultyIds extends Command
         }
 
         // get ids from opensearch and store them in our table (faulty_ids)
-        // $searchBefore = '2025-08-15 00:00:00';
         $cursor = null;
         $page = 1;
         $params = ['fetch_size' => $batchSize];
