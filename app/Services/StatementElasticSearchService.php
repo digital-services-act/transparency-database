@@ -857,12 +857,18 @@ class StatementElasticSearchService
 
     public function deleteStatementsForDate(Carbon $date): array
     {
+        // Set to the very end of the day: 23:59:59.999
+        $date->setTime(23, 59, 59, 999999); // 999 milliseconds in microseconds
+        $timestamp = $date->getTimestampMs();
+
         return $this->client->deleteByQuery([
             'index' => $this->index_name,
             'body' => [
                 'query' => [
-                    'match' => [
-                        'received_date' => $date->getTimestampMs(),
+                    'range' => [
+                        'received_date' => [
+                            'lte' => $timestamp,
+                        ],
                     ],
                 ],
             ],
