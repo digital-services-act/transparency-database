@@ -23,7 +23,7 @@ class StatementsFixPuids extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:fix-puids {platform?} {--dry-run} {--batch=500}';
+    protected $signature = 'statements:fix-puids {platform?} {--dry-run} {--batch=1000}';
     protected $description = 'Fix faulty PUIDs for a platform and record affected dates in Redis for later CSV regenration';
 
     /**

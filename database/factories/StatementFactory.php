@@ -60,7 +60,7 @@ class StatementFactory extends Factory
 
         return [
 
-            'id' => $id,
+            // 'id' => $id,
             'decision_visibility' => $this->faker->randomElements(
                 array_keys(Statement::DECISION_VISIBILITIES),
                 2,
