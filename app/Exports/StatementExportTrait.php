@@ -209,7 +209,7 @@ trait StatementExportTrait
      * @param  mixed  $statement
      * @param  mixed  $platforms
      */
-    public function mapRaw($statement, $platforms): array
+    public function mapRawFull($statement, $platforms): array
     {
         return [
             $statement->uuid,

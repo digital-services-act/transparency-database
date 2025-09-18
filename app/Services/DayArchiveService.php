@@ -10,14 +10,50 @@ use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DayArchiveService
 {
     use StatementExportTrait;
 
-    public function __construct(protected PlatformQueryService $platform_query_service) {}
+    // Table to use for fetching statements
+    public $statements_table = 'statements_beta';
 
+    // Database connection to use (defaults to pgsql, can be overridden for testing)
+    public $connection = 'pgsql';
+
+    // Define the versions of CSV exports
+    public $versions = [
+        'full',
+        'light',
+    ];
+
+    // Number of statements to process in each subpart
+    public $chunk = 100000;
+
+    public $platforms = [];
+
+    public function __construct(protected PlatformQueryService $platform_query_service)
+    {
+        $this->platforms = $platform_query_service->getPlatformsById();
+    }
+
+    /**
+     * Build the basic exports array structure.
+     *
+     * this will include the 'global' export as well as one for each platform
+     *
+     * the structure is:
+     * [
+     *   ['id' => null, 'slug' => 'global'],
+     *   ['id' => 1, 'slug' => 'platform-name'],
+     *   ...
+     * ]
+     *
+     * @return array<array|array{id: null, slug: string}>
+     */
     public function buildBasicExportsArray(): array
     {
         $exports = [];
@@ -235,5 +271,77 @@ class DayArchiveService
         $selects[] = 'platform_id';
 
         return implode(', ', $selects);
+    }
+
+    public function prepareHeadingsArray(): array
+    {
+        $headings = [];
+        $headings['full'] = $this->headings();
+        $headings['light'] = $this->headingsLight();
+
+        return $headings;
+    }
+
+    /**
+     * Map the statement to rows for each version.
+     *
+     * @param  mixed  $statement  The raw statement object from database query.
+     * @return array<string, array<int, string|null>> An associative array where keys are version names
+     *                                                ('full', 'light', etc.) and values are arrays representing the mapped rows for each version.
+     */
+    public function mapRows(mixed $statement): array
+    {
+        $rows = [];
+
+        foreach ($this->versions as $version) {
+            $function = 'mapRaw'.Str::ucfirst($version);
+            $row = $this->$function($statement, $this->platforms);
+            $rows[$version] = $row;
+        }
+
+        return $rows;
+    }
+
+    public function csvstr(array $fields): string
+    {
+        $f = fopen('php://memory', 'wb+');
+        fputcsv($f, $fields);
+
+        rewind($f);
+        $csv_line = stream_get_contents($f);
+
+        return rtrim($csv_line);
+    }
+
+    /**
+     * Build CSV lines for each version from the given statement.
+     *
+     * @param  mixed  $statement  The raw statement object from database query to convert to CSV lines.
+     * @return array<string, string> An associative array where keys are version names ('full', 'light', etc.)
+     *                               and values are the corresponding CSV lines as strings.
+     */
+    public function buildCsvLines(mixed $statement): array
+    {
+        $csvs = [];
+        $rows = $this->mapRows($statement);
+        foreach ($this->versions as $version) {
+            $csvs[$version] = $this->csvstr($rows[$version]);
+        }
+
+        return $csvs;
+    }
+
+    public function getRawStatements(int $start, int $end): Collection
+    {
+        $select_raw = $this->getSelectRawString();
+        $statements = DB::connection($this->connection)
+            ->table($this->statements_table)
+            ->selectRaw($select_raw)
+            ->where('id', '>=', $start)
+            ->where('id', '<=', $end)
+            ->orderBy('id')
+            ->get();
+
+        return $statements;
     }
 }

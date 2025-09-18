@@ -9,6 +9,7 @@ use App\Services\DayArchiveService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class DayArchiveServiceTest extends TestCase
@@ -25,6 +26,9 @@ class DayArchiveServiceTest extends TestCase
         parent::setUp();
         $this->day_archive_service = app(DayArchiveService::class);
         $this->assertNotNull($this->day_archive_service);
+
+        // Set the connection to use the testing database (sqlite)
+        $this->day_archive_service->connection = config('database.default');
 
         $this->required_fields = [
             'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED', 'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'],
@@ -319,5 +323,282 @@ class DayArchiveServiceTest extends TestCase
         $result = $this->day_archive_service->getSelectRawString();
         $this->assertNotNull($result);
         $this->assertIsString($result);
+    }
+
+    /**
+     * @test
+     */
+    public function it_prepares_headings_array_for_both_versions(): void
+    {
+        $result = $this->day_archive_service->prepareHeadingsArray();
+
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
+
+        // Should contain both 'full' and 'light' versions
+        $this->assertArrayHasKey('full', $result);
+        $this->assertArrayHasKey('light', $result);
+
+        // Both should be arrays of headings
+        $this->assertIsArray($result['full']);
+        $this->assertIsArray($result['light']);
+
+        // Full version should have more headings than light version
+        $this->assertGreaterThan(count($result['light']), count($result['full']));
+
+        // Should contain some expected headings
+        $this->assertContains('uuid', $result['full']);
+        $this->assertContains('uuid', $result['light']);
+        $this->assertContains('decision_ground', $result['full']);
+        $this->assertContains('platform_name', $result['full']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_converts_array_to_csv_string(): void
+    {
+        $fields = ['field1', 'field2', 'field with spaces', 'field,with,commas'];
+
+        $result = $this->day_archive_service->csvstr($fields);
+
+        $this->assertNotNull($result);
+        $this->assertIsString($result);
+
+        // Should contain all fields
+        $this->assertStringContainsString('field1', $result);
+        $this->assertStringContainsString('field2', $result);
+        $this->assertStringContainsString('field with spaces', $result);
+
+        // Should properly escape fields with commas
+        $this->assertStringContainsString('"field,with,commas"', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function it_converts_array_with_special_characters_to_csv_string(): void
+    {
+        $fields = ['normal', 'with"quote', "with\nnewline", 'with,comma'];
+
+        $result = $this->day_archive_service->csvstr($fields);
+
+        $this->assertNotNull($result);
+        $this->assertIsString($result);
+
+        // Should handle quotes and newlines properly
+        $this->assertStringContainsString('normal', $result);
+        $this->assertStringContainsString('"with""quote"', $result); // CSV escapes quotes by doubling them
+    }
+
+    /**
+     * @test
+     */
+    public function it_maps_statement_to_rows_for_all_versions(): void
+    {
+        $admin = $this->signInAsAdmin();
+
+        // Create a real statement in the database
+        $statement = Statement::create(array_merge($this->required_fields, [
+            'user_id' => $admin->id,
+            'platform_id' => 1, // Use platform ID that definitely exists
+            'created_at' => '2030-01-01 12:00:00',
+        ]));
+
+        // Use the service's getRawStatements method to get the raw SQL result
+        $rawStatements = $this->day_archive_service->getRawStatements($statement->id, $statement->id);
+        $this->assertNotEmpty($rawStatements);
+
+        $rawStatement = $rawStatements->first();
+
+        $result = $this->day_archive_service->mapRows($rawStatement);
+
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
+
+        // Should contain both 'full' and 'light' versions
+        $this->assertArrayHasKey('full', $result);
+        $this->assertArrayHasKey('light', $result);
+
+        // Both should be arrays of mapped data
+        $this->assertIsArray($result['full']);
+        $this->assertIsArray($result['light']);
+
+        // Full version should have more fields than light version
+        $this->assertGreaterThan(count($result['light']), count($result['full']));
+
+        // Both should contain some basic fields
+        $this->assertNotEmpty($result['full']);
+        $this->assertNotEmpty($result['light']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_builds_csv_lines_for_statement(): void
+    {
+        $admin = $this->signInAsAdmin();
+
+        // Create a real statement in the database
+        $statement = Statement::create(array_merge($this->required_fields, [
+            'user_id' => $admin->id,
+            'platform_id' => 1, // Use platform ID that definitely exists
+            'created_at' => '2030-01-01 12:00:00',
+        ]));
+
+        // Use the service's getRawStatements method to get the raw SQL result
+        $rawStatements = $this->day_archive_service->getRawStatements($statement->id, $statement->id);
+        $this->assertNotEmpty($rawStatements);
+
+        $rawStatement = $rawStatements->first();
+
+        $result = $this->day_archive_service->buildCsvLines($rawStatement);
+
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
+
+        // Should contain both 'full' and 'light' versions
+        $this->assertArrayHasKey('full', $result);
+        $this->assertArrayHasKey('light', $result);
+
+        // Both should be CSV strings
+        $this->assertIsString($result['full']);
+        $this->assertIsString($result['light']);
+
+        // Should contain some of the statement data
+        $this->assertStringContainsString('TK421', $result['full']); // puid from required_fields
+        $this->assertStringContainsString('TK421', $result['light']); // puid should be in both versions
+
+        // Full version should be longer than light version
+        $this->assertGreaterThan(strlen($result['light']), strlen($result['full']));
+    }
+
+    /**
+     * @test
+     */
+    public function it_builds_csv_lines_with_special_characters(): void
+    {
+        $admin = $this->signInAsAdmin();
+
+        // Create a real statement in the database with special characters
+        $statement = Statement::create(array_merge($this->required_fields, [
+            'user_id' => $admin->id,
+            'platform_id' => 1, // Use platform ID that definitely exists
+            'created_at' => '2030-01-01 12:00:00',
+            'puid' => 'Special,Puid"With\'Quotes',
+            'decision_facts' => "Facts with\nnewlines and \"quotes\"",
+        ]));
+
+        // Use the service's getRawStatements method to get the raw SQL result
+        $rawStatements = $this->day_archive_service->getRawStatements($statement->id, $statement->id);
+        $this->assertNotEmpty($rawStatements);
+
+        $rawStatement = $rawStatements->first();
+
+        $result = $this->day_archive_service->buildCsvLines($rawStatement);
+
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
+
+        // Should properly escape special characters in CSV
+        $this->assertIsString($result['full']);
+        $this->assertIsString($result['light']);
+
+        // Should contain escaped special characters
+        $this->assertStringContainsString('Special,Puid', $result['full']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_gets_raw_statements_with_proper_format(): void
+    {
+        $admin = $this->signInAsAdmin();
+
+        // Create multiple statements
+        $statement1 = Statement::create(array_merge($this->required_fields, [
+            'user_id' => $admin->id,
+            'platform_id' => 1,
+            'created_at' => '2030-01-01 12:00:00',
+            'puid' => 'FIRST_STATEMENT',
+        ]));
+
+        $statement2 = Statement::create(array_merge($this->required_fields, [
+            'user_id' => $admin->id,
+            'platform_id' => 1,
+            'created_at' => '2030-01-01 12:00:01',
+            'puid' => 'SECOND_STATEMENT',
+        ]));
+
+        // Get raw statements using the service method
+        $rawStatements = $this->day_archive_service->getRawStatements($statement1->id, $statement2->id);
+
+        $this->assertNotNull($rawStatements);
+        $this->assertInstanceOf(Collection::class, $rawStatements);
+        $this->assertCount(2, $rawStatements);
+
+        // Check that the statements are stdClass objects (raw SQL results)
+        $firstRaw = $rawStatements->first();
+        $this->assertInstanceOf(\stdClass::class, $firstRaw);
+
+        // Should have expected properties from the raw select
+        $this->assertObjectHasProperty('id', $firstRaw);
+        $this->assertObjectHasProperty('uuid', $firstRaw);
+        $this->assertObjectHasProperty('puid', $firstRaw);
+        $this->assertObjectHasProperty('platform_id', $firstRaw);
+        $this->assertObjectHasProperty('created_at', $firstRaw);
+
+        // Should be ordered by ID
+        $this->assertEquals('FIRST_STATEMENT', $firstRaw->puid);
+        $this->assertEquals('SECOND_STATEMENT', $rawStatements->last()->puid);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_empty_array_in_csvstr(): void
+    {
+        $result = $this->day_archive_service->csvstr([]);
+
+        $this->assertNotNull($result);
+        $this->assertIsString($result);
+        $this->assertEquals('', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_single_field_in_csvstr(): void
+    {
+        $result = $this->day_archive_service->csvstr(['single_field']);
+
+        $this->assertNotNull($result);
+        $this->assertIsString($result);
+        $this->assertEquals('single_field', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_csvstr_with_problematic_data(): void
+    {
+        // Try with data that has special CSV characters but are still strings
+        $problematicFields = [
+            'field,with,commas',
+            'field"with"quotes',
+            "field\nwith\nnewlines",
+            "field\twith\ttabs",
+            "\x00\x01\x02\x03", // binary data as string
+            'normal_field',
+        ];
+
+        $result = $this->day_archive_service->csvstr($problematicFields);
+
+        // The method should handle this gracefully and return a string
+        $this->assertIsString($result);
+
+        // Should contain escaped versions of the problematic data
+        $this->assertStringContainsString('"field,with,commas"', $result);
+        $this->assertStringContainsString('normal_field', $result);
     }
 }

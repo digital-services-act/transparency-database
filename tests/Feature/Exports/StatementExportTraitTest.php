@@ -70,7 +70,7 @@ class StatementExportTraitTest extends TestCase
 
         $platforms = $this->platformQueryService->getPlatformsById();
 
-        $mapped = $this->mapRaw($statement, $platforms);
+        $mapped = $this->mapRawFull($statement, $platforms);
 
         $this->assertIsArray($mapped);
         $this->assertTrue(in_array($statement->uuid, $mapped));
