@@ -593,9 +593,9 @@ class StatementElasticSearchService
         }
 
         if (config('app.env', '') !== 'testing') {
-            // @codeCoverageIgnoreStart
+
             return $filter_value;
-            // @codeCoverageIgnoreEnd
+
         }
 
         return implode(' OR ', $ors);
@@ -746,9 +746,6 @@ class StatementElasticSearchService
         return implode(' OR ', $ors);
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
     private function applyContentLanguageFilter(array $filter_values): string
     {
         $ors = [];
@@ -837,9 +834,6 @@ class StatementElasticSearchService
         throw new RuntimeException('Elasticsearch index error');
     }
 
-    /**
-     * @codeCoverageIgnore This is calling elasticsearch directly
-     */
     public function bulkIndexStatements(Collection $statements): void
     {
         if ($statements->count() !== 0) {
@@ -876,9 +870,6 @@ class StatementElasticSearchService
         ])->asArray();
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
     public function allSendingPlatformIds(): array
     {
         return Cache::remember('all_sending_platform_ids', self::ONE_HOUR, function () {
