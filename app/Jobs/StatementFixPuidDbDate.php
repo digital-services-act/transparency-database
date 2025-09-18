@@ -54,15 +54,27 @@ class StatementFixPuidDbDate implements ShouldQueue
 
         $table = $start->lt('2025-07-01 00:00:00') ? 'statements' : 'statements_beta';
 
-        $query = <<<SQL
-            UPDATE {$table}
-            SET puid = SUBSTRING_INDEX(puid, '-', 1)
-            WHERE created_at BETWEEN '{$start}' AND '{$end}'
-                AND platform_id = {$platform->id}
-        SQL;
+        $ids = DB::connection('mysql::read')
+            ->table($table)
+            ->select(DB::raw("min(id) as min_id, max(id) as max_id"))
+            ->whereBetween('created_at', [$start, $end])
+            ->get()
+            ->first();
+
+        if (empty($ids) || $ids->min_id === null || $ids->max_id === null) {
+            Log::info("No statements found for platform {$platform->name} on {$this->date}");
+            return;
+        }
 
         try {
-            DB::connection('mysql::read')->unprepared($query);
+            DB::connection('mysql::read')
+                ->table($table)
+                ->whereBetween('id', [$ids->min_id, $ids->max_id])
+                ->where('platform_id', $platform->id)
+                ->update([
+                    'puid' => DB::raw("SUBSTRING_INDEX(puid, '-', 1)")
+                ]);
+
             Log::info("StatementFixPuidDbDate for {$this->date} ended " . Carbon::now()->diffForHumans($startBatch));
         } catch (\Exception $e) {
             Log::error("Error in StatementFixPuidDbDate for {$this->date}: " . $e->getMessage());
