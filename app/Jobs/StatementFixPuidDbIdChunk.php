@@ -54,7 +54,6 @@ class StatementFixPuidDbIdChunk implements ShouldQueue
         $range = range($this->min, $end);
 
         try {
-            // StatementSearchableChunk::dispatch
             DB::connection('mysql::read')
                 ->table($this->table)
                 ->whereIn('id', $range)

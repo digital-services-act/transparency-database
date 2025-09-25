@@ -35,17 +35,19 @@ class StatementsFetchFaultyIds extends Command
             return;
         }
 
-        // get ids from opensearch and store them in our table (faulty_ids)
+        // I get ids from opensearch and store them in our table (faulty_ids)
         $cursor = null;
         $page = 1;
         $params = ['fetch_size' => $batchSize];
 
+        // I get the records from OS starting with 2025-01-02
+        // because from then onward, the record counts are the same DB vs OS
         $query = <<<SQL
             SELECT
                 %s
             FROM statement_index
             WHERE platform_id = $platform->id
-              AND created_at < '2025-08-15 00:00:00'
+              AND created_at between '2025-01-02 00:00:00' and '2025-08-15 00:00:00'
             ORDER BY created_at ASC
         SQL;
 
