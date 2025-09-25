@@ -47,11 +47,19 @@ class StatementsFixPuidsDbDateRange extends Command
             $end   = Carbon::parse($date)->endOfDay();
 
             $table = $date->lt('2025-07-01 00:00:00') ? 'statements' : 'statements_beta';
-            $query = DB::connection('mysql::read')
-                ->table($table)
-                ->whereBetween('created_at', [$start, $end]);
-            $minId = $query->min('id');
-            $maxId = $query->max('id');
+            $getConnection = fn () => DB::connection('mysql::read')->table($table);
+
+            $minId = $getConnection()
+                ->whereBetween('created_at', [$start, $start->copy()->addMinutes(1)])
+                ->min('id');
+            $maxId = $getConnection()
+                ->whereBetween('created_at', [$end->copy()->subMinutes(1), $end])
+                ->max('id');
+
+            if (!$minId || !$maxId) {
+                $this->warn("No records found for {$date->toDateString()}");
+                continue;
+            }
 
             StatementFixPuidDbIdChunk::dispatch($platform->id, $minId, $maxId, $table);
             $this->info("Dispatched job for {$date->toDateString()}: {$table} with IDs from {$minId} to {$maxId}");
