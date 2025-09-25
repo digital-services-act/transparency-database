@@ -6,6 +6,9 @@ use App\Jobs\OpenSearchDeleteBatch;
 use Illuminate\Console\Command;
 use OpenSearch\Client;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OpenSearchDeleteDateRange extends Command
 {
     /**
