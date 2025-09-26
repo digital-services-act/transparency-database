@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('faulty_ids', function (Blueprint $table) {
             $table->bigInteger('id')->primary();
             $table->enum('source_table', ['statements', 'statements_beta'])->default('statements_beta')->nullable();
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->index();
             $table->timestamp('updated_os_at')->nullable();
             $table->timestamp('updated_db_at')->nullable();
         });
