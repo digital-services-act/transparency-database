@@ -47,13 +47,13 @@ class OpenSearchDeleteDateRange extends Command
         $batchSize = (int) $this->option('batch');
 
         // Check if write blocks
-        $settings = $this->opensearch->indices()->getSettings(['index' => $index]);
-        $blocks = $settings[$index]['settings']['index'] ?? [];
+        // $settings = $this->opensearch->indices()->getSettings(['index' => $index]);
+        // $blocks = $settings[$index]['settings']['index'] ?? [];
 
-        if (($blocks['blocks']['read_only_allow_delete'] ?? 'false') === 'true') {
-            $this->warn("⚠️ Index {$index} is read-only. Removing block...");
-            $this->unblockIndex($index);
-        }
+        // if (($blocks['blocks']['read_only_allow_delete'] ?? 'false') === 'true') {
+        //     $this->warn("⚠️ Index {$index} is read-only. Removing block...");
+        //     $this->unblockIndex($index);
+        // }
 
         $must = [];
         $must[] = [
