@@ -193,8 +193,7 @@ trait StatementExportTrait
             $statement->getRawOriginal('created_at'),
         ];
 
-        foreach ($out as $key => $value)
-        {
+        foreach ($out as $key => $value) {
             $value = trim($value);
             $value = preg_replace('~[\r\n]+~', ' ', $value);
             $value = str_replace("\\\"", '"', $value);
@@ -202,7 +201,6 @@ trait StatementExportTrait
         }
 
         return $out;
-
     }
 
     /**
@@ -211,7 +209,7 @@ trait StatementExportTrait
      * @param mixed $platforms
      * @return array
      */
-    public function mapRaw($statement, $platforms): array
+    public function mapRaw($statement, $platforms, $table = 'statements_beta'): array
     {
         return [
             $statement->uuid,
@@ -250,7 +248,8 @@ trait StatementExportTrait
             $statement->content_type_other,
             $statement->content_language,
             $statement->content_date,
-            $statement->content_id_ean,
+            // $statement->content_id_ean,
+            ...($table === 'statements_beta' ? [$statement->content_id_ean] : []),
 
             $statement->territorial_scope,
 
@@ -277,7 +276,7 @@ trait StatementExportTrait
      * @param mixed $platforms
      * @return array
      */
-    public function mapRawLight($statement, $platforms): array
+    public function mapRawLight($statement, $platforms, $table = 'statements_beta'): array
     {
         return [
             $statement->uuid,
@@ -316,7 +315,8 @@ trait StatementExportTrait
             $statement->content_type_other,
             $statement->content_language,
             $statement->content_date,
-            $statement->content_id_ean,
+            // $statement->content_id_ean,
+            ...($table === 'statements_beta' ? [$statement->content_id_ean] : []),
 
             //$statement->territorial_scope,
 

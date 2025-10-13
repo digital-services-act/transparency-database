@@ -6,6 +6,7 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DayArchiveService;
 use App\Services\PlatformQueryService;
+use Carbon\Carbon;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,10 +14,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * 
+ *
  * @codeCoverageIgnore
  */
 class StatementCsvExportZ implements ShouldQueue
@@ -27,11 +29,7 @@ class StatementCsvExportZ implements ShouldQueue
     use SerializesModels;
     use Batchable;
 
-    public $statements_table = 'statements_beta';
-
-    public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false)
-    {
-    }
+    public function __construct(public string $date, public string $part, public int $start_id, public int $end_id, public bool $headers = false) {}
 
     private function csvstr(array $fields): string
     {
@@ -47,18 +45,28 @@ class StatementCsvExportZ implements ShouldQueue
 
     public function handle(DayArchiveService $day_archive_service, PlatformQueryService $platform_query_service): void
     {
+        $table = Carbon::parse($this->date)->lt('2025-07-01') ? 'statements' : 'statements_beta';
+
         $platforms = $platform_query_service->getPlatformsById();
 
         $exports = $day_archive_service->buildBasicExportsArray();
         $versions = ['full', 'light'];
-        $select_raw = $day_archive_service->getSelectRawString();
+        $select_raw = $day_archive_service->getSelectRawString($table);
         $chunk = 100000;
 
         $current_start = $this->start_id;
 
         $headings = [];
-        $headings['full'] = $this->csvstr($day_archive_service->headings());
-        $headings['light'] = $this->csvstr($day_archive_service->headingsLight());
+        $headings['full'] = $day_archive_service->headings($table);
+        $headings['light'] = $day_archive_service->headingsLight($table);
+
+        if ($table === 'statements') {
+            unset($headings['full'][array_search('content_id_ean', $headings['full'])]);
+            unset($headings['light'][array_search('content_id_ean', $headings['light'])]);
+        }
+
+        $headings['full'] = $this->csvstr($headings['full']);
+        $headings['light'] = $this->csvstr($headings['light']);
 
         foreach (array_keys($exports) as $index) {
             $exports[$index]['subparts']['full'] = [];
@@ -76,19 +84,17 @@ class StatementCsvExportZ implements ShouldQueue
 
             $current_end = min(($current_start + $chunk), $this->end_id);
             $statements = DB::connection('mysql::read')
-                ->table($this->statements_table)
+                ->table($table)
                 ->selectRaw($select_raw)
                 ->where('id', '>=', $current_start)
                 ->where('id', '<=', $current_end)
                 ->orderBy('id')
                 ->get();
 
-
-
             foreach ($statements as $statement) {
                 // Write to the global no matter what.
-                $row = $day_archive_service->mapRaw($statement, $platforms);
-                $row_light = $day_archive_service->mapRawLight($statement, $platforms);
+                $row = $day_archive_service->mapRaw($statement, $platforms, $table);
+                $row_light = $day_archive_service->mapRawLight($statement, $platforms, $table);
 
                 $csv = $this->csvstr($row);
                 $csv_light = $this->csvstr($row_light);
