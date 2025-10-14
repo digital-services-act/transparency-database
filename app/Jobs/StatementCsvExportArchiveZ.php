@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -82,6 +83,9 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
         if ($existing && $this->keepOldCount) {
             $total = $existing->total;
+            Log::info(
+                "Found existing day_archive for {$date}, platform {$this->platform_slug}. Keeping count {$existing->total}."
+            );
         } else {
             $total = $this->platform_slug === 'global' ? $statement_search_service->totalForDate($date) : $statement_search_service->totalForPlatformDate($platform, $date);
             $existing?->delete();
