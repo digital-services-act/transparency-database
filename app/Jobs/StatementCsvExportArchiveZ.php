@@ -13,11 +13,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 /**
- * 
+ *
  * @codeCoverageIgnore
  */
 class StatementCsvExportArchiveZ implements ShouldQueue
@@ -27,9 +28,10 @@ class StatementCsvExportArchiveZ implements ShouldQueue
     use Queueable;
     use SerializesModels;
     use Batchable;
-    public function __construct(public string $date, public string $platform_slug, public mixed $platform_id = null)
-    {
-    }
+
+    protected $keepOldCount = false;
+
+    public function __construct(public string $date, public string $platform_slug, public mixed $platform_id = null) {}
 
     private function innerZipSize($zip_file): int
     {
@@ -76,22 +78,36 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         $zipfilesha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-full.zip.sha1';
         $zipfilelightsha1 = $path . 'sor-' . $this->platform_slug . '-' . $this->date . '-light.zip.sha1';
 
-        $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
-        $existing?->delete();
 
-        DayArchive::create([
-            'date'         => $this->date,
-            'total'        => $this->platform_slug === 'global' ? $statement_search_service->totalForDate($date) : $statement_search_service->totalForPlatformDate($platform, $date),
-            'platform_id'  => $this->platform_id,
-            'url'          => $base_s3_url . basename($zipfile),
-            'urllight'     => $base_s3_url . basename($zipfilelight),
-            'sha1url'      => $base_s3_url . basename($zipfilesha1),
-            'sha1urllight' => $base_s3_url . basename($zipfilelightsha1),
-            'completed_at' => Carbon::now(),
-            'size' => $size,
-            'sizelight' => $sizelight,
-            'zipsize' => filesize($zipfile),
-            'ziplightsize' => filesize($zipfilelight),
-        ]);
+        $total = 0;
+        $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
+        if ($existing && $this->keepOldCount) {
+            $total = $existing->total;
+            Log::info(
+                "Found existing day_archive for {$date}, platform {$this->platform_slug}. Keeping count {$existing->total}."
+            );
+        } else {
+            $total = $this->platform_slug === 'global' ? $statement_search_service->totalForDate($date) : $statement_search_service->totalForPlatformDate($platform, $date);
+            $existing?->delete();
+        }
+
+        DayArchive::updateOrInsert(
+            [
+                'date' => $this->date,
+                'platform_id'  => $this->platform_id,
+            ],
+            [
+                'total'        => $total,
+                'url'          => $base_s3_url . basename($zipfile),
+                'urllight'     => $base_s3_url . basename($zipfilelight),
+                'sha1url'      => $base_s3_url . basename($zipfilesha1),
+                'sha1urllight' => $base_s3_url . basename($zipfilelightsha1),
+                'completed_at' => Carbon::now(),
+                'size' => $size,
+                'sizelight' => $sizelight,
+                'zipsize' => filesize($zipfile),
+                'ziplightsize' => filesize($zipfilelight),
+            ]
+        );
     }
 }
