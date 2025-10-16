@@ -6,6 +6,7 @@ use App\Exports\StatementExportTrait;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Models\StatementAlpha;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -15,9 +16,7 @@ class DayArchiveService
 {
     use StatementExportTrait;
 
-    public function __construct(protected StatementSearchService $statement_search_service, protected PlatformQueryService $platform_query_service)
-    {
-    }
+    public function __construct(protected StatementSearchService $statement_search_service, protected PlatformQueryService $platform_query_service) {}
 
     public function buildBasicExportsArray(): array
     {
@@ -52,9 +51,10 @@ class DayArchiveService
             // For each iteration, add seconds to the starting point
             $currentSecond = $startOfMinute->copy()->addSeconds($i);
 
+            $query = $date->lt('2025-07-01 00:00:00') ? StatementAlpha::query() : Statement::query();
+
             // Query the database for the minimum ID created exactly at this second
-            $first = Statement::query()
-                ->selectRaw('min(id) as min')
+            $first = $query->selectRaw('min(id) as min')
                 ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
                 ->first();
 
@@ -80,9 +80,10 @@ class DayArchiveService
             // Subtract seconds to move backwards
             $currentSecond = $endOfDay->copy()->subSeconds($i);
 
+            $query = $date->lt('2025-07-01 00:00:00') ? StatementAlpha::query() : Statement::query();
+
             // Query the database for the maximum ID created exactly at this second
-            $last = Statement::query()
-                ->selectRaw('max(id) as max')
+            $last = $query->selectRaw('max(id) as max')
                 ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
                 ->first();
 
@@ -130,7 +131,7 @@ class DayArchiveService
         return "REPLACE(REPLACE({$fieldName}, '\n', ' '), '\\\\\"', '\"') AS {$fieldName}";
     }
 
-    public function getSelectRawString(): string
+    public function getSelectRawString(string $table = 'statements_beta'): string
     {
         $selects = [];
         $selects[] = "id";
@@ -168,7 +169,9 @@ class DayArchiveService
         $selects[] = $this->cleanTextField("content_type_other");
         $selects[] = "content_language";
         $selects[] = "content_date";
-        $selects[] = "content_id_ean";
+        if ($table === 'statements_beta') {
+            $selects[] = "content_id_ean";
+        }
 
         $selects[] = "territorial_scope";
         $selects[] = "application_date";
