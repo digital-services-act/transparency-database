@@ -29,7 +29,7 @@ class StatementsDayArchiveZ extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:day-archive-z {date=yesterday}';
+    protected $signature = 'statements:day-archive-z {date=yesterday} {--table=statements_beta}';
 
     /**
      * The console command description.
@@ -45,13 +45,18 @@ class StatementsDayArchiveZ extends Command
      */
     public function handle(DayArchiveService $day_archive_service, StatementSearchService $statementSearchService): void
     {
-        if ( ! config('filesystems.disks.s3ds.bucket')) {
+        if (! config('filesystems.disks.s3ds.bucket')) {
             Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
 
             return;
         }
 
 
+        $table = $this->option('table');
+        if (! in_array($table, ['statements', 'statements_beta'], true)) {
+            Log::error('Unrecognized table name.');
+            return;
+        }
 
         $date        = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
