@@ -11,6 +11,10 @@ use OpenSearch\Client;
  */
 class OpenSearchDeleteDateRange extends Command
 {
+    use CommandTrait;
+
+    protected $index = 'statement_index';
+
     /**
      * The name and signature of the console command.
      *
@@ -18,9 +22,9 @@ class OpenSearchDeleteDateRange extends Command
      */
     protected $signature = 'opensearch:delete-date-range
         {start : Start date (Y-m-d)}
-        {end : End date (Y-m-d)}
+        {end? : End date (Y-m-d)}
         {--platform_id= : Platform ID (optional)}
-        {--batch=2500 : Batch size per delete}
+        {--batch=3000 : Batch size per delete}
         {--index=statement_index : OpenSearch index name}';
 
     /**
@@ -40,27 +44,29 @@ class OpenSearchDeleteDateRange extends Command
      */
     public function handle()
     {
-        $index = $this->option('index');
         $start = $this->argument('start');
         $end = $this->argument('end');
         $platformId = $this->option('platform_id');
         $batchSize = (int) $this->option('batch');
 
-        // Check if write blocks
-        // $settings = $this->opensearch->indices()->getSettings(['index' => $index]);
-        // $blocks = $settings[$index]['settings']['index'] ?? [];
+        $start = $this->sanitizeDateArgument('start');
 
-        // if (($blocks['blocks']['read_only_allow_delete'] ?? 'false') === 'true') {
-        //     $this->warn("⚠️ Index {$index} is read-only. Removing block...");
-        //     $this->unblockIndex($index);
-        // }
+        if (!$end) {
+            $end = $start;
+        } else {
+            $end = $this->sanitizeDateArgument('end');
+        }
+
+        if (env('APP_ENV_REAL') === 'dev') {
+            $this->unblockIndex();
+        }
 
         $must = [];
         $must[] = [
             'range' => [
                 'created_at' => [
-                    'gte' => "{$start}T00:00:00",
-                    'lte' => "{$end}T23:59:59"
+                    'gte' => $start->startOfDay()->getTimestampMs(),
+                    'lte' => $end->endOfDay()->getTimestampMs(),
                 ],
             ],
         ];
@@ -69,28 +75,33 @@ class OpenSearchDeleteDateRange extends Command
         }
 
         $query = ['bool' => ['must' => $must ?: [['match_all' => (object)[]]]]];
-        $count = $this->opensearch->count(['index' => $index, 'body' => ['query' => $query]])['count'];
+        $count = $this->opensearch->count(['index' => $this->index, 'body' => ['query' => $query]])['count'];
 
         if (!$count) {
             $this->warn("No documents match.");
             return;
         }
 
-        $this->info("🔍 Found {$count} documents in {$index} to delete.");
+        $this->info("🔍 Found {$count} documents in {$this->index} to delete.");
 
         $batches = ceil($count / $batchSize);
 
         for ($i = 1; $i <= $batches; $i++) {
-            OpenSearchDeleteBatch::dispatch($index, $query, $batchSize)->delay(now()->addSeconds($i * 5));
+            OpenSearchDeleteBatch::dispatch($this->index, $query, $batchSize)->delay(now()->addSeconds($i * 5));
             $this->line("📤 Dispatched batch {$i}/{$batches}");
         }
     }
 
-    protected function unblockIndex(string $index)
+    protected function unblockIndex(): void
     {
-        if (env('APP_ENV_REAL') !== 'production') {
+        // Check if write blocks
+        $settings = $this->opensearch->indices()->getSettings(['index' => $this->index]);
+        $blocks = $settings[$this->index]['settings']['index'] ?? [];
+
+        if (($blocks['blocks']['read_only_allow_delete'] ?? 'false') === 'true') {
+            $this->warn("⚠️ Index {$this->index} is read-only. Removing block...");
             $this->opensearch->indices()->putSettings([
-                'index' => $index,
+                'index' => $this->index,
                 'body'  => [
                     'settings' => [
                         'index.blocks.read_only_allow_delete' => false

@@ -8,9 +8,9 @@ use RuntimeException;
 
 trait CommandTrait
 {
-    public function sanitizeDateArgument(): Carbon
+    public function sanitizeDateArgument(string $name = ''): Carbon
     {
-        $date = $this->argument('date');
+        $date = $this->argument($name ?: 'date');
 
         if ($date === 'yesterday') {
             $date = Carbon::yesterday();
