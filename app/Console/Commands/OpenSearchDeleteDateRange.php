@@ -15,6 +15,8 @@ class OpenSearchDeleteDateRange extends Command
 
     protected $index = 'statement_index';
 
+    public const CONCURRENT_DELETES = 4;
+
     /**
      * The name and signature of the console command.
      *
@@ -24,8 +26,7 @@ class OpenSearchDeleteDateRange extends Command
         {start : Start date (Y-m-d)}
         {end? : End date (Y-m-d)}
         {--platform_id= : Platform ID (optional)}
-        {--batch=3000 : Batch size per delete}
-        {--index=statement_index : OpenSearch index name}';
+        {--batch=5000 : Batch size per delete}';
 
     /**
      * The console command description.
@@ -47,7 +48,6 @@ class OpenSearchDeleteDateRange extends Command
         $start = $this->argument('start');
         $end = $this->argument('end');
         $platformId = $this->option('platform_id');
-        $batchSize = (int) $this->option('batch');
 
         $start = $this->sanitizeDateArgument('start');
 
@@ -55,10 +55,6 @@ class OpenSearchDeleteDateRange extends Command
             $end = $start;
         } else {
             $end = $this->sanitizeDateArgument('end');
-        }
-
-        if (env('APP_ENV_REAL') === 'dev') {
-            $this->unblockIndex();
         }
 
         $must = [];
@@ -84,11 +80,28 @@ class OpenSearchDeleteDateRange extends Command
 
         $this->info("🔍 Found {$count} documents in {$this->index} to delete.");
 
-        $batches = ceil($count / $batchSize);
+        // We'll run multiple delete threads in parallel as it speeds things up on the OS
+        $parts = self::CONCURRENT_DELETES;
+        $partSize = (int) ceil($count / $parts);
 
-        for ($i = 1; $i <= $batches; $i++) {
-            OpenSearchDeleteBatch::dispatch($this->index, $query, $batchSize)->delay(now()->addSeconds($i * 5));
-            $this->line("📤 Dispatched batch {$i}/{$batches}");
+        for ($i = 1; $i <= $parts; $i++) {
+            try {
+                $this->opensearch->deleteByQuery([
+                    'index'     => $this->index,
+                    'conflicts' => 'proceed',
+                    'body'      => ['query' => $query],
+                    'size'      => $partSize,
+                    'refresh' => true,
+                    'wait_for_completion' => false,
+                ]);
+                $this->line("📤 Running delete batch {$i}/{$parts} (size={$partSize})");
+            } catch (\Throwable $e) {
+                logger()->error('OpenSearch deleteByQuery failed', [
+                    'batch' => $i,
+                    'error' => $e->getMessage(),
+                ]);
+                $this->error("Batch {$i} failed: {$e->getMessage()}");
+            }
         }
     }
 
