@@ -1,3 +1,9 @@
+#### [Announcement - DB] Update to the submissions by Facebook and Instagram
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/11/2025</p>
+
+On 27 October 2025, Meta identified and fixed an issue affecting the submissions to the DSA Transparency Database from Facebook and Instagram from Trusted Flaggers. Prior to this date, statements of reasons sourcing from Trusted Flaggers might not have been labelled as such. The issue was fixed on submissions starting from 28/10/2025.
+
 #### [Announcement – DB] Schema update of the DSA Transparency Database completed
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 01/07/2025</p>
