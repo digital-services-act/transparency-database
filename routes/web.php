@@ -25,6 +25,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/test-log', function () {
+    \Log::info('🎉 Test log to stdout is working!');
+    return 'Logged!';
+});
+
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
