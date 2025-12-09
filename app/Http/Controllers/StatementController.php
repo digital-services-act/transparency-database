@@ -224,8 +224,7 @@ class StatementController extends Controller
         $validated = $this->sanitizeData($validated);
 
         try {
-            $this->puidService->addPuidToCache($validated['platform_id'], $validated['puid']);
-            $this->puidService->addPuidToDatabase($validated['platform_id'], $validated['puid']);
+            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
         } catch (PuidNotUniqueSingleException $e) {
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
