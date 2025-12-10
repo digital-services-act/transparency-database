@@ -29,9 +29,7 @@ class OpenSearchAPIController extends Controller
 
     private int $response_size_limit = 5242880;
 
-    public function __construct(private readonly Client $client, private readonly StatementSearchService $statement_search_service)
-    {
-    }
+    public function __construct(private readonly Client $client, private readonly StatementSearchService $statement_search_service) {}
 
     /**
      * @return JsonResponse
@@ -82,10 +80,15 @@ class OpenSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    $response = $this->client->sql()->query([
-                        'query' => $request->toArray()['query'] ?? '',
-                        'fetch_size' => $request->toArray()['fetch_size'] ?? 1000
-                    ]);
+                    $params = [
+                        'query' => $request->get('query', ''),
+                        'fetch_size' => $request->get('fetch_size', 1000),
+                    ];
+
+                    if ($request->has('cursor')) {
+                        $params['cursor'] = $request->get('cursor');
+                    }
+                    $response = $this->client->sql()->query($params);
                     return response()->json($response);
                 } catch (Exception $exception) {
                     return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
@@ -197,7 +200,6 @@ class OpenSearchAPIController extends Controller
             }
 
             fclose($out);
-
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid aggregates csv date attempt: ' . $exception->getMessage()], $this->error_code);
         }
