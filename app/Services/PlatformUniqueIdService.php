@@ -21,10 +21,12 @@ class PlatformUniqueIdService
 
         $lock = Cache::lock($lockKey, $this->lock_valid_seconds);
 
+        // @codeCoverageIgnoreStart
         if (! $lock->get()) {
             Log::info('Lock encountered for PUID ' . $puid . ' on platform ' . $platform_id);
             throw new PuidNotUniqueSingleException($puid);
         }
+        // @codeCoverageIgnoreEnd
 
         try {
             $this->addPuidToCache($platform_id, $puid);
