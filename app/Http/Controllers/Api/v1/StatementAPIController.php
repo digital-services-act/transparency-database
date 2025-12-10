@@ -34,7 +34,7 @@ class StatementAPIController extends Controller
     public function __construct(
         EuropeanCountriesService $european_countries_service,
         protected StatementSearchService $statement_search_service,
-        protected PlatformUniqueIdService $platform_unique_id_service
+        protected PlatformUniqueIdService $puidService
     ) {
         $this->european_countries_service = $european_countries_service;
     }
@@ -59,7 +59,7 @@ class StatementAPIController extends Controller
     {
         $platform_id = $this->getRequestUserPlatformId($request);
 
-        $found = $this->platform_unique_id_service->checkPuidExists($platform_id, $puid);
+        $found = $this->puidService->checkPuidExists($platform_id, $puid);
 
         if ($found || $this->statement_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
             // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
@@ -90,8 +90,7 @@ class StatementAPIController extends Controller
         }
 
         try {
-            $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
-            $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
+            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
         } catch (PuidNotUniqueSingleException $e) {
             return $e->getJsonResponse();
         }

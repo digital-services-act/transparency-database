@@ -6,13 +6,15 @@ use App\Exceptions\PuidNotUniqueSingleException;
 use App\Models\PlatformPuid;
 use App\Services\PlatformUniqueIdService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Cache;
 use Override;
 use Tests\TestCase;
 
 class PlatformUniqueIdServiceTest extends TestCase
 {
 
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     protected PlatformUniqueIdService $platformUniqueIdService;
 
@@ -73,5 +75,37 @@ class PlatformUniqueIdServiceTest extends TestCase
         foreach ($puids as $puid) {
             $this->assertTrue($this->platformUniqueIdService->isPuidInCache($platform_id, $puid));
         }
+    }
+
+    /** @test */
+    public function it_should_store_puid_on_handle(): void
+    {
+        $puid = $this->faker->uuid();
+        $platform_id = 1;
+        $key = $this->platformUniqueIdService->getCacheKey($platform_id, $puid);
+
+        $this->assertFalse(Cache::has($key));
+        $this->platformUniqueIdService->handlePuid($puid, $platform_id);
+        $this->assertTrue(Cache::has($key));
+
+        $this->assertDatabaseHas(PlatformPuid::class, [
+            'platform_id' => $platform_id,
+            'puid' => $puid
+        ]);
+    }
+
+    /** @test */
+    public function it_should_throw_unique_exception_on_duplicate_puid_on_handle()
+    {
+        $puid = $this->faker->uuid();
+        $platform_id = 1;
+        $key = $this->platformUniqueIdService->getCacheKey($platform_id, $puid);
+
+        $this->assertFalse(Cache::has($key));
+        $this->platformUniqueIdService->handlePuid($puid, $platform_id);
+        $this->assertTrue(Cache::has($key));
+
+        $this->expectException(PuidNotUniqueSingleException::class);
+        $this->platformUniqueIdService->handlePuid($puid, $platform_id);
     }
 }
