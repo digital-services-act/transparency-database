@@ -13,6 +13,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,25 @@ Route::get('/test-log', function () {
     \Log::info('🎉 Test log to stdout is working!');
 
     return 'Logged!';
+});
+
+Route::get('/test-s3-presigned', function () {
+    $filename = 'test-'.Str::random(16).'.txt';
+    $content = 'This is a test file created at '.now()->toDateTimeString();
+
+    // Upload to S3 with private visibility
+    $disk = Storage::disk('s3ds');
+    $disk->put($filename, $content, ['visibility' => 'private']);
+
+    // Generate presigned URL valid for 10 minutes
+    $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(10));
+
+    return response()->json([
+        'message' => 'Test file uploaded successfully',
+        'filename' => $filename,
+        'presigned_url' => $presignedUrl,
+        'expires_in' => '10 minutes',
+    ]);
 });
 
 Route::middleware(['force.auth'])->group(static function () {
