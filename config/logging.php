@@ -51,7 +51,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single', 'db','stderr','syslog'],
+            'channels' => ['single', 'db', 'stderr', 'syslog'],
             'ignore_exceptions' => true,
         ],
 

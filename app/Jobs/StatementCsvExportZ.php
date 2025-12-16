@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -146,8 +147,16 @@ class StatementCsvExportZ implements ShouldQueue
                         // Create the CSV file name
                         $csv_file = $this->csvFilenameForSlugAndVersionAndSubpart($platform_slug, $version, $subpart);
 
-                        // Add the CSV file to the zip from memory
-                        $zip->addFromString($csv_file, $headings[$version]."\n".implode("\n", $rows));
+                        try {
+                            // Add the CSV file to the zip from memory
+                            $zip->addFromString($csv_file, $headings[$version]."\n".implode("\n", $rows));
+                        } catch (\Exception $e) {
+                            // Handle exception if needed
+                            Log::error('Failed to add file to zip: '.$e->getMessage());
+                            Log::error('File: '.$csv_file);
+                            Log::error('Rows count: '.count($rows));
+                            Log::error('Rows: '.var_dump($rows, true));
+                        }
                     }
                 }
 

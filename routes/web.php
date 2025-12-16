@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test-log', function () {
     \Log::info('🎉 Test log to stdout is working!');
+
     return 'Logged!';
 });
 
