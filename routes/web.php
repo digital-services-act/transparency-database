@@ -86,8 +86,7 @@ Route::get('/test-s3-existing/{filename}', function (string $filename) {
 
     // Also try direct client approach
     try {
-        $adapter = $disk->getAdapter();
-        $client = $adapter->getClient();
+        $client = $disk->getClient();
         $bucket = config('filesystems.disks.s3ds.bucket');
 
         $cmd = $client->getCommand('GetObject', [
@@ -146,8 +145,7 @@ Route::get('/test-s3-debug', function () {
 
     // Step 4: Try to get the S3 client directly and create presigned request
     try {
-        $adapter = $disk->getAdapter();
-        $client = $adapter->getClient();
+        $client = $disk->getClient();
         $bucket = config('filesystems.disks.s3ds.bucket');
 
         $cmd = $client->getCommand('GetObject', [
