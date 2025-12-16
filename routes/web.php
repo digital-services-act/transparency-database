@@ -52,6 +52,69 @@ Route::get('/test-s3-presigned', function () {
     ]);
 });
 
+Route::get('/test-s3-list', function () {
+    $disk = Storage::disk('s3ds');
+
+    // List all files (limited to first 50)
+    $files = collect($disk->files())->take(50)->map(function ($file) use ($disk) {
+        return [
+            'name' => $file,
+            'size' => $disk->size($file),
+            'last_modified' => $disk->lastModified($file),
+        ];
+    });
+
+    return response()->json([
+        'bucket' => config('filesystems.disks.s3ds.bucket'),
+        'endpoint' => config('filesystems.disks.s3ds.endpoint'),
+        'file_count' => $files->count(),
+        'files' => $files,
+    ]);
+});
+
+Route::get('/test-s3-debug', function () {
+    $disk = Storage::disk('s3ds');
+    $filename = 'test-'.Str::random(16).'.txt';
+    $content = 'Test file';
+
+    try {
+        // Test upload
+        $uploaded = $disk->put($filename, $content);
+
+        // Test if file exists
+        $exists = $disk->exists($filename);
+
+        // Get the URL (non-presigned)
+        $url = $disk->url($filename);
+
+        // Generate presigned URL
+        $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(10));
+
+        // Get adapter info
+        $adapter = $disk->getAdapter();
+        $client = $adapter->getClient();
+
+        return response()->json([
+            'upload_success' => $uploaded,
+            'file_exists' => $exists,
+            'public_url' => $url,
+            'presigned_url' => $presignedUrl,
+            'config' => [
+                'bucket' => config('filesystems.disks.s3ds.bucket'),
+                'region' => config('filesystems.disks.s3ds.region'),
+                'endpoint' => config('filesystems.disks.s3ds.endpoint'),
+                'use_path_style' => config('filesystems.disks.s3ds.use_path_style_endpoint'),
+            ],
+            'client_region' => $client->getRegion(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ], 500);
+    }
+});
+
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
