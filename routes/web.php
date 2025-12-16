@@ -110,6 +110,7 @@ Route::get('/test-s3-debug', function () {
     $content = 'Test file at '.now()->toDateTimeString();
     $results = [
         'config' => [
+            'default_disk' => config('filesystems.default'),
             'bucket' => config('filesystems.disks.s3ds.bucket'),
             'region' => config('filesystems.disks.s3ds.region'),
             'endpoint' => config('filesystems.disks.s3ds.endpoint'),
