@@ -55,64 +55,118 @@ Route::get('/test-s3-presigned', function () {
 Route::get('/test-s3-list', function () {
     $disk = Storage::disk('s3ds');
 
-    // List all files (limited to first 50)
-    $files = collect($disk->files())->take(50)->map(function ($file) use ($disk) {
-        return [
-            'name' => $file,
-            'size' => $disk->size($file),
-            'last_modified' => $disk->lastModified($file),
-        ];
-    });
+    try {
+        // List all files (limited to first 20)
+        $files = collect($disk->files())->take(20)->values();
 
-    return response()->json([
-        'bucket' => config('filesystems.disks.s3ds.bucket'),
-        'endpoint' => config('filesystems.disks.s3ds.endpoint'),
-        'file_count' => $files->count(),
-        'files' => $files,
-    ]);
+        return response()->json([
+            'bucket' => config('filesystems.disks.s3ds.bucket'),
+            'endpoint' => config('filesystems.disks.s3ds.endpoint'),
+            'file_count' => $files->count(),
+            'files' => $files,
+        ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 });
+
+Route::get('/test-s3-existing/{filename}', function (string $filename) {
+    $disk = Storage::disk('s3ds');
+    $results = [];
+
+    // Generate presigned URL for existing file
+    try {
+        $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(10));
+        $results['presigned_url'] = $presignedUrl;
+    } catch (\Exception $e) {
+        $results['presigned_error'] = $e->getMessage();
+    }
+
+    // Also try direct client approach
+    try {
+        $adapter = $disk->getAdapter();
+        $client = $adapter->getClient();
+        $bucket = config('filesystems.disks.s3ds.bucket');
+
+        $cmd = $client->getCommand('GetObject', [
+            'Bucket' => $bucket,
+            'Key' => $filename,
+        ]);
+
+        $request = $client->createPresignedRequest($cmd, '+10 minutes');
+        $results['direct_presigned_url'] = (string) $request->getUri();
+    } catch (\Exception $e) {
+        $results['direct_presigned_error'] = $e->getMessage();
+    }
+
+    return response()->json($results, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+})->where('filename', '.*');
 
 Route::get('/test-s3-debug', function () {
     $disk = Storage::disk('s3ds');
     $filename = 'test-'.Str::random(16).'.txt';
-    $content = 'Test file';
+    $content = 'Test file at '.now()->toDateTimeString();
+    $results = [
+        'config' => [
+            'bucket' => config('filesystems.disks.s3ds.bucket'),
+            'region' => config('filesystems.disks.s3ds.region'),
+            'endpoint' => config('filesystems.disks.s3ds.endpoint'),
+            'url' => config('filesystems.disks.s3ds.url'),
+            'use_path_style' => config('filesystems.disks.s3ds.use_path_style_endpoint'),
+            'visibility' => config('filesystems.disks.s3ds.visibility'),
+        ],
+    ];
 
+    // Step 1: Test upload
     try {
-        // Test upload
         $uploaded = $disk->put($filename, $content);
+        $results['step1_upload'] = ['success' => $uploaded];
+    } catch (\Exception $e) {
+        $results['step1_upload'] = ['error' => $e->getMessage()];
+    }
 
-        // Test if file exists
-        $exists = $disk->exists($filename);
-
-        // Get the URL (non-presigned)
-        $url = $disk->url($filename);
-
-        // Generate presigned URL
+    // Step 2: Generate presigned URL (doesn't require the file to exist)
+    try {
         $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(10));
+        $results['step2_presigned_url'] = ['url' => $presignedUrl];
+    } catch (\Exception $e) {
+        $results['step2_presigned_url'] = ['error' => $e->getMessage()];
+    }
 
-        // Get adapter info
+    // Step 3: Generate public URL
+    try {
+        $publicUrl = $disk->url($filename);
+        $results['step3_public_url'] = ['url' => $publicUrl];
+    } catch (\Exception $e) {
+        $results['step3_public_url'] = ['error' => $e->getMessage()];
+    }
+
+    // Step 4: Try to get the S3 client directly and create presigned request
+    try {
         $adapter = $disk->getAdapter();
         $client = $adapter->getClient();
+        $bucket = config('filesystems.disks.s3ds.bucket');
 
-        return response()->json([
-            'upload_success' => $uploaded,
-            'file_exists' => $exists,
-            'public_url' => $url,
-            'presigned_url' => $presignedUrl,
-            'config' => [
-                'bucket' => config('filesystems.disks.s3ds.bucket'),
-                'region' => config('filesystems.disks.s3ds.region'),
-                'endpoint' => config('filesystems.disks.s3ds.endpoint'),
-                'use_path_style' => config('filesystems.disks.s3ds.use_path_style_endpoint'),
-            ],
-            'client_region' => $client->getRegion(),
+        $cmd = $client->getCommand('GetObject', [
+            'Bucket' => $bucket,
+            'Key' => $filename,
         ]);
+
+        $request = $client->createPresignedRequest($cmd, '+10 minutes');
+        $directPresignedUrl = (string) $request->getUri();
+
+        $results['step4_direct_presigned'] = [
+            'url' => $directPresignedUrl,
+            'client_endpoint' => $client->getEndpoint()->__toString(),
+            'client_region' => $client->getRegion(),
+        ];
     } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ], 500);
+        $results['step4_direct_presigned'] = ['error' => $e->getMessage()];
     }
+
+    return response()->json($results, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 });
 
 Route::middleware(['force.auth'])->group(static function () {
