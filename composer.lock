@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9804c993c47b3bc4f889176a9f2020f0",
+    "content-hash": "7eec2b3a199f3c0f02123f0049144407",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -10318,16 +10318,16 @@
         },
         {
             "name": "laravel/boost",
-            "version": "v1.0.19",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/boost.git",
-                "reference": "a18c0408b91b119f1105daf7b2ff4e66fa1bc8e7"
+                "reference": "3590becd1af6425e9b5c952ef7e68171d72d0ec4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/boost/zipball/a18c0408b91b119f1105daf7b2ff4e66fa1bc8e7",
-                "reference": "a18c0408b91b119f1105daf7b2ff4e66fa1bc8e7",
+                "url": "https://api.github.com/repos/laravel/boost/zipball/3590becd1af6425e9b5c952ef7e68171d72d0ec4",
+                "reference": "3590becd1af6425e9b5c952ef7e68171d72d0ec4",
                 "shasum": ""
             },
             "require": {
@@ -10379,7 +10379,7 @@
                 "issues": "https://github.com/laravel/boost/issues",
                 "source": "https://github.com/laravel/boost"
             },
-            "time": "2025-08-27T19:28:28+00:00"
+            "time": "2025-09-04T06:58:26+00:00"
         },
         {
             "name": "laravel/mcp",
@@ -13178,5 +13178,5 @@
         "ext-zip": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

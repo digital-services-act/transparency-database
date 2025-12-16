@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Services\DayArchiveQueryService;
 use App\Services\DayArchiveService;
@@ -9,8 +10,10 @@ use App\Services\PlatformQueryService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class DataDownloadController extends Controller
 {
@@ -49,5 +52,34 @@ class DataDownloadController extends Controller
         ]);
 
         return ['platforms' => $platforms];
+    }
+
+    public function download(DayArchive $dayArchive, string $type): RedirectResponse
+    {
+        $urlMap = [
+            'full' => $dayArchive->url,
+            'light' => $dayArchive->urllight,
+            'sha1' => $dayArchive->sha1url,
+            'sha1light' => $dayArchive->sha1urllight,
+        ];
+
+        if (! isset($urlMap[$type])) {
+            abort(404, 'Invalid download type');
+        }
+
+        $storedUrl = $urlMap[$type];
+
+        if (empty($storedUrl)) {
+            abort(404, 'File not found');
+        }
+
+        // Extract filename from stored URL
+        $filename = basename(parse_url($storedUrl, PHP_URL_PATH));
+
+        // Generate presigned URL valid for 60 minutes (sufficient for large file downloads)
+        $disk = Storage::disk('s3ds');
+        $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(60));
+
+        return redirect()->away($presignedUrl);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\DayArchive;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DataDownloadControllerTest extends TestCase
@@ -19,9 +21,6 @@ class DataDownloadControllerTest extends TestCase
         $this->signInAsAdmin();
     }
 
-    /**
-     * @test
-     */
     public function test_can_view_day_archive_index_page()
     {
         $response = $this->get('/explore-data/download');
@@ -30,14 +29,111 @@ class DataDownloadControllerTest extends TestCase
         $response->assertViewHas(['dayarchives', 'options', 'platform', 'reindexing']);
     }
 
-    /**
-     * @test
-     */
     public function test_can_view_day_archive_index_page_with_platform_uuid()
     {
         $platform = Platform::factory()->create();
         $response = $this->get('/explore-data/download/?uuid='.$platform->uuid);
         $response->assertStatus(200);
         $response->assertViewIs('explore-data.download');
+    }
+
+    public function test_download_redirects_to_presigned_url_for_full_type(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'url' => 'https://example.com/bucket/archive-2024-01-01-full.zip',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'full',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_download_redirects_to_presigned_url_for_light_type(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'urllight' => 'https://example.com/bucket/archive-2024-01-01-light.zip',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'light',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_download_redirects_to_presigned_url_for_sha1_type(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'sha1url' => 'https://example.com/bucket/archive-2024-01-01-full.zip.sha1',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'sha1',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_download_redirects_to_presigned_url_for_sha1light_type(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'sha1urllight' => 'https://example.com/bucket/archive-2024-01-01-light.zip.sha1',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'sha1light',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_download_returns_404_for_invalid_type(): void
+    {
+        $dayArchive = DayArchive::factory()->completed()->create();
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'invalid',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_download_returns_404_for_nonexistent_archive(): void
+    {
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => 99999,
+            'type' => 'full',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_download_returns_404_when_url_is_empty(): void
+    {
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'url' => null,
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'full',
+        ]));
+
+        $response->assertNotFound();
     }
 }

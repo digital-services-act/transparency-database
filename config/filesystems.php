@@ -66,7 +66,7 @@ return [
             'endpoint' => 'https://'.env('CELLAR_ADDON_HOST', ''),
             'use_path_style_endpoint' => env('CELLAR_ADDON_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'visibility' => 'public',
+            'visibility' => 'private',
         ],
 
         'ovh' => [

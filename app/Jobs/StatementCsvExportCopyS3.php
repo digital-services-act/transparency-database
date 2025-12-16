@@ -26,11 +26,11 @@ class StatementCsvExportCopyS3 implements ShouldQueue
         $disk = Storage::disk('s3ds');
         $disk->put($this->zip, fopen($path.$this->zip, 'rb+'),
             [
-                'visibility' => 'public',
+                'visibility' => 'private',
             ]);
         $disk->put($this->sha1, fopen($path.$this->sha1, 'rb+'),
             [
-                'visibility' => 'public',
+                'visibility' => 'private',
             ]);
     }
 }
