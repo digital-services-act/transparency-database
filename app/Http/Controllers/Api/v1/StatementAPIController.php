@@ -34,7 +34,7 @@ class StatementAPIController extends Controller
     public function __construct(
         EuropeanCountriesService $european_countries_service,
         protected StatementSearchService $statement_search_service,
-        protected PlatformUniqueIdService $platform_unique_id_service
+        protected PlatformUniqueIdService $puidService
     ) {
         $this->european_countries_service = $european_countries_service;
     }
@@ -44,7 +44,8 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function showUuid(string $uuid
+    public function showUuid(
+        string $uuid
     ): \Illuminate\Contracts\Foundation\Application|Application|RedirectResponse|Redirector|JsonResponse {
         $id = $this->statement_search_service->uuidToId($uuid);
         if ($id === 0) {
@@ -58,21 +59,17 @@ class StatementAPIController extends Controller
     {
         $platform_id = $this->getRequestUserPlatformId($request);
 
-        $found = false;
-        // First check if PUID exists in cache or in the PlatformPuid Table
-        if ($this->platform_unique_id_service->isPuidInCache($platform_id, $puid) || PlatformPuid::where('platform_id',
-                $platform_id)->where('puid', $puid)->exists()) {
-            $found = true;
-        }
+        $found = $this->puidService->checkPuidExists($platform_id, $puid);
 
         if ($found || $this->statement_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
             // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
             return response()->json(['message' => 'statement of reason found', 'puid' => $puid], Response::HTTP_FOUND);
         }
 
-
-        return response()->json(['message' => 'statement of reason not found', 'puid' => $puid],
-            Response::HTTP_NOT_FOUND);
+        return response()->json(
+            ['message' => 'statement of reason not found', 'puid' => $puid],
+            Response::HTTP_NOT_FOUND
+        );
     }
 
     public function store(StatementStoreRequest $request): JsonResponse
@@ -87,17 +84,13 @@ class StatementAPIController extends Controller
 
         $validated = $this->sanitizeData($validated);
 
-
         // Extract EAN-13 codes from content_id if present and no content_id_ean is present
         if (!isset($validated['content_id_ean']) && isset($validated['content_id']) && isset($validated['content_id']['EAN-13'])) {
             $validated['content_id_ean'] = $validated['content_id']['EAN-13'];
         }
 
-
-
         try {
-            $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
-            $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
+            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
         } catch (PuidNotUniqueSingleException $e) {
             return $e->getJsonResponse();
         }
@@ -110,6 +103,4 @@ class StatementAPIController extends Controller
 
         return response()->json($out, Response::HTTP_CREATED);
     }
-
-
 }

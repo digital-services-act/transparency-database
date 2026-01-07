@@ -11,6 +11,12 @@ use OpenSearch\Client;
  */
 class OpenSearchDeleteDateRange extends Command
 {
+    use CommandTrait;
+
+    protected $index = 'statement_index';
+
+    public const CONCURRENT_DELETES = 4;
+
     /**
      * The name and signature of the console command.
      *
@@ -18,10 +24,9 @@ class OpenSearchDeleteDateRange extends Command
      */
     protected $signature = 'opensearch:delete-date-range
         {start : Start date (Y-m-d)}
-        {end : End date (Y-m-d)}
+        {end? : End date (Y-m-d)}
         {--platform_id= : Platform ID (optional)}
-        {--batch=2500 : Batch size per delete}
-        {--index=statement_index : OpenSearch index name}';
+        {--batch=5000 : Batch size per delete}';
 
     /**
      * The console command description.
@@ -40,27 +45,24 @@ class OpenSearchDeleteDateRange extends Command
      */
     public function handle()
     {
-        $index = $this->option('index');
         $start = $this->argument('start');
         $end = $this->argument('end');
         $platformId = $this->option('platform_id');
-        $batchSize = (int) $this->option('batch');
 
-        // Check if write blocks
-        // $settings = $this->opensearch->indices()->getSettings(['index' => $index]);
-        // $blocks = $settings[$index]['settings']['index'] ?? [];
+        $start = $this->sanitizeDateArgument('start');
 
-        // if (($blocks['blocks']['read_only_allow_delete'] ?? 'false') === 'true') {
-        //     $this->warn("⚠️ Index {$index} is read-only. Removing block...");
-        //     $this->unblockIndex($index);
-        // }
+        if (!$end) {
+            $end = $start;
+        } else {
+            $end = $this->sanitizeDateArgument('end');
+        }
 
         $must = [];
         $must[] = [
             'range' => [
                 'created_at' => [
-                    'gte' => "{$start}T00:00:00",
-                    'lte' => "{$end}T23:59:59"
+                    'gte' => $start->startOfDay()->getTimestampMs(),
+                    'lte' => $end->endOfDay()->getTimestampMs(),
                 ],
             ],
         ];
@@ -69,28 +71,50 @@ class OpenSearchDeleteDateRange extends Command
         }
 
         $query = ['bool' => ['must' => $must ?: [['match_all' => (object)[]]]]];
-        $count = $this->opensearch->count(['index' => $index, 'body' => ['query' => $query]])['count'];
+        $count = $this->opensearch->count(['index' => $this->index, 'body' => ['query' => $query]])['count'];
 
         if (!$count) {
             $this->warn("No documents match.");
             return;
         }
 
-        $this->info("🔍 Found {$count} documents in {$index} to delete.");
+        $this->info("🔍 Found {$count} documents in {$this->index} to delete.");
 
-        $batches = ceil($count / $batchSize);
+        // We'll run multiple delete threads in parallel as it speeds things up on the OS
+        $parts = self::CONCURRENT_DELETES;
+        $partSize = (int) ceil($count / $parts);
 
-        for ($i = 1; $i <= $batches; $i++) {
-            OpenSearchDeleteBatch::dispatch($index, $query, $batchSize)->delay(now()->addSeconds($i * 5));
-            $this->line("📤 Dispatched batch {$i}/{$batches}");
+        for ($i = 1; $i <= $parts; $i++) {
+            try {
+                $this->opensearch->deleteByQuery([
+                    'index'     => $this->index,
+                    'conflicts' => 'proceed',
+                    'body'      => ['query' => $query],
+                    'size'      => $partSize,
+                    'refresh' => true,
+                    'wait_for_completion' => false,
+                ]);
+                $this->line("📤 Running delete batch {$i}/{$parts} (size={$partSize})");
+            } catch (\Throwable $e) {
+                logger()->error('OpenSearch deleteByQuery failed', [
+                    'batch' => $i,
+                    'error' => $e->getMessage(),
+                ]);
+                $this->error("Batch {$i} failed: {$e->getMessage()}");
+            }
         }
     }
 
-    protected function unblockIndex(string $index)
+    protected function unblockIndex(): void
     {
-        if (env('APP_ENV_REAL') !== 'production') {
+        // Check if write blocks
+        $settings = $this->opensearch->indices()->getSettings(['index' => $this->index]);
+        $blocks = $settings[$this->index]['settings']['index'] ?? [];
+
+        if (($blocks['blocks']['read_only_allow_delete'] ?? 'false') === 'true') {
+            $this->warn("⚠️ Index {$this->index} is read-only. Removing block...");
             $this->opensearch->indices()->putSettings([
-                'index' => $index,
+                'index' => $this->index,
                 'body'  => [
                     'settings' => [
                         'index.blocks.read_only_allow_delete' => false

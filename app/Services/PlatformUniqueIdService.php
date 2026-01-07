@@ -6,11 +6,34 @@ use App\Exceptions\PuidNotUniqueMultipleException;
 use App\Exceptions\PuidNotUniqueSingleException;
 use App\Models\PlatformPuid;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PlatformUniqueIdService
 {
-    public function __construct(protected int $cache_valid_days = 2)
+    public $lock_valid_seconds = 30;
+
+    public function __construct(protected int $cache_valid_days = 2) {}
+
+    public function handlePuid(mixed $puid, int $platform_id): void
     {
+        $key = $this->getCacheKey($platform_id, $puid);
+        $lockKey = "lock:puid:{{$key}}";
+
+        $lock = Cache::lock($lockKey, $this->lock_valid_seconds);
+
+        // @codeCoverageIgnoreStart
+        if (! $lock->get()) {
+            Log::info('Lock encountered for PUID ' . $puid . ' on platform ' . $platform_id);
+            throw new PuidNotUniqueSingleException($puid);
+        }
+        // @codeCoverageIgnoreEnd
+
+        try {
+            $this->addPuidToCache($platform_id, $puid);
+            $this->addPuidToDatabase($platform_id, $puid);
+        } finally {
+            optional($lock)->release();
+        }
     }
 
     public function getCacheKey(int $platform_id, mixed $puid): string
@@ -26,11 +49,9 @@ class PlatformUniqueIdService
      */
     public function addPuidToCache($platform_id, $puid): void
     {
-        if($this->isPuidInCache($platform_id, $puid)){
+        if (! Cache::add($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days))) {
             throw new PuidNotUniqueSingleException($puid);
         }
-
-        Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));
     }
 
     /**
@@ -83,15 +104,24 @@ class PlatformUniqueIdService
     }
 
     /**
+     *
+     * @return bool
+     */
+    public function isPuidInDb(int $platform_id, mixed $puid): bool
+    {
+        return PlatformPuid::where('platform_id', $platform_id)->where('puid', $puid)->exists();
+    }
+
+    /**
      * @throws PuidNotUniqueMultipleException
      */
     public function checkDuplicatesInPlatformPuids(array $puids_to_check, int $platform_id): void
     {
         $duplicates = PlatformPuid::query()
-                                  ->where('platform_id', $platform_id)
-                                  ->whereIn('puid', $puids_to_check)
-                                  ->pluck('puid')
-                                  ->toArray();
+            ->where('platform_id', $platform_id)
+            ->whereIn('puid', $puids_to_check)
+            ->pluck('puid')
+            ->toArray();
         $this->doWeHaveDuplicates($duplicates);
     }
 
@@ -126,5 +156,10 @@ class PlatformUniqueIdService
         foreach ($puids as $puid) {
             Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));
         }
+    }
+
+    public function checkPuidExists(int $platformId, string $puid): bool
+    {
+        return $this->isPuidInCache($platformId, $puid) || $this->isPuidInDb($platformId, $puid);
     }
 }
