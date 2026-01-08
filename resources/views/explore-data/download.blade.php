@@ -92,8 +92,8 @@
             <x-ecl.datepicker label="To" id="to_date" justlabel="true" name="to_date" :value="request()->get('to_date', '')" />
         </div>
         <div class="ecl-col-l-4">
-            <x-ecl.select label="Select a Platform" name="uuid" id="uuid" justlabel="true"
-                :options="$options['platforms']" :default="request()->get('uuid', '')" />
+            <x-ecl.select label="Select a Platform" name="platform_id" id="platform_id" justlabel="true"
+                :options="$options['platforms']" :default="request()->get('platform_id', '')" />
 
         </div>
         <div class="ecl-col-l-2 ecl-u-align-content-center">
@@ -126,7 +126,7 @@
         // Attach event listeners to input fields
         var fromInput = document.getElementById("from_date");
         var toInput = document.getElementById("to_date");
-        var platformInput = document.getElementById("uuid");
+        var platformInput = document.getElementById("platform_id");
 
         fromInput.addEventListener("change", submitForm);
         toInput.addEventListener("change", submitForm);

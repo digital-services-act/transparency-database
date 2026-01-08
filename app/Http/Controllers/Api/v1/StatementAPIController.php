@@ -28,7 +28,8 @@ class StatementAPIController extends Controller
     public function __construct(
         EuropeanCountriesService $european_countries_service,
         protected StatementElasticSearchService $statement_elastic_search_service,
-        protected PlatformUniqueIdService $platform_unique_id_service
+        protected PlatformUniqueIdService $puidService
+
     ) {
         $this->european_countries_service = $european_countries_service;
     }
@@ -42,20 +43,17 @@ class StatementAPIController extends Controller
     {
         $platform_id = $this->getRequestUserPlatformId($request);
 
-        $found = false;
-        // First check if PUID exists in cache or in the PlatformPuid Table
-        if ($this->platform_unique_id_service->isPuidInCache($platform_id, $puid) || PlatformPuid::where('platform_id',
-            $platform_id)->where('puid', $puid)->exists()) {
-            $found = true;
-        }
+        $found = $this->puidService->checkPuidExists($platform_id, $puid);
 
         if ($found || $this->statement_elastic_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
             // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
             return response()->json(['message' => 'statement of reason found', 'puid' => $puid], Response::HTTP_FOUND);
         }
 
-        return response()->json(['message' => 'statement of reason not found', 'puid' => $puid],
-            Response::HTTP_NOT_FOUND);
+        return response()->json(
+            ['message' => 'statement of reason not found', 'puid' => $puid],
+            Response::HTTP_NOT_FOUND
+        );
     }
 
     public function store(StatementStoreRequest $request): JsonResponse
@@ -76,8 +74,7 @@ class StatementAPIController extends Controller
         }
 
         try {
-            $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
-            $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
+            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
         } catch (PuidNotUniqueSingleException $e) {
             return $e->getJsonResponse();
         }

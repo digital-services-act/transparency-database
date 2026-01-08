@@ -14,9 +14,10 @@ use TypeError;
 class DayArchiveQueryService
 {
     private array $allowed_filters = [
-        'uuid',
+        'platform_id',
         'from_date',
         'to_date',
+        'uuid'
     ];
 
     public function query(array $filters): Builder
@@ -38,7 +39,7 @@ class DayArchiveQueryService
         }
 
         // if there was no uuid filter then lock it into the global archives
-        if (! isset($filters['uuid']) || ! $filters['uuid']) {
+        if (!isset($filters['platform_id']) || !$filters['platform_id']) {
             $query->whereNull('platform_id');
         }
 
@@ -63,5 +64,13 @@ class DayArchiveQueryService
     {
         $date = Carbon::createFromFormat('d-m-Y', $filter_value);
         $query->whereDate('date', '<=', $date);
+    }
+
+    private function applyPlatformIdFilter(Builder $query, $value): void
+    {
+        $platform = Platform::query()->where('id', $value)->count();
+        if ($platform) {
+            $query->where('platform_id', $value);
+        }
     }
 }

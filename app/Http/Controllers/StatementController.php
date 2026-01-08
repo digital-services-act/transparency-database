@@ -33,7 +33,7 @@ class StatementController extends Controller
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
-        protected PlatformUniqueIdService $platform_unique_id_service,
+        protected PlatformUniqueIdService $puidService,
         protected PlatformQueryService $platform_query_service,
     ) {}
 
@@ -93,7 +93,6 @@ class StatementController extends Controller
             $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
             $statements = $elastic_results['statements'];
             $total = $elastic_results['total'];
-
         } else {
             // This should never happen,
             // raw queries on the statement table is very bad
@@ -137,12 +136,11 @@ class StatementController extends Controller
 
         $view = 'statement.show';
 
-        // Statement Alpha
-
         $statement_content_types = Statement::getEnumValues($statement->content_type);
         $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
         $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
         $category_specifications = Statement::getEnumValues($statement->category_specification);
+
 
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         sort($statement_territorial_scope_country_names);
@@ -157,7 +155,6 @@ class StatementController extends Controller
             'statement_visibility_decisions' => $statement_visibility_decisions,
             'category_specifications' => $category_specifications,
         ]);
-
     }
 
     public function store(StatementStoreRequest $request): RedirectResponse
@@ -172,8 +169,7 @@ class StatementController extends Controller
         $validated = $this->sanitizeData($validated);
 
         try {
-            $this->platform_unique_id_service->addPuidToCache($validated['platform_id'], $validated['puid']);
-            $this->platform_unique_id_service->addPuidToDatabase($validated['platform_id'], $validated['puid']);
+            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
         } catch (PuidNotUniqueSingleException $e) {
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
@@ -187,10 +183,9 @@ class StatementController extends Controller
             // If we have elasticsearch configured, we want to index the new statement
             // right away so it appears in search results immediately.
             $this->statement_elastic_search_service->indexStatement($statement);
-
         }
 
-        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->uuid.'">Click here to view it.</a>');
+        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/' . $statement->uuid . '">Click here to view it.</a>');
     }
 
     private function prepareOptions($noval_on_select = false): array

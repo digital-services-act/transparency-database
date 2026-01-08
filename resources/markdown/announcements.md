@@ -1,14 +1,37 @@
-#### [Announcement – Access to data] New file formats available for download 
+#### [Announcement - DB] Update to the submissions by Facebook and Instagram
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/11/2025</p>
+
+On 27 October 2025, Meta identified and fixed an issue affecting the submissions to the DSA Transparency Database from Facebook and Instagram from Trusted Flaggers. Prior to this date, statements of reasons sourcing from Trusted Flaggers might not have been labelled as such. The issue was fixed on submissions starting from 28/10/2025.
+
+#### [Announcement – DB] Schema update of the DSA Transparency Database completed
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 01/07/2025</p>
+
+To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database has been updated to reflect the requirements laid down in the [Implementing Regulation on Transparency Reporting](https://eur-lex.europa.eu/eli/reg_impl/2024/2835/oj/eng). As of today, all statements of reasons need to be submitted to the DSA Transparency Database in line with the updated schema, documented [here](/page/api-documentation). Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 remain available according to the old schema in line with the [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy) of the DSA Transparency Database.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+#### [Announcement – DB] Update to the submissions by Google Shopping
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 03/06/2025</p>
+
+Starting from 30 May 2025, statements of reasons submissions to the DSA Transparency Database from Google Shopping no longer include automated notifications to merchants about additional grounds for a restriction they are already subject to.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+#### [Announcement – Access to data] New file formats available for download
+
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
 Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). See [the dsa-tdb documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/data_sources.html) for more information on how to download these data. You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from [the dsa-tdb package documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/). We provide two types of aggregated data: the basic aggregation currently feeding the [Dashboard](/dashboard) and an advanced one aggregating the data on all the database’s non-free-text fields columns.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
-#### [Announcement – Access to data] Update to the data retention policy 
+#### [Announcement – Access to data] Update to the data retention policy
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
-Starting from 18th of February 2025, the data retention policy of the DSA Transparency Database (TDB) will be updated to extend the availability of the daily dumps files from 18 months to five years after their creation and to include additional file formats. After this period, they will be archived in a cold storage. The rest of the data retention policy remains unchanged. 
+Starting from 18th of February 2025, the data retention policy of the DSA Transparency Database (TDB) will be updated to extend the availability of the daily dumps files from 18 months to five years after their creation and to include additional file formats. After this period, they will be archived in a cold storage. The rest of the data retention policy remains unchanged.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 #### [Announcement – Dashboard] New pages and filters for better separation between platforms
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/12/2024</p>
@@ -83,7 +106,7 @@ We refer to the [API documentation](/page/api-documentation#additional-explanati
 
 On 8th of April 2024, the Transparency Database (TDB) team is updating the structure of the daily dumps CSV files available in the [Data Download](/data-download) section. This change aims at improving the daily dump CSV creation to speed it up and make it more computationally efficient. This will enable to publish the CSV files in a quick and timely manner even with the current high daily volume of Statement of Reasons (SoRs) submitted to the TDB, which is expected to further increase in the coming months when small platforms will onboard.
 
-The new structure will consist of one zip file, with multiple zip files within.  
+The new structure will consist of one zip file, with multiple zip files within.
 Each inner zip file will contain 1 million records maximum broken up into CSV parts of 100 000.
 
 For instance, the light version global dump for September 25th 2024 -named sor-global-2023-09-25-light.zip-, will contain several zip files named like sor-global-2023-09-25-light-00000.csv.zip. Each of the latter will contain several CSV chunks, with about 100’000 SoR in each, named sor-global-2023-09-25-light-00000-00000.csv.
@@ -101,7 +124,7 @@ Starting from 15th of April 2024, the Transparency Database (TDB) will follow th
 
 The [daily dumps files](/data-download) will be available for 18 months (540 days) after their creation. After this period, they will be archived in a cold storage.
 
-Lastly, the [Dashboard](/dashboard) will contain the aggregated statistics for the last 5 years of data. 
+Lastly, the [Dashboard](/dashboard) will contain the aggregated statistics for the last 5 years of data.
 
 <p class="ecl-u-type-paragraph" style="font-style: italic">
 <img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png">

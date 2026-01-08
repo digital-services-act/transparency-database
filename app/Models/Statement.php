@@ -114,7 +114,8 @@ class Statement extends Model
         'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED,
     ];
 
-    public const LABEL_STATEMENT_DECISION_GROUND = 'Ground for Decision';
+
+    public const LABEL_STATEMENT_DECISION_GROUND = 'Decision Ground';
 
     public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
 
@@ -594,19 +595,19 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        return Cache::remember('platform-'.$this->platform_id.'-name', 3600, function () {
+        return Cache::remember('platform-' . $this->platform_id . '-name', 3600, function () {
             $platform = Platform::find($this->platform_id);
 
-            return $platform->name ?? 'deleted-name-'.$this->platform_id;
+            return $platform->name ?? 'deleted-name-' . $this->platform_id;
         });
     }
 
     public function platformUuidCached(): string
     {
-        return Cache::remember('platform-'.$this->platform_id.'-uuid', 3600, function () {
+        return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, function () {
             $platform = Platform::find($this->platform_id);
 
-            return $platform->uuid ?? 'deleted-uuid-'.$this->platform_id;
+            return $platform->uuid ?? 'deleted-uuid-' . $this->platform_id;
         });
     }
 
@@ -727,7 +728,7 @@ class Statement extends Model
 
     public function getSelfAttribute(): string
     {
-        return route('api.v'.config('app.api_latest').'.statement.show', [$this->uuid]);
+        return route('api.v' . config('app.api_latest') . '.statement.show', [$this->uuid]);
     }
 
     public function getPlatformNameAttribute(): string
@@ -796,8 +797,8 @@ class Statement extends Model
 
         foreach ($keys as $key) {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class.'::'.$key)) {
-                $value = constant(self::class.'::'.$key);
+            if (defined(self::class . '::' . $key)) {
+                $value = constant(self::class . '::' . $key);
                 if ($value !== null) {
                     $enumValues[] = $value;
                 }
