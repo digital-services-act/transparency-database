@@ -156,7 +156,6 @@ class StatementControllerTest extends TestCase
 
         $response = $this->get(route('statement.create'));
         $response->assertRedirectContains('/login');
-
     }
 
     /**

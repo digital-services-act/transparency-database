@@ -136,10 +136,6 @@ class StatementController extends Controller
 
         $view = 'statement.show';
 
-
-        // Statement Beta
-        $statement = Statement::find($statement);
-
         if (!$statement) {
             abort(404);
         }
