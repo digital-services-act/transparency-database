@@ -39,17 +39,6 @@ class StatementAPIController extends Controller
         return $statement;
     }
 
-    public function showUuid(
-        string $uuid
-    ): JsonResponse|Statement|\Illuminate\Http\RedirectResponse {
-        $id = $this->statement_elastic_search_service->uuidToId($uuid);
-        if ($id === 0) {
-            return response()->json(['message' => 'statement of reason not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        return redirect(route('api.v1.statement.show', [$id]));
-    }
-
     public function existingPuid(Request $request, string $puid): Statement|JsonResponse
     {
         $platform_id = $this->getRequestUserPlatformId($request);

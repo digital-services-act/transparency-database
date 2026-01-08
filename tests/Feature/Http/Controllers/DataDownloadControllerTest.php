@@ -32,7 +32,7 @@ class DataDownloadControllerTest extends TestCase
     public function test_can_view_day_archive_index_page_with_platform_uuid()
     {
         $platform = Platform::factory()->create();
-        $response = $this->get('/explore-data/download/?uuid='.$platform->uuid);
+        $response = $this->get('/explore-data/download/?uuid=' . $platform->uuid);
         $response->assertStatus(200);
         $response->assertViewIs('explore-data.download');
     }
@@ -132,6 +132,47 @@ class DataDownloadControllerTest extends TestCase
         $response = $this->get(route('dayarchive.download', [
             'dayArchive' => $dayArchive->id,
             'type' => 'full',
+        ]));
+
+        $response->assertNotFound();
+    }
+    public function test_download_returns_404_when_urllight_is_empty_string(): void
+    {
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'urllight' => '',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'light',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_download_returns_404_when_sha1url_is_empty_string(): void
+    {
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'sha1url' => '',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'sha1',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_download_returns_404_when_sha1urllight_is_empty_string(): void
+    {
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'sha1urllight' => '',
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'sha1light',
         ]));
 
         $response->assertNotFound();

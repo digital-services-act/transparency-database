@@ -136,10 +136,6 @@ class StatementController extends Controller
 
         $view = 'statement.show';
 
-        if (!$statement) {
-            abort(404);
-        }
-
         $statement_content_types = Statement::getEnumValues($statement->content_type);
         $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
         $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
