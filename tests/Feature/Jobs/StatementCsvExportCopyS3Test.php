@@ -21,13 +21,13 @@ class StatementCsvExportCopyS3Test extends TestCase
         $s3DiskMock = Mockery::mock();
         $s3DiskMock->shouldReceive('put')
             ->twice() // Once for zip, once for sha1
-            ->with(Mockery::type('string'), Mockery::type('resource'), ['visibility' => 'public'])
+            ->with(Mockery::type('string'), Mockery::type('resource'), ['visibility' => 'private'])
             ->andReturn(true);
 
         Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
 
         // Create temporary directory for local path
-        $tempDir = sys_get_temp_dir().'/test_csv_copy_'.time().'/';
+        $tempDir = sys_get_temp_dir() . '/test_csv_copy_' . time() . '/';
         mkdir($tempDir, 0755, true);
         Storage::shouldReceive('path')->with('')->andReturn($tempDir);
 
@@ -35,16 +35,16 @@ class StatementCsvExportCopyS3Test extends TestCase
         $zipFile = 'test-export.zip';
         $sha1File = 'test-export.zip.sha1';
 
-        file_put_contents($tempDir.$zipFile, 'fake zip content');
-        file_put_contents($tempDir.$sha1File, 'fake sha1 checksum');
+        file_put_contents($tempDir . $zipFile, 'fake zip content');
+        file_put_contents($tempDir . $sha1File, 'fake sha1 checksum');
 
         // Create and handle the job
         $job = new StatementCsvExportCopyS3($zipFile, $sha1File);
         $job->handle();
 
         // Clean up
-        unlink($tempDir.$zipFile);
-        unlink($tempDir.$sha1File);
+        unlink($tempDir . $zipFile);
+        unlink($tempDir . $sha1File);
         rmdir($tempDir);
 
         $this->assertTrue(true);
