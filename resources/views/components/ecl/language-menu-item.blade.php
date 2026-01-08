@@ -1,6 +1,6 @@
 @props(['lang','label'])
 <li class="ecl-site-header__language-item">
-    @if(strtoupper(request()->query('lang')) === $lang)
+    @if(strtoupper(session('locale')) === $lang)
 
         <a href="?lang={{ strtolower($lang) }}"
            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-site-header__language-link ecl-site-header__language-link--active"

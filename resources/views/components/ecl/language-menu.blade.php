@@ -5,11 +5,11 @@
         <span class="ecl-site-header__language-icon">
             <svg class="ecl-icon ecl-icon--s ecl-site-header__icon" focusable="false"
                  aria-hidden="false" role="img">
-                <title>{{ request()->query('lang', 'en') }}</title>
+                <title>{{ session('locale') }}</title>
                 <x-ecl.icon incon="global"/>
             </svg>
         </span>
-        {{ request()->query('lang', 'en') }}
+        {{ session('locale') }}
     </a>
     <div class="ecl-site-header__language-container" id="language-list-overlay" hidden
          data-ecl-language-list-overlay aria-labelledby="ecl-site-header__language-title"

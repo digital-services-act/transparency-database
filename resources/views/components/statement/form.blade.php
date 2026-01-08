@@ -1,8 +1,6 @@
 @php use App\Models\Statement; @endphp
 @props(['statement' => null, 'options' => null])
 
-<h4 class="ecl-u-type-heading-4">Select visibility decision(s)</h4>
-
 <x-ecl.select-multiple :label="Statement::LABEL_STATEMENT_DECISION_VISIBILITY"
               name="decision_visibility"
               id="decision_visibility"

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Services\DayArchiveService;
 use App\Services\PlatformQueryService;
+use Carbon\Carbon;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -74,8 +75,6 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         $zipfilesha1 = $path.'sor-'.$this->platform_slug.'-'.$this->date.'-full.zip.sha1';
         $zipfilelightsha1 = $path.'sor-'.$this->platform_slug.'-'.$this->date.'-light.zip.sha1';
 
-        $existing = $this->platform_slug === 'global' ? $day_archive_service->getDayArchiveByDate($date) : $day_archive_service->getDayArchiveByPlatformDate($platform, $date);
-        $existing?->delete();
 
         DayArchive::create([
             'date' => $this->date,
