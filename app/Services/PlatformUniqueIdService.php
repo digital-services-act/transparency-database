@@ -23,7 +23,7 @@ class PlatformUniqueIdService
 
         // @codeCoverageIgnoreStart
         if (! $lock->get()) {
-            Log::info('Lock encountered for PUID ' . $puid . ' on platform ' . $platform_id);
+            Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
             throw new PuidNotUniqueSingleException($puid);
         }
         // @codeCoverageIgnoreEnd
@@ -92,10 +92,6 @@ class PlatformUniqueIdService
         return Cache::get($this->getCacheKey($platform_id, $puid), false);
     }
 
-    /**
-     *
-     * @return bool
-     */
     public function isPuidInDb(int $platform_id, mixed $puid): bool
     {
         return PlatformPuid::where('platform_id', $platform_id)->where('puid', $puid)->exists();
@@ -119,10 +115,13 @@ class PlatformUniqueIdService
      */
     public function checkDuplicatesInCache(array $puids, int $platform_id): void
     {
+        $keys = array_map(fn ($puid) => $this->getCacheKey($platform_id, $puid), $puids);
+        $cached = Cache::many($keys);
+
         $duplicates = [];
         foreach ($puids as $puid) {
-            if ($this->isPuidInCache($platform_id, $puid)) {
-                // If the value is not valid, return early
+            $key = $this->getCacheKey($platform_id, $puid);
+            if (! empty($cached[$key])) {
                 $duplicates[] = $puid;
             }
         }
@@ -142,9 +141,42 @@ class PlatformUniqueIdService
 
     public function refreshPuidsInCache(array $puids, int $platform_id): void
     {
+        $cacheData = [];
         foreach ($puids as $puid) {
-            Cache::put($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days));
+            $cacheData[$this->getCacheKey($platform_id, $puid)] = true;
         }
+        Cache::putMany($cacheData, now()->addDays($this->cache_valid_days));
+    }
+
+    /**
+     * Bulk add PUIDs to database using a single insert query.
+     *
+     * @param  array<array{platform_id: int, puid: string}>  $statements
+     */
+    public function addPuidsToDatabase(array $statements): void
+    {
+        $records = array_map(static fn ($s) => [
+            'platform_id' => $s['platform_id'],
+            'puid' => $s['puid'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ], $statements);
+
+        PlatformPuid::insertOrIgnore($records);
+    }
+
+    /**
+     * Bulk add PUIDs to cache using a single operation.
+     *
+     * @param  array<array{platform_id: int, puid: string}>  $statements
+     */
+    public function addPuidsToCache(array $statements): void
+    {
+        $cacheData = [];
+        foreach ($statements as $statement) {
+            $cacheData[$this->getCacheKey($statement['platform_id'], $statement['puid'])] = true;
+        }
+        Cache::putMany($cacheData, now()->addDays($this->cache_valid_days));
     }
 
     public function checkPuidExists(int $platformId, string $puid): bool

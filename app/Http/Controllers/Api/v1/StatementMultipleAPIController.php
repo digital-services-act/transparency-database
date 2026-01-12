@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Exceptions\PuidNotUniqueMultipleException;
-use App\Exceptions\PuidNotUniqueSingleException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
@@ -99,34 +98,13 @@ class StatementMultipleAPIController extends Controller
 
     }
 
-    /**
-     * @return void
-     */
-    private function insertAndAddPuidsToCacheAndDatabase(array $payload)
+    private function insertAndAddPuidsToCacheAndDatabase(array $payload): void
     {
-
         // Bulk insert on production, the cron will index later.
         Statement::insert($payload['statements']);
 
-        // No error, add the platform unique ids into the cache and database
-        foreach ($payload['statements'] as $statement) {
-            try {
-                $this->platform_unique_id_service->addPuidToCache($statement['platform_id'], $statement['puid']);
-            } catch (PuidNotUniqueSingleException $puidNotUniqueSingleException) {
-                Log::info('PUID Not Unique in Cache Exception thrown in Multiple Statements', [
-                    'platform_id' => $statement['platform_id'],
-                    'puid' => $statement['puid'],
-                ]);
-            }
-
-            try {
-                $this->platform_unique_id_service->addPuidToDatabase($statement['platform_id'], $statement['puid']);
-            } catch (PuidNotUniqueSingleException $puidNotUniqueSingleException) {
-                Log::info('PUID Not Unique in Database Exception thrown in Multiple Statements', [
-                    'platform_id' => $statement['platform_id'],
-                    'puid' => $statement['puid'],
-                ]);
-            }
-        }
+        // Bulk add PUIDs to cache and database (2 operations instead of 200)
+        $this->platform_unique_id_service->addPuidsToCache($payload['statements']);
+        $this->platform_unique_id_service->addPuidsToDatabase($payload['statements']);
     }
 }
