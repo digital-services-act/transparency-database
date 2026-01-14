@@ -61,13 +61,17 @@ class StatementsDayArchiveZ extends Command
         $last_id = $day_archive_service->getLastIdOfDate($date);
 
         if (! $first_id) {
-            Log::error('No first_id found for date: ' . $date_string);
+            $this->error('No first_id found for date: ' . $date_string . '. Aborting...');
+            Log::error('StatementsDayArchiveZ: No first_id found for date: ' . $date_string . '. Aborting...');
             return;
         }
+
         if (! $last_id) {
-            Log::error('No last_id found for date: ' . $date_string);
+            $this->error('No last_id found for date: ' . $date_string . '. Aborting...');
+            Log::error('StatementsDayArchiveZ: No last_id found for date: ' . $date_string . '. Aborting...');
             return;
         }
+
 
         // One Mill
         $chunk = 1000000;
