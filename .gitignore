@@ -29,3 +29,4 @@ vapor.yml
 auth.json
 transparency.sqlite
 database.sqlite
+.clever.json
