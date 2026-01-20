@@ -60,6 +60,19 @@ class StatementsDayArchiveZ extends Command
         $first_id = $day_archive_service->getFirstIdOfDate($date);
         $last_id = $day_archive_service->getLastIdOfDate($date);
 
+        if (! $first_id) {
+            $this->error('No first_id found for date: ' . $date_string . '. Aborting...');
+            Log::error('StatementsDayArchiveZ: No first_id found for date: ' . $date_string . '. Aborting...');
+            return;
+        }
+
+        if (! $last_id) {
+            $this->error('No last_id found for date: ' . $date_string . '. Aborting...');
+            Log::error('StatementsDayArchiveZ: No last_id found for date: ' . $date_string . '. Aborting...');
+            return;
+        }
+
+
         // One Mill
         $chunk = 1000000;
 
@@ -98,8 +111,8 @@ class StatementsDayArchiveZ extends Command
         $copys3_jobs = [];
         foreach ($exports as $export) {
             foreach ($versions as $version) {
-                $zip = 'sor-'.$export['slug'].'-'.$date_string.'-'.$version.'.zip';
-                $sha1 = 'sor-'.$export['slug'].'-'.$date_string.'-'.$version.'.zip.sha1';
+                $zip = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.zip';
+                $sha1 = 'sor-' . $export['slug'] . '-' . $date_string . '-' . $version . '.zip.sha1';
                 $copys3_jobs[] = new StatementCsvExportCopyS3($zip, $sha1);
             }
         }
@@ -120,15 +133,15 @@ class StatementsDayArchiveZ extends Command
             'copys3_jobs' => $copys3_jobs,
         ];
 
-        Log::info('Day Archiving Started for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
-        File::delete(File::glob(storage_path('app').'/*'.$date_string.'*'));
+        Log::info('Day Archiving Started for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
+        File::delete(File::glob(storage_path('app') . '/*' . $date_string . '*'));
         Bus::batch($luggage['csv_export_jobs'])->onQueue('csv')->finally(static function () use ($luggage) {
             Bus::batch($luggage['group_zip_jobs'])->onQueue('zip')->finally(static function () use ($luggage) {
                 Bus::batch($luggage['sha1_jobs'])->onQueue('sha1')->finally(static function () use ($luggage) {
                     Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
                         Bus::batch($luggage['archive_jobs'])->onQueue('archive')->finally(static function () use ($luggage) {
-                            File::delete(File::glob(storage_path('app').'/*'.$luggage['date_string'].'*'));
-                            Log::info('Day Archiving Ended for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
+                            File::delete(File::glob(storage_path('app') . '/*' . $luggage['date_string'] . '*'));
+                            Log::info('Day Archiving Ended for: ' . $luggage['date_string'] . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
                         })->dispatch();
                     })->dispatch();
                 })->dispatch();
