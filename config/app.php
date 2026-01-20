@@ -93,9 +93,7 @@ return [
     */
 
     'locale' => 'en',
-    'locales' => ['en','fr','mt','bg','pl','hr','pt','cs','ro','da','sk','nl','sl','et','es','fi','sv','de','el','hu','ga','it','lv','lt'],
-
-
+    'locales' => ['en', 'fr', 'mt', 'bg', 'pl', 'hr', 'pt', 'cs', 'ro', 'da', 'sk', 'nl', 'sl', 'et', 'es', 'fi', 'sv', 'de', 'el', 'hu', 'ga', 'it', 'lv', 'lt'],
 
     /*
     |--------------------------------------------------------------------------
@@ -152,8 +150,8 @@ return [
     */
 
     'maintenance' => [
-        'driver' => 'file',
-        // 'store'  => 'redis',
+        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
     /*
