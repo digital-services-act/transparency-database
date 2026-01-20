@@ -39,6 +39,22 @@ context("Single statement endpoint", () => {
       }).then((response) => {
         expect(response.status).to.eq(201);
         expect(response.body).to.have.property("id");
+
+        cy.wait(1000);
+        // Let's check Opensearch for the puid
+        cy.request({
+          method: "POST",
+          url: `${Cypress.env("apiUrl")}/opensearch/sql`,
+          headers: { ...headers, Authorization: `Bearer ${token}` },
+          body: {
+            query: `SELECT puid from statement_index order by id desc limit 1`,
+          },
+          failOnStatusCode: false,
+        }).then((searchResponse) => {
+          expect(searchResponse.status).to.eq(200);
+          const puidSearch = searchResponse.body.datarows.flat()[0];
+          expect(puidSearch).to.eq(puid);
+        });
       });
     });
   });
@@ -56,7 +72,7 @@ context("Single statement endpoint", () => {
       }).then((response) => {
         expect(response.status).to.eq(422);
         expect(response.body.message).to.eq(
-          "The identifier given is not unique within this platform."
+          "The identifier given is not unique within this platform.",
         );
       });
     });
@@ -133,7 +149,7 @@ context("Single statement endpoint", () => {
         }).then((response) => {
           expect(response.status).to.eq(422);
           expect(response.body.message).to.eq(
-            "The selected category is invalid."
+            "The selected category is invalid.",
           );
         });
       });
@@ -156,7 +172,7 @@ context("Single statement endpoint", () => {
         }).then((response) => {
           expect(response.status).to.eq(422);
           expect(response.body.message).to.eq(
-            "The selected category specification is invalid."
+            "The selected category specification is invalid.",
           );
         });
       });
@@ -178,7 +194,7 @@ context("Single statement endpoint", () => {
         }).then((response) => {
           expect(response.status).to.eq(422);
           expect(response.body.message).to.eq(
-            "The selected category is invalid."
+            "The selected category is invalid.",
           );
         });
 
@@ -215,7 +231,7 @@ context("Single statement endpoint", () => {
         }).then((response) => {
           expect(response.status).to.eq(422);
           expect(response.body.message).to.eq(
-            "The selected category specification is invalid."
+            "The selected category specification is invalid.",
           );
         });
 
@@ -284,7 +300,7 @@ context("Single statement endpoint", () => {
       }).then((response) => {
         expect(response.status).to.eq(422);
         expect(response.body.message).to.eq(
-          "The identifier given is not unique within this platform."
+          "The identifier given is not unique within this platform.",
         );
       });
     });

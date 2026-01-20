@@ -611,7 +611,6 @@ class Statement extends Model
         } else {
             return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
         }
-
     }
 
     public function platformUuidCached(): string
@@ -621,7 +620,6 @@ class Statement extends Model
         } else {
             return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
         }
-
     }
 
     public function toSearchableArray(): array
