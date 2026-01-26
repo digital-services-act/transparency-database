@@ -47,7 +47,7 @@ context("Multiple statements endpoint", () => {
           url: `${Cypress.env("apiUrl")}/opensearch/sql`,
           headers: { ...headers, Authorization: `Bearer ${token}` },
           body: {
-            query: `SELECT puid from statement_index order by id desc limit ${count}`,
+            query: `SELECT puid from statement_index order by id desc`,
           },
         }).then((searchResponse) => {
           expect(searchResponse.status).to.eq(200);

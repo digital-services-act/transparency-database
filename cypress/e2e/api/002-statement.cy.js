@@ -47,13 +47,13 @@ context("Single statement endpoint", () => {
           url: `${Cypress.env("apiUrl")}/opensearch/sql`,
           headers: { ...headers, Authorization: `Bearer ${token}` },
           body: {
-            query: `SELECT puid from statement_index order by id desc limit 1`,
+            query: `SELECT puid from statement_index order by id desc`,
           },
           failOnStatusCode: false,
         }).then((searchResponse) => {
           expect(searchResponse.status).to.eq(200);
-          const puidSearch = searchResponse.body.datarows.flat()[0];
-          expect(puidSearch).to.eq(puid);
+          expect(searchResponse.body.datarows).to.not.be.undefined;
+          expect(searchResponse.body.datarows[0][0]).to.eq(puid);
         });
       });
     });
