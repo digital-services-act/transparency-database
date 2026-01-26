@@ -83,11 +83,26 @@ class PlatformUniqueIdService
             $this->checkDuplicatesInCache($puids, $payload['platform_id']);
             $this->checkDuplicatesInPlatformPuids($puids, $payload['platform_id']);
 
-            // No duplicates, add all PUIDs to cache and database
+            // No duplicates, add all PUIDs to cache and db
+            $puidFailures = [];
             foreach ($puids as $puid) {
-                $this->addPuidToCache($payload['platform_id'], $puid);
-                $this->addPuidToDatabase($payload['platform_id'], $puid);
+                try {
+                    $this->addPuidToCache($payload['platform_id'], $puid);
+                    $this->addPuidToDatabase($payload['platform_id'], $puid);
+                    // @codeCoverageIgnoreStart
+                } catch (\Exception $e) {
+                    $puidFailures[] = $puid;
+                    // @codeCoverageIgnoreEnd
+                }
             }
+
+            // @codeCoverageIgnoreStart
+            if (! empty($puidFailures)) {
+                // This should not happen, but in case it does, we log it and throw an exception
+                Log::warning('PuidNotUniqueSingleException encountered during batch processing when adding PUIDs to Cache and DB:' . implode(', ', $puidFailures) . ' on platform ' . $payload['platform_id']);
+                throw new PuidNotUniqueMultipleException($puidFailures);
+            }
+            // @codeCoverageIgnoreEnd
 
             $statements = $payload['statements'];
             // "Enrich" the payload with additional data
@@ -99,21 +114,7 @@ class PlatformUniqueIdService
             );
 
             // Now we save the statements
-            // @codeCoverageIgnoreStart
-            if (env('APP_ENV_REAL') === 'production') {
-                // Bulk insert on production, the cron will index later.
-                Statement::insert($statements);
-                // @codeCoverageIgnoreEnd
-            } else {
-                // Not production, we index at the moment.
-                $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
-
-                Statement::insert($statements);
-                $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
-
-                $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
-                $this->opensearch->bulkIndexStatements($statements);
-            }
+            Statement::bulkInsert($statements);
         } finally {
             foreach ($locks as $lock) {
                 optional($lock)->release();

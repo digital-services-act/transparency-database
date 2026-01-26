@@ -880,4 +880,30 @@ class Statement extends Model
 
         return $out;
     }
+
+    /**
+     * Save a batch of statements coming from the Multi API endpoint
+     * @param array $statements
+     *
+     * @return void
+     */
+    public static function bulkInsert(array $statements): void
+    {
+        // @codeCoverageIgnoreStart
+        if (env('APP_ENV_REAL') === 'production') {
+            // Bulk insert on production, the cron will index later.
+            Statement::insert($statements);
+            // @codeCoverageIgnoreEnd
+        } else {
+            $opensearch = app('App\Services\StatementSearchService');
+            // Not production, we index at the moment.
+            $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
+
+            Statement::insert($statements);
+            $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
+
+            $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
+            $opensearch->bulkIndexStatements($statements);
+        }
+    }
 }
