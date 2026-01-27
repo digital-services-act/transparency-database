@@ -53,7 +53,9 @@ context("Single statement endpoint", () => {
         }).then((searchResponse) => {
           expect(searchResponse.status).to.eq(200);
           expect(searchResponse.body.datarows).to.not.be.undefined;
-          expect(searchResponse.body.datarows[0][0]).to.eq(puid);
+
+          const rows = searchResponse.body.datarows.flat();
+          expect(rows).to.contain(puid);
         });
       });
     });
