@@ -84,23 +84,22 @@ class PlatformUniqueIdService
             $this->checkDuplicatesInPlatformPuids($puids, $payload['platform_id']);
 
             // No duplicates, add all PUIDs to cache and db
-            $puidFailures = [];
+            $cacheFailures = [];
             foreach ($puids as $puid) {
                 try {
                     $this->addPuidToCache($payload['platform_id'], $puid);
-                    $this->addPuidToDatabase($payload['platform_id'], $puid);
                     // @codeCoverageIgnoreStart
-                } catch (\Exception $e) {
-                    $puidFailures[] = $puid;
+                } catch (PuidNotUniqueSingleException $e) {
+                    $cacheFailures[] = $puid;
                     // @codeCoverageIgnoreEnd
                 }
             }
 
             // @codeCoverageIgnoreStart
-            if (! empty($puidFailures)) {
+            if (! empty($cacheFailures)) {
                 // This should not happen, but in case it does, we log it and throw an exception
-                Log::warning('PuidNotUniqueSingleException encountered during batch processing when adding PUIDs to Cache and DB:' . implode(', ', $puidFailures) . ' on platform ' . $payload['platform_id']);
-                throw new PuidNotUniqueMultipleException($puidFailures);
+                Log::warning('PuidNotUniqueSingleException encountered during batch processing when adding PUIDs to Cache and DB:' . implode(', ', $cacheFailures) . ' on platform ' . $payload['platform_id']);
+                throw new PuidNotUniqueMultipleException($cacheFailures);
             }
             // @codeCoverageIgnoreEnd
 
@@ -114,7 +113,10 @@ class PlatformUniqueIdService
             );
 
             // Now we save the statements
-            Statement::bulkInsert($statements);
+            Statement::insertBulk($statements);
+
+            // Bulk insert PUIDS into DB (should be ok????)
+            PlatformPuid::insertBulk($puids, $payload['platform_id']);
         } finally {
             foreach ($locks as $lock) {
                 optional($lock)->release();

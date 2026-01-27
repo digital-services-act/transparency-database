@@ -887,7 +887,7 @@ class Statement extends Model
      *
      * @return void
      */
-    public static function bulkInsert(array $statements): void
+    public static function insertBulk(array $statements): void
     {
         // @codeCoverageIgnoreStart
         if (env('APP_ENV_REAL') === 'production') {
