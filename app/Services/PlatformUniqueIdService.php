@@ -7,16 +7,18 @@ use App\Exceptions\PuidNotUniqueSingleException;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PlatformUniqueIdService
 {
     public $lock_valid_seconds = 30;
+    public $cacheKeys = [];
 
     public function __construct(
         protected GroupedSubmissionsService $groupService,
         protected StatementSearchService $opensearch,
-        protected int $cache_valid_days = 2
+        protected int $cache_valid_days = 3
     ) {}
 
     public function handlePuid(mixed $puid, int $platform_id): void
@@ -88,6 +90,7 @@ class PlatformUniqueIdService
             foreach ($puids as $puid) {
                 try {
                     $this->addPuidToCache($payload['platform_id'], $puid);
+                    $this->cacheKeys[] = $this->getCacheKey($payload['platform_id'], $puid);
                     // @codeCoverageIgnoreStart
                 } catch (PuidNotUniqueSingleException $e) {
                     $cacheFailures[] = $puid;
@@ -112,11 +115,23 @@ class PlatformUniqueIdService
                 $payload['method']
             );
 
-            // Now we save the statements
-            Statement::insertBulk($statements);
+            try {
+                DB::transaction(function () use ($statements, $puids, $payload) {
+                    // Now we save the statements
+                    Statement::insertBulk($statements);
 
-            // Bulk insert PUIDS into DB (should be ok????)
-            PlatformPuid::insertBulk($puids, $payload['platform_id']);
+                    // Bulk insert PUIDS into DB (should be ok????)
+                    PlatformPuid::insertBulk($puids, $payload['platform_id']);
+                });
+                // @codeCoverageIgnoreStart
+            } catch (\Exception $e) {
+                // If we have an exception, we need to remove the PUIDs from the cache
+                foreach ($puids as $puid) {
+                    Cache::forget($this->getCacheKey($payload['platform_id'], $puid));
+                }
+                throw $e;
+                // @codeCoverageIgnoreEnd
+            }
         } finally {
             foreach ($locks as $lock) {
                 optional($lock)->release();
