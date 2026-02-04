@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class PlatformUniqueIdService
 {
-    public $lock_valid_seconds = 30;
+    public $lock_valid_seconds = 60;
     public $cacheKeys = [];
 
     public function __construct(
