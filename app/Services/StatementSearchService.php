@@ -72,9 +72,7 @@ class StatementSearchService
     public const ONE_HOUR = 1 * 60 * 60;
     public const FIVE_MINUTES = 5 * 60;
 
-    public function __construct(private readonly Client $client, protected PlatformQueryService $platformQueryService)
-    {
-    }
+    public function __construct(private readonly Client $client, protected PlatformQueryService $platformQueryService) {}
 
     /**
      *
@@ -468,7 +466,8 @@ class StatementSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client->bulk(['require_alias' => !$replace, 'body' => implode("\n", $bulk)]);
+            // $this->client->bulk(['require_alias' => !$replace, 'body' => implode("\n", $bulk)]);
+            $this->client->bulk(['body' => implode("\n", $bulk)]);
         }
     }
 
@@ -708,7 +707,6 @@ class StatementSearchService
             $query = "SELECT CAST(count(*) AS BIGINT), method, platform_id FROM " . $this->index_name . " WHERE platform_id <> " . $dsa_team_platform_id . " GROUP BY platform_id, method LIMIT 5000";
             return $this->extractMethodAggregateFromQuery($query);
         });
-
     }
 
     private function extractMethodAggregateFromQuery(string $query): array
@@ -1264,166 +1262,166 @@ JSON;
     {
         return [
             'properties' =>
+            [
+                'automated_decision' =>
                 [
-                    'automated_decision' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'automated_detection' =>
-                        [
-                            'type' => 'boolean',
-                        ],
-                    'category' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'category_specification' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'content_type' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'content_type_single' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'content_type_other' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'content_language' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'created_at' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'received_date' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'content_date' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'application_date' =>
-                        [
-                            'type' => 'date',
-                        ],
-                    'decision_account' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'account_type' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_facts' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_ground' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_monetary' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_provision' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'decision_visibility' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_visibility_single' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'id' =>
-                        [
-                            'type' => 'long',
-                        ],
-                    'illegal_content_explanation' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'illegal_content_legal_ground' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'incompatible_content_explanation' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'incompatible_content_ground' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'platform_id' =>
-                        [
-                            'type' => 'long',
-                        ],
-                    'platform_name' =>
-                        [
-                            'type' => 'text',
-                            "fields" => [
-                                "keyword" => [
-                                    "type" => "keyword",
-                                    "ignore_above" => 256
-                                ]
-                            ]
-                        ],
-                    'platform_uuid' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'source_identity' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'source_type' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'url' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'uuid' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'puid' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_visibility_other' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'decision_monetary_other' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'territorial_scope' =>
-                        [
-                            'type' => 'text',
-                        ],
-                    'method' =>
-                        [
-                            'type' => 'keyword',
-                        ],
-                    'content_id_ean' =>
-                        [
-                            'type' => 'long',
-                        ],
+                    'type' => 'keyword',
                 ],
+                'automated_detection' =>
+                [
+                    'type' => 'boolean',
+                ],
+                'category' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'category_specification' =>
+                [
+                    'type' => 'text',
+                ],
+                'content_type' =>
+                [
+                    'type' => 'text',
+                ],
+                'content_type_single' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'content_type_other' =>
+                [
+                    'type' => 'text',
+                ],
+                'content_language' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'created_at' =>
+                [
+                    'type' => 'date',
+                ],
+                'received_date' =>
+                [
+                    'type' => 'date',
+                ],
+                'content_date' =>
+                [
+                    'type' => 'date',
+                ],
+                'application_date' =>
+                [
+                    'type' => 'date',
+                ],
+                'decision_account' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'account_type' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'decision_facts' =>
+                [
+                    'type' => 'text',
+                ],
+                'decision_ground' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'decision_monetary' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'decision_provision' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'decision_visibility' =>
+                [
+                    'type' => 'text',
+                ],
+                'decision_visibility_single' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'id' =>
+                [
+                    'type' => 'long',
+                ],
+                'illegal_content_explanation' =>
+                [
+                    'type' => 'text',
+                ],
+                'illegal_content_legal_ground' =>
+                [
+                    'type' => 'text',
+                ],
+                'incompatible_content_explanation' =>
+                [
+                    'type' => 'text',
+                ],
+                'incompatible_content_ground' =>
+                [
+                    'type' => 'text',
+                ],
+                'platform_id' =>
+                [
+                    'type' => 'long',
+                ],
+                'platform_name' =>
+                [
+                    'type' => 'text',
+                    "fields" => [
+                        "keyword" => [
+                            "type" => "keyword",
+                            "ignore_above" => 256
+                        ]
+                    ]
+                ],
+                'platform_uuid' =>
+                [
+                    'type' => 'text',
+                ],
+                'source_identity' =>
+                [
+                    'type' => 'text',
+                ],
+                'source_type' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'url' =>
+                [
+                    'type' => 'text',
+                ],
+                'uuid' =>
+                [
+                    'type' => 'text',
+                ],
+                'puid' =>
+                [
+                    'type' => 'text',
+                ],
+                'decision_visibility_other' =>
+                [
+                    'type' => 'text',
+                ],
+                'decision_monetary_other' =>
+                [
+                    'type' => 'text',
+                ],
+                'territorial_scope' =>
+                [
+                    'type' => 'text',
+                ],
+                'method' =>
+                [
+                    'type' => 'keyword',
+                ],
+                'content_id_ean' =>
+                [
+                    'type' => 'long',
+                ],
+            ],
         ];
     }
 }
