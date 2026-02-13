@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DatabaseVelocityController;
 use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
@@ -181,6 +182,7 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::prefix('/admin/')->group(static function () {
             Route::group(['middleware' => ['can:administrate']], static function () {
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
+                Route::get('database-velocity', [DatabaseVelocityController::class, 'index'])->name('database-velocity.index');
             });
             Route::get('onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
             Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');

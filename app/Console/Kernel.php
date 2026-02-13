@@ -37,6 +37,8 @@ class Kernel extends ConsoleKernel
         // The main indexer run daily after midnight. Only on prod
         if (config('app.is_task_server')) {
 
+            $schedule->command('statements:track-velocity')->everyMinute();
+
             $schedule->command('statements:elastic-index-date-seq yesterday 2000')
                 ->dailyAt(self::DAILY_AFTER_MIDNIGHT);
 
