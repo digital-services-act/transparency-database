@@ -35,7 +35,7 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(11, $events);
+        $this->assertCount(12, $events);
 
         // Check for a specific command that is unique to production
         $this->assertTrue($events->contains(function ($event) {
@@ -54,7 +54,7 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(11, $events);
+        $this->assertCount(12, $events);
     }
 
     /**
