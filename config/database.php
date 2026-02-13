@@ -155,11 +155,6 @@ return [
             'options' => [
                 'password' => env('REDIS_PASSWORD'),
                 'username' => env('REDIS_USERNAME'),
-                'context' => [
-                    'stream' => [
-                        'verify_peer' => false,
-                    ],
-                ],
             ],
         ],
 
