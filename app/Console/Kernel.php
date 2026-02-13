@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
 
-        $schedule->command('statements:track-velocity')->everyMinute();
+        $schedule->command('statements:track-velocity')->everyMinute()->onOneServer();
 
         // The main indexer run daily after midnight. Only on prod
         if (config('app.is_task_server')) {
