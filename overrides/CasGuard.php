@@ -101,7 +101,7 @@ final class CasGuard implements AuthGuard
             return null;
         }
 
-        return $this->user->user;
+        return $this->user()?->getAuthIdentifier();
     }
 
     public function logout(): void
