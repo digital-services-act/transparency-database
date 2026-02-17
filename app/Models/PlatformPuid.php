@@ -33,4 +33,20 @@ class PlatformPuid extends Model
     {
         return $this->hasOne(Platform::class, 'id', 'platform_id');
     }
+
+    public static function insertBulk(array $puids, int $platform_id): void
+    {
+        $timestamp = now();
+
+        $records = array_map(function ($puid) use ($platform_id, $timestamp) {
+            return [
+                'platform_id' => $platform_id,
+                'puid' => $puid,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ];
+        }, $puids);
+
+        self::insert($records);
+    }
 }

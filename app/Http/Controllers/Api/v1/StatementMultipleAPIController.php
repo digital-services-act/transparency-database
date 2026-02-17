@@ -13,7 +13,6 @@ use App\Services\EuropeanCountriesService;
 use App\Services\GroupedSubmissionsService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementSearchService;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,8 +31,7 @@ class StatementMultipleAPIController extends Controller
         protected GroupedSubmissionsService $grouped_submissions_service,
         protected StatementSearchService $statement_search_service,
         protected EuropeanCountriesService $european_countries_service
-    ) {
-    }
+    ) {}
 
 
     /**
@@ -41,13 +39,12 @@ class StatementMultipleAPIController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $platform_id = $this->getRequestUserPlatformId($request);
-        $user_id = $request->user()->id;
-        $method = Statement::METHOD_API_MULTI;
-
         $payload = $request->validate([
             'statements' => 'required|array|between:1,100',
         ]);
+        $payload['user_id'] = $request->user()->id;
+        $payload['method'] = Statement::METHOD_API_MULTI;
+        $payload['platform_id'] = $this->getRequestUserPlatformId($request);
 
         $errors = [];
         [$errors, $payload] = $this->grouped_submissions_service->sanitizePayload($payload, $errors);
@@ -66,28 +63,20 @@ class StatementMultipleAPIController extends Controller
             return response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // Check if PUIDs are unique in the Request made by the client
-        $puids_to_check = array_map(static fn($potential_statement) => $potential_statement['puid'],
-            $payload['statements']);
-
+        $out = [];
         try {
-            $this->platform_unique_id_service->checkDuplicatesInRequest($puids_to_check);
-            $this->platform_unique_id_service->checkDuplicatesInCache($puids_to_check, $platform_id);
-            $this->platform_unique_id_service->checkDuplicatesInPlatformPuids($puids_to_check, $platform_id);
+            // Handle the PUID checks, inserts and statements creation in this service method
+            $out = $this->platform_unique_id_service->handleBatchPayload($payload);
         } catch (PuidNotUniqueMultipleException $puidNotUniqueMultipleException) {
             // If the cache expired, and we got a new duplicate, we add it again to the cache
-            $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(),
-                $platform_id);
+            $this->platform_unique_id_service->refreshPuidsInCache(
+                $puidNotUniqueMultipleException->getDuplicates(),
+                $payload['platform_id']
+            );
             return $puidNotUniqueMultipleException->getJsonResponse();
         }
 
-        $out = $this->grouped_submissions_service->enrichThePayloadForBulkInsert($payload['statements'], $platform_id,
-            $user_id, $method);
-
-        $this->insertAndAddPuidsToCacheAndDatabase($payload);
-
         return response()->json(['statements' => $out], Response::HTTP_CREATED);
-
     }
 
     /**

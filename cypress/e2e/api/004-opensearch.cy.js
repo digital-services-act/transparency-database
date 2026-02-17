@@ -17,7 +17,7 @@ const index = "statement_index";
 // aggregates
 // platforms
 // labels
-// total
+// totalw
 // datetotal
 // platformdatetotal
 // datetotalrange
