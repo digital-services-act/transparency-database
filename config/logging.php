@@ -102,6 +102,7 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
+            'formatter' => env('LOG_STDERR_FORMATTER'),
             'prefix' => env('APP_NAME', 'laravel'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
