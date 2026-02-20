@@ -170,6 +170,8 @@ return [
                 [
                     'host' => env('REDIS_HOST', '127.0.0.1'),
                     'port' => env('REDIS_PORT', '6379'),
+                    'persistent' => true,
+                    'persistent_id' => env('APP_NAME', 'laravel'),
                 ],
             ],
 
@@ -177,6 +179,8 @@ return [
                 [
                     'host' => env('REDIS_HOST', '127.0.0.1'),
                     'port' => env('REDIS_PORT', '6379'),
+                    'persistent' => true,
+                    'persistent_id' => env('APP_NAME', 'laravel'),
                 ],
             ],
 
