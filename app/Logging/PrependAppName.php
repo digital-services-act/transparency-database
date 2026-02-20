@@ -3,7 +3,7 @@
 namespace App\Logging;
 
 use Illuminate\Log\Logger;
-use Monolog\LogRecord;
+use Monolog\Formatter\LineFormatter;
 
 class PrependAppName
 {
@@ -12,11 +12,13 @@ class PrependAppName
         $appName = config('app.name', 'Laravel');
 
         foreach ($logger->getHandlers() as $handler) {
-            $handler->pushProcessor(function (LogRecord $record) use ($appName): LogRecord {
-                return $record->with(
-                    message: "[{$appName}] {$record->message}"
-                );
-            });
+            // On impose un format où le nom d'app est AVANT le datetime
+            $handler->setFormatter(new LineFormatter(
+                format: "({$appName}) [%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
+                dateFormat: 'Y-m-d H:i:s',
+                allowInlineLineBreaks: true,
+                ignoreEmptyContextAndExtra: true,
+            ));
         }
     }
 }
