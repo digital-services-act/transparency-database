@@ -57,12 +57,14 @@ return [
 
         'single' => [
             'driver' => 'single',
+            'tap' => [App\Logging\PrependAppName::class],
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
         'daily' => [
             'driver' => 'daily',
+            'tap' => [App\Logging\PrependAppName::class],
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
@@ -91,6 +93,7 @@ return [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
             'handler' => StreamHandler::class,
+            'tap' => [App\Logging\PrependAppName::class],
             'formatter' => env('LOG_STDERR_FORMATTER'),
             'with' => [
                 'stream' => 'php://stderr',
@@ -99,6 +102,7 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
+            'prefix' => env('APP_NAME', 'laravel'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
