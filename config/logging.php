@@ -102,7 +102,7 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
-            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'tap' => [App\Logging\PrependAppName::class],
             'prefix' => env('APP_NAME', 'laravel'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
