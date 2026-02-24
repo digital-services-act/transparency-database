@@ -165,23 +165,24 @@ return [
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_')
         ],
 
+
         'clusters' => [
             'default' => [
-                [
-                    'host' => env('REDIS_HOST', '127.0.0.1'),
-                    'port' => env('REDIS_PORT', '6379'),
-                    'persistent' => true,
-                    'persistent_id' => env('APP_NAME', 'laravel'),
-                ],
+                ['host' => 'bewg7wuwurmmcotmpqp0-redis.services.clever-cloud.com', 'port' => 40428, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+                ['host' => 'bx4ojeq3aztvwsla4kwr-redis.services.clever-cloud.com', 'port' => 40487, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+                ['host' => 'bpy29tm60cugl9nwdq1u-redis.services.clever-cloud.com', 'port' => 40499, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+                ['host' => 'bmecjbzvy7jqjy6cqc40-redis.services.clever-cloud.com', 'port' => 40517, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+                ['host' => 'blyv1dzzmh3lh72yhlnv-redis.services.clever-cloud.com', 'port' => 40518, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+                ['host' => 'b3o65ktuzby6uyenhbsu-redis.services.clever-cloud.com', 'port' => 40522, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
             ],
 
             'cache' => [
-                [
-                    'host' => env('REDIS_HOST', '127.0.0.1'),
-                    'port' => env('REDIS_PORT', '6379'),
-                    'persistent' => true,
-                    'persistent_id' => env('APP_NAME', 'laravel'),
-                ],
+                ['host' => 'bewg7wuwurmmcotmpqp0-redis.services.clever-cloud.com', 'port' => 40428, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+                ['host' => 'bx4ojeq3aztvwsla4kwr-redis.services.clever-cloud.com', 'port' => 40487, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+                ['host' => 'bpy29tm60cugl9nwdq1u-redis.services.clever-cloud.com', 'port' => 40499, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+                ['host' => 'bmecjbzvy7jqjy6cqc40-redis.services.clever-cloud.com', 'port' => 40517, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+                ['host' => 'blyv1dzzmh3lh72yhlnv-redis.services.clever-cloud.com', 'port' => 40518, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+                ['host' => 'b3o65ktuzby6uyenhbsu-redis.services.clever-cloud.com', 'port' => 40522, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
             ],
 
             'options' => [
