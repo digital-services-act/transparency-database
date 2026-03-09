@@ -50,7 +50,7 @@ class ElasticSearchAPIController extends Controller
 
                     return response()->json($response);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'failed to retrieve indices: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'failed to retrieve indices: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -67,7 +67,7 @@ class ElasticSearchAPIController extends Controller
                         'body' => $request->toArray(),
                     ])->asArray());
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid query attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid query attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -84,7 +84,7 @@ class ElasticSearchAPIController extends Controller
                         'body' => $request->toArray(),
                     ])->asArray());
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid count attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid count attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -104,7 +104,7 @@ class ElasticSearchAPIController extends Controller
 
                     return response()->json($response);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid sql attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid sql attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -123,7 +123,7 @@ class ElasticSearchAPIController extends Controller
 
                     return response()->json($response);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid lucene query attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid lucene query attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -184,7 +184,7 @@ class ElasticSearchAPIController extends Controller
 
             fclose($out);
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid aggregates csv date attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid aggregates csv date attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -220,7 +220,7 @@ class ElasticSearchAPIController extends Controller
 
                     return response()->json($results);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid aggregates date attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid aggregates date attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -252,7 +252,7 @@ class ElasticSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid aggregates range attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid aggregates range attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -283,7 +283,7 @@ class ElasticSearchAPIController extends Controller
 
             return response()->json($results);
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid aggregates range dates attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid aggregates range dates attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -300,7 +300,7 @@ class ElasticSearchAPIController extends Controller
 
                     return response()->json($platforms);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid platforms attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid platforms attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -328,7 +328,7 @@ class ElasticSearchAPIController extends Controller
                         'source_types' => Statement::SOURCE_TYPES,
                     ]);
                 } catch (Exception $exception) {
-                    return response()->json(['error' => 'invalid labels attempt: ' . $exception->getMessage()], $this->error_code);
+                    return response()->json(['error' => 'invalid labels attempt: '.$exception->getMessage()], $this->error_code);
                 }
             }
         );
@@ -346,7 +346,7 @@ class ElasticSearchAPIController extends Controller
 
             return response()->json($this->statement_elastic_search_service->totalForDate($date));
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid date total attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid date total attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -363,7 +363,7 @@ class ElasticSearchAPIController extends Controller
 
             return response()->json($this->statement_elastic_search_service->totalForPlatformDate($platform, $date));
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid date total platform attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid date total platform attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -374,7 +374,7 @@ class ElasticSearchAPIController extends Controller
 
             return response()->json($this->statement_elastic_search_service->totalForDateRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid date total range attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid date total range attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -385,7 +385,7 @@ class ElasticSearchAPIController extends Controller
 
             return response()->json($this->statement_elastic_search_service->datesTotalsForRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
-            return response()->json(['error' => 'invalid date totals range attempt: ' . $exception->getMessage()], $this->error_code);
+            return response()->json(['error' => 'invalid date totals range attempt: '.$exception->getMessage()], $this->error_code);
         }
     }
 
@@ -409,7 +409,7 @@ class ElasticSearchAPIController extends Controller
 
             return $date;
         } catch (Exception $exception) {
-            throw new RuntimeException("Can't sanitize this date: '" . $date_in . "' " . $exception->getMessage(), $exception->getCode(), $exception);
+            throw new RuntimeException("Can't sanitize this date: '".$date_in."' ".$exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 

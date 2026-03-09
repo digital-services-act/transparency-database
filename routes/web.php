@@ -219,6 +219,24 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
+    Route::get('/ping-elasticsearch', function () {
+        try {
+            $service = app(\App\Services\StatementElasticSearchService::class);
+            $info = $service->client()->info()->asArray();
+
+            return response()->json([
+                'status' => 'ok',
+                'cluster_name' => $info['cluster_name'] ?? null,
+                'version' => $info['version']['number'] ?? null,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 503);
+        }
+    });
+
     Route::get('/ping-redis', function () {
         try {
             $cacheDriver = config('cache.default');
