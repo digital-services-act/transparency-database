@@ -80,111 +80,64 @@ class DayArchiveService
 
     public function getFirstIdOfDate(Carbon $date)
     {
-        // Start at the beginning of the specified minute
-        $startOfMinute = $date->copy()->setTime(0, 0, 0);
-        $firstId = false;
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
 
-        for ($i = 0; $i < 60; $i++) {
-            // For each iteration, add seconds to the starting point
-            $currentSecond = $startOfMinute->copy()->addSeconds($i);
+        $query = $date->lt('2025-07-01 00:00:00')
+            ? StatementAlpha::query()
+            : Statement::query();
 
-            $query = $date->lt('2025-07-01 00:00:00') ? StatementAlpha::query() : Statement::query();
-
-            // Query the database for the minimum ID created exactly at this second
-            $first = $query->selectRaw('min(id) as min')
-                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
-                ->first();
-
-            // If a result is found, return the id
-            if ($first && $first->min) {
-                return $first->min;
-            }
-        }
-
-        // Return false if no ID is found within the minute
-        return $firstId;
+        return $query
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->value('id') ?: false;
     }
 
     public function getFirstPlatformPuidIdOfDate(Carbon $date)
     {
-        // Start at the beginning of the specified minute
-        $startOfMinute = $date->copy()->setTime(0, 0, 0);
-        $firstId = false;
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
 
-        for ($i = 0; $i < 60; $i++) {
-            // For each iteration, add seconds to the starting point
-            $currentSecond = $startOfMinute->copy()->addSeconds($i);
-
-            // Query the database for the minimum ID created exactly at this second
-            $first = PlatformPuid::query()
-                ->selectRaw('min(id) as min')
-                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
-                ->first();
-
-            // If a result is found, return the id
-            if ($first && $first->min) {
-                return $first->min;
-            }
-        }
-
-        // Return false if no ID is found within the minute
-        return $firstId;
+        return PlatformPuid::query()
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->value('id') ?: false;
     }
 
     public function getLastIdOfDate(Carbon $date)
     {
-        // Set the time to 23:59:59 of the given date
-        $endOfDay = $date->copy()->setTime(23, 59, 59); // '2030-01-01 23:59:59'
-        $lastId = false;
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
 
-        // Loop through the last minute, going backwards from 23:59:59 to 23:59:00
-        for ($i = 0; $i < 60; $i++) {
-            // Subtract seconds to move backwards
-            $currentSecond = $endOfDay->copy()->subSeconds($i);
+        $query = $date->lt('2025-07-01 00:00:00')
+            ? StatementAlpha::query()
+            : Statement::query();
 
-            $query = $date->lt('2025-07-01 00:00:00') ? StatementAlpha::query() : Statement::query();
-
-            // Query the database for the maximum ID created exactly at this second
-            $last = $query->selectRaw('max(id) as max')
-                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
-                ->first();
-
-            // If a result is found, return the id immediately
-            if ($last && $last->max) {
-                return $last->max;
-            }
-        }
-
-        // Return false if no ID is found within the last minute
-        return $lastId;
+        return $query
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->value('id') ?: false;
     }
 
     public function getLastPlatformPuidIdOfDate(Carbon $date)
     {
-        // Set the time to 23:59:59 of the given date
-        $endOfDay = $date->copy()->setTime(23, 59, 59); // '2030-01-01 23:59:59'
-        $lastId = false;
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
 
-        // Loop through the last minute, going backwards from 23:59:59 to 23:59:00
-        for ($i = 0; $i < 60; $i++) {
-            // Subtract seconds to move backwards
-            $currentSecond = $endOfDay->copy()->subSeconds($i);
-
-            // Query the database for the maximum ID created exactly at this second
-            $last = PlatformPuid::query()
-                ->selectRaw('max(id) as max')
-                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
-                ->first();
-
-            // If a result is found, return the id immediately
-            if ($last && $last->max) {
-                return $last->max;
-            }
-        }
-
-        // Return false if no ID is found within the last minute
-        return $lastId;
+        return PlatformPuid::query()
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->value('id') ?: false;
     }
+
 
     public function globalList(): Builder
     {
