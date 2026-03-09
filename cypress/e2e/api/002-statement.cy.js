@@ -40,7 +40,7 @@ context("Single statement endpoint", () => {
         expect(response.status).to.eq(201);
         expect(response.body).to.have.property("id");
 
-        cy.wait(2000);
+        cy.wait(5000);
         // Let's check Opensearch for the puid
         cy.request({
           method: "POST",
