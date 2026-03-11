@@ -169,6 +169,15 @@ Route::get('/test-s3-debug', function () {
     return response()->json($results, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 });
 
+Route::get('/test-sleep/{seconds}', function (int $seconds) {
+    sleep($seconds);
+
+    return response()->json([
+        'message' => "Success! Waited {$seconds} seconds.",
+    ]);
+});
+
+
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
