@@ -324,6 +324,55 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 }
 ```
 
+#### Basic Temporal Analysis:
+
+- Displays daily trends in content moderation
+- Tracks changes in platforms’ behaviour over time
+- Reveals category-specific patterns
+
+```json
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "received_date": "2026-01-01"
+    }
+  },
+  "aggs": {
+    "by_platform": {
+      "terms": {
+        "field": "platform_name.keyword",
+        "size": 100
+      },
+      "aggs": {
+        "by_category": {
+          "terms": {
+            "field": "category",
+            "size": 100
+          },
+          "aggs": {
+            "statement_count": {
+              "value_count": {
+                "field": "_id"
+              }
+            },
+            "automation_rate": {
+              "avg": {
+                "script": {
+                  "source": "doc['automated_detection'].size() != 0 && doc['automated_detection'].value ? 1 : 0"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+\* Use `platform_name.keyword` whenever you need to group, sort, or aggregate by this field. `platform_name` is a full-text (analyzed) field, meaning its value is broken into tokens for search (e.g. "TikTok EU" → ["tiktok", "eu"]). Aggregations require exact values, so OpenSearch provides a `.keyword` subfield that stores the original string unchanged.
+
 ### Example Request Body & Response
 
 ### Request Body
@@ -486,9 +535,9 @@ aggregations), consider
 
 ```json
 SELECT
-platform_name,
-decision_ground,
-COUNT(*) as decision_count
+    platform_name.keyword,
+    decision_ground,
+    COUNT(*) as decision_count
 FROM statement_index
 WHERE received_date >= '2024-01-01'
 AND received_date <= '2024-06-30'
@@ -504,35 +553,17 @@ ORDER BY platform_name, decision_count DESC;
 
 ```json
 SELECT
-content_type_single,
-automated_decision,
-platform_name,
-COUNT(*) as decision_count
+    content_type_single,
+    automated_decision,
+    platform_name.keyword,
+    COUNT(*) as decision_count
 FROM statement_index
 WHERE received_date = '2024-06-26'
 GROUP BY content_type_single, automated_decision, platform_name
 ORDER BY decision_count DESC;
 ```
 
-3.&nbsp;Basic Temporal Analysis:
-
-- Displays daily trends in content moderation
-- Tracks changes in platforms’ behaviour over time
-- Reveals category-specific patterns
-
-```json
-SELECT
-received_date,
-platform_name,
-category,
-COUNT(*) as statement_count,
-AVG(CASE WHEN automated_detection = true THEN 1.0 ELSE 0.0 END) as automation_rate
-FROM statement_index
-WHERE received_date >= '2024-01-01'
-AND received_date <= '2024-06-30'
-GROUP BY received_date, platform_name, category
-ORDER BY received_date, platform_name;
-```
+\* Use `platform_name.keyword` whenever you need to group, sort, or aggregate by this field. `platform_name` is a full-text (analyzed) field, meaning its value is broken into tokens for search (e.g. "TikTok EU" → ["tiktok", "eu"]). Aggregations require exact values, so OpenSearch provides a `.keyword` subfield that stores the original string unchanged.
 
 ### Example Request Body & Response
 
