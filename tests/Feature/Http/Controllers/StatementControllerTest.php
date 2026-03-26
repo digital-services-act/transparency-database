@@ -40,18 +40,6 @@ class StatementControllerTest extends TestCase
         'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY'
     ];
 
-    //    /**
-//     * @test
-//     */
-//    public function index_displays_error_if_not_logged()
-//    {
-//
-//        $response = $this->get(route('statement.index'));
-//        $response->assertOk();
-//        $response->assertViewIs('statement.index');
-//        $response->assertViewHas('statements');
-//    }
-
     /**
      * @test
      */
@@ -76,6 +64,15 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
+    /** @test */
+    public function index_shows_search_form()
+    {
+        $this->signInAsContributor();
+        $response = $this->get(route('statement.index'));
+        $response->assertOk();
+        $response->assertSeeText('Search “Statements of reasons”');
+        $response->assertSee('input', ['name' => 's']);
+    }
 
     /**
      * @test
