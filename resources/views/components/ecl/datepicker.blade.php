@@ -9,20 +9,28 @@
     'value' => null,
     'justlabel' => false,
     'disableFuture' => false,
+    'invalid' => false,
 ])
 <div class="ecl-form-group ecl-u-mb-2xl">
     <x-ecl.label :label=$label :required=$required :name=$name :for=$id :justlabel="$justlabel" />
     <x-ecl.help :help=$help />
-    <x-ecl.error-feedback :name="$name" />
-    <div class="ecl-datepicker">
-        <input type="text" autoComplete="off" data-ecl-datepicker-toggle="" id="{{ $id }}"
-            name="{{ $name }}" class="ecl-datepicker__field ecl-text-input ecl-text-input--{{ $size }}"
-            @if ($required) required="" @endif placeholder="DD-MM-YYYY"
-            value="{{ old($name, $value) }}" />
+    <div class="ecl-datepicker {{ $invalid ? 'ecl-datepicker--invalid' : '' }}">
+        <input
+            id="{{ $id }}"
+            class="ecl-datepicker__field ecl-text-input ecl-text-input--{{ $size }} {{ $invalid ? 'ecl-text-input--invalid' : '' }}"
+            type="text"
+            autoComplete="off"
+            data-ecl-datepicker-toggle=""
+            name="{{ $name }}"
+            @if ($required) required="" @endif
+            placeholder="DD-MM-YYYY"
+            value="{{ old($name, $value) }}"
+        />
         <svg class="ecl-icon ecl-icon--s ecl-datepicker__icon" focusable="false" aria-hidden="true">
             <x-ecl.icon icon="calendar" />
         </svg>
     </div>
+    <x-ecl.error-feedback :name="$name" />
 </div>
 
 <script>

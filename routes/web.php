@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
-        Route::get('feedback',[FeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
         Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
         Route::group(['middleware' => ['can:create statements']], static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
@@ -49,14 +49,12 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
         Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('generate-api-key');
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('generate-api-key');
-
     });
 
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
 
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
-    Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
     Route::get('/statement/{statement}', [StatementController::class, 'show'])
         ->where('statement', '[0-9]+')  // Only accept digits for a statement
         ->name('statement.show');
@@ -73,5 +71,4 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
-
 });
