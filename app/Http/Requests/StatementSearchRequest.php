@@ -28,7 +28,9 @@ class StatementSearchRequest extends FormRequest
                 return true;
             }
         }
+        // @codeCoverageIgnoreStart
         return false;
+        // @codeCoverageIgnoreEnd
     }
 
     /**

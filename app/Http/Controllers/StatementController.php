@@ -128,15 +128,6 @@ class StatementController extends Controller
     }
 
     /**
-     * @return View|Factory|Application
-     */
-    public function search(Request $request): View|Factory|Application
-    {
-        $options = $this->prepareOptions(true);
-        return view('statement.search', ['options' => $options]);
-    }
-
-    /**
      * @return Factory|View|Application|RedirectResponse
      */
     public function create(Request $request): Factory|View|Application|RedirectResponse
