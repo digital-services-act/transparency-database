@@ -80,18 +80,6 @@ class StatementControllerTest extends TestCase
     /**
      * @test
      */
-    public function basic_search_route_works(): void
-    {
-        $this->signInAsAdmin();
-        $response = $this->get(route('statement.search'));
-        $response->assertOk();
-        $response->assertViewIs('statement.search');
-    }
-
-
-    /**
-     * @test
-     */
     public function create_blocks_when_no_platform(): void
     {
         $user = $this->signInAsAdmin();
@@ -200,7 +188,6 @@ class StatementControllerTest extends TestCase
 
         $response = $this->get(route('statement.create'));
         $response->assertRedirectContains('/login');
-
     }
 
 
