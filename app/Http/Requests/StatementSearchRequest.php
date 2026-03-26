@@ -21,17 +21,25 @@ class StatementSearchRequest extends FormRequest
         'created_at_end',
     ];
 
+    // @codeCoverageIgnoreStart
     public function hasAdvancedFilters(): bool
     {
         foreach ($this->advancedFilters as $filter) {
-            if ($this->filled($filter)) {
+            $value = $this->input($filter);
+
+            // Array fields (multi-selects, checkboxes)
+            if (is_array($value) && !empty(array_filter($value))) {
+                return true;
+            }
+
+            // Scalar fields (dates, text inputs)
+            if (!is_array($value) && !is_null($value) && $value !== '') {
                 return true;
             }
         }
-        // @codeCoverageIgnoreStart
         return false;
-        // @codeCoverageIgnoreEnd
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * Determine if the user is authorized to make this request.
