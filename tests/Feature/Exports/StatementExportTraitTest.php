@@ -21,9 +21,7 @@ class StatementExportTraitTest extends TestCase
         $this->platformQueryService = app(PlatformQueryService::class);
     }
 
-    /** 
-     * @test  
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_headings_returns_all_required_columns()
     {
         $headings = $this->headings();
@@ -35,7 +33,7 @@ class StatementExportTraitTest extends TestCase
         $this->assertContains('created_at', $headings);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_headings_light_returns_subset_of_columns()
     {
         $headings = $this->headingsLight();
@@ -49,7 +47,7 @@ class StatementExportTraitTest extends TestCase
     }
 
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_map_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
@@ -63,7 +61,7 @@ class StatementExportTraitTest extends TestCase
     }
 
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_mapRaw_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();
@@ -78,7 +76,7 @@ class StatementExportTraitTest extends TestCase
         $this->assertContains($platform->name, $mapped);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_mapRawLight_function_maps_statements_correctly()
     {
         $platform = Platform::factory()->create();

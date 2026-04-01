@@ -11,10 +11,7 @@ class PlatformTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function saving_platform_saves_the_user(): void
     {
         $platform = Platform::all()->random()->first();
@@ -26,10 +23,7 @@ class PlatformTest extends TestCase
         $this->assertNotNull($platform->updated_by);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function platofrm_slugify_is_working(): void
     {
         $platform = Platform::create([
@@ -40,10 +34,7 @@ class PlatformTest extends TestCase
         $this->assertEquals('test-platform', $platform->slugifyName());
     }
 
-    /**
-     * @return void
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function saving_platform_saves_null_user_on_no_auth(): void
     {
         $platform = Platform::all()->random()->first();
@@ -54,10 +45,7 @@ class PlatformTest extends TestCase
         $this->assertNull($platform->updated_by);
     }
 
-    /**
-     * @return void
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creating_platform_saves_the_user(): void
     {
         $this->signInAsAdmin();
@@ -70,10 +58,7 @@ class PlatformTest extends TestCase
         $this->assertNull($platform->updated_by);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_tell_if_it_is_dsa_or_not(): void
     {
         $platform = Platform::create([

@@ -23,11 +23,7 @@ class DayArchiveQueryServiceTest extends TestCase
         $this->assertNotNull($this->day_archive_query_service);
     }
 
-    /**
-     *
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_builds_query(): void
     {
         $query = $this->day_archive_query_service->query([]);
@@ -36,11 +32,7 @@ class DayArchiveQueryServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" is null', $sql);
     }
 
-    /**
-     *
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_the_filters(): void
     {
         $platform = Platform::first();
@@ -55,11 +47,7 @@ class DayArchiveQueryServiceTest extends TestCase
     }
 
 
-    /**
-     *
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_throws_an_error_on_bad_dates_and_skips(): void
     {
         $platform = Platform::first();

@@ -32,7 +32,7 @@ class HeartbeatTest extends TestCase
             ->registerCommand($this->app->make('command.heartbeat'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_reports_when_database_is_up()
     {
         // Act & Assert
@@ -42,7 +42,7 @@ class HeartbeatTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_reports_when_database_is_down()
     {
         // Arrange - Set an invalid database connection
@@ -56,7 +56,7 @@ class HeartbeatTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_respects_custom_timeout()
     {
         // Act & Assert
@@ -66,7 +66,7 @@ class HeartbeatTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_help_information()
     {
         // Act & Assert

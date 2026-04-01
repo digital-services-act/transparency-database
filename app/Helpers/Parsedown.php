@@ -14,16 +14,18 @@ class Parsedown extends ParsedownOriginal {
     {
         $Block = parent::blockTable($Line, $Block);
 
-        if(is_null($Block)){ return; }
+        if (is_null($Block)) {
+            return;
+        }
 
         $Block['element']['attributes']['class'] = 'ecl-table-responsive ecl-table ecl-table--zebra';
 
-        foreach ($Block['element']['text'] as &$elem) {
+        foreach ($Block['element']['elements'] ?? [] as &$elem) {
             if ($elem['name'] === 'thead') {
                 $elem['attributes']['class'] = 'ecl-table__head';
-                $elem['text'][0]['attributes']['class'] = 'ecl-table__row';
+                $elem['elements'][0]['attributes']['class'] = 'ecl-table__row';
 
-                foreach ($elem['text'][0]['text'] as &$th) {
+                foreach ($elem['elements'][0]['elements'] ?? [] as &$th) {
                     $th['attributes']['class'] = 'ecl-table__header';
                     $th['attributes']['style'] = 'font-size: 11px; text-align: center';
                 }
@@ -40,13 +42,11 @@ class Parsedown extends ParsedownOriginal {
 
     protected function blockTableContinue($Line, array $Block)
     {
-        if (isset($Block['interrupted']))
-        {
+        if (isset($Block['interrupted'])) {
             return;
         }
 
-        if ($Line['text'][0] === '|' or strpos($Line['text'], '|'))
-        {
+        if (count($Block['alignments']) === 1 || $Line['text'][0] === '|' || strpos($Line['text'], '|')) {
             $Elements = array();
 
             $row = $Line['text'];
@@ -54,26 +54,27 @@ class Parsedown extends ParsedownOriginal {
             $row = trim($row);
             $row = trim($row, '|');
 
-            preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]+`|`)+/', $row, $matches);
+            preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]++`|`)++/', $row, $matches);
 
-            foreach ($matches[0] as $index => $cell)
-            {
+            $cells = array_slice($matches[0], 0, count($Block['alignments']));
+
+            foreach ($cells as $index => $cell) {
                 $cell = trim($cell);
 
                 $Element = array(
                     'name' => 'td',
-                    'handler' => 'line',
-                    'text' => $cell,
+                    'handler' => array(
+                        'function' => 'lineElements',
+                        'argument' => $cell,
+                        'destination' => 'elements',
+                    ),
                     'attributes' => [
                         'class' => 'ecl-table__cell'
                     ]
                 );
 
-                if (isset($Block['alignments'][$index]))
-                {
-                    $Element['attributes'] = array(
-                        'style' => 'text-align: '.$Block['alignments'][$index].';',
-                    );
+                if (isset($Block['alignments'][$index])) {
+                    $Element['attributes']['style'] = 'text-align: ' . $Block['alignments'][$index] . ';';
                 }
 
                 $Elements []= $Element;
@@ -81,14 +82,13 @@ class Parsedown extends ParsedownOriginal {
 
             $Element = array(
                 'name' => 'tr',
-                'handler' => 'elements',
-                'text' => $Elements,
+                'elements' => $Elements,
                 'attributes' => [
                     'class' => 'ecl-table__row'
                 ]
             );
 
-            $Block['element']['text'][1]['text'] []= $Element;
+            $Block['element']['elements'][1]['elements'] []= $Element;
 
             return $Block;
         }
@@ -97,12 +97,10 @@ class Parsedown extends ParsedownOriginal {
     protected function blockTableComplete(array $Block)
     {
         $Block['element'] = [
-            'name'       => 'div',
-            'handler'    => 'elements',
-            'text'       => [$Block['element']],
+            'name' => 'div',
+            'elements' => [$Block['element']],
             'attributes' => [
                 'class' => 'ecl-table-responsive',
-                // 'style' => 'width: 110%; font-size: 11px;'
             ],
         ];
 

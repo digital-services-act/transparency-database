@@ -75,9 +75,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_requires_auth(): void
     {
         // Not signing in.
@@ -89,9 +87,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_works(): void
     {
         $user = $this->signInAsAdmin();
@@ -118,9 +114,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_validates(): void
     {
         $user = $this->signInAsContributor();
@@ -151,9 +145,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_detect_non_unique_in_call(): void
     {
         $user = $this->signInAsAdmin();
@@ -181,9 +173,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_detect_non_unique_in_cache(): void
     {
         $user = $this->signInAsAdmin();
@@ -219,9 +209,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_detects_previous_puid(): void
     {
         $user = $this->signInAsAdmin();
@@ -257,9 +245,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(20, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_statements_store_detects_previous_puid_from_database_and_refresh_cache(): void
     {
         $user = $this->signInAsAdmin();
@@ -303,9 +289,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_store_multiple_submissions_created_by_factory(): void
     {
         $user = $this->signInAsContributor();
@@ -322,9 +306,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(15, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_deduplicate_territories(): void
     {
         $user = $this->signInAsContributor();
@@ -345,9 +327,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals(["DE", "ES", "PT"], $territorial_scope);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_require_decision_visibility_other_field_when_sending_multiple_statements(): void
     {
         $this->signInAsContributor();
@@ -381,9 +361,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_only_accept_arrays_as_content_type(): void
     {
         $this->signInAsContributor();
@@ -402,9 +380,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_only_accept_arrays_as_decision_visibility(): void
     {
         $this->signInAsContributor();
@@ -423,9 +399,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_require_descriptions_when_other_fields_are_sent_via_multiple_statements(): void
     {
         $this->signInAsContributor();
@@ -459,9 +433,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_should_not_save_source_identity(): void
     {
         $user = $this->signInAsContributor();
@@ -491,9 +463,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertNull($statement->source_identity);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_different_content_types(): void
     {
         $this->signInAsContributor();
@@ -519,9 +489,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('content type other required field', $statement->content_type_other);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_different_source_type(): void
     {
         $this->signInAsContributor();
@@ -556,9 +524,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('source identity required field', $statementB->source_identity);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_different_decision_monetary(): void
     {
         $this->signInAsContributor();
@@ -597,9 +563,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertNull($statementC->decision_monetary_other);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_different_category_specifications(): void
     {
         $this->signInAsContributor();
@@ -635,9 +599,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertNull($statementC->category_specification_other);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_different_decision_grounds(): void
     {
         $this->signInAsContributor();
@@ -685,9 +647,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('Yes', $statementB->incompatible_content_illegal);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_different_decision_visibility(): void
     {
         $this->signInAsContributor();
@@ -720,9 +680,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertNull($statementB->decision_visibility_other);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_statements_with_different_attributes_should_be_persisted_and_visible(): void
     {
         $this->signInAsContributor();
@@ -780,9 +738,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         ])->assertStatus(Response::HTTP_OK);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_category_addition(): void
     {
         $this->signInAsContributor();
@@ -810,9 +766,7 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_reject_bad_puids(): void
     {
         $this->signInAsContributor();
@@ -856,9 +810,7 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('The puid format is invalid.', $response->json()['errors']['statement_1']['puid'][0]);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_multiple_with_content_id(): void
     {
         $this->signInAsContributor();

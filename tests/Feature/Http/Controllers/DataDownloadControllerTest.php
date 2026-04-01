@@ -19,9 +19,7 @@ class DataDownloadControllerTest extends TestCase
         $this->signInAsAdmin();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_can_view_day_archive_index_page()
     {
         $response = $this->get('/explore-data/download');
@@ -30,9 +28,7 @@ class DataDownloadControllerTest extends TestCase
         $response->assertViewHas(['dayarchives', 'options', 'platform', 'reindexing']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_can_view_day_archive_index_page_with_platform_uuid()
     {
         $platform = Platform::factory()->create();

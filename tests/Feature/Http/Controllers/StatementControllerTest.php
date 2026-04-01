@@ -52,9 +52,7 @@ class StatementControllerTest extends TestCase
 //        $response->assertViewHas('statements');
 //    }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_displays_view_if_logged_with_rights(): void
     {
         $this->signInAsAdmin();
@@ -64,9 +62,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_handles_the_max_pages_issue(): void
     {
         $this->signInAsAdmin();
@@ -77,9 +73,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function basic_search_route_works(): void
     {
         $this->signInAsAdmin();
@@ -89,9 +83,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_blocks_when_no_platform(): void
     {
         $user = $this->signInAsAdmin();
@@ -104,9 +96,7 @@ class StatementControllerTest extends TestCase
 
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function showUuid_works(): void
     {
         $this->signInAsAdmin();
@@ -120,9 +110,7 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect(route('statement.show', ['statement' => $statement]));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
@@ -132,9 +120,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function showUuid_throws_404(): void
     {
         $this->signInAsAdmin();
@@ -150,19 +136,14 @@ class StatementControllerTest extends TestCase
 
 
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_show_the_index(): void
     {
         $response = $this->get(route('statement.index'));
         $response->assertOk();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function export_downloads_a_file(): void
     {
 
@@ -173,9 +154,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_displays_view(): void
     {
 
@@ -186,9 +165,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewIs('statement.create');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_must_be_authenticated(): void
     {
 
@@ -204,9 +181,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_displays_view(): void
     {
 
@@ -220,9 +195,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statement');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_legacy_displays_view(): void
     {
 
@@ -236,9 +209,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statement');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_beta_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
@@ -248,9 +219,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_legacy_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
@@ -260,10 +229,7 @@ class StatementControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     * @see StatementAPIControllerTest
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_saves_and_redirects(): void
     {
 
@@ -291,10 +257,7 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect(route('statement.index'));
     }
 
-    /**
-     * @test
-     * @see StatementAPIControllerTest
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_fails_with_existing_puid(): void
     {
 

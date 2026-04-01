@@ -39,21 +39,24 @@ final class CasGuard implements AuthGuard
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function masquerade(){
-        if (strtolower((string)config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
+    public function masquerade()
+    {
+        if (strtolower((string) config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
             throw new \Exception('Masquerade cannot be used in a production environment.');
-        };
+        }
+
         $attributes = [
-            "email" => config('cas.cas_masquerade')
+            'email' => config('cas.cas_masquerade'),
         ];
+
         $user = User::firstOrCreateByAttributes($attributes);
         $this->setUser($user);
+
         return $user;
     }
 
     public function attempt(array $credentials): ?Authenticatable
     {
-
         $user = User::firstOrCreateByAttributes($credentials['attributes']);
 
         if (null === $user) {
@@ -114,7 +117,6 @@ final class CasGuard implements AuthGuard
     #[\Override]
     public function setUser(Authenticatable $user): void
     {
-
         $this->user = $user;
         $this->loggedOut = false;
         $this->session->put($this->getName(), $user);
@@ -129,7 +131,6 @@ final class CasGuard implements AuthGuard
         }
 
         return $this->session->get(auth()->guard('web')->getName());
-//        return $this->provider->retrieveCasUser();
     }
 
     #[\Override]

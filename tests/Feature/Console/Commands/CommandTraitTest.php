@@ -55,7 +55,7 @@ class CommandTraitTest extends TestCase
         $this->command->setOutput($output);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_yesterday_date_argument()
     {
         $this->setCommandArgument('yesterday');
@@ -63,7 +63,7 @@ class CommandTraitTest extends TestCase
         $this->assertEquals(Carbon::yesterday()->startOfDay(), $result);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_today_date_argument()
     {
         $this->setCommandArgument('today');
@@ -71,7 +71,7 @@ class CommandTraitTest extends TestCase
         $this->assertEquals(Carbon::today()->startOfDay(), $result);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_days_ago_date_argument()
     {
         $this->setCommandArgument('5');
@@ -79,7 +79,7 @@ class CommandTraitTest extends TestCase
         $this->assertEquals(Carbon::now()->subDays(5)->startOfDay(), $result);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_specific_date_format()
     {
         $this->setCommandArgument('2023-12-25');
@@ -87,7 +87,7 @@ class CommandTraitTest extends TestCase
         $this->assertEquals(Carbon::create(2023, 12, 25)->startOfDay(), $result);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_throws_exception_for_invalid_date_format()
     {
         $this->setCommandArgument('invalid-date');
@@ -95,7 +95,7 @@ class CommandTraitTest extends TestCase
         $this->command->sanitizeDateArgument();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_converts_argument_to_integer()
     {
         $input = new ArrayInput(
@@ -111,7 +111,7 @@ class CommandTraitTest extends TestCase
         $this->assertSame(42, $result);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_converts_argument_to_boolean()
     {
         $input = new ArrayInput(

@@ -11,7 +11,7 @@ class OnboardingControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_requires_authentication()
     {
         $response = $this->get(route('onboarding.index'));
@@ -19,7 +19,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_requires_onboarding_role()
     {
         $this->signIn();
@@ -27,7 +27,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function onboarding_user_can_access_index()
     {
         $this->signInAsOnboarding();
@@ -37,7 +37,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertViewHas(['platforms', 'options', 'all_platforms_count', 'platform_ids_methods_data']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_displays_correct_platform_count()
     {
         $this->signInAsOnboarding();
@@ -48,7 +48,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertViewHas('all_platforms_count', $initialCount + 3);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_filter_platforms_by_vlop_status()
     {
         $this->signInAsOnboarding();
@@ -65,7 +65,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertFalse($platforms->contains($nonVlopPlatform));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_sort_platforms_by_name()
     {
         $this->signInAsOnboarding();
@@ -83,7 +83,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals('C Platform', $platforms->last()->name);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_sort_platforms_by_creation_date()
     {
         $this->signInAsOnboarding();
@@ -100,7 +100,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertTrue($platforms->last()->is($oldPlatform));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_search_platforms_by_name()
     {
         $this->signInAsOnboarding();
@@ -114,7 +114,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertFalse($platforms->contains($nonMatchingPlatform));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function invalid_sorting_parameters_default_to_name_asc()
     {
         $this->signInAsOnboarding();
@@ -131,7 +131,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals('B Platform', $platforms->last()->name);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function options_contains_all_required_filter_choices()
     {
         $this->signInAsOnboarding();

@@ -18,22 +18,26 @@ use Illuminate\Routing\Redirector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class LoginController extends Controller
+final class LogoutController extends Controller
 {
     public function __invoke(
         Request $request,
         CasInterface $cas,
-        ServerRequestInterface $serverRequest,
+        ServerRequestInterface $serverRequest
     ): Redirector|RedirectResponse|ResponseInterface {
-        if (strtolower((string)config('app.env_real')) !== 'production' && !is_null(config('cas.cas_masquerade'))) {
-            auth('web')->masquerade();
-            return redirect('/profile/start');
+        $response = $cas
+            ->logout(
+                $serverRequest->withQueryParams(
+                    $request->query->all()
+                )
+            );
+
+        if (auth()->check()) {
+            auth()->logout();
+
+            return redirect('/');
         }
 
-        $parameters = $request->query->all() + [
-                'renew' => null !== auth()->guard()->user(),
-            ];
-
-        return $cas->login($serverRequest->withQueryParams($parameters));
+        return $response;
     }
 }

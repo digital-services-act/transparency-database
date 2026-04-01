@@ -45,10 +45,7 @@ class DayArchiveServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_builds_an_exports_array(): void
     {
         $result = $this->day_archive_service->buildBasicExportsArray();
@@ -57,9 +54,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertCount(20, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_retrieves_global_list(): void
     {
         DayArchive::create([
@@ -86,9 +81,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('2023-10-01', $last->date->format('Y-m-d'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gloabl_list_must_be_completed_day_archive(): void
     {
         DayArchive::create([
@@ -106,9 +99,7 @@ class DayArchiveServiceTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_retrieves_an_archive_by_date(): void
     {
         DayArchive::create([
@@ -134,10 +125,7 @@ class DayArchiveServiceTest extends TestCase
     }
 
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_first_id_from_date(): void
     {
 
@@ -164,10 +152,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_one->id, $first_id);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_false_on_first(): void
     {
         $this->signInAsAdmin();
@@ -176,10 +161,7 @@ class DayArchiveServiceTest extends TestCase
     }
 
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_first_id_from_date_in_the_first_minute(): void
     {
 
@@ -204,10 +186,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_one->id, $first_id);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_last_id_from_date(): void
     {
         $admin = $this->signInAsAdmin();
@@ -232,10 +211,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_two->id, $last_id);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_last_id_from_date_in_the_last_minute(): void
     {
 
@@ -260,10 +236,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_two->id, $first_id);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_zero_on_last(): void
     {
         $this->signInAsAdmin();
@@ -271,10 +244,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertFalse($last_id);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_query_by_platform(): void
     {
         $platform = Platform::first();
@@ -285,10 +255,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where "platform_id" = ? and "completed_at" is not null order by "date" desc', $sql);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_day_archive_by_platform_date(): void
     {
         $platform = Platform::first();
@@ -311,10 +278,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_query_for_a_date(): void
     {
         $date = Carbon::createFromDate(2024, 6, 15);
@@ -326,10 +290,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where strftime(\'%Y-%m-%d\', "date") = cast(? as text)', $sql);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_big_raw_select_string(): void
     {
         $result = $this->day_archive_service->getSelectRawString();

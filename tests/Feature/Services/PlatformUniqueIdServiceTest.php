@@ -25,10 +25,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         $this->assertNotNull($this->platformUniqueIdService);
     }
 
-    /**
-     * @test
-     * @throws PuidNotUniqueSingleException
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_store_and_check_cache(): void
     {
         $puid        = "foo-bar-puid";
@@ -39,10 +36,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         $this->assertTrue($this->platformUniqueIdService->isPuidInCache($platform_id, $puid));
     }
 
-    /**
-     * @test
-     * @throws PuidNotUniqueSingleException
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_store_and_check_database_only_once(): void
     {
         $puid        = "foo-bar-puid";
@@ -57,10 +51,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         $this->assertTrue($this->platformUniqueIdService->isPuidInCache($platform_id, $puid));
     }
 
-    /**
-     * @test
-     * @throws PuidNotUniqueSingleException
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_refresh_the_cache(): void
     {
         $platform_id = 1;
@@ -77,7 +68,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_store_puid_on_handle(): void
     {
         $puid = $this->faker->uuid();
@@ -94,7 +85,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_throw_unique_exception_on_duplicate_puid_on_handle()
     {
         $puid = $this->faker->uuid();

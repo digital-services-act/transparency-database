@@ -41,7 +41,7 @@ class RedirectIfAuthenticatedTest extends TestCase
         $this->baseUrl = config('app.url');
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_guest_to_proceed()
     {
         // Ensure no user is logged in
@@ -54,7 +54,7 @@ class RedirectIfAuthenticatedTest extends TestCase
         $this->assertEquals(204, $response->getStatusCode());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_authenticated_user_to_home()
     {
         // Create and login a user
@@ -76,7 +76,7 @@ class RedirectIfAuthenticatedTest extends TestCase
         $this->assertEquals($this->baseUrl, $response->getTargetUrl());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_multiple_auth_guards()
     {
         // Test with default guard when no user is authenticated
@@ -105,7 +105,7 @@ class RedirectIfAuthenticatedTest extends TestCase
         $this->assertEquals($this->baseUrl, $response->getTargetUrl());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_empty_guards_array()
     {
         // Test with no guards specified (should use default guard)

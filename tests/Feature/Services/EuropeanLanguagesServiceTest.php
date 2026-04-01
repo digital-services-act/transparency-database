@@ -21,10 +21,7 @@ class EuropeanLanguagesServiceTest extends TestCase
     }
 
 
-    /**
-     * @return void
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gives_back_european_languages(): void
     {
         $result = $this->european_languages_service->getEuropeanLanguages();
@@ -33,10 +30,7 @@ class EuropeanLanguagesServiceTest extends TestCase
         $this->assertEquals(count(EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES), count($result));
     }
 
-    /**
-     * @return void
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gives_back_all_languages_codes(): void
     {
         $result = $this->european_languages_service->getAllLanguages();
@@ -44,10 +38,7 @@ class EuropeanLanguagesServiceTest extends TestCase
         $this->assertCount(184, $result);
     }
 
-    /**
-     * @return void
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gives_back_all_languages_codes_euro_first(): void
     {
         $result = $this->european_languages_service->getAllLanguages(true);

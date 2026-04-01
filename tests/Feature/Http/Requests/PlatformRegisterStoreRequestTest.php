@@ -46,7 +46,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
         });
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function users_without_platform_can_register()
     {
         $this->actingAs($this->user);
@@ -59,7 +59,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dsa_team_users_can_register_platforms()
     {
         $this->actingAs($this->dsaUser);
@@ -72,7 +72,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function users_with_platform_cannot_register()
     {
         // Assign a platform to the user
@@ -89,7 +89,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function name_is_required()
     {
         $this->actingAs($this->user);
@@ -102,7 +102,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function name_must_be_string()
     {
         $this->actingAs($this->user);
@@ -116,7 +116,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function name_must_not_exceed_255_characters()
     {
         $this->actingAs($this->user);
@@ -130,7 +130,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function url_is_required()
     {
         $this->actingAs($this->user);
@@ -143,7 +143,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['url']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function url_must_be_valid()
     {
         $this->actingAs($this->user);
@@ -157,7 +157,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['url']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function url_must_not_exceed_255_characters()
     {
         $this->actingAs($this->user);
@@ -171,7 +171,7 @@ class PlatformRegisterStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['url']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function in_method_builds_validation_rule_correctly()
     {
         // Create a request instance
