@@ -68,7 +68,6 @@ class StatementController extends Controller
             'total' => $setup['total'],
             'similarity_results' => null,
             'reindexing' => Cache::get('reindexing', false),
-            'open_advanced_filter' => $request->hasAdvancedFilters(),
         ]);
     }
 

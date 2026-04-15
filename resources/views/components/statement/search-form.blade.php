@@ -5,6 +5,20 @@
     'open_advanced_filter' => false
 ])
 
+@php
+    $advancedFilters = \App\Http\Requests\StatementSearchRequest::ADVANCED_FILTERS;
+
+    $hasAdvancedErrors = collect($advancedFilters)->contains(fn ($field) =>
+        $errors->has($field) || $errors->has($field.'.*')
+    );
+
+    $hasAdvancedInput = collect($advancedFilters)->contains(fn ($field) =>
+        !empty(array_filter((array) request()->input($field)))
+    );
+
+    $shouldOpenAdvancedFilter = $hasAdvancedErrors || $hasAdvancedInput;
+@endphp
+
 <form method="get" action="{{ route('statement.index') }}">
     <div id="search-content">
 
@@ -154,7 +168,7 @@
             </div>
         </div>
 
-        <x-ecl.accordion label="Advanced Filter" :open="$open_advanced_filter">
+        <x-ecl.accordion label="Advanced Filter" :open="$shouldOpenAdvancedFilter">
 
             <x-ecl.select-multiple
                 :label="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
