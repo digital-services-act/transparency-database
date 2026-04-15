@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StatementSearchRequest extends FormRequest
 {
-    protected array $advancedFilters =  [
+    public const ADVANCED_FILTERS =  [
         'account_type',
         'category_specification',
         'territorial_scope',
@@ -20,26 +20,6 @@ class StatementSearchRequest extends FormRequest
         'created_at_start',
         'created_at_end',
     ];
-
-    // @codeCoverageIgnoreStart
-    public function hasAdvancedFilters(): bool
-    {
-        foreach ($this->advancedFilters as $filter) {
-            $value = $this->input($filter);
-
-            // Array fields (multi-selects, checkboxes)
-            if (is_array($value) && !empty(array_filter($value))) {
-                return true;
-            }
-
-            // Scalar fields (dates, text inputs)
-            if (!is_array($value) && !is_null($value) && $value !== '') {
-                return true;
-            }
-        }
-        return false;
-    }
-    // @codeCoverageIgnoreEnd
 
     /**
      * Determine if the user is authorized to make this request.

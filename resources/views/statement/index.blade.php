@@ -69,7 +69,6 @@
     <x-statement.search-form
         :similarity_results="$similarity_results"
         :options="$options"
-        :open_advanced_filter="$open_advanced_filter"
     />
 
     <div class="ecl-u-mt-xl">&nbsp;<!-- CALIFORNIA --></div>
