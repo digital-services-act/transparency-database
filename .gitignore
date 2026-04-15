@@ -28,3 +28,5 @@ vapor.yml
 .env.docker-env
 auth.json
 transparency.sqlite
+database.sqlite
+.clever.json
