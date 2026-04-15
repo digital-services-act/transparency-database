@@ -2,46 +2,60 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use \Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BackfillAPIController extends Controller
 {
-    // This is the first id to start with -1 as the first statement in the old database has id 102107966886
-    private $start_id = 102107966885;
-    // This is the absolute highest to go to this number will change when we go live. 
-    // For now this is starting id of the new database to avoid any conflicts with the old database.
-    private $end_id = 200000000000;
-    private $table = 'statements_beta';
-
-    public function __construct()
+    public function statements(Request $request): JsonResponse
     {
-        
-    }
+        $bulkInsertData = $request->input('statements', []);
 
-    public function statements(Request $request)
-    {
-        $bulkInsertData = $request->input('statements');
-        // Insert the data into the database
-        DB::table($this->table)->insert($bulkInsertData);
+        if ($bulkInsertData !== []) {
+            DB::table($this->table())->insert($bulkInsertData);
+        }
 
         return response()->json([
             'message' => 'ok',
+            'inserted' => count($bulkInsertData),
         ]);
     }
 
-    public function highestImportedId()
+    public function lastImportedId(): JsonResponse
     {
-        $lowestId = DB::table($this->table)
-            ->where('id', '<', $this->end_id)
-            ->where('id', '>', $this->start_id)
+        $lastImportedId = DB::table($this->table())
+            ->where('id', '<', $this->endId())
+            ->where('id', '>', $this->startId())
             ->max('id');
-        if (!$lowestId) {
-            $lowestId = $this->start_id;
+
+        if (! $lastImportedId) {
+            $lastImportedId = $this->startId();
         }    
+
         return response()->json([
-            'lowest_id' => $lowestId,
+            'last_imported_id' => $lastImportedId,
         ]);
+    }
+
+    public function highestImportedId(): JsonResponse
+    {
+        return $this->lastImportedId();
+    }
+
+    private function startId(): int
+    {
+        return (int) config('backfill.start_id');
+    }
+
+    private function endId(): int
+    {
+        return (int) config('backfill.end_id');
+    }
+
+    private function table(): string
+    {
+        return (string) config('backfill.table');
     }
 }

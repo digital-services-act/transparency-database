@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::post('platform/{platform:dsa_common_id}/users', static fn (\App\Http\Requests\PlatformUsersStoreRequest $request, \App\Models\Platform $platform): \Illuminate\Http\JsonResponse => (new PlatformUserAPIController)->store($request, $platform))->name('api.v1.platform-users.store')->can('create users');
 
     Route::group(['prefix' => 'backfill', 'middleware' => ['can:administrate']], static function () {
+        Route::get('last-imported-id', [BackfillAPIController::class, 'lastImportedId'])->name('api.v1.backfill.last-imported-id');
         Route::get('highest-imported-id', [BackfillAPIController::class, 'highestImportedId'])->name('api.v1.backfill.highest-imported-id');
         Route::post('statements', [BackfillAPIController::class, 'statements'])->name('api.v1.backfill.statements');
     });
