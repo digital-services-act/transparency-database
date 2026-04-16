@@ -64,6 +64,7 @@ class ElasticSearchAPIController extends Controller
                 try {
                     return response()->json($this->client->search([
                         'index' => $this->index_name,
+                        'track_total_hits' => true,
                         'body' => $request->toArray(),
                     ])->asArray());
                 } catch (Exception $exception) {
