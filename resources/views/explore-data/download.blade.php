@@ -99,7 +99,7 @@
         <div class="ecl-col-l-2 ecl-u-align-content-center">
             <div class="ecl-form-group" style="">
                 @if ($errors->any())
-                    <div style="margin-top: -24px;"></div>
+                    <div style="margin-top: -22px;"></div>
                 @else
                     <label for="search-btn" style="visibility: hidden; line-height: 24px; display: block;">Search</label>
                 @endif
