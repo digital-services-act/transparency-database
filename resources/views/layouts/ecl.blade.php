@@ -80,7 +80,7 @@
 
                 @if ($errors->any())
                     <x-ecl.message type="error" icon="error" title="Errors"
-                                   message="Your request contained multiple errors. Please make sure to fill in all of the mandatory fields."/>
+                                   message="Your request contained multiple errors. Please correct the highlighted fields and try again."/>
                 @endif
 
             </div>

@@ -1,4 +1,8 @@
-@props(['label' => 'label', 'unique' => uniqid()])
+@props([
+    'label' => 'label',
+    'unique' => uniqid(),
+    'open' => false
+])
 <div class="ecl-accordion ecl-u-mt-l" data-ecl-accordion id="accordion-{{ $unique }}">
     <div class="ecl-accordion__item">
         <h3 class="ecl-accordion__title" id="accordion-title-{{ $unique }}">
@@ -34,6 +38,15 @@
     var elt = document.querySelector('#accordion-{{ $unique }}');
     var accordion = new ECL.Accordion(elt);
     accordion.init();
+
+    const shouldOpen = @json($open);
+
+    if (shouldOpen) {
+        const toggle = elt.querySelector('[data-ecl-accordion-toggle]');
+        if (toggle && toggle.getAttribute('aria-expanded') !== 'true') {
+            toggle.click();
+        }
+    }
   })
 </script>
 

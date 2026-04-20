@@ -14,12 +14,16 @@ use Illuminate\Support\Facades\Cache;
 
 class DataDownloadController extends Controller
 {
-    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service, protected PlatformQueryService $platform_query_service)
-    {
-    }
+    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service, protected PlatformQueryService $platform_query_service) {}
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $validated = $request->validate([
+            'platform_id' => 'nullable|integer|exists:platforms,id',
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date'
+        ]);
+
         $dayarchives = $this->day_archive_query_service->query($request->query());
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 

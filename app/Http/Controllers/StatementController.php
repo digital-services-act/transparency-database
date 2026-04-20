@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\PuidNotUniqueSingleException;
 use App\Exports\StatementsExport;
 use App\Http\Controllers\Traits\Sanitizer;
+use App\Http\Requests\StatementSearchRequest;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Models\StatementAlpha;
@@ -44,32 +45,30 @@ class StatementController extends Controller
      *
      * @return View|Factory|Application
      */
-    public function index(Request $request): View|Factory|Application
+    public function index(StatementSearchRequest $request): View|Factory|Application
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
         $max_pages = 200;
-        $page = $request->get('page', 0);
-        if ($page > $max_pages) {
-            $request->query->set('page', $max_pages);
+        $pagination_per_page = 50;
+
+        if ($request->get('page', 0) > $max_pages) {
+            $request->merge(['page' => $max_pages]);
         }
 
         $setup = $this->setupQuery($request);
+        $statements = $setup['statements']
+            ->orderBy('created_at', 'DESC')
+            ->paginate($pagination_per_page)
+            ->withQueryString()
+            ->appends('query', null);
 
-        $pagination_per_page = 50;
-
-        $statements = $setup['statements'];
-        $options = $this->prepareOptions(true);
-        $statements = $statements->orderBy('created_at', 'DESC')->paginate($pagination_per_page)->withQueryString()->appends('query', null);
-        $total = $setup['total'];
-
-        $similarity_results = null;
-        // if ($request->get('s')) {
-        //     $similarity_results = $this->drive_in_service->getSimilarityWords($request->get('s'));
-        // }
-
-        $reindexing = Cache::get('reindexing', false);
-
-        return view('statement.index', ['statements' => $statements, 'options' => $options, 'total' => $total, 'similarity_results' => $similarity_results, 'reindexing' => $reindexing]);
+        return view('statement.index', [
+            'statements' => $statements,
+            'options' => $this->prepareOptions(true),
+            'total' => $setup['total'],
+            'similarity_results' => null,
+            'reindexing' => Cache::get('reindexing', false),
+        ]);
     }
 
     public function exportCsv(Request $request)
@@ -125,15 +124,6 @@ class StatementController extends Controller
             'statements' => $statements,
             'total' => $total,
         ];
-    }
-
-    /**
-     * @return View|Factory|Application
-     */
-    public function search(Request $request): View|Factory|Application
-    {
-        $options = $this->prepareOptions(true);
-        return view('statement.search', ['options' => $options]);
     }
 
     /**
