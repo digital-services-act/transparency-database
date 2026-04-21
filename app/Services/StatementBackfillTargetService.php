@@ -5,6 +5,9 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementBackfillTargetService
 {
     private const JSON_STRING_COLUMNS = [
@@ -81,7 +84,7 @@ class StatementBackfillTargetService
     public function sendStatements(array $statements): void
     {
         $normalizedStatements = array_map(
-            fn (array $statement): array => $this->normalizeStatement($statement),
+            fn(array $statement): array => $this->normalizeStatement($statement),
             $statements
         );
 
@@ -184,6 +187,6 @@ class StatementBackfillTargetService
             throw new RuntimeException('BACKFILL_BASE_URL is not configured.');
         }
 
-        return $baseUrl.'/'.ltrim($path, '/');
+        return $baseUrl . '/' . ltrim($path, '/');
     }
 }

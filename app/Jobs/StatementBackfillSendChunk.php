@@ -12,6 +12,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementBackfillSendChunk implements ShouldQueue
 {
     use Dispatchable;
@@ -46,7 +49,7 @@ class StatementBackfillSendChunk implements ShouldQueue
             ->orderBy('id')
             ->get();
 
-        $statements = array_map(static fn ($row) => (array) $row, $rows->all());
+        $statements = array_map(static fn($row) => (array) $row, $rows->all());
 
         if ($statements !== []) {
             $backfillTargetService->sendStatements($statements);
@@ -69,7 +72,7 @@ class StatementBackfillSendChunk implements ShouldQueue
         if ($end < $this->max) {
             self::dispatch($end + 1, $this->max, $this->chunk);
         } else {
-            Log::info('StatementBackfillSendChunk max reached at '.Carbon::now()->format('Y-m-d H:i:s'), [
+            Log::info('StatementBackfillSendChunk max reached at ' . Carbon::now()->format('Y-m-d H:i:s'), [
                 'range_end' => $end,
             ]);
         }

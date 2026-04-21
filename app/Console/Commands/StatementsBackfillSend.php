@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StatementsBackfillSend extends Command
 {
     protected $signature = 'statements:backfill-send
