@@ -40,18 +40,6 @@ class StatementControllerTest extends TestCase
         'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY'
     ];
 
-    //    /**
-//     * @test
-//     */
-//    public function index_displays_error_if_not_logged()
-//    {
-//
-//        $response = $this->get(route('statement.index'));
-//        $response->assertOk();
-//        $response->assertViewIs('statement.index');
-//        $response->assertViewHas('statements');
-//    }
-
     /**
      * @test
      */
@@ -76,18 +64,15 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-
-    /**
-     * @test
-     */
-    public function basic_search_route_works(): void
+    /** @test */
+    public function index_shows_search_form()
     {
-        $this->signInAsAdmin();
-        $response = $this->get(route('statement.search'));
+        $this->signInAsContributor();
+        $response = $this->get(route('statement.index'));
         $response->assertOk();
-        $response->assertViewIs('statement.search');
+        $response->assertSeeText('Search “Statements of reasons”');
+        $response->assertSee('input', ['name' => 's']);
     }
-
 
     /**
      * @test
@@ -200,7 +185,6 @@ class StatementControllerTest extends TestCase
 
         $response = $this->get(route('statement.create'));
         $response->assertRedirectContains('/login');
-
     }
 
 
