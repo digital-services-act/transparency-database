@@ -23,7 +23,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->withoutVite();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_constructs_with_feedback_message()
     {
         $feedback = 'Test feedback message';
@@ -32,7 +32,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEquals($feedback, $mail->feedback);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_correct_envelope()
     {
         $mail = new FeedbackMail('Test feedback');
@@ -42,7 +42,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEquals('Feedback Received', $envelope->subject);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_correct_content()
     {
         $mail = new FeedbackMail('Test feedback');
@@ -52,7 +52,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEquals('feedback.mail', $content->markdown);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_no_attachments()
     {
         $mail = new FeedbackMail('Test feedback');
@@ -62,7 +62,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEmpty($attachments);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_markdown_view()
     {
         // Create a mock user
@@ -89,7 +89,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertStringContainsString('test@example.com', $rendered);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_is_queueable()
     {
         $mail = new FeedbackMail('Test feedback');
@@ -100,7 +100,7 @@ class FeedbackMailTest extends BaseTestCase
         );
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_serializes_models()
     {
         $mail = new FeedbackMail('Test feedback');

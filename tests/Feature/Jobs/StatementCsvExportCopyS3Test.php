@@ -12,9 +12,7 @@ class StatementCsvExportCopyS3Test extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_copies_zip_and_sha1_files_to_s3(): void
     {
         // Mock Storage facades
@@ -50,9 +48,7 @@ class StatementCsvExportCopyS3Test extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_constructs_with_zip_and_sha1_filenames(): void
     {
         $zipFile = 'export-2025-09-16.zip';

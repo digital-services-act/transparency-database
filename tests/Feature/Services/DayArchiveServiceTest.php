@@ -49,9 +49,7 @@ class DayArchiveServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_builds_an_exports_array(): void
     {
         $result = $this->day_archive_service->buildBasicExportsArray();
@@ -60,9 +58,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertCount(20, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_retrieves_global_list(): void
     {
         DayArchive::create([
@@ -88,9 +84,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('2023-10-01', $last->date->format('Y-m-d'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gloabl_list_must_be_completed_day_archive(): void
     {
         DayArchive::create([
@@ -106,9 +100,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertCount(0, $list);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_retrieves_an_archive_by_date(): void
     {
         DayArchive::create([
@@ -133,9 +125,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals(1, $dayarchive->total);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_first_id_from_date(): void
     {
 
@@ -162,9 +152,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_one->id, $first_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_false_on_first(): void
     {
         $this->signInAsAdmin();
@@ -172,9 +160,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertFalse($first_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_first_id_from_date_in_the_first_minute(): void
     {
 
@@ -199,9 +185,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_one->id, $first_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_last_id_from_date(): void
     {
         $admin = $this->signInAsAdmin();
@@ -226,9 +210,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_two->id, $last_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_last_id_from_date_in_the_last_minute(): void
     {
 
@@ -253,9 +235,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($statement_two->id, $first_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_zero_on_last(): void
     {
         $this->signInAsAdmin();
@@ -263,9 +243,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertFalse($last_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_query_by_platform(): void
     {
         $platform = Platform::first();
@@ -276,9 +254,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where "platform_id" = ? and "completed_at" is not null order by "date" desc', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_day_archive_by_platform_date(): void
     {
         $platform = Platform::first();
@@ -301,9 +277,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_query_for_a_date(): void
     {
         $date = Carbon::createFromDate(2024, 6, 15);
@@ -315,9 +289,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('select * from "day_archives" where strftime(\'%Y-%m-%d\', "date") = cast(? as text)', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_a_big_raw_select_string(): void
     {
         $result = $this->day_archive_service->getSelectRawString();
@@ -325,9 +297,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertIsString($result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prepares_headings_array_for_both_versions(): void
     {
         $result = $this->day_archive_service->prepareHeadingsArray();
@@ -353,9 +323,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertContains('platform_name', $result['full']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_converts_array_to_csv_string(): void
     {
         $fields = ['field1', 'field2', 'field with spaces', 'field,with,commas'];
@@ -374,9 +342,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertStringContainsString('"field,with,commas"', $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_converts_array_with_special_characters_to_csv_string(): void
     {
         $fields = ['normal', 'with"quote', "with\nnewline", 'with,comma'];
@@ -391,9 +357,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertStringContainsString('"with""quote"', $result); // CSV escapes quotes by doubling them
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_maps_statement_to_rows_for_all_versions(): void
     {
         $admin = $this->signInAsAdmin();
@@ -432,9 +396,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertNotEmpty($result['light']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_builds_csv_lines_for_statement(): void
     {
         $admin = $this->signInAsAdmin();
@@ -473,9 +435,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertGreaterThan(strlen($result['light']), strlen($result['full']));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_builds_csv_lines_with_special_characters(): void
     {
         $admin = $this->signInAsAdmin();
@@ -508,9 +468,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertStringContainsString('Special,Puid', $result['full']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_raw_statements_with_proper_format(): void
     {
         $admin = $this->signInAsAdmin();
@@ -553,9 +511,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('SECOND_STATEMENT', $rawStatements->last()->puid);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_empty_array_in_csvstr(): void
     {
         $result = $this->day_archive_service->csvstr([]);
@@ -565,9 +521,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('', $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_single_field_in_csvstr(): void
     {
         $result = $this->day_archive_service->csvstr(['single_field']);
@@ -577,9 +531,7 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals('single_field', $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_csvstr_with_problematic_data(): void
     {
         // Try with data that has special CSV characters but are still strings

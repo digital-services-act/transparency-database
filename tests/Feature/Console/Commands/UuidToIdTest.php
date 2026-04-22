@@ -11,9 +11,7 @@ class UuidToIdTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_runs_without_errors(): void
     {
         // Mock the StatementElasticSearchService

@@ -287,7 +287,7 @@ class DayArchiveService
         return $csvs;
     }
 
-    public function getRawStatements(int $start, int $end): Collection
+    public function getRawStatements(int $start, int $end, string $date = ''): Collection
     {
         $select_raw = $this->getSelectRawString();
         $statements = DB::connection($this->connection)
@@ -295,6 +295,17 @@ class DayArchiveService
             ->selectRaw($select_raw)
             ->where('id', '>=', $start)
             ->where('id', '<=', $end)
+            ->when($date, function ($query, $date) {
+
+                $startOfDay = $date . ' 00:00:00';
+                $endOfDay = $date . ' 23:59:59';
+
+                $query->where('created_at', '>=', $startOfDay)
+                    ->where('created_at', '<=', $endOfDay);
+
+                return $query;
+
+            })
             ->orderBy('id')
             ->get();
 

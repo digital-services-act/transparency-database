@@ -16,9 +16,7 @@ class StatementsRemoveDateTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_dispatches_jobs_when_ids_are_found(): void
     {
         Queue::fake();
@@ -48,9 +46,7 @@ class StatementsRemoveDateTest extends TestCase
         Log::shouldNotHaveReceived('warning');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_a_warning_when_ids_are_not_found(): void
     {
         Queue::fake();

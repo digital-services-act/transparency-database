@@ -13,9 +13,7 @@ class StatementDeleteChunkTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_deletes_chunk_and_dispatches_next_job(): void
     {
         Queue::fake();
@@ -34,9 +32,7 @@ class StatementDeleteChunkTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_deletes_final_chunk_and_logs_completion(): void
     {
         Queue::fake();
@@ -54,9 +50,7 @@ class StatementDeleteChunkTest extends TestCase
         Queue::assertNotPushed(StatementDeleteChunk::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_single_chunk_job(): void
     {
         Queue::fake();
@@ -74,9 +68,7 @@ class StatementDeleteChunkTest extends TestCase
         Queue::assertNotPushed(StatementDeleteChunk::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_respects_max_boundary_and_does_not_delete_beyond(): void
     {
         Queue::fake();
@@ -95,9 +87,7 @@ class StatementDeleteChunkTest extends TestCase
         Queue::assertNotPushed(StatementDeleteChunk::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_ensures_complete_coverage_of_range(): void
     {
         Queue::fake();

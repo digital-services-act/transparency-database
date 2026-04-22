@@ -11,9 +11,7 @@ class GiveRoleTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_assigns_role_to_user_successfully(): void
     {
         // Create a test role and user
@@ -29,9 +27,7 @@ class GiveRoleTest extends TestCase
         $this->assertTrue($user->fresh()->hasRole('test-role'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_error_when_role_not_found(): void
     {
         // Create a test user but no role
@@ -43,9 +39,7 @@ class GiveRoleTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_error_when_user_not_found(): void
     {
         // Create a test role but no user

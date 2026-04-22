@@ -11,9 +11,7 @@ class GenerateStatementsTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_dispatches_default_amount_of_jobs(): void
     {
         Queue::fake();
@@ -26,9 +24,7 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 200);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_dispatches_custom_amount_of_jobs(): void
     {
         Queue::fake();
@@ -41,9 +37,7 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 5);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_zero_amount(): void
     {
         Queue::fake();
@@ -56,9 +50,7 @@ class GenerateStatementsTest extends TestCase
         Queue::assertNothingPushed();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_dispatches_jobs_with_custom_date(): void
     {
         Queue::fake();
@@ -79,9 +71,7 @@ class GenerateStatementsTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_sod_option_correctly(): void
     {
         Queue::fake();
@@ -98,9 +88,7 @@ class GenerateStatementsTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_eod_option_correctly(): void
     {
         Queue::fake();
@@ -117,9 +105,7 @@ class GenerateStatementsTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_both_sod_and_eod_options(): void
     {
         Queue::fake();

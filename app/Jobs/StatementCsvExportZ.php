@@ -106,7 +106,7 @@ class StatementCsvExportZ implements ShouldQueue
             $current_end = min(($current_start + $day_archive_service->chunk), $this->end_id);
 
             // Fetch statements in the current chunk
-            $statements = $day_archive_service->getRawStatements($current_start, $current_end);
+            $statements = $day_archive_service->getRawStatements($current_start, $current_end, $this->date);
 
             // Process each statement
             foreach ($statements as $statement) {

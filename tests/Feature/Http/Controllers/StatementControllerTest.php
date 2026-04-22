@@ -50,8 +50,8 @@ class StatementControllerTest extends TestCase
     //    }
 
     /**
-     * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
     public function index_displays_view_if_logged_with_rights(): void
     {
         $this->signInAsAdmin();
@@ -61,9 +61,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_handles_the_max_pages_issue(): void
     {
         $this->signInAsAdmin();
@@ -73,9 +71,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function basic_search_route_works(): void
     {
         $this->signInAsAdmin();
@@ -84,9 +80,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewIs('statement.search');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_blocks_when_no_platform(): void
     {
         $user = $this->signInAsAdmin();
@@ -97,9 +91,7 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
@@ -108,18 +100,14 @@ class StatementControllerTest extends TestCase
         $response->assertNotFound();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_show_the_index(): void
     {
         $response = $this->get(route('statement.index'));
         $response->assertOk();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function export_downloads_a_file(): void
     {
 
@@ -129,9 +117,7 @@ class StatementControllerTest extends TestCase
         $response->assertDownload();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_displays_view(): void
     {
 
@@ -142,9 +128,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewIs('statement.create');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_must_be_authenticated(): void
     {
 
@@ -158,9 +142,7 @@ class StatementControllerTest extends TestCase
         $response->assertRedirectContains('/login');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_displays_view(): void
     {
 
@@ -174,9 +156,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statement');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_beta_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
@@ -186,10 +166,10 @@ class StatementControllerTest extends TestCase
     }
 
     /**
-     * @test
      *
      * @see StatementAPIControllerTest
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_saves_and_redirects(): void
     {
 
@@ -218,10 +198,10 @@ class StatementControllerTest extends TestCase
     }
 
     /**
-     * @test
      *
      * @see StatementAPIControllerTest
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_fails_with_existing_puid(): void
     {
 
@@ -244,9 +224,7 @@ class StatementControllerTest extends TestCase
         $response->assertSessionHas('error', 'The PUID is not unique in the database');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_uses_elasticsearch_when_configured(): void
     {
         $this->signInAsAdmin();
@@ -265,9 +243,7 @@ class StatementControllerTest extends TestCase
         $response->assertOk();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_uses_database_when_elasticsearch_is_not_configured(): void
     {
         $this->signInAsAdmin();
@@ -283,9 +259,7 @@ class StatementControllerTest extends TestCase
         $response->assertOk();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_indexes_statement_in_non_production_with_elastic(): void
     {
         $this->signInAsAdmin();
@@ -302,9 +276,7 @@ class StatementControllerTest extends TestCase
         $this->post(route('statement.store'), $this->dummy_attributes);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_does_not_index_statement_in_production(): void
     {
         $this->signInAsAdmin();
@@ -321,9 +293,7 @@ class StatementControllerTest extends TestCase
         $this->post(route('statement.store'), $this->dummy_attributes);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_does_not_index_statement_when_elastic_is_not_configured(): void
     {
         $this->signInAsAdmin();

@@ -12,9 +12,7 @@ class QueueNukeTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_truncates_queue_tables_and_restarts_queue(): void
     {
         // Seed the queue tables with some dummy data

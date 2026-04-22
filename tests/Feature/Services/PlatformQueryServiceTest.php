@@ -21,9 +21,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertNotNull($this->platformQueryService);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_queries_on_s(): void
     {
         $filters = [];
@@ -33,9 +31,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringContainsString('"name" LIKE \'%zaphod%\'', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_queries_on_has_tokens(): void
     {
         $filters = [];
@@ -57,9 +53,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"has_tokens"', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_queries_on_has_statements(): void
     {
         $filters = [];
@@ -81,9 +75,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"has_statements"', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_queries_on_vlop(): void
     {
         $filters = [];
@@ -105,9 +97,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"vlop"', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_queries_on_onboarded(): void
     {
         $filters = [];
@@ -129,36 +119,28 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"onboarded"', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_platform_dropdown_options(): void
     {
         $options = $this->platformQueryService->getPlatformDropDownOptions();
         $this->assertIsArray($options);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_platforms_by_id(): void
     {
         $platforms_by_id = $this->platformQueryService->getPlatformsById();
         $this->assertIsArray($platforms_by_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_platform_ids(): void
     {
         $platform_ids = $this->platformQueryService->getPlatformIds();
         $this->assertIsArray($platform_ids);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_platform_vlop_ids(): void
     {
         $platform_ids = $this->platformQueryService->getVlopPlatformIds();

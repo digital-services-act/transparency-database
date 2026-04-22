@@ -24,9 +24,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertNotNull($this->statement_elastic_search_service);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_do_a_basic_query(): void
     {
         $filters = [];
@@ -35,9 +33,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('*', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_automatic_detection(): void
     {
         $filters = [
@@ -55,9 +51,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(automated_detection:true OR automated_detection:false)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_automatic_decision(): void
     {
         $filters = [
@@ -68,9 +62,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(automated_decision:AUTOMATED_DECISION_FULLY OR automated_decision:AUTOMATED_DECISION_PARTIALLY OR automated_decision:AUTOMATED_DECISION_NOT_AUTOMATED)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_source_type(): void
     {
         $filters = [
@@ -81,9 +73,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(source_type:SOURCE_ARTICLE_16 OR source_type:SOURCE_TRUSTED_FLAGGER OR source_type:SOURCE_TYPE_OTHER_NOTIFICATION OR source_type:SOURCE_VOLUNTARY)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_s(): void
     {
         $filters = [
@@ -95,9 +85,7 @@ class StatementElasticSearchServiceTest extends TestCase
             $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_visibility(): void
     {
         $filters = [
@@ -109,9 +97,7 @@ class StatementElasticSearchServiceTest extends TestCase
             $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_category_specification(): void
     {
         $filters = [
@@ -122,9 +108,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertStringContainsString('category_specification:KEYWORD_ANIMAL_HARM OR category_specification:', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_monetary(): void
     {
         $filters = [
@@ -135,9 +119,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(decision_monetary:DECISION_MONETARY_SUSPENSION OR decision_monetary:DECISION_MONETARY_TERMINATION OR decision_monetary:DECISION_MONETARY_OTHER)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_provision(): void
     {
         $filters = [
@@ -149,9 +131,7 @@ class StatementElasticSearchServiceTest extends TestCase
             $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_account(): void
     {
         $filters = [
@@ -162,9 +142,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(decision_account:DECISION_ACCOUNT_SUSPENDED OR decision_account:DECISION_ACCOUNT_TERMINATED)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_account_type(): void
     {
         $filters = [
@@ -175,9 +153,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(account_type:ACCOUNT_TYPE_BUSINESS OR account_type:ACCOUNT_TYPE_PRIVATE)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_grounds(): void
     {
         $filters = [
@@ -188,9 +164,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(decision_ground:DECISION_GROUND_ILLEGAL_CONTENT OR decision_ground:DECISION_GROUND_INCOMPATIBLE_CONTENT)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_category(): void
     {
         $filters = [
@@ -201,9 +175,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertStringContainsString('category:STATEMENT_CATEGORY_ANIMAL_WELFARE OR', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_content_type(): void
     {
         $filters = [
@@ -214,9 +186,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertStringContainsString('content_type:CONTENT_TYPE_TEXT OR ', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_only_real_platform_ids(): void
     {
         $filters = [
@@ -227,9 +197,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertNotEquals('(platform_id:99 OR platform_id:100)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_platform_id(): void
     {
 
@@ -245,9 +213,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(platform_id:'.$platform_id_one.' OR platform_id:'.$platform_id_two.')', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_territorial_scope(): void
     {
         $filters = [
@@ -258,9 +224,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals('(territorial_scope:BG OR territorial_scope:NL)', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_created_at(): void
     {
         $filters['created_at_start'] = '15-12-2020';
@@ -281,9 +245,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertStringContainsString('2020-12-20T00:00:00 TO 2020-12-21T23:59:59]', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function start_and_end_dates_must_be_valid(): void
     {
         $filters['created_at_start'] = 'not a good date';
@@ -304,18 +266,14 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertStringNotContainsString('created_at', $query);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_starts_a_count_query(): void
     {
         $result = $this->statement_elastic_search_service->startCountQuery();
         $this->assertEquals('SELECT CAST(count(*) AS BIGINT) as count FROM statement_index', $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_extracts_a_count_query_result(): void
     {
         $fake_result = [
@@ -330,9 +288,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals(666, $test);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_make_received_date_condition(): void
     {
         $now = Carbon::create(2024, 1, 29);
@@ -341,9 +297,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals($should_be, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_make_received_date_range_condition(): void
     {
         $start = Carbon::create(2024, 1, 1);
@@ -353,9 +307,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals($should_be, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_builds_wheres(): void
     {
         $conditions = [
@@ -373,9 +325,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals($should_be, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_get_the_grand_total(): void
     {
         $cache = Cache::get('grand_total');
@@ -386,9 +336,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertNotNull($cache);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_extracts_count_query_results(): void
     {
         $this->statement_elastic_search_service->setMockCountQueryAnswer(777);
@@ -396,18 +344,14 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals(777, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_bad_count_query_results(): void
     {
         $result = $this->statement_elastic_search_service->extractCountQueryResult([['fruits' => ['bananas', 'oranges']]]);
         $this->assertEquals(0, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_the_top_categories(): void
     {
         $result = $this->statement_elastic_search_service->topCategories();
@@ -431,9 +375,7 @@ class StatementElasticSearchServiceTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_the_top_decisions_visibility(): void
     {
         $result = $this->statement_elastic_search_service->topDecisionVisibilities();
@@ -456,9 +398,7 @@ class StatementElasticSearchServiceTest extends TestCase
         $this->assertEquals(777, $result[3]['total']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_automated_decision_percentage(): void
     {
         $this->statement_elastic_search_service->setMockCountQueryAnswer(1000);
