@@ -17,6 +17,7 @@ use Illuminate\Contracts\Auth\Guard as AuthGuard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -28,11 +29,25 @@ final class CasGuard implements AuthGuard
 
     private ?Authenticatable $user = null;
 
+    private readonly Session $session;
+
     public function __construct(
         private readonly ?UserProvider $provider,
-        private readonly Request $request,
-        private readonly Session $session
-    ) {}
+        Request|Session $requestOrSession,
+        ?Session $session = null
+    ) {
+        if ($requestOrSession instanceof Session) {
+            $this->session = $requestOrSession;
+
+            return;
+        }
+
+        if ($session === null) {
+            throw new InvalidArgumentException('The CAS guard requires a session store.');
+        }
+
+        $this->session = $session;
+    }
 
     /**
      * @throws ContainerExceptionInterface
