@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: transparency-database-clever-postgres
+    environment:
+      POSTGRES_DB: transparency_clever
+      POSTGRES_USER: transparency
+      POSTGRES_PASSWORD: transparency
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./storage/docker/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

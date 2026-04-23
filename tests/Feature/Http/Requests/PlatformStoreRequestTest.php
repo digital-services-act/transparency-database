@@ -39,7 +39,7 @@ class PlatformStoreRequestTest extends TestCase
         });
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function authorized_users_can_create_platform()
     {
         $this->actingAs($this->user);
@@ -58,7 +58,7 @@ class PlatformStoreRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function unauthorized_users_cannot_create_platform()
     {
         $this->actingAs($this->user);
@@ -76,7 +76,7 @@ class PlatformStoreRequestTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function name_is_required()
     {
         $this->actingAs($this->user);
@@ -90,7 +90,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function name_must_be_string()
     {
         $this->actingAs($this->user);
@@ -105,7 +105,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function name_must_not_exceed_max_length()
     {
         $this->actingAs($this->user);
@@ -120,7 +120,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function vlop_is_required()
     {
         $this->actingAs($this->user);
@@ -134,7 +134,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['vlop']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function vlop_must_be_integer()
     {
         $this->actingAs($this->user);
@@ -149,7 +149,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['vlop']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function optional_fields_can_be_null()
     {
         $this->actingAs($this->user);
@@ -167,7 +167,7 @@ class PlatformStoreRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dsa_common_id_must_be_unique()
     {
         $this->actingAs($this->user);
@@ -186,7 +186,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['dsa_common_id']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function in_method_builds_validation_rule_correctly()
     {
         // Create a request instance

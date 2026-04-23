@@ -14,9 +14,7 @@ class LogMessagesControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_list_the_log_messages(): void
     {
         $this->signInAsAdmin();
@@ -25,9 +23,7 @@ class LogMessagesControllerTest extends TestCase
         $response->assertViewIs('log_messages.index');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_removes_log_messages_redirects_to_index(): void
     {
         // We should be at 0
@@ -48,9 +44,7 @@ class LogMessagesControllerTest extends TestCase
         $this->assertCount(0, $log_messages);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_block_non_admins_from_truncating(): void
     {
         $this->signInAsSupport();
@@ -58,9 +52,7 @@ class LogMessagesControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_block_non_admins_from_viewing(): void
     {
         $this->signInAsOnboarding();

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\BackfillAPIController;
 use App\Http\Controllers\Api\v1\ElasticSearchAPIController;
 use App\Http\Controllers\Api\v1\PlatformAPIController;
 use App\Http\Controllers\Api\v1\PlatformUserAPIController;
@@ -45,6 +46,16 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('datetotalsrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.elasticsearch.datetotalsrange');
     });
 
+    Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {
+        Route::post('search', [ElasticSearchAPIController::class, 'search']);
+        Route::post('count', [ElasticSearchAPIController::class, 'count']);
+        Route::post('sql', [ElasticSearchAPIController::class, 'sql']);
+        Route::post('query', [ElasticSearchAPIController::class, 'dql']);
+        Route::get('aggregates/{date}/{attributes?}', [ElasticSearchAPIController::class, 'aggregatesForDate']);
+        Route::get('platforms', [ElasticSearchAPIController::class, 'platforms']);
+        Route::get('labels', [ElasticSearchAPIController::class, 'labels']);
+    });
+
     // Onboarding routes
     Route::get('platform/{platform:dsa_common_id}', static fn (\App\Models\Platform $platform) => (new PlatformAPIController)->get($platform))->name('api.v1.platform.get')->can('view platforms');
     Route::put('platform/{platform:dsa_common_id}', static fn (\App\Models\Platform $platform, \App\Http\Requests\PlatformUpdateRequest $request): \Illuminate\Http\JsonResponse => (new PlatformAPIController)->update($platform, $request))->name('api.v1.platform.update')->can('create platforms');
@@ -53,4 +64,9 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::delete('user/{email}', static fn ($email) => (new UserAPIController)->delete($email))->name('api.v1.user.delete')->can('create users');
     Route::post('platform/{platform:dsa_common_id}/users', static fn (\App\Http\Requests\PlatformUsersStoreRequest $request, \App\Models\Platform $platform): \Illuminate\Http\JsonResponse => (new PlatformUserAPIController)->store($request, $platform))->name('api.v1.platform-users.store')->can('create users');
 
+    Route::group(['prefix' => 'backfill', 'middleware' => ['can:administrate']], static function () {
+        Route::get('last-imported-id', [BackfillAPIController::class, 'lastImportedId'])->name('api.v1.backfill.last-imported-id');
+        Route::get('highest-imported-id', [BackfillAPIController::class, 'highestImportedId'])->name('api.v1.backfill.highest-imported-id');
+        Route::post('statements', [BackfillAPIController::class, 'statements'])->name('api.v1.backfill.statements');
+    });
 });

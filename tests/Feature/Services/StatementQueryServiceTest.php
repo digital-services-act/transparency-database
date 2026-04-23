@@ -9,9 +9,7 @@ use App\Services\StatementQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-/**
- * @covers \App\Services\StatementQueryService
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(\App\Services\StatementQueryService::class)]
 class StatementQueryServiceTest extends TestCase
 {
     use RefreshDatabase;
@@ -30,9 +28,7 @@ class StatementQueryServiceTest extends TestCase
         Statement::factory(10)->create();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_do_a_basic_query(): void
     {
         // 10 statements
@@ -40,9 +36,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_automated_detection(): void
     {
         // 10 statements
@@ -54,9 +48,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_automated_decision(): void
     {
         // 10 statements
@@ -69,9 +61,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_territorial_scope(): void
     {
         $filters = [
@@ -87,9 +77,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(['%"FR"%', '%"DE"%', '%"NL"%'], array_values($bindings));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_visibility(): void
     {
         $filters = [
@@ -108,9 +96,7 @@ class StatementQueryServiceTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_content_type(): void
     {
         $filters = [
@@ -126,9 +112,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(['%"CONTENT_TYPE_TEXT"%', '%"CONTENT_TYPE_VIDEO"%'], array_values($bindings));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_category_specification(): void
     {
         // Clear existing data and create statements with known category specifications
@@ -157,9 +141,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(2, $result->count());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_created_at_start(): void
     {
         $filters = [
@@ -169,9 +151,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" >= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_created_at_end(): void
     {
         $filters = [
@@ -181,9 +161,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_platform_id(): void
     {
         $filters = [
@@ -193,9 +171,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where exists (select * from "platforms" where "statements_beta"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_ground(): void
     {
         $filters = [
@@ -205,9 +181,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "decision_ground" in (?', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_source_type(): void
     {
         $filters = [
@@ -217,9 +191,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "source_type" in (?', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_category(): void
     {
         $filters = [
@@ -229,9 +201,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "category" in (?', $sql);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_errors_gracefully(): void
     {
         // Create a statement with known values
@@ -257,9 +227,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertNotNull($result); // Should return a query builder despite error
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_text_search(): void
     {
         Statement::query()->delete();
@@ -317,9 +285,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_decision_fields(): void
     {
         Statement::query()->delete();
@@ -364,9 +330,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $result->count());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_content_language(): void
     {
         Statement::query()->delete();

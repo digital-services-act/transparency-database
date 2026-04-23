@@ -13,9 +13,7 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_displays_users_with_search(): void
     {
         $this->signInAsAdmin();
@@ -28,9 +26,7 @@ class UserControllerTest extends TestCase
         $response->assertSee('searchme@test.com');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_filters_by_platform_uuid(): void
     {
         $this->signInAsAdmin();
@@ -45,9 +41,7 @@ class UserControllerTest extends TestCase
         $response->assertSee($user->email);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_stores_returnto_in_session(): void
     {
         $this->signInAsAdmin();
@@ -59,9 +53,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals($returnTo, session('returnto'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function create_sets_platform_from_query(): void
     {
         $this->signInAsAdmin();
@@ -74,9 +66,7 @@ class UserControllerTest extends TestCase
         $response->assertSee('value="'.$platform->id.'"', false);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_redirects_to_returnto_url(): void
     {
         $this->signInAsAdmin();
@@ -93,9 +83,7 @@ class UserControllerTest extends TestCase
         $this->assertNull(session('returnto'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function update_changes_user_details(): void
     {
         $this->signInAsAdmin();
@@ -116,9 +104,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function update_redirects_to_returnto_url(): void
     {
         $this->signInAsAdmin();
@@ -136,9 +122,7 @@ class UserControllerTest extends TestCase
         $this->assertNull(session('returnto'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_redirects_to_index(): void
     {
         $this->signInAsAdmin();
@@ -149,9 +133,7 @@ class UserControllerTest extends TestCase
         $response->assertRedirect(route('user.index'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function edit_stores_returnto_in_session(): void
     {
         $this->signInAsAdmin();
@@ -164,9 +146,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals($returnTo, session('returnto'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function destroy_redirects_to_returnto_url(): void
     {
         $this->signInAsAdmin();
@@ -178,9 +158,7 @@ class UserControllerTest extends TestCase
         $response->assertRedirect($returnTo);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function non_admin_cannot_see_restricted_roles(): void
     {
         $user = $this->signInAsSupport();
@@ -194,7 +172,7 @@ class UserControllerTest extends TestCase
         $this->assertFalse($roles->contains('name', 'User'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function deleting_user_deletes_the_rest(): void
     {
         /** @var User $user */
@@ -216,7 +194,7 @@ class UserControllerTest extends TestCase
         $this->assertCount($total_users_start - 1, User::all());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function support_should_be_able_to_create_user(): void
     {
         /** @var User $user */

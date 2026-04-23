@@ -16,9 +16,7 @@ class StatementAlphaTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function territorial_scope_is_always_an_array(): void
     {
 
@@ -50,9 +48,7 @@ class StatementAlphaTest extends TestCase
         $this->assertCount(0, $statement->territorial_scope);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function territorial_scope_is_always_sorted(): void
     {
 
@@ -68,9 +64,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEquals(['AU', 'BE', 'SK'], $territorial_scope);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function territorial_scope_is_always_unique(): void
     {
         $statement = StatementAlpha::all()->random()->first();
@@ -85,9 +79,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEquals(['AU', 'BE', 'SK'], $territorial_scope);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_generates_uuid_on_creation(): void
     {
         $statement = StatementAlpha::factory()->create();
@@ -95,9 +87,7 @@ class StatementAlphaTest extends TestCase
         $this->assertTrue(Str::isUuid($statement->uuid));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_correct_relationships(): void
     {
         $statement = StatementAlpha::factory()->create();
@@ -106,9 +96,7 @@ class StatementAlphaTest extends TestCase
         $this->assertInstanceOf(HasOne::class, $statement->platform());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_casts_attributes_correctly(): void
     {
         $statement = StatementAlpha::factory()->create([
@@ -139,9 +127,7 @@ class StatementAlphaTest extends TestCase
         $this->assertIsArray($statement->category_specification);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_platform_name_caching(): void
     {
         $platform = Platform::factory()->create(['name' => 'Test Platform']);
@@ -157,9 +143,7 @@ class StatementAlphaTest extends TestCase
         $statement->platformNameCached();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_generates_correct_permalink_and_self_urls(): void
     {
         $statement = StatementAlpha::factory()->create();
@@ -175,9 +159,7 @@ class StatementAlphaTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_formats_restrictions_correctly(): void
     {
         $statement = StatementAlpha::factory()->create([
@@ -192,9 +174,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEquals('Visibility, Monetary', $statement->restrictions());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_formats_all_restrictions_correctly(): void
     {
         $statement = StatementAlpha::factory()->create([
@@ -209,9 +189,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEquals('Visibility, Monetary, Provision, Account', $statement->restrictions());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_invalid_json_in_raw_keys(): void
     {
         $statement = StatementAlpha::factory()->create();
@@ -224,9 +202,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEmpty($statement->territorial_scope);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_converts_enum_values_correctly(): void
     {
         // Test valid keys
@@ -261,9 +237,7 @@ class StatementAlphaTest extends TestCase
         ], $values);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prepares_searchable_array_correctly(): void
     {
         $statement = StatementAlpha::factory()->create([
@@ -281,9 +255,7 @@ class StatementAlphaTest extends TestCase
         $this->assertTrue($searchable['automated_detection']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_platform_uuid_caching(): void
     {
         $platform = Platform::factory()->create(['uuid' => Str::uuid()]);
@@ -299,9 +271,7 @@ class StatementAlphaTest extends TestCase
         $statement->platformUuidCached();
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prepares_syncable_array_correctly(): void
     {
         $statement = StatementAlpha::factory()->create([
@@ -320,9 +290,7 @@ class StatementAlphaTest extends TestCase
         $this->assertArrayHasKey('automated_detection', $syncable);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_platform_attributes_when_platform_missing(): void
     {
         // Create a statement without platform_id
@@ -333,9 +301,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEquals('deleted-name-', $statement->platformNameCached());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_searchable_index_name(): void
     {
         $statement = StatementAlpha::factory()->create();
@@ -343,9 +309,7 @@ class StatementAlphaTest extends TestCase
         $this->assertEquals('statement_index', $statement->searchableAs());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_non_array_json_decode_result(): void
     {
         $statement = StatementAlpha::factory()->create();

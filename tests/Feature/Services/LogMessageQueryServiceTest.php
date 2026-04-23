@@ -23,9 +23,7 @@ class LogMessageQueryServiceTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_on_s(): void
     {
         $result = $this->log_message_query_service->query(['s' => 'cow']);
@@ -33,9 +31,7 @@ class LogMessageQueryServiceTest extends TestCase
         $this->assertEquals('select * from "log_messages" where "message" LIKE \'%cow%\' or "context" LIKE \'%cow%\'', $raw);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_searches_id_on_int(): void
     {
         $result = $this->log_message_query_service->query(['s' => 5]);
@@ -43,9 +39,7 @@ class LogMessageQueryServiceTest extends TestCase
         $this->assertEquals('select * from "log_messages" where "id" = 5', $raw);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_escapes_potentially_dangerous_stuff(): void
     {
         $result = $this->log_message_query_service->query(['s' => "'; select * FROM statements;"]);

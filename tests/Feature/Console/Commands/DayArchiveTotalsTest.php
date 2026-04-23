@@ -12,9 +12,7 @@ class DayArchiveTotalsTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_runs_without_errors(): void
     {
         // Create a DayArchive record for the command to process
@@ -31,9 +29,7 @@ class DayArchiveTotalsTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_save_when_nosave_option_is_used(): void
     {
         // Create a DayArchive record
@@ -55,9 +51,7 @@ class DayArchiveTotalsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_archives_with_a_platform_and_saves_the_total(): void
     {
         // Create a DayArchive with a platform

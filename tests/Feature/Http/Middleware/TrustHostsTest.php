@@ -21,7 +21,7 @@ class TrustHostsTest extends TestCase
         $this->middleware = new TrustHosts($this->app);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_array_with_application_url_pattern()
     {
         // Set a test application URL
@@ -34,7 +34,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?example\.com$', $hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_application_url_with_subdomain()
     {
         // Set a test application URL with subdomain
@@ -47,7 +47,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?api\.example\.com$', $hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_application_url_with_port()
     {
         // Set a test application URL with port
@@ -60,7 +60,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?example\.com$', $hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_application_url_with_path()
     {
         // Set a test application URL with path
@@ -73,7 +73,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?example\.com$', $hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_localhost()
     {
         // Set localhost as application URL
@@ -86,7 +86,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?localhost$', $hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_ip_address()
     {
         // Set IP address as application URL
@@ -99,7 +99,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?127\.0\.0\.1$', $hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_empty_application_url()
     {
         // Set empty application URL
@@ -112,7 +112,7 @@ class TrustHostsTest extends TestCase
         $this->assertNull($hosts[0]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_invalid_application_url()
     {
         // Set invalid URL

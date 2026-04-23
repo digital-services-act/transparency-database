@@ -13,9 +13,7 @@ class AggregatesFreezeTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_runs_with_successful_aggregates(): void
     {
         // Mock the StatementElasticSearchService
@@ -65,9 +63,7 @@ class AggregatesFreezeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_error_and_returns_early_when_no_aggregates(): void
     {
         // Mock Storage first, before any other setup

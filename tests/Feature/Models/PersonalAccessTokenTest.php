@@ -18,14 +18,14 @@ class PersonalAccessTokenTest extends TestCase
         Cache::flush();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_correct_ttl_and_interval_defaults()
     {
         $this->assertEquals(3600, PersonalAccessToken::$ttl);
         $this->assertEquals(3600, PersonalAccessToken::$interval);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_caches_last_used_at_updates()
     {
         $user = User::factory()->create();
@@ -40,7 +40,7 @@ class PersonalAccessTokenTest extends TestCase
         $this->assertNotNull(Cache::get($cacheKey));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_respects_configured_cache_interval()
     {
         $customInterval = 7200;
@@ -66,7 +66,7 @@ class PersonalAccessTokenTest extends TestCase
         $this->assertNull(Cache::get($cacheKey));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_clears_cache_on_token_deletion()
     {
         $user = User::factory()->create();
@@ -90,7 +90,7 @@ class PersonalAccessTokenTest extends TestCase
         $this->assertNull(Cache::get($tokenCacheKey));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_critical_error_on_cache_failure()
     {
         $user = User::factory()->create();
@@ -111,7 +111,7 @@ class PersonalAccessTokenTest extends TestCase
         $token->save();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_database_when_caching_last_used_at()
     {
         $user = User::factory()->create();

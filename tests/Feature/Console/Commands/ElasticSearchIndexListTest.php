@@ -12,9 +12,7 @@ class ElasticSearchIndexListTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_be_instantiated(): void
     {
         $command = new ElasticSearchIndexList;
@@ -24,9 +22,7 @@ class ElasticSearchIndexListTest extends TestCase
         $this->assertEquals('Get some info about the elasticsearch.', $command->getDescription());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_lists_elasticsearch_indices_with_dependency_injection(): void
     {
         // Now with business logic in the service, testing is much simpler!
@@ -52,9 +48,7 @@ class ElasticSearchIndexListTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_empty_index_list_gracefully(): void
     {
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -70,9 +64,7 @@ class ElasticSearchIndexListTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_single_index(): void
     {
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);

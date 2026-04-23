@@ -41,7 +41,7 @@ class UserUpdateRequestTest extends TestCase
         });
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function authorized_users_can_update_users()
     {
         $this->actingAs($this->user);
@@ -60,7 +60,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function unauthorized_users_cannot_update_users()
     {
         $this->actingAs($this->user);
@@ -79,7 +79,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function email_must_be_valid()
     {
         $this->actingAs($this->user);
@@ -94,7 +94,7 @@ class UserUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['email']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function email_must_be_unique_except_for_current_user()
     {
         $this->actingAs($this->user);
@@ -121,7 +121,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function platform_id_must_be_integer_if_provided()
     {
         $this->actingAs($this->user);
@@ -137,7 +137,7 @@ class UserUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['platform_id']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function platform_id_can_be_null()
     {
         $this->actingAs($this->user);
@@ -152,7 +152,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function roles_must_be_an_array()
     {
         $this->actingAs($this->user);
@@ -167,7 +167,7 @@ class UserUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['roles']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function roles_are_required()
     {
         $this->actingAs($this->user);

@@ -10,9 +10,7 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_throws_an_error_on_first_or_create_with_no_email(): void
     {
         $this->expectException(\Exception::class);
@@ -21,9 +19,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_a_user_by_attributes(): void
     {
         $result = User::firstOrCreateByAttributes([
@@ -34,9 +30,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(User::class, $result);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_correctly_sees_valid_token_or_not(): void
     {
         $user = User::firstOrCreateByAttributes([

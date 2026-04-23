@@ -11,9 +11,7 @@ class StatementCsvExportSha1Test extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_runs_without_errors(): void
     {
         // Create a temporary directory and file for testing

@@ -28,9 +28,7 @@ class PlatformAPIControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_store_requires_auth(): void
     {
         // Not signing in.
@@ -43,9 +41,7 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_store_works(): void
     {
 
@@ -68,9 +64,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertCount(21, Platform::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_store_handles_duplicate_platform(): void
     {
         $user = $this->signInAsOnboarding();
@@ -95,9 +89,7 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertJsonStructure(['message', 'errors']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_update_works(): void
     {
 
@@ -128,9 +120,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertCount(21, Platform::all());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_give_platform_data(): void
     {
         $this->withoutExceptionHandling();
@@ -147,9 +137,7 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_store_returns_existing_platform_with_same_name(): void
     {
         $user = $this->signInAsOnboarding();
@@ -177,9 +165,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertCount(21, Platform::all()); // No new platform should be created
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_store_updates_dsa_common_id_for_platform_without_dsa_id(): void
     {
         $user = $this->signInAsOnboarding();
@@ -210,9 +196,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertEquals('new-id-456', Platform::find($existingPlatform->id)->dsa_common_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function api_platform_store_fails_when_existing_platform_has_dsa_id(): void
     {
         $user = $this->signInAsOnboarding();
