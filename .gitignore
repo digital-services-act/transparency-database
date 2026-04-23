@@ -33,3 +33,4 @@ database.sqlite
 .clever.json
 /storage/app/*
 !/storage/app/.gitignore
+.DS_Store
