@@ -44,6 +44,15 @@ class StatementBackfillSendChunk implements ShouldQueue
     {
         $end = min($this->min + $this->chunk - 1, $this->max);
 
+        // Queue the next range.
+        if ($end < $this->max) {
+            self::dispatch($end + 1, $this->max, $this->chunk);
+        } else {
+            Log::info('StatementBackfillSendChunk max reached at ' . Carbon::now()->format('Y-m-d H:i:s'), [
+                'range_end' => $end,
+            ]);
+        }
+
         $rows = DB::table($backfillTargetService->getConfiguredTable())
             ->whereBetween('id', [$this->min, $end])
             ->orderBy('id')
@@ -68,14 +77,7 @@ class StatementBackfillSendChunk implements ShouldQueue
             ]);
         }
 
-        // Queue the next range only after the current one succeeds so max(id) resumption stays safe.
-        if ($end < $this->max) {
-            self::dispatch($end + 1, $this->max, $this->chunk);
-        } else {
-            Log::info('StatementBackfillSendChunk max reached at ' . Carbon::now()->format('Y-m-d H:i:s'), [
-                'range_end' => $end,
-            ]);
-        }
+        
     }
 
     /**
