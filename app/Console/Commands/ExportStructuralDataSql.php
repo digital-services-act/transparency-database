@@ -13,7 +13,6 @@ class ExportStructuralDataSql extends Command
     private const TABLES_IN_INSERT_ORDER = [
         'platforms',
         'day_archives',
-        'platform_day_totals',
         'users',
         'roles',
         'permissions',
