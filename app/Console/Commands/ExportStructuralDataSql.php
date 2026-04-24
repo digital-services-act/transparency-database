@@ -12,6 +12,8 @@ class ExportStructuralDataSql extends Command
 {
     private const TABLES_IN_INSERT_ORDER = [
         'platforms',
+        'day_archives',
+        'platform_day_totals',
         'users',
         'roles',
         'permissions',
@@ -24,7 +26,6 @@ class ExportStructuralDataSql extends Command
     private const CLEANUP_STATEMENTS = [
         'DELETE FROM "sessions";',
         'DELETE FROM "password_resets";',
-        'DELETE FROM "platform_day_totals";',
         'UPDATE "api_logs" SET "platform_id" = NULL;',
     ];
 
@@ -51,7 +52,7 @@ class ExportStructuralDataSql extends Command
      *
      * @var string
      */
-    protected $description = 'Export structural auth data to a PostgreSQL replayable SQL file.';
+    protected $description = 'Export structural and archive data to a PostgreSQL replayable SQL file.';
 
     /**
      * Execute the console command.
