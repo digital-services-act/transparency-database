@@ -22,6 +22,10 @@ class ExportStructuralDataSql extends Command
         'personal_access_tokens',
     ];
 
+    private const BULK_INSERT_BATCH_SIZES = [
+        'day_archives' => 1000,
+    ];
+
     private const CLEANUP_STATEMENTS = [
         'DELETE FROM "sessions";',
         'DELETE FROM "password_resets";',
@@ -102,42 +106,29 @@ class ExportStructuralDataSql extends Command
             '-- Driver: ' . DB::connection()->getDriverName(),
             '-- Target: PostgreSQL',
             '',
+            '-- Initial cleanup transaction.',
             'BEGIN;',
             '',
             '-- Clear related non-exported state that can interfere with the refresh.',
             ...self::CLEANUP_STATEMENTS,
             '',
-            '-- Clear exported tables in reverse dependency order.',
+            'COMMIT;',
+            '',
+            '-- Refresh exported tables one table per transaction.',
         ];
-
-        foreach (array_reverse(self::TABLES_IN_INSERT_ORDER) as $table) {
-            $lines[] = 'DELETE FROM ' . $this->wrapIdentifier($table) . ';';
-        }
-
-        $lines[] = '';
-        $lines[] = '-- Reinsert exported data.';
 
         foreach (self::TABLES_IN_INSERT_ORDER as $table) {
             $lines = [
                 ...$lines,
-                ...$this->buildTableInserts($table),
+                ...$this->buildTableTransaction($table),
             ];
         }
-
-        $lines[] = '';
-        $lines[] = '-- Reset PostgreSQL sequences after explicit id inserts.';
-
-        foreach ($this->tablesWithPrimaryKeySequence() as $table) {
-            $lines[] = $this->buildSequenceResetStatement($table);
-        }
-
-        $lines[] = 'COMMIT;';
         $lines[] = '';
 
         return implode(PHP_EOL, $lines);
     }
 
-    private function buildTableInserts(string $table): array
+    private function buildTableTransaction(string $table): array
     {
         $columns = Schema::getColumnListing($table);
         $rows = $this->orderedRows($table, $columns);
@@ -145,13 +136,45 @@ class ExportStructuralDataSql extends Command
         $lines = [
             '',
             sprintf('-- %s: %d row(s)', $table, $rows->count()),
+            'BEGIN;',
+            'DELETE FROM ' . $this->wrapIdentifier($table) . ';',
         ];
 
-        if ($rows->isEmpty()) {
-            return $lines;
+        if ($rows->isNotEmpty()) {
+            $lines = [
+                ...$lines,
+                ...$this->buildInsertStatements($table, $columns, $rows),
+            ];
         }
 
+        if (Schema::hasColumn($table, 'id')) {
+            $lines[] = $this->buildSequenceResetStatement($table);
+        }
+
+        $lines[] = 'COMMIT;';
+
+        return $lines;
+    }
+
+    private function buildInsertStatements(string $table, array $columns, Collection $rows): array
+    {
+        if ($rows->isEmpty()) {
+            return [];
+        }
+
+        $batchSize = self::BULK_INSERT_BATCH_SIZES[$table] ?? 1;
+
+        if ($batchSize === 1) {
+            return $this->buildSingleRowInsertStatements($table, $columns, $rows);
+        }
+
+        return $this->buildBulkInsertStatements($table, $columns, $rows, $batchSize);
+    }
+
+    private function buildSingleRowInsertStatements(string $table, array $columns, Collection $rows): array
+    {
         $wrappedColumns = implode(', ', array_map(fn (string $column): string => $this->wrapIdentifier($column), $columns));
+        $lines = [];
 
         foreach ($rows as $row) {
             $values = [];
@@ -165,6 +188,35 @@ class ExportStructuralDataSql extends Command
                 $this->wrapIdentifier($table),
                 $wrappedColumns,
                 implode(', ', $values)
+            );
+        }
+
+        return $lines;
+    }
+
+    private function buildBulkInsertStatements(string $table, array $columns, Collection $rows, int $batchSize): array
+    {
+        $wrappedColumns = implode(', ', array_map(fn (string $column): string => $this->wrapIdentifier($column), $columns));
+        $lines = [];
+
+        foreach ($rows->chunk($batchSize) as $chunk) {
+            $valueTuples = [];
+
+            foreach ($chunk as $row) {
+                $values = [];
+
+                foreach ($columns as $column) {
+                    $values[] = $this->formatValue($table, $column, $row->{$column} ?? null);
+                }
+
+                $valueTuples[] = '(' . implode(', ', $values) . ')';
+            }
+
+            $lines[] = sprintf(
+                "INSERT INTO %s (%s) VALUES\n%s;",
+                $this->wrapIdentifier($table),
+                $wrappedColumns,
+                implode(",\n", $valueTuples)
             );
         }
 
@@ -227,14 +279,6 @@ class ExportStructuralDataSql extends Command
         }
 
         return base_path($path);
-    }
-
-    private function tablesWithPrimaryKeySequence(): array
-    {
-        return array_values(array_filter(
-            self::TABLES_IN_INSERT_ORDER,
-            static fn (string $table): bool => Schema::hasColumn($table, 'id')
-        ));
     }
 
     private function buildSequenceResetStatement(string $table): string
