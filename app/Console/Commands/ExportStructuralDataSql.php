@@ -41,6 +41,12 @@ class ExportStructuralDataSql extends Command
         ],
     ];
 
+    private const EXCLUDED_COLUMNS = [
+        'users' => [
+            'eu_login_username',
+        ],
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -130,7 +136,7 @@ class ExportStructuralDataSql extends Command
 
     private function buildTableTransaction(string $table): array
     {
-        $columns = Schema::getColumnListing($table);
+        $columns = $this->selectedColumns($table);
         $rows = $this->orderedRows($table, $columns);
 
         $lines = [
@@ -279,6 +285,16 @@ class ExportStructuralDataSql extends Command
         }
 
         return base_path($path);
+    }
+
+    private function selectedColumns(string $table): array
+    {
+        $excludedColumns = self::EXCLUDED_COLUMNS[$table] ?? [];
+
+        return array_values(array_filter(
+            Schema::getColumnListing($table),
+            static fn (string $column): bool => ! in_array($column, $excludedColumns, true)
+        ));
     }
 
     private function buildSequenceResetStatement(string $table): string
