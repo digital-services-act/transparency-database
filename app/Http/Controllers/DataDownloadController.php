@@ -73,6 +73,13 @@ class DataDownloadController extends Controller
             abort(404, 'File not found');
         }
 
+        // amazonaws
+        // if the url is an older s3 url, we can redirect directly to it
+        if (str_contains($storedUrl, 'amazonaws')) {
+            return redirect()->away($storedUrl);
+        }
+
+
         // Extract filename from stored URL
         $filename = basename(parse_url($storedUrl, PHP_URL_PATH));
 
