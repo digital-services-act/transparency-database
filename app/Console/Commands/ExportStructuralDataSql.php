@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class ExportStructuralDataSql extends Command
 {
@@ -54,7 +56,9 @@ class ExportStructuralDataSql extends Command
      */
     protected $signature = 'db:export-structural-sql
                             {path? : Output path for the SQL file}
-                            {--force : Overwrite the output file if it already exists}';
+                            {--force : Overwrite the output SQL and ZIP files if they already exist}
+                            {--zip-path= : Output path for the password-protected ZIP file}
+                            {--s3-path= : Destination path for the ZIP file on the s3ds disk}';
 
     /**
      * The console command description.
@@ -69,10 +73,25 @@ class ExportStructuralDataSql extends Command
     public function handle(): int
     {
         $path = $this->resolveOutputPath((string) $this->argument('path'));
+        $zipPath = $this->resolveZipPath($path, (string) $this->option('zip-path'));
+        $s3Path = $this->resolveS3Path($zipPath, (string) $this->option('s3-path'));
 
         if (File::exists($path) && ! $this->option('force')) {
             $this->error("Output file already exists: {$path}");
             $this->line('Use --force to overwrite it.');
+
+            return self::FAILURE;
+        }
+
+        if (File::exists($zipPath) && ! $this->option('force')) {
+            $this->error("ZIP file already exists: {$zipPath}");
+            $this->line('Use --force to overwrite it.');
+
+            return self::FAILURE;
+        }
+
+        if (! config('filesystems.disks.s3ds.bucket')) {
+            $this->error('The s3ds disk bucket is not configured.');
 
             return self::FAILURE;
         }
@@ -91,10 +110,31 @@ class ExportStructuralDataSql extends Command
             return self::FAILURE;
         }
 
+        $password = $this->promptForZipPassword();
+
+        if ($password === null) {
+            return self::FAILURE;
+        }
+
         File::ensureDirectoryExists(dirname($path));
         File::put($path, $this->buildSqlDump());
 
         $this->info("SQL export written to {$path}");
+
+        if (! $this->createPasswordProtectedZip($path, $zipPath, $password)) {
+            return self::FAILURE;
+        }
+
+        $this->info("Password-protected ZIP written to {$zipPath}");
+
+        $publicUrl = $this->uploadZipToS3($zipPath, $s3Path);
+
+        if ($publicUrl === null) {
+            return self::FAILURE;
+        }
+
+        $this->info("ZIP uploaded to s3ds: {$s3Path}");
+        $this->line("Download URL: {$publicUrl}");
 
         foreach (self::TABLES_IN_INSERT_ORDER as $table) {
             $this->line(sprintf('%s: %d row(s)', $table, DB::table($table)->count()));
@@ -103,13 +143,117 @@ class ExportStructuralDataSql extends Command
         return self::SUCCESS;
     }
 
+    private function promptForZipPassword(): ?string
+    {
+        $password = (string) $this->secret('ZIP password');
+
+        if ($password === '') {
+            $this->error('ZIP password cannot be empty.');
+
+            return null;
+        }
+
+        $confirmation = (string) $this->secret('Confirm ZIP password');
+
+        if (! hash_equals($password, $confirmation)) {
+            $this->error('ZIP passwords do not match.');
+
+            return null;
+        }
+
+        return $password;
+    }
+
+    private function createPasswordProtectedZip(string $sqlPath, string $zipPath, string $password): bool
+    {
+        if (! method_exists(ZipArchive::class, 'setEncryptionName') || ! defined('ZipArchive::EM_AES_256')) {
+            $this->error('The installed ZIP extension does not support AES encrypted ZIP entries.');
+
+            return false;
+        }
+
+        File::ensureDirectoryExists(dirname($zipPath));
+        File::delete($zipPath);
+
+        $zip = new ZipArchive;
+        $openResult = $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        if ($openResult !== true) {
+            $this->error("Unable to open ZIP file for writing: {$zipPath}");
+
+            return false;
+        }
+
+        $archiveName = basename($sqlPath);
+
+        if (! $zip->setPassword($password)) {
+            $this->error('Unable to set the ZIP password.');
+            $zip->close();
+            File::delete($zipPath);
+
+            return false;
+        }
+
+        if (! $zip->addFile($sqlPath, $archiveName)) {
+            $this->error("Unable to add SQL file to ZIP: {$sqlPath}");
+            $zip->close();
+            File::delete($zipPath);
+
+            return false;
+        }
+
+        if (! $zip->setEncryptionName($archiveName, ZipArchive::EM_AES_256)) {
+            $this->error('Unable to encrypt the SQL file inside the ZIP.');
+            $zip->close();
+            File::delete($zipPath);
+
+            return false;
+        }
+
+        if (! $zip->close()) {
+            $this->error("Unable to finish writing ZIP file: {$zipPath}");
+            File::delete($zipPath);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function uploadZipToS3(string $zipPath, string $s3Path): ?string
+    {
+        $stream = fopen($zipPath, 'rb');
+
+        if ($stream === false) {
+            $this->error("Unable to read ZIP file for upload: {$zipPath}");
+
+            return null;
+        }
+
+        try {
+            $uploaded = Storage::disk('s3ds')->put($s3Path, $stream, [
+                'visibility' => 'public',
+            ]);
+        } finally {
+            fclose($stream);
+        }
+
+        if (! $uploaded) {
+            $this->error("Unable to upload ZIP file to s3ds: {$s3Path}");
+
+            return null;
+        }
+
+        return $this->s3dsPublicUrl($s3Path);
+    }
+
     private function buildSqlDump(): string
     {
         $lines = [
             '-- Structural data export for transparency-database',
-            '-- Generated at: ' . now()->toDateTimeString(),
-            '-- Connection: ' . DB::getDefaultConnection(),
-            '-- Driver: ' . DB::connection()->getDriverName(),
+            '-- Generated at: '.now()->toDateTimeString(),
+            '-- Connection: '.DB::getDefaultConnection(),
+            '-- Driver: '.DB::connection()->getDriverName(),
             '-- Target: PostgreSQL',
             '',
             '-- Initial cleanup transaction.',
@@ -143,7 +287,7 @@ class ExportStructuralDataSql extends Command
             '',
             sprintf('-- %s: %d row(s)', $table, $rows->count()),
             'BEGIN;',
-            'DELETE FROM ' . $this->wrapIdentifier($table) . ';',
+            'DELETE FROM '.$this->wrapIdentifier($table).';',
         ];
 
         if ($rows->isNotEmpty()) {
@@ -215,7 +359,7 @@ class ExportStructuralDataSql extends Command
                     $values[] = $this->formatValue($table, $column, $row->{$column} ?? null);
                 }
 
-                $valueTuples[] = '(' . implode(', ', $values) . ')';
+                $valueTuples[] = '('.implode(', ', $values).')';
             }
 
             $lines[] = sprintf(
@@ -264,12 +408,12 @@ class ExportStructuralDataSql extends Command
 
     private function quoteString(string $value): string
     {
-        return "'" . str_replace("'", "''", $value) . "'";
+        return "'".str_replace("'", "''", $value)."'";
     }
 
     private function wrapIdentifier(string $identifier): string
     {
-        return '"' . str_replace('"', '""', $identifier) . '"';
+        return '"'.str_replace('"', '""', $identifier).'"';
     }
 
     private function resolveOutputPath(string $path): string
@@ -285,6 +429,46 @@ class ExportStructuralDataSql extends Command
         }
 
         return base_path($path);
+    }
+
+    private function resolveZipPath(string $sqlPath, string $zipPath): string
+    {
+        $zipPath = trim($zipPath);
+
+        if ($zipPath === '') {
+            return $sqlPath.'.zip';
+        }
+
+        return $this->resolveOutputPath($zipPath);
+    }
+
+    private function resolveS3Path(string $zipPath, string $s3Path): string
+    {
+        $s3Path = trim($s3Path);
+
+        if ($s3Path === '') {
+            return basename($zipPath);
+        }
+
+        return ltrim($s3Path, '/');
+    }
+
+    private function s3dsPublicUrl(string $s3Path): string
+    {
+        $bucket = config('filesystems.disks.s3ds.bucket');
+        $region = config('filesystems.disks.s3ds.region');
+
+        return sprintf(
+            'https://%s.s3.%s.amazonaws.com/%s',
+            $bucket,
+            $region,
+            $this->encodeUrlPath($s3Path)
+        );
+    }
+
+    private function encodeUrlPath(string $path): string
+    {
+        return implode('/', array_map('rawurlencode', explode('/', $path)));
     }
 
     private function selectedColumns(string $table): array
