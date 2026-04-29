@@ -141,7 +141,6 @@ class StatementController extends Controller
         $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
         $category_specifications = Statement::getEnumValues($statement->category_specification);
 
-
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         sort($statement_territorial_scope_country_names);
         $statement_content_language = $this->european_languages_service->getName($statement->content_language ?? '');
@@ -169,12 +168,14 @@ class StatementController extends Controller
         $validated = $this->sanitizeData($validated);
 
         try {
-            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
+            $statement = $this->puidService->runWithReservedPuid(
+                $validated['platform_id'],
+                $validated['puid'],
+                static fn () => Statement::create($validated)
+            );
         } catch (PuidNotUniqueSingleException $e) {
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
-
-        $statement = Statement::create($validated);
 
         $uri = config('elasticsearch.uri');
         $env = config('app.env');
@@ -185,7 +186,7 @@ class StatementController extends Controller
             $this->statement_elastic_search_service->indexStatement($statement);
         }
 
-        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/' . $statement->uuid . '">Click here to view it.</a>');
+        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->uuid.'">Click here to view it.</a>');
     }
 
     private function prepareOptions($noval_on_select = false): array

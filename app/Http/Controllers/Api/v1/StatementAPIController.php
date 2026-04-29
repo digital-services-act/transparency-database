@@ -8,7 +8,6 @@ use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Http\Controllers\Traits\Sanitizer;
 use App\Http\Controllers\Traits\StatementAPITrait;
 use App\Http\Requests\StatementStoreRequest;
-use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\PlatformUniqueIdService;
@@ -74,12 +73,15 @@ class StatementAPIController extends Controller
         }
 
         try {
-            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
+            $statement = $this->puidService->runWithReservedPuid(
+                $validated['platform_id'],
+                $validated['puid'],
+                static fn () => Statement::create($validated)
+            );
         } catch (PuidNotUniqueSingleException $e) {
             return $e->getJsonResponse();
         }
 
-        $statement = Statement::create($validated);
         $out = $statement->toArray();
         $out['puid'] = $statement->puid;
 

@@ -66,10 +66,15 @@ class StatementMultipleAPIController extends Controller
         $puids_to_check = array_map(static fn ($potential_statement) => $potential_statement['puid'],
             $payload['statements']);
 
+        $out = $this->grouped_submissions_service->enrichThePayloadForBulkInsert($payload['statements'], $platform_id,
+            $user_id, $method);
+
         try {
-            $this->platform_unique_id_service->checkDuplicatesInRequest($puids_to_check);
-            $this->platform_unique_id_service->checkDuplicatesInCache($puids_to_check, $platform_id);
-            $this->platform_unique_id_service->checkDuplicatesInPlatformPuids($puids_to_check, $platform_id);
+            $this->platform_unique_id_service->runWithReservedPuids(
+                $puids_to_check,
+                $platform_id,
+                static fn () => Statement::insert($payload['statements'])
+            );
         } catch (PuidNotUniqueMultipleException $puidNotUniqueMultipleException) {
             // If the cache expired, and we got a new duplicate, we add it again to the cache
             $this->platform_unique_id_service->refreshPuidsInCache($puidNotUniqueMultipleException->getDuplicates(),
@@ -77,11 +82,6 @@ class StatementMultipleAPIController extends Controller
 
             return $puidNotUniqueMultipleException->getJsonResponse();
         }
-
-        $out = $this->grouped_submissions_service->enrichThePayloadForBulkInsert($payload['statements'], $platform_id,
-            $user_id, $method);
-
-        $this->insertAndAddPuidsToCacheAndDatabase($payload);
 
         $uri = config('elasticsearch.uri');
         $env = config('app.env');
@@ -96,15 +96,5 @@ class StatementMultipleAPIController extends Controller
 
         return response()->json(['statements' => $out], Response::HTTP_CREATED);
 
-    }
-
-    private function insertAndAddPuidsToCacheAndDatabase(array $payload): void
-    {
-        // Bulk insert on production, the cron will index later.
-        Statement::insert($payload['statements']);
-
-        // Bulk add PUIDs to cache and database (2 operations instead of 200)
-        $this->platform_unique_id_service->addPuidsToCache($payload['statements']);
-        $this->platform_unique_id_service->addPuidsToDatabase($payload['statements']);
     }
 }

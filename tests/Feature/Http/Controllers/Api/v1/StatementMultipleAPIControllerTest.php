@@ -883,17 +883,14 @@ class StatementMultipleAPIControllerTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function store_uses_bulk_cache_operations(): void
+    public function store_uses_transactional_bulk_puid_reservation(): void
     {
         $this->signInAsAdmin();
 
         $mock = $this->mock(\App\Services\PlatformUniqueIdService::class);
-        $mock->shouldReceive('checkDuplicatesInRequest')->andReturn();
-        $mock->shouldReceive('checkDuplicatesInCache')->andReturn();
-        $mock->shouldReceive('checkDuplicatesInPlatformPuids')->andReturn();
-        // Verify bulk methods are called instead of single-item methods
-        $mock->shouldReceive('addPuidsToCache')->once();
-        $mock->shouldReceive('addPuidsToDatabase')->once();
+        $mock->shouldReceive('runWithReservedPuids')
+            ->once()
+            ->andReturnUsing(static fn (array $puids, int $platform_id, \Closure $callback) => $callback());
 
         $response = $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(1)], [
             'Accept' => 'application/json',

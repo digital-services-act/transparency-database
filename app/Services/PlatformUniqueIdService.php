@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Exceptions\PuidNotUniqueMultipleException;
 use App\Exceptions\PuidNotUniqueSingleException;
 use App\Models\PlatformPuid;
+use Closure;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PlatformUniqueIdService
@@ -16,8 +18,7 @@ class PlatformUniqueIdService
 
     public function handlePuid(mixed $puid, int $platform_id): void
     {
-        $key = $this->getCacheKey($platform_id, $puid);
-        $lockKey = "lock:puid:{{$key}}";
+        $lockKey = $this->getLockKey($platform_id, $puid);
 
         $lock = Cache::lock($lockKey, $this->lock_valid_seconds);
 
@@ -36,9 +37,104 @@ class PlatformUniqueIdService
         }
     }
 
+    public function runWithReservedPuid(int $platform_id, mixed $puid, Closure $callback): mixed
+    {
+        $lock = $this->acquirePuidLock($platform_id, $puid);
+
+        try {
+            $result = DB::transaction(function () use ($platform_id, $puid, $callback) {
+                $this->addPuidToDatabase($platform_id, $puid);
+
+                return $callback();
+            }, 1);
+
+            $this->refreshPuidsInCache([$puid], $platform_id);
+
+            return $result;
+        } catch (PuidNotUniqueSingleException $e) {
+            $this->refreshPuidsInCache([$puid], $platform_id);
+
+            throw $e;
+        } finally {
+            optional($lock)->release();
+        }
+    }
+
+    public function runWithReservedPuids(array $puids, int $platform_id, Closure $callback): mixed
+    {
+        $this->checkDuplicatesInRequest($puids);
+
+        $locks = $this->acquirePuidLocks($puids, $platform_id);
+
+        try {
+            $result = DB::transaction(function () use ($puids, $platform_id, $callback) {
+                $this->checkDuplicatesInPlatformPuids($puids, $platform_id);
+                $this->addPuidRecordsToDatabase($puids, $platform_id);
+
+                return $callback();
+            }, 1);
+
+            $this->refreshPuidsInCache($puids, $platform_id);
+
+            return $result;
+        } finally {
+            $this->releasePuidLocks($locks);
+        }
+    }
+
     public function getCacheKey(int $platform_id, mixed $puid): string
     {
         return 'puid-'.$platform_id.'-'.$puid;
+    }
+
+    private function getLockKey(int $platform_id, mixed $puid): string
+    {
+        return 'lock:puid:{'.$this->getCacheKey($platform_id, $puid).'}';
+    }
+
+    private function acquirePuidLock(int $platform_id, mixed $puid): mixed
+    {
+        $lock = Cache::lock($this->getLockKey($platform_id, $puid), $this->lock_valid_seconds);
+
+        // @codeCoverageIgnoreStart
+        if (! $lock->get()) {
+            Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+            throw new PuidNotUniqueSingleException($puid);
+        }
+        // @codeCoverageIgnoreEnd
+
+        return $lock;
+    }
+
+    private function acquirePuidLocks(array $puids, int $platform_id): array
+    {
+        $uniquePuids = array_values(array_unique($puids));
+        sort($uniquePuids, SORT_STRING);
+
+        $locks = [];
+
+        foreach ($uniquePuids as $puid) {
+            $lock = Cache::lock($this->getLockKey($platform_id, $puid), $this->lock_valid_seconds);
+
+            // @codeCoverageIgnoreStart
+            if (! $lock->get()) {
+                $this->releasePuidLocks($locks);
+                Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+                throw new PuidNotUniqueMultipleException([$puid]);
+            }
+            // @codeCoverageIgnoreEnd
+
+            $locks[] = $lock;
+        }
+
+        return $locks;
+    }
+
+    private function releasePuidLocks(array $locks): void
+    {
+        foreach (array_reverse($locks) as $lock) {
+            optional($lock)->release();
+        }
     }
 
     /**
@@ -163,6 +259,20 @@ class PlatformUniqueIdService
         ], $statements);
 
         PlatformPuid::insertOrIgnore($records);
+    }
+
+    private function addPuidRecordsToDatabase(array $puids, int $platform_id): void
+    {
+        $now = now();
+
+        $records = array_map(static fn ($puid) => [
+            'platform_id' => $platform_id,
+            'puid' => $puid,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ], array_values(array_unique($puids)));
+
+        PlatformPuid::insert($records);
     }
 
     /**
