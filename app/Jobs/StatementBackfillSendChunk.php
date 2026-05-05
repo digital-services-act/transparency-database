@@ -43,6 +43,24 @@ class StatementBackfillSendChunk implements ShouldQueue
     public function handle(StatementBackfillTargetService $backfillTargetService): void
     {
         $end = min($this->min + $this->chunk - 1, $this->max);
+        $attempt = $this->attempts();
+
+        // Only the first attempt should fan out the next chunk.
+        if ($end < $this->max && $attempt === 1) {
+            self::dispatch($end + 1, $this->max, $this->chunk);
+        } elseif ($end < $this->max) {
+            Log::info('StatementBackfillSendChunk skipped dispatch on retry', [
+                'range_start' => $this->min,
+                'range_end' => $end,
+                'attempt' => $attempt,
+                'next_range_start' => $end + 1,
+                'max_id' => $this->max,
+            ]);
+        } else {
+            Log::info('StatementBackfillSendChunk max reached at ' . Carbon::now()->format('Y-m-d H:i:s'), [
+                'range_end' => $end,
+            ]);
+        }
 
         $rows = DB::table($backfillTargetService->getConfiguredTable())
             ->whereBetween('id', [$this->min, $end])
@@ -64,15 +82,6 @@ class StatementBackfillSendChunk implements ShouldQueue
         } else {
             Log::info('StatementBackfillSendChunk found no rows in range', [
                 'range_start' => $this->min,
-                'range_end' => $end,
-            ]);
-        }
-
-        // Queue the next range only after the current one succeeds so max(id) resumption stays safe.
-        if ($end < $this->max) {
-            self::dispatch($end + 1, $this->max, $this->chunk);
-        } else {
-            Log::info('StatementBackfillSendChunk max reached at ' . Carbon::now()->format('Y-m-d H:i:s'), [
                 'range_end' => $end,
             ]);
         }

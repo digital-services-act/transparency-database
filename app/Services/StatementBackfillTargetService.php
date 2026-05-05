@@ -122,6 +122,8 @@ class StatementBackfillTargetService
             }
         }
 
+        unset($statement['content_id']);
+
         return $statement;
     }
 
