@@ -140,7 +140,7 @@ class PlatformUniqueIdService
     /**
      * @throws PuidNotUniqueSingleException
      */
-    public function addPuidToCache($platform_id, $puid): void
+    public function addPuidToCache(int $platform_id, string $puid): void
     {
         if (! Cache::add($this->getCacheKey($platform_id, $puid), true, now()->addDays($this->cache_valid_days))) {
             throw new PuidNotUniqueSingleException($puid);
@@ -150,7 +150,7 @@ class PlatformUniqueIdService
     /**
      * @throws PuidNotUniqueSingleException
      */
-    public function addPuidToDatabase($platform_id, $puid): void
+    public function addPuidToDatabase(int $platform_id, string $puid): void
     {
         if (PlatformPuid::where('platform_id', $platform_id)->where('puid', $puid)->exists()) {
             throw new PuidNotUniqueSingleException($puid);
@@ -228,7 +228,7 @@ class PlatformUniqueIdService
     /**
      * @throws PuidNotUniqueMultipleException
      */
-    private function doWeHaveDuplicates($duplicates): void
+    private function doWeHaveDuplicates(array $duplicates): void
     {
         if (! empty($duplicates)) {
             throw new PuidNotUniqueMultipleException($duplicates);
