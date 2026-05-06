@@ -236,6 +236,47 @@ class DayArchiveServiceTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function it_gets_first_and_last_ids_for_a_date_with_non_sequential_ids(): void
+    {
+        $admin = $this->signInAsAdmin();
+        $platform = Platform::nonDsa()->first();
+
+        Statement::query()->forceDelete();
+
+        $this->createStatementWithId(1000, '2030-01-01 23:59:59', 'PREVIOUS_DAY', $platform->id, $admin->id);
+        $first = $this->createStatementWithId(1010, '2030-01-02 00:00:00', 'TARGET_FIRST', $platform->id, $admin->id);
+        $this->createStatementWithId(2500, '2030-01-02 12:00:00', 'TARGET_MIDDLE', $platform->id, $admin->id);
+        $last = $this->createStatementWithId(4090, '2030-01-02 23:59:59', 'TARGET_LAST', $platform->id, $admin->id);
+        $this->createStatementWithId(4100, '2030-01-03 00:00:00', 'NEXT_DAY', $platform->id, $admin->id);
+
+        $date = Carbon::createFromDate(2030, 1, 2);
+
+        $this->assertEquals($first->id, $this->day_archive_service->getFirstIdOfDate($date));
+        $this->assertEquals($last->id, $this->day_archive_service->getLastIdOfDate($date));
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_filters_raw_statements_to_the_requested_day_inside_a_non_sequential_id_window(): void
+    {
+        $admin = $this->signInAsAdmin();
+        $platform = Platform::nonDsa()->first();
+
+        Statement::query()->forceDelete();
+
+        $this->createStatementWithId(1010, '2030-01-02 00:00:00', 'TARGET_FIRST', $platform->id, $admin->id);
+        $this->createStatementWithId(1500, '2030-01-01 23:59:59', 'PREVIOUS_DAY_INSIDE_WINDOW', $platform->id, $admin->id);
+        $this->createStatementWithId(2500, '2030-01-03 00:00:00', 'NEXT_DAY_INSIDE_WINDOW', $platform->id, $admin->id);
+        $this->createStatementWithId(4090, '2030-01-02 23:59:59', 'TARGET_LAST', $platform->id, $admin->id);
+
+        $raw_statements = $this->day_archive_service->getRawStatements(1010, 4090, '2030-01-02');
+
+        $this->assertEquals([
+            'TARGET_FIRST',
+            'TARGET_LAST',
+        ], $raw_statements->pluck('puid')->all());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_zero_on_last(): void
     {
         $this->signInAsAdmin();
@@ -552,5 +593,17 @@ class DayArchiveServiceTest extends TestCase
         // Should contain escaped versions of the problematic data
         $this->assertStringContainsString('"field,with,commas"', $result);
         $this->assertStringContainsString('normal_field', $result);
+    }
+
+    private function createStatementWithId(int $id, string $created_at, string $puid, int $platform_id, int $user_id): Statement
+    {
+        return Statement::unguarded(fn () => Statement::factory()->create([
+            'id' => $id,
+            'created_at' => $created_at,
+            'updated_at' => $created_at,
+            'puid' => $puid,
+            'platform_id' => $platform_id,
+            'user_id' => $user_id,
+        ]));
     }
 }
