@@ -25,7 +25,7 @@ class BackfillTestSeeder extends Seeder
         $this->seedUsers();
         $this->seedRolesAndPermissions();
         $this->seedStatements(
-            (int) env('BACKFILL_FIXTURE_STATEMENT_START_ID', 2000),
+            (int) env('BACKFILL_FIXTURE_STATEMENT_START_ID', 1000),
             (int) env('BACKFILL_FIXTURE_STATEMENT_COUNT', 1000),
         );
         $this->seedKnownToken();
@@ -192,9 +192,9 @@ class BackfillTestSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         PermissionsSeeder::resetRolesAndPermissions();
-        (new OnboardingPermissionsSeeder())->run();
-        (new ResearchPermissionsSeeder())->run();
-        (new SupportPermissionsSeeder())->run();
+        (new OnboardingPermissionsSeeder)->run();
+        (new ResearchPermissionsSeeder)->run();
+        (new SupportPermissionsSeeder)->run();
 
         foreach ($this->sampleUsers() as $user) {
             User::query()->findOrFail($user['id'])->assignRole($user['role']);
@@ -370,6 +370,6 @@ class BackfillTestSeeder extends Seeder
             }
         }
 
-        return 'backfill-admin@clever.test';
+        return 'backfill-admin@test.local';
     }
 }

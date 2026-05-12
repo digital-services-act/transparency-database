@@ -21,6 +21,12 @@ class DataDownloadController extends Controller
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $validated = $request->validate([
+            'platform_id' => 'nullable|integer|exists:platforms,id',
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date',
+        ]);
+
         $dayarchives = $this->day_archive_query_service->query($request->query());
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
@@ -78,7 +84,6 @@ class DataDownloadController extends Controller
         if (str_contains($storedUrl, 'amazonaws')) {
             return redirect()->away($storedUrl);
         }
-
 
         // Extract filename from stored URL
         $filename = basename(parse_url($storedUrl, PHP_URL_PATH));
