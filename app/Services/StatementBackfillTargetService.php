@@ -51,6 +51,11 @@ class StatementBackfillTargetService
         return (int) config('backfill.chunk_size');
     }
 
+    public function getConfiguredDirection(): string
+    {
+        return (string) config('backfill.direction');
+    }
+
     public function getConfiguredTable(): string
     {
         return (string) config('backfill.table');
@@ -63,19 +68,30 @@ class StatementBackfillTargetService
 
     public function getLastImportedId(): int
     {
+        return $this->getImportedBoundaryId('asc');
+    }
+
+    public function getImportedBoundaryId(string $direction): int
+    {
         $response = $this->request()
             ->get($this->buildUrl((string) config('backfill.last_imported_path')))
             ->throw();
 
-        $lastImportedId = $response->json('last_imported_id')
-            ?? $response->json('highest_imported_id')
-            ?? $response->json('lowest_id');
+        if (strtolower($direction) === 'desc') {
+            $importedBoundaryId = $response->json('lowest_id')
+                ?? $response->json('last_imported_id')
+                ?? $response->json('highest_imported_id');
+        } else {
+            $importedBoundaryId = $response->json('last_imported_id')
+                ?? $response->json('highest_imported_id')
+                ?? $response->json('lowest_id');
+        }
 
-        if (! is_numeric($lastImportedId)) {
+        if (! is_numeric($importedBoundaryId)) {
             throw new RuntimeException('Backfill target did not return a numeric imported id.');
         }
 
-        return (int) $lastImportedId;
+        return (int) $importedBoundaryId;
     }
 
     /**
@@ -84,7 +100,7 @@ class StatementBackfillTargetService
     public function sendStatements(array $statements): void
     {
         $normalizedStatements = array_map(
-            fn(array $statement): array => $this->normalizeStatement($statement),
+            fn (array $statement): array => $this->normalizeStatement($statement),
             $statements
         );
 
@@ -189,6 +205,6 @@ class StatementBackfillTargetService
             throw new RuntimeException('BACKFILL_BASE_URL is not configured.');
         }
 
-        return $baseUrl . '/' . ltrim($path, '/');
+        return $baseUrl.'/'.ltrim($path, '/');
     }
 }
