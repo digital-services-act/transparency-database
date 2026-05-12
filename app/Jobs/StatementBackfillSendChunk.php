@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 /**
  * @codeCoverageIgnore
@@ -26,11 +27,21 @@ class StatementBackfillSendChunk implements ShouldQueue
 
     public int $timeout = 180;
 
+    public const DIRECTION_ASC = 'asc';
+
+    public const DIRECTION_DESC = 'desc';
+
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $min, public int $max, public int $chunk)
-    {
+    public function __construct(
+        public int $min,
+        public int $max,
+        public int $chunk,
+        public string $direction = self::DIRECTION_ASC
+    ) {
+        $this->direction = self::normalizeDirection($direction);
+
         $queue = (string) config('backfill.queue');
         if ($queue !== '') {
             $this->onQueue($queue);
@@ -42,47 +53,56 @@ class StatementBackfillSendChunk implements ShouldQueue
      */
     public function handle(StatementBackfillTargetService $backfillTargetService): void
     {
-        $end = min($this->min + $this->chunk - 1, $this->max);
+        [$rangeStart, $rangeEnd] = $this->resolveRange();
         $attempt = $this->attempts();
 
         // Only the first attempt should fan out the next chunk.
-        if ($end < $this->max && $attempt === 1) {
-            self::dispatch($end + 1, $this->max, $this->chunk);
-        } elseif ($end < $this->max) {
+        if ($this->hasNextChunk($rangeStart, $rangeEnd) && $attempt === 1) {
+            $this->dispatchNextChunk($rangeStart, $rangeEnd);
+        } elseif ($this->hasNextChunk($rangeStart, $rangeEnd)) {
             Log::info('StatementBackfillSendChunk skipped dispatch on retry', [
-                'range_start' => $this->min,
-                'range_end' => $end,
+                'range_start' => $rangeStart,
+                'range_end' => $rangeEnd,
+                'direction' => $this->direction,
                 'attempt' => $attempt,
-                'next_range_start' => $end + 1,
-                'max_id' => $this->max,
             ]);
         } else {
-            Log::info('StatementBackfillSendChunk max reached at ' . Carbon::now()->format('Y-m-d H:i:s'), [
-                'range_end' => $end,
+            Log::info('StatementBackfillSendChunk boundary reached at '.Carbon::now()->format('Y-m-d H:i:s'), [
+                'range_start' => $rangeStart,
+                'range_end' => $rangeEnd,
+                'direction' => $this->direction,
             ]);
         }
 
-        $rows = DB::table($backfillTargetService->getConfiguredTable())
-            ->whereBetween('id', [$this->min, $end])
-            ->orderBy('id')
-            ->get();
+        $query = DB::table($backfillTargetService->getConfiguredTable())
+            ->whereBetween('id', [$rangeStart, $rangeEnd]);
 
-        $statements = array_map(static fn($row) => (array) $row, $rows->all());
+        if ($this->direction === self::DIRECTION_DESC) {
+            $query->orderByDesc('id');
+        } else {
+            $query->orderBy('id');
+        }
+
+        $rows = $query->get();
+
+        $statements = array_map(static fn ($row) => (array) $row, $rows->all());
 
         if ($statements !== []) {
             $backfillTargetService->sendStatements($statements);
 
             Log::info('StatementBackfillSendChunk sent rows', [
-                'range_start' => $this->min,
-                'range_end' => $end,
+                'range_start' => $rangeStart,
+                'range_end' => $rangeEnd,
+                'direction' => $this->direction,
                 'row_count' => count($statements),
                 'first_statement_id' => $statements[0]['id'] ?? null,
                 'last_statement_id' => $statements[count($statements) - 1]['id'] ?? null,
             ]);
         } else {
             Log::info('StatementBackfillSendChunk found no rows in range', [
-                'range_start' => $this->min,
-                'range_end' => $end,
+                'range_start' => $rangeStart,
+                'range_end' => $rangeEnd,
+                'direction' => $this->direction,
             ]);
         }
     }
@@ -93,5 +113,54 @@ class StatementBackfillSendChunk implements ShouldQueue
     public function backoff(): array
     {
         return [30, 120, 300];
+    }
+
+    public static function normalizeDirection(string $direction): string
+    {
+        $direction = strtolower(trim($direction));
+
+        if (! in_array($direction, [self::DIRECTION_ASC, self::DIRECTION_DESC], true)) {
+            throw new InvalidArgumentException('Backfill direction must be asc or desc.');
+        }
+
+        return $direction;
+    }
+
+    /**
+     * @return array{0: int, 1: int}
+     */
+    private function resolveRange(): array
+    {
+        if ($this->direction === self::DIRECTION_DESC) {
+            return [
+                max($this->max - $this->chunk + 1, $this->min),
+                $this->max,
+            ];
+        }
+
+        return [
+            $this->min,
+            min($this->min + $this->chunk - 1, $this->max),
+        ];
+    }
+
+    private function hasNextChunk(int $rangeStart, int $rangeEnd): bool
+    {
+        if ($this->direction === self::DIRECTION_DESC) {
+            return $rangeStart > $this->min;
+        }
+
+        return $rangeEnd < $this->max;
+    }
+
+    private function dispatchNextChunk(int $rangeStart, int $rangeEnd): void
+    {
+        if ($this->direction === self::DIRECTION_DESC) {
+            self::dispatch($this->min, $rangeStart - 1, $this->chunk, $this->direction);
+
+            return;
+        }
+
+        self::dispatch($rangeEnd + 1, $this->max, $this->chunk, $this->direction);
     }
 }
