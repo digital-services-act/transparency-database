@@ -1,5 +1,5 @@
 @php use App\Models\Statement; @endphp
-@props(['statements' => null, 'paginator' => null])
+@props(['statements' => null])
 
 <style>
   .statement-row:hover {
@@ -47,4 +47,4 @@
   })
 </script>
 
-{{ $paginator->links('paginator') }}
+{{ $statements->links('paginator') }}
