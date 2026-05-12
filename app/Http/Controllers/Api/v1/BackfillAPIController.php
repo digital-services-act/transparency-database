@@ -25,23 +25,40 @@ class BackfillAPIController extends Controller
 
     public function lastImportedId(): JsonResponse
     {
-        $lastImportedId = DB::table($this->table())
-            ->where('id', '<', $this->endId())
-            ->where('id', '>', $this->startId())
-            ->max('id');
-
-        if (! $lastImportedId) {
-            $lastImportedId = $this->startId();
-        }    
-
-        return response()->json([
-            'last_imported_id' => $lastImportedId,
-        ]);
+        return $this->importedId($this->direction());
     }
 
     public function highestImportedId(): JsonResponse
     {
-        return $this->lastImportedId();
+        return $this->importedId('asc');
+    }
+
+    private function importedId(string $direction): JsonResponse
+    {
+        $query = DB::table($this->table())
+            ->where('id', '<', $this->endId())
+            ->where('id', '>', $this->startId());
+
+        $highestImportedId = (clone $query)->max('id');
+        $lowestId = (clone $query)->min('id');
+
+        $lastImportedId = $direction === 'desc'
+            ? ($lowestId ?? $this->endId())
+            : ($highestImportedId ?? $this->startId());
+
+        return response()->json([
+            'last_imported_id' => (int) $lastImportedId,
+            'highest_imported_id' => $highestImportedId === null ? null : (int) $highestImportedId,
+            'lowest_id' => $lowestId === null ? null : (int) $lowestId,
+            'direction' => $direction,
+        ]);
+    }
+
+    private function direction(): string
+    {
+        $direction = strtolower(trim((string) config('backfill.direction', 'desc')));
+
+        return $direction === 'asc' ? 'asc' : 'desc';
     }
 
     private function startId(): int
