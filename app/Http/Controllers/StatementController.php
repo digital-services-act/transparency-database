@@ -42,7 +42,7 @@ class StatementController extends Controller
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
 
         $pagination_per_page = 50;
-        $page = (int) $request->get('page', 1);
+        $page = min(max((int) $request->get('page', 1), 1), 200);
 
         $options = $this->prepareOptions(true);
 
@@ -60,12 +60,11 @@ class StatementController extends Controller
         $paginator->setPath(route('statement.index', $parameters));
 
         return view('statement.index', [
-            'statements' => $statements,
+            'statements' => $paginator,
             'options' => $options,
             'total' => $total,
             'similarity_results' => $similarity_results,
             'reindexing' => $reindexing,
-            'paginator' => $paginator,
         ]);
     }
 

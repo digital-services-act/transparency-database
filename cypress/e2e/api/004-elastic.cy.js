@@ -2,13 +2,16 @@ import { faker } from "@faker-js/faker";
 import { generateStatementRequestBody } from "../../support/e2e";
 
 const _ = Cypress._;
-const baseUrl = `${Cypress.env("apiUrl")}/opensearch`;
+const baseUrl = `${Cypress.env("apiUrl")}/elastic`;
 const token = Cypress.env("token");
 const headers = {
   "Content-Type": "application/json",
   Accept: "application/json",
 };
 const index = "statement_index";
+const contextIfElasticEnabled = Cypress.env("elasticSearchEnabled")
+  ? context
+  : context.skip;
 
 // search
 // count
@@ -17,7 +20,7 @@ const index = "statement_index";
 // aggregates
 // platforms
 // labels
-// total
+// totalw
 // datetotal
 // platformdatetotal
 // datetotalrange
@@ -33,7 +36,7 @@ const doRequest = (url, body = {}) => {
   });
 };
 
-context("OpenSearch endpoint", () => {
+contextIfElasticEnabled("ElasticSearch endpoint", () => {
   // /sql endpoint
   let url = `${baseUrl}/sql`;
   it("responds with 422 for empty request body", () => {
