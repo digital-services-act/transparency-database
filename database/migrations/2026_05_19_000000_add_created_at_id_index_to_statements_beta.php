@@ -9,14 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('statements_beta', function (Blueprint $table): void {
-            $table->index(['created_at', 'id'], 'statements_beta_created_at_id_index');
+            if (! Schema::hasIndex('statements_beta', 'statements_beta_created_at_id_index')) {
+                $table->index(['created_at', 'id'], 'statements_beta_created_at_id_index');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('statements_beta', function (Blueprint $table): void {
-            $table->dropIndex('statements_beta_created_at_id_index');
+            if (Schema::hasIndex('statements_beta', 'statements_beta_created_at_id_index')) {
+                $table->dropIndex('statements_beta_created_at_id_index');
+            }
         });
     }
 };
