@@ -32,9 +32,29 @@ class DataDownloadControllerTest extends TestCase
     public function test_can_view_day_archive_index_page_with_platform_uuid()
     {
         $platform = Platform::factory()->create();
-        $response = $this->get('/explore-data/download/?uuid=' . $platform->uuid);
+        $response = $this->get('/explore-data/download/?uuid='.$platform->uuid);
         $response->assertStatus(200);
         $response->assertViewIs('explore-data.download');
+    }
+
+    public function test_day_archive_table_links_to_internal_download_route(): void
+    {
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'url' => 'https://example.com/bucket/archive-2024-01-01-full.zip',
+            'urllight' => 'https://example.com/bucket/archive-2024-01-01-light.zip',
+            'sha1url' => 'https://example.com/bucket/archive-2024-01-01-full.zip.sha1',
+            'sha1urllight' => 'https://example.com/bucket/archive-2024-01-01-light.zip.sha1',
+        ]);
+
+        $response = $this->get('/explore-data/download');
+
+        $response->assertStatus(200);
+        $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'full']), false);
+        $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'light']), false);
+        $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'sha1']), false);
+        $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'sha1light']), false);
+        $response->assertDontSee('https://example.com/bucket/archive-2024-01-01-full.zip', false);
+        $response->assertDontSee('https://example.com/bucket/archive-2024-01-01-light.zip', false);
     }
 
     public function test_download_redirects_to_presigned_url_for_full_type(): void
@@ -136,6 +156,7 @@ class DataDownloadControllerTest extends TestCase
 
         $response->assertNotFound();
     }
+
     public function test_download_returns_404_when_urllight_is_empty_string(): void
     {
         $dayArchive = DayArchive::factory()->completed()->create([

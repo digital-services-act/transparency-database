@@ -35,14 +35,14 @@
             <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date->format('Y-m-d')}}</td>
             @if(!$reindexing)<td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>@endif
             <td class="ecl-table__cell" data-ecl-table-header="Full">
-                <a href="{{ $dayarchive->url }}"
-                   title="{{ $dayarchive->url }}"
+                <a href="{{ route('dayarchive.download', ['dayArchive' => $dayarchive->id, 'type' => 'full']) }}"
+                   title="Download full archive"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
                 &nbsp;&nbsp;&nbsp;
-                <a download href="{{ $dayarchive->sha1url }}"
-                   title="{{ $dayarchive->sha1url }}"
+                <a href="{{ route('dayarchive.download', ['dayArchive' => $dayarchive->id, 'type' => 'sha1']) }}"
+                   title="Download SHA1 checksum"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
@@ -52,14 +52,14 @@
                 zip:&nbsp;{{human_filesize($dayarchive->zipsize)}}&nbsp
             </td>
             <td class="ecl-table__cell" data-ecl-table-header="Light">
-                <a download href="{{ $dayarchive->urllight }}"
-                   title="{{ $dayarchive->urllight }}"
+                <a href="{{ route('dayarchive.download', ['dayArchive' => $dayarchive->id, 'type' => 'light']) }}"
+                   title="Download light archive"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">zip</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
                 &nbsp;&nbsp;&nbsp;
-                <a download href="{{ $dayarchive->sha1urllight }}"
-                   title="{{ $dayarchive->sha1urllight }}"
+                <a href="{{ route('dayarchive.download', ['dayArchive' => $dayarchive->id, 'type' => 'sha1light']) }}"
+                   title="Download SHA1 checksum"
                    class="ecl-link ecl-link--standalone ecl-link--icon ecl-link--icon-after">
                     <span class="ecl-link__label">sha1</span><svg class="ecl-icon ecl-icon--fluid ecl-link__icon" focusable="false" aria-hidden="true"><x-ecl.icon icon="download"/></svg>
                 </a>
