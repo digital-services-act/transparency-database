@@ -34,3 +34,4 @@ database.sqlite
 /storage/app/*
 !/storage/app/.gitignore
 .DS_Store
+scratch.sh
