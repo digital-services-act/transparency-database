@@ -1,8 +1,21 @@
 <?php
 
+$host = env('ES_ADDON_HOST');
+$scheme = env('ES_ADDON_SCHEME', 'https');
+
+if (is_string($host)) {
+    $host = trim($host);
+}
+
+if (! is_string($host) || $host === '') {
+    $host = null;
+} elseif (! preg_match('#^https?://#i', $host)) {
+    $host = rtrim((string) $scheme, ':/').'://'.$host;
+}
+
 return [
-    'hosts' => [env('ES_ADDON_HOST', 'localhost:9200').':9200'],
-    'uri' => [env('ES_ADDON_URI', null)],
+    'hosts' => [$host],
+    'uri' => [$host],
     'basicAuthentication' => [
         'username' => env('ES_ADDON_USER', null),
         'password' => env('ES_ADDON_PASSWORD', null),

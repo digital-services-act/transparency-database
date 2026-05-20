@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Platform;
 use App\Models\Statement;
 use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\ClientBuilder;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -21,7 +22,7 @@ class StatementElasticSearchService
 {
     private string $index_name = 'statement_index';
 
-    private Client $client;
+    private ?Client $client = null;
 
     // This service builds and does queries with elastic.
     // The elastic has to be setup and there needs to be a 'statements' index.
@@ -76,22 +77,55 @@ class StatementElasticSearchService
 
     public function __construct(protected PlatformQueryService $platformQueryService)
     {
-        $uri = config('elasticsearch.uri');
-        if (is_array($uri) && $uri[0]) {
-            $this->client = \Elastic\Elasticsearch\ClientBuilder::create()
-                ->setHosts($uri)
-                ->build();
+        $hosts = $this->configuredHosts();
+
+        if ($hosts !== []) {
+            $builder = ClientBuilder::create()
+                ->setHosts($hosts)
+                ->setRetries((int) config('elasticsearch.retries', 2));
+
+            $username = config('elasticsearch.basicAuthentication.username');
+            $password = config('elasticsearch.basicAuthentication.password');
+
+            if (is_string($username) && $username !== '' && is_string($password) && $password !== '') {
+                $builder->setBasicAuthentication($username, $password);
+            }
+
+            $this->client = $builder->build();
         }
     }
 
     public function client(): Client
     {
+        if ($this->client === null) {
+            throw new RuntimeException('Elasticsearch is not configured. Set ES_ADDON_HOST, ES_ADDON_USER, and ES_ADDON_PASSWORD.');
+        }
+
         return $this->client;
+    }
+
+    private function configuredHosts(): array
+    {
+        $hosts = config('elasticsearch.uri', []);
+
+        if (! is_array($hosts)) {
+            $hosts = [$hosts];
+        }
+
+        return array_values(array_filter(array_map(static function ($host): ?string {
+            if (! is_string($host)) {
+                return null;
+            }
+
+            $host = trim($host);
+
+            return $host === '' ? null : $host;
+        }, $hosts)));
     }
 
     public function getIndexList(): array
     {
-        $stats = $this->client->indices()->stats()->asArray();
+        $stats = $this->client()->indices()->stats()->asArray();
 
         return array_keys($stats['indices'] ?? []);
     }
@@ -99,12 +133,12 @@ class StatementElasticSearchService
     public function getIndexInfo(string $index): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
         // Get index stats
-        $stats = $this->client->indices()->stats()->asArray();
+        $stats = $this->client()->indices()->stats()->asArray();
         $indices = $stats['indices'];
 
         if (! isset($indices[$index])) {
@@ -114,13 +148,13 @@ class StatementElasticSearchService
         $index_stats = $indices[$index];
 
         // Get mapping
-        $mapping = $this->client->indices()->getMapping(['index' => $index])->asArray();
+        $mapping = $this->client()->indices()->getMapping(['index' => $index])->asArray();
 
         // Get shards
-        $shards = $this->client->cat()->shards(['index' => $index, 'format' => 'json'])->asArray();
+        $shards = $this->client()->cat()->shards(['index' => $index, 'format' => 'json'])->asArray();
 
         // Get aliases
-        $alias = $this->client->indices()->getAlias(['index' => $index])->asArray();
+        $alias = $this->client()->indices()->getAlias(['index' => $index])->asArray();
 
         // Process fields from mapping
         $fields = [];
@@ -157,12 +191,12 @@ class StatementElasticSearchService
     public function deleteIndex(string $index): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
         // Delete the index
-        $response = $this->client->indices()->delete(['index' => $index])->asArray();
+        $response = $this->client()->indices()->delete(['index' => $index])->asArray();
 
         return [
             'index' => $index,
@@ -173,7 +207,7 @@ class StatementElasticSearchService
 
     public function getTasks(): array
     {
-        $tasklist = $this->client->tasks()->list()->asArray();
+        $tasklist = $this->client()->tasks()->list()->asArray();
 
         $cancellable = [];
         $all_tasks = [];
@@ -210,17 +244,17 @@ class StatementElasticSearchService
     public function createIndexAlias(string $index, string $alias): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
         // Check if alias already exists on this index
-        if ($this->client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
+        if ($this->client()->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
             throw new RuntimeException('Alias already exists on this index');
         }
 
         // Create the alias
-        $response = $this->client->indices()->putAlias(['index' => $index, 'name' => $alias])->asArray();
+        $response = $this->client()->indices()->putAlias(['index' => $index, 'name' => $alias])->asArray();
 
         return [
             'index' => $index,
@@ -233,17 +267,17 @@ class StatementElasticSearchService
     public function deleteIndexAlias(string $index, string $alias): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
         // Check if alias exists on this index
-        if (! $this->client->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
+        if (! $this->client()->indices()->existsAlias(['index' => $index, 'name' => $alias])->asBool()) {
             throw new RuntimeException('Alias does not exist on this index');
         }
 
         // Delete the alias
-        $response = $this->client->indices()->deleteAlias(['index' => $index, 'name' => $alias])->asArray();
+        $response = $this->client()->indices()->deleteAlias(['index' => $index, 'name' => $alias])->asArray();
 
         return [
             'index' => $index,
@@ -256,12 +290,12 @@ class StatementElasticSearchService
     public function getIndexSettings(string $index): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
         // Get index settings
-        $response = $this->client->indices()->getSettings(['index' => $index])->asArray();
+        $response = $this->client()->indices()->getSettings(['index' => $index])->asArray();
         $settings = $response[$index]['settings'] ?? [];
 
         // Process settings into readable format
@@ -344,16 +378,16 @@ class StatementElasticSearchService
     public function updateIndexRefreshInterval(string $index, int $interval): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
         // Get current settings for comparison
-        $currentResponse = $this->client->indices()->getSettings(['index' => $index])->asArray();
+        $currentResponse = $this->client()->indices()->getSettings(['index' => $index])->asArray();
         $currentInterval = $currentResponse[$index]['settings']['index']['refresh_interval'] ?? 'N/A';
 
         // Update refresh interval
-        $response = $this->client->indices()->putSettings([
+        $response = $this->client()->indices()->putSettings([
             'index' => $index,
             'body' => [
                 'refresh_interval' => $interval.'s',
@@ -372,21 +406,21 @@ class StatementElasticSearchService
     public function swapIndexAlias(string $fromIndex, string $toIndex, string $alias): array
     {
         // Check if both indices exist
-        if (! $this->client->indices()->exists(['index' => $fromIndex])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $fromIndex])->asBool()) {
             throw new RuntimeException('Source index does not exist');
         }
 
-        if (! $this->client->indices()->exists(['index' => $toIndex])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $toIndex])->asBool()) {
             throw new RuntimeException('Target index does not exist');
         }
 
         // Check if alias exists on source index
-        if (! $this->client->indices()->existsAlias(['index' => $fromIndex, 'name' => $alias])->asBool()) {
+        if (! $this->client()->indices()->existsAlias(['index' => $fromIndex, 'name' => $alias])->asBool()) {
             throw new RuntimeException('Alias does not exist on source index');
         }
 
         // Check if alias already exists on target index
-        if ($this->client->indices()->existsAlias(['index' => $toIndex, 'name' => $alias])->asBool()) {
+        if ($this->client()->indices()->existsAlias(['index' => $toIndex, 'name' => $alias])->asBool()) {
             throw new RuntimeException('Alias already exists on target index');
         }
 
@@ -408,7 +442,7 @@ class StatementElasticSearchService
             ],
         ];
 
-        $response = $this->client->indices()->updateAliases(['body' => $body])->asArray();
+        $response = $this->client()->indices()->updateAliases(['body' => $body])->asArray();
 
         return [
             'from_index' => $fromIndex,
@@ -422,7 +456,7 @@ class StatementElasticSearchService
     public function removeDocumentFromIndex(string $index, int $documentId): array
     {
         // Check if index exists
-        if (! $this->client->indices()->exists(['index' => $index])->asBool()) {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
             throw new RuntimeException('Index does not exist');
         }
 
@@ -433,7 +467,7 @@ class StatementElasticSearchService
 
         try {
             // Attempt to delete the document
-            $response = $this->client->delete([
+            $response = $this->client()->delete([
                 'index' => $index,
                 'id' => $documentId,
             ])->asArray();
@@ -445,7 +479,7 @@ class StatementElasticSearchService
                 'result' => $response['result'] ?? 'unknown',
                 'version' => $response['_version'] ?? null,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Document might not exist - this is often not a fatal error
             if (str_contains($e->getMessage(), 'not_found')) {
                 throw new RuntimeException('Document not found in index');
@@ -461,7 +495,7 @@ class StatementElasticSearchService
         $cancellableCount = $tasksInfo['cancellable_tasks'];
 
         // Cancel all cancellable tasks
-        $response = $this->client->tasks()->cancel()->asArray();
+        $response = $this->client()->tasks()->cancel()->asArray();
 
         return [
             'cancelled_tasks' => $cancellableCount,
@@ -477,7 +511,7 @@ class StatementElasticSearchService
     {
         $query = $this->buildQuery($filters);
 
-        $results = $this->client->search([
+        $results = $this->client()->search([
             'index' => $this->index_name,
             'from' => $page * $perPage,
             'size' => $perPage,
@@ -799,7 +833,6 @@ class StatementElasticSearchService
             $ors[] = 'platform_id:'.$filter_value;
         }
 
-
         return implode(' OR ', $ors);
     }
 
@@ -822,7 +855,7 @@ class StatementElasticSearchService
     {
         $doc = $statement->toSearchableArray();
 
-        $response = $this->client->index([
+        $response = $this->client()->index([
             'index' => $this->index_name,
             'id' => $statement->id,
             'body' => $doc,
@@ -853,7 +886,7 @@ class StatementElasticSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)."\n"]);
+            $this->client()->bulk(['require_alias' => true, 'body' => implode("\n", $bulk)."\n"]);
         }
     }
 
@@ -863,7 +896,7 @@ class StatementElasticSearchService
         $date->setTime(23, 59, 59, 999999); // 999 milliseconds in microseconds
         $timestamp = $date->getTimestampMs();
 
-        return $this->client->deleteByQuery([
+        return $this->client()->deleteByQuery([
             'index' => $this->index_name,
             'body' => [
                 'query' => [
@@ -1028,9 +1061,8 @@ class StatementElasticSearchService
 
     public function runSql(string $sql): array
     {
-        $uri = config('elasticsearch.uri');
-        if (is_array($uri) && $uri[0]) {
-            return $this->client->sql()->query([
+        if ($this->client !== null) {
+            return $this->client()->sql()->query([
                 'body' => [
                     'query' => $sql,
                 ],
@@ -1132,8 +1164,7 @@ class StatementElasticSearchService
     {
 
         $out = [];
-        $uri = config('elasticsearch.uri');
-        if (is_array($uri) && $uri[0]) {
+        if ($this->client !== null) {
             $results = $this->runSql($query);
             $rows = $results['rows'];
             foreach ($rows as [$total, $method, $platform_id]) {
@@ -1273,7 +1304,7 @@ class StatementElasticSearchService
             ],
         ];
 
-        $result = $this->client->search([
+        $result = $this->client()->search([
             'index' => $this->index_name,
             'body' => $query,
         ])->asArray();
@@ -1315,7 +1346,7 @@ class StatementElasticSearchService
             ],
         ];
 
-        $result = $this->client->search([
+        $result = $this->client()->search([
             'index' => $this->index_name,
             'body' => $query,
         ])->asArray();
@@ -1599,7 +1630,7 @@ JSON;
 
     public function processAggregateQuery(stdClass $query): array
     {
-        $result = $this->client->search([
+        $result = $this->client()->search([
             'index' => $this->index_name,
             'body' => $query,
         ])->asArray();
@@ -1677,15 +1708,15 @@ JSON;
             ],
         ];
 
-        $this->client->indices()->create(['index' => $index, 'body' => $body]);
+        $this->client()->indices()->create(['index' => $index, 'body' => $body]);
     }
 
     public function deleteStatementIndex(): void
     {
         $index = $this->index_name;
 
-        if ($this->client->indices()->exists(['index' => $index])) {
-            $this->client->indices()->delete(['index' => $index]);
+        if ($this->client()->indices()->exists(['index' => $index])) {
+            $this->client()->indices()->delete(['index' => $index]);
         }
     }
 
