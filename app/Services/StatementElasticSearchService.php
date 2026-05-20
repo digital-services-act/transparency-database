@@ -403,6 +403,73 @@ class StatementElasticSearchService
         ];
     }
 
+    public function updateIndexBulkMode(
+        string $index,
+        bool $enabled,
+        int $restoreReplicas = 2,
+        string $restoreRefreshInterval = '1s',
+        bool $asyncTranslog = true,
+        bool $refreshAfterDisable = true,
+    ): array {
+        if (! $this->client()->indices()->exists(['index' => $index])->asBool()) {
+            throw new RuntimeException('Index does not exist');
+        }
+
+        $currentResponse = $this->client()->indices()->getSettings(['index' => $index])->asArray();
+        $currentSettings = $currentResponse[$index]['settings']['index'] ?? [];
+        if ($currentSettings === [] && $currentResponse !== []) {
+            $firstIndexResponse = reset($currentResponse);
+            $currentSettings = $firstIndexResponse['settings']['index'] ?? [];
+        }
+        $previousSettings = $this->extractBulkModeSettings($currentSettings);
+
+        $newSettings = $enabled ? [
+            'number_of_replicas' => 0,
+            'refresh_interval' => '-1',
+            'translog' => [
+                'durability' => $asyncTranslog ? 'async' : 'request',
+            ],
+        ] : [
+            'number_of_replicas' => $restoreReplicas,
+            'refresh_interval' => $restoreRefreshInterval,
+            'translog' => [
+                'durability' => 'request',
+            ],
+        ];
+
+        $response = $this->client()->indices()->putSettings([
+            'index' => $index,
+            'body' => [
+                'index' => $newSettings,
+            ],
+        ])->asArray();
+
+        $refreshed = false;
+        if (! $enabled && $refreshAfterDisable) {
+            $this->client()->indices()->refresh(['index' => $index])->asArray();
+            $refreshed = true;
+        }
+
+        return [
+            'index' => $index,
+            'enabled' => $enabled,
+            'previous_settings' => $previousSettings,
+            'new_settings' => $this->extractBulkModeSettings($newSettings),
+            'updated' => true,
+            'acknowledged' => $response['acknowledged'] ?? false,
+            'refreshed' => $refreshed,
+        ];
+    }
+
+    private function extractBulkModeSettings(array $settings): array
+    {
+        return [
+            'number_of_replicas' => $settings['number_of_replicas'] ?? 'N/A',
+            'refresh_interval' => $settings['refresh_interval'] ?? 'N/A',
+            'translog.durability' => $settings['translog']['durability'] ?? 'request',
+        ];
+    }
+
     public function swapIndexAlias(string $fromIndex, string $toIndex, string $alias): array
     {
         // Check if both indices exist

@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\StatementElasticSearchableChunk;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 /**
  * @codeCoverageIgnore
@@ -16,7 +18,9 @@ class ElasticIndexingStats extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:indexing-stats {--interval=5 : Polling interval in seconds}';
+    protected $signature = 'elastic:indexing-stats
+        {--interval=5 : Polling interval in seconds}
+        {--once : Display the current stats once and exit}';
 
     /**
      * The console command description.
@@ -40,7 +44,13 @@ class ElasticIndexingStats extends Command
      */
     public function handle(): void
     {
-        $interval = (int) $this->option('interval');
+        $interval = max(1, (int) $this->option('interval'));
+
+        if ($this->option('once')) {
+            $this->displayStats(false);
+
+            return;
+        }
 
         $this->info("Monitoring ElasticSearch indexing jobs (polling every {$interval} seconds)");
         $this->info("Press Ctrl+C to stop monitoring\n");
@@ -68,13 +78,15 @@ class ElasticIndexingStats extends Command
     /**
      * Display current indexing statistics
      */
-    private function displayStats(): void
+    private function displayStats(bool $clearScreen = true): void
     {
         $timestamp = Carbon::now();
         $jobs = $this->getElasticIndexingJobs();
 
-        // Clear screen and show header
-        $this->output->write("\033[2J\033[H"); // Clear screen and move cursor to top
+        if ($clearScreen) {
+            $this->output->write("\033[2J\033[H");
+        }
+
         $this->info('ElasticSearch Indexing Stats - '.$timestamp->format('Y-m-d H:i:s'));
         $this->line(str_repeat('=', 60));
 
@@ -110,27 +122,41 @@ class ElasticIndexingStats extends Command
     private function getElasticIndexingJobs(): array
     {
         $jobs = DB::table('jobs')
-            ->whereRaw("JSON_EXTRACT(payload, '$.displayName') = ?", ['App\\Jobs\\StatementElasticSearchableChunk'])
+            ->where('payload', 'like', '%StatementElasticSearchableChunk%')
             ->get();
 
         $parsedJobs = [];
 
         foreach ($jobs as $job) {
             $payload = json_decode($job->payload, true);
-            if (isset($payload['data']['command'])) {
-                // Unserialize the command to get min, max, chunk
-                $command = unserialize($payload['data']['command']);
-                if ($command && isset($command->min, $command->max, $command->chunk)) {
-                    $parsedJobs[] = [
-                        'id' => $job->id,
-                        'min' => $command->min,
-                        'max' => $command->max,
-                        'chunk' => $command->chunk,
-                        'created_at' => $job->created_at,
-                        'attempts' => $job->attempts,
-                        'reserved_at' => $job->reserved_at,
-                    ];
-                }
+
+            if (($payload['displayName'] ?? null) !== StatementElasticSearchableChunk::class) {
+                continue;
+            }
+
+            $serializedCommand = $payload['data']['command'] ?? null;
+            if (! is_string($serializedCommand)) {
+                continue;
+            }
+
+            try {
+                $command = unserialize($serializedCommand, [
+                    'allowed_classes' => [StatementElasticSearchableChunk::class],
+                ]);
+            } catch (Throwable) {
+                continue;
+            }
+
+            if ($command instanceof StatementElasticSearchableChunk) {
+                $parsedJobs[] = [
+                    'id' => $job->id,
+                    'min' => $command->min,
+                    'max' => $command->max,
+                    'chunk' => $command->chunk,
+                    'created_at' => $job->created_at,
+                    'attempts' => $job->attempts,
+                    'reserved_at' => $job->reserved_at,
+                ];
             }
         }
 
