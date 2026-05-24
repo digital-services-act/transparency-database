@@ -19,7 +19,7 @@ class StatementsIndexDateSeq extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-date-seq {date=yesterday} {chunk=500}';
+    protected $signature = 'statements:index-date-seq {date=yesterday} {chunk=1000} {range=true}';
 
     /**
      * The console command description.
@@ -35,13 +35,14 @@ class StatementsIndexDateSeq extends Command
     {
         $chunk = $this->intifyArgument('chunk');
         $date = $this->sanitizeDateArgument();
+        $range = $this->boolifyArgument('range');
 
         $min = $day_archive_service->getFirstIdOfDate($date);
         $max = $day_archive_service->getLastIdOfDate($date);
 
         if ($min && $max) {
             Log::info('Indexing started for date: ' . $date->format('Y-m-d') . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-            StatementSearchableChunk::dispatch($min, $max, $chunk);
+            StatementSearchableChunk::dispatch($min, $max, $chunk, $range);
         } else {
             Log::warning('Not able to obtain the highest or lowest ID for the day: ' . $date->format('Y-m-d'));
         }

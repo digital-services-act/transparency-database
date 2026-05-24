@@ -20,7 +20,7 @@ class StatementsIndexRangeSeq extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:index-range-seq {min=default} {max=default} {chunk=500}';
+    protected $signature = 'statements:index-range-seq {min=default} {max=default} {chunk=1000} {range=true}';
 
     /**
      * The console command description.
@@ -36,6 +36,7 @@ class StatementsIndexRangeSeq extends Command
     {
 
         $chunk = $this->intifyArgument('chunk');
+        $range = $this->boolifyArgument('range');
 
         if ($this->argument('min') === 'opensearch') {
             $min = $statement_search_service->highestId();
@@ -47,7 +48,7 @@ class StatementsIndexRangeSeq extends Command
 
         if ($min && $max && $min < $max) {
             Log::info('Indexing started for range: ' . $min . ' :: ' . $max . ' at ' . Carbon::now()->format('Y-m-d H:i:s'));
-            StatementSearchableChunk::dispatch($min, $max, $chunk);
+            StatementSearchableChunk::dispatch($min, $max, $chunk, $range);
         }
     }
 }

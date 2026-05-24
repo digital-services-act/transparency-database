@@ -27,7 +27,7 @@ class   StatementSearchableChunk implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $min, public int $max, public int $chunk)
+    public function __construct(public int $min, public int $max, public int $chunk, public bool $range = true)
     {
     }
 
@@ -51,12 +51,17 @@ class   StatementSearchableChunk implements ShouldQueue
             if ($end < $this->max) {
                 $next_min = $this->min + $this->chunk + 1;
                 // Start the next one.
-                self::dispatch($next_min, $this->max, $this->chunk);
+                self::dispatch($next_min, $this->max, $this->chunk, $this->range);
             }
 
-            $range = range($this->min, $end);
-            // Bulk indexing.
-            $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
+            if ($this->range) {
+                $range = range($this->min, $end);
+                $statements = Statement::on('mysql::read')->whereIn('id', $range)->get();
+            } else {
+                $statements = Statement::on('mysql::read')
+                    ->whereBetween('id', [$this->min, $end])->orderBy('id')->get();
+            }
+
             $statement_search_service->bulkIndexStatements($statements);
 
             if ($end >= $this->max) {
