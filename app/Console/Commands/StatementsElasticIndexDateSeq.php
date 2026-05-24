@@ -24,6 +24,7 @@ class StatementsElasticIndexDateSeq extends Command
     protected $signature = 'statements:elastic-index-date-seq
         {date=yesterday}
         {chunk=500}
+        {range=true}
         {--skip-id-range=* : Inclusive statement ID range(s) to skip while queueing indexing jobs, format start:end. May be repeated.}';
 
     /**
@@ -42,6 +43,7 @@ class StatementsElasticIndexDateSeq extends Command
         $chunk = $this->intifyArgument('chunk');
         Log::info('Step 2');
         $date = $this->sanitizeDateArgument();
+        $use_range = $this->boolifyArgument('range');
 
         Log::info('Step 3');
         $min = $day_archive_service->getFirstIdOfDate($date);
@@ -72,7 +74,7 @@ class StatementsElasticIndexDateSeq extends Command
             }
 
             foreach ($ranges as $range) {
-                StatementElasticSearchableChunk::dispatch($range['start'], $range['end'], $chunk);
+                StatementElasticSearchableChunk::dispatch($range['start'], $range['end'], $chunk, $use_range);
             }
         } else {
             Log::info('Step 6');

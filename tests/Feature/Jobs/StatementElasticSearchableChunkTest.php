@@ -186,6 +186,31 @@ class StatementElasticSearchableChunkTest extends TestCase
         });
     }
 
+    public function test_job_preserves_range_mode_when_dispatching_next_job(): void
+    {
+        Cache::shouldReceive('get')
+            ->with('stop_reindexing', false)
+            ->andReturn(false);
+
+        $this->mockService->shouldReceive('bulkIndexStatements')
+            ->once()
+            ->with(Mockery::on(function ($collection) {
+                return $collection->count() === 0;
+            }));
+
+        Queue::fake();
+
+        $job = new StatementElasticSearchableChunk(9001, 9500, 100, false);
+        $job->handle($this->mockService);
+
+        Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
+            return $job->min === 9102
+                && $job->max === 9500
+                && $job->chunk === 100
+                && $job->range === false;
+        });
+    }
+
     public function test_job_handles_single_item_chunk(): void
     {
         // Single statement

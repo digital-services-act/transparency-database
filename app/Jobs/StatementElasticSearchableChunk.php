@@ -24,7 +24,7 @@ class StatementElasticSearchableChunk implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $min, public int $max, public int $chunk) {}
+    public function __construct(public int $min, public int $max, public int $chunk, public bool $range = true) {}
 
     /**
      * Execute the job.
@@ -46,12 +46,19 @@ class StatementElasticSearchableChunk implements ShouldQueue
             if ($end < $this->max) {
                 $next_min = $this->min + $this->chunk + 1;
                 // Start the next one.
-                self::dispatch($next_min, $this->max, $this->chunk);
+                self::dispatch($next_min, $this->max, $this->chunk, $this->range);
             }
 
-            $range = range($this->min, $end);
-            // Bulk indexing.
-            $statements = Statement::query()->whereIn('id', $range)->get();
+            if ($this->range) {
+                $range = range($this->min, $end);
+                $statements = Statement::query()->whereIn('id', $range)->get();
+            } else {
+                $statements = Statement::query()
+                    ->whereBetween('id', [$this->min, $end])
+                    ->orderBy('id')
+                    ->get();
+            }
+
             $statement_elastic_search_service->bulkIndexStatements($statements);
 
             if ($end >= $this->max) {

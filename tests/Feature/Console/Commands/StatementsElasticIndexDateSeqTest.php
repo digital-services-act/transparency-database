@@ -47,6 +47,41 @@ class StatementsElasticIndexDateSeqTest extends TestCase
     }
 
     #[Test]
+    public function it_passes_range_mode_to_queued_indexing_jobs(): void
+    {
+        Queue::fake();
+
+        $admin = $this->signInAsAdmin();
+        $platform = Platform::nonDsa()->first();
+
+        Statement::query()->forceDelete();
+
+        $this->createStatementWithId(100, '2030-01-02 00:00:00', 'TARGET_FIRST', $platform->id, $admin->id);
+        $this->createStatementWithId(2500000, '2030-01-02 23:59:59', 'TARGET_LAST', $platform->id, $admin->id);
+
+        $this->artisan('statements:elastic-index-date-seq', [
+            'date' => '2030-01-02',
+            'chunk' => 2000,
+            'range' => 'false',
+            '--skip-id-range' => ['500000:2000000'],
+        ])->assertSuccessful();
+
+        Queue::assertPushed(StatementElasticSearchableChunk::class, 2);
+        Queue::assertPushed(StatementElasticSearchableChunk::class, function (StatementElasticSearchableChunk $job): bool {
+            return $job->min === 100
+                && $job->max === 499999
+                && $job->chunk === 2000
+                && $job->range === false;
+        });
+        Queue::assertPushed(StatementElasticSearchableChunk::class, function (StatementElasticSearchableChunk $job): bool {
+            return $job->min === 2000001
+                && $job->max === 2500000
+                && $job->chunk === 2000
+                && $job->range === false;
+        });
+    }
+
+    #[Test]
     public function it_supports_repeated_skip_id_ranges(): void
     {
         Queue::fake();
