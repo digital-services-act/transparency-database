@@ -21,7 +21,7 @@ class PlatformController extends Controller
     {
         $platforms = Platform::query();
         if ($request->get('s')) {
-            $platforms = Platform::where('name', 'like', '%'.$request->get('s').'%');
+            $platforms = Platform::whereLike('name', '%'.$request->get('s').'%');
         }
 
         $platforms->orderBy('name');

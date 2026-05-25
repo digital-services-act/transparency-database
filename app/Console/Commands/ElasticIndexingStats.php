@@ -122,7 +122,7 @@ class ElasticIndexingStats extends Command
     private function getElasticIndexingJobs(): array
     {
         $jobs = DB::table('jobs')
-            ->where('payload', 'like', '%StatementElasticSearchableChunk%')
+            ->whereLike('payload', '%StatementElasticSearchableChunk%')
             ->get();
 
         $parsedJobs = [];

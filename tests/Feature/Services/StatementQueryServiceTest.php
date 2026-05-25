@@ -6,10 +6,14 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\StatementQueryService;
+use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(\App\Services\StatementQueryService::class)]
+#[CoversClass(StatementQueryService::class)]
 class StatementQueryServiceTest extends TestCase
 {
     use RefreshDatabase;
@@ -28,7 +32,7 @@ class StatementQueryServiceTest extends TestCase
         Statement::factory(10)->create();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_can_do_a_basic_query(): void
     {
         // 10 statements
@@ -36,7 +40,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_automated_detection(): void
     {
         // 10 statements
@@ -48,7 +52,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_automated_decision(): void
     {
         // 10 statements
@@ -61,7 +65,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_territorial_scope(): void
     {
         $filters = [
@@ -71,13 +75,13 @@ class StatementQueryServiceTest extends TestCase
         $sql = $this->statement_query_service->query($filters)->toSql();
         $bindings = $this->statement_query_service->query($filters)->getBindings();
 
-        // Check that we're using JSON extract and proper OR conditions
-        $this->assertStringContainsString('json_extract', strtolower($sql));
+        // Check that we're using portable JSON contains conditions.
+        $this->assertStringContainsString('json_each("territorial_scope")', strtolower($sql));
         $this->assertCount(3, $bindings); // Should only have 3 bindings as XX is filtered out
-        $this->assertEquals(['%"FR"%', '%"DE"%', '%"NL"%'], array_values($bindings));
+        $this->assertEquals(['FR', 'DE', 'NL'], array_values($bindings));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_decision_visibility(): void
     {
         $filters = [
@@ -87,16 +91,16 @@ class StatementQueryServiceTest extends TestCase
         $sql = $this->statement_query_service->query($filters)->toSql();
         $bindings = $this->statement_query_service->query($filters)->getBindings();
 
-        // Check that we're using JSON extract and proper OR conditions
-        $this->assertStringContainsString('json_extract', strtolower($sql));
+        // Check that we're using portable JSON contains conditions.
+        $this->assertStringContainsString('json_each("decision_visibility")', strtolower($sql));
         $this->assertCount(2, $bindings);
         $this->assertEquals(
-            ['%"DECISION_VISIBILITY_CONTENT_REMOVED"%', '%"DECISION_VISIBILITY_CONTENT_DISABLED"%'],
+            ['DECISION_VISIBILITY_CONTENT_REMOVED', 'DECISION_VISIBILITY_CONTENT_DISABLED'],
             array_values($bindings)
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_content_type(): void
     {
         $filters = [
@@ -106,13 +110,13 @@ class StatementQueryServiceTest extends TestCase
         $sql = $this->statement_query_service->query($filters)->toSql();
         $bindings = $this->statement_query_service->query($filters)->getBindings();
 
-        // Check that we're using JSON extract and proper OR conditions
-        $this->assertStringContainsString('json_extract', strtolower($sql));
+        // Check that we're using portable JSON contains conditions.
+        $this->assertStringContainsString('json_each("content_type")', strtolower($sql));
         $this->assertCount(2, $bindings); // Should only have 2 bindings as INVALID_TYPE is filtered out
-        $this->assertEquals(['%"CONTENT_TYPE_TEXT"%', '%"CONTENT_TYPE_VIDEO"%'], array_values($bindings));
+        $this->assertEquals(['CONTENT_TYPE_TEXT', 'CONTENT_TYPE_VIDEO'], array_values($bindings));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_category_specification(): void
     {
         // Clear existing data and create statements with known category specifications
@@ -132,16 +136,16 @@ class StatementQueryServiceTest extends TestCase
         $sql = $result->toSql();
         $bindings = $result->getBindings();
 
-        // Check that we're using JSON extract and proper OR conditions
-        $this->assertStringContainsString('json_extract', strtolower($sql));
+        // Check that we're using portable JSON contains conditions.
+        $this->assertStringContainsString('json_each("category_specification")', strtolower($sql));
         $this->assertCount(2, $bindings); // Should only have 2 bindings as INVALID_KEYWORD is filtered out
-        $this->assertEquals(['%"KEYWORD_HATE_SPEECH"%', '%"KEYWORD_MISINFORMATION_DISINFORMATION"%'], array_values($bindings));
+        $this->assertEquals(['KEYWORD_HATE_SPEECH', 'KEYWORD_MISINFORMATION_DISINFORMATION'], array_values($bindings));
 
         // Verify we get both statements that have either KEYWORD_HATE_SPEECH or KEYWORD_DISINFORMATION
         $this->assertEquals(2, $result->count());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_created_at_start(): void
     {
         $filters = [
@@ -151,7 +155,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" >= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_created_at_end(): void
     {
         $filters = [
@@ -161,7 +165,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_platform_id(): void
     {
         $filters = [
@@ -171,7 +175,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where exists (select * from "platforms" where "statements_beta"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_decision_ground(): void
     {
         $filters = [
@@ -181,7 +185,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "decision_ground" in (?', $sql);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_source_type(): void
     {
         $filters = [
@@ -191,7 +195,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "source_type" in (?', $sql);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_category(): void
     {
         $filters = [
@@ -201,7 +205,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "category" in (?', $sql);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_handles_errors_gracefully(): void
     {
         // Create a statement with known values
@@ -227,7 +231,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertNotNull($result); // Should return a query builder despite error
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_text_search(): void
     {
         Statement::query()->delete();
@@ -285,7 +289,25 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
+    public function it_uses_case_insensitive_text_search_on_postgres(): void
+    {
+        $connection = DB::connection();
+        $originalGrammar = $connection->getQueryGrammar();
+
+        try {
+            $connection->setQueryGrammar(new PostgresGrammar($connection));
+
+            $sql = $this->statement_query_service->query(['s' => 'Test'])->toSql();
+
+            $this->assertStringContainsString('"decision_facts"::text ilike ?', $sql);
+            $this->assertStringNotContainsString(' LIKE ', $sql);
+        } finally {
+            $connection->setQueryGrammar($originalGrammar);
+        }
+    }
+
+    #[Test]
     public function it_filters_on_decision_fields(): void
     {
         Statement::query()->delete();
@@ -330,7 +352,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $result->count());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_filters_on_content_language(): void
     {
         Statement::query()->delete();

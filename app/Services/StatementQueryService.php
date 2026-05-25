@@ -69,18 +69,18 @@ class StatementQueryService
     private function applySFilter(Builder $query, string $filter_value): void
     {
         $query->where(function ($q) use ($filter_value) {
-            $q->orWhere('incompatible_content_ground', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('incompatible_content_explanation', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('illegal_content_legal_ground', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('illegal_content_explanation', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('decision_facts', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('uuid', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('puid', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('decision_visibility_other', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('decision_monetary_other', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('content_type_other', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('source_identity', 'LIKE', '%'.$filter_value.'%')
-                ->orWhere('content_id_ean', 'LIKE', '%'.$filter_value.'%');
+            $q->orWhereLike('incompatible_content_ground', '%'.$filter_value.'%')
+                ->orWhereLike('incompatible_content_explanation', '%'.$filter_value.'%')
+                ->orWhereLike('illegal_content_legal_ground', '%'.$filter_value.'%')
+                ->orWhereLike('illegal_content_explanation', '%'.$filter_value.'%')
+                ->orWhereLike('decision_facts', '%'.$filter_value.'%')
+                ->orWhereLike('uuid', '%'.$filter_value.'%')
+                ->orWhereLike('puid', '%'.$filter_value.'%')
+                ->orWhereLike('decision_visibility_other', '%'.$filter_value.'%')
+                ->orWhereLike('decision_monetary_other', '%'.$filter_value.'%')
+                ->orWhereLike('content_type_other', '%'.$filter_value.'%')
+                ->orWhereLike('source_identity', '%'.$filter_value.'%')
+                ->orWhereLike('content_id_ean', '%'.$filter_value.'%');
         });
     }
 
@@ -129,7 +129,7 @@ class StatementQueryService
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(decision_visibility, "$") LIKE ?', ['%"'.$value.'"%']);
+                    $query->orWhereJsonContains('decision_visibility', $value);
                 }
             });
         }
@@ -173,7 +173,7 @@ class StatementQueryService
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(category_specification, "$") LIKE ?', ['%"'.$value.'"%']);
+                    $query->orWhereJsonContains('category_specification', $value);
                 }
             });
         }
@@ -185,7 +185,7 @@ class StatementQueryService
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(content_type, "$") LIKE ?', ['%"'.$value.'"%']);
+                    $query->orWhereJsonContains('content_type', $value);
                 }
             });
         }
@@ -222,7 +222,7 @@ class StatementQueryService
         if ($filter_values_validated !== []) {
             $query->where(function ($query) use ($filter_values_validated) {
                 foreach ($filter_values_validated as $value) {
-                    $query->orWhereRaw('json_extract(territorial_scope, "$") LIKE ?', ['%"'.$value.'"%']);
+                    $query->orWhereJsonContains('territorial_scope', $value);
                 }
             });
         }

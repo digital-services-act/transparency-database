@@ -31,7 +31,7 @@ class UserController extends Controller
         $uuid = $request->query('uuid');
 
         if ($s) {
-            $users->where('email', 'like', '%'.$s.'%');
+            $users->whereLike('email', '%'.$s.'%');
         }
 
         if ($uuid) {
