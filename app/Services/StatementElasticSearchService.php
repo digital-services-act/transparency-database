@@ -104,6 +104,11 @@ class StatementElasticSearchService
         return $this->client;
     }
 
+    public function isConfigured(): bool
+    {
+        return $this->client !== null;
+    }
+
     private function configuredHosts(): array
     {
         $hosts = config('elasticsearch.uri', []);
@@ -975,6 +980,26 @@ class StatementElasticSearchService
                 ],
             ],
             'wait_for_completion' => false,
+        ])->asArray();
+    }
+
+    public function deleteStatementsBeforeDate(Carbon $cutoff, bool $waitForCompletion = false): array
+    {
+        $timestamp = $cutoff->copy()->startOfDay()->getTimestampMs();
+
+        return $this->client()->deleteByQuery([
+            'index' => $this->index_name,
+            'body' => [
+                'query' => [
+                    'range' => [
+                        'received_date' => [
+                            'lt' => $timestamp,
+                        ],
+                    ],
+                ],
+            ],
+            'conflicts' => 'proceed',
+            'wait_for_completion' => $waitForCompletion,
         ])->asArray();
     }
 

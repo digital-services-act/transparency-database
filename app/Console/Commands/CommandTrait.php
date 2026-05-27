@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Exception;
 use Illuminate\Support\Carbon;
+use InvalidArgumentException;
 use RuntimeException;
 
 trait CommandTrait
@@ -38,5 +39,44 @@ trait CommandTrait
     public function boolifyArgument(string $argument): bool
     {
         return $this->argument($argument) === 'true';
+    }
+
+    public function positiveIntOption(string $name): int
+    {
+        $value = (int) $this->option($name);
+
+        if ($value < 1) {
+            throw new InvalidArgumentException(sprintf('The --%s option must be greater than zero.', $name));
+        }
+
+        return $value;
+    }
+
+    public function nullablePositiveIntOption(string $name): ?int
+    {
+        $raw = $this->option($name);
+
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+
+        $value = (int) $raw;
+
+        if ($value < 1) {
+            throw new InvalidArgumentException(sprintf('The --%s option must be greater than zero.', $name));
+        }
+
+        return $value;
+    }
+
+    public function nonNegativeIntOption(string $name): int
+    {
+        $value = (int) $this->option($name);
+
+        if ($value < 0) {
+            throw new InvalidArgumentException(sprintf('The --%s option must be zero or greater.', $name));
+        }
+
+        return $value;
     }
 }
