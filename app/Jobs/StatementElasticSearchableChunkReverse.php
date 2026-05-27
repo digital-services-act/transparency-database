@@ -36,6 +36,7 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
         // Set this in cache, to emergency stop reindexing.
         $stop = Cache::get('stop_reindexing', false);
         if (! $stop) {
+            $attempt = $this->attempts();
             $end = $this->max - $this->chunk;
 
             if ($end < $this->min) {
@@ -43,10 +44,19 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
             }
 
             // Dispatch the next one
-            if ($end > $this->min) {
+            if ($end > $this->min && $attempt === 1) {
                 $next_max = $this->max - $this->chunk - 1;
                 // Start the next one.
                 self::dispatch($this->min, $next_max, $this->chunk, $this->range);
+            } elseif ($end > $this->min) {
+                Log::info('StatementElasticSearchableChunkReverse skipped dispatch on retry', [
+                    'min' => $this->min,
+                    'max' => $this->max,
+                    'end' => $end,
+                    'chunk' => $this->chunk,
+                    'range' => $this->range,
+                    'attempt' => $attempt,
+                ]);
             }
 
             if ($this->range) {
