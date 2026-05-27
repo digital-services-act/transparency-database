@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
             $schedule->command('statements:elastic-index-date-seq yesterday 2000')
                 ->dailyAt(self::DAILY_AFTER_MIDNIGHT);
 
-            $schedule->command('statements:remove-date')
+            $schedule->command('statements:prune-old')
                 ->dailyAt(self::DAILY_FIVE_AM);
 
             $schedule->command('statements:day-archive-z')

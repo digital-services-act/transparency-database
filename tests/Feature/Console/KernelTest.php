@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Console;
 
+use App\Console\Kernel;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +16,7 @@ class KernelTest extends TestCase
         config()->set('app.is_task_server', false);
 
         // We need to resolve the kernel and call the schedule method to populate the schedule
-        $kernel = $this->app->make(\App\Console\Kernel::class);
+        $kernel = $this->app->make(Kernel::class);
         $schedule = new Schedule;
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
@@ -30,12 +31,19 @@ class KernelTest extends TestCase
         config()->set('app.env', 'production');
 
         // We need to resolve the kernel and call the schedule method to populate the schedule
-        $kernel = $this->app->make(\App\Console\Kernel::class);
+        $kernel = $this->app->make(Kernel::class);
         $schedule = new Schedule;
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
         $this->assertCount(12, $events);
+
+        $this->assertTrue($events->contains(function ($event) {
+            return str_contains($event->command, 'statements:prune-old') && $event->expression === '0 5 * * *';
+        }));
+        $this->assertFalse($events->contains(function ($event) {
+            return str_contains($event->command, 'statements:remove-date');
+        }));
 
         // Check for a specific command that is unique to production
         $this->assertTrue($events->contains(function ($event) {
@@ -49,12 +57,18 @@ class KernelTest extends TestCase
         config()->set('app.env', 'testing');
 
         // We need to resolve the kernel and call the schedule method to populate the schedule
-        $kernel = $this->app->make(\App\Console\Kernel::class);
+        $kernel = $this->app->make(Kernel::class);
         $schedule = new Schedule;
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
         $this->assertCount(12, $events);
+        $this->assertTrue($events->contains(function ($event) {
+            return str_contains($event->command, 'statements:prune-old') && $event->expression === '0 5 * * *';
+        }));
+        $this->assertFalse($events->contains(function ($event) {
+            return str_contains($event->command, 'statements:remove-date');
+        }));
     }
 
     /**
