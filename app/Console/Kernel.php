@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
         if (config('app.is_task_server')) {
             $schedule->command('statements:track-velocity')->everyMinute()->onOneServer();
 
-            $schedule->command('statements:elastic-index-date-seq yesterday 2000')
+            $schedule->command('statements:elastic-index-date-seq yesterday 1000 false 8')
                 ->dailyAt(self::DAILY_AFTER_MIDNIGHT);
 
             $schedule->command('statements:prune-old')
