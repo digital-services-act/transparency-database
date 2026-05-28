@@ -6,6 +6,9 @@ use App\Models\Platform;
 use App\Models\Statement;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Elastic\Transport\Exception\NoNodeAvailableException;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -13,11 +16,13 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JsonException;
 use RuntimeException;
 use stdClass;
+use Throwable;
 
 /**
  * @codeCoverageIgnore This whole service does many elasticsearch calls. Mocking the returns is not possible
@@ -81,22 +86,29 @@ class StatementElasticSearchService
 
     public function __construct(protected PlatformQueryService $platformQueryService)
     {
+        $this->client = $this->makeClient();
+    }
+
+    private function makeClient(): ?Client
+    {
         $hosts = $this->configuredHosts();
 
-        if ($hosts !== []) {
-            $builder = ClientBuilder::create()
-                ->setHosts($hosts)
-                ->setRetries((int) config('elasticsearch.retries', 2));
-
-            $username = config('elasticsearch.basicAuthentication.username');
-            $password = config('elasticsearch.basicAuthentication.password');
-
-            if (is_string($username) && $username !== '' && is_string($password) && $password !== '') {
-                $builder->setBasicAuthentication($username, $password);
-            }
-
-            $this->client = $builder->build();
+        if ($hosts === []) {
+            return null;
         }
+
+        $builder = ClientBuilder::create()
+            ->setHosts($hosts)
+            ->setRetries((int) config('elasticsearch.retries', 2));
+
+        $username = config('elasticsearch.basicAuthentication.username');
+        $password = config('elasticsearch.basicAuthentication.password');
+
+        if (is_string($username) && $username !== '' && is_string($password) && $password !== '') {
+            $builder->setBasicAuthentication($username, $password);
+        }
+
+        return $builder->build();
     }
 
     public function client(): Client
@@ -106,6 +118,11 @@ class StatementElasticSearchService
         }
 
         return $this->client;
+    }
+
+    private function rebuildClient(): void
+    {
+        $this->client = $this->makeClient();
     }
 
     public function isConfigured(): bool
@@ -955,10 +972,7 @@ class StatementElasticSearchService
             }
 
             // Call the bulk and make them searchable.
-            $this->client()->bulk([
-                'require_alias' => true,
-                'body' => $this->buildBulkBodyFromSearchableArrays($docs),
-            ]);
+            $this->bulkSearchableArrays($docs);
         }
     }
 
@@ -1012,12 +1026,9 @@ class StatementElasticSearchService
     public function bulkIndexRawStatementRows(SupportCollection $statements): void
     {
         if ($statements->count() !== 0) {
-            $this->client()->bulk([
-                'require_alias' => true,
-                'body' => $this->buildBulkBodyFromSearchableArrays(
-                    $this->searchableArraysFromRawStatementRows($statements),
-                ),
-            ]);
+            $this->bulkSearchableArrays(
+                $this->searchableArraysFromRawStatementRows($statements),
+            );
         }
     }
 
@@ -1150,6 +1161,17 @@ class StatementElasticSearchService
         return $bulk === [] ? '' : implode("\n", $bulk)."\n";
     }
 
+    private function bulkSearchableArrays(array $docs): void
+    {
+        $body = $this->buildBulkBodyFromSearchableArrays($docs);
+
+        if ($body === '') {
+            return;
+        }
+
+        $this->bulkWithRetry($body);
+    }
+
     private function benchmarkBulkIndexSearchableArrays(array $docs, array $metrics): array
     {
         $ndjson = $this->measureIndexingStep(
@@ -1158,21 +1180,121 @@ class StatementElasticSearchService
         $body = $ndjson['value'];
 
         $elasticMs = 0.0;
+        $bulk = [
+            'attempts' => 0,
+            'retries' => 0,
+            'retry_sleep_ms' => 0,
+        ];
+
         if ($body !== '') {
-            $elastic = $this->measureIndexingStep(fn () => $this->client()->bulk([
-                'require_alias' => true,
-                'body' => $body,
-            ]));
+            $elastic = $this->measureIndexingStep(fn (): array => $this->bulkWithRetry($body));
             $elasticMs = $elastic['ms'];
+            $bulk = $elastic['value'];
         }
 
         $metrics['ndjson_ms'] = $ndjson['ms'];
         $metrics['elastic_ms'] = $elasticMs;
+        $metrics['elastic_attempts'] = $bulk['attempts'];
+        $metrics['elastic_retries'] = $bulk['retries'];
+        $metrics['elastic_retry_sleep_ms'] = $bulk['retry_sleep_ms'];
         $metrics['payload_bytes'] = strlen($body);
         $metrics['payload_mb'] = round(strlen($body) / 1024 / 1024, 4);
         $metrics['total_ms'] = ($metrics['transform_ms'] ?? 0.0) + $metrics['ndjson_ms'] + $metrics['elastic_ms'];
 
         return $metrics;
+    }
+
+    private function bulkWithRetry(string $body): array
+    {
+        $delays = $this->bulkRetryDelaysMs();
+        $maxAttempts = count($delays) + 1;
+        $retrySleepMs = 0;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                $this->client()->bulk([
+                    'require_alias' => true,
+                    'body' => $body,
+                ]);
+
+                return [
+                    'attempts' => $attempt,
+                    'retries' => $attempt - 1,
+                    'retry_sleep_ms' => $retrySleepMs,
+                ];
+            } catch (Throwable $exception) {
+                if (! $this->shouldRetryBulkException($exception) || $attempt >= $maxAttempts) {
+                    throw $exception;
+                }
+
+                if ($exception instanceof NoNodeAvailableException) {
+                    $this->rebuildClient();
+                }
+
+                $delayMs = $this->jitteredBulkRetryDelayMs($delays[$attempt - 1]);
+                $retrySleepMs += $delayMs;
+
+                Log::warning('Elasticsearch bulk retry', [
+                    'attempt' => $attempt,
+                    'next_attempt' => $attempt + 1,
+                    'max_attempts' => $maxAttempts,
+                    'delay_ms' => $delayMs,
+                    'exception' => get_class($exception),
+                    'status' => $this->bulkExceptionStatus($exception),
+                    'message' => $exception->getMessage(),
+                    'payload_mb' => round(strlen($body) / 1024 / 1024, 4),
+                ]);
+
+                usleep($delayMs * 1000);
+            }
+        }
+
+        throw new RuntimeException('Elasticsearch bulk retry loop exited unexpectedly.');
+    }
+
+    private function shouldRetryBulkException(Throwable $exception): bool
+    {
+        if ($exception instanceof NoNodeAvailableException || $exception instanceof ServerResponseException) {
+            return true;
+        }
+
+        if ($exception instanceof ClientResponseException) {
+            return in_array($this->bulkExceptionStatus($exception), [408, 429], true);
+        }
+
+        return false;
+    }
+
+    private function bulkExceptionStatus(Throwable $exception): ?int
+    {
+        if (! method_exists($exception, 'getResponse')) {
+            return null;
+        }
+
+        try {
+            return $exception->getResponse()->getStatusCode();
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    private function bulkRetryDelaysMs(): array
+    {
+        $delays = config('elasticsearch.bulk_retry_delays_ms', [250, 750, 1500, 3000]);
+
+        if (! is_array($delays)) {
+            $delays = [$delays];
+        }
+
+        return array_values(array_filter(
+            array_map(static fn ($delay): int => max(0, (int) $delay), $delays),
+            static fn (int $delay): bool => $delay > 0,
+        ));
+    }
+
+    private function jitteredBulkRetryDelayMs(int $delayMs): int
+    {
+        return max(1, $delayMs + random_int(0, max(1, (int) floor($delayMs / 5))));
     }
 
     private function measureIndexingStep(callable $callback): array
