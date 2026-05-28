@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Statement;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
-class StatementElasticSearchableChunkReverse implements ShouldQueue
+class StatementElasticSearchableRawChunk implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -43,19 +42,19 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
         $stop = Cache::get('stop_reindexing', false);
         if (! $stop) {
             $attempt = $this->attempts();
-            $end = $this->max - $this->chunk;
+            $end = $this->min + $this->chunk;
 
-            if ($end < $this->min) {
-                $end = $this->min;
+            if ($end > $this->max) {
+                $end = $this->max;
             }
 
             // Dispatch the next one
-            if ($end > $this->min && $attempt === 1) {
-                $next_max = $this->max - $this->chunk - 1;
+            if ($end < $this->max && $attempt === 1) {
+                $next_min = $this->min + $this->chunk + 1;
                 // Start the next one.
-                self::dispatch($this->min, $next_max, $this->chunk, $this->range, $this->benchmark);
-            } elseif ($end > $this->min) {
-                Log::info('StatementElasticSearchableChunkReverse skipped dispatch on retry', [
+                self::dispatch($next_min, $this->max, $this->chunk, $this->range, $this->benchmark);
+            } elseif ($end < $this->max) {
+                Log::info('StatementElasticSearchableRawChunk skipped dispatch on retry', [
                     'min' => $this->min,
                     'max' => $this->max,
                     'end' => $end,
@@ -66,27 +65,14 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
                 ]);
             }
 
-            $fetch_start = hrtime(true);
-            if ($this->range) {
-                $range = range($end, $this->max);
-                $statements = Statement::query()
-                    ->whereIn('id', $range)
-                    ->orderByDesc('id')
-                    ->get();
-            } else {
-                $statements = Statement::query()
-                    ->whereBetween('id', [$end, $this->max])
-                    ->orderByDesc('id')
-                    ->get();
-            }
-            $fetch_ms = round((hrtime(true) - $fetch_start) / 1_000_000, 3);
-
             if ($this->benchmark) {
-                $metrics = $statement_elastic_search_service->benchmarkBulkIndexStatements($statements);
-                $metrics['fetch_ms'] = $fetch_ms;
-                $metrics['total_ms'] += $fetch_ms;
+                $metrics = $statement_elastic_search_service->benchmarkBulkIndexRawStatementsForIdRange(
+                    $this->min,
+                    $end,
+                    $this->range,
+                );
 
-                Log::info('StatementElasticSearchableChunkReverse benchmark', array_merge([
+                Log::info('StatementElasticSearchableRawChunk benchmark', array_merge([
                     'min' => $this->min,
                     'max' => $this->max,
                     'end' => $end,
@@ -95,11 +81,15 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
                     'attempt' => $attempt,
                 ], $metrics));
             } else {
-                $statement_elastic_search_service->bulkIndexStatements($statements);
+                $statement_elastic_search_service->bulkIndexRawStatementsForIdRange(
+                    $this->min,
+                    $end,
+                    $this->range,
+                );
             }
 
-            if ($end <= $this->min) {
-                Log::info('StatementElasticSearchableChunkReverse Min Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
+            if ($end >= $this->max) {
+                Log::info('StatementElasticSearchableRawChunk Max Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
             }
         }
     }

@@ -24,7 +24,13 @@ class StatementElasticSearchableChunk implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $min, public int $max, public int $chunk, public bool $range = true) {}
+    public function __construct(
+        public int $min,
+        public int $max,
+        public int $chunk,
+        public bool $range = true,
+        public bool $benchmark = false,
+    ) {}
 
     /**
      * Execute the job.
@@ -47,7 +53,7 @@ class StatementElasticSearchableChunk implements ShouldQueue
             if ($end < $this->max && $attempt === 1) {
                 $next_min = $this->min + $this->chunk + 1;
                 // Start the next one.
-                self::dispatch($next_min, $this->max, $this->chunk, $this->range);
+                self::dispatch($next_min, $this->max, $this->chunk, $this->range, $this->benchmark);
             } elseif ($end < $this->max) {
                 Log::info('StatementElasticSearchableChunk skipped dispatch on retry', [
                     'min' => $this->min,
@@ -55,10 +61,12 @@ class StatementElasticSearchableChunk implements ShouldQueue
                     'end' => $end,
                     'chunk' => $this->chunk,
                     'range' => $this->range,
+                    'benchmark' => $this->benchmark,
                     'attempt' => $attempt,
                 ]);
             }
 
+            $fetch_start = hrtime(true);
             if ($this->range) {
                 $range = range($this->min, $end);
                 $statements = Statement::query()->whereIn('id', $range)->get();
@@ -68,8 +76,24 @@ class StatementElasticSearchableChunk implements ShouldQueue
                     ->orderBy('id')
                     ->get();
             }
+            $fetch_ms = round((hrtime(true) - $fetch_start) / 1_000_000, 3);
 
-            $statement_elastic_search_service->bulkIndexStatements($statements);
+            if ($this->benchmark) {
+                $metrics = $statement_elastic_search_service->benchmarkBulkIndexStatements($statements);
+                $metrics['fetch_ms'] = $fetch_ms;
+                $metrics['total_ms'] += $fetch_ms;
+
+                Log::info('StatementElasticSearchableChunk benchmark', array_merge([
+                    'min' => $this->min,
+                    'max' => $this->max,
+                    'end' => $end,
+                    'chunk' => $this->chunk,
+                    'range' => $this->range,
+                    'attempt' => $attempt,
+                ], $metrics));
+            } else {
+                $statement_elastic_search_service->bulkIndexStatements($statements);
+            }
 
             if ($end >= $this->max) {
                 Log::info('StatementElasticSearchableChunk Max Reached at '.Carbon::now()->format('Y-m-d H:i:s'));

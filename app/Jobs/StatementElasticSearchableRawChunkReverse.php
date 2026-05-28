@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Statement;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
-class StatementElasticSearchableChunkReverse implements ShouldQueue
+class StatementElasticSearchableRawChunkReverse implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -55,7 +54,7 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
                 // Start the next one.
                 self::dispatch($this->min, $next_max, $this->chunk, $this->range, $this->benchmark);
             } elseif ($end > $this->min) {
-                Log::info('StatementElasticSearchableChunkReverse skipped dispatch on retry', [
+                Log::info('StatementElasticSearchableRawChunkReverse skipped dispatch on retry', [
                     'min' => $this->min,
                     'max' => $this->max,
                     'end' => $end,
@@ -66,27 +65,15 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
                 ]);
             }
 
-            $fetch_start = hrtime(true);
-            if ($this->range) {
-                $range = range($end, $this->max);
-                $statements = Statement::query()
-                    ->whereIn('id', $range)
-                    ->orderByDesc('id')
-                    ->get();
-            } else {
-                $statements = Statement::query()
-                    ->whereBetween('id', [$end, $this->max])
-                    ->orderByDesc('id')
-                    ->get();
-            }
-            $fetch_ms = round((hrtime(true) - $fetch_start) / 1_000_000, 3);
-
             if ($this->benchmark) {
-                $metrics = $statement_elastic_search_service->benchmarkBulkIndexStatements($statements);
-                $metrics['fetch_ms'] = $fetch_ms;
-                $metrics['total_ms'] += $fetch_ms;
+                $metrics = $statement_elastic_search_service->benchmarkBulkIndexRawStatementsForIdRange(
+                    $end,
+                    $this->max,
+                    $this->range,
+                    'desc',
+                );
 
-                Log::info('StatementElasticSearchableChunkReverse benchmark', array_merge([
+                Log::info('StatementElasticSearchableRawChunkReverse benchmark', array_merge([
                     'min' => $this->min,
                     'max' => $this->max,
                     'end' => $end,
@@ -95,11 +82,16 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
                     'attempt' => $attempt,
                 ], $metrics));
             } else {
-                $statement_elastic_search_service->bulkIndexStatements($statements);
+                $statement_elastic_search_service->bulkIndexRawStatementsForIdRange(
+                    $end,
+                    $this->max,
+                    $this->range,
+                    'desc',
+                );
             }
 
             if ($end <= $this->min) {
-                Log::info('StatementElasticSearchableChunkReverse Min Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
+                Log::info('StatementElasticSearchableRawChunkReverse Min Reached at '.Carbon::now()->format('Y-m-d H:i:s'));
             }
         }
     }
