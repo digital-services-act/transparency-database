@@ -5,6 +5,7 @@ namespace Tests\Feature\Models;
 use App\Models\Platform;
 use App\Models\PlatformPuid;
 use App\Services\DayArchiveService;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -149,6 +150,60 @@ class PlatformPuidTest extends TestCase
         $this->assertNotNull($found);
         $this->assertEquals($platform->id, $found->platform_id);
         $this->assertEquals($puid, $found->puid);
+    }
+
+    public function test_insert_bulk_creates_platform_puids_with_timestamps()
+    {
+        $platform = Platform::factory()->create();
+        $timestamp = Carbon::parse('2031-02-03 04:05:06');
+
+        Carbon::setTestNow($timestamp);
+
+        try {
+            PlatformPuid::insertBulk(['bulk-puid-1', 'bulk-puid-2'], $platform->id);
+        } finally {
+            Carbon::setTestNow();
+        }
+
+        $this->assertDatabaseHas('platform_puids', [
+            'platform_id' => $platform->id,
+            'puid' => 'bulk-puid-1',
+            'created_at' => $timestamp->toDateTimeString(),
+            'updated_at' => $timestamp->toDateTimeString(),
+        ]);
+        $this->assertDatabaseHas('platform_puids', [
+            'platform_id' => $platform->id,
+            'puid' => 'bulk-puid-2',
+            'created_at' => $timestamp->toDateTimeString(),
+            'updated_at' => $timestamp->toDateTimeString(),
+        ]);
+    }
+
+    public function test_platform_id_and_puid_are_unique_together()
+    {
+        $firstPlatform = Platform::factory()->create();
+        $secondPlatform = Platform::factory()->create();
+
+        PlatformPuid::create([
+            'platform_id' => $firstPlatform->id,
+            'puid' => 'shared-puid',
+        ]);
+        PlatformPuid::create([
+            'platform_id' => $secondPlatform->id,
+            'puid' => 'shared-puid',
+        ]);
+
+        $this->assertDatabaseHas('platform_puids', [
+            'platform_id' => $secondPlatform->id,
+            'puid' => 'shared-puid',
+        ]);
+
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        PlatformPuid::create([
+            'platform_id' => $firstPlatform->id,
+            'puid' => 'shared-puid',
+        ]);
     }
 
     public function test_gets_the_first_platform_puid_id_from_date()
