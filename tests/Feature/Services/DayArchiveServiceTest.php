@@ -5,6 +5,7 @@ namespace Tests\Feature\Services;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Models\StatementAlpha;
 use App\Services\DayArchiveService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -250,6 +251,23 @@ class DayArchiveServiceTest extends TestCase
         $this->createStatementWithId(4100, '2030-01-03 00:00:00', 'NEXT_DAY', $platform->id, $admin->id);
 
         $date = Carbon::createFromDate(2030, 1, 2);
+
+        $this->assertEquals($first->id, $this->day_archive_service->getFirstIdOfDate($date));
+        $this->assertEquals($last->id, $this->day_archive_service->getLastIdOfDate($date));
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_gets_first_and_last_legacy_statement_ids_before_beta_cutover(): void
+    {
+        StatementAlpha::query()->forceDelete();
+
+        $this->createStatementAlphaWithId(1000, '2025-06-29 23:59:59', 'PREVIOUS_DAY');
+        $first = $this->createStatementAlphaWithId(1010, '2025-06-30 00:00:00', 'TARGET_FIRST');
+        $this->createStatementAlphaWithId(2500, '2025-06-30 12:00:00', 'TARGET_MIDDLE');
+        $last = $this->createStatementAlphaWithId(4090, '2025-06-30 23:59:59', 'TARGET_LAST');
+        $this->createStatementAlphaWithId(4100, '2025-07-01 00:00:00', 'NEXT_DAY');
+
+        $date = Carbon::createFromDate(2025, 6, 30);
 
         $this->assertEquals($first->id, $this->day_archive_service->getFirstIdOfDate($date));
         $this->assertEquals($last->id, $this->day_archive_service->getLastIdOfDate($date));
@@ -604,6 +622,16 @@ class DayArchiveServiceTest extends TestCase
             'puid' => $puid,
             'platform_id' => $platform_id,
             'user_id' => $user_id,
+        ]));
+    }
+
+    private function createStatementAlphaWithId(int $id, string $created_at, string $puid): StatementAlpha
+    {
+        return StatementAlpha::unguarded(fn () => StatementAlpha::factory()->create([
+            'id' => $id,
+            'created_at' => $created_at,
+            'updated_at' => $created_at,
+            'puid' => $puid,
         ]));
     }
 }

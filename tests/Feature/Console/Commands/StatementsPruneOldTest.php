@@ -6,6 +6,7 @@ use App\Models\Platform;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\StatementElasticSearchService;
+use Illuminate\Database\Connection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -141,6 +142,32 @@ class StatementsPruneOldTest extends TestCase
     }
 
     #[Test]
+    public function it_reports_synchronous_elasticsearch_prune_completion(): void
+    {
+        Carbon::setTestNow('2026-05-27 12:00:00');
+        $this->clearPrunedTables();
+
+        $this->mock(StatementElasticSearchService::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('isConfigured')->once()->andReturnTrue();
+            $mock->shouldReceive('deleteStatementsBeforeDate')
+                ->once()
+                ->with(
+                    Mockery::on(fn (Carbon $cutoff): bool => $cutoff->equalTo(Carbon::parse('2025-11-28 00:00:00'))),
+                    true
+                )
+                ->andReturn(['deleted' => 1234]);
+        });
+
+        $this->artisan('statements:prune-old', [
+            '--batch' => 1,
+            '--max-batches' => 1,
+            '--elastic-sync' => true,
+        ])
+            ->expectsOutput('Elasticsearch prune completed. Deleted 1,234 statements.')
+            ->assertExitCode(0);
+    }
+
+    #[Test]
     public function it_fails_without_deleting_database_rows_when_elasticsearch_is_required_but_not_configured(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
@@ -158,6 +185,52 @@ class StatementsPruneOldTest extends TestCase
             ->assertExitCode(1);
 
         $this->assertDatabaseHas('statements_beta', ['id' => 100000000001]);
+    }
+
+    #[Test]
+    public function it_applies_postgres_timeouts_and_uses_postgres_delete_batches(): void
+    {
+        Carbon::setTestNow('2026-05-27 12:00:00');
+
+        $connection = Mockery::mock(Connection::class);
+        $connection->shouldReceive('getDriverName')->times(3)->andReturn('pgsql');
+        $connection->shouldReceive('statement')->once()->with("SET lock_timeout = '2s'")->andReturnTrue();
+        $connection->shouldReceive('statement')->once()->with("SET statement_timeout = '5min'")->andReturnTrue();
+        $connection->shouldReceive('delete')
+            ->twice()
+            ->withArgs(fn (string $sql, array $bindings): bool => str_contains($sql, 'WITH victims AS')
+                && str_contains($sql, 'DELETE FROM')
+                && str_contains($sql, 'USING victims')
+                && $bindings[0] instanceof Carbon
+                && $bindings[1] === 500)
+            ->andReturn(0);
+
+        DB::shouldReceive('connection')->once()->with('nightly-pg')->andReturn($connection);
+
+        $this->artisan('statements:prune-old', [
+            '--connection' => 'nightly-pg',
+            '--batch' => 500,
+            '--skip-elastic' => true,
+        ])
+            ->assertExitCode(0);
+    }
+
+    #[Test]
+    public function it_sleeps_between_database_batches_when_requested(): void
+    {
+        Carbon::setTestNow('2026-05-27 12:00:00');
+        $this->clearPrunedTables();
+
+        Statement::factory()->create(['id' => 100000000001, 'created_at' => '2025-11-27 23:59:59']);
+
+        $this->artisan('statements:prune-old', [
+            '--batch' => 1,
+            '--sleep-ms' => 1,
+            '--skip-elastic' => true,
+        ])
+            ->assertExitCode(0);
+
+        $this->assertDatabaseMissing('statements_beta', ['id' => 100000000001]);
     }
 
     #[Test]
