@@ -121,6 +121,21 @@ class DataDownloadControllerTest extends TestCase
         $response->assertRedirect();
     }
 
+    public function test_download_redirects_directly_for_legacy_amazonaws_url(): void
+    {
+        $legacyUrl = 'https://dsa-transparency-database.s3.amazonaws.com/archive-2024-01-01-full.zip';
+        $dayArchive = DayArchive::factory()->completed()->create([
+            'url' => $legacyUrl,
+        ]);
+
+        $response = $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'full',
+        ]));
+
+        $response->assertRedirect($legacyUrl);
+    }
+
     public function test_download_returns_404_for_invalid_type(): void
     {
         $dayArchive = DayArchive::factory()->completed()->create();

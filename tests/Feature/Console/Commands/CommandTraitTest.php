@@ -200,6 +200,22 @@ class CommandTraitTest extends TestCase
     }
 
     #[Test]
+    public function it_rejects_non_positive_nullable_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--nullable-positive' => '0',
+        ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The --nullable-positive option must be greater than zero.');
+
+        $this->command->nullablePositiveIntOption('nullable-positive');
+    }
+
+    #[Test]
     public function it_converts_non_negative_integer_options()
     {
         $this->setCommandInput([
