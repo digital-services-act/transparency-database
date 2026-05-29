@@ -85,9 +85,8 @@ class StatementAPIController extends Controller
         $out = $statement->toArray();
         $out['puid'] = $statement->puid;
 
-        $uri = config('elasticsearch.uri');
         $env = config('app.env');
-        if ($env !== 'production' && $uri && $uri[0]) {
+        if ($env !== 'production' && StatementElasticSearchService::hasConfiguredUris()) {
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statement
             // right away so it appears in search results immediately.

@@ -83,9 +83,8 @@ class StatementMultipleAPIController extends Controller
             return $puidNotUniqueMultipleException->getJsonResponse();
         }
 
-        $uri = config('elasticsearch.uri');
         $env = config('app.env');
-        if ($env !== 'production' && $uri && $uri[0]) {
+        if ($env !== 'production' && StatementElasticSearchService::hasConfiguredUris()) {
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statements
             // right away so they appear in search results immediately.

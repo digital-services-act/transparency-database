@@ -84,9 +84,7 @@ class StatementController extends Controller
     private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the elastic is not available in the unit tests
-        $uri = config('elasticsearch.uri');
-        if (is_array($uri) && $uri[0]) {
-
+        if (StatementElasticSearchService::hasConfiguredUris()) {
             $filters = $request->query();
 
             $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
@@ -176,9 +174,8 @@ class StatementController extends Controller
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
 
-        $uri = config('elasticsearch.uri');
         $env = config('app.env');
-        if ($env !== 'production' && $uri && $uri[0]) {
+        if ($env !== 'production' && StatementElasticSearchService::hasConfiguredUris()) {
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statement
             // right away so it appears in search results immediately.

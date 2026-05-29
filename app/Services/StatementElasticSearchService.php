@@ -130,7 +130,17 @@ class StatementElasticSearchService
         return $this->client !== null;
     }
 
+    public static function hasConfiguredUris(): bool
+    {
+        return self::configuredUris() !== [];
+    }
+
     private function configuredHosts(): array
+    {
+        return self::configuredUris();
+    }
+
+    private static function configuredUris(): array
     {
         $hosts = config('elasticsearch.uri', []);
 
