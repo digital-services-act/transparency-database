@@ -13,8 +13,7 @@ class UserAPIControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_not_find_the_route_for_unknown_user(): void
+    public function test_it_should_not_find_the_route_for_unknown_user(): void
     {
 
         $this->signInAsOnboarding();
@@ -27,8 +26,7 @@ class UserAPIControllerTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_return_invited_users_as_inactive(): void
+    public function test_it_should_return_invited_users_as_inactive(): void
     {
 
         $this->signInAsOnboarding();
@@ -48,8 +46,7 @@ class UserAPIControllerTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_say_email_is_not_active(): void
+    public function test_it_should_say_email_is_not_active(): void
     {
 
         $this->signInAsOnboarding();
@@ -69,8 +66,7 @@ class UserAPIControllerTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_say_user_is_active_when_he_created_a_token(): void
+    public function test_it_should_say_user_is_active_when_he_created_a_token(): void
     {
 
         $this->signInAsOnboarding();
@@ -92,8 +88,7 @@ class UserAPIControllerTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_deactivate_user_and_tokens(): void
+    public function test_it_should_deactivate_user_and_tokens(): void
     {
 
         $this->signInAsOnboarding();

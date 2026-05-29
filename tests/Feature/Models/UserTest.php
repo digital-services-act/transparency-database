@@ -10,8 +10,7 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_throws_an_error_on_first_or_create_with_no_email(): void
+    public function test_it_throws_an_error_on_first_or_create_with_no_email(): void
     {
         $this->expectException(\Exception::class);
         $result = User::firstOrCreateByAttributes([
@@ -19,8 +18,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_creates_a_user_by_attributes(): void
+    public function test_it_creates_a_user_by_attributes(): void
     {
         $result = User::firstOrCreateByAttributes([
             'name' => 'test',
@@ -30,8 +28,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(User::class, $result);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_matches_users_by_email_case_insensitively_on_login(): void
+    public function test_it_matches_users_by_email_case_insensitively_on_login(): void
     {
         $first = User::firstOrCreateByAttributes([
             'email' => 'John.Doe@ec.europa.eu',
@@ -46,8 +43,7 @@ class UserTest extends TestCase
         $this->assertSame(1, User::query()->where('email', 'john.doe@ec.europa.eu')->count());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_finds_a_pre_existing_mixed_case_user_on_login_without_creating_a_duplicate(): void
+    public function test_it_finds_a_pre_existing_mixed_case_user_on_login_without_creating_a_duplicate(): void
     {
         $existing = User::query()->newModelInstance();
         $existing->setRawAttributes(['email' => 'John.Doe@ec.europa.eu']);
@@ -62,8 +58,7 @@ class UserTest extends TestCase
         $this->assertSame(1, User::query()->whereRaw('lower(email) = ?', ['john.doe@ec.europa.eu'])->count());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_lowercases_email_when_assigned_directly(): void
+    public function test_it_lowercases_email_when_assigned_directly(): void
     {
         $user = new User;
         $user->email = 'Mixed.Case@Example.COM';
@@ -71,8 +66,7 @@ class UserTest extends TestCase
         $this->assertSame('mixed.case@example.com', $user->email);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_correctly_sees_valid_token_or_not(): void
+    public function test_it_correctly_sees_valid_token_or_not(): void
     {
         $user = User::firstOrCreateByAttributes([
             'name' => 'test',

@@ -11,8 +11,7 @@ class SupportActionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function support_should_be_able_to_create_user(): void
+    public function test_support_should_be_able_to_create_user(): void
     {
         /** @var User $user */
         $user = $this->signInAsSupport();
@@ -29,10 +28,7 @@ class SupportActionsTest extends TestCase
 
     }
 
-    /**
-     */
-        #[\PHPUnit\Framework\Attributes\Test]
-    public function support_should_be_able_to_create_platform(): void
+    public function test_support_should_be_able_to_create_platform(): void
     {
         /** @var User $user */
         $this->signInAsSupport();
@@ -49,10 +45,7 @@ class SupportActionsTest extends TestCase
 
     }
 
-    /**
-     */
-        #[\PHPUnit\Framework\Attributes\Test]
-    public function support_should_not_be_able_to_delete_a_platform(): void
+    public function test_support_should_not_be_able_to_delete_a_platform(): void
     {
         /** @var User $user */
         $this->signInAsSupport();

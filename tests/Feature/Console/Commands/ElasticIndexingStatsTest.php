@@ -9,15 +9,13 @@ use App\Jobs\StatementElasticSearchableRawChunkReverse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ElasticIndexingStatsTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_runs_once_with_an_empty_queue(): void
+    public function test_it_runs_once_with_an_empty_queue(): void
     {
         $this->artisan('elastic:indexing-stats', ['--once' => true])
             ->expectsOutputToContain('ElasticSearch Indexing Stats')
@@ -25,8 +23,7 @@ class ElasticIndexingStatsTest extends TestCase
             ->assertSuccessful();
     }
 
-    #[Test]
-    public function it_reports_statement_elasticsearch_chunk_jobs_without_database_json_functions(): void
+    public function test_it_reports_statement_elasticsearch_chunk_jobs_without_database_json_functions(): void
     {
         $queries = [];
         DB::listen(function ($query) use (&$queries): void {
@@ -63,8 +60,7 @@ class ElasticIndexingStatsTest extends TestCase
         );
     }
 
-    #[Test]
-    public function it_reports_all_statement_elasticsearch_chunk_job_variants(): void
+    public function test_it_reports_all_statement_elasticsearch_chunk_job_variants(): void
     {
         $this->insertIndexingJob(new StatementElasticSearchableChunk(100, 500, 10));
         $this->insertIndexingJob(new StatementElasticSearchableChunkReverse(100, 450, 10));
@@ -87,8 +83,7 @@ class ElasticIndexingStatsTest extends TestCase
         $this->assertStringContainsString('Active Jobs Summary', $output);
     }
 
-    #[Test]
-    public function it_reports_independent_chains_for_multiple_raw_forward_roots(): void
+    public function test_it_reports_independent_chains_for_multiple_raw_forward_roots(): void
     {
         $this->insertIndexingJob(new StatementElasticSearchableRawChunk(100, 200, 10, false, true));
         $this->insertIndexingJob(new StatementElasticSearchableRawChunk(300, 400, 10, false, true));
@@ -105,8 +100,7 @@ class ElasticIndexingStatsTest extends TestCase
         $this->assertStringContainsString('400', $output);
     }
 
-    #[Test]
-    public function it_handles_jobs_serialized_before_the_benchmark_property_existed(): void
+    public function test_it_handles_jobs_serialized_before_the_benchmark_property_existed(): void
     {
         DB::table('jobs')->insert([
             'queue' => 'default',

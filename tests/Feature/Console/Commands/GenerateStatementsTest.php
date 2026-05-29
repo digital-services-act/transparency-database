@@ -3,6 +3,7 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Jobs\StatementCreation;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -11,8 +12,7 @@ class GenerateStatementsTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_dispatches_default_amount_of_jobs(): void
+    public function test_it_dispatches_default_amount_of_jobs(): void
     {
         Queue::fake();
 
@@ -24,8 +24,7 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_dispatches_custom_amount_of_jobs(): void
+    public function test_it_dispatches_custom_amount_of_jobs(): void
     {
         Queue::fake();
 
@@ -37,8 +36,7 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 5);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_zero_amount(): void
+    public function test_it_handles_zero_amount(): void
     {
         Queue::fake();
 
@@ -50,8 +48,7 @@ class GenerateStatementsTest extends TestCase
         Queue::assertNothingPushed();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_dispatches_jobs_with_custom_date(): void
+    public function test_it_dispatches_jobs_with_custom_date(): void
     {
         Queue::fake();
 
@@ -65,14 +62,13 @@ class GenerateStatementsTest extends TestCase
         // Verify jobs were dispatched with correct timestamp
         Queue::assertPushed(StatementCreation::class, function ($job) {
             // Check that the timestamp corresponds to 2025-01-15
-            $date = \Carbon\Carbon::createFromTimestamp($job->when);
+            $date = Carbon::createFromTimestamp($job->when);
 
             return $date->format('Y-m-d') === '2025-01-15';
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_sod_option_correctly(): void
+    public function test_it_handles_sod_option_correctly(): void
     {
         Queue::fake();
 
@@ -82,14 +78,13 @@ class GenerateStatementsTest extends TestCase
 
         // Verify jobs were dispatched with start of day timestamp
         Queue::assertPushed(StatementCreation::class, function ($job) {
-            $date = \Carbon\Carbon::createFromTimestamp($job->when);
+            $date = Carbon::createFromTimestamp($job->when);
 
             return $date->format('Y-m-d H:i:s') === '2025-01-15 00:00:00';
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_eod_option_correctly(): void
+    public function test_it_handles_eod_option_correctly(): void
     {
         Queue::fake();
 
@@ -99,14 +94,13 @@ class GenerateStatementsTest extends TestCase
 
         // Verify jobs were dispatched with end of day timestamp
         Queue::assertPushed(StatementCreation::class, function ($job) {
-            $date = \Carbon\Carbon::createFromTimestamp($job->when);
+            $date = Carbon::createFromTimestamp($job->when);
 
             return $date->format('Y-m-d H:i:s') === '2025-01-15 23:59:59';
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_both_sod_and_eod_options(): void
+    public function test_it_handles_both_sod_and_eod_options(): void
     {
         Queue::fake();
 
@@ -117,7 +111,7 @@ class GenerateStatementsTest extends TestCase
 
         // Verify job was dispatched with end of day timestamp (eod overrides sod)
         Queue::assertPushed(StatementCreation::class, function ($job) {
-            $date = \Carbon\Carbon::createFromTimestamp($job->when);
+            $date = Carbon::createFromTimestamp($job->when);
 
             return $date->format('Y-m-d H:i:s') === '2025-01-15 23:59:59';
         });

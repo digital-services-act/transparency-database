@@ -6,7 +6,6 @@ use App\Console\Commands\CommandTrait;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -65,48 +64,42 @@ class CommandTraitTest extends TestCase
         $this->command->setOutput($output);
     }
 
-    #[Test]
-    public function it_handles_yesterday_date_argument()
+    public function test_it_handles_yesterday_date_argument()
     {
         $this->setCommandArgument('yesterday');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::yesterday()->startOfDay(), $result);
     }
 
-    #[Test]
-    public function it_handles_today_date_argument()
+    public function test_it_handles_today_date_argument()
     {
         $this->setCommandArgument('today');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::today()->startOfDay(), $result);
     }
 
-    #[Test]
-    public function it_handles_days_ago_date_argument()
+    public function test_it_handles_days_ago_date_argument()
     {
         $this->setCommandArgument('5');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::now()->subDays(5)->startOfDay(), $result);
     }
 
-    #[Test]
-    public function it_handles_specific_date_format()
+    public function test_it_handles_specific_date_format()
     {
         $this->setCommandArgument('2023-12-25');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::create(2023, 12, 25)->startOfDay(), $result);
     }
 
-    #[Test]
-    public function it_throws_exception_for_invalid_date_format()
+    public function test_it_throws_exception_for_invalid_date_format()
     {
         $this->setCommandArgument('invalid-date');
         $this->expectException(RuntimeException::class);
         $this->command->sanitizeDateArgument();
     }
 
-    #[Test]
-    public function it_converts_argument_to_integer()
+    public function test_it_converts_argument_to_integer()
     {
         $input = new ArrayInput(
             ['date' => 'today', 'number' => '42', 'flag' => 'false'],
@@ -121,8 +114,7 @@ class CommandTraitTest extends TestCase
         $this->assertSame(42, $result);
     }
 
-    #[Test]
-    public function it_converts_argument_to_boolean()
+    public function test_it_converts_argument_to_boolean()
     {
         $input = new ArrayInput(
             ['date' => 'today', 'number' => '0', 'flag' => 'true'],
@@ -149,8 +141,7 @@ class CommandTraitTest extends TestCase
         $this->assertFalse($result);
     }
 
-    #[Test]
-    public function it_converts_positive_integer_options()
+    public function test_it_converts_positive_integer_options()
     {
         $this->setCommandInput([
             'date' => 'today',
@@ -162,8 +153,7 @@ class CommandTraitTest extends TestCase
         $this->assertSame(42, $this->command->positiveIntOption('positive'));
     }
 
-    #[Test]
-    public function it_rejects_non_positive_integer_options()
+    public function test_it_rejects_non_positive_integer_options()
     {
         $this->setCommandInput([
             'date' => 'today',
@@ -178,8 +168,7 @@ class CommandTraitTest extends TestCase
         $this->command->positiveIntOption('positive');
     }
 
-    #[Test]
-    public function it_converts_nullable_positive_integer_options()
+    public function test_it_converts_nullable_positive_integer_options()
     {
         $this->setCommandInput([
             'date' => 'today',
@@ -199,8 +188,7 @@ class CommandTraitTest extends TestCase
         $this->assertSame(7, $this->command->nullablePositiveIntOption('nullable-positive'));
     }
 
-    #[Test]
-    public function it_rejects_non_positive_nullable_integer_options()
+    public function test_it_rejects_non_positive_nullable_integer_options()
     {
         $this->setCommandInput([
             'date' => 'today',
@@ -215,8 +203,7 @@ class CommandTraitTest extends TestCase
         $this->command->nullablePositiveIntOption('nullable-positive');
     }
 
-    #[Test]
-    public function it_converts_non_negative_integer_options()
+    public function test_it_converts_non_negative_integer_options()
     {
         $this->setCommandInput([
             'date' => 'today',
@@ -237,8 +224,7 @@ class CommandTraitTest extends TestCase
         $this->assertSame(9, $this->command->nonNegativeIntOption('non-negative'));
     }
 
-    #[Test]
-    public function it_rejects_negative_integer_options()
+    public function test_it_rejects_negative_integer_options()
     {
         $this->setCommandInput([
             'date' => 'today',

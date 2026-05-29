@@ -17,8 +17,7 @@ class ToggleCacheVarTest extends BaseTestCase
         Cache::flush();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_can_set_cache_variable_to_true()
+    public function test_it_can_set_cache_variable_to_true()
     {
         // Arrange
         $key = 'test_cache_key';
@@ -33,8 +32,7 @@ class ToggleCacheVarTest extends BaseTestCase
         $this->assertTrue(Cache::get($key));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_can_set_cache_variable_to_false()
+    public function test_it_can_set_cache_variable_to_false()
     {
         // Arrange
         $key = 'test_cache_key';
@@ -49,8 +47,7 @@ class ToggleCacheVarTest extends BaseTestCase
         $this->assertFalse(Cache::get($key));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_can_toggle_existing_cache_variable()
+    public function test_it_can_toggle_existing_cache_variable()
     {
         // Arrange
         $key = 'test_cache_key';
@@ -71,8 +68,7 @@ class ToggleCacheVarTest extends BaseTestCase
         $this->assertTrue(Cache::get($key));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_empty_key_gracefully()
+    public function test_it_handles_empty_key_gracefully()
     {
         // Act
         $this->artisan('toggle-cache-var', [
@@ -84,8 +80,7 @@ class ToggleCacheVarTest extends BaseTestCase
         $this->assertNull(Cache::get(''));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_invalid_state_value()
+    public function test_it_handles_invalid_state_value()
     {
         // Arrange
         $key = 'test_cache_key';

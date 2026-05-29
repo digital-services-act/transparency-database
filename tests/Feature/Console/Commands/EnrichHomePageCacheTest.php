@@ -14,8 +14,7 @@ class EnrichHomePageCacheTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_with_all_option(): void
+    public function test_it_runs_with_all_option(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -42,8 +41,7 @@ class EnrichHomePageCacheTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_with_grandtotal_option(): void
+    public function test_it_runs_with_grandtotal_option(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -60,8 +58,7 @@ class EnrichHomePageCacheTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_reindexing_scenario_for_grandtotal(): void
+    public function test_it_handles_reindexing_scenario_for_grandtotal(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -79,8 +76,7 @@ class EnrichHomePageCacheTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_with_platformstotal_option(): void
+    public function test_it_runs_with_platformstotal_option(): void
     {
         // Create test platforms to count
         Platform::factory()->count(3)->create();
@@ -93,8 +89,7 @@ class EnrichHomePageCacheTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_with_automateddecisionspercentage_option(): void
+    public function test_it_runs_with_automateddecisionspercentage_option(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);

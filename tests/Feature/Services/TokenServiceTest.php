@@ -13,8 +13,7 @@ class TokenServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_calculates_total_vlop_valid_tokens_correctly()
+    public function test_it_calculates_total_vlop_valid_tokens_correctly()
     {
         // Seed the test database with some data
         $this->seedTestData();
@@ -25,8 +24,7 @@ class TokenServiceTest extends TestCase
         $this->assertEquals(2, $total_vlop_valid_tokens);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_calculates_total_non_vlop_valid_tokens_correctly()
+    public function test_it_calculates_total_non_vlop_valid_tokens_correctly()
     {
         // Seed the test database with some data
         $this->seedTestData();

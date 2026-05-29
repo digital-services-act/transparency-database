@@ -9,7 +9,6 @@ use App\Services\EuropeanLanguagesService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class StatementSearchRequestTest extends TestCase
@@ -25,14 +24,12 @@ class StatementSearchRequestTest extends TestCase
         })->middleware('web')->name('test-statement-search');
     }
 
-    #[Test]
-    public function it_authorizes_search_requests(): void
+    public function test_it_authorizes_search_requests(): void
     {
         $this->assertTrue((new StatementSearchRequest)->authorize());
     }
 
-    #[Test]
-    public function it_accepts_a_valid_search_payload(): void
+    public function test_it_accepts_a_valid_search_payload(): void
     {
         $language = array_key_first(app(EuropeanLanguagesService::class)->getAllLanguages());
 
@@ -51,8 +48,7 @@ class StatementSearchRequestTest extends TestCase
             ->assertJsonPath('content_language.0', $language);
     }
 
-    #[Test]
-    public function it_rejects_invalid_scalar_array_and_date_values(): void
+    public function test_it_rejects_invalid_scalar_array_and_date_values(): void
     {
         $response = $this->getSearchJson([
             's' => str_repeat('a', 256),
@@ -69,8 +65,7 @@ class StatementSearchRequestTest extends TestCase
             ]);
     }
 
-    #[Test]
-    public function it_rejects_non_integer_platform_ids(): void
+    public function test_it_rejects_non_integer_platform_ids(): void
     {
         $response = $this->getSearchJson([
             'platform_id' => ['not-an-integer'],
@@ -80,8 +75,7 @@ class StatementSearchRequestTest extends TestCase
             ->assertJsonValidationErrors(['platform_id.0']);
     }
 
-    #[Test]
-    public function it_filters_unsupported_option_values_before_validation(): void
+    public function test_it_filters_unsupported_option_values_before_validation(): void
     {
         $country = array_key_first(app(EuropeanCountriesService::class)->getOptionsArray());
         $language = array_key_first(app(EuropeanLanguagesService::class)->getAllLanguages());

@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class StatementsPruneOldTest extends TestCase
@@ -27,8 +26,7 @@ class StatementsPruneOldTest extends TestCase
         parent::tearDown();
     }
 
-    #[Test]
-    public function it_prunes_old_statements_and_platform_puids_in_batches(): void
+    public function test_it_prunes_old_statements_and_platform_puids_in_batches(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
         $this->clearPrunedTables();
@@ -78,8 +76,7 @@ class StatementsPruneOldTest extends TestCase
         $this->assertDatabaseHas('platform_puids', ['puid' => 'new-puid']);
     }
 
-    #[Test]
-    public function it_can_limit_the_number_of_batches_per_table(): void
+    public function test_it_can_limit_the_number_of_batches_per_table(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
         $this->clearPrunedTables();
@@ -116,8 +113,7 @@ class StatementsPruneOldTest extends TestCase
         $this->assertSame(1, DB::table('platform_puids')->where('created_at', '<', '2025-11-28 00:00:00')->count());
     }
 
-    #[Test]
-    public function it_starts_an_async_elasticsearch_prune_before_database_batches(): void
+    public function test_it_starts_an_async_elasticsearch_prune_before_database_batches(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
         $this->clearPrunedTables();
@@ -141,8 +137,7 @@ class StatementsPruneOldTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[Test]
-    public function it_reports_synchronous_elasticsearch_prune_completion(): void
+    public function test_it_reports_synchronous_elasticsearch_prune_completion(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
         $this->clearPrunedTables();
@@ -167,8 +162,7 @@ class StatementsPruneOldTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[Test]
-    public function it_fails_without_deleting_database_rows_when_elasticsearch_is_required_but_not_configured(): void
+    public function test_it_fails_without_deleting_database_rows_when_elasticsearch_is_required_but_not_configured(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
         $this->clearPrunedTables();
@@ -187,8 +181,7 @@ class StatementsPruneOldTest extends TestCase
         $this->assertDatabaseHas('statements_beta', ['id' => 100000000001]);
     }
 
-    #[Test]
-    public function it_applies_postgres_timeouts_and_uses_postgres_delete_batches(): void
+    public function test_it_applies_postgres_timeouts_and_uses_postgres_delete_batches(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
 
@@ -215,8 +208,7 @@ class StatementsPruneOldTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[Test]
-    public function it_sleeps_between_database_batches_when_requested(): void
+    public function test_it_sleeps_between_database_batches_when_requested(): void
     {
         Carbon::setTestNow('2026-05-27 12:00:00');
         $this->clearPrunedTables();
@@ -233,8 +225,7 @@ class StatementsPruneOldTest extends TestCase
         $this->assertDatabaseMissing('statements_beta', ['id' => 100000000001]);
     }
 
-    #[Test]
-    public function it_rejects_invalid_batch_options(): void
+    public function test_it_rejects_invalid_batch_options(): void
     {
         $this->artisan('statements:prune-old', ['--batch' => 0])
             ->assertExitCode(1)

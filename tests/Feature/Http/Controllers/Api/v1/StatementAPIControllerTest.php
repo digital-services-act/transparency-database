@@ -76,8 +76,7 @@ class StatementAPIControllerTest extends TestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_show_works(): void
+    public function test_api_statement_show_works(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -95,8 +94,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_existing_puid_works(): void
+    public function test_api_statement_existing_puid_works(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -120,8 +118,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($this->statement->puid, $response->json('puid'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_existing_puid_works_with_record_in_cache(): void
+    public function test_api_statement_existing_puid_works_with_record_in_cache(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -147,8 +144,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($this->statement->puid, $response->json('puid'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_existing_puid_gives_404(): void
+    public function test_api_statement_existing_puid_gives_404(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -169,8 +165,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('a-bad-puid', $response->json('puid'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_show_requires_auth(): void
+    public function test_api_statement_show_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         $attributes = $this->required_fields;
@@ -183,8 +178,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_store_requires_auth(): void
+    public function test_api_statement_store_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         // Not signing in.
@@ -195,8 +189,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_store_works(): void
+    public function test_api_statement_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -219,8 +212,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_language);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_content_language_is_stored(): void
+    public function test_api_statement_content_language_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -247,8 +239,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('EN', $statement->content_language);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_content_language_can_be_non_european(): void
+    public function test_api_statement_content_language_can_be_non_european(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -275,8 +266,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('VI', $statement->content_language);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_content_language_must_be_valid(): void
+    public function test_api_statement_content_language_must_be_valid(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -295,8 +285,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_content_language_must_be_uppercase(): void
+    public function test_api_statement_content_language_must_be_uppercase(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -315,8 +304,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_account_type_is_stored(): void
+    public function test_api_statement_account_type_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -342,8 +330,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_account_type_is_validated(): void
+    public function test_api_statement_account_type_is_validated(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -361,8 +348,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_json_store_works(): void
+    public function test_api_statement_json_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -404,8 +390,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->decision_ground_reference_url);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function application_date_must_be_correct_format(): void
+    public function test_application_date_must_be_correct_format(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -455,8 +440,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($application_date_in, $resource['application_date']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function request_rejects_bad_dates(): void
+    public function test_request_rejects_bad_dates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -474,8 +458,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('The application date does not match the format YYYY-MM-DD.', $response->json('message'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_store_rejects_bad_decision_ground_urls(): void
+    public function test_api_statement_store_rejects_bad_decision_ground_urls(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -491,8 +474,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(10, Statement::all());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_statement_store_accepts_google_decision_ground_urls(): void
+    public function test_api_statement_store_accepts_google_decision_ground_urls(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -508,8 +490,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(11, Statement::all());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function request_rejects_bad_countries(): void
+    public function test_request_rejects_bad_countries(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -524,8 +505,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('The selected territorial scope is invalid.', $response->json('message'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_does_not_save_optional_fields_non_related_to_illegal_content(): void
+    public function test_store_does_not_save_optional_fields_non_related_to_illegal_content(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -545,8 +525,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->incompatible_content_explanation);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_does_not_save_optional_fields_non_related_to_incompatible_content(): void
+    public function test_store_does_not_save_optional_fields_non_related_to_incompatible_content(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -568,8 +547,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->illegal_content_explanation);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function request_rejects_bad_puids(): void
+    public function test_request_rejects_bad_puids(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -587,8 +565,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('The puid format is invalid.', $response->json('message'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_enforces_puid_uniqueness(): void
+    public function test_store_enforces_puid_uniqueness(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -636,8 +613,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($count_after, $count_before);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_handles_query_exception_in_puid_check(): void
+    public function test_store_handles_query_exception_in_puid_check(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -653,8 +629,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertJsonStructure(['message', 'errors']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
+    public function test_store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
     {
         $user = $this->signInAsAdmin();
         $this->assertDatabaseCount(PlatformPuid::class, 0);
@@ -685,8 +660,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertTrue(Cache::has($key));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function on_store_puid_is_shown_but_not_on_show(): void
+    public function test_on_store_puid_is_shown_but_not_on_show(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
@@ -726,8 +700,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertStringNotContainsString('"puid":', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_content_type_other(): void
+    public function test_store_should_save_content_type_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -748,8 +721,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->content_type_other);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_not_save_content_type_other(): void
+    public function test_store_should_not_save_content_type_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -770,8 +742,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_type_other);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_source_identity(): void
+    public function test_store_should_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -792,8 +763,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->source_identity);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_not_save_source_identity(): void
+    public function test_store_should_not_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -814,8 +784,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->source_identity);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_end_dates(): void
+    public function test_store_should_save_end_dates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -844,8 +813,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('2023-08-13 00:00:00', (string) $statement->end_date_account_restriction);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_keywords_with_other(): void
+    public function test_store_should_save_keywords_with_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -870,8 +838,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->category_specification_other);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_not_duplicate_categories(): void
+    public function test_store_should_save_not_duplicate_categories(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -893,8 +860,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(1, $statement->category_addition);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_empty_additional_categories_as_empty_array(): void
+    public function test_store_should_save_empty_additional_categories_as_empty_array(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -914,8 +880,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals([], $statement->category_addition);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_null_decisions_when_account_is_suspended(): void
+    public function test_store_should_save_null_decisions_when_account_is_suspended(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -939,8 +904,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->decision_provision);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_should_save_null_decisions_when_account_is_suspended_2(): void
+    public function test_store_should_save_null_decisions_when_account_is_suspended_2(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -957,9 +921,7 @@ class StatementAPIControllerTest extends TestCase
 
     /**
      * @return void
-     *
      */
-    #[\PHPUnit\Framework\Attributes\Test]
     public function test_can_store_statement_with_valid_ean13_content_id()
     {
         $platform = Platform::factory()->create();
@@ -993,7 +955,6 @@ class StatementAPIControllerTest extends TestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
     public function test_rejects_invalid_ean13_content_id()
     {
         $platform = Platform::factory()->create();
@@ -1025,8 +986,7 @@ class StatementAPIControllerTest extends TestCase
             ->assertJsonValidationErrors(['content_id.EAN-13']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_indexes_statement_in_non_production_with_elastic(): void
+    public function test_store_indexes_statement_in_non_production_with_elastic(): void
     {
         $this->signInAsAdmin();
 
@@ -1036,7 +996,7 @@ class StatementAPIControllerTest extends TestCase
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
         // Mock the elastic search service
-        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock = $this->mock(StatementElasticSearchService::class);
         $mock->shouldReceive('indexStatement')->once();
 
         $this->post(route('api.v1.statement.store'), $this->required_fields, [
@@ -1044,8 +1004,7 @@ class StatementAPIControllerTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_does_not_index_statement_in_production(): void
+    public function test_store_does_not_index_statement_in_production(): void
     {
         $this->signInAsAdmin();
 
@@ -1055,7 +1014,7 @@ class StatementAPIControllerTest extends TestCase
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
         // Mock the elastic search service
-        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock = $this->mock(StatementElasticSearchService::class);
         $mock->shouldReceive('indexStatement')->never();
 
         $this->post(route('api.v1.statement.store'), $this->required_fields, [
@@ -1063,8 +1022,7 @@ class StatementAPIControllerTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_does_not_index_statement_when_elastic_is_not_configured(): void
+    public function test_store_does_not_index_statement_when_elastic_is_not_configured(): void
     {
         $this->signInAsAdmin();
 
@@ -1074,7 +1032,7 @@ class StatementAPIControllerTest extends TestCase
         config()->set('elasticsearch.uri', [null]);
 
         // Mock the elastic search service
-        $mock = $this->mock(\App\Services\StatementElasticSearchService::class);
+        $mock = $this->mock(StatementElasticSearchService::class);
         $mock->shouldReceive('indexStatement')->never();
 
         $this->post(route('api.v1.statement.store'), $this->required_fields, [

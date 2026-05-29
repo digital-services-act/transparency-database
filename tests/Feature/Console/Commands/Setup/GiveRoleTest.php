@@ -11,8 +11,7 @@ class GiveRoleTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_assigns_role_to_user_successfully(): void
+    public function test_it_assigns_role_to_user_successfully(): void
     {
         // Create a test role and user
         $role = Role::create(['name' => 'test-role']);
@@ -27,8 +26,7 @@ class GiveRoleTest extends TestCase
         $this->assertTrue($user->fresh()->hasRole('test-role'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_shows_error_when_role_not_found(): void
+    public function test_it_shows_error_when_role_not_found(): void
     {
         // Create a test user but no role
         User::factory()->create(['email' => 'test@example.com']);
@@ -39,8 +37,7 @@ class GiveRoleTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_shows_error_when_user_not_found(): void
+    public function test_it_shows_error_when_user_not_found(): void
     {
         // Create a test role but no user
         Role::create(['name' => 'test-role']);

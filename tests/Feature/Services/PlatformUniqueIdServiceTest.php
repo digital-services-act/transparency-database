@@ -10,7 +10,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Override;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PlatformUniqueIdServiceTest extends TestCase
@@ -30,8 +29,7 @@ class PlatformUniqueIdServiceTest extends TestCase
     /**
      * @throws PuidNotUniqueSingleException
      */
-    #[Test]
-    public function it_should_store_and_check_cache(): void
+    public function test_it_should_store_and_check_cache(): void
     {
         $puid = 'foo-bar-puid';
         $platform_id = 1;
@@ -44,8 +42,7 @@ class PlatformUniqueIdServiceTest extends TestCase
     /**
      * @throws PuidNotUniqueSingleException
      */
-    #[Test]
-    public function it_should_store_and_check_database_only_once(): void
+    public function test_it_should_store_and_check_database_only_once(): void
     {
         $puid = 'foo-bar-puid';
         $platform_id = 1;
@@ -62,8 +59,7 @@ class PlatformUniqueIdServiceTest extends TestCase
     /**
      * @throws PuidNotUniqueSingleException
      */
-    #[Test]
-    public function it_should_refresh_the_cache(): void
+    public function test_it_should_refresh_the_cache(): void
     {
         $platform_id = 1;
 
@@ -79,8 +75,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         }
     }
 
-    #[Test]
-    public function it_should_store_puid_on_handle(): void
+    public function test_it_should_store_puid_on_handle(): void
     {
         $puid = $this->faker->uuid();
         $platform_id = 1;
@@ -96,8 +91,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         ]);
     }
 
-    #[Test]
-    public function it_should_throw_unique_exception_on_duplicate_puid_on_handle()
+    public function test_it_should_throw_unique_exception_on_duplicate_puid_on_handle(): void
     {
         $puid = $this->faker->uuid();
         $platform_id = 1;
@@ -111,8 +105,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         $this->platformUniqueIdService->handlePuid($puid, $platform_id);
     }
 
-    #[Test]
-    public function it_detects_duplicate_puids_from_cache(): void
+    public function test_it_detects_duplicate_puids_from_cache(): void
     {
         $platform_id = 1;
 
@@ -126,16 +119,14 @@ class PlatformUniqueIdServiceTest extends TestCase
         }
     }
 
-    #[Test]
-    public function it_allows_puids_that_are_not_in_cache(): void
+    public function test_it_allows_puids_that_are_not_in_cache(): void
     {
         $this->platformUniqueIdService->checkDuplicatesInCache(['new-puid-1', 'new-puid-2'], 1);
 
         $this->assertTrue(true);
     }
 
-    #[Test]
-    public function it_bulk_adds_puids_to_database_and_ignores_existing_records(): void
+    public function test_it_bulk_adds_puids_to_database_and_ignores_existing_records(): void
     {
         PlatformPuid::create([
             'platform_id' => 1,
@@ -159,8 +150,7 @@ class PlatformUniqueIdServiceTest extends TestCase
         ]);
     }
 
-    #[Test]
-    public function it_bulk_adds_puids_to_cache(): void
+    public function test_it_bulk_adds_puids_to_cache(): void
     {
         $statements = [
             ['platform_id' => 1, 'puid' => 'cached-bulk-puid-1'],

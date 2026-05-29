@@ -32,8 +32,7 @@ class RouteProtectionTest extends TestCase
         $this->researcher = User::factory()->create()->assignRole('EU ResearchAPI access');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function generate_api_key(): void
+    public function test_generate_api_key(): void
     {
         $this->withExceptionHandling();
 
@@ -45,8 +44,7 @@ class RouteProtectionTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function manage_platforms(): void
+    public function test_manage_platforms(): void
     {
         $this->withExceptionHandling();
 
@@ -57,8 +55,7 @@ class RouteProtectionTest extends TestCase
         $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage Platforms');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function manage_users(): void
+    public function test_manage_users(): void
     {
         $this->withExceptionHandling();
 
@@ -69,8 +66,7 @@ class RouteProtectionTest extends TestCase
         $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage Users');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function onboarding_dashboard(): void
+    public function test_onboarding_dashboard(): void
     {
         $this->withExceptionHandling();
 
@@ -84,8 +80,7 @@ class RouteProtectionTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function view_log_files(): void
+    public function test_view_log_files(): void
     {
         $this->withExceptionHandling();
 

@@ -7,15 +7,13 @@ use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class StatementsElasticIndexDateSeqTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_queues_default_raw_where_between_indexing_chains_for_the_date(): void
+    public function test_it_queues_default_raw_where_between_indexing_chains_for_the_date(): void
     {
         Queue::fake();
 
@@ -46,8 +44,7 @@ class StatementsElasticIndexDateSeqTest extends TestCase
         });
     }
 
-    #[Test]
-    public function it_skips_configured_id_gaps_when_queueing_indexing_jobs(): void
+    public function test_it_skips_configured_id_gaps_when_queueing_indexing_jobs(): void
     {
         Queue::fake();
 
@@ -81,8 +78,7 @@ class StatementsElasticIndexDateSeqTest extends TestCase
         });
     }
 
-    #[Test]
-    public function it_can_still_pass_range_mode_to_queued_indexing_jobs(): void
+    public function test_it_can_still_pass_range_mode_to_queued_indexing_jobs(): void
     {
         Queue::fake();
 
@@ -117,8 +113,7 @@ class StatementsElasticIndexDateSeqTest extends TestCase
         });
     }
 
-    #[Test]
-    public function it_passes_benchmark_mode_to_queued_indexing_jobs(): void
+    public function test_it_passes_benchmark_mode_to_queued_indexing_jobs(): void
     {
         Queue::fake();
 
@@ -146,8 +141,7 @@ class StatementsElasticIndexDateSeqTest extends TestCase
         });
     }
 
-    #[Test]
-    public function it_supports_repeated_skip_id_ranges(): void
+    public function test_it_supports_repeated_skip_id_ranges(): void
     {
         Queue::fake();
 

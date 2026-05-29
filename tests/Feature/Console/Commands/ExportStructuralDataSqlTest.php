@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use ZipArchive;
 
@@ -14,8 +13,7 @@ class ExportStructuralDataSqlTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_creates_an_encrypted_zip_and_uploads_it_to_s3ds(): void
+    public function test_it_creates_an_encrypted_zip_and_uploads_it_to_s3ds(): void
     {
         Storage::fake('s3ds');
 

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use PDOException;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Throwable;
 
@@ -17,8 +16,7 @@ class QueueNukeTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_deletes_queue_tables_in_batches_and_restarts_queue(): void
+    public function test_it_deletes_queue_tables_in_batches_and_restarts_queue(): void
     {
         foreach (range(1, 3) as $id) {
             DB::table('jobs')->insert([
@@ -68,8 +66,7 @@ class QueueNukeTest extends TestCase
         $this->assertTrue(Cache::has('illuminate:queue:restart'));
     }
 
-    #[Test]
-    public function it_deletes_postgres_queue_rows_with_skip_locked_batches(): void
+    public function test_it_deletes_postgres_queue_rows_with_skip_locked_batches(): void
     {
         $this->mockPostgresQueueTables(
             deleteResults: [2, 0],
@@ -81,8 +78,7 @@ class QueueNukeTest extends TestCase
         $this->assertSame(2, $deleted);
     }
 
-    #[Test]
-    public function it_retries_postgres_queue_rows_when_a_batch_is_locked(): void
+    public function test_it_retries_postgres_queue_rows_when_a_batch_is_locked(): void
     {
         $this->mockPostgresQueueTables(
             deleteResults: [0, 1, 0],
@@ -94,8 +90,7 @@ class QueueNukeTest extends TestCase
         $this->assertSame(1, $deleted);
     }
 
-    #[Test]
-    public function it_times_out_when_postgres_queue_rows_remain_locked(): void
+    public function test_it_times_out_when_postgres_queue_rows_remain_locked(): void
     {
         $this->mockPostgresQueueTables(
             deleteResults: [0],
@@ -110,8 +105,7 @@ class QueueNukeTest extends TestCase
             ->assertExitCode(1);
     }
 
-    #[Test]
-    public function it_reports_timeout_when_locked_postgres_rows_cannot_be_counted(): void
+    public function test_it_reports_timeout_when_locked_postgres_rows_cannot_be_counted(): void
     {
         $this->mockPostgresQueueTables(
             deleteResults: [$this->queryException('55P03')],
@@ -124,8 +118,7 @@ class QueueNukeTest extends TestCase
         $this->invokeQueueNukeMethod('deletePostgresRows', ['jobs', 'id', 2, 0, 0]);
     }
 
-    #[Test]
-    public function it_rethrows_non_retryable_postgres_delete_errors(): void
+    public function test_it_rethrows_non_retryable_postgres_delete_errors(): void
     {
         $this->mockPostgresQueueTables(
             deleteResults: [$this->queryException('99999')],
@@ -136,8 +129,7 @@ class QueueNukeTest extends TestCase
         $this->invokeQueueNukeMethod('deletePostgresRows', ['jobs', 'id', 2, 60, 0]);
     }
 
-    #[Test]
-    public function it_rethrows_non_retryable_postgres_count_errors(): void
+    public function test_it_rethrows_non_retryable_postgres_count_errors(): void
     {
         $this->mockPostgresQueueTables(
             deleteResults: [0],
@@ -149,8 +141,7 @@ class QueueNukeTest extends TestCase
         $this->invokeQueueNukeMethod('deletePostgresRows', ['jobs', 'id', 2, 60, 0]);
     }
 
-    #[Test]
-    public function it_can_sleep_between_postgres_lock_retries(): void
+    public function test_it_can_sleep_between_postgres_lock_retries(): void
     {
         $startedAt = microtime(true);
 

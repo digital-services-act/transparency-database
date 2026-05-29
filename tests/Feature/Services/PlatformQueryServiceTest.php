@@ -7,7 +7,6 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Override;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PlatformQueryServiceTest extends TestCase
@@ -24,8 +23,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertNotNull($this->platformQueryService);
     }
 
-    #[Test]
-    public function it_queries_on_s(): void
+    public function test_it_queries_on_s(): void
     {
         $filters = [];
         $filters['s'] = 'zaphod';
@@ -34,8 +32,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringContainsString('"name" like \'%zaphod%\'', $sql);
     }
 
-    #[Test]
-    public function it_uses_case_insensitive_search_on_postgres(): void
+    public function test_it_uses_case_insensitive_search_on_postgres(): void
     {
         $connection = DB::connection();
         $originalGrammar = $connection->getQueryGrammar();
@@ -51,8 +48,7 @@ class PlatformQueryServiceTest extends TestCase
         }
     }
 
-    #[Test]
-    public function it_queries_on_has_tokens(): void
+    public function test_it_queries_on_has_tokens(): void
     {
         $filters = [];
         $filters['has_tokens'] = 0;
@@ -73,8 +69,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"has_tokens"', $sql);
     }
 
-    #[Test]
-    public function it_queries_on_has_statements(): void
+    public function test_it_queries_on_has_statements(): void
     {
         $filters = [];
         $filters['has_statements'] = 0;
@@ -95,8 +90,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"has_statements"', $sql);
     }
 
-    #[Test]
-    public function it_queries_on_vlop(): void
+    public function test_it_queries_on_vlop(): void
     {
         $filters = [];
         $filters['vlop'] = 0;
@@ -117,8 +111,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"vlop"', $sql);
     }
 
-    #[Test]
-    public function it_queries_on_onboarded(): void
+    public function test_it_queries_on_onboarded(): void
     {
         $filters = [];
         $filters['onboarded'] = 0;
@@ -139,29 +132,25 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"onboarded"', $sql);
     }
 
-    #[Test]
-    public function it_gets_platform_dropdown_options(): void
+    public function test_it_gets_platform_dropdown_options(): void
     {
         $options = $this->platformQueryService->getPlatformDropDownOptions();
         $this->assertIsArray($options);
     }
 
-    #[Test]
-    public function it_gets_platforms_by_id(): void
+    public function test_it_gets_platforms_by_id(): void
     {
         $platforms_by_id = $this->platformQueryService->getPlatformsById();
         $this->assertIsArray($platforms_by_id);
     }
 
-    #[Test]
-    public function it_gets_platform_ids(): void
+    public function test_it_gets_platform_ids(): void
     {
         $platform_ids = $this->platformQueryService->getPlatformIds();
         $this->assertIsArray($platform_ids);
     }
 
-    #[Test]
-    public function it_gets_platform_vlop_ids(): void
+    public function test_it_gets_platform_vlop_ids(): void
     {
         $platform_ids = $this->platformQueryService->getVlopPlatformIds();
         $this->assertIsArray($platform_ids);

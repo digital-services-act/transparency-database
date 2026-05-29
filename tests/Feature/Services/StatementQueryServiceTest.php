@@ -10,7 +10,6 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 #[CoversClass(StatementQueryService::class)]
@@ -32,16 +31,14 @@ class StatementQueryServiceTest extends TestCase
         Statement::factory(10)->create();
     }
 
-    #[Test]
-    public function it_can_do_a_basic_query(): void
+    public function test_it_can_do_a_basic_query(): void
     {
         // 10 statements
         $total = $this->statement_query_service->query([])->count();
         $this->assertEquals(10, $total);
     }
 
-    #[Test]
-    public function it_filters_on_automated_detection(): void
+    public function test_it_filters_on_automated_detection(): void
     {
         // 10 statements
         $automated_count = $this->statement_query_service->query(['automated_detection' => ['Yes']])->count();
@@ -52,8 +49,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    #[Test]
-    public function it_filters_on_automated_decision(): void
+    public function test_it_filters_on_automated_decision(): void
     {
         // 10 statements
         $fully_count = $this->statement_query_service->query(['automated_decision' => ['AUTOMATED_DECISION_FULLY']])->count();
@@ -65,8 +61,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
-    #[Test]
-    public function it_filters_on_territorial_scope(): void
+    public function test_it_filters_on_territorial_scope(): void
     {
         $filters = [
             'territorial_scope' => ['FR', 'DE', 'NL', 'XX'],
@@ -81,8 +76,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(['FR', 'DE', 'NL'], array_values($bindings));
     }
 
-    #[Test]
-    public function it_filters_on_decision_visibility(): void
+    public function test_it_filters_on_decision_visibility(): void
     {
         $filters = [
             'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_REMOVED', 'DECISION_VISIBILITY_CONTENT_DISABLED'],
@@ -100,8 +94,7 @@ class StatementQueryServiceTest extends TestCase
         );
     }
 
-    #[Test]
-    public function it_filters_on_content_type(): void
+    public function test_it_filters_on_content_type(): void
     {
         $filters = [
             'content_type' => ['CONTENT_TYPE_TEXT', 'CONTENT_TYPE_VIDEO', 'INVALID_TYPE'],
@@ -116,8 +109,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(['CONTENT_TYPE_TEXT', 'CONTENT_TYPE_VIDEO'], array_values($bindings));
     }
 
-    #[Test]
-    public function it_filters_on_category_specification(): void
+    public function test_it_filters_on_category_specification(): void
     {
         // Clear existing data and create statements with known category specifications
         Statement::query()->delete();
@@ -145,8 +137,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(2, $result->count());
     }
 
-    #[Test]
-    public function it_filters_on_created_at_start(): void
+    public function test_it_filters_on_created_at_start(): void
     {
         $filters = [
             'created_at_start' => '20-5-2021',
@@ -155,8 +146,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" >= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    #[Test]
-    public function it_filters_on_created_at_end(): void
+    public function test_it_filters_on_created_at_end(): void
     {
         $filters = [
             'created_at_end' => '20-5-2021',
@@ -165,8 +155,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    #[Test]
-    public function it_filters_on_platform_id(): void
+    public function test_it_filters_on_platform_id(): void
     {
         $filters = [
             'platform_id' => [1],
@@ -175,8 +164,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where exists (select * from "platforms" where "statements_beta"."platform_id" = "platforms"."id" and "platforms"."id" in (?) and "platforms"."deleted_at" is null) and "statements_beta"."deleted_at" is null', $sql);
     }
 
-    #[Test]
-    public function it_filters_on_decision_ground(): void
+    public function test_it_filters_on_decision_ground(): void
     {
         $filters = [
             'decision_ground' => array_keys(Statement::DECISION_GROUNDS),
@@ -185,8 +173,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "decision_ground" in (?', $sql);
     }
 
-    #[Test]
-    public function it_filters_on_source_type(): void
+    public function test_it_filters_on_source_type(): void
     {
         $filters = [
             'source_type' => array_keys(Statement::SOURCE_TYPES),
@@ -195,8 +182,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "source_type" in (?', $sql);
     }
 
-    #[Test]
-    public function it_filters_on_category(): void
+    public function test_it_filters_on_category(): void
     {
         $filters = [
             'category' => array_keys(Statement::STATEMENT_CATEGORIES),
@@ -205,8 +191,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertStringContainsString('select * from "statements_beta" where "category" in (?', $sql);
     }
 
-    #[Test]
-    public function it_handles_errors_gracefully(): void
+    public function test_it_handles_errors_gracefully(): void
     {
         // Create a statement with known values
         Statement::query()->delete();
@@ -231,8 +216,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertNotNull($result); // Should return a query builder despite error
     }
 
-    #[Test]
-    public function it_filters_on_text_search(): void
+    public function test_it_filters_on_text_search(): void
     {
         Statement::query()->delete();
 
@@ -289,8 +273,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    #[Test]
-    public function it_uses_case_insensitive_text_search_on_postgres(): void
+    public function test_it_uses_case_insensitive_text_search_on_postgres(): void
     {
         $connection = DB::connection();
         $originalGrammar = $connection->getQueryGrammar();
@@ -307,8 +290,7 @@ class StatementQueryServiceTest extends TestCase
         }
     }
 
-    #[Test]
-    public function it_filters_on_decision_fields(): void
+    public function test_it_filters_on_decision_fields(): void
     {
         Statement::query()->delete();
 
@@ -352,8 +334,7 @@ class StatementQueryServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $result->count());
     }
 
-    #[Test]
-    public function it_filters_on_content_language(): void
+    public function test_it_filters_on_content_language(): void
     {
         Statement::query()->delete();
 

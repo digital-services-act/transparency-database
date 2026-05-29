@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Middleware;
 
 use App\Http\Middleware\Locale;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
@@ -41,8 +40,7 @@ class LocaleTest extends TestCase
         Config::set('app.locales', ['en', 'fr', 'de']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_uses_default_locale_when_no_preferences_set()
+    public function test_it_uses_default_locale_when_no_preferences_set()
     {
         // Remove HTTP_ACCEPT_LANGUAGE if it exists
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -56,8 +54,7 @@ class LocaleTest extends TestCase
         $this->assertEquals('en', session('locale'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_sets_locale_from_query_parameter()
+    public function test_it_sets_locale_from_query_parameter()
     {
         $request = Request::create('/', 'GET', ['lang' => 'fr']);
 
@@ -68,8 +65,7 @@ class LocaleTest extends TestCase
         $this->assertEquals('fr', session('locale'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_ignores_invalid_locale_in_query_parameter()
+    public function test_it_ignores_invalid_locale_in_query_parameter()
     {
         $request = Request::create('/', 'GET', ['lang' => 'invalid']);
 
@@ -80,8 +76,7 @@ class LocaleTest extends TestCase
         $this->assertEquals('en', session('locale'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_falls_back_to_default_locale_for_unsupported_browser_locales()
+    public function test_it_falls_back_to_default_locale_for_unsupported_browser_locales()
     {
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'es-ES,es;q=0.9,it-IT;q=0.8,it;q=0.7';
 
@@ -92,8 +87,7 @@ class LocaleTest extends TestCase
         $this->assertEquals('en', session('locale'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_falls_back_to_en_for_array_as_parameter()
+    public function test_it_falls_back_to_en_for_array_as_parameter()
     {
         $request = Request::create('/', 'GET', ['lang' => ['ro', 'en', 'it']]);
 

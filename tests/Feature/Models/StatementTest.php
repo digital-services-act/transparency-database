@@ -15,8 +15,7 @@ class StatementTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function territorial_scope_is_always_an_array(): void
+    public function test_territorial_scope_is_always_an_array(): void
     {
 
         $statement = Statement::all()->random()->first();
@@ -47,8 +46,7 @@ class StatementTest extends TestCase
         $this->assertCount(0, $statement->territorial_scope);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function territorial_scope_is_always_sorted(): void
+    public function test_territorial_scope_is_always_sorted(): void
     {
 
         $statement = Statement::all()->random()->first();
@@ -63,8 +61,7 @@ class StatementTest extends TestCase
         $this->assertEquals(['AU', 'BE', 'SK'], $territorial_scope);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function territorial_scope_is_always_unique(): void
+    public function test_territorial_scope_is_always_unique(): void
     {
         $statement = Statement::all()->random()->first();
 
@@ -78,16 +75,14 @@ class StatementTest extends TestCase
         $this->assertEquals(['AU', 'BE', 'SK'], $territorial_scope);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_generates_uuid_on_creation(): void
+    public function test_it_generates_uuid_on_creation(): void
     {
         $statement = Statement::factory()->create();
         $this->assertNotNull($statement->uuid);
         $this->assertTrue(Str::isUuid($statement->uuid));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_has_correct_relationships(): void
+    public function test_it_has_correct_relationships(): void
     {
         $statement = Statement::factory()->create();
 
@@ -95,8 +90,7 @@ class StatementTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $statement->platform());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_casts_attributes_correctly(): void
+    public function test_it_casts_attributes_correctly(): void
     {
         $statement = Statement::factory()->create([
             'content_date' => now(),
@@ -126,8 +120,7 @@ class StatementTest extends TestCase
         $this->assertIsArray($statement->category_specification);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_platform_name_caching(): void
+    public function test_it_handles_platform_name_caching(): void
     {
         $platform = Platform::factory()->create(['name' => 'Test Platform']);
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);
@@ -142,8 +135,7 @@ class StatementTest extends TestCase
         $statement->platformNameCached();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_generates_correct_permalink_and_self_urls(): void
+    public function test_it_generates_correct_permalink_and_self_urls(): void
     {
         $statement = Statement::factory()->create();
 
@@ -158,8 +150,7 @@ class StatementTest extends TestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_formats_restrictions_correctly(): void
+    public function test_it_formats_restrictions_correctly(): void
     {
         $statement = Statement::factory()->create([
             'decision_visibility' => ['REMOVED'],
@@ -173,8 +164,7 @@ class StatementTest extends TestCase
         $this->assertEquals('Visibility, Monetary', $statement->restrictions());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_invalid_json_in_raw_keys(): void
+    public function test_it_handles_invalid_json_in_raw_keys(): void
     {
         $statement = Statement::factory()->create();
 
@@ -186,8 +176,7 @@ class StatementTest extends TestCase
         $this->assertEmpty($statement->territorial_scope);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_converts_enum_values_correctly(): void
+    public function test_it_converts_enum_values_correctly(): void
     {
         // Test valid keys
         $values = Statement::getEnumValues([
@@ -221,8 +210,7 @@ class StatementTest extends TestCase
         ], $values);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_prepares_searchable_array_correctly(): void
+    public function test_it_prepares_searchable_array_correctly(): void
     {
         $statement = Statement::factory()->create([
             'decision_visibility' => ['REMOVED'],
@@ -239,8 +227,7 @@ class StatementTest extends TestCase
         $this->assertTrue($searchable['automated_detection']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_platform_uuid_caching(): void
+    public function test_it_handles_platform_uuid_caching(): void
     {
         $platform = Platform::factory()->create(['uuid' => Str::uuid()]);
         $statement = Statement::factory()->create(['platform_id' => $platform->id]);
@@ -255,8 +242,7 @@ class StatementTest extends TestCase
         $statement->platformUuidCached();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_prepares_syncable_array_correctly(): void
+    public function test_it_prepares_syncable_array_correctly(): void
     {
         $statement = Statement::factory()->create([
             'decision_visibility' => ['REMOVED'],
@@ -274,8 +260,7 @@ class StatementTest extends TestCase
         $this->assertArrayHasKey('automated_detection', $syncable);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_platform_attributes_when_platform_missing(): void
+    public function test_it_handles_platform_attributes_when_platform_missing(): void
     {
         // Create a statement without platform_id
         $statement = Statement::factory()->make(['platform_id' => null]);
@@ -285,16 +270,14 @@ class StatementTest extends TestCase
         $this->assertEquals('deleted-name-', $statement->platformNameCached());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_searchable_index_name(): void
+    public function test_it_handles_searchable_index_name(): void
     {
         $statement = Statement::factory()->create();
 
         $this->assertEquals('statement_index', $statement->searchableAs());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_non_array_json_decode_result(): void
+    public function test_territorial_scope_handles_non_array_json_decode_result(): void
     {
         $statement = Statement::factory()->create();
 

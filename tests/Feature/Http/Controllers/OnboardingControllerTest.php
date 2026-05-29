@@ -4,31 +4,27 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OnboardingControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function index_requires_authentication()
+    public function test_index_requires_authentication()
     {
         $response = $this->get(route('onboarding.index'));
         $response->assertStatus(302);
         $response->assertRedirect('/login');
     }
 
-    #[Test]
-    public function index_requires_onboarding_role()
+    public function test_index_requires_onboarding_role()
     {
         $this->signIn();
         $response = $this->get(route('onboarding.index'));
         $response->assertForbidden();
     }
 
-    #[Test]
-    public function onboarding_user_can_access_index()
+    public function test_onboarding_user_can_access_index()
     {
         $this->signInAsOnboarding();
         $response = $this->get(route('onboarding.index'));
@@ -37,8 +33,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertViewHas(['platforms', 'options', 'all_platforms_count', 'platform_ids_methods_data']);
     }
 
-    #[Test]
-    public function index_displays_correct_platform_count()
+    public function test_index_displays_correct_platform_count()
     {
         $this->signInAsOnboarding();
         $initialCount = Platform::nonDSA()->count();
@@ -48,8 +43,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertViewHas('all_platforms_count', $initialCount + 3);
     }
 
-    #[Test]
-    public function can_filter_platforms_by_vlop_status()
+    public function test_can_filter_platforms_by_vlop_status()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -65,8 +59,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertFalse($platforms->contains($nonVlopPlatform));
     }
 
-    #[Test]
-    public function can_sort_platforms_by_name()
+    public function test_can_sort_platforms_by_name()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -83,8 +76,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals('C Platform', $platforms->last()->name);
     }
 
-    #[Test]
-    public function can_sort_platforms_by_creation_date()
+    public function test_can_sort_platforms_by_creation_date()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -100,8 +92,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertTrue($platforms->last()->is($oldPlatform));
     }
 
-    #[Test]
-    public function can_search_platforms_by_name_case_insensitively()
+    public function test_can_search_platforms_by_name_case_insensitively()
     {
         $this->signInAsOnboarding();
         $matchingPlatform = Platform::factory()->create(['name' => 'Test Platform']);
@@ -114,8 +105,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertFalse($platforms->contains($nonMatchingPlatform));
     }
 
-    #[Test]
-    public function invalid_sorting_parameters_default_to_name_asc()
+    public function test_invalid_sorting_parameters_default_to_name_asc()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -131,8 +121,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals('B Platform', $platforms->last()->name);
     }
 
-    #[Test]
-    public function options_contains_all_required_filter_choices()
+    public function test_options_contains_all_required_filter_choices()
     {
         $this->signInAsOnboarding();
         $response = $this->get(route('onboarding.index'));

@@ -13,8 +13,7 @@ class AggregatesFreezeTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_with_successful_aggregates(): void
+    public function test_it_runs_with_successful_aggregates(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -63,8 +62,7 @@ class AggregatesFreezeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_logs_error_and_returns_early_when_no_aggregates(): void
+    public function test_it_logs_error_and_returns_early_when_no_aggregates(): void
     {
         // Mock Storage first, before any other setup
         $s3DiskMock = Mockery::mock();

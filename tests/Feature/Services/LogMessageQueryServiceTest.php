@@ -4,7 +4,6 @@ namespace Tests\Feature\Services;
 
 use App\Services\LogMessageQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LogMessageQueryServiceTest extends TestCase
@@ -24,24 +23,21 @@ class LogMessageQueryServiceTest extends TestCase
 
     }
 
-    #[Test]
-    public function it_filters_on_s(): void
+    public function test_it_filters_on_s(): void
     {
         $result = $this->log_message_query_service->query(['s' => 'cow']);
         $raw = $result->toRawSql();
         $this->assertEquals('select * from "log_messages" where "message" like \'%cow%\' or "context" like \'%cow%\'', $raw);
     }
 
-    #[Test]
-    public function it_searches_id_on_int(): void
+    public function test_it_searches_id_on_int(): void
     {
         $result = $this->log_message_query_service->query(['s' => 5]);
         $raw = $result->toRawSql();
         $this->assertEquals('select * from "log_messages" where "id" = 5', $raw);
     }
 
-    #[Test]
-    public function it_escapes_potentially_dangerous_stuff(): void
+    public function test_it_escapes_potentially_dangerous_stuff(): void
     {
         $result = $this->log_message_query_service->query(['s' => "'; select * FROM statements;"]);
         $raw = $result->toRawSql();
