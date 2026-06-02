@@ -56,6 +56,32 @@ class PlatformUniqueIdServiceTest extends TestCase
         $this->assertTrue($this->platformUniqueIdService->isPuidInCache($platform_id, $puid));
     }
 
+    public function test_add_puid_to_database_sets_timestamps(): void
+    {
+        $this->platformUniqueIdService->addPuidToDatabase(1, 'timestamped-puid');
+
+        $record = PlatformPuid::query()->where('platform_id', 1)->where('puid', 'timestamped-puid')->firstOrFail();
+
+        $this->assertNotNull($record->created_at);
+        $this->assertNotNull($record->updated_at);
+    }
+
+    public function test_add_puid_to_database_throws_on_pre_existing_record(): void
+    {
+        PlatformPuid::create([
+            'platform_id' => 1,
+            'puid' => 'already-there',
+        ]);
+
+        $this->expectException(PuidNotUniqueSingleException::class);
+
+        try {
+            $this->platformUniqueIdService->addPuidToDatabase(1, 'already-there');
+        } finally {
+            $this->assertDatabaseCount(PlatformPuid::class, 1);
+        }
+    }
+
     /**
      * @throws PuidNotUniqueSingleException
      */
