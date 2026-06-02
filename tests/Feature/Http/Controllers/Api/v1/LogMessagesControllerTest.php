@@ -28,8 +28,8 @@ class LogMessagesControllerTest extends TestCase
         $log_messages = LogMessage::all();
         $this->assertCount(0, $log_messages);
 
-        // Create One
-        Log::info('this is a test');
+        // Create One (db is no longer part of the default stack, so target it explicitly)
+        Log::channel('db')->info('this is a test');
         $log_messages = LogMessage::all();
         $this->assertCount(1, $log_messages);
 
