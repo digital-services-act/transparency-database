@@ -213,4 +213,68 @@ class DataDownloadControllerTest extends TestCase
 
         $response->assertNotFound();
     }
+
+    public function test_aggregates_download_redirects_to_presigned_url_for_csv(): void
+    {
+        Storage::fake('s3ds');
+        Storage::disk('s3ds')->put('aggregates-2026-06-01.csv', 'platform_id,count');
+
+        $response = $this->get(route('aggregates.download', [
+            'date' => '2026-06-01',
+            'ext' => 'csv',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_aggregates_download_redirects_to_presigned_url_for_json(): void
+    {
+        Storage::fake('s3ds');
+        Storage::disk('s3ds')->put('aggregates-2026-06-01.json', '{"aggregates":[]}');
+
+        $response = $this->get(route('aggregates.download', [
+            'date' => '2026-06-01',
+            'ext' => 'json',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_aggregates_download_returns_404_when_file_is_missing(): void
+    {
+        Storage::fake('s3ds');
+
+        $response = $this->get(route('aggregates.download', [
+            'date' => '2026-06-01',
+            'ext' => 'csv',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_aggregates_download_returns_404_for_invalid_extension(): void
+    {
+        Storage::fake('s3ds');
+        Storage::disk('s3ds')->put('aggregates-2026-06-01.txt', 'unsupported');
+
+        $response = $this->get(route('aggregates.download', [
+            'date' => '2026-06-01',
+            'ext' => 'txt',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_aggregates_download_returns_404_for_invalid_date_format(): void
+    {
+        Storage::fake('s3ds');
+        Storage::disk('s3ds')->put('aggregates-2026-06-1.csv', 'platform_id,count');
+
+        $response = $this->get(route('aggregates.download', [
+            'date' => '2026-06-1',
+            'ext' => 'csv',
+        ]));
+
+        $response->assertNotFound();
+    }
 }
