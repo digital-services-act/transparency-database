@@ -9,7 +9,6 @@ use App\Services\DayArchiveService;
 use App\Services\PlatformQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use ZipArchive;
 
@@ -17,8 +16,7 @@ class StatementCsvExportZTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_exports_only_the_requested_day_when_other_days_have_ids_inside_the_chunk_window(): void
+    public function test_it_exports_only_the_requested_day_when_other_days_have_ids_inside_the_chunk_window(): void
     {
         Storage::fake('local');
 

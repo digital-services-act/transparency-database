@@ -14,8 +14,7 @@ class PlatformControllerTest extends TestCase
     // use AdditionalAssertions;
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function index_displays_platforms(): void
+    public function test_index_displays_platforms(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create(['name' => 'Test Platform']);
@@ -28,8 +27,7 @@ class PlatformControllerTest extends TestCase
         $response->assertSee('Test Platform');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function index_can_search_platforms(): void
+    public function test_index_can_search_platforms(): void
     {
         $this->signInAsAdmin();
         $platform1 = Platform::factory()->create(['name' => 'Test Platform']);
@@ -42,8 +40,7 @@ class PlatformControllerTest extends TestCase
         $response->assertDontSee('Another Platform');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function create_displays_form(): void
+    public function test_create_displays_form(): void
     {
         $this->signInAsAdmin();
 
@@ -54,8 +51,7 @@ class PlatformControllerTest extends TestCase
         $response->assertViewHas(['platform', 'options']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_creates_platform(): void
+    public function test_store_creates_platform(): void
     {
         $this->signInAsAdmin();
 
@@ -73,8 +69,7 @@ class PlatformControllerTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function store_prevents_dsa_team_name(): void
+    public function test_store_prevents_dsa_team_name(): void
     {
         $this->signInAsAdmin();
 
@@ -87,8 +82,7 @@ class PlatformControllerTest extends TestCase
         $response->assertSessionHas('error');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function show_redirects_to_index(): void
+    public function test_show_redirects_to_index(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -98,8 +92,7 @@ class PlatformControllerTest extends TestCase
         $response->assertRedirect(route('platform.index'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function edit_displays_form(): void
+    public function test_edit_displays_form(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -111,8 +104,7 @@ class PlatformControllerTest extends TestCase
         $response->assertViewHas(['platform', 'options']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function edit_stores_returnto(): void
+    public function test_edit_stores_returnto(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -126,8 +118,7 @@ class PlatformControllerTest extends TestCase
         $this->assertEquals('/some/path', session('returnto'));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function update_saves_platform(): void
+    public function test_update_saves_platform(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -149,8 +140,7 @@ class PlatformControllerTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function update_respects_returnto(): void
+    public function test_update_respects_returnto(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -165,8 +155,7 @@ class PlatformControllerTest extends TestCase
         $response->assertRedirect('/some/path');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function update_prevents_dsa_platform_changes(): void
+    public function test_update_prevents_dsa_platform_changes(): void
     {
         $this->signInAsAdmin();
         $dsa_platform = Platform::getDsaPlatform();
@@ -185,8 +174,7 @@ class PlatformControllerTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function deleting_platform_deletes_the_rest(): void
+    public function test_deleting_platform_deletes_the_rest(): void
     {
         $this->signInAsAdmin();
 
@@ -217,8 +205,7 @@ class PlatformControllerTest extends TestCase
         $this->assertCount($platform_count - 1, Platform::all());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function destroy_requires_admin(): void
+    public function test_destroy_requires_admin(): void
     {
         $this->signIn();
         $platform = Platform::factory()->create();
@@ -229,8 +216,7 @@ class PlatformControllerTest extends TestCase
         $this->assertDatabaseHas('platforms', ['id' => $platform->id]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function destroy_prevents_dsa_platform_deletion(): void
+    public function test_destroy_prevents_dsa_platform_deletion(): void
     {
         $this->signInAsAdmin();
         $dsa_platform = Platform::getDsaPlatform();

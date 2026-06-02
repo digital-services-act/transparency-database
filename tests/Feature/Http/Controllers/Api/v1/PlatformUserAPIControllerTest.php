@@ -20,8 +20,7 @@ class PlatformUserAPIControllerTest extends TestCase
 
     private Platform $platform;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_platform_user_store_requires_auth(): void
+    public function test_api_platform_user_store_requires_auth(): void
     {
         // Not signing in.
 
@@ -33,8 +32,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function api_platform_user_store_creates_the_user(): void
+    public function test_api_platform_user_store_creates_the_user(): void
     {
         $this->signInAsOnboarding();
 
@@ -75,8 +73,7 @@ class PlatformUserAPIControllerTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_not_create_duplicates(): void
+    public function test_it_should_not_create_duplicates(): void
     {
         // If the user already logged in with EU Login and belongs to a platform, we don't need to add the user again.
 
@@ -113,8 +110,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->get(route('statement.create'))->assertOk();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_onboard_the_user(): void
+    public function test_it_should_onboard_the_user(): void
     {
         $this->withoutExceptionHandling();
 
@@ -147,8 +143,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->checkOnboarding($platform_user->fresh(), $platform);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_onboard_two_users_with_plus_sign_in_email(): void
+    public function test_it_should_onboard_two_users_with_plus_sign_in_email(): void
     {
         $this->withoutExceptionHandling();
 
@@ -184,8 +179,7 @@ class PlatformUserAPIControllerTest extends TestCase
         $this->assertCount(3, $platform->fresh()->users);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_should_not_allow_same_user_on_different_platforms(): void
+    public function test_it_should_not_allow_same_user_on_different_platforms(): void
     {
         $this->signInAsOnboarding();
 

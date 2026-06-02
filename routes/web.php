@@ -62,7 +62,10 @@ Route::middleware(['force.auth'])->group(static function () {
     Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])
         ->name('statement.show');
 
-    Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index');
+    // Aggregates download
+    Route::get('/explore-data/download/aggregates-{date}.{ext}', [DataDownloadController::class, 'aggregates'])->name('aggregates.download');
+
+    Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index')->whereUuid('uuid');
     Route::get('/explore-data/download-file/{dayArchive}/{type}', [DataDownloadController::class, 'download'])->name('dayarchive.download');
 
     Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');

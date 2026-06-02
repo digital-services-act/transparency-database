@@ -23,27 +23,24 @@ class LogMessageQueryServiceTest extends TestCase
 
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_filters_on_s(): void
+    public function test_it_filters_on_s(): void
     {
         $result = $this->log_message_query_service->query(['s' => 'cow']);
         $raw = $result->toRawSql();
-        $this->assertEquals('select * from "log_messages" where "message" LIKE \'%cow%\' or "context" LIKE \'%cow%\'', $raw);
+        $this->assertEquals('select * from "log_messages" where "message" like \'%cow%\' or "context" like \'%cow%\'', $raw);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_searches_id_on_int(): void
+    public function test_it_searches_id_on_int(): void
     {
         $result = $this->log_message_query_service->query(['s' => 5]);
         $raw = $result->toRawSql();
         $this->assertEquals('select * from "log_messages" where "id" = 5', $raw);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_escapes_potentially_dangerous_stuff(): void
+    public function test_it_escapes_potentially_dangerous_stuff(): void
     {
         $result = $this->log_message_query_service->query(['s' => "'; select * FROM statements;"]);
         $raw = $result->toRawSql();
-        $this->assertEquals('select * from "log_messages" where "message" LIKE \'%\'\'; select * FROM statements;%\' or "context" LIKE \'%\'\'; select * FROM statements;%\'', $raw);
+        $this->assertEquals('select * from "log_messages" where "message" like \'%\'\'; select * FROM statements;%\' or "context" like \'%\'\'; select * FROM statements;%\'', $raw);
     }
 }

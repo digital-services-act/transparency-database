@@ -11,8 +11,7 @@ class TrackDatabaseVelocityTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_creates_a_velocity_record(): void
+    public function test_it_creates_a_velocity_record(): void
     {
         $this->artisan('statements:track-velocity')
             ->expectsOutputToContain('Recorded:')
@@ -25,8 +24,7 @@ class TrackDatabaseVelocityTest extends TestCase
         $this->assertNotNull($velocity->rows_per_second);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_records_correct_max_id(): void
+    public function test_it_records_correct_max_id(): void
     {
         $this->artisan('statements:track-velocity')->assertExitCode(0);
 
@@ -34,16 +32,14 @@ class TrackDatabaseVelocityTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $velocity->max_statement_id);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function the_velocity_page_requires_authentication(): void
+    public function test_the_velocity_page_requires_authentication(): void
     {
         $response = $this->withoutMiddleware(PreventRequestsDuringMaintenance::class)
             ->get(route('database-velocity.index'));
         $response->assertRedirect();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function the_velocity_page_loads_for_admin_users(): void
+    public function test_the_velocity_page_loads_for_admin_users(): void
     {
         $this->signInAsAdmin();
 
@@ -53,8 +49,7 @@ class TrackDatabaseVelocityTest extends TestCase
         $response->assertSee('Database Velocity');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function the_velocity_page_displays_recorded_data(): void
+    public function test_the_velocity_page_displays_recorded_data(): void
     {
         $this->signInAsAdmin();
 

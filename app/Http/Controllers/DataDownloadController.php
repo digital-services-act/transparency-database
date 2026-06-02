@@ -94,4 +94,31 @@ class DataDownloadController extends Controller
 
         return redirect()->away($presignedUrl);
     }
+
+    public function aggregates(string $date, string $ext): RedirectResponse
+    {
+        // examples
+        // "aggregates-2026-06-01.csv",
+        // "aggregates-2026-06-01.json",
+
+        $allowedExts = ['csv', 'json'];
+        if (! in_array($ext, $allowedExts)) {
+            abort(404, 'Invalid file extension');
+        }
+
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            abort(404, 'Invalid date format');
+        }
+
+        $filename = "aggregates-{$date}.{$ext}";
+        $disk = Storage::disk('s3ds');
+        
+        if (! $disk->exists($filename)) {
+            abort(404, 'File not found');
+        }
+
+        $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(60));
+
+        return redirect()->away($presignedUrl);
+    }
 }

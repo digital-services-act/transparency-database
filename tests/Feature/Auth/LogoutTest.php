@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LogoutTest extends TestCase
@@ -13,8 +12,7 @@ class LogoutTest extends TestCase
         // The logout route only needs auth/session configuration.
     }
 
-    #[Test]
-    public function cas_logout_route_resolves_the_package_guard(): void
+    public function test_cas_logout_route_resolves_the_package_guard(): void
     {
         config([
             'laravel-cas.masquerade' => 'test@example.org',

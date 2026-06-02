@@ -10,24 +10,21 @@ class OnboardingControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function index_requires_authentication()
+    public function test_index_requires_authentication()
     {
         $response = $this->get(route('onboarding.index'));
         $response->assertStatus(302);
         $response->assertRedirect('/login');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function index_requires_onboarding_role()
+    public function test_index_requires_onboarding_role()
     {
         $this->signIn();
         $response = $this->get(route('onboarding.index'));
         $response->assertForbidden();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function onboarding_user_can_access_index()
+    public function test_onboarding_user_can_access_index()
     {
         $this->signInAsOnboarding();
         $response = $this->get(route('onboarding.index'));
@@ -36,8 +33,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertViewHas(['platforms', 'options', 'all_platforms_count', 'platform_ids_methods_data']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function index_displays_correct_platform_count()
+    public function test_index_displays_correct_platform_count()
     {
         $this->signInAsOnboarding();
         $initialCount = Platform::nonDSA()->count();
@@ -47,8 +43,7 @@ class OnboardingControllerTest extends TestCase
         $response->assertViewHas('all_platforms_count', $initialCount + 3);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function can_filter_platforms_by_vlop_status()
+    public function test_can_filter_platforms_by_vlop_status()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -64,8 +59,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertFalse($platforms->contains($nonVlopPlatform));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function can_sort_platforms_by_name()
+    public function test_can_sort_platforms_by_name()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -82,8 +76,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals('C Platform', $platforms->last()->name);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function can_sort_platforms_by_creation_date()
+    public function test_can_sort_platforms_by_creation_date()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -99,22 +92,20 @@ class OnboardingControllerTest extends TestCase
         $this->assertTrue($platforms->last()->is($oldPlatform));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function can_search_platforms_by_name()
+    public function test_can_search_platforms_by_name_case_insensitively()
     {
         $this->signInAsOnboarding();
         $matchingPlatform = Platform::factory()->create(['name' => 'Test Platform']);
         $nonMatchingPlatform = Platform::factory()->create(['name' => 'Other Platform']);
 
-        $response = $this->get(route('onboarding.index', ['s' => 'Test']));
+        $response = $this->get(route('onboarding.index', ['s' => 'test']));
         $platforms = $response->viewData('platforms');
 
         $this->assertTrue($platforms->contains($matchingPlatform));
         $this->assertFalse($platforms->contains($nonMatchingPlatform));
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function invalid_sorting_parameters_default_to_name_asc()
+    public function test_invalid_sorting_parameters_default_to_name_asc()
     {
         $this->signInAsOnboarding();
         // Clear existing non-DSA platforms
@@ -130,8 +121,7 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals('B Platform', $platforms->last()->name);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function options_contains_all_required_filter_choices()
+    public function test_options_contains_all_required_filter_choices()
     {
         $this->signInAsOnboarding();
         $response = $this->get(route('onboarding.index'));

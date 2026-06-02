@@ -11,6 +11,7 @@ use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 class TestCommand extends Command
@@ -28,6 +29,9 @@ class TestCommand extends Command
                 new InputArgument('date', InputArgument::REQUIRED),
                 new InputArgument('number', InputArgument::REQUIRED),
                 new InputArgument('flag', InputArgument::REQUIRED),
+                new InputOption('positive', null, InputOption::VALUE_REQUIRED, '', '1'),
+                new InputOption('nullable-positive', null, InputOption::VALUE_OPTIONAL),
+                new InputOption('non-negative', null, InputOption::VALUE_REQUIRED, '', '0'),
             ])
         );
     }
@@ -45,8 +49,13 @@ class CommandTraitTest extends TestCase
 
     private function setCommandArgument(string $value): void
     {
+        $this->setCommandInput(['date' => $value, 'number' => '0', 'flag' => 'false']);
+    }
+
+    private function setCommandInput(array $inputValues): void
+    {
         $input = new ArrayInput(
-            ['date' => $value, 'number' => '0', 'flag' => 'false'],
+            $inputValues,
             $this->command->getDefinition()
         );
         $output = new OutputStyle($input, new BufferedOutput);
@@ -55,48 +64,42 @@ class CommandTraitTest extends TestCase
         $this->command->setOutput($output);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_yesterday_date_argument()
+    public function test_it_handles_yesterday_date_argument()
     {
         $this->setCommandArgument('yesterday');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::yesterday()->startOfDay(), $result);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_today_date_argument()
+    public function test_it_handles_today_date_argument()
     {
         $this->setCommandArgument('today');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::today()->startOfDay(), $result);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_days_ago_date_argument()
+    public function test_it_handles_days_ago_date_argument()
     {
         $this->setCommandArgument('5');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::now()->subDays(5)->startOfDay(), $result);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_specific_date_format()
+    public function test_it_handles_specific_date_format()
     {
         $this->setCommandArgument('2023-12-25');
         $result = $this->command->sanitizeDateArgument();
         $this->assertEquals(Carbon::create(2023, 12, 25)->startOfDay(), $result);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_throws_exception_for_invalid_date_format()
+    public function test_it_throws_exception_for_invalid_date_format()
     {
         $this->setCommandArgument('invalid-date');
         $this->expectException(RuntimeException::class);
         $this->command->sanitizeDateArgument();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_converts_argument_to_integer()
+    public function test_it_converts_argument_to_integer()
     {
         $input = new ArrayInput(
             ['date' => 'today', 'number' => '42', 'flag' => 'false'],
@@ -111,8 +114,7 @@ class CommandTraitTest extends TestCase
         $this->assertSame(42, $result);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_converts_argument_to_boolean()
+    public function test_it_converts_argument_to_boolean()
     {
         $input = new ArrayInput(
             ['date' => 'today', 'number' => '0', 'flag' => 'true'],
@@ -137,5 +139,103 @@ class CommandTraitTest extends TestCase
 
         $result = $this->command->boolifyArgument('flag');
         $this->assertFalse($result);
+    }
+
+    public function test_it_converts_positive_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--positive' => '42',
+        ]);
+
+        $this->assertSame(42, $this->command->positiveIntOption('positive'));
+    }
+
+    public function test_it_rejects_non_positive_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--positive' => '0',
+        ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The --positive option must be greater than zero.');
+
+        $this->command->positiveIntOption('positive');
+    }
+
+    public function test_it_converts_nullable_positive_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+        ]);
+
+        $this->assertNull($this->command->nullablePositiveIntOption('nullable-positive'));
+
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--nullable-positive' => '7',
+        ]);
+
+        $this->assertSame(7, $this->command->nullablePositiveIntOption('nullable-positive'));
+    }
+
+    public function test_it_rejects_non_positive_nullable_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--nullable-positive' => '0',
+        ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The --nullable-positive option must be greater than zero.');
+
+        $this->command->nullablePositiveIntOption('nullable-positive');
+    }
+
+    public function test_it_converts_non_negative_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--non-negative' => '0',
+        ]);
+
+        $this->assertSame(0, $this->command->nonNegativeIntOption('non-negative'));
+
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--non-negative' => '9',
+        ]);
+
+        $this->assertSame(9, $this->command->nonNegativeIntOption('non-negative'));
+    }
+
+    public function test_it_rejects_negative_integer_options()
+    {
+        $this->setCommandInput([
+            'date' => 'today',
+            'number' => '0',
+            'flag' => 'false',
+            '--non-negative' => '-1',
+        ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The --non-negative option must be zero or greater.');
+
+        $this->command->nonNegativeIntOption('non-negative');
     }
 }

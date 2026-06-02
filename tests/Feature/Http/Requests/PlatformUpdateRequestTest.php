@@ -42,8 +42,7 @@ class PlatformUpdateRequestTest extends TestCase
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function authorized_users_can_update_platform()
+    public function test_authorized_users_can_update_platform()
     {
         $this->actingAs($this->user);
 
@@ -61,8 +60,7 @@ class PlatformUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function users_with_view_permission_can_update_platform()
+    public function test_users_with_view_permission_can_update_platform()
     {
         $this->actingAs($this->user);
 
@@ -80,8 +78,7 @@ class PlatformUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function unauthorized_users_cannot_update_platform()
+    public function test_unauthorized_users_cannot_update_platform()
     {
         $this->actingAs($this->user);
 
@@ -101,8 +98,7 @@ class PlatformUpdateRequestTest extends TestCase
         $response->assertStatus(403);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function name_is_required()
+    public function test_name_is_required()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -115,8 +111,7 @@ class PlatformUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function vlop_is_required()
+    public function test_vlop_is_required()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -129,8 +124,7 @@ class PlatformUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['vlop']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function dsa_common_id_must_be_unique()
+    public function test_dsa_common_id_must_be_unique()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -148,8 +142,7 @@ class PlatformUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['dsa_common_id']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function dsa_common_id_can_remain_same()
+    public function test_dsa_common_id_can_remain_same()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -167,8 +160,7 @@ class PlatformUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function in_method_builds_validation_rule_correctly()
+    public function test_in_method_builds_validation_rule_correctly()
     {
         // Create a request instance
         $request = new PlatformUpdateRequest;

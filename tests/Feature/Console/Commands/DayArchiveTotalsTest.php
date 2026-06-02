@@ -12,8 +12,7 @@ class DayArchiveTotalsTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_without_errors(): void
+    public function test_it_runs_without_errors(): void
     {
         // Create a DayArchive record for the command to process
         DayArchive::factory()->create(['date' => '2025-09-03']);
@@ -29,8 +28,7 @@ class DayArchiveTotalsTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_does_not_save_when_nosave_option_is_used(): void
+    public function test_it_does_not_save_when_nosave_option_is_used(): void
     {
         // Create a DayArchive record
         $dayArchive = DayArchive::factory()->create(['date' => '2025-09-03', 'total' => 0]);
@@ -51,8 +49,7 @@ class DayArchiveTotalsTest extends TestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_archives_with_a_platform_and_saves_the_total(): void
+    public function test_it_handles_archives_with_a_platform_and_saves_the_total(): void
     {
         // Create a DayArchive with a platform
         $dayArchive = DayArchive::factory()->forPlatform()->create([

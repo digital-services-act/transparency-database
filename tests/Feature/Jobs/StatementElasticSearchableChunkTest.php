@@ -5,6 +5,7 @@ namespace Tests\Feature\Jobs;
 use App\Jobs\StatementElasticSearchableChunk;
 use App\Models\Statement;
 use App\Services\StatementElasticSearchService;
+use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -53,6 +54,35 @@ class StatementElasticSearchableChunkTest extends TestCase
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
             return $job->min === 1102 && $job->max === 2000 && $job->chunk === 100;
         });
+    }
+
+    public function test_retry_does_not_dispatch_next_job(): void
+    {
+        for ($i = 1001; $i <= 1005; $i++) {
+            Statement::factory()->create(['id' => $i]);
+        }
+
+        Cache::shouldReceive('get')
+            ->with('stop_reindexing', false)
+            ->andReturn(false);
+
+        $this->mockService->shouldReceive('bulkIndexStatements')
+            ->once()
+            ->with(Mockery::on(function ($collection) {
+                return $collection->count() === 5 &&
+                       $collection->pluck('id')->sort()->values()->toArray() === [1001, 1002, 1003, 1004, 1005];
+            }));
+
+        Queue::fake();
+
+        $job = new StatementElasticSearchableChunk(1001, 2000, 100);
+        $queueJob = Mockery::mock(QueueJob::class);
+        $queueJob->shouldReceive('attempts')->once()->andReturn(2);
+        $job->job = $queueJob;
+
+        $job->handle($this->mockService);
+
+        Queue::assertNotPushed(StatementElasticSearchableChunk::class);
     }
 
     public function test_job_processes_final_chunk_without_dispatching_next(): void
@@ -183,6 +213,31 @@ class StatementElasticSearchableChunkTest extends TestCase
         // Should still dispatch next job even with empty results
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
             return $job->min === 9102 && $job->max === 9500 && $job->chunk === 100;
+        });
+    }
+
+    public function test_job_preserves_range_mode_when_dispatching_next_job(): void
+    {
+        Cache::shouldReceive('get')
+            ->with('stop_reindexing', false)
+            ->andReturn(false);
+
+        $this->mockService->shouldReceive('bulkIndexStatements')
+            ->once()
+            ->with(Mockery::on(function ($collection) {
+                return $collection->count() === 0;
+            }));
+
+        Queue::fake();
+
+        $job = new StatementElasticSearchableChunk(9001, 9500, 100, false);
+        $job->handle($this->mockService);
+
+        Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
+            return $job->min === 9102
+                && $job->max === 9500
+                && $job->chunk === 100
+                && $job->range === false;
         });
     }
 

@@ -33,8 +33,8 @@ class LogMessageQueryService
             $filter_value = (int) $filter_value;
             $query->where('id', $filter_value);
         } else {
-            $query->orWhere('message', 'LIKE', '%'.$filter_value.'%');
-            $query->orWhere('context', 'LIKE', '%'.$filter_value.'%');
+            $query->orWhereLike('message', '%'.$filter_value.'%');
+            $query->orWhereLike('context', '%'.$filter_value.'%');
         }
     }
 }

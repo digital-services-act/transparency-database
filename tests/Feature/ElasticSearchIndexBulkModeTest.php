@@ -135,6 +135,88 @@ class ElasticSearchIndexBulkModeTest extends TestCase
             ->assertExitCode(1);
     }
 
+    public function test_command_rejects_negative_restore_replicas(): void
+    {
+        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService->shouldNotReceive('updateIndexBulkMode');
+
+        $this->app->instance(StatementElasticSearchService::class, $mockService);
+
+        $this->artisan('elasticsearch:index-bulk-mode', [
+            'index' => 'statements_index',
+            '--replicas' => -1,
+        ])
+            ->expectsOutput('The --replicas option must be 0 or greater.')
+            ->assertExitCode(1);
+    }
+
+    public function test_command_rejects_empty_restore_refresh_interval(): void
+    {
+        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService->shouldNotReceive('updateIndexBulkMode');
+
+        $this->app->instance(StatementElasticSearchService::class, $mockService);
+
+        $this->artisan('elasticsearch:index-bulk-mode', [
+            'index' => 'statements_index',
+            '--refresh-interval' => '',
+        ])
+            ->expectsOutput('The --refresh-interval option cannot be empty.')
+            ->assertExitCode(1);
+    }
+
+    public function test_command_fails_when_bulk_mode_update_is_not_acknowledged(): void
+    {
+        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService->shouldReceive('updateIndexBulkMode')
+            ->with('statements_index', true, 2, '1s', true, true)
+            ->andReturn(['acknowledged' => false]);
+
+        $this->app->instance(StatementElasticSearchService::class, $mockService);
+
+        $this->artisan('elasticsearch:index-bulk-mode', [
+            'index' => 'statements_index',
+        ])
+            ->expectsOutput('Bulk indexing mode update was not acknowledged by Elasticsearch.')
+            ->assertExitCode(1);
+    }
+
+    public function test_command_reports_refresh_after_disabling_bulk_mode(): void
+    {
+        $result = [
+            'index' => 'statements_index',
+            'enabled' => false,
+            'previous_settings' => [
+                'number_of_replicas' => '0',
+                'refresh_interval' => '-1',
+                'translog.durability' => 'async',
+            ],
+            'new_settings' => [
+                'number_of_replicas' => 2,
+                'refresh_interval' => '1s',
+                'translog.durability' => 'request',
+            ],
+            'updated' => true,
+            'acknowledged' => true,
+            'refreshed' => true,
+        ];
+
+        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService->shouldReceive('updateIndexBulkMode')
+            ->with('statements_index', false, 2, '1s', true, true)
+            ->andReturn($result);
+
+        $this->app->instance(StatementElasticSearchService::class, $mockService);
+
+        $this->artisan('elasticsearch:index-bulk-mode', [
+            'index' => 'statements_index',
+            'mode' => 'off',
+        ])
+            ->expectsOutputToContain('Bulk indexing mode disabled')
+            ->expectsOutput('Index refreshed after restoring normal indexing settings.')
+            ->assertExitCode(0);
+    }
+
     public function test_command_handles_missing_index(): void
     {
         $mockService = Mockery::mock(StatementElasticSearchService::class);
@@ -148,6 +230,22 @@ class ElasticSearchIndexBulkModeTest extends TestCase
             'index' => 'missing_index',
         ])
             ->expectsOutput("Index 'missing_index' does not exist.")
+            ->assertExitCode(1);
+    }
+
+    public function test_command_handles_runtime_failures(): void
+    {
+        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService->shouldReceive('updateIndexBulkMode')
+            ->with('statements_index', true, 2, '1s', true, true)
+            ->andThrow(new RuntimeException('Connection timed out'));
+
+        $this->app->instance(StatementElasticSearchService::class, $mockService);
+
+        $this->artisan('elasticsearch:index-bulk-mode', [
+            'index' => 'statements_index',
+        ])
+            ->expectsOutput("Failed to update bulk indexing mode for index 'statements_index': Connection timed out")
             ->assertExitCode(1);
     }
 

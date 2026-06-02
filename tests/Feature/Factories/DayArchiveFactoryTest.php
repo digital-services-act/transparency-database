@@ -4,6 +4,7 @@ namespace Tests\Feature\Factories;
 
 use App\Models\DayArchive;
 use App\Models\Platform;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -65,7 +66,12 @@ class DayArchiveFactoryTest extends TestCase
 
     public function test_it_creates_multiple_archives_with_unique_dates()
     {
-        $archives = DayArchive::factory()->count(5)->create();
+        $archives = DayArchive::factory()
+            ->count(5)
+            ->sequence(fn (Sequence $sequence) => [
+                'date' => now()->subDays($sequence->index)->toDateString(),
+            ])
+            ->create();
 
         $uniqueDates = $archives->pluck('date')->unique()->count();
         $this->assertEquals(5, $uniqueDates, 'Each archive should have a unique date');

@@ -10,16 +10,14 @@ class QueueViewTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_successfully_with_an_empty_queue(): void
+    public function test_it_runs_successfully_with_an_empty_queue(): void
     {
         $this->artisan('queue:view')
             ->expectsOutput('Queues:')
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_successfully_with_jobs_in_the_queue(): void
+    public function test_it_runs_successfully_with_jobs_in_the_queue(): void
     {
         // Seed a job
         DB::table('jobs')->insert([
@@ -38,8 +36,7 @@ class QueueViewTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_reserved_and_multi_attempt_jobs(): void
+    public function test_it_handles_reserved_and_multi_attempt_jobs(): void
     {
         // Seed a reserved job with multiple attempts to hit all logic branches
         DB::table('jobs')->insert([

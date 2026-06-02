@@ -13,8 +13,7 @@ class StatementDeleteChunkTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_deletes_chunk_and_dispatches_next_job(): void
+    public function test_it_deletes_chunk_and_dispatches_next_job(): void
     {
         Queue::fake();
 
@@ -32,8 +31,7 @@ class StatementDeleteChunkTest extends TestCase
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_deletes_final_chunk_and_logs_completion(): void
+    public function test_it_deletes_final_chunk_and_logs_completion(): void
     {
         Queue::fake();
         Log::shouldReceive('info')->once()->with(\Mockery::pattern('/StatementDeleteChunk Max Reached/'));
@@ -50,8 +48,7 @@ class StatementDeleteChunkTest extends TestCase
         Queue::assertNotPushed(StatementDeleteChunk::class);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_single_chunk_job(): void
+    public function test_it_handles_single_chunk_job(): void
     {
         Queue::fake();
         Log::shouldReceive('info')->once()->with(\Mockery::pattern('/StatementDeleteChunk Max Reached/'));
@@ -68,8 +65,7 @@ class StatementDeleteChunkTest extends TestCase
         Queue::assertNotPushed(StatementDeleteChunk::class);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_respects_max_boundary_and_does_not_delete_beyond(): void
+    public function test_it_respects_max_boundary_and_does_not_delete_beyond(): void
     {
         Queue::fake();
         Log::shouldReceive('info')->once()->with(\Mockery::pattern('/StatementDeleteChunk Max Reached/'));
@@ -87,8 +83,7 @@ class StatementDeleteChunkTest extends TestCase
         Queue::assertNotPushed(StatementDeleteChunk::class);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_ensures_complete_coverage_of_range(): void
+    public function test_it_ensures_complete_coverage_of_range(): void
     {
         Queue::fake();
 

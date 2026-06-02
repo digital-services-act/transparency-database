@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatementElasticSearchableChunk;
+use App\Jobs\StatementElasticSearchableRawChunk;
 use App\Services\DayArchiveService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -23,7 +23,10 @@ class StatementsElasticIndexDateSeq extends Command
      */
     protected $signature = 'statements:elastic-index-date-seq
         {date=yesterday}
-        {chunk=500}
+        {chunk=1000}
+        {range=false}
+        {chains=8 : Number of independent root indexing chains to dispatch per indexable ID range.}
+        {--benchmark : Log per-chunk indexing timing metrics from the queued indexing jobs.}
         {--skip-id-range=* : Inclusive statement ID range(s) to skip while queueing indexing jobs, format start:end. May be repeated.}';
 
     /**
@@ -31,7 +34,7 @@ class StatementsElasticIndexDateSeq extends Command
      *
      * @var string
      */
-    protected $description = 'Elastic Index statements for a day';
+    protected $description = 'Elastic Index statements for a day using raw chained chunks';
 
     /**
      * Execute the console command.
@@ -42,6 +45,9 @@ class StatementsElasticIndexDateSeq extends Command
         $chunk = $this->intifyArgument('chunk');
         Log::info('Step 2');
         $date = $this->sanitizeDateArgument();
+        $use_range = $this->boolifyArgument('range');
+        $chains = $this->positiveIntArgument('chains');
+        $benchmark = (bool) $this->option('benchmark');
 
         Log::info('Step 3');
         $min = $day_archive_service->getFirstIdOfDate($date);
@@ -71,13 +77,34 @@ class StatementsElasticIndexDateSeq extends Command
                 return;
             }
 
-            foreach ($ranges as $range) {
-                StatementElasticSearchableChunk::dispatch($range['start'], $range['end'], $chunk);
+            $root_ranges = $this->chainRootRangesToIndex($ranges, $chains);
+
+            Log::info('Queueing raw Elasticsearch indexing chains for date: '.$date->format('Y-m-d'), [
+                'chunk' => $chunk,
+                'range' => $use_range,
+                'chains_per_range' => $chains,
+                'root_jobs' => count($root_ranges),
+                'benchmark' => $benchmark,
+            ]);
+
+            foreach ($root_ranges as $range) {
+                StatementElasticSearchableRawChunk::dispatch($range['start'], $range['end'], $chunk, $use_range, $benchmark);
             }
         } else {
             Log::info('Step 6');
             Log::warning('Not able to obtain the highest or lowest ID for the day: '.$date->format('Y-m-d'));
         }
+    }
+
+    private function positiveIntArgument(string $name): int
+    {
+        $value = $this->intifyArgument($name);
+
+        if ($value < 1) {
+            throw new InvalidArgumentException(sprintf('The %s argument must be greater than zero.', $name));
+        }
+
+        return $value;
     }
 
     private function skipIdRanges(): array
@@ -161,6 +188,44 @@ class StatementsElasticIndexDateSeq extends Command
             $ranges[] = [
                 'start' => $current,
                 'end' => $max,
+            ];
+        }
+
+        return $ranges;
+    }
+
+    private function chainRootRangesToIndex(array $ranges, int $chains): array
+    {
+        $root_ranges = [];
+
+        foreach ($ranges as $range) {
+            $root_ranges = array_merge(
+                $root_ranges,
+                $this->splitRangeIntoChains($range['start'], $range['end'], $chains),
+            );
+        }
+
+        return $root_ranges;
+    }
+
+    private function splitRangeIntoChains(int $start, int $end, int $chains): array
+    {
+        $total = $end - $start + 1;
+        $chain_count = min($chains, $total);
+        $chain_size = (int) ceil($total / $chain_count);
+        $ranges = [];
+
+        for ($i = 0; $i < $chain_count; $i++) {
+            $chain_start = $start + ($i * $chain_size);
+            $chain_end = min($end, $chain_start + $chain_size - 1);
+
+            if ($chain_start > $end) {
+                break;
+            }
+
+            $ranges[] = [
+                'start' => $chain_start,
+                'end' => $chain_end,
             ];
         }
 

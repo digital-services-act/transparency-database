@@ -12,8 +12,7 @@ class PidPuid2IdsTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_runs_without_errors(): void
+    public function test_it_runs_without_errors(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -36,8 +35,7 @@ class PidPuid2IdsTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_string_platform_id_conversion(): void
+    public function test_it_handles_string_platform_id_conversion(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);
@@ -59,8 +57,7 @@ class PidPuid2IdsTest extends TestCase
             ->assertExitCode(0);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_handles_empty_result(): void
+    public function test_it_handles_empty_result(): void
     {
         // Mock the StatementElasticSearchService
         $serviceMock = Mockery::mock(StatementElasticSearchService::class);

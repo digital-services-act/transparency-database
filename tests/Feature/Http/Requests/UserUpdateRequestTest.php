@@ -41,8 +41,7 @@ class UserUpdateRequestTest extends TestCase
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function authorized_users_can_update_users()
+    public function test_authorized_users_can_update_users()
     {
         $this->actingAs($this->user);
 
@@ -60,8 +59,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function unauthorized_users_cannot_update_users()
+    public function test_unauthorized_users_cannot_update_users()
     {
         $this->actingAs($this->user);
 
@@ -79,8 +77,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(403);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function email_must_be_valid()
+    public function test_email_must_be_valid()
     {
         $this->actingAs($this->user);
         Gate::define('create users', fn () => true);
@@ -94,8 +91,7 @@ class UserUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['email']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function email_must_be_unique_except_for_current_user()
+    public function test_email_must_be_unique_except_for_current_user()
     {
         $this->actingAs($this->user);
         Gate::define('create users', fn () => true);
@@ -121,8 +117,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function platform_id_must_be_integer_if_provided()
+    public function test_platform_id_must_be_integer_if_provided()
     {
         $this->actingAs($this->user);
         Gate::define('create users', fn () => true);
@@ -137,8 +132,7 @@ class UserUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['platform_id']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function platform_id_can_be_null()
+    public function test_platform_id_can_be_null()
     {
         $this->actingAs($this->user);
         Gate::define('create users', fn () => true);
@@ -152,8 +146,7 @@ class UserUpdateRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function roles_must_be_an_array()
+    public function test_roles_must_be_an_array()
     {
         $this->actingAs($this->user);
         Gate::define('create users', fn () => true);
@@ -167,8 +160,7 @@ class UserUpdateRequestTest extends TestCase
             ->assertJsonValidationErrors(['roles']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function roles_are_required()
+    public function test_roles_are_required()
     {
         $this->actingAs($this->user);
         Gate::define('create users', fn () => true);

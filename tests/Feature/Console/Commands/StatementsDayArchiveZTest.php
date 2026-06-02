@@ -7,15 +7,13 @@ use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class StatementsDayArchiveZTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_skips_configured_id_gaps_when_queueing_csv_export_jobs(): void
+    public function test_it_skips_configured_id_gaps_when_queueing_csv_export_jobs(): void
     {
         Bus::fake();
 
@@ -51,8 +49,7 @@ class StatementsDayArchiveZTest extends TestCase
         $this->assertSame(2500000, $secondJob->end_id);
     }
 
-    #[Test]
-    public function it_supports_repeated_skip_id_ranges(): void
+    public function test_it_supports_repeated_skip_id_ranges(): void
     {
         Bus::fake();
 

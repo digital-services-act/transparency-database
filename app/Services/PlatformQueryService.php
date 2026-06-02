@@ -41,7 +41,7 @@ class PlatformQueryService
     private function applySFilter(Builder $query, string $filter_value): void
     {
         if ($filter_value) {
-            $query->where('name', 'LIKE', '%'.$filter_value.'%');
+            $query->whereLike('name', '%'.$filter_value.'%');
         }
     }
 

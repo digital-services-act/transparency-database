@@ -39,8 +39,7 @@ class PlatformStoreRequestTest extends TestCase
         });
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function authorized_users_can_create_platform()
+    public function test_authorized_users_can_create_platform()
     {
         $this->actingAs($this->user);
 
@@ -58,8 +57,7 @@ class PlatformStoreRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function unauthorized_users_cannot_create_platform()
+    public function test_unauthorized_users_cannot_create_platform()
     {
         $this->actingAs($this->user);
 
@@ -76,8 +74,7 @@ class PlatformStoreRequestTest extends TestCase
         $response->assertStatus(403);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function name_is_required()
+    public function test_name_is_required()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -90,8 +87,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function name_must_be_string()
+    public function test_name_must_be_string()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -105,8 +101,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function name_must_not_exceed_max_length()
+    public function test_name_must_not_exceed_max_length()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -120,8 +115,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function vlop_is_required()
+    public function test_vlop_is_required()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -134,8 +128,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['vlop']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function vlop_must_be_integer()
+    public function test_vlop_must_be_integer()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -149,8 +142,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['vlop']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function optional_fields_can_be_null()
+    public function test_optional_fields_can_be_null()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -167,8 +159,7 @@ class PlatformStoreRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function dsa_common_id_must_be_unique()
+    public function test_dsa_common_id_must_be_unique()
     {
         $this->actingAs($this->user);
         Gate::define('create platforms', fn () => true);
@@ -186,8 +177,7 @@ class PlatformStoreRequestTest extends TestCase
             ->assertJsonValidationErrors(['dsa_common_id']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function in_method_builds_validation_rule_correctly()
+    public function test_in_method_builds_validation_rule_correctly()
     {
         // Create a request instance
         $request = new PlatformStoreRequest;
