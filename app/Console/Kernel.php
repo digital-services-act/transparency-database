@@ -42,7 +42,9 @@ class Kernel extends ConsoleKernel
                 ->dailyAt(self::DAILY_AFTER_MIDNIGHT);
 
             $schedule->command('statements:prune-old')
-                ->dailyAt(self::DAILY_FIVE_AM);
+                ->dailyAt(self::DAILY_FIVE_AM)
+                ->withoutOverlapping()
+                ->runInBackground();
 
             $schedule->command('statements:day-archive-z')
                 ->dailyAt(self::DAILY_SIX_AM);

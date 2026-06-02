@@ -181,15 +181,16 @@ class StatementsPruneOld extends Command
             return $connection->delete(
                 sprintf(
                     'WITH victims AS (
-                        SELECT id
+                        SELECT ctid
                         FROM %s
                         WHERE created_at < ?
                         ORDER BY created_at ASC, id ASC
                         LIMIT ?
+                        FOR UPDATE SKIP LOCKED
                     )
                     DELETE FROM %s AS target
                     USING victims
-                    WHERE target.id = victims.id',
+                    WHERE target.ctid = victims.ctid',
                     $table,
                     $table
                 ),

@@ -192,8 +192,11 @@ class StatementsPruneOldTest extends TestCase
         $connection->shouldReceive('delete')
             ->twice()
             ->withArgs(fn (string $sql, array $bindings): bool => str_contains($sql, 'WITH victims AS')
+                && str_contains($sql, 'SELECT ctid')
+                && str_contains($sql, 'FOR UPDATE SKIP LOCKED')
                 && str_contains($sql, 'DELETE FROM')
                 && str_contains($sql, 'USING victims')
+                && str_contains($sql, 'target.ctid = victims.ctid')
                 && $bindings[0] instanceof Carbon
                 && $bindings[1] === 500)
             ->andReturn(0);
