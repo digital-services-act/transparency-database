@@ -42,7 +42,7 @@ class LogMessagesControllerTest extends TestCase
         $this->assertCount(0, $log_messages);
     }
 
-    public function test_it_should_block_non_admins_from_truncating(): void
+    public function test_it_should_block_non_admins_from_deleting(): void
     {
         $this->signInAsSupport();
         $response = $this->delete(route('log-messages.destroy'));

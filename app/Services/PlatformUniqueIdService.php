@@ -24,7 +24,7 @@ class PlatformUniqueIdService
 
         // @codeCoverageIgnoreStart
         if (! $lock->get()) {
-            Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+            //Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
             throw new PuidNotUniqueSingleException($puid);
         }
         // @codeCoverageIgnoreEnd
@@ -98,7 +98,7 @@ class PlatformUniqueIdService
 
         // @codeCoverageIgnoreStart
         if (! $lock->get()) {
-            Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+            //Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
             throw new PuidNotUniqueSingleException($puid);
         }
         // @codeCoverageIgnoreEnd
@@ -119,7 +119,7 @@ class PlatformUniqueIdService
             // @codeCoverageIgnoreStart
             if (! $lock->get()) {
                 $this->releasePuidLocks($locks);
-                Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+                //Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
                 throw new PuidNotUniqueMultipleException([$puid]);
             }
             // @codeCoverageIgnoreEnd

@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yoeriboven\LaravelLogDb\Models\LogMessage;
 
 class LogMessagesController extends Controller
@@ -31,8 +32,8 @@ class LogMessagesController extends Controller
      */
     public function destroy(): RedirectResponse
     {
-        LogMessage::truncate();
+        DB::table((new LogMessage)->getTable())->delete();
 
-        return redirect()->route('log-messages.index')->with('success', 'The log messages have been truncated');
+        return redirect()->route('log-messages.index')->with('success', 'The log messages have been deleted');
     }
 }
