@@ -24,7 +24,7 @@ class PlatformUniqueIdService
 
         // @codeCoverageIgnoreStart
         if (! $lock->get()) {
-            //Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+            // Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
             throw new PuidNotUniqueSingleException($puid);
         }
         // @codeCoverageIgnoreEnd
@@ -98,7 +98,7 @@ class PlatformUniqueIdService
 
         // @codeCoverageIgnoreStart
         if (! $lock->get()) {
-            //Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+            // Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
             throw new PuidNotUniqueSingleException($puid);
         }
         // @codeCoverageIgnoreEnd
@@ -119,7 +119,7 @@ class PlatformUniqueIdService
             // @codeCoverageIgnoreStart
             if (! $lock->get()) {
                 $this->releasePuidLocks($locks);
-                //Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
+                // Log::info('Lock encountered for PUID '.$puid.' on platform '.$platform_id);
                 throw new PuidNotUniqueMultipleException([$puid]);
             }
             // @codeCoverageIgnoreEnd
@@ -152,14 +152,18 @@ class PlatformUniqueIdService
      */
     public function addPuidToDatabase(int $platform_id, string $puid): void
     {
-        if (PlatformPuid::where('platform_id', $platform_id)->where('puid', $puid)->exists()) {
-            throw new PuidNotUniqueSingleException($puid);
-        }
+        $now = now();
 
-        PlatformPuid::create([
+        $inserted = PlatformPuid::insertOrIgnore([
             'puid' => $puid,
             'platform_id' => $platform_id,
+            'created_at' => $now,
+            'updated_at' => $now,
         ]);
+
+        if ($inserted === 0) {
+            throw new PuidNotUniqueSingleException($puid);
+        }
     }
 
     /**

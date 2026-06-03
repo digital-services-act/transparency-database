@@ -131,4 +131,55 @@ class ApiLoggingTraitTest extends TestCase
         $this->assertEquals($responseData, $apiLog->response_data);
         $this->assertEquals(200, $apiLog->response_code);
     }
+
+    public function test_summarizes_large_successful_response()
+    {
+        $request = new Request;
+        $request->server->set('REQUEST_METHOD', 'GET');
+        $request->server->set('REQUEST_URI', '/api/v1/search');
+
+        $responseData = ['took' => 5, 'hits' => str_repeat('x', 70000)];
+        $response = new JsonResponse($responseData, 200);
+
+        $this->controller->logApiCallTest($request, $response);
+
+        $apiLog = ApiLog::first();
+        $this->assertTrue($apiLog->response_data['logged_summary']);
+        $this->assertEquals(['took', 'hits'], $apiLog->response_data['top_level_keys']);
+        $this->assertArrayNotHasKey('hits', $apiLog->response_data);
+        $this->assertGreaterThan(70000, $apiLog->response_data['response_size_bytes']);
+    }
+
+    public function test_truncates_large_error_response()
+    {
+        $request = new Request;
+        $request->server->set('REQUEST_METHOD', 'GET');
+        $request->server->set('REQUEST_URI', '/api/v1/search');
+
+        $responseData = ['error' => str_repeat('x', 70000)];
+        $response = new JsonResponse($responseData, 500);
+
+        $this->controller->logApiCallTest($request, $response);
+
+        $apiLog = ApiLog::first();
+        $this->assertTrue($apiLog->response_data['truncated']);
+        $this->assertEquals(65536, strlen($apiLog->response_data['preview']));
+        $this->assertGreaterThan(70000, $apiLog->response_data['original_size_bytes']);
+    }
+
+    public function test_caps_large_request_data()
+    {
+        $request = new Request;
+        $request->server->set('REQUEST_METHOD', 'POST');
+        $request->server->set('REQUEST_URI', '/api/v1/search');
+        $request->merge(['query' => str_repeat('x', 70000)]);
+
+        $response = new JsonResponse(['ok' => true], 200);
+
+        $this->controller->logApiCallTest($request, $response);
+
+        $apiLog = ApiLog::first();
+        $this->assertTrue($apiLog->request_data['truncated']);
+        $this->assertEquals(65536, strlen($apiLog->request_data['preview']));
+    }
 }
