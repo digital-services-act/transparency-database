@@ -21,13 +21,14 @@ class PlatformPuidDeleteChunk implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $min, public int $max, public int $chunk) {}
+    public function __construct(public int $min, public int $max, public int $chunk, public string $date) {}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
+        $attempt = $this->attempts();
         $end = $this->min + $this->chunk;
 
         if ($end > $this->max) {
@@ -35,14 +36,29 @@ class PlatformPuidDeleteChunk implements ShouldQueue
         }
 
         // Dispatch the next one
-        if ($end < $this->max) {
+        if ($end < $this->max && $attempt === 1) {
             $next_min = $this->min + $this->chunk + 1;
             // Start the next one.
-            self::dispatch($next_min, $this->max, $this->chunk);
+            self::dispatch($next_min, $this->max, $this->chunk, $this->date);
+        } elseif ($end < $this->max) {
+            Log::info('PlatformPuidDeleteChunk skipped dispatch on retry', [
+                'min' => $this->min,
+                'max' => $this->max,
+                'end' => $end,
+                'chunk' => $this->chunk,
+                'date' => $this->date,
+                'attempt' => $attempt,
+            ]);
         }
 
-        $range = range($this->min, $end);
-        DB::table('platform_puids')->whereIn('id', $range)->delete();
+        $startOfDay = Carbon::parse($this->date)->startOfDay();
+
+        DB::table('platform_puids')
+            ->where('id', '>=', $this->min)
+            ->where('id', '<=', $end)
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $startOfDay->copy()->addDay())
+            ->delete();
 
         if ($end >= $this->max) {
             Log::info('PlatformPuidDeleteChunk Max Reached at '.Carbon::now()->format('Y-m-d H:i:s'));

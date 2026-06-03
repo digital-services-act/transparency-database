@@ -3,105 +3,130 @@
 namespace Tests\Feature\Jobs;
 
 use App\Jobs\PlatformPuidDeleteChunk;
+use App\Models\Platform;
+use App\Models\PlatformPuid;
+use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
+use Mockery;
 use Tests\TestCase;
 
 class PlatformPuidDeleteChunkTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_deletes_chunk_and_dispatches_next_job(): void
+    public function test_it_deletes_chunk_and_dispatches_next_job_on_first_attempt(): void
     {
-        // Mock the facades
         Queue::fake();
-        DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
-        DB::shouldReceive('whereIn')->with('id', [10, 11, 12, 13, 14, 15])->andReturnSelf();
-        DB::shouldReceive('delete')->once();
+        $this->expectDelete(10, 15);
 
-        // Create job: min=10, max=20, chunk=5
-        // This should process IDs 10-15 and dispatch next job for 16-20
-        $job = new PlatformPuidDeleteChunk(10, 20, 5);
+        $job = new PlatformPuidDeleteChunk(10, 20, 5, '2025-11-27');
         $job->handle();
 
-        // Verify next job was dispatched with correct boundaries
-        Queue::assertPushed(PlatformPuidDeleteChunk::class, function ($job) {
-            return $job->min === 16 && $job->max === 20 && $job->chunk === 5;
+        Queue::assertPushed(PlatformPuidDeleteChunk::class, function (PlatformPuidDeleteChunk $job): bool {
+            return $job->min === 16
+                && $job->max === 20
+                && $job->chunk === 5
+                && $job->date === '2025-11-27';
         });
+    }
+
+    public function test_retry_deletes_current_chunk_but_does_not_dispatch_next_job(): void
+    {
+        Queue::fake();
+        $this->expectDelete(10, 15);
+
+        $job = new PlatformPuidDeleteChunk(10, 20, 5, '2025-11-27');
+        $queueJob = Mockery::mock(QueueJob::class);
+        $queueJob->shouldReceive('attempts')->once()->andReturn(2);
+        $job->job = $queueJob;
+
+        $job->handle();
+
+        Queue::assertNotPushed(PlatformPuidDeleteChunk::class);
     }
 
     public function test_it_deletes_final_chunk_and_logs_completion(): void
     {
-        // Mock the facades
         Queue::fake();
-        DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
-        DB::shouldReceive('whereIn')->with('id', [18, 19, 20])->andReturnSelf();
-        DB::shouldReceive('delete')->once();
-        Log::shouldReceive('info')->once()->with(\Mockery::pattern('/PlatformPuidDeleteChunk Max Reached at/'));
+        Log::shouldReceive('info')->once()->with(Mockery::pattern('/PlatformPuidDeleteChunk Max Reached at/'));
+        $this->expectDelete(18, 20);
 
-        // Create job: min=18, max=20, chunk=5
-        // This should process only remaining IDs 18-20, not beyond max
-        $job = new PlatformPuidDeleteChunk(18, 20, 5);
+        $job = new PlatformPuidDeleteChunk(18, 20, 5, '2025-11-27');
         $job->handle();
 
-        // Verify no next job was dispatched
-        Queue::assertNotPushed(PlatformPuidDeleteChunk::class);
-    }
-
-    public function test_it_handles_single_chunk_scenario(): void
-    {
-        // Mock the facades
-        Queue::fake();
-        DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
-        DB::shouldReceive('whereIn')->with('id', [1, 2, 3, 4, 5])->andReturnSelf();
-        DB::shouldReceive('delete')->once();
-        Log::shouldReceive('info')->once()->with(\Mockery::pattern('/PlatformPuidDeleteChunk Max Reached at/'));
-
-        // Create job: min=1, max=5, chunk=10
-        // This should process all IDs 1-5, not attempt to go beyond max
-        $job = new PlatformPuidDeleteChunk(1, 5, 10);
-        $job->handle();
-
-        // Verify no next job was dispatched
         Queue::assertNotPushed(PlatformPuidDeleteChunk::class);
     }
 
     public function test_it_respects_max_boundary_and_does_not_delete_beyond(): void
     {
         Queue::fake();
-        Log::shouldReceive('info')->once()->with(\Mockery::pattern('/PlatformPuidDeleteChunk Max Reached at/'));
+        Log::shouldReceive('info')->once()->with(Mockery::pattern('/PlatformPuidDeleteChunk Max Reached at/'));
+        $this->expectDelete(95, 100);
 
-        // Test case: min=95, max=100, chunk=10
-        // Should only delete [95,96,97,98,99,100] - exactly 6 records, not 10
-        DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
-        DB::shouldReceive('whereIn')->with('id', [95, 96, 97, 98, 99, 100])->andReturnSelf();
-        DB::shouldReceive('delete')->once();
-
-        $job = new PlatformPuidDeleteChunk(95, 100, 10);
+        $job = new PlatformPuidDeleteChunk(95, 100, 10, '2025-11-27');
         $job->handle();
 
-        // Verify no additional job is dispatched since we've reached max
         Queue::assertNotPushed(PlatformPuidDeleteChunk::class);
     }
 
     public function test_it_ensures_complete_coverage_of_range(): void
     {
         Queue::fake();
+        $this->expectDelete(1, 4);
 
-        // Test the full sequence to ensure complete coverage
-        // First chunk: min=1, max=10, chunk=3 should delete [1,2,3,4] and dispatch next with min=5
-        DB::shouldReceive('table')->with('platform_puids')->andReturnSelf();
-        DB::shouldReceive('whereIn')->with('id', [1, 2, 3, 4])->andReturnSelf();
-        DB::shouldReceive('delete')->once();
-
-        $job = new PlatformPuidDeleteChunk(1, 10, 3);
+        $job = new PlatformPuidDeleteChunk(1, 10, 3, '2025-11-27');
         $job->handle();
 
-        // Verify next job starts where this one left off
-        Queue::assertPushed(PlatformPuidDeleteChunk::class, function ($job) {
-            return $job->min === 5 && $job->max === 10 && $job->chunk === 3;
+        Queue::assertPushed(PlatformPuidDeleteChunk::class, function (PlatformPuidDeleteChunk $job): bool {
+            return $job->min === 5
+                && $job->max === 10
+                && $job->chunk === 3
+                && $job->date === '2025-11-27';
         });
+    }
+
+    public function test_it_can_limit_deletes_to_a_specific_date(): void
+    {
+        $platformId = Platform::nonDsa()->first()->id;
+
+        PlatformPuid::factory()->create([
+            'id' => 10,
+            'platform_id' => $platformId,
+            'puid' => 'target-date-puid',
+            'created_at' => '2025-11-27 12:00:00',
+        ]);
+        PlatformPuid::factory()->create([
+            'id' => 11,
+            'platform_id' => $platformId,
+            'puid' => 'other-date-puid',
+            'created_at' => '2025-11-28 12:00:00',
+        ]);
+
+        $job = new PlatformPuidDeleteChunk(10, 11, 10, '2025-11-27');
+        $job->handle();
+
+        $this->assertDatabaseMissing('platform_puids', ['puid' => 'target-date-puid']);
+        $this->assertDatabaseHas('platform_puids', ['puid' => 'other-date-puid']);
+    }
+
+    private function expectDelete(int $start, int $end, string $date = '2025-11-27'): void
+    {
+        $startOfDay = Carbon::parse($date)->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
+
+        DB::shouldReceive('table')->once()->with('platform_puids')->andReturnSelf();
+        DB::shouldReceive('where')->once()->with('id', '>=', $start)->andReturnSelf();
+        DB::shouldReceive('where')->once()->with('id', '<=', $end)->andReturnSelf();
+        DB::shouldReceive('where')->once()->withArgs(fn (string $column, string $operator, Carbon $value): bool => $column === 'created_at'
+            && $operator === '>='
+            && $value->equalTo($startOfDay))->andReturnSelf();
+        DB::shouldReceive('where')->once()->withArgs(fn (string $column, string $operator, Carbon $value): bool => $column === 'created_at'
+            && $operator === '<'
+            && $value->equalTo($endOfDay))->andReturnSelf();
+        DB::shouldReceive('delete')->once()->andReturn(0);
     }
 }

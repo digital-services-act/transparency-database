@@ -22,7 +22,9 @@ class Kernel extends ConsoleKernel
     private const string DAILY_NINE_O_FOUR_AM = '09:04';
 
     private const string DAILY_FIVE_AM = '05:00';
+
     private const string DAILY_TWO_AM = '02:00';
+
     private const string DAILY_SIX_AM = '06:00';
 
     private const string DAILY_EIGHT_O_FIVE_AM = '08:05';
@@ -36,8 +38,8 @@ class Kernel extends ConsoleKernel
     {
         // We should only be running crons on the task server.
         if (config('app.is_task_server')) {
-            
-            $schedule->command('statements:prune-old')
+
+            $schedule->command('statements:remove-date 181 10000 4')
                 ->dailyAt(self::DAILY_TWO_AM)
                 ->withoutOverlapping()
                 ->runInBackground();
@@ -55,10 +57,10 @@ class Kernel extends ConsoleKernel
                 ->dailyAt(self::DAILY_EIGHT_FIFTEEN_AM);
 
             if (config('app.env') === 'production') {
-                
+
                 // Home page caching once daily at 9
                 $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
-                
+
                 // Indexing nightly on production, on other envs it runs at create statement time
                 $schedule->command('statements:elastic-index-date-seq yesterday 1000 false 8')->dailyAt(self::DAILY_AFTER_MIDNIGHT);
 

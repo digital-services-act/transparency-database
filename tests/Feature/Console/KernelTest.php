@@ -36,7 +36,7 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(12, $events);
+        $this->assertCount(11, $events);
 
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'statements:elastic-index-date-seq yesterday 1000 false 8')
@@ -44,10 +44,10 @@ class KernelTest extends TestCase
         }));
 
         $this->assertTrue($events->contains(function ($event) {
-            return str_contains($event->command, 'statements:prune-old') && $event->expression === '0 5 * * *';
+            return str_contains($event->command, 'statements:remove-date 181 10000 4') && $event->expression === '0 2 * * *';
         }));
         $this->assertFalse($events->contains(function ($event) {
-            return str_contains($event->command, 'statements:remove-date');
+            return str_contains($event->command, 'statements:prune-old');
         }));
 
         // Check for a specific command that is unique to production
@@ -67,12 +67,12 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(12, $events);
+        $this->assertCount(10, $events);
         $this->assertTrue($events->contains(function ($event) {
-            return str_contains($event->command, 'statements:prune-old') && $event->expression === '0 5 * * *';
+            return str_contains($event->command, 'statements:remove-date 181 10000 4') && $event->expression === '0 2 * * *';
         }));
         $this->assertFalse($events->contains(function ($event) {
-            return str_contains($event->command, 'statements:remove-date');
+            return str_contains($event->command, 'statements:prune-old');
         }));
     }
 
