@@ -4,6 +4,7 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
@@ -91,5 +92,64 @@ class AggregatesFreezeTest extends TestCase
         $this->artisan('aggregates-freeze', ['date' => '30']);
 
         $this->assertTrue(true);
+    }
+
+    public function test_it_uses_yesterday_argument_for_aggregate_date_and_output_files(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-06-03 12:00:00', 'UTC'));
+
+        $tempDir = sys_get_temp_dir().'/test_aggregates_yesterday_'.uniqid().'/';
+        mkdir($tempDir, 0755, true);
+
+        $mockResults = [
+            'aggregates' => [
+                [
+                    'category' => 'test_category',
+                    'platform_name' => 'Test Platform',
+                    'total' => 100,
+                ],
+            ],
+        ];
+
+        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        $serviceMock->shouldReceive('getAllowedAggregateAttributes')
+            ->twice()
+            ->andReturn(['category']);
+        $serviceMock->shouldReceive('processDateAggregate')
+            ->once()
+            ->with(
+                Mockery::on(fn (Carbon $date): bool => $date->equalTo(Carbon::parse('2026-06-02 00:00:00', 'UTC'))),
+                ['category'],
+                false
+            )
+            ->andReturn($mockResults);
+
+        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+
+        $s3DiskMock = Mockery::mock();
+        $s3DiskMock->shouldReceive('put')
+            ->once()
+            ->with('aggregates-2026-06-02.csv', Mockery::type('resource'))
+            ->andReturn(true);
+        $s3DiskMock->shouldReceive('put')
+            ->once()
+            ->with('aggregates-2026-06-02.json', json_encode($mockResults, JSON_THROW_ON_ERROR))
+            ->andReturn(true);
+
+        Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
+        Storage::shouldReceive('path')->with('')->andReturn($tempDir);
+
+        Log::shouldReceive('info')->once()->with(Mockery::pattern('/Number of aggregates.*1/'));
+
+        try {
+            $this->artisan('aggregates-freeze', ['date' => 'yesterday'])->assertSuccessful();
+        } finally {
+            Carbon::setTestNow();
+
+            if (is_dir($tempDir)) {
+                array_map('unlink', glob("$tempDir/*"));
+                rmdir($tempDir);
+            }
+        }
     }
 }
