@@ -4,8 +4,8 @@ namespace Tests\Feature\Services;
 
 use App\Models\DayArchive;
 use App\Models\Platform;
+use App\Models\PlatformPuid;
 use App\Models\Statement;
-use App\Models\StatementAlpha;
 use App\Services\DayArchiveService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -246,20 +246,56 @@ class DayArchiveServiceTest extends TestCase
         $this->assertEquals($last->id, $this->day_archive_service->getLastIdOfDate($date));
     }
 
-    public function test_it_gets_first_and_last_legacy_statement_ids_before_beta_cutover(): void
+    public function test_it_corrects_statement_id_bounds_with_boundary_window(): void
     {
-        StatementAlpha::query()->forceDelete();
+        $admin = $this->signInAsAdmin();
+        $platform = Platform::nonDsa()->first();
 
-        $this->createStatementAlphaWithId(1000, '2025-06-29 23:59:59', 'PREVIOUS_DAY');
-        $first = $this->createStatementAlphaWithId(1010, '2025-06-30 00:00:00', 'TARGET_FIRST');
-        $this->createStatementAlphaWithId(2500, '2025-06-30 12:00:00', 'TARGET_MIDDLE');
-        $last = $this->createStatementAlphaWithId(4090, '2025-06-30 23:59:59', 'TARGET_LAST');
-        $this->createStatementAlphaWithId(4100, '2025-07-01 00:00:00', 'NEXT_DAY');
+        Statement::query()->forceDelete();
 
-        $date = Carbon::createFromDate(2025, 6, 30);
+        $this->createStatementWithId(900, '2030-01-01 23:59:59', 'PREVIOUS_DAY_LOWER_ID', $platform->id, $admin->id);
+        $first = $this->createStatementWithId(1000, '2030-01-02 00:01:30', 'TARGET_LOW_ID_INSIDE_START_WINDOW', $platform->id, $admin->id);
+        $this->createStatementWithId(2000, '2030-01-02 00:00:00', 'TARGET_FIRST_BY_CREATED_AT', $platform->id, $admin->id);
+        $this->createStatementWithId(3000, '2030-01-02 23:59:59', 'TARGET_LAST_BY_CREATED_AT', $platform->id, $admin->id);
+        $last = $this->createStatementWithId(5000, '2030-01-02 23:58:30', 'TARGET_HIGH_ID_INSIDE_END_WINDOW', $platform->id, $admin->id);
+        $this->createStatementWithId(6000, '2030-01-03 00:00:00', 'NEXT_DAY_HIGHER_ID', $platform->id, $admin->id);
+
+        $date = Carbon::createFromDate(2030, 1, 2);
 
         $this->assertEquals($first->id, $this->day_archive_service->getFirstIdOfDate($date));
         $this->assertEquals($last->id, $this->day_archive_service->getLastIdOfDate($date));
+    }
+
+    public function test_it_falls_back_to_created_at_bounds_when_statement_boundary_windows_are_empty(): void
+    {
+        $admin = $this->signInAsAdmin();
+        $platform = Platform::nonDsa()->first();
+
+        Statement::query()->forceDelete();
+
+        $only = $this->createStatementWithId(2500, '2030-01-02 12:00:00', 'TARGET_MIDDAY_ONLY', $platform->id, $admin->id);
+
+        $date = Carbon::createFromDate(2030, 1, 2);
+
+        $this->assertEquals($only->id, $this->day_archive_service->getFirstIdOfDate($date));
+        $this->assertEquals($only->id, $this->day_archive_service->getLastIdOfDate($date));
+    }
+
+    public function test_it_corrects_platform_puid_id_bounds_with_boundary_window(): void
+    {
+        $platform = Platform::nonDsa()->first();
+
+        PlatformPuid::query()->delete();
+
+        $first = $this->createPlatformPuidWithId(1000, '2030-01-02 00:01:30', 'target-low-id-inside-start-window', $platform->id);
+        $this->createPlatformPuidWithId(2000, '2030-01-02 00:00:00', 'target-first-by-created-at', $platform->id);
+        $this->createPlatformPuidWithId(3000, '2030-01-02 23:59:59', 'target-last-by-created-at', $platform->id);
+        $last = $this->createPlatformPuidWithId(5000, '2030-01-02 23:58:30', 'target-high-id-inside-end-window', $platform->id);
+
+        $date = Carbon::createFromDate(2030, 1, 2);
+
+        $this->assertEquals($first->id, $this->day_archive_service->getFirstPlatformPuidIdOfDate($date));
+        $this->assertEquals($last->id, $this->day_archive_service->getLastPlatformPuidIdOfDate($date));
     }
 
     public function test_it_filters_raw_statements_to_the_requested_day_inside_a_non_sequential_id_window(): void
@@ -598,13 +634,14 @@ class DayArchiveServiceTest extends TestCase
         ]));
     }
 
-    private function createStatementAlphaWithId(int $id, string $created_at, string $puid): StatementAlpha
+    private function createPlatformPuidWithId(int $id, string $created_at, string $puid, int $platform_id): PlatformPuid
     {
-        return StatementAlpha::unguarded(fn () => StatementAlpha::factory()->create([
+        return PlatformPuid::unguarded(fn () => PlatformPuid::factory()->create([
             'id' => $id,
             'created_at' => $created_at,
             'updated_at' => $created_at,
             'puid' => $puid,
+            'platform_id' => $platform_id,
         ]));
     }
 }
