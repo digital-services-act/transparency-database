@@ -27,11 +27,11 @@ class Kernel extends ConsoleKernel
 
     private const string DAILY_SIX_AM = '06:00';
 
-    private const string DAILY_EIGHT_O_FIVE_AM = '08:05';
+    private const string DAILY_SIX_O_FIVE_AM = '06:05';
 
-    private const string DAILY_EIGHT_TEN_AM = '08:10';
+    private const string DAILY_SIX_TEN_AM = '06:10';
 
-    private const string DAILY_EIGHT_FIFTEEN_AM = '08:15';
+    private const string DAILY_SIX_FIFTEEN_AM = '06:15';
 
     #[\Override]
     protected function schedule(Schedule $schedule): void
@@ -48,13 +48,13 @@ class Kernel extends ConsoleKernel
                 ->dailyAt(self::DAILY_SIX_AM);
 
             $schedule->command('aggregates-freeze 160')
-                ->dailyAt(self::DAILY_EIGHT_O_FIVE_AM);
+                ->dailyAt(self::DAILY_SIX_O_FIVE_AM);
 
             $schedule->command('aggregates-freeze 20')
-                ->dailyAt(self::DAILY_EIGHT_TEN_AM);
+                ->dailyAt(self::DAILY_SIX_TEN_AM);
 
             $schedule->command('aggregates-freeze yesterday')
-                ->dailyAt(self::DAILY_EIGHT_FIFTEEN_AM);
+                ->dailyAt(self::DAILY_SIX_FIFTEEN_AM);
 
             if (config('app.env') === 'production') {
 
