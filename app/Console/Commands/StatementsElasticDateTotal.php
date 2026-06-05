@@ -7,6 +7,7 @@ use App\Services\StatementElasticSearchService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
@@ -21,7 +22,9 @@ class StatementsElasticDateTotal extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:elastic-date-total {date=yesterday}';
+    protected $signature = 'statements:elastic-date-total
+        {date=yesterday}
+        {--raw-count : Count statements_beta rows for the date directly from the database.}';
 
     /**
      * The console command description.
@@ -59,6 +62,13 @@ class StatementsElasticDateTotal extends Command
             $this->info('Source Difference DB Percentage: '.($db_diff > 0 ? floor(($source_diff / $db_diff) * 100).'%' : 'n/a'));
             $this->info('Source Difference ES Percentage: '.($es_total > 0 ? floor(($source_diff / $es_total) * 100).'%' : 'n/a'));
 
+            if ((bool) $this->option('raw-count')) {
+                $raw_count = $this->rawStatementCountForDate($date);
+                $this->info('Raw DB Date Count: '.$raw_count);
+                $this->info('Raw DB Date Count Difference From Elastic: '.($raw_count - $es_total));
+                $this->info('Raw DB Date Count Difference From ID Span: '.($db_diff - $raw_count));
+            }
+
             if ($db_diff !== $es_total) {
                 $this->outputIdOverlapDiagnostics($day_archive_service, $date, (int) $first_id, (int) $last_id, $source_diff);
             }
@@ -80,6 +90,16 @@ class StatementsElasticDateTotal extends Command
         } else {
             $this->info('Could not find the first or last ids: '.$first_id.' :: '.$last_id);
         }
+    }
+
+    private function rawStatementCountForDate(Carbon $date): int
+    {
+        $start_of_day = $date->copy()->startOfDay();
+
+        return DB::table('statements_beta')
+            ->where('created_at', '>=', $start_of_day)
+            ->where('created_at', '<', $start_of_day->copy()->addDay())
+            ->count();
     }
 
     private function outputIdOverlapDiagnostics(
