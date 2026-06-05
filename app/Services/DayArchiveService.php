@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Exports\StatementExportTrait;
 use App\Models\DayArchive;
 use App\Models\Platform;
-use App\Models\PlatformPuid;
-use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -84,11 +82,7 @@ class DayArchiveService
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
 
-        $query = Statement::query()
-            ->where('created_at', '>=', $startOfDay)
-            ->where('created_at', '<', $endOfDay);
-
-        return $this->getFirstIdFromBoundaryWindow($query, $startOfDay, $endOfDay, $boundaryMinutes);
+        return $this->getFirstIdFromBoundaryWindow('statements_beta', $startOfDay, $endOfDay, $boundaryMinutes);
     }
 
     public function getFirstPlatformPuidIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
@@ -96,11 +90,7 @@ class DayArchiveService
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
 
-        $query = PlatformPuid::query()
-            ->where('created_at', '>=', $startOfDay)
-            ->where('created_at', '<', $endOfDay);
-
-        return $this->getFirstIdFromBoundaryWindow($query, $startOfDay, $endOfDay, $boundaryMinutes);
+        return $this->getFirstIdFromBoundaryWindow('platform_puids', $startOfDay, $endOfDay, $boundaryMinutes);
     }
 
     public function getLastIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
@@ -108,11 +98,7 @@ class DayArchiveService
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
 
-        $query = Statement::query()
-            ->where('created_at', '>=', $startOfDay)
-            ->where('created_at', '<', $endOfDay);
-
-        return $this->getLastIdFromBoundaryWindow($query, $startOfDay, $endOfDay, $boundaryMinutes);
+        return $this->getLastIdFromBoundaryWindow('statements_beta', $startOfDay, $endOfDay, $boundaryMinutes);
     }
 
     public function getLastPlatformPuidIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
@@ -120,18 +106,15 @@ class DayArchiveService
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
 
-        $query = PlatformPuid::query()
-            ->where('created_at', '>=', $startOfDay)
-            ->where('created_at', '<', $endOfDay);
-
-        return $this->getLastIdFromBoundaryWindow($query, $startOfDay, $endOfDay, $boundaryMinutes);
+        return $this->getLastIdFromBoundaryWindow('platform_puids', $startOfDay, $endOfDay, $boundaryMinutes);
     }
 
-    private function getFirstIdFromBoundaryWindow(Builder $query, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)
+    private function getFirstIdFromBoundaryWindow(string $table, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)
     {
         if ($boundaryMinutes > 0) {
             $boundaryEnd = $startOfDay->copy()->addMinutes($boundaryMinutes)->min($endOfDay);
-            $id = (clone $query)
+            $id = DB::table($table)
+                ->where('created_at', '>=', $startOfDay)
                 ->where('created_at', '<', $boundaryEnd)
                 ->min('id');
 
@@ -140,18 +123,21 @@ class DayArchiveService
             }
         }
 
-        return (clone $query)
+        return DB::table($table)
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
             ->orderBy('created_at')
             ->orderBy('id')
             ->value('id') ?: false;
     }
 
-    private function getLastIdFromBoundaryWindow(Builder $query, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)
+    private function getLastIdFromBoundaryWindow(string $table, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)
     {
         if ($boundaryMinutes > 0) {
             $boundaryStart = $endOfDay->copy()->subMinutes($boundaryMinutes)->max($startOfDay);
-            $id = (clone $query)
+            $id = DB::table($table)
                 ->where('created_at', '>=', $boundaryStart)
+                ->where('created_at', '<', $endOfDay)
                 ->max('id');
 
             if ($id) {
@@ -159,7 +145,9 @@ class DayArchiveService
             }
         }
 
-        return (clone $query)
+        return DB::table($table)
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->value('id') ?: false;
