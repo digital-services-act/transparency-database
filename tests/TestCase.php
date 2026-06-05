@@ -8,7 +8,6 @@ use Database\Seeders\OnboardingPermissionsSeeder;
 use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ResearchPermissionsSeeder;
-use Database\Seeders\StatementAlphaSeeder;
 use Database\Seeders\StatementSeeder;
 use Database\Seeders\SupportPermissionsSeeder;
 use Database\Seeders\UserSeeder;
@@ -96,6 +95,5 @@ abstract class TestCase extends BaseTestCase
         $this->seed(SupportPermissionsSeeder::class);
         $this->seed(ResearchPermissionsSeeder::class);
         StatementSeeder::resetStatements($statement_count);
-        StatementAlphaSeeder::resetStatements($statement_count);
     }
 }
