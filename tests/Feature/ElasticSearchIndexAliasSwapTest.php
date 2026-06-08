@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;
@@ -22,12 +22,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
             'acknowledged' => true,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('old_index', 'new_index', 'current')
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'old_index',
@@ -47,12 +47,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
             'acknowledged' => false,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('source_index', 'target_index', 'production')
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'source_index',
@@ -64,12 +64,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
 
     public function test_command_handles_non_existent_source_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('nonexistent_index', 'target_index', 'test_alias')
             ->andThrow(new RuntimeException('Source index does not exist'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'nonexistent_index',
@@ -81,12 +81,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
 
     public function test_command_handles_non_existent_target_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('source_index', 'nonexistent_target', 'test_alias')
             ->andThrow(new RuntimeException('Target index does not exist'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'source_index',
@@ -98,12 +98,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
 
     public function test_command_handles_alias_not_on_source(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('source_index', 'target_index', 'missing_alias')
             ->andThrow(new RuntimeException('Alias does not exist on source index'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'source_index',
@@ -115,12 +115,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
 
     public function test_command_handles_alias_already_on_target(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('source_index', 'target_index', 'existing_alias')
             ->andThrow(new RuntimeException('Alias already exists on target index'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'source_index',
@@ -132,12 +132,12 @@ class ElasticSearchIndexAliasSwapTest extends TestCase
 
     public function test_command_handles_general_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('swapIndexAlias')
             ->with('error_index', 'target_index', 'error_alias')
             ->andThrow(new RuntimeException('Connection timeout'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-swap', [
             'index' => 'error_index',

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
@@ -43,11 +43,11 @@ class ElasticSearchTasksTest extends TestCase
             ],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getTasks')
             ->andReturn($tasksInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks')
             ->assertExitCode(0);
@@ -73,11 +73,11 @@ class ElasticSearchTasksTest extends TestCase
             ],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getTasks')
             ->andReturn($tasksInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks')
             ->assertExitCode(0);
@@ -92,11 +92,11 @@ class ElasticSearchTasksTest extends TestCase
             'all_tasks' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getTasks')
             ->andReturn($tasksInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks')
             ->assertExitCode(0);
@@ -125,11 +125,11 @@ class ElasticSearchTasksTest extends TestCase
             'all_tasks' => $cancellableTasks, // Simplified for test
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getTasks')
             ->andReturn($tasksInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks')
             ->assertExitCode(0);
@@ -137,11 +137,11 @@ class ElasticSearchTasksTest extends TestCase
 
     public function test_command_handles_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getTasks')
             ->andThrow(new \Exception('Connection timeout'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks')
             ->assertExitCode(0);
@@ -167,11 +167,11 @@ class ElasticSearchTasksTest extends TestCase
             'all_tasks' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getTasks')
             ->andReturn($tasksInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks')
             ->assertExitCode(0);

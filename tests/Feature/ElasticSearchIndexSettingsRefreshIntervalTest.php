@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;
@@ -22,12 +22,12 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
             'acknowledged' => true,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('updateIndexRefreshInterval')
             ->with('test_index', 30)
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'test_index',
@@ -46,12 +46,12 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
             'acknowledged' => false,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('updateIndexRefreshInterval')
             ->with('test_index', 60)
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'test_index',
@@ -62,12 +62,12 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('updateIndexRefreshInterval')
             ->with('nonexistent_index', 15)
             ->andThrow(new RuntimeException('Index does not exist'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'nonexistent_index',
@@ -78,12 +78,12 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_handles_general_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('updateIndexRefreshInterval')
             ->with('error_index', 5)
             ->andThrow(new RuntimeException('Connection timeout'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'error_index',
@@ -102,12 +102,12 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
             'acknowledged' => true,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('updateIndexRefreshInterval')
             ->with('test_index', 0)
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'test_index',

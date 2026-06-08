@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Console\Command;
 
 class ElasticSearchRemoveSor extends Command
@@ -26,7 +26,7 @@ class ElasticSearchRemoveSor extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementElasticSearchService $elasticSearchService): void
+    public function handle(StatementElasticToolsService $elasticSearchService): void
     {
         $index = $this->argument('index');
         $documentId = $this->intifyArgument('id');

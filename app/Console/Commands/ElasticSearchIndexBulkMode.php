@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Console\Command;
 use RuntimeException;
 
@@ -31,7 +31,7 @@ class ElasticSearchIndexBulkMode extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementElasticSearchService $elasticSearchService): int
+    public function handle(StatementElasticToolsService $elasticSearchService): int
     {
         $index = (string) $this->argument('index');
         $mode = strtolower((string) $this->argument('mode'));

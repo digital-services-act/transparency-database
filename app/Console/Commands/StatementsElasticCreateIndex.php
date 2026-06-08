@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\StatementElasticConnectionService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
@@ -31,7 +31,7 @@ class StatementsElasticCreateIndex extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementElasticSearchService $statement_search_service): void
+    public function handle(StatementElasticToolsService $statement_elastic_tools_service): void
     {
         /** @var Client $client */
         $client = app(StatementElasticConnectionService::class)->client();
@@ -45,7 +45,7 @@ class StatementsElasticCreateIndex extends Command
             return;
         }
 
-        $properties = $statement_search_service->statementIndexProperties();
+        $properties = $statement_elastic_tools_service->statementIndexProperties();
 
         $body = [
             'mappings' => $properties,

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;
@@ -21,12 +21,12 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
             'acknowledged' => true,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('test_index', 'test_alias')
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-create', [
             'index' => 'test_index',
@@ -44,12 +44,12 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
             'acknowledged' => false,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('test_index', 'problematic_alias')
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-create', [
             'index' => 'test_index',
@@ -60,12 +60,12 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('nonexistent_index', 'test_alias')
             ->andThrow(new RuntimeException('Index does not exist'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-create', [
             'index' => 'nonexistent_index',
@@ -76,12 +76,12 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
 
     public function test_command_handles_existing_alias(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('existing_index', 'existing_alias')
             ->andThrow(new RuntimeException('Alias already exists on this index'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-create', [
             'index' => 'existing_index',
@@ -92,12 +92,12 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
 
     public function test_command_handles_general_runtime_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('error_index', 'error_alias')
             ->andThrow(new RuntimeException('Connection timeout'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-create', [
             'index' => 'error_index',
@@ -115,12 +115,12 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
             'acknowledged' => true,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('statements_production_2024.09.17', 'current-production-index')
             ->andReturn($result);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-alias-create', [
             'index' => 'statements_production_2024.09.17',
@@ -145,7 +145,7 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
             'acknowledged' => true,
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('createIndexAlias')
             ->with('shared_index', 'alias_one')
             ->andReturn($result1);
@@ -153,7 +153,7 @@ class ElasticSearchIndexAliasCreateTest extends TestCase
             ->with('shared_index', 'alias_two')
             ->andReturn($result2);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         // First alias
         $this->artisan('elasticsearch:index-alias-create', [

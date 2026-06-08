@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;
@@ -40,12 +40,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
             'raw_settings' => [], // Not used in command output
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('test_index')
             ->andReturn($settingsInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'test_index'])
             ->assertExitCode(0);
@@ -67,12 +67,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
             'raw_settings' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('minimal_index')
             ->andReturn($settingsInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'minimal_index'])
             ->assertExitCode(0);
@@ -86,12 +86,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
             'raw_settings' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('empty_settings_index')
             ->andReturn($settingsInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'empty_settings_index'])
             ->assertExitCode(0);
@@ -99,12 +99,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('nonexistent_index')
             ->andThrow(new RuntimeException('Index does not exist'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'nonexistent_index'])
             ->assertExitCode(0);
@@ -112,12 +112,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
 
     public function test_command_handles_general_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('error_index')
             ->andThrow(new RuntimeException('Connection timeout'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'error_index'])
             ->assertExitCode(0);
@@ -155,12 +155,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
             'raw_settings' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('statements_production_2024.09.17')
             ->andReturn($settingsInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'statements_production_2024.09.17'])
             ->assertExitCode(0);
@@ -185,12 +185,12 @@ class ElasticSearchIndexSettingsTest extends TestCase
             'raw_settings' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexSettings')
             ->with('dev_test_index')
             ->andReturn($settingsInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-settings', ['index' => 'dev_test_index'])
             ->assertExitCode(0);

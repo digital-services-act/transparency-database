@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
@@ -19,11 +19,11 @@ class ElasticSearchTasksCancelTest extends TestCase
             'response' => ['nodes' => []],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andReturn($cancelResult);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -37,11 +37,11 @@ class ElasticSearchTasksCancelTest extends TestCase
             'response' => ['nodes' => []],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andReturn($cancelResult);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -55,11 +55,11 @@ class ElasticSearchTasksCancelTest extends TestCase
             'response' => ['nodes' => []],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andReturn($cancelResult);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -73,11 +73,11 @@ class ElasticSearchTasksCancelTest extends TestCase
             'response' => ['nodes' => []],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andReturn($cancelResult);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -85,11 +85,11 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andThrow(new \Exception('Connection timeout'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -97,11 +97,11 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_elasticsearch_error(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andThrow(new \Exception('Cluster unavailable'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -115,11 +115,11 @@ class ElasticSearchTasksCancelTest extends TestCase
             'response' => ['nodes' => []],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('cancelAllTasks')
             ->andReturn($cancelResult);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);

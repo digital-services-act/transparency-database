@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Console\Command;
 
 class ElasticSearchTasksCancel extends Command
@@ -24,7 +24,7 @@ class ElasticSearchTasksCancel extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementElasticSearchService $elasticSearchService): void
+    public function handle(StatementElasticToolsService $elasticSearchService): void
     {
         try {
             $result = $elasticSearchService->cancelAllTasks();

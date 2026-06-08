@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;
@@ -33,12 +33,12 @@ class ElasticSearchIndexInfoTest extends TestCase
             ],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('test_index')
             ->andReturn($indexInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'test_index'])
             ->assertExitCode(0);
@@ -59,12 +59,12 @@ class ElasticSearchIndexInfoTest extends TestCase
             'aliases' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('no_alias_index')
             ->andReturn($indexInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'no_alias_index'])
             ->assertExitCode(0);
@@ -85,12 +85,12 @@ class ElasticSearchIndexInfoTest extends TestCase
             'aliases' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('large_index')
             ->andReturn($indexInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'large_index'])
             ->assertExitCode(0);
@@ -98,12 +98,12 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('nonexistent_index')
             ->andThrow(new RuntimeException('Index does not exist'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'nonexistent_index'])
             ->assertExitCode(0);
@@ -111,12 +111,12 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_alias_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('alias_index')
             ->andThrow(new RuntimeException('Index is not in the indices stats, probably you used an alias?'));
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'alias_index'])
             ->assertExitCode(0);
@@ -135,12 +135,12 @@ class ElasticSearchIndexInfoTest extends TestCase
             'aliases' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('empty_index')
             ->andReturn($indexInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'empty_index'])
             ->assertExitCode(0);
@@ -159,12 +159,12 @@ class ElasticSearchIndexInfoTest extends TestCase
             'aliases' => [],
         ];
 
-        $mockService = Mockery::mock(StatementElasticSearchService::class);
+        $mockService = Mockery::mock(StatementElasticToolsService::class);
         $mockService->shouldReceive('getIndexInfo')
             ->with('size_test')
             ->andReturn($indexInfo);
 
-        $this->app->instance(StatementElasticSearchService::class, $mockService);
+        $this->app->instance(StatementElasticToolsService::class, $mockService);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'size_test'])
             ->assertExitCode(0);
