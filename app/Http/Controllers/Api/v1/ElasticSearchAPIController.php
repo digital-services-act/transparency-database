@@ -134,7 +134,7 @@ class ElasticSearchAPIController extends Controller
 
     public function clearAggregateCache(): string
     {
-        $this->statement_elastic_search_service->clearOSACache();
+        $this->statement_elastic_search_service->clearESACache();
 
         return 'ok';
     }
