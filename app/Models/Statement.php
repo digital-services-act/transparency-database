@@ -114,7 +114,6 @@ class Statement extends Model
         'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED,
     ];
 
-
     public const LABEL_STATEMENT_DECISION_GROUND = 'Decision Ground';
 
     public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
@@ -595,19 +594,19 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        return Cache::remember('platform-' . $this->platform_id . '-name', 3600, function () {
+        return Cache::remember('platform-'.$this->platform_id.'-name', 3600, function () {
             $platform = Platform::find($this->platform_id);
 
-            return $platform->name ?? 'deleted-name-' . $this->platform_id;
+            return $platform->name ?? 'deleted-name-'.$this->platform_id;
         });
     }
 
     public function platformUuidCached(): string
     {
-        return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, function () {
+        return Cache::remember('platform-'.$this->platform_id.'-uuid', 3600, function () {
             $platform = Platform::find($this->platform_id);
 
-            return $platform->uuid ?? 'deleted-uuid-' . $this->platform_id;
+            return $platform->uuid ?? 'deleted-uuid-'.$this->platform_id;
         });
     }
 
@@ -660,57 +659,6 @@ class Statement extends Model
         ];
     }
 
-    public function toSyncableArray(): array
-    {
-
-        return [
-            'id' => $this->getRawOriginal('id'),
-            'uuid' => $this->getRawOriginal('uuid'),
-            'decision_visibility' => $this->getRawOriginal('decision_visibility'),
-            'decision_visibility_other' => $this->getRawOriginal('decision_visibility_other'),
-            'decision_monetary' => $this->getRawOriginal('decision_monetary'),
-            'decision_monetary_other' => $this->getRawOriginal('decision_monetary_other'),
-            'decision_provision' => $this->getRawOriginal('decision_provision'),
-            'decision_account' => $this->getRawOriginal('decision_account'),
-            'account_type' => $this->getRawOriginal('account_type'),
-            'decision_ground' => $this->getRawOriginal('decision_ground'),
-            'decision_ground_reference_url' => $this->getRawOriginal('decision_ground_reference_url'),
-            'content_type' => $this->getRawOriginal('content_type'),
-            'content_type_other' => $this->getRawOriginal('content_type_other'),
-            'content_language' => $this->getRawOriginal('content_language'),
-            'content_date' => $this->getRawOriginal('content_date'),
-            'application_date' => $this->getRawOriginal('application_date'),
-            'illegal_content_legal_ground' => $this->getRawOriginal('illegal_content_legal_ground'),
-            'illegal_content_explanation' => $this->getRawOriginal('illegal_content_explanation'),
-            'incompatible_content_ground' => $this->getRawOriginal('incompatible_content_ground'),
-            'incompatible_content_explanation' => $this->getRawOriginal('incompatible_content_explanation'),
-            'incompatible_content_illegal' => $this->getRawOriginal('incompatible_content_illegal'),
-            'source_type' => $this->getRawOriginal('source_type'),
-            'source_identity' => $this->getRawOriginal('source_identity'),
-            'decision_facts' => $this->getRawOriginal('decision_facts'),
-            'automated_detection' => $this->getRawOriginal('automated_detection'),
-            'automated_decision' => $this->getRawOriginal('automated_decision'),
-            'category' => $this->getRawOriginal('category'),
-            'category_addition' => $this->getRawOriginal('category_addition'),
-            'category_specification' => $this->getRawOriginal('category_specification'),
-            'category_specification_other' => $this->getRawOriginal('category_specification_other'),
-            'platform_id' => $this->getRawOriginal('platform_id'),
-            'user_id' => $this->getRawOriginal('user_id'),
-            'created_at' => $this->getRawOriginal('created_at'),
-            'updated_at' => $this->getRawOriginal('updated_at'),
-            'deleted_at' => $this->getRawOriginal('deleted_at'),
-            'puid' => $this->getRawOriginal('puid'),
-            'territorial_scope' => $this->getRawOriginal('territorial_scope'),
-            'method' => $this->getRawOriginal('method'),
-            'end_date' => $this->getRawOriginal('end_date'),
-            'end_date_visibility_restriction' => $this->getRawOriginal('end_date_visibility_restriction'),
-            'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
-            'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
-            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
-            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
-        ];
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -728,7 +676,7 @@ class Statement extends Model
 
     public function getSelfAttribute(): string
     {
-        return route('api.v' . config('app.api_latest') . '.statement.show', [$this->uuid]);
+        return route('api.v'.config('app.api_latest').'.statement.show', [$this->uuid]);
     }
 
     public function getPlatformNameAttribute(): string
@@ -797,8 +745,8 @@ class Statement extends Model
 
         foreach ($keys as $key) {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class . '::' . $key)) {
-                $value = constant(self::class . '::' . $key);
+            if (defined(self::class.'::'.$key)) {
+                $value = constant(self::class.'::'.$key);
                 if ($value !== null) {
                     $enumValues[] = $value;
                 }

@@ -242,24 +242,6 @@ class StatementTest extends TestCase
         $statement->platformUuidCached();
     }
 
-    public function test_it_prepares_syncable_array_correctly(): void
-    {
-        $statement = Statement::factory()->create([
-            'decision_visibility' => ['REMOVED'],
-            'content_type' => ['TEXT', 'IMAGE'],
-            'automated_detection' => Statement::AUTOMATED_DETECTION_YES,
-        ]);
-
-        $syncable = $statement->toSyncableArray();
-
-        $this->assertArrayHasKey('id', $syncable);
-        $this->assertArrayHasKey('uuid', $syncable);
-        $this->assertArrayHasKey('platform_id', $syncable);
-        $this->assertArrayHasKey('decision_visibility', $syncable);
-        $this->assertArrayHasKey('content_type', $syncable);
-        $this->assertArrayHasKey('automated_detection', $syncable);
-    }
-
     public function test_it_handles_platform_attributes_when_platform_missing(): void
     {
         // Create a statement without platform_id
