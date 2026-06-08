@@ -12,6 +12,8 @@ use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
 use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
+use App\Services\StatementElasticConnectionService;
+use App\Services\StatementElasticIndexerService;
 use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -29,6 +31,7 @@ class StatementController extends Controller
 
     public function __construct(
         protected StatementQueryService $statement_query_service,
+        protected StatementElasticConnectionService $statement_elastic_connection_service,
         protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
@@ -84,7 +87,7 @@ class StatementController extends Controller
     private function setupQuery(Request $request, int $page, int $perPage): array
     {
         // We have to ignore this in code coverage because the elastic is not available in the unit tests
-        if (StatementElasticSearchService::hasConfiguredUris()) {
+        if ($this->statement_elastic_connection_service->isConfigured()) {
             $filters = $request->query();
 
             $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
@@ -153,7 +156,7 @@ class StatementController extends Controller
         ]);
     }
 
-    public function store(StatementStoreRequest $request): RedirectResponse
+    public function store(StatementStoreRequest $request, StatementElasticIndexerService $statement_elastic_indexer_service): RedirectResponse
     {
 
         $validated = $request->safe()->merge([
@@ -175,11 +178,11 @@ class StatementController extends Controller
         }
 
         $env = config('app.env');
-        if ($env !== 'production' && StatementElasticSearchService::hasConfiguredUris()) {
+        if ($env !== 'production' && $this->statement_elastic_connection_service->isConfigured()) {
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statement
             // right away so it appears in search results immediately.
-            $this->statement_elastic_search_service->indexStatement($statement);
+            $statement_elastic_indexer_service->indexStatement($statement);
         }
 
         return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->uuid.'">Click here to view it.</a>');

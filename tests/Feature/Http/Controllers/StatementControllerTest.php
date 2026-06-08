@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\StatementController;
 use App\Models\Statement;
+use App\Services\StatementElasticIndexerService;
 use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
 // use JMac\Testing\Traits\AdditionalAssertions;
@@ -252,8 +253,8 @@ class StatementControllerTest extends TestCase
         // Set the config to use elasticsearch
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
         $mock->shouldReceive('indexStatement')->once();
 
         $this->post(route('statement.store'), $this->dummy_attributes);
@@ -268,8 +269,8 @@ class StatementControllerTest extends TestCase
         // Set the config to use elasticsearch
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
         $mock->shouldReceive('indexStatement')->never();
 
         $this->post(route('statement.store'), $this->dummy_attributes);
@@ -284,8 +285,8 @@ class StatementControllerTest extends TestCase
         // Ensure elasticsearch is not configured
         config()->set('elasticsearch.uri', [null]);
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
         $mock->shouldReceive('indexStatement')->never();
 
         $this->post(route('statement.store'), $this->dummy_attributes);

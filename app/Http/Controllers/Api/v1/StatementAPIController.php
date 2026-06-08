@@ -11,6 +11,8 @@ use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\PlatformUniqueIdService;
+use App\Services\StatementElasticConnectionService;
+use App\Services\StatementElasticIndexerService;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -55,8 +57,11 @@ class StatementAPIController extends Controller
         );
     }
 
-    public function store(StatementStoreRequest $request): JsonResponse
-    {
+    public function store(
+        StatementStoreRequest $request,
+        StatementElasticConnectionService $statement_elastic_connection_service,
+        StatementElasticIndexerService $statement_elastic_indexer_service,
+    ): JsonResponse {
         $validated = $request->safe()->merge(
             [
                 'platform_id' => $this->getRequestUserPlatformId($request),
@@ -86,11 +91,11 @@ class StatementAPIController extends Controller
         $out['puid'] = $statement->puid;
 
         $env = config('app.env');
-        if ($env !== 'production' && StatementElasticSearchService::hasConfiguredUris()) {
+        if ($env !== 'production' && $statement_elastic_connection_service->isConfigured()) {
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statement
             // right away so it appears in search results immediately.
-            $this->statement_elastic_search_service->indexStatement($statement);
+            $statement_elastic_indexer_service->indexStatement($statement);
         }
 
         return response()->json($out, Response::HTTP_CREATED);

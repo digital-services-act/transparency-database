@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticConnectionService;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
@@ -31,7 +31,7 @@ class ElasticSearchIndexReindex extends Command
     public function handle(): void
     {
         /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticConnectionService::class)->client();
         $index = $this->argument('index');
         $target = $this->argument('target');
 

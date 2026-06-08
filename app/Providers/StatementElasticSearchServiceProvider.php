@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Services\PlatformQueryService;
+use App\Services\StatementElasticConnectionService;
+use App\Services\StatementElasticIndexerService;
 use App\Services\StatementElasticSearchService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -16,7 +18,14 @@ class StatementElasticSearchServiceProvider extends ServiceProvider implements D
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(StatementElasticSearchService::class, static fn (Application $app) => new StatementElasticSearchService(app(PlatformQueryService::class)));
+        $this->app->singleton(StatementElasticConnectionService::class, static fn () => new StatementElasticConnectionService);
+        $this->app->singleton(StatementElasticSearchService::class, static fn (Application $app) => new StatementElasticSearchService(
+            app(PlatformQueryService::class),
+            $app->make(StatementElasticConnectionService::class),
+        ));
+        $this->app->singleton(StatementElasticIndexerService::class, static fn (Application $app) => new StatementElasticIndexerService(
+            $app->make(StatementElasticConnectionService::class),
+        ));
     }
 
     /**
@@ -29,6 +38,10 @@ class StatementElasticSearchServiceProvider extends ServiceProvider implements D
     #[\Override]
     public function provides(): array
     {
-        return [StatementElasticSearchService::class];
+        return [
+            StatementElasticConnectionService::class,
+            StatementElasticSearchService::class,
+            StatementElasticIndexerService::class,
+        ];
     }
 }

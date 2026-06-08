@@ -7,6 +7,7 @@ use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticSearchService;
 use Elastic\Elasticsearch\Client;
 use Exception;
@@ -26,15 +27,18 @@ class ElasticSearchAPIController extends Controller
 
     private Client $client;
 
-    private string $index_name = 'statement_index';
+    private string $index_name;
 
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
     private int $response_size_limit = 5242880;
 
-    public function __construct(private readonly StatementElasticSearchService $statement_elastic_search_service)
-    {
-        $this->client = $this->statement_elastic_search_service->client();
+    public function __construct(
+        private readonly StatementElasticConnectionService $statement_elastic_connection_service,
+        private readonly StatementElasticSearchService $statement_elastic_search_service,
+    ) {
+        $this->client = $this->statement_elastic_connection_service->client();
+        $this->index_name = $this->statement_elastic_connection_service->statementIndexName();
     }
 
     public function indices(Request $request): JsonResponse

@@ -7,7 +7,7 @@ use App\Jobs\StatementElasticSearchableChunkReverse;
 use App\Jobs\StatementElasticSearchableRawChunk;
 use App\Jobs\StatementElasticSearchableRawChunkReverse;
 use App\Models\Statement;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -25,8 +25,8 @@ class StatementElasticSearchableChunkBenchmarkTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockService = Mockery::mock(StatementElasticSearchService::class);
-        $this->app->instance(StatementElasticSearchService::class, $this->mockService);
+        $this->mockService = Mockery::mock(StatementElasticIndexerService::class);
+        $this->app->instance(StatementElasticIndexerService::class, $this->mockService);
     }
 
     public function test_forward_eloquent_job_logs_benchmark_timings_when_enabled(): void

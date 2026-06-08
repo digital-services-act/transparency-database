@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticSearchService;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
@@ -33,7 +34,7 @@ class StatementsElasticCreateIndex extends Command
     public function handle(StatementElasticSearchService $statement_search_service): void
     {
         /** @var Client $client */
-        $client = app(StatementElasticSearchService::class)->client();
+        $client = app(StatementElasticConnectionService::class)->client();
         $index = $this->argument('index');
         $shards = $this->intifyArgument('shards');
         $replicas = $this->intifyArgument('replicas');

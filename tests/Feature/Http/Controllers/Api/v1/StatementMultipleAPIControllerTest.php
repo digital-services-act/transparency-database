@@ -5,7 +5,7 @@ namespace Tests\Feature\Http\Controllers\Api\v1;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -812,8 +812,8 @@ class StatementMultipleAPIControllerTest extends TestCase
         // Set the config to use elasticsearch
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
         $mock->shouldReceive('bulkIndexStatements')->once();
 
         $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
@@ -830,8 +830,8 @@ class StatementMultipleAPIControllerTest extends TestCase
         // Set the config to use elasticsearch
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
         $mock->shouldReceive('bulkIndexStatements')->never();
 
         $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
@@ -848,8 +848,8 @@ class StatementMultipleAPIControllerTest extends TestCase
         // Ensure elasticsearch is not configured
         config()->set('elasticsearch.uri', [null]);
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
         $mock->shouldReceive('bulkIndexStatements')->never();
 
         $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [

@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -36,7 +36,7 @@ class StatementElasticSearchableRawChunkReverse implements ShouldQueue
      *
      * @throws JsonException
      */
-    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
+    public function handle(StatementElasticIndexerService $statement_elastic_indexer_service): void
     {
         // Set this in cache, to emergency stop reindexing.
         $stop = Cache::get('stop_reindexing', false);
@@ -66,7 +66,7 @@ class StatementElasticSearchableRawChunkReverse implements ShouldQueue
             }
 
             if ($this->benchmark) {
-                $metrics = $statement_elastic_search_service->benchmarkBulkIndexRawStatementsForIdRange(
+                $metrics = $statement_elastic_indexer_service->benchmarkBulkIndexRawStatementsForIdRange(
                     $end,
                     $this->max,
                     $this->range,
@@ -82,7 +82,7 @@ class StatementElasticSearchableRawChunkReverse implements ShouldQueue
                     'attempt' => $attempt,
                 ], $metrics));
             } else {
-                $statement_elastic_search_service->bulkIndexRawStatementsForIdRange(
+                $statement_elastic_indexer_service->bulkIndexRawStatementsForIdRange(
                     $end,
                     $this->max,
                     $this->range,

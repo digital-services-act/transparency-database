@@ -4,19 +4,19 @@ namespace Tests\Feature\Services;
 
 use App\Models\Platform;
 use App\Models\Statement;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
-class StatementElasticSearchRawIndexingTest extends TestCase
+class StatementElasticIndexerRawIndexingTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_raw_statement_payload_matches_current_searchable_payload(): void
     {
         $statement = Statement::factory()->create();
-        $service = app(StatementElasticSearchService::class);
+        $service = app(StatementElasticIndexerService::class);
 
         $rawStatement = $service->rawStatementRowsForIdRange($statement->id, $statement->id)->first();
 
@@ -32,7 +32,7 @@ class StatementElasticSearchRawIndexingTest extends TestCase
         Platform::query()->findOrFail($statement->platform_id)->delete();
         Cache::flush();
 
-        $service = app(StatementElasticSearchService::class);
+        $service = app(StatementElasticIndexerService::class);
         $rawStatement = $service->rawStatementRowsForIdRange($statement->id, $statement->id)->first();
 
         $this->assertSame(

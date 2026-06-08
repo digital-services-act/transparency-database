@@ -11,7 +11,8 @@ use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\GroupedSubmissionsService;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticConnectionService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,15 +29,17 @@ class StatementMultipleAPIController extends Controller
     public function __construct(
         protected PlatformUniqueIdService $platform_unique_id_service,
         protected GroupedSubmissionsService $grouped_submissions_service,
-        protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service
     ) {}
 
     /**
      * @throws PuidNotUniqueMultipleException|PuidNotUniqueSingleException|JsonException
      */
-    public function store(Request $request): JsonResponse
-    {
+    public function store(
+        Request $request,
+        StatementElasticConnectionService $statement_elastic_connection_service,
+        StatementElasticIndexerService $statement_elastic_indexer_service,
+    ): JsonResponse {
         $platform_id = $this->getRequestUserPlatformId($request);
         $user_id = $request->user()->id;
         $method = Statement::METHOD_API_MULTI;
@@ -84,13 +87,13 @@ class StatementMultipleAPIController extends Controller
         }
 
         $env = config('app.env');
-        if ($env !== 'production' && StatementElasticSearchService::hasConfiguredUris()) {
+        if ($env !== 'production' && $statement_elastic_connection_service->isConfigured()) {
             // If we are not production and
             // If we have elasticsearch configured, we want to index the new statements
             // right away so they appear in search results immediately.
             $uuids = array_map(static fn ($statement) => $statement['uuid'], $payload['statements']);
             $statements = Statement::query()->whereIn('uuid', $uuids)->get();
-            $this->statement_elastic_search_service->bulkIndexStatements($statements);
+            $statement_elastic_indexer_service->bulkIndexStatements($statements);
         }
 
         return response()->json(['statements' => $out], Response::HTTP_CREATED);

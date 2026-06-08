@@ -3,7 +3,7 @@
 namespace Tests\Feature\Jobs;
 
 use App\Jobs\StatementElasticSearchableRawChunkReverse;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -22,8 +22,8 @@ class StatementElasticSearchableRawChunkReverseTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockService = Mockery::mock(StatementElasticSearchService::class);
-        $this->app->instance(StatementElasticSearchService::class, $this->mockService);
+        $this->mockService = Mockery::mock(StatementElasticIndexerService::class);
+        $this->app->instance(StatementElasticIndexerService::class, $this->mockService);
     }
 
     public function test_job_indexes_highest_raw_chunk_and_dispatches_next_lower_job(): void

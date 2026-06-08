@@ -4,7 +4,7 @@ namespace Tests\Feature\Jobs;
 
 use App\Jobs\StatementElasticSearchableChunk;
 use App\Models\Statement;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -23,8 +23,8 @@ class StatementElasticSearchableChunkTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockService = Mockery::mock(StatementElasticSearchService::class);
-        $this->app->instance(StatementElasticSearchService::class, $this->mockService);
+        $this->mockService = Mockery::mock(StatementElasticIndexerService::class);
+        $this->app->instance(StatementElasticIndexerService::class, $this->mockService);
     }
 
     public function test_job_processes_chunk_and_dispatches_next_job(): void

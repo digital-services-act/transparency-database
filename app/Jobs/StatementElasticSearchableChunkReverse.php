@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Statement;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticIndexerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,7 +37,7 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
      *
      * @throws JsonException
      */
-    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
+    public function handle(StatementElasticIndexerService $statement_elastic_indexer_service): void
     {
         // Set this in cache, to emergency stop reindexing.
         $stop = Cache::get('stop_reindexing', false);
@@ -82,7 +82,7 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
             $fetch_ms = round((hrtime(true) - $fetch_start) / 1_000_000, 3);
 
             if ($this->benchmark) {
-                $metrics = $statement_elastic_search_service->benchmarkBulkIndexStatements($statements);
+                $metrics = $statement_elastic_indexer_service->benchmarkBulkIndexStatements($statements);
                 $metrics['fetch_ms'] = $fetch_ms;
                 $metrics['total_ms'] += $fetch_ms;
 
@@ -95,7 +95,7 @@ class StatementElasticSearchableChunkReverse implements ShouldQueue
                     'attempt' => $attempt,
                 ], $metrics));
             } else {
-                $statement_elastic_search_service->bulkIndexStatements($statements);
+                $statement_elastic_indexer_service->bulkIndexStatements($statements);
             }
 
             if ($end <= $this->min) {
