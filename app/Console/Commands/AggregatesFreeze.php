@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticAggregationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -31,18 +31,18 @@ class AggregatesFreeze extends Command
      *
      * @throws JsonException
      */
-    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
+    public function handle(StatementElasticAggregationService $statement_elastic_aggregation_service): void
     {
         $date = $this->sanitizeDateArgument();
 
-        $attributes = $statement_elastic_search_service->getAllowedAggregateAttributes();
+        $attributes = $statement_elastic_aggregation_service->getAllowedAggregateAttributes();
 
         $disk = Storage::disk('s3ds');
         $path = Storage::path('');
         $json_file = 'aggregates-'.$date->format('Y-m-d').'.json';
         $csv_file = 'aggregates-'.$date->format('Y-m-d').'.csv';
 
-        $results = $statement_elastic_search_service->processDateAggregate(
+        $results = $statement_elastic_aggregation_service->processDateAggregate(
             $date,
             $attributes,
             false
@@ -57,7 +57,7 @@ class AggregatesFreeze extends Command
         }
 
         // Make the CSV
-        $headers = $statement_elastic_search_service->getAllowedAggregateAttributes();
+        $headers = $statement_elastic_aggregation_service->getAllowedAggregateAttributes();
         $headers[] = 'platform_name';
         $headers[] = 'total';
         $headers = array_diff($headers, ['platform_id']);

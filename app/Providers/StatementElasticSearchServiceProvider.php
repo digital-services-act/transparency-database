@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\PlatformQueryService;
+use App\Services\StatementElasticAggregationService;
 use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticIndexerService;
 use App\Services\StatementElasticSearchService;
@@ -19,9 +20,14 @@ class StatementElasticSearchServiceProvider extends ServiceProvider implements D
     public function register(): void
     {
         $this->app->singleton(StatementElasticConnectionService::class, static fn () => new StatementElasticConnectionService);
+        $this->app->singleton(StatementElasticAggregationService::class, static fn (Application $app) => new StatementElasticAggregationService(
+            app(PlatformQueryService::class),
+            $app->make(StatementElasticConnectionService::class),
+        ));
         $this->app->singleton(StatementElasticSearchService::class, static fn (Application $app) => new StatementElasticSearchService(
             app(PlatformQueryService::class),
             $app->make(StatementElasticConnectionService::class),
+            $app->make(StatementElasticAggregationService::class),
         ));
         $this->app->singleton(StatementElasticIndexerService::class, static fn (Application $app) => new StatementElasticIndexerService(
             $app->make(StatementElasticConnectionService::class),
@@ -40,6 +46,7 @@ class StatementElasticSearchServiceProvider extends ServiceProvider implements D
     {
         return [
             StatementElasticConnectionService::class,
+            StatementElasticAggregationService::class,
             StatementElasticSearchService::class,
             StatementElasticIndexerService::class,
         ];

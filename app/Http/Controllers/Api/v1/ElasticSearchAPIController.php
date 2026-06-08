@@ -7,6 +7,7 @@ use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\StatementElasticAggregationService;
 use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticSearchService;
 use Elastic\Elasticsearch\Client;
@@ -35,6 +36,7 @@ class ElasticSearchAPIController extends Controller
 
     public function __construct(
         private readonly StatementElasticConnectionService $statement_elastic_connection_service,
+        private readonly StatementElasticAggregationService $statement_elastic_aggregation_service,
         private readonly StatementElasticSearchService $statement_elastic_search_service,
     ) {
         $this->client = $this->statement_elastic_connection_service->client();
@@ -138,7 +140,7 @@ class ElasticSearchAPIController extends Controller
 
     public function clearAggregateCache(): string
     {
-        $this->statement_elastic_search_service->clearESACache();
+        $this->statement_elastic_aggregation_service->clearESACache();
 
         return 'ok';
     }
@@ -157,13 +159,13 @@ class ElasticSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes('all', false);
 
-            $results = $this->statement_elastic_search_service->processDateAggregate(
+            $results = $this->statement_elastic_aggregation_service->processDateAggregate(
                 $date,
                 $attributes,
                 $this->booleanizeQueryParam('cache')
             );
 
-            $headers = $this->statement_elastic_search_service->getAllowedAggregateAttributes(false);
+            $headers = $this->statement_elastic_aggregation_service->getAllowedAggregateAttributes(false);
             $headers[] = 'platform_name';
             $headers[] = 'total';
             $headers = array_diff($headers, ['platform_id']);
@@ -212,7 +214,7 @@ class ElasticSearchAPIController extends Controller
 
                     $attributes = $this->sanitizeAttributes($attributes_in, true);
 
-                    $results = $this->statement_elastic_search_service->processDateAggregate(
+                    $results = $this->statement_elastic_aggregation_service->processDateAggregate(
                         $date,
                         $attributes,
                         $this->booleanizeQueryParam('cache')
@@ -242,7 +244,7 @@ class ElasticSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_elastic_search_service->processRangeAggregate(
+            $results = $this->statement_elastic_aggregation_service->processRangeAggregate(
                 $dates['start'],
                 $dates['end'],
                 $attributes,
@@ -272,7 +274,7 @@ class ElasticSearchAPIController extends Controller
 
             $attributes = $this->sanitizeAttributes($attributes_in);
 
-            $results = $this->statement_elastic_search_service->processDatesAggregate(
+            $results = $this->statement_elastic_aggregation_service->processDatesAggregate(
                 $dates['start'],
                 $dates['end'],
                 $attributes,
@@ -442,7 +444,7 @@ class ElasticSearchAPIController extends Controller
     {
         $attributes = explode('__', $attributes_in);
         if ($attributes[0] === 'all') {
-            $attributes = $this->statement_elastic_search_service->getAllowedAggregateAttributes($remove_received_date);
+            $attributes = $this->statement_elastic_aggregation_service->getAllowedAggregateAttributes($remove_received_date);
         }
 
         return $attributes;

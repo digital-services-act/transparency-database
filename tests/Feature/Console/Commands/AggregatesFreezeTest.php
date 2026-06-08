@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticAggregationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -16,8 +16,8 @@ class AggregatesFreezeTest extends TestCase
 
     public function test_it_runs_with_successful_aggregates(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        // Mock the StatementElasticAggregationService
+        $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
         $serviceMock->shouldReceive('getAllowedAggregateAttributes')
             ->twice() // Once at start, once for headers
             ->andReturn(['category']);
@@ -36,7 +36,7 @@ class AggregatesFreezeTest extends TestCase
             ->once()
             ->andReturn($mockResults);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
 
         // Mock Storage facades
         $s3DiskMock = Mockery::mock();
@@ -70,8 +70,8 @@ class AggregatesFreezeTest extends TestCase
         Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
         Storage::shouldReceive('path')->with('')->andReturn('/tmp/');
 
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        // Mock the StatementElasticAggregationService
+        $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
         $serviceMock->shouldReceive('getAllowedAggregateAttributes')
             ->once() // Only called once, returns before headers call
             ->andReturn(['category']);
@@ -82,7 +82,7 @@ class AggregatesFreezeTest extends TestCase
             ->once()
             ->andReturn($emptyResults);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
 
         // Mock Log facade - expect info and error messages
         Log::shouldReceive('info')->once()->with(Mockery::pattern('/Number of aggregates.*0/'));
@@ -111,7 +111,7 @@ class AggregatesFreezeTest extends TestCase
             ],
         ];
 
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
         $serviceMock->shouldReceive('getAllowedAggregateAttributes')
             ->twice()
             ->andReturn(['category']);
@@ -124,7 +124,7 @@ class AggregatesFreezeTest extends TestCase
             )
             ->andReturn($mockResults);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
 
         $s3DiskMock = Mockery::mock();
         $s3DiskMock->shouldReceive('put')
