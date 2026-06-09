@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\PlatformPuidDeleteChunk;
 use App\Jobs\StatementDeleteChunk;
 use App\Services\DayArchiveService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticToolsService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +37,7 @@ class StatementsRemoveDate extends Command
     /**
      * Execute the console command.
      */
-    public function handle(DayArchiveService $day_archive_service, StatementElasticSearchService $statement_elastic_search_service): int
+    public function handle(DayArchiveService $day_archive_service, StatementElasticToolsService $statement_elastic_tools_service): int
     {
         try {
             $chunk = $this->positiveIntArgument('chunk');
@@ -53,7 +53,7 @@ class StatementsRemoveDate extends Command
         $max = $day_archive_service->getLastIdOfDate($date);
 
         // Delete from Elasticsearch in one fast range task. The database work remains date-scoped below.
-        $statement_elastic_search_service->deleteStatementsBeforeDate($date->copy()->addDay());
+        $statement_elastic_tools_service->deleteStatementsBeforeDate($date->copy()->addDay());
 
         if ($min && $max) {
             Log::info('Statement Removing Started', ['date' => $date->format('Y-m-d'), 'at' => Carbon::now()->format('Y-m-d H:i:s')]);

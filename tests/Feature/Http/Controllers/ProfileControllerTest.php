@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
 use App\Models\User;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use App\Services\TokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -41,8 +41,8 @@ class ProfileControllerTest extends TestCase
         $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
         $user = $this->createUserWithPlatform();
 
-        // Mock the StatementElasticSearchService
-        $this->mock(StatementElasticSearchService::class, function ($mock) {
+        // Mock the StatementElasticStatsService
+        $this->mock(StatementElasticStatsService::class, function ($mock) {
             $mock->shouldReceive('methodsByPlatformAll')->once()->andReturn(['platform1' => ['api']]);
             $mock->shouldReceive('allSendingPlatformIds')->once()->andReturn([1, 2]);
             $mock->shouldReceive('totalVlopPlatformsSending')->once()->andReturn(1);

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Models\Platform;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -16,14 +16,14 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_runs_with_all_option(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        // Mock the StatementElasticStatsService
+        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
         $serviceMock->shouldReceive('grandTotalNoCache')->once()->andReturn(12345);
         $serviceMock->shouldReceive('fullyAutomatedDecisionPercentageNoCache')->once()->andReturn(67);
         $serviceMock->shouldReceive('topCategoriesNoCache')->once()->andReturn(['category1', 'category2']);
         $serviceMock->shouldReceive('topDecisionVisibilitiesNoCache')->once()->andReturn(['visibility1', 'visibility2']);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
 
         // Create test platforms to avoid mocking the model
         Platform::factory()->count(5)->create();
@@ -43,11 +43,11 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_runs_with_grandtotal_option(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        // Mock the StatementElasticStatsService
+        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
         $serviceMock->shouldReceive('grandTotalNoCache')->once()->andReturn(54321);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
 
         // Mock Cache facade
         Cache::shouldReceive('get')->with('reindexing', false)->andReturn(false);
@@ -60,11 +60,11 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_handles_reindexing_scenario_for_grandtotal(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        // Mock the StatementElasticStatsService
+        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
         $serviceMock->shouldReceive('totalForDate')->with(Mockery::type(Carbon::class))->once()->andReturn(100);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
 
         // Mock Cache facade for reindexing scenario
         Cache::shouldReceive('get')->with('reindexing', false)->andReturn(true);
@@ -91,11 +91,11 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_runs_with_automateddecisionspercentage_option(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
+        // Mock the StatementElasticStatsService
+        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
         $serviceMock->shouldReceive('fullyAutomatedDecisionPercentageNoCache')->once()->andReturn(85);
 
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
 
         // Mock Cache facade
         Cache::shouldReceive('put')->with('automated_decisions_percentage', 85, 90000);

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Models\DayArchive;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -18,7 +18,7 @@ class DayArchiveTotalsTest extends TestCase
         DayArchive::factory()->create(['date' => '2025-09-03']);
 
         // Mock the service it depends on
-        $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) {
+        $this->mock(StatementElasticStatsService::class, function (MockInterface $mock) {
             // Ensure the method is called and just return a dummy value
             $mock->shouldReceive('totalForDate')->andReturn(123);
         });
@@ -34,7 +34,7 @@ class DayArchiveTotalsTest extends TestCase
         $dayArchive = DayArchive::factory()->create(['date' => '2025-09-03', 'total' => 0]);
 
         // Mock the service
-        $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) {
+        $this->mock(StatementElasticStatsService::class, function (MockInterface $mock) {
             $mock->shouldReceive('totalForDate')->andReturn(123);
         });
 
@@ -58,7 +58,7 @@ class DayArchiveTotalsTest extends TestCase
         ]);
 
         // Mock the service to expect the platform-specific method call
-        $this->mock(StatementElasticSearchService::class, function (MockInterface $mock) use ($dayArchive) {
+        $this->mock(StatementElasticStatsService::class, function (MockInterface $mock) use ($dayArchive) {
             $mock->shouldReceive('totalForPlatformDate')
                 ->withArgs(function ($platform, $date) use ($dayArchive) {
                     return $platform->id === $dayArchive->platform_id && $date->isSameDay($dayArchive->date);

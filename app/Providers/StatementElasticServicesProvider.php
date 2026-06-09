@@ -7,6 +7,7 @@ use App\Services\StatementElasticAggregationService;
 use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticIndexerService;
 use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use App\Services\StatementElasticToolsService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -26,6 +27,10 @@ class StatementElasticServicesProvider extends ServiceProvider implements Deferr
             $app->make(StatementElasticConnectionService::class),
         ));
         $this->app->singleton(StatementElasticSearchService::class, static fn (Application $app) => new StatementElasticSearchService(
+            app(PlatformQueryService::class),
+            $app->make(StatementElasticConnectionService::class),
+        ));
+        $this->app->singleton(StatementElasticStatsService::class, static fn (Application $app) => new StatementElasticStatsService(
             app(PlatformQueryService::class),
             $app->make(StatementElasticConnectionService::class),
             $app->make(StatementElasticAggregationService::class),
@@ -52,6 +57,7 @@ class StatementElasticServicesProvider extends ServiceProvider implements Deferr
             StatementElasticConnectionService::class,
             StatementElasticAggregationService::class,
             StatementElasticSearchService::class,
+            StatementElasticStatsService::class,
             StatementElasticIndexerService::class,
             StatementElasticToolsService::class,
         ];

@@ -9,7 +9,7 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\StatementElasticAggregationService;
 use App\Services\StatementElasticConnectionService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use Elastic\Elasticsearch\Client;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +37,7 @@ class ElasticSearchAPIController extends Controller
     public function __construct(
         private readonly StatementElasticConnectionService $statement_elastic_connection_service,
         private readonly StatementElasticAggregationService $statement_elastic_aggregation_service,
-        private readonly StatementElasticSearchService $statement_elastic_search_service,
+        private readonly StatementElasticStatsService $statement_elastic_stats_service,
     ) {
         $this->client = $this->statement_elastic_connection_service->client();
         $this->index_name = $this->statement_elastic_connection_service->statementIndexName();
@@ -345,7 +345,7 @@ class ElasticSearchAPIController extends Controller
 
     public function total(): JsonResponse
     {
-        return response()->json($this->statement_elastic_search_service->grandTotal());
+        return response()->json($this->statement_elastic_stats_service->grandTotal());
     }
 
     public function dateTotal(string $date_in): JsonResponse
@@ -353,7 +353,7 @@ class ElasticSearchAPIController extends Controller
         try {
             $date = $this->sanitizeDateString($date_in);
 
-            return response()->json($this->statement_elastic_search_service->totalForDate($date));
+            return response()->json($this->statement_elastic_stats_service->totalForDate($date));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date total attempt: '.$exception->getMessage()], $this->error_code);
         }
@@ -370,7 +370,7 @@ class ElasticSearchAPIController extends Controller
                 throw new RuntimeException('Platform not found');
             }
 
-            return response()->json($this->statement_elastic_search_service->totalForPlatformDate($platform, $date));
+            return response()->json($this->statement_elastic_stats_service->totalForPlatformDate($platform, $date));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date total platform attempt: '.$exception->getMessage()], $this->error_code);
         }
@@ -381,7 +381,7 @@ class ElasticSearchAPIController extends Controller
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            return response()->json($this->statement_elastic_search_service->totalForDateRange($dates['start'], $dates['end']));
+            return response()->json($this->statement_elastic_stats_service->totalForDateRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date total range attempt: '.$exception->getMessage()], $this->error_code);
         }
@@ -392,7 +392,7 @@ class ElasticSearchAPIController extends Controller
         try {
             $dates = $this->sanitizeDateStartEndStrings($start_in, $end_in);
 
-            return response()->json($this->statement_elastic_search_service->datesTotalsForRange($dates['start'], $dates['end']));
+            return response()->json($this->statement_elastic_stats_service->datesTotalsForRange($dates['start'], $dates['end']));
         } catch (Exception $exception) {
             return response()->json(['error' => 'invalid date totals range attempt: '.$exception->getMessage()], $this->error_code);
         }

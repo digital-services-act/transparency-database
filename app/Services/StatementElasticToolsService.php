@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Elastic\Elasticsearch\Client;
 use Exception;
+use Illuminate\Support\Carbon;
 use RuntimeException;
 
 /**
@@ -455,6 +456,47 @@ class StatementElasticToolsService
             }
             throw new RuntimeException('Failed to delete document: '.$e->getMessage());
         }
+    }
+
+    public function deleteStatementsForDate(Carbon $date): array
+    {
+        // Set to the very end of the day: 23:59:59.999
+        $date->setTime(23, 59, 59, 999999); // 999 milliseconds in microseconds
+        $timestamp = $date->getTimestampMs();
+
+        return $this->client()->deleteByQuery([
+            'index' => $this->indexName(),
+            'body' => [
+                'query' => [
+                    'range' => [
+                        'received_date' => [
+                            'lte' => $timestamp,
+                        ],
+                    ],
+                ],
+            ],
+            'wait_for_completion' => false,
+        ])->asArray();
+    }
+
+    public function deleteStatementsBeforeDate(Carbon $cutoff, bool $waitForCompletion = false): array
+    {
+        $timestamp = $cutoff->copy()->startOfDay()->getTimestampMs();
+
+        return $this->client()->deleteByQuery([
+            'index' => $this->indexName(),
+            'body' => [
+                'query' => [
+                    'range' => [
+                        'received_date' => [
+                            'lt' => $timestamp,
+                        ],
+                    ],
+                ],
+            ],
+            'conflicts' => 'proceed',
+            'wait_for_completion' => $waitForCompletion,
+        ])->asArray();
     }
 
     public function cancelAllTasks(): array

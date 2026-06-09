@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Platform;
 use App\Services\PlatformQueryService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use App\Services\TokenService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -15,20 +15,20 @@ class OnboardingController extends Controller
 {
     protected TokenService $tokenService;
 
-    protected StatementElasticSearchService $statement_elastic_search_service;
+    protected StatementElasticStatsService $statement_elastic_stats_service;
 
     protected PlatformQueryService $platform_query_service;
 
-    public function __construct(PlatformQueryService $platform_query_service, StatementElasticSearchService $statement_elastic_search_service, TokenService $tokenService)
+    public function __construct(PlatformQueryService $platform_query_service, StatementElasticStatsService $statement_elastic_stats_service, TokenService $tokenService)
     {
         $this->platform_query_service = $platform_query_service;
-        $this->statement_elastic_search_service = $statement_elastic_search_service;
+        $this->statement_elastic_stats_service = $statement_elastic_stats_service;
         $this->tokenService = $tokenService;
     }
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $platform_ids_methods_data = $this->statement_elastic_search_service->methodsByPlatformAll();
+        $platform_ids_methods_data = $this->statement_elastic_stats_service->methodsByPlatformAll();
 
         $filters = [];
         $filters['s'] = $request->get('s');

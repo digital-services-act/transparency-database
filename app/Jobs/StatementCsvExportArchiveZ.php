@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Services\DayArchiveService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +13,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -47,7 +46,7 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         return $totalSize;
     }
 
-    public function handle(StatementElasticSearchService $statement_elastic_search_service, DayArchiveService $day_archive_service): void
+    public function handle(StatementElasticStatsService $statement_elastic_stats_service, DayArchiveService $day_archive_service): void
     {
         $path = Storage::path('');
         // $base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
@@ -75,10 +74,9 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         $zipfilesha1 = $path.'sor-'.$this->platform_slug.'-'.$this->date.'-full.zip.sha1';
         $zipfilelightsha1 = $path.'sor-'.$this->platform_slug.'-'.$this->date.'-light.zip.sha1';
 
-
         DayArchive::create([
             'date' => $this->date,
-            'total' => $this->platform_slug === 'global' ? $statement_elastic_search_service->totalForDate($date) : $statement_elastic_search_service->totalForPlatformDate($platform, $date),
+            'total' => $this->platform_slug === 'global' ? $statement_elastic_stats_service->totalForDate($date) : $statement_elastic_stats_service->totalForPlatformDate($platform, $date),
             'platform_id' => $this->platform_id,
             'url' => $base_s3_url.basename($zipfile),
             'urllight' => $base_s3_url.basename($zipfilelight),

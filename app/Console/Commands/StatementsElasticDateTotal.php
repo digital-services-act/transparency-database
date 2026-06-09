@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\DayArchiveService;
-use App\Services\StatementElasticSearchService;
+use App\Services\StatementElasticStatsService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -39,7 +39,7 @@ class StatementsElasticDateTotal extends Command
      * @throws Exception
      * @throws Throwable
      */
-    public function handle(DayArchiveService $day_archive_service, StatementElasticSearchService $statement_elastic_search_service): void
+    public function handle(DayArchiveService $day_archive_service, StatementElasticStatsService $statement_elastic_stats_service): void
     {
         $date = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
@@ -53,7 +53,7 @@ class StatementsElasticDateTotal extends Command
             $this->info('Last ID: '.$last_id);
             $db_diff = $last_id - $first_id;
             $this->info('Difference in IDs: '.$db_diff);
-            $es_total = $statement_elastic_search_service->totalForDate($date);
+            $es_total = $statement_elastic_stats_service->totalForDate($date);
             $this->info('Elastic Total: '.$es_total);
             $source_diff = $db_diff - $es_total;
             $this->info('Source Difference: '.$source_diff);
@@ -74,8 +74,8 @@ class StatementsElasticDateTotal extends Command
             }
 
             $this->info('statements:index-date '.$date_string);
-            $totals = $statement_elastic_search_service->totalsForPlatformsDate($date);
-            $methods = $statement_elastic_search_service->methodsByPlatformsDate($date);
+            $totals = $statement_elastic_stats_service->totalsForPlatformsDate($date);
+            $methods = $statement_elastic_stats_service->methodsByPlatformsDate($date);
             foreach ($totals as $index => $total) {
                 $totals[$index]['API'] = $methods[$total['platform_id']]['API'] ?? 0;
                 $totals[$index]['API_MULTI'] = $methods[$total['platform_id']]['API_MULTI'] ?? 0;
