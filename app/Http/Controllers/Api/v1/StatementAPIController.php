@@ -88,6 +88,10 @@ class StatementAPIController extends Controller
         }
 
         $out = $statement->toArray();
+<<<<<<< HEAD
+=======
+        $out['id'] = $statement->id;
+>>>>>>> dev
         $out['puid'] = $statement->puid;
 
         $env = config('app.env');

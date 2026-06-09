@@ -65,6 +65,22 @@ Route::middleware(['force.auth'])->group(static function () {
     // Aggregates download
     Route::get('/explore-data/download/aggregates-{date}.{ext}', [DataDownloadController::class, 'aggregates'])->name('aggregates.download');
 
+<<<<<<< HEAD
+=======
+    $archiveFilenameConstraints = [
+        'platformSlug' => '[A-Za-z0-9][A-Za-z0-9-]*',
+        'date' => '\d{4}-\d{2}-\d{2}',
+        'version' => 'full|light',
+    ];
+
+    Route::get('/explore-data/download/sor-{platformSlug}-{date}-{version}.zip.sha1', [DataDownloadController::class, 'archiveChecksumByFilename'])
+        ->where($archiveFilenameConstraints)
+        ->name('dayarchive.download.filename.sha1');
+    Route::get('/explore-data/download/sor-{platformSlug}-{date}-{version}.zip', [DataDownloadController::class, 'archiveByFilename'])
+        ->where($archiveFilenameConstraints)
+        ->name('dayarchive.download.filename');
+
+>>>>>>> dev
     Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index')->whereUuid('uuid');
     Route::get('/explore-data/download-file/{dayArchive}/{type}', [DataDownloadController::class, 'download'])->name('dayarchive.download');
 
