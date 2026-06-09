@@ -66,7 +66,10 @@
 
     <hr class="ecl-separator">
 
-    <x-statement.search-form :similarity_results="$similarity_results" :options="$options" />
+    <x-statement.search-form
+        :similarity_results="$similarity_results"
+        :options="$options"
+    />
 
     <div class="ecl-u-mt-xl">&nbsp;<!-- CALIFORNIA --></div>
     <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mt-xl">

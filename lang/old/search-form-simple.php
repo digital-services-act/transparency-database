@@ -3,6 +3,6 @@
 return [
 
     'label' => 'Search',
-    'placeholder' => 'enter your text search here'
+    'placeholder' => 'enter your text search here',
 
 ];

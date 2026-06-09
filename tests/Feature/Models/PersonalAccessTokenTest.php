@@ -6,7 +6,7 @@ use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class PersonalAccessTokenTest extends TestCase
@@ -19,15 +19,13 @@ class PersonalAccessTokenTest extends TestCase
         Cache::flush();
     }
 
-    /** @test */
-    public function it_has_correct_ttl_and_interval_defaults()
+    public function test_it_has_correct_ttl_and_interval_defaults()
     {
         $this->assertEquals(3600, PersonalAccessToken::$ttl);
         $this->assertEquals(3600, PersonalAccessToken::$interval);
     }
 
-    /** @test */
-    public function it_caches_last_used_at_updates()
+    public function test_it_caches_last_used_at_updates()
     {
         $user = User::factory()->create();
         $token = $user->createToken('test-token')->accessToken;
@@ -41,8 +39,7 @@ class PersonalAccessTokenTest extends TestCase
         $this->assertNotNull(Cache::get($cacheKey));
     }
 
-    /** @test */
-    public function it_respects_configured_cache_interval()
+    public function test_it_respects_configured_cache_interval()
     {
         $customInterval = 7200;
         config(['sanctum.cache.update_last_used_at_interval' => $customInterval]);
@@ -67,8 +64,7 @@ class PersonalAccessTokenTest extends TestCase
         $this->assertNull(Cache::get($cacheKey));
     }
 
-    /** @test */
-    public function it_clears_cache_on_token_deletion()
+    public function test_it_clears_cache_on_token_deletion()
     {
         $user = User::factory()->create();
         $token = $user->createToken('test-token')->accessToken;
@@ -76,7 +72,7 @@ class PersonalAccessTokenTest extends TestCase
         // Set some cache values
         $lastUsedCacheKey = sprintf('personal-access-token:%s:last_used_at', $token->id);
         $tokenableCacheKey = sprintf('personal-access-token:%s:tokenable', $token->id);
-        $tokenCacheKey = 'personal-access-token:' . $token->id;
+        $tokenCacheKey = 'personal-access-token:'.$token->id;
 
         Cache::put($lastUsedCacheKey, now(), 3600);
         Cache::put($tokenableCacheKey, $user, 3600);
@@ -91,8 +87,7 @@ class PersonalAccessTokenTest extends TestCase
         $this->assertNull(Cache::get($tokenCacheKey));
     }
 
-    /** @test */
-    public function it_logs_critical_error_on_cache_failure()
+    public function test_it_logs_critical_error_on_cache_failure()
     {
         $user = User::factory()->create();
         $token = $user->createToken('test-token')->accessToken;
@@ -103,7 +98,7 @@ class PersonalAccessTokenTest extends TestCase
             ->andThrow(new \Exception('Cache error'));
 
         // Mock Log facade
-        \Illuminate\Support\Facades\Log::shouldReceive('critical')
+        Log::shouldReceive('critical')
             ->once()
             ->with('Critical Personal Access Token Error', \Mockery::hasKey('exception'));
 
@@ -112,8 +107,7 @@ class PersonalAccessTokenTest extends TestCase
         $token->save();
     }
 
-    /** @test */
-    public function it_updates_database_when_caching_last_used_at()
+    public function test_it_updates_database_when_caching_last_used_at()
     {
         $user = User::factory()->create();
         $token = $user->createToken('test-token')->accessToken;
@@ -126,7 +120,7 @@ class PersonalAccessTokenTest extends TestCase
         // Verify database was updated
         $this->assertDatabaseHas('personal_access_tokens', [
             'id' => $token->id,
-            'last_used_at' => $newLastUsedAt
+            'last_used_at' => $newLastUsedAt,
         ]);
     }
 }

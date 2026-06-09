@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Services\EuropeanCountriesService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Foundation\Application;
 
 class EuropeanCountriesServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -15,13 +15,14 @@ class EuropeanCountriesServiceProvider extends ServiceProvider implements Deferr
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(EuropeanCountriesService::class, static fn(Application $app) => new EuropeanCountriesService());
+        $this->app->singleton(EuropeanCountriesService::class, static fn (Application $app) => new EuropeanCountriesService);
     }
 
     /**
      * Get the services provided by the provider.
      *
      * @codeCoverageIgnore
+     *
      * @return array<int, string>
      */
     #[\Override]

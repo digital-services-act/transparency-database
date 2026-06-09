@@ -2,9 +2,8 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Validation\Rule;
 
 class UniquePlatformAndUser implements Rule
 {
@@ -12,9 +11,9 @@ class UniquePlatformAndUser implements Rule
     public function passes($attribute, $value)
     {
         $user = User::where('email', $value)->first();
-        
+
         // If user doesn't exist, it's valid
-        if (!$user) {
+        if (! $user) {
             return true;
         }
 

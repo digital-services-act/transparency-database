@@ -29,7 +29,7 @@ return new class extends Migration
                 'sha1',
                 'sha1light',
                 'sha1url',
-                'sha1urllight'
+                'sha1urllight',
             ]);
         });
     }

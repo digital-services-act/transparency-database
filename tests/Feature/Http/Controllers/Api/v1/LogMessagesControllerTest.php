@@ -14,10 +14,7 @@ class LogMessagesControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /**
-     * @test
-     */
-    public function it_should_list_the_log_messages(): void
+    public function test_it_should_list_the_log_messages(): void
     {
         $this->signInAsAdmin();
         $response = $this->get(route('log-messages.index'));
@@ -25,18 +22,14 @@ class LogMessagesControllerTest extends TestCase
         $response->assertViewIs('log_messages.index');
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function it_removes_log_messages_redirects_to_index(): void
+    public function test_it_removes_log_messages_redirects_to_index(): void
     {
         // We should be at 0
         $log_messages = LogMessage::all();
         $this->assertCount(0, $log_messages);
-        
-        // Create One
-        Log::info('this is a test');
+
+        // Create One (db is no longer part of the default stack, so target it explicitly)
+        Log::channel('db')->info('this is a test');
         $log_messages = LogMessage::all();
         $this->assertCount(1, $log_messages);
 
@@ -49,22 +42,14 @@ class LogMessagesControllerTest extends TestCase
         $this->assertCount(0, $log_messages);
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function it_should_block_non_admins_from_truncating(): void
+    public function test_it_should_block_non_admins_from_deleting(): void
     {
         $this->signInAsSupport();
         $response = $this->delete(route('log-messages.destroy'));
         $response->assertForbidden();
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function it_should_block_non_admins_from_viewing(): void
+    public function test_it_should_block_non_admins_from_viewing(): void
     {
         $this->signInAsOnboarding();
         $response = $this->get(route('log-messages.index'));

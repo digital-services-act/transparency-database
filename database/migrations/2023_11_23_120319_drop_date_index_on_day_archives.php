@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('day_archives', function (Blueprint $table) {
-            $table->dropIndex('date_index');
-        });
+        // Schema::table('day_archives', function (Blueprint $table) {
+        //     $table->dropIndex('date_index');
+        // });
     }
 
     /**
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('day_archives', function (Blueprint $table) {
-            $table->unique(['date'], 'date_index');
-        });
+        // Schema::table('day_archives', function (Blueprint $table) {
+        //     $table->unique(['date'], 'date_index');
+        // });
     }
 };

@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DayArchive extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     protected $casts = [
-        'date' => 'date:Y-m-d'
+        'date' => 'date:Y-m-d',
     ];
 
     public function scopeGlobal(Builder $query): void
@@ -21,9 +22,6 @@ class DayArchive extends Model
         $query->whereNull('platform_id');
     }
 
-    /**
-     * @return BelongsTo
-     */
     public function platform(): BelongsTo
     {
         return $this->belongsTo(Platform::class);

@@ -32,6 +32,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Is Task Server
+    |--------------------------------------------------------------------------
+    | This value determines if this instance is a task server that should
+    | run scheduled tasks. Set this in your ".env" file.
+    |
+    */
+    'is_task_server' => env('APP_IS_TASK_SERVER', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |
@@ -83,9 +93,7 @@ return [
     */
 
     'locale' => 'en',
-    'locales' => ['en','fr','mt','bg','pl','hr','pt','cs','ro','da','sk','nl','sl','et','es','fi','sv','de','el','hu','ga','it','lv','lt'],
-
-
+    'locales' => ['en', 'fr', 'mt', 'bg', 'pl', 'hr', 'pt', 'cs', 'ro', 'da', 'sk', 'nl', 'sl', 'et', 'es', 'fi', 'sv', 'de', 'el', 'hu', 'ga', 'it', 'lv', 'lt'],
 
     /*
     |--------------------------------------------------------------------------
@@ -142,8 +150,8 @@ return [
     */
 
     'maintenance' => [
-        'driver' => 'file',
-        // 'store'  => 'redis',
+        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
     /*
@@ -152,7 +160,7 @@ return [
     |-------------------------------------------
     | That is the default API version of your API (Last version).
     */
-    'api_latest'  => '1',
+    'api_latest' => '1',
 
     /*
     |-------------------------------------------
@@ -160,15 +168,7 @@ return [
     |-------------------------------------------
     | Specify which versions of the api should be enabled in the RSP.
     */
-    'api_versions' => [1],
-
-    /*
-    |-------------------------------------------
-    | Real Environment
-    |-------------------------------------------
-    | Specify the real environment as each environment is knows as production from Vapor configuration file.
-    */
-    'env_real' => env('APP_ENV_REAL', 'local'),
+    'api_versions' => [1, 2],
 
     /*
     |--------------------------------------------------------------------------
@@ -224,21 +224,18 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\VaporUiServiceProvider::class,
 
-
-
         App\Providers\StatementQueryServiceProvider::class,
         App\Providers\LogMessageQueryServiceProvider::class,
         App\Providers\PlatformQueryServiceProvider::class,
-        App\Providers\StatementSearchServiceProvider::class,
+        App\Providers\StatementElasticServicesProvider::class,
         App\Providers\EuropeanCountriesServiceProvider::class,
         App\Providers\EuropeanLanguagesServiceProvider::class,
         App\Providers\DayArchiveServiceProvider::class,
         App\Providers\DriveInServiceProvider::class,
         App\Providers\DayArchiveQueryServiceProvider::class,
-        Zing\LaravelScout\OpenSearch\OpenSearchServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
-        EcPhp\LaravelCas\Providers\AppServiceProvider::class,
+        EcDoris\LaravelCas\Providers\AppServiceProvider::class,
 
     ],
 

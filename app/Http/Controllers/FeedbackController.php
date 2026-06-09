@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Stevebauman\Purify\Facades\Purify;
 
-
 class FeedbackController extends Controller
 {
     public function index(Request $request)
@@ -20,7 +19,7 @@ class FeedbackController extends Controller
     {
         $purified_feedback = Purify::clean($request->get('feedback'));
 
-//        return new FeedbackMail($purified_feedback);
+        //        return new FeedbackMail($purified_feedback);
         Mail::to(config('dsa.FEEDBACK_MAIL'))
             ->send(new FeedbackMail($purified_feedback));
 

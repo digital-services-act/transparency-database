@@ -22,7 +22,7 @@ class DayArchiveTest extends TestCase
             'sizelight' => 500,
             'url' => 'https://example.com/archive.zip',
             'urllight' => 'https://example.com/archive-light.zip',
-            'platform_id' => null
+            'platform_id' => null,
         ]);
 
         $this->assertDatabaseHas('day_archives', [
@@ -32,7 +32,7 @@ class DayArchiveTest extends TestCase
             'sizelight' => 500,
             'url' => 'https://example.com/archive.zip',
             'urllight' => 'https://example.com/archive-light.zip',
-            'platform_id' => null
+            'platform_id' => null,
         ]);
 
         $this->assertInstanceOf(DayArchive::class, $dayArchive);
@@ -45,7 +45,7 @@ class DayArchiveTest extends TestCase
             'date' => $date,
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         $this->assertInstanceOf(Carbon::class, $dayArchive->date);
@@ -60,7 +60,7 @@ class DayArchiveTest extends TestCase
             'total' => 100,
             'size' => 1000,
             'sizelight' => 500,
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         $this->assertInstanceOf(Platform::class, $dayArchive->platform);
@@ -75,7 +75,7 @@ class DayArchiveTest extends TestCase
             'total' => 100,
             'size' => 1000,
             'sizelight' => 500,
-            'platform_id' => null
+            'platform_id' => null,
         ]);
 
         // Create platform-specific archive
@@ -85,7 +85,7 @@ class DayArchiveTest extends TestCase
             'total' => 50,
             'size' => 500,
             'sizelight' => 250,
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         $globalArchives = DayArchive::global()->get();
@@ -100,7 +100,7 @@ class DayArchiveTest extends TestCase
             'date' => Carbon::now()->toDateString(),
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         $newTotal = 150;
@@ -116,7 +116,7 @@ class DayArchiveTest extends TestCase
             'date' => Carbon::now()->toDateString(),
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         $id = $dayArchive->id;
@@ -133,12 +133,12 @@ class DayArchiveTest extends TestCase
             'total' => 100,
             'size' => 1000,
             'sizelight' => 500,
-            'non_existent_field' => 'test'
+            'non_existent_field' => 'test',
         ];
 
         // Filter out non-existent fields before creating
         $validAttributes = array_intersect_key($attributes, array_flip([
-            'date', 'total', 'size', 'sizelight', 'url', 'urllight', 'completed_at', 'platform_id'
+            'date', 'total', 'size', 'sizelight', 'url', 'urllight', 'completed_at', 'platform_id',
         ]));
 
         $dayArchive = DayArchive::create($validAttributes);
@@ -147,7 +147,7 @@ class DayArchiveTest extends TestCase
             'date' => $date,
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         // Verify the non-existent field was not added to the model
@@ -165,21 +165,21 @@ class DayArchiveTest extends TestCase
             'date' => $yesterday,
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         DayArchive::create([
             'date' => $today,
             'total' => 150,
             'size' => 1500,
-            'sizelight' => 750
+            'sizelight' => 750,
         ]);
 
         DayArchive::create([
             'date' => $tomorrow,
             'total' => 200,
             'size' => 2000,
-            'sizelight' => 1000
+            'sizelight' => 1000,
         ]);
 
         $archives = DayArchive::whereBetween('date', [$yesterday, $today])->get();
@@ -196,21 +196,21 @@ class DayArchiveTest extends TestCase
             'date' => Carbon::now()->subDays(2),
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         DayArchive::create([
             'date' => Carbon::now()->subDay(),
             'total' => 150,
             'size' => 1500,
-            'sizelight' => 750
+            'sizelight' => 750,
         ]);
 
         DayArchive::create([
             'date' => Carbon::now(),
             'total' => 200,
             'size' => 2000,
-            'sizelight' => 1000
+            'sizelight' => 1000,
         ]);
 
         $totalSum = DayArchive::sum('total');
@@ -230,7 +230,7 @@ class DayArchiveTest extends TestCase
             'total' => 100,
             'size' => 1000,
             'sizelight' => 500,
-            'completed_at' => $now
+            'completed_at' => $now,
         ]);
 
         $this->assertNotNull($dayArchive->completed_at);
@@ -244,7 +244,7 @@ class DayArchiveTest extends TestCase
             'date' => Carbon::now()->toDateString(),
             'total' => 100,
             'size' => 1000,
-            'sizelight' => 500
+            'sizelight' => 500,
         ]);
 
         $this->assertNull($dayArchive->url);

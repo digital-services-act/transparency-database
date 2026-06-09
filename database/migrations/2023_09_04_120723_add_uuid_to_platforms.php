@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('platforms', function (Blueprint $table) {
-            $table->string('uuid', 36)->default('-')->index('platform_uuidindex');;
+            $table->string('uuid', 36)->default('-')->index('platform_uuidindex');
         });
     }
 

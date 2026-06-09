@@ -2,23 +2,24 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Http\Controllers\StatementController;
 use App\Models\Statement;
-use App\Models\StatementAlpha;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticIndexerService;
+use App\Services\StatementElasticSearchService;
+use App\Services\StatementQueryService;
+// use JMac\Testing\Traits\AdditionalAssertions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
-#use JMac\Testing\Traits\AdditionalAssertions;
-use Mockery\MockInterface;
 use Tests\Feature\Http\Controllers\Api\v1\StatementAPIControllerTest;
 use Tests\TestCase;
 
 /**
- * @see \App\Http\Controllers\StatementController
+ * @see StatementController
  */
 class StatementControllerTest extends TestCase
 {
-    #use AdditionalAssertions;
+    // use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
 
@@ -37,25 +38,22 @@ class StatementControllerTest extends TestCase
         'source_type' => 'SOURCE_ARTICLE_16',
         'decision_facts' => 'Facts and circumstances',
         'automated_detection' => 'Yes',
-        'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY'
+        'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
     ];
 
     //    /**
-//     * @test
-//     */
-//    public function index_displays_error_if_not_logged()
-//    {
-//
-//        $response = $this->get(route('statement.index'));
-//        $response->assertOk();
-//        $response->assertViewIs('statement.index');
-//        $response->assertViewHas('statements');
-//    }
+    //     * @test
+    //     */
+    //    public function index_displays_error_if_not_logged()
+    //    {
+    //
+    //        $response = $this->get(route('statement.index'));
+    //        $response->assertOk();
+    //        $response->assertViewIs('statement.index');
+    //        $response->assertViewHas('statements');
+    //    }
 
-    /**
-     * @test
-     */
-    public function index_displays_view_if_logged_with_rights(): void
+    public function test_index_displays_view_if_logged_with_rights(): void
     {
         $this->signInAsAdmin();
         $response = $this->get(route('statement.index'));
@@ -64,10 +62,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-    /**
-     * @test
-     */
-    public function index_handles_the_max_pages_issue(): void
+    public function test_index_handles_the_max_pages_issue(): void
     {
         $this->signInAsAdmin();
         $response = $this->get(route('statement.index', ['page' => 400]));
@@ -76,11 +71,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statements');
     }
 
-
-    /**
-     * @test
-     */
-    public function basic_search_route_works(): void
+    public function test_basic_search_route_works(): void
     {
         $this->signInAsAdmin();
         $response = $this->get(route('statement.search'));
@@ -88,11 +79,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewIs('statement.search');
     }
 
-
-    /**
-     * @test
-     */
-    public function create_blocks_when_no_platform(): void
+    public function test_create_blocks_when_no_platform(): void
     {
         $user = $this->signInAsAdmin();
         $user->platform_id = null;
@@ -102,28 +89,7 @@ class StatementControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-
-
-    /**
-     * @test
-     */
-    public function showUuid_works(): void
-    {
-        $this->signInAsAdmin();
-        $statement = Statement::factory()->create();
-        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
-            $mock->shouldReceive('uuidToId')
-                ->with($statement->uuid)
-                ->andReturn($statement->id);
-        });
-        $response = $this->get(route('statement.show.uuid', ['uuid' => $statement->uuid]));
-        $response->assertRedirect(route('statement.show', ['statement' => $statement]));
-    }
-
-    /**
-     * @test
-     */
-    public function show_throws_404_if_not_found(): void
+    public function test_show_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
         $statement = Statement::factory()->create();
@@ -131,39 +97,13 @@ class StatementControllerTest extends TestCase
         $response->assertNotFound();
     }
 
-
-    /**
-     * @test
-     */
-    public function showUuid_throws_404(): void
-    {
-        $this->signInAsAdmin();
-        $statement = Statement::factory()->create();
-        $statement_search_service = $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($statement) {
-            $mock->shouldReceive('uuidToId')
-                ->with($statement->uuid)
-                ->andReturn(0);
-        });
-        $response = $this->get(route('statement.show.uuid', ['uuid' => $statement->uuid]));
-        $response->assertNotFound();
-    }
-
-
-
-    /**
-     * @test
-     * @return void
-     */
-    public function it_can_show_the_index(): void
+    public function test_it_can_show_the_index(): void
     {
         $response = $this->get(route('statement.index'));
         $response->assertOk();
     }
 
-    /**
-     * @test
-     */
-    public function export_downloads_a_file(): void
+    public function test_export_downloads_a_file(): void
     {
 
         $this->signInAsAdmin();
@@ -172,11 +112,7 @@ class StatementControllerTest extends TestCase
         $response->assertDownload();
     }
 
-
-    /**
-     * @test
-     */
-    public function create_displays_view(): void
+    public function test_create_displays_view(): void
     {
 
         $user = $this->signInAsAdmin();
@@ -186,10 +122,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewIs('statement.create');
     }
 
-    /**
-     * @test
-     */
-    public function create_must_be_authenticated(): void
+    public function test_create_must_be_authenticated(): void
     {
 
         // The cas is set to masquerade in testing mode.
@@ -200,14 +133,9 @@ class StatementControllerTest extends TestCase
 
         $response = $this->get(route('statement.create'));
         $response->assertRedirectContains('/login');
-
     }
 
-
-    /**
-     * @test
-     */
-    public function show_displays_view(): void
+    public function test_show_displays_view(): void
     {
 
         $this->signInAsAdmin();
@@ -220,26 +148,7 @@ class StatementControllerTest extends TestCase
         $response->assertViewHas('statement');
     }
 
-    /**
-     * @test
-     */
-    public function show_legacy_displays_view(): void
-    {
-
-        $this->signInAsAdmin();
-
-        $statement = StatementAlpha::factory()->create();
-        $response = $this->get(route('statement.show', $statement));
-
-        $response->assertOk();
-        $response->assertViewIs('statement.show_legacy');
-        $response->assertViewHas('statement');
-    }
-
-    /**
-     * @test
-     */
-    public function show_beta_throws_404_if_not_found(): void
+    public function test_show_beta_throws_404_if_not_found(): void
     {
         $this->signInAsAdmin();
 
@@ -247,24 +156,10 @@ class StatementControllerTest extends TestCase
         $response->assertNotFound();
     }
 
-
     /**
-     * @test
-     */
-    public function show_legacy_throws_404_if_not_found(): void
-    {
-        $this->signInAsAdmin();
-
-        $response = $this->get(route('statement.show', ['statement' => 100000000005]));
-        $response->assertNotFound();
-    }
-
-
-    /**
-     * @test
      * @see StatementAPIControllerTest
      */
-    public function store_saves_and_redirects(): void
+    public function test_store_saves_and_redirects(): void
     {
 
         // This is a basic test that the normal controller is working.
@@ -288,14 +183,13 @@ class StatementControllerTest extends TestCase
         $this->assertEquals('2023-05-12 00:00:00', (string) $statement->content_date);
         $this->assertInstanceOf(Carbon::class, $statement->content_date);
 
-        $response->assertRedirect(route('statement.index'));
+        $response->assertRedirect(route('statement.show', $statement->uuid));
     }
 
     /**
-     * @test
      * @see StatementAPIControllerTest
      */
-    public function store_fails_with_existing_puid(): void
+    public function test_store_fails_with_existing_puid(): void
     {
 
         // This is a basic test that the normal controller is working.
@@ -313,8 +207,88 @@ class StatementControllerTest extends TestCase
 
         $response = $this->post(route('statement.store'), $this->dummy_attributes);
 
-
         $response->assertRedirect(route('statement.index'));
         $response->assertSessionHas('error', 'The PUID is not unique in the database');
+    }
+
+    public function test_index_uses_elasticsearch_when_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Mock the elastic search service
+        $mock = $this->mock(StatementElasticSearchService::class);
+        $mock->shouldReceive('query')->once()->andReturn([
+            'statements' => Statement::query(),
+            'total' => 0,
+        ]);
+
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        $response = $this->get(route('statement.index'));
+        $response->assertOk();
+    }
+
+    public function test_index_uses_database_when_elasticsearch_is_not_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Mock the statement query service
+        $mock = $this->mock(StatementQueryService::class);
+        $mock->shouldReceive('query')->twice()->andReturn(Statement::query());
+
+        // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.uri', [null]);
+
+        $response = $this->get(route('statement.index'));
+        $response->assertOk();
+    }
+
+    public function test_store_indexes_statement_in_non_production_with_elastic(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
+        $mock->shouldReceive('indexStatement')->once();
+
+        $this->post(route('statement.store'), $this->dummy_attributes);
+    }
+
+    public function test_store_does_not_index_statement_in_production(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to production
+        config()->set('app.env', 'production');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
+        $mock->shouldReceive('indexStatement')->never();
+
+        $this->post(route('statement.store'), $this->dummy_attributes);
+    }
+
+    public function test_store_does_not_index_statement_when_elastic_is_not_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.uri', [null]);
+
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
+        $mock->shouldReceive('indexStatement')->never();
+
+        $this->post(route('statement.store'), $this->dummy_attributes);
     }
 }

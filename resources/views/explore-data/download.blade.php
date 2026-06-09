@@ -82,7 +82,7 @@
 
 </div>
 <form method="get" id="platform">
-    <div class="ecl-row ecl-u-mt-l" style="border-width: 50px">
+    <div class="ecl-row ecl-u-mt-l" style="border-width: 50px;">
 
         <div class="ecl-col-l-2">
             <x-ecl.datepicker label="From" id="from_date" justlabel="true" name="from_date"
@@ -97,8 +97,13 @@
 
         </div>
         <div class="ecl-col-l-2 ecl-u-align-content-center">
-            <div class="ecl-form-group" style="margin-top: 24px;">
-                <button class="ecl-button ecl-button--primary" type="submit">
+            <div class="ecl-form-group" style="">
+                @if ($errors->any())
+                    <div style="margin-top: -22px;"></div>
+                @else
+                    <label for="search-btn" style="visibility: hidden; line-height: 24px; display: block;">Search</label>
+                @endif
+                <button id="search-btn" class="ecl-button ecl-button--primary" type="submit">
                     <span class="ecl-button__container">
                         <span class="ecl-button__label" data-ecl-label="true">
                             Search

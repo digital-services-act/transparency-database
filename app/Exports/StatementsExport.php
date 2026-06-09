@@ -10,7 +10,6 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class StatementsExport implements FromCollection, WithHeadings, WithMapping
 {
-
     use Exportable;
     use StatementExportTrait;
 
@@ -22,13 +21,11 @@ class StatementsExport implements FromCollection, WithHeadings, WithMapping
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     #[\Override]
     public function collection()
     {
         return $this->collection;
     }
-
-
 }

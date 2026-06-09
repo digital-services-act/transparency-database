@@ -40,7 +40,7 @@ return [
     */
 
     'serve_assets' => [
-        'static/ecl/images/icons/sprites/icons.svg'
+        'static/ecl/images/icons/sprites/icons.svg',
     ],
 
 ];

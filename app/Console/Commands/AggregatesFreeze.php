@@ -2,18 +2,16 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticAggregationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use JsonException;
 
-/**
- * @codeCoverageIgnore
- */
 class AggregatesFreeze extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -30,71 +28,45 @@ class AggregatesFreeze extends Command
 
     /**
      * Execute the console command.
+     *
      * @throws JsonException
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementElasticAggregationService $statement_elastic_aggregation_service): void
     {
         $date = $this->sanitizeDateArgument();
 
-        $attributes = $statement_search_service->getAllowedAggregateAttributes();
+        $attributes = $statement_elastic_aggregation_service->getAllowedAggregateAttributes();
 
         $disk = Storage::disk('s3ds');
         $path = Storage::path('');
-        $json_file = 'aggregates-' . $date->format('Y-m-d') . '.json';
-        $csv_file = 'aggregates-' . $date->format('Y-m-d') . '.csv';
+        $json_file = 'aggregates-'.$date->format('Y-m-d').'.json';
+        $csv_file = 'aggregates-'.$date->format('Y-m-d').'.csv';
 
-        $results = $statement_search_service->processDateAggregate(
+        $results = $statement_elastic_aggregation_service->processDateAggregate(
             $date,
             $attributes,
             false
         );
 
-        Log::info('Number of aggregates in the aggregates freeze results: ' . count($results['aggregates']));
+        Log::info('Number of aggregates in the aggregates freeze results: '.count($results['aggregates']));
 
-        if (count($results['aggregates']) === 0)
-        {
-            Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 10 seconds and trying again');
-            sleep(10);
-            $results = $statement_search_service->processDateAggregate(
-                $date,
-                $attributes,
-                false
-            );
-            Log::info('Number of aggregates in the aggregates freeze results: ' . count($results['aggregates']));
-        }
+        if (count($results['aggregates']) === 0) {
+            Log::error('The number of aggregates in the aggregates freeze results is 0');
 
-        if (count($results['aggregates']) === 0)
-        {
-            Log::info('The number of aggregates in the aggregates freeze results is 0, waiting 20 seconds and trying again');
-            sleep(20);
-            $results = $statement_search_service->processDateAggregate(
-                $date,
-                $attributes,
-                false
-            );
-            Log::info('Number of aggregates in the aggregates freeze results: ' . count($results['aggregates']));
-        }
-
-
-        if (count($results['aggregates']) === 0)
-        {
-            Log::warning('The number of aggregates in the aggregates freeze results is still 0, exiting');
-            exit;
+            return;
         }
 
         // Make the CSV
-        $headers = $statement_search_service->getAllowedAggregateAttributes();
+        $headers = $statement_elastic_aggregation_service->getAllowedAggregateAttributes();
         $headers[] = 'platform_name';
         $headers[] = 'total';
         $headers = array_diff($headers, ['platform_id']);
 
-        $out = fopen($path . $csv_file, 'wb');
+        $out = fopen($path.$csv_file, 'wb');
         fputcsv($out, $headers);
-        foreach ($results['aggregates'] as $result)
-        {
+        foreach ($results['aggregates'] as $result) {
             $row = [];
-            foreach ($headers as $header)
-            {
+            foreach ($headers as $header) {
                 $row[] = $result[$header];
             }
 
@@ -102,8 +74,8 @@ class AggregatesFreeze extends Command
         }
 
         fclose($out);
-        $disk->put($csv_file, fopen($path . $csv_file, 'rb+'));
-        unlink($path . $csv_file);
+        $disk->put($csv_file, fopen($path.$csv_file, 'rb+'));
+        unlink($path.$csv_file);
 
         // Now do the JSON
         $disk->put($json_file, json_encode($results, JSON_THROW_ON_ERROR));

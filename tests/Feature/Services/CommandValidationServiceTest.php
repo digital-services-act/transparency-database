@@ -10,18 +10,19 @@ use Tests\TestCase;
 class CommandValidationServiceTest extends TestCase
 {
     private CommandValidationService $service;
+
     private Command $command;
 
     protected function setUp(): void
     {
         // Skip parent::setUp() to avoid database seeding
         $this->createApplication();
-        
-        $this->service = new CommandValidationService();
+
+        $this->service = new CommandValidationService;
         $this->command = $this->createMock(Command::class);
     }
 
-    public function testValidateRequiredArgument(): void
+    public function test_validate_required_argument(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
@@ -32,7 +33,7 @@ class CommandValidationServiceTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    public function testValidateRequiredArgumentThrowsOnEmpty(): void
+    public function test_validate_required_argument_throws_on_empty(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
@@ -41,11 +42,11 @@ class CommandValidationServiceTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("The 'test' argument is required.");
-        
+
         $this->service->validateRequiredArgument($this->command, 'test');
     }
 
-    public function testValidateBooleanArgument(): void
+    public function test_validate_boolean_argument(): void
     {
         $this->command->expects($this->exactly(4))
             ->method('argument')
@@ -58,7 +59,7 @@ class CommandValidationServiceTest extends TestCase
         $this->assertFalse($this->service->validateBooleanArgument($this->command, 'test'));
     }
 
-    public function testValidateBooleanArgumentThrowsOnInvalid(): void
+    public function test_validate_boolean_argument_throws_on_invalid(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
@@ -67,11 +68,11 @@ class CommandValidationServiceTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("The 'test' must be a boolean value (true/false).");
-        
+
         $this->service->validateBooleanArgument($this->command, 'test');
     }
 
-    public function testValidateNumericArgument(): void
+    public function test_validate_numeric_argument(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
@@ -82,7 +83,7 @@ class CommandValidationServiceTest extends TestCase
         $this->assertEquals(42, $result);
     }
 
-    public function testValidateNumericArgumentThrowsOnNonNumeric(): void
+    public function test_validate_numeric_argument_throws_on_non_numeric(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
@@ -91,11 +92,11 @@ class CommandValidationServiceTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("The 'test' must be a numeric value.");
-        
+
         $this->service->validateNumericArgument($this->command, 'test');
     }
 
-    public function testValidateNumericArgumentThrowsOnBelowMinimum(): void
+    public function test_validate_numeric_argument_throws_on_below_minimum(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
@@ -107,7 +108,7 @@ class CommandValidationServiceTest extends TestCase
         $this->service->validateNumericArgument($this->command, 'test', 10);
     }
 
-    public function testValidateNumericArgumentThrowsOnAboveMaximum(): void
+    public function test_validate_numeric_argument_throws_on_above_maximum(): void
     {
         $this->command->expects($this->once())
             ->method('argument')
