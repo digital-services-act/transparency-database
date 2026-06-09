@@ -206,11 +206,29 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(11, Statement::all());
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertNotNull($statement);
+        $this->assertEquals($statement->id, $response->json('id'));
         $this->assertEquals('API', $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertNull($statement->account_type);
         $this->assertNull($statement->content_language);
+    }
+
+    public function test_api_statement_store_response_includes_raw_id(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertIsInt($response->json('id'));
+        $this->assertSame($statement->id, $response->json('id'));
     }
 
     public function test_api_statement_content_language_is_stored(): void

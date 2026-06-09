@@ -136,6 +136,88 @@ class DataDownloadControllerTest extends TestCase
         $response->assertRedirect($legacyUrl);
     }
 
+    public function test_can_download_global_full_archive_by_deterministic_filename(): void
+    {
+        Storage::fake('s3ds');
+
+        DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip',
+        ]);
+
+        $response = $this->get(route('dayarchive.download.filename', [
+            'platformSlug' => 'global',
+            'date' => '2026-06-01',
+            'version' => 'full',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_can_download_global_sha1_archive_by_deterministic_filename(): void
+    {
+        Storage::fake('s3ds');
+
+        DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'sha1url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip.sha1',
+        ]);
+
+        $response = $this->get(route('dayarchive.download.filename.sha1', [
+            'platformSlug' => 'global',
+            'date' => '2026-06-01',
+            'version' => 'full',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_can_download_platform_light_archive_by_deterministic_filename(): void
+    {
+        Storage::fake('s3ds');
+
+        $platform = Platform::factory()->create([
+            'name' => 'Example Platform',
+        ]);
+
+        DayArchive::factory()->completed()->forPlatform($platform)->create([
+            'date' => '2026-06-01',
+            'urllight' => 'https://example.com/bucket/sor-example-platform-2026-06-01-light.zip',
+        ]);
+
+        $response = $this->get(route('dayarchive.download.filename', [
+            'platformSlug' => 'example-platform',
+            'date' => '2026-06-01',
+            'version' => 'light',
+        ]));
+
+        $response->assertRedirect();
+    }
+
+    public function test_deterministic_archive_download_returns_404_for_missing_completed_archive(): void
+    {
+        DayArchive::factory()->global()->create([
+            'date' => '2026-06-01',
+            'url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip',
+            'completed_at' => null,
+        ]);
+
+        $response = $this->get(route('dayarchive.download.filename', [
+            'platformSlug' => 'global',
+            'date' => '2026-06-01',
+            'version' => 'full',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_deterministic_archive_download_returns_404_for_invalid_version(): void
+    {
+        $response = $this->get('/explore-data/download/sor-global-2026-06-01-medium.zip');
+
+        $response->assertNotFound();
+    }
+
     public function test_download_returns_404_for_invalid_type(): void
     {
         $dayArchive = DayArchive::factory()->completed()->create();
