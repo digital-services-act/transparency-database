@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-//        Schema::create('database_velocities', function (Blueprint $table) {
-//            $table->id();
-//            $table->unsignedBigInteger('max_statement_id');
-//            $table->decimal('rows_per_second', 10, 2);
-//            $table->timestamps();
-//        });
+        Schema::create('database_velocities', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('max_statement_id');
+            $table->decimal('rows_per_second', 10, 2);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-//        Schema::dropIfExists('database_velocities');
+        Schema::dropIfExists('database_velocities');
     }
 };
