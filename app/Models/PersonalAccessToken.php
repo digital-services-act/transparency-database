@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-
 use Exception;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -17,24 +15,21 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
 
     /**
      * The seconds to cache the token for.
-     *
      */
     public static int $ttl = 3600;
 
     /**
      * The interval to refresh the last_used field in database.
-     *
      */
     public static int $interval = 3600;
 
-      /**
+    /**
      * Bootstrap the model and its traits.
      *
      * todo update cache
-     *
-     * @return void
      */
-    #[\Override]protected static function boot(): void
+    #[\Override]
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -47,8 +42,9 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
                     $interval,
                     static function () use ($personalAccessToken) {
                         DB::table($personalAccessToken->getTable())
-                          ->where('id', $personalAccessToken->id)
-                          ->update($personalAccessToken->getDirty());
+                            ->where('id', $personalAccessToken->id)
+                            ->update($personalAccessToken->getDirty());
+
                         return now();
                     }
                 );
@@ -60,10 +56,9 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
         });
 
         static::deleting(static function (self $personalAccessToken) {
-            Cache::forget('personal-access-token:' . $personalAccessToken->id);
+            Cache::forget('personal-access-token:'.$personalAccessToken->id);
             Cache::forget(sprintf('personal-access-token:%s:last_used_at', $personalAccessToken->id));
             Cache::forget(sprintf('personal-access-token:%s:tokenable', $personalAccessToken->id));
         });
     }
-
 }

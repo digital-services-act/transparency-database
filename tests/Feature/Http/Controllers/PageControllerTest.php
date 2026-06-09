@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use Tests\TestCase;
-use Illuminate\Support\Facades\File;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
+use Tests\TestCase;
 
 class PageControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected string $markdownDir = __DIR__ . '/../../../../resources/markdown';
+    protected string $markdownDir = __DIR__.'/../../../../resources/markdown';
 
     public function test_show_displays_markdown_page(): void
     {
@@ -73,11 +73,10 @@ class PageControllerTest extends TestCase
     public function test_profile_show_sets_profile_flag(): void
     {
         $this->signIn();
-    
-        // Create a test file 
+
+        // Create a test file
         $testfile = "{$this->markdownDir}/test-profile.md";
         File::put($testfile, "# Test Profile\nContent.");
-
 
         $response = $this->get('/profile/page/test-profile');
 
@@ -92,10 +91,10 @@ class PageControllerTest extends TestCase
         $this->signIn();
         // Create a test file with multiple headers
         $markdown = "# Main Title\n## Sub Section\n### Another Section";
-    
-        // Create a test file 
+
+        // Create a test file
         $testfile = "{$this->markdownDir}/headers.md";
-        File::put($testfile,$markdown);
+        File::put($testfile, $markdown);
 
         $response = $this->get('/page/headers');
 

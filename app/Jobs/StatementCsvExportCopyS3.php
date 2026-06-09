@@ -10,26 +10,27 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * 
- * @codeCoverageIgnore
- */
 class StatementCsvExportCopyS3 implements ShouldQueue
 {
+    use Batchable;
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use Batchable;
-    public function __construct(public string $zip, public string $sha1)
-    {
-    }
+
+    public function __construct(public string $zip, public string $sha1) {}
 
     public function handle(): void
     {
         $path = Storage::path('');
         $disk = Storage::disk('s3ds');
-        $disk->put($this->zip, fopen($path . $this->zip, 'rb+'));
-        $disk->put($this->sha1, fopen($path . $this->sha1, 'rb+'));
+        $disk->put($this->zip, fopen($path.$this->zip, 'rb+'),
+            [
+                'visibility' => 'private',
+            ]);
+        $disk->put($this->sha1, fopen($path.$this->sha1, 'rb+'),
+            [
+                'visibility' => 'private',
+            ]);
     }
 }

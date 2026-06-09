@@ -1,18 +1,17 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: transparency-database-sandbox-mysql
+  postgres:
+    image: postgres:16-alpine
+    container_name: transparency-database-clever-postgres
     environment:
-      MYSQL_DATABASE: transparency_sandbox
-      MYSQL_USER: transparency
-      MYSQL_PASSWORD: transparency
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_DB: transparency_clever
+      POSTGRES_USER: transparency
+      POSTGRES_PASSWORD: transparency
     ports:
-      - "3307:3306"
+      - "5433:5432"
     volumes:
-      - ./storage/docker/mysql:/var/lib/mysql
+      - ./storage/docker/postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -proot --silent"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
-      retries: 20
+      retries: 10

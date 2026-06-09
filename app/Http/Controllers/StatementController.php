@@ -5,25 +5,24 @@ namespace App\Http\Controllers;
 use App\Exceptions\PuidNotUniqueSingleException;
 use App\Exports\StatementsExport;
 use App\Http\Controllers\Traits\Sanitizer;
-use App\Http\Requests\StatementSearchRequest;
 use App\Http\Requests\StatementStoreRequest;
 use App\Models\Statement;
-use App\Models\StatementAlpha;
 use App\Services\DriveInService;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
 use App\Services\PlatformQueryService;
 use App\Services\PlatformUniqueIdService;
+use App\Services\StatementElasticConnectionService;
+use App\Services\StatementElasticIndexerService;
+use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
-use App\Services\StatementSearchService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel;
 
 class StatementController extends Controller
@@ -32,7 +31,8 @@ class StatementController extends Controller
 
     public function __construct(
         protected StatementQueryService $statement_query_service,
-        protected StatementSearchService $statement_search_service,
+        protected StatementElasticConnectionService $statement_elastic_connection_service,
+        protected StatementElasticSearchService $statement_elastic_search_service,
         protected EuropeanCountriesService $european_countries_service,
         protected EuropeanLanguagesService $european_languages_service,
         protected DriveInService $drive_in_service,
@@ -40,78 +40,59 @@ class StatementController extends Controller
         protected PlatformQueryService $platform_query_service,
     ) {}
 
-    /**
-     * @param Request $request
-     *
-     * @return View|Factory|Application
-     */
-    public function index(StatementSearchRequest $request): View|Factory|Application
+    public function index(Request $request): View|Factory|Application
     {
         // Limit the page query var to 200, other wise opensearch can error out on max result window.
-        $max_pages = 200;
+
         $pagination_per_page = 50;
+        $page = min(max((int) $request->get('page', 1), 1), 200);
 
-        if ($request->get('page', 0) > $max_pages) {
-            $request->merge(['page' => $max_pages]);
-        }
+        $options = $this->prepareOptions(true);
 
-        $setup = $this->setupQuery($request);
-        $statements = $setup['statements']
-            ->orderBy('created_at', 'DESC')
-            ->paginate($pagination_per_page)
-            ->withQueryString()
-            ->appends('query', null);
+        $setup = $this->setupQuery($request, $page - 1, $pagination_per_page);
+        $statements = $setup['statements'];
+        $total = $setup['total'];
+
+        $statements = $statements->orderBy('created_at', 'DESC')->get();
+        $pagination_max = min(10000, $total);
+        $similarity_results = null;
+        $reindexing = Cache::get('reindexing', false);
+        $paginator = new LengthAwarePaginator($statements, $pagination_max, $pagination_per_page, $page);
+        $parameters = $request->query();
+        unset($parameters['page']);
+        $paginator->setPath(route('statement.index', $parameters));
 
         return view('statement.index', [
-            'statements' => $statements,
-            'options' => $this->prepareOptions(true),
-            'total' => $setup['total'],
-            'similarity_results' => null,
-            'reindexing' => Cache::get('reindexing', false),
+            'statements' => $paginator,
+            'options' => $options,
+            'total' => $total,
+            'similarity_results' => $similarity_results,
+            'reindexing' => $reindexing,
         ]);
     }
 
     public function exportCsv(Request $request)
     {
-        $setup = $this->setupQuery($request);
+        $setup = $this->setupQuery($request, 0, 1000);
 
         $statements = $setup['statements'];
         $statements->limit = 1000;
 
-        $export = new StatementsExport();
+        $export = new StatementsExport;
         $export->setCollection($statements->orderBy('created_at', 'DESC')->get());
 
         return $export->download('statements-of-reason.csv', Excel::CSV);
     }
 
-
-    /**
-     * @codeCoverageIgnore
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    private function setupQuery(Request $request): array
+    private function setupQuery(Request $request, int $page, int $perPage): array
     {
-        // We have to ignore this in code coverage because the opensearch driver is not available in the unit tests
-        if (config('scout.driver') == 'opensearch') {
-
+        // We have to ignore this in code coverage because the elastic is not available in the unit tests
+        if ($this->statement_elastic_connection_service->isConfigured()) {
             $filters = $request->query();
-            $current_env = config('app.env_real', '');
 
-            if ($current_env === 'sandbox') {
-                $filters['received_date'] = '01-04-2025';
-            }
-
-            if ($current_env === 'production') {
-                $filters['received_date'] = '01-07-2025';
-            }
-
-            $statements = $this->statement_search_service->query($filters);
-            $total = $this->statement_search_service->query($request->query(), [
-                'size' => 1,
-                'from' => 0,
-                'track_total_hits' => true,
-            ])->paginate(1)->total();
+            $elastic_results = $this->statement_elastic_search_service->query($filters, [], $page, $perPage);
+            $statements = $elastic_results['statements'];
+            $total = $elastic_results['total'];
         } else {
             // This should never happen,
             // raw queries on the statement table is very bad
@@ -126,56 +107,39 @@ class StatementController extends Controller
         ];
     }
 
-    /**
-     * @return Factory|View|Application|RedirectResponse
-     */
+    public function search(Request $request): View|Factory|Application
+    {
+        $options = $this->prepareOptions(true);
+
+        return view('statement.search', ['options' => $options]);
+    }
+
     public function create(Request $request): Factory|View|Application|RedirectResponse
     {
         // If you don't have a platform, we don't want you here.
-        if (!$request->user()->platform) {
+        if (! $request->user()->platform) {
             return back()->withErrors('Your account is not associated with a platform.');
         }
-        $statement = new Statement();
+        $statement = new Statement;
         $statement->territorial_scope = [];
 
         $options = $this->prepareOptions();
+
         return view('statement.create', [
             'statement' => $statement,
             'options' => $options,
         ]);
     }
 
-    public function show(int $statement): Factory|View|Application
+    public function show(Statement $statement): Factory|View|Application
     {
 
         $view = 'statement.show';
 
-        // Statement Alpha
-        if ($statement < 100000000000) {
-            $view = 'statement.show_legacy';
-
-            $statement = StatementAlpha::find($statement);
-            if (!$statement) {
-                abort(404);
-            }
-
-            $statement_content_types = StatementAlpha::getEnumValues($statement->content_type);
-            $statement_additional_categories = StatementAlpha::getEnumValues($statement->category_addition);
-            $statement_visibility_decisions = StatementAlpha::getEnumValues($statement->decision_visibility);
-            $category_specifications = StatementAlpha::getEnumValues($statement->category_specification);
-        } else {
-            // Statement Beta
-            $statement = Statement::find($statement);
-
-            if (!$statement) {
-                abort(404);
-            }
-
-            $statement_content_types = Statement::getEnumValues($statement->content_type);
-            $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
-            $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
-            $category_specifications = Statement::getEnumValues($statement->category_specification);
-        }
+        $statement_content_types = Statement::getEnumValues($statement->content_type);
+        $statement_additional_categories = Statement::getEnumValues($statement->category_addition);
+        $statement_visibility_decisions = Statement::getEnumValues($statement->decision_visibility);
+        $category_specifications = Statement::getEnumValues($statement->category_specification);
 
         $statement_territorial_scope_country_names = $this->european_countries_service->getCountryNames($statement->territorial_scope);
         sort($statement_territorial_scope_country_names);
@@ -188,21 +152,11 @@ class StatementController extends Controller
             'statement_content_language' => $statement_content_language,
             'statement_additional_categories' => $statement_additional_categories,
             'statement_visibility_decisions' => $statement_visibility_decisions,
-            'category_specifications' => $category_specifications
+            'category_specifications' => $category_specifications,
         ]);
     }
 
-    public function showUuid(string $uuid): Redirector|RedirectResponse|Application
-    {
-        $id = $this->statement_search_service->uuidToId($uuid);
-        if ($id === 0) {
-            abort(404);
-        }
-
-        return redirect(route('statement.show', [$id]));
-    }
-
-    public function store(StatementStoreRequest $request): RedirectResponse
+    public function store(StatementStoreRequest $request, StatementElasticIndexerService $statement_elastic_indexer_service): RedirectResponse
     {
 
         $validated = $request->safe()->merge([
@@ -214,25 +168,31 @@ class StatementController extends Controller
         $validated = $this->sanitizeData($validated);
 
         try {
-            $this->puidService->handlePuid($validated['puid'], $validated['platform_id']);
+            $statement = $this->puidService->runWithReservedPuid(
+                $validated['platform_id'],
+                $validated['puid'],
+                static fn () => Statement::create($validated)
+            );
         } catch (PuidNotUniqueSingleException $e) {
             return redirect()->route('statement.index')->with('error', 'The PUID is not unique in the database');
         }
 
+        $env = config('app.env');
+        if ($env !== 'production' && $this->statement_elastic_connection_service->isConfigured()) {
+            // If we are not production and
+            // If we have elasticsearch configured, we want to index the new statement
+            // right away so it appears in search results immediately.
+            $statement_elastic_indexer_service->indexStatement($statement);
+        }
 
-        $statement = Statement::create($validated);
-
-        return redirect()->route('statement.index')->with('success', 'The statement has been created. <a href="/statement/' . $statement->id . '">Click here to view it.</a>');
+        return redirect()->route('statement.show', [$statement])->with('success', 'The statement has been created. <a href="/statement/'.$statement->uuid.'">Click here to view it.</a>');
     }
 
-    /**
-     * @return array
-     */
     private function prepareOptions($noval_on_select = false): array
     {
         // Prepare options for forms and selects and such.
         $countries = $this->mapForSelectWithKeys($this->european_countries_service->getOptionsArray());
-        //dd($countries);
+        // dd($countries);
 
         $languages = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true), $noval_on_select);
         $languages_grouped = $this->mapForSelectWithKeys($this->european_languages_service->getAllLanguages(true, true));

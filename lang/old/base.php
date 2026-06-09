@@ -41,6 +41,6 @@ return [
         'se' => 'Swedish',
         'sv' => 'Swedish',
         'tr' => 'Turkish',
-        'lu' => 'Luxembourgish'
-    ]
+        'lu' => 'Luxembourgish',
+    ],
 ];

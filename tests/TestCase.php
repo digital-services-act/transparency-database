@@ -9,7 +9,6 @@ use Database\Seeders\PermissionsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ResearchPermissionsSeeder;
 use Database\Seeders\StatementSeeder;
-use Database\Seeders\StatementAlphaSeeder;
 use Database\Seeders\SupportPermissionsSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -25,7 +24,6 @@ abstract class TestCase extends BaseTestCase
 
     use CreatesApplication;
 
-
     protected function signInAsAdmin($user = null)
     {
         $user = $this->signIn($user);
@@ -33,6 +31,7 @@ abstract class TestCase extends BaseTestCase
 
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
+
         return $user;
     }
 
@@ -43,6 +42,7 @@ abstract class TestCase extends BaseTestCase
 
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
+
         return $user;
     }
 
@@ -53,6 +53,7 @@ abstract class TestCase extends BaseTestCase
 
         $dsa_platform = Platform::getDsaPlatform();
         $this->assignPlatform($user, $dsa_platform);
+
         return $user;
     }
 
@@ -63,6 +64,7 @@ abstract class TestCase extends BaseTestCase
 
         $non_dsa_platform = Platform::nonDsa()->first();
         $this->assignPlatform($user, $non_dsa_platform);
+
         return $user;
     }
 
@@ -75,9 +77,9 @@ abstract class TestCase extends BaseTestCase
     protected function signIn($user = null)
     {
         $user = $user ?: User::create([
-            'name' => "Test User",
-            'email' => "testuser@testing.org",
-            'password' => 'testpassword'
+            'name' => 'Test User',
+            'email' => 'testuser@testing.org',
+            'password' => 'testpassword',
         ]);
         $this->actingAs($user);
 
@@ -93,7 +95,5 @@ abstract class TestCase extends BaseTestCase
         $this->seed(SupportPermissionsSeeder::class);
         $this->seed(ResearchPermissionsSeeder::class);
         StatementSeeder::resetStatements($statement_count);
-        StatementAlphaSeeder::resetStatements($statement_count);
     }
-
 }

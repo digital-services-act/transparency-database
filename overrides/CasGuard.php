@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace EcPhp\LaravelCas\Auth;
+namespace EcDoris\LaravelCas\Auth;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -17,6 +17,7 @@ use Illuminate\Contracts\Auth\Guard as AuthGuard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -28,26 +29,41 @@ final class CasGuard implements AuthGuard
 
     private ?Authenticatable $user = null;
 
+    private readonly Session $session;
+
     public function __construct(
         private readonly ?UserProvider $provider,
-        private readonly Request $request,
-        private readonly Session $session
+        Request|Session $requestOrSession,
+        ?Session $session = null
     ) {
+        if ($requestOrSession instanceof Session) {
+            $this->session = $requestOrSession;
+
+            return;
+        }
+
+        if ($session === null) {
+            throw new InvalidArgumentException('The CAS guard requires a session store.');
+        }
+
+        $this->session = $session;
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function masquerade(){
-        if (strtolower((string)config('app.env_real')) === 'production' && config('cas.cas_masquerade')) {
+    public function masquerade()
+    {
+        if (strtolower((string) config('app.env')) === 'production' && config('cas.cas_masquerade')) {
             throw new \Exception('Masquerade cannot be used in a production environment.');
-        };
+        }
         $attributes = [
-            "email" => config('cas.cas_masquerade')
+            'email' => config('cas.cas_masquerade'),
         ];
         $user = User::firstOrCreateByAttributes($attributes);
         $this->setUser($user);
+
         return $user;
     }
 
@@ -56,7 +72,7 @@ final class CasGuard implements AuthGuard
 
         $user = User::firstOrCreateByAttributes($credentials['attributes']);
 
-        if (null === $user) {
+        if ($user === null) {
             return null;
         }
 
@@ -68,7 +84,7 @@ final class CasGuard implements AuthGuard
     #[\Override]
     public function check()
     {
-        return null !== $this->user();
+        return $this->user() !== null;
     }
 
     public function getJsonParams()
@@ -84,13 +100,13 @@ final class CasGuard implements AuthGuard
     #[\Override]
     public function guest()
     {
-        return !$this->check();
+        return ! $this->check();
     }
 
     #[\Override]
     public function hasUser()
     {
-        return null !== $this->user();
+        return $this->user() !== null;
     }
 
     #[\Override]
@@ -100,7 +116,7 @@ final class CasGuard implements AuthGuard
             return null;
         }
 
-        return $this->user->user;
+        return $this->user()?->getAuthIdentifier();
     }
 
     public function logout(): void
@@ -129,12 +145,12 @@ final class CasGuard implements AuthGuard
         }
 
         return $this->session->get(auth()->guard('web')->getName());
-//        return $this->provider->retrieveCasUser();
+        //        return $this->provider->retrieveCasUser();
     }
 
     #[\Override]
     public function validate(array $credentials = [])
     {
-        return [] !== $credentials;
+        return $credentials !== [];
     }
 }

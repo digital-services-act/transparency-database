@@ -2,15 +2,8 @@
 
 namespace App\Http\Controllers\Traits;
 
-use Illuminate\Support\Arr;
-
 trait Sanitizer
 {
-    /**
-     * @param array $validated
-     *
-     * @return array
-     */
     public function sanitizeData(array $validated): array
     {
         $validated['application_date'] = $this->sanitizeDate($validated['application_date'] ?? null);
@@ -24,21 +17,21 @@ trait Sanitizer
 
         $validated['content_type'] = array_unique($validated['content_type']);
         sort($validated['content_type']);
-        if (array_key_exists('decision_visibility', $validated) && !is_null($validated['decision_visibility'])) {
+        if (array_key_exists('decision_visibility', $validated) && ! is_null($validated['decision_visibility'])) {
             $validated['decision_visibility'] = array_unique($validated['decision_visibility']);
             sort($validated['decision_visibility']);
         }
 
-        if (array_key_exists('category_specification', $validated) && !is_null($validated['category_specification'])) {
+        if (array_key_exists('category_specification', $validated) && ! is_null($validated['category_specification'])) {
             $validated['category_specification'] = array_unique($validated['category_specification']);
             sort($validated['category_specification']);
         }
 
-        if (array_key_exists('category_addition', $validated) && !is_null($validated['category_addition'])) {
+        if (array_key_exists('category_addition', $validated) && ! is_null($validated['category_addition'])) {
             $valueToRemove = $validated['category'];
 
             $collection = collect($validated['category_addition']);
-            $filteredCollection = $collection->filter(static fn($item) => $item !== $valueToRemove);
+            $filteredCollection = $collection->filter(static fn ($item) => $item !== $valueToRemove);
 
             $filteredArray = $filteredCollection->toArray();
 

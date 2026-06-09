@@ -13,6 +13,7 @@ class Platform extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     public const LABEL_DSA_TEAM = 'DSA Team';
 
     protected $hidden = [
@@ -32,14 +33,13 @@ class Platform extends Model
      */
     protected $guarded = [
         'id',
-        'uuid'
+        'uuid',
     ];
 
     public function scopeNonDsa(Builder $query): void
     {
         $query->where('name', '!=', self::LABEL_DSA_TEAM);
     }
-
 
     public function scopeVlops(Builder $query): void
     {
@@ -60,7 +60,6 @@ class Platform extends Model
     {
         return self::query()->where('name', self::LABEL_DSA_TEAM)->first();
     }
-
 
     public static function dsaTeamPlatformId(): int
     {

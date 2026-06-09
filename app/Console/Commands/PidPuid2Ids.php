@@ -2,16 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Console\Command;
 use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * @codeCoverageIgnore
- */
 class PidPuid2Ids extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -29,10 +27,10 @@ class PidPuid2Ids extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StatementSearchService $statement_search_service): void
+    public function handle(StatementElasticSearchService $statement_elastic_search_service): void
     {
         $platform_id = $this->intifyArgument('platform_id');
         $puid = $this->argument('puid');
-        VarDumper::dump($statement_search_service->PlatformIdPuidToIds($platform_id, $puid));
+        VarDumper::dump($statement_elastic_search_service->PlatformIdPuidToIds($platform_id, $puid));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Http\Controllers\UserController;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
@@ -13,10 +14,7 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
-    public function index_displays_users_with_search(): void
+    public function test_index_displays_users_with_search(): void
     {
         $this->signInAsAdmin();
         $user = User::factory()->create(['email' => 'searchme@test.com']);
@@ -28,10 +26,7 @@ class UserControllerTest extends TestCase
         $response->assertSee('searchme@test.com');
     }
 
-    /**
-     * @test
-     */
-    public function index_filters_by_platform_uuid(): void
+    public function test_index_filters_by_platform_uuid(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -45,10 +40,7 @@ class UserControllerTest extends TestCase
         $response->assertSee($user->email);
     }
 
-    /**
-     * @test
-     */
-    public function create_stores_returnto_in_session(): void
+    public function test_create_stores_returnto_in_session(): void
     {
         $this->signInAsAdmin();
         $returnTo = '/some/path';
@@ -59,10 +51,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals($returnTo, session('returnto'));
     }
 
-    /**
-     * @test
-     */
-    public function create_sets_platform_from_query(): void
+    public function test_create_sets_platform_from_query(): void
     {
         $this->signInAsAdmin();
         $platform = Platform::factory()->create();
@@ -71,13 +60,10 @@ class UserControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewHas('user');
-        $response->assertSee('value="' . $platform->id . '"', false);
+        $response->assertSee('value="'.$platform->id.'"', false);
     }
 
-    /**
-     * @test
-     */
-    public function store_redirects_to_returnto_url(): void
+    public function test_store_redirects_to_returnto_url(): void
     {
         $this->signInAsAdmin();
         $returnTo = '/some/path';
@@ -86,17 +72,14 @@ class UserControllerTest extends TestCase
         $response = $this->post(route('user.store'), [
             'email' => 'test@example.com',
             'roles' => [1],
-            'platform_id' => 1
+            'platform_id' => 1,
         ]);
 
         $response->assertRedirect($returnTo);
         $this->assertNull(session('returnto'));
     }
 
-    /**
-     * @test
-     */
-    public function update_changes_user_details(): void
+    public function test_update_changes_user_details(): void
     {
         $this->signInAsAdmin();
         $user = User::factory()->create();
@@ -105,21 +88,18 @@ class UserControllerTest extends TestCase
         $response = $this->put(route('user.update', $user), [
             'email' => 'updated@example.com',
             'platform_id' => $newPlatform->id,
-            'roles' => [1]
+            'roles' => [1],
         ]);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'email' => 'updated@example.com',
-            'platform_id' => $newPlatform->id
+            'platform_id' => $newPlatform->id,
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function update_redirects_to_returnto_url(): void
+    public function test_update_redirects_to_returnto_url(): void
     {
         $this->signInAsAdmin();
         $user = User::factory()->create();
@@ -129,17 +109,14 @@ class UserControllerTest extends TestCase
         $response = $this->put(route('user.update', $user), [
             'email' => 'test@example.com',
             'platform_id' => 1,
-            'roles' => [1]
+            'roles' => [1],
         ]);
 
         $response->assertRedirect($returnTo);
         $this->assertNull(session('returnto'));
     }
 
-    /**
-     * @test
-     */
-    public function show_redirects_to_index(): void
+    public function test_show_redirects_to_index(): void
     {
         $this->signInAsAdmin();
         $user = User::factory()->create();
@@ -149,10 +126,7 @@ class UserControllerTest extends TestCase
         $response->assertRedirect(route('user.index'));
     }
 
-    /**
-     * @test
-     */
-    public function edit_stores_returnto_in_session(): void
+    public function test_edit_stores_returnto_in_session(): void
     {
         $this->signInAsAdmin();
         $user = User::factory()->create();
@@ -164,10 +138,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals($returnTo, session('returnto'));
     }
 
-    /**
-     * @test
-     */
-    public function destroy_redirects_to_returnto_url(): void
+    public function test_destroy_redirects_to_returnto_url(): void
     {
         $this->signInAsAdmin();
         $user = User::factory()->create();
@@ -178,13 +149,10 @@ class UserControllerTest extends TestCase
         $response->assertRedirect($returnTo);
     }
 
-    /**
-     * @test
-     */
-    public function non_admin_cannot_see_restricted_roles(): void
+    public function test_non_admin_cannot_see_restricted_roles(): void
     {
         $user = $this->signInAsSupport();
-        $controller = new \App\Http\Controllers\UserController();
+        $controller = new UserController;
 
         $roles = $controller->getAvailableRolesToDisplay();
 
@@ -194,8 +162,7 @@ class UserControllerTest extends TestCase
         $this->assertFalse($roles->contains('name', 'User'));
     }
 
-    /** @test */
-    public function deleting_user_deletes_the_rest(): void
+    public function test_deleting_user_deletes_the_rest(): void
     {
         /** @var User $user */
         $user = $this->signInAsAdmin();
@@ -216,8 +183,7 @@ class UserControllerTest extends TestCase
         $this->assertCount($total_users_start - 1, User::all());
     }
 
-    /** @test */
-    public function support_should_be_able_to_create_user(): void
+    public function test_support_should_be_able_to_create_user(): void
     {
         /** @var User $user */
         $user = $this->signInAsSupport();
@@ -226,10 +192,10 @@ class UserControllerTest extends TestCase
 
         $response = $this->post(route('user.store'), [
             'email' => 'foo@bar.com',
-            'roles' => [1,2],
-            'platform_id' => 1
+            'roles' => [1, 2],
+            'platform_id' => 1,
         ], [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $this->assertCount($user_count + 1, User::all());

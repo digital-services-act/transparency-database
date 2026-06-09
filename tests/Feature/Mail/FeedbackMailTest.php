@@ -9,8 +9,8 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Auth;
-use Tests\CreatesApplication;
 use Mockery;
+use Tests\CreatesApplication;
 
 class FeedbackMailTest extends BaseTestCase
 {
@@ -23,8 +23,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->withoutVite();
     }
 
-    /** @test */
-    public function it_constructs_with_feedback_message()
+    public function test_it_constructs_with_feedback_message()
     {
         $feedback = 'Test feedback message';
         $mail = new FeedbackMail($feedback);
@@ -32,8 +31,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEquals($feedback, $mail->feedback);
     }
 
-    /** @test */
-    public function it_has_correct_envelope()
+    public function test_it_has_correct_envelope()
     {
         $mail = new FeedbackMail('Test feedback');
         $envelope = $mail->envelope();
@@ -42,8 +40,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEquals('Feedback Received', $envelope->subject);
     }
 
-    /** @test */
-    public function it_has_correct_content()
+    public function test_it_has_correct_content()
     {
         $mail = new FeedbackMail('Test feedback');
         $content = $mail->content();
@@ -52,8 +49,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEquals('feedback.mail', $content->markdown);
     }
 
-    /** @test */
-    public function it_has_no_attachments()
+    public function test_it_has_no_attachments()
     {
         $mail = new FeedbackMail('Test feedback');
         $attachments = $mail->attachments();
@@ -62,8 +58,7 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertEmpty($attachments);
     }
 
-    /** @test */
-    public function it_renders_markdown_view()
+    public function test_it_renders_markdown_view()
     {
         // Create a mock user
         $user = Mockery::mock(User::class);
@@ -89,22 +84,20 @@ class FeedbackMailTest extends BaseTestCase
         $this->assertStringContainsString('test@example.com', $rendered);
     }
 
-    /** @test */
-    public function it_is_queueable()
+    public function test_it_is_queueable()
     {
         $mail = new FeedbackMail('Test feedback');
-        
+
         $this->assertTrue(
             in_array('Illuminate\Bus\Queueable', class_uses_recursive($mail)),
             'FeedbackMail should use Queueable trait'
         );
     }
 
-    /** @test */
-    public function it_serializes_models()
+    public function test_it_serializes_models()
     {
         $mail = new FeedbackMail('Test feedback');
-        
+
         $this->assertTrue(
             in_array('Illuminate\Queue\SerializesModels', class_uses_recursive($mail)),
             'FeedbackMail should use SerializesModels trait'

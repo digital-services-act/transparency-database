@@ -7,21 +7,21 @@ use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticIndexerService;
+use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-
-#use JMac\Testing\Traits\AdditionalAssertions;
+// use JMac\Testing\Traits\AdditionalAssertions;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
 class StatementAPIControllerTest extends TestCase
 {
-    #use AdditionalAssertions;
+    // use AdditionalAssertions;
     use RefreshDatabase;
     use WithFaker;
 
@@ -31,9 +31,6 @@ class StatementAPIControllerTest extends TestCase
 
     protected PlatformUniqueIdService $platformUniqueIdService;
 
-    /**
-     * @return array
-     */
     public function createFullStatements($count = 5): array
     {
         $statements = Statement::factory()->count($count)->make()->toArray();
@@ -50,7 +47,6 @@ class StatementAPIControllerTest extends TestCase
         return $statements;
     }
 
-
     #[\Override]
     protected function setUp(): void
     {
@@ -59,7 +55,7 @@ class StatementAPIControllerTest extends TestCase
         $this->required_fields = [
             'decision_visibility' => [
                 'DECISION_VISIBILITY_CONTENT_DISABLED',
-                'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED'
+                'DECISION_VISIBILITY_CONTENT_AGE_RESTRICTED',
             ],
             'decision_monetary' => null,
             'decision_provision' => null,
@@ -77,15 +73,11 @@ class StatementAPIControllerTest extends TestCase
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
             'application_date' => '2023-05-18',
-            'content_date' => '2023-05-18'
+            'content_date' => '2023-05-18',
         ];
     }
 
-
-    /**
-     * @test
-     */
-    public function api_statement_show_works(): void
+    public function test_api_statement_show_works(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -95,7 +87,7 @@ class StatementAPIControllerTest extends TestCase
         $this->statement = Statement::create($attributes);
 
         $response = $this->get(route('api.v1.statement.show', [$this->statement]), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_OK);
         $this->assertEquals($this->statement->decision_ground, $response->json('decision_ground'));
@@ -103,10 +95,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($this->statement->source_identity, $response->json('source_identity'));
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_existing_puid_works(): void
+    public function test_api_statement_existing_puid_works(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -117,12 +106,12 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = $this->statement;
 
-        $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
+        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) use ($statement) {
             $mock->shouldReceive('PlatformIdPuidToId')->andReturn($statement->id);
         });
 
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_FOUND);
@@ -130,10 +119,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($this->statement->puid, $response->json('puid'));
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_existing_puid_works_with_record_in_cache(): void
+    public function test_api_statement_existing_puid_works_with_record_in_cache(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -146,12 +132,12 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = $this->statement;
 
-        $this->mock(StatementSearchService::class, static function (MockInterface $mock) use ($statement) {
+        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) {
             $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
         });
 
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_FOUND);
@@ -159,11 +145,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($this->statement->puid, $response->json('puid'));
     }
 
-
-    /**
-     * @test
-     */
-    public function api_statement_existing_puid_gives_404(): void
+    public function test_api_statement_existing_puid_gives_404(): void
     {
         $this->setUpFullySeededDatabase();
         $admin = $this->signInAsAdmin();
@@ -172,22 +154,19 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
-        $this->mock(StatementSearchService::class, static function (MockInterface $mock) {
+        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) {
             $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
         });
 
         $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_NOT_FOUND);
         $this->assertEquals('statement of reason not found', $response->json('message'));
         $this->assertEquals('a-bad-puid', $response->json('puid'));
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_show_requires_auth(): void
+    public function test_api_statement_show_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         $attributes = $this->required_fields;
@@ -195,30 +174,23 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = Platform::all()->random()->first()->id;
         $this->statement = Statement::create($attributes);
         $response = $this->get(route('api.v1.statement.show', [$this->statement]), [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_store_requires_auth(): void
+    public function test_api_statement_store_requires_auth(): void
     {
         $this->setUpFullySeededDatabase();
         // Not signing in.
         $this->assertCount(10, Statement::all());
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-
-    /**
-     * @test
-     */
-    public function api_statement_store_works(): void
+    public function test_api_statement_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -228,7 +200,7 @@ class StatementAPIControllerTest extends TestCase
             'application_date' => '2023-12-20',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(11, Statement::all());
@@ -241,12 +213,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_language);
     }
 
-
-    /**
-     * @return void
-     * @test
-     */
-    public function api_statement_content_language_is_stored(): void
+    public function test_api_statement_content_language_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -255,10 +222,10 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
-            'content_language' => 'EN'
+            'content_language' => 'EN',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(11, Statement::all());
@@ -273,11 +240,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('EN', $statement->content_language);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function api_statement_content_language_can_be_non_european(): void
+    public function test_api_statement_content_language_can_be_non_european(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -286,10 +249,10 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
-            'content_language' => 'VI'
+            'content_language' => 'VI',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(11, Statement::all());
@@ -304,11 +267,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('VI', $statement->content_language);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function api_statement_content_language_must_be_valid(): void
+    public function test_api_statement_content_language_must_be_valid(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -318,20 +277,16 @@ class StatementAPIControllerTest extends TestCase
             'application_date' => '2023-12-20',
 
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
-            'content_language' => 'XX'
+            'content_language' => 'XX',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function api_statement_content_language_must_be_uppercase(): void
+    public function test_api_statement_content_language_must_be_uppercase(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -341,20 +296,16 @@ class StatementAPIControllerTest extends TestCase
             'application_date' => '2023-12-20',
 
             'account_type' => 'ACCOUNT_TYPE_BUSINESS',
-            'content_language' => 'en'
+            'content_language' => 'en',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function api_statement_account_type_is_stored(): void
+    public function test_api_statement_account_type_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -363,10 +314,10 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20',
 
-            'account_type' => 'ACCOUNT_TYPE_BUSINESS'
+            'account_type' => 'ACCOUNT_TYPE_BUSINESS',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(11, Statement::all());
@@ -380,11 +331,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals('ACCOUNT_TYPE_BUSINESS', $statement->account_type);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function api_statement_account_type_is_validated(): void
+    public function test_api_statement_account_type_is_validated(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -393,19 +340,16 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, [
             'application_date' => '2023-12-20-05',
 
-            'account_type' => 'ACCOUNT_TYPE_NOT_VALID'
+            'account_type' => 'ACCOUNT_TYPE_NOT_VALID',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_json_store_works(): void
+    public function test_api_statement_json_store_works(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -415,7 +359,7 @@ class StatementAPIControllerTest extends TestCase
             'application_date' => '2023-07-15',
 
         ]);
-        $object = new \stdClass();
+        $object = new \stdClass;
         foreach ($fields as $key => $value) {
             $object->$key = $value;
         }
@@ -430,7 +374,7 @@ class StatementAPIControllerTest extends TestCase
             $headers = [
                 'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json'
+                'HTTP_ACCEPT' => 'application/json',
             ],
             $json
         );
@@ -447,16 +391,12 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->decision_ground_reference_url);
     }
 
-
-    /**
-     * @test
-     */
-    public function application_date_must_be_correct_format(): void
+    public function test_application_date_must_be_correct_format(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
 
-        $date = Carbon::createFromDate(2023, 2, 5,);
+        $date = Carbon::createFromDate(2023, 2, 5);
 
         $this->assertCount(10, Statement::all());
 
@@ -465,9 +405,9 @@ class StatementAPIControllerTest extends TestCase
 
         $fields = array_merge($this->required_fields, [
             'application_date' => $application_date_in,
-            'end_date_monetary_restriction' => $end_date_in
+            'end_date_monetary_restriction' => $end_date_in,
         ]);
-        $object = new \stdClass();
+        $object = new \stdClass;
         foreach ($fields as $key => $value) {
             $object->$key = $value;
         }
@@ -482,7 +422,7 @@ class StatementAPIControllerTest extends TestCase
             $headers = [
                 'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json'
+                'HTTP_ACCEPT' => 'application/json',
             ],
             $json
         );
@@ -501,10 +441,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($application_date_in, $resource['application_date']);
     }
 
-    /**
-     * @test
-     */
-    public function request_rejects_bad_dates(): void
+    public function test_request_rejects_bad_dates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -516,16 +453,13 @@ class StatementAPIControllerTest extends TestCase
         ]);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The application date does not match the format YYYY-MM-DD.', $response->json('message'));
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_store_rejects_bad_decision_ground_urls(): void
+    public function test_api_statement_store_rejects_bad_decision_ground_urls(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -535,16 +469,13 @@ class StatementAPIControllerTest extends TestCase
             'decision_ground_reference_url' => 'notvalidurl',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(10, Statement::all());
     }
 
-    /**
-     * @test
-     */
-    public function api_statement_store_accepts_google_decision_ground_urls(): void
+    public function test_api_statement_store_accepts_google_decision_ground_urls(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -554,16 +485,13 @@ class StatementAPIControllerTest extends TestCase
             'decision_ground_reference_url' => 'https://www.goodurl.com',
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertCount(11, Statement::all());
     }
 
-    /**
-     * @test
-     */
-    public function request_rejects_bad_countries(): void
+    public function test_request_rejects_bad_countries(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -572,16 +500,13 @@ class StatementAPIControllerTest extends TestCase
             'territorial_scope' => ['XY', 'ZZ'],
         ]);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The selected territorial scope is invalid.', $response->json('message'));
     }
 
-    /**
-     * @test
-     */
-    public function store_does_not_save_optional_fields_non_related_to_illegal_content(): void
+    public function test_store_does_not_save_optional_fields_non_related_to_illegal_content(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -592,7 +517,7 @@ class StatementAPIControllerTest extends TestCase
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -601,11 +526,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->incompatible_content_explanation);
     }
 
-
-    /**
-     * @test
-     */
-    public function store_does_not_save_optional_fields_non_related_to_incompatible_content(): void
+    public function test_store_does_not_save_optional_fields_non_related_to_incompatible_content(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -618,7 +539,7 @@ class StatementAPIControllerTest extends TestCase
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -627,10 +548,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->illegal_content_explanation);
     }
 
-    /**
-     * @test
-     */
-    public function request_rejects_bad_puids(): void
+    public function test_request_rejects_bad_puids(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -642,26 +560,23 @@ class StatementAPIControllerTest extends TestCase
         ]);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The puid format is invalid.', $response->json('message'));
     }
 
-    /**
-     * @test
-     */
-    public function store_enforces_puid_uniqueness(): void
+    public function test_store_enforces_puid_uniqueness(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
 
         $fields = array_merge($this->required_fields, [
-            'puid' => ''
+            'puid' => '',
         ]);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -672,13 +587,12 @@ class StatementAPIControllerTest extends TestCase
         $this->assertDatabaseCount(PlatformPuid::class, 0);
 
         $fields = array_merge($this->required_fields, [
-            'puid' => 'new-puid-123'
+            'puid' => 'new-puid-123',
         ]);
-
 
         // Now let's create one
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseCount(PlatformPuid::class, 1);
@@ -686,7 +600,7 @@ class StatementAPIControllerTest extends TestCase
 
         // Let's do it again
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertUnprocessable();
@@ -700,10 +614,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals($count_after, $count_before);
     }
 
-    /**
-     * @test
-     */
-    public function store_handles_query_exception_in_puid_check(): void
+    public function test_store_handles_query_exception_in_puid_check(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -712,17 +623,14 @@ class StatementAPIControllerTest extends TestCase
         $this->required_fields['puid'] = null; // This should trigger a database error since PUID is required
 
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonStructure(['message', 'errors']);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
+    public function test_store_should_refresh_the_cache_when_cache_expired_and_archived_statement_is_present(): void
     {
         $user = $this->signInAsAdmin();
         $this->assertDatabaseCount(PlatformPuid::class, 0);
@@ -732,40 +640,33 @@ class StatementAPIControllerTest extends TestCase
 
         PlatformPuid::create([
             'puid' => $puid,
-            'platform_id' => $user->platform->id
+            'platform_id' => $user->platform->id,
         ]);
 
         $this->assertDatabaseCount(PlatformPuid::class, 1);
 
         $fields = array_merge($this->required_fields, [
-            'puid' => $puid
+            'puid' => $puid,
         ]);
 
         $key = sprintf('puid-%s-%s', $user->platform->id, $puid);
         $this->assertFalse(Cache::has($key));
 
-
         // Now let's create one
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
-
 
         $this->assertDatabaseCount(PlatformPuid::class, 1);
         $this->assertTrue(Cache::has($key));
     }
 
-
-    /**
-     * @return void
-     * @test
-     */
-    public function on_store_puid_is_shown_but_not_on_show(): void
+    public function test_on_store_puid_is_shown_but_not_on_show(): void
     {
         $this->setUpFullySeededDatabase();
         $this->signInAsAdmin();
 
-        $object = new \stdClass();
+        $object = new \stdClass;
         foreach ($this->required_fields as $key => $value) {
             $object->$key = $value;
         }
@@ -780,29 +681,27 @@ class StatementAPIControllerTest extends TestCase
             $headers = [
                 'HTTP_CONTENT_LENGTH' => mb_strlen($json, '8bit'),
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json'
+                'HTTP_ACCEPT' => 'application/json',
             ],
             $json
         );
 
         $response->assertStatus(Response::HTTP_CREATED);
+
         // It shows on the store response
         $this->assertNotNull($response->json('puid'));
         $content = $response->content();
         $this->assertStringContainsString('"puid":', $content);
 
-
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
         // In the show call it should be not there or null
-        $response = $this->call('GET', route('api.v1.statement.show', ['statement' => $response->json('id')]));
+        $response = $this->call('GET', route('api.v1.statement.show', [$statement]));
         $this->assertNull($response->json('puid'));
         $content = $response->content();
         $this->assertStringNotContainsString('"puid":', $content);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_content_type_other(): void
+    public function test_store_should_save_content_type_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -814,7 +713,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -823,10 +722,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->content_type_other);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_not_save_content_type_other(): void
+    public function test_store_should_not_save_content_type_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -838,7 +734,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -847,11 +743,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_type_other);
     }
 
-
-    /**
-     * @test
-     */
-    public function store_should_save_source_identity(): void
+    public function test_store_should_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -863,7 +755,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -872,10 +764,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->source_identity);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_not_save_source_identity(): void
+    public function test_store_should_not_save_source_identity(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -887,7 +776,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -896,11 +785,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->source_identity);
     }
 
-
-    /**
-     * @test
-     */
-    public function store_should_save_end_dates(): void
+    public function test_store_should_save_end_dates(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -914,25 +799,22 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
         $statement = Statement::where('uuid', $response->json('uuid'))->first();
         $this->assertInstanceOf(Carbon::class, $statement->end_date_visibility_restriction);
-        $this->assertEquals('2023-08-10 00:00:00', (string)$statement->end_date_visibility_restriction);
+        $this->assertEquals('2023-08-10 00:00:00', (string) $statement->end_date_visibility_restriction);
         $this->assertInstanceOf(Carbon::class, $statement->end_date_monetary_restriction);
-        $this->assertEquals('2023-08-11 00:00:00', (string)$statement->end_date_monetary_restriction);
+        $this->assertEquals('2023-08-11 00:00:00', (string) $statement->end_date_monetary_restriction);
         $this->assertInstanceOf(Carbon::class, $statement->end_date_service_restriction);
-        $this->assertEquals('2023-08-12 00:00:00', (string)$statement->end_date_service_restriction);
+        $this->assertEquals('2023-08-12 00:00:00', (string) $statement->end_date_service_restriction);
         $this->assertInstanceOf(Carbon::class, $statement->end_date_account_restriction);
-        $this->assertEquals('2023-08-13 00:00:00', (string)$statement->end_date_account_restriction);
+        $this->assertEquals('2023-08-13 00:00:00', (string) $statement->end_date_account_restriction);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_keywords_with_other(): void
+    public function test_store_should_save_keywords_with_other(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -941,14 +823,14 @@ class StatementAPIControllerTest extends TestCase
             'category_specification' => [
                 'KEYWORD_ADULT_SEXUAL_MATERIAL',
                 'KEYWORD_DESIGN_INFRINGEMENT',
-                'KEYWORD_OTHER'
+                'KEYWORD_OTHER',
             ],
             'category_specification_other' => 'foobar keyword',
         ];
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -957,10 +839,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNotNull($statement->category_specification_other);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_not_duplicate_categories(): void
+    public function test_store_should_save_not_duplicate_categories(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -972,7 +851,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -982,10 +861,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertCount(1, $statement->category_addition);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_empty_additional_categories_as_empty_array(): void
+    public function test_store_should_save_empty_additional_categories_as_empty_array(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -997,7 +873,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -1005,10 +881,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertEquals([], $statement->category_addition);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_null_decisions_when_account_is_suspended(): void
+    public function test_store_should_save_null_decisions_when_account_is_suspended(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -1022,7 +895,7 @@ class StatementAPIControllerTest extends TestCase
         $fields = array_merge($this->required_fields, $extra_fields);
 
         $response = $this->post(route('api.v1.statement.store'), $fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -1032,10 +905,7 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->decision_provision);
     }
 
-    /**
-     * @test
-     */
-    public function store_should_save_null_decisions_when_account_is_suspended_2(): void
+    public function test_store_should_save_null_decisions_when_account_is_suspended_2(): void
     {
         $this->setUpFullySeededDatabase();
         $user = $this->signInAsAdmin();
@@ -1043,7 +913,7 @@ class StatementAPIControllerTest extends TestCase
         $this->required_fields['decisions'] = null;
 
         $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -1051,56 +921,13 @@ class StatementAPIControllerTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function show_uuid_redirects_when_uuid_exists(): void
-    {
-        $this->setUpFullySeededDatabase();
-        $admin = $this->signInAsAdmin();
-        $attributes = $this->required_fields;
-        $attributes['user_id'] = $admin->id;
-        $attributes['platform_id'] = $admin->platform_id;
-        $this->statement = Statement::create($attributes);
-
-        $uuid = $this->statement->uuid;
-
-        $this->mock(StatementSearchService::class, function (MockInterface $mock) use ($uuid) {
-            $mock->shouldReceive('uuidToId')
-                ->with($uuid)
-                ->andReturn($this->statement->id);
-        });
-
-        $response = $this->get(route('api.v1.statement.show.uuid', [$uuid]));
-        $response->assertRedirect(route('api.v1.statement.show', [$this->statement->id]));
-    }
-
-    /**
-     * @test
-     */
-    public function show_uuid_returns_404_when_uuid_not_found(): void
-    {
-        $this->setUpFullySeededDatabase();
-        $this->signInAsAdmin();
-
-        $this->mock(StatementSearchService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('uuidToId')
-                ->andReturn(0);
-        });
-
-        $response = $this->get(route('api.v1.statement.show.uuid', ['non-existent-uuid']));
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-        $response->assertJson(['message' => 'statement of reason not found']);
-    }
-
-    /**
      * @return void
-     * @test
      */
     public function test_can_store_statement_with_valid_ean13_content_id()
     {
         $platform = Platform::factory()->create();
         $user = User::factory()->create([
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         // Give the user permission to create statements
@@ -1110,7 +937,7 @@ class StatementAPIControllerTest extends TestCase
 
         $statement = $this->createFullStatements(1)[0];
         $statement['content_id'] = [
-            'EAN-13' => '1234567890123'
+            'EAN-13' => '1234567890123',
         ];
 
         $response = $this->postJson('/api/v1/statement', $statement);
@@ -1119,7 +946,7 @@ class StatementAPIControllerTest extends TestCase
 
         // Get the statement from the database
         $dbStatement = \DB::table('statements_beta')
-            ->where('id', $response->json('id'))
+            ->where('uuid', $response->json('uuid'))
             ->first();
 
         $this->assertNotNull($dbStatement);
@@ -1129,14 +956,11 @@ class StatementAPIControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
     public function test_rejects_invalid_ean13_content_id()
     {
         $platform = Platform::factory()->create();
         $user = User::factory()->create([
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         // Give the user permission to create statements
@@ -1148,7 +972,7 @@ class StatementAPIControllerTest extends TestCase
 
         // Test with invalid length
         $statement['content_id'] = [
-            'EAN-13' => '123456789012' // 12 digits instead of 13
+            'EAN-13' => '123456789012', // 12 digits instead of 13
         ];
         $response = $this->postJson('/api/v1/statement', $statement);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -1156,11 +980,64 @@ class StatementAPIControllerTest extends TestCase
 
         // Test with non-numeric characters
         $statement['content_id'] = [
-            'EAN-13' => '12345678901AB'
+            'EAN-13' => '12345678901AB',
         ];
         $response = $this->postJson('/api/v1/statement', $statement);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors(['content_id.EAN-13']);
     }
 
+    public function test_store_indexes_statement_in_non_production_with_elastic(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
+        $mock->shouldReceive('indexStatement')->once();
+
+        $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json',
+        ]);
+    }
+
+    public function test_store_does_not_index_statement_in_production(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to production
+        config()->set('app.env', 'production');
+        // Set the config to use elasticsearch
+        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
+        $mock->shouldReceive('indexStatement')->never();
+
+        $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json',
+        ]);
+    }
+
+    public function test_store_does_not_index_statement_when_elastic_is_not_configured(): void
+    {
+        $this->signInAsAdmin();
+
+        // Set the environment to non-production
+        config()->set('app.env', 'testing');
+        // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.uri', [null]);
+
+        // Mock the elastic indexer service
+        $mock = $this->mock(StatementElasticIndexerService::class);
+        $mock->shouldReceive('indexStatement')->never();
+
+        $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json',
+        ]);
+    }
 }

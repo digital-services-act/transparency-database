@@ -12,20 +12,18 @@ trait ExceptionHandlingTrait
     public function handleQueryException(QueryException $e, string $subject): JsonResponse
     {
 
-        Log::error($subject . ' Creation Query Exception Thrown', ['exception' => $e]);
+        Log::error($subject.' Creation Query Exception Thrown', ['exception' => $e]);
 
         $errors = [
             'uncaught_exception' => [
-                $subject . ' Creation Query Exception Occurred, information has been passed on to the development team.'
-            ]
+                $subject.' Creation Query Exception Occurred, information has been passed on to the development team.',
+            ],
         ];
 
-        $message = $subject . ' Creation Query Exception Occurred, information has been passed on to the development team.';
+        $message = $subject.' Creation Query Exception Occurred, information has been passed on to the development team.';
 
         return response()->json(['message' => $message, 'errors' => $errors], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-
-
 
     private function extractPUIDFromMessage($message): string
     {
@@ -33,6 +31,6 @@ trait ExceptionHandlingTrait
 
         preg_match($pattern, (string) $message, $matches);
 
-        return $matches[2] ?? "Unknown Exception";
+        return $matches[2] ?? 'Unknown Exception';
     }
 }

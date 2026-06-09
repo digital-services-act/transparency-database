@@ -1,3 +1,9 @@
+#### [Announcement - DB] Update to the submissions by Google Play
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/06/2026</p>
+
+Due to a technical error, statements of reasons transmitted to the DSA Transparency Database related to actions taken on a portion of Google Play contained some incorrect information. Specifically, the field indicating whether a violation was detected via automated means was inverted. Consequently, from September 2023 to May 2026, a portion of records related to Google Play marked as "automated" were actually manual, and records marked as "manual" were actually “automated”. The issue was remediated as of 29 May 2026.
+
 #### [Announcement - DB] Update to the submissions by Facebook and Instagram
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/11/2025</p>

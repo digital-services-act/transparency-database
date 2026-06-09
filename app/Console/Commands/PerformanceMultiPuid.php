@@ -20,9 +20,11 @@ class PerformanceMultiPuid extends Command
     protected $description = 'Test PUID cache and database performance';
 
     private array $insertedIds = [];
+
     private array $cacheKeys = [];
 
     private int $lock_valid_seconds = 30;
+
     private int $cache_valid_days = 2;
 
     public function handle(): int
@@ -31,12 +33,13 @@ class PerformanceMultiPuid extends Command
         $platformId = (int) $this->option('platform-id');
         $platform = Platform::find($platformId);
 
-        if (!$platform) {
+        if (! $platform) {
             $this->error("❌ Platform with ID {$platformId} does not exist.");
+
             return 1;
         }
 
-        $this->info("🧪 Starting PUID Performance Test");
+        $this->info('🧪 Starting PUID Performance Test');
         $this->info("PUIDs to test: {$count}");
         $this->info("Platform: {$platformId}");
         $this->newLine();
@@ -66,15 +69,15 @@ class PerformanceMultiPuid extends Command
                 }
             }
 
-
             if (! empty($failedLocks)) {
                 // This should not happen, but in case it does, we log it and throw an exception
-                $this->error('❌ Failed to acquire locks for PUIDs: ' . implode(', ', $failedLocks) . ' on platform ' . $platformId);
+                $this->error('❌ Failed to acquire locks for PUIDs: '.implode(', ', $failedLocks).' on platform '.$platformId);
+
                 return 1;
             }
 
             $duration = (microtime(true) - $start) * 1000;
-            $this->info("🕒 LOCKING takes: " . number_format($duration, 2) . "ms");
+            $this->info('🕒 LOCKING takes: '.number_format($duration, 2).'ms');
             $this->newLine();
 
             // Check cache then check puids table
@@ -95,7 +98,7 @@ class PerformanceMultiPuid extends Command
             $this->cleanup();
 
             $duration = (microtime(true) - $start) * 1000;
-            $this->info("🕒 Total Test Duration: " . number_format($duration, 2) . "ms");
+            $this->info('🕒 Total Test Duration: '.number_format($duration, 2).'ms');
         }
     }
 
@@ -105,17 +108,18 @@ class PerformanceMultiPuid extends Command
         for ($i = 0; $i < $count; $i++) {
             $puids[] = (string) Str::uuid();
         }
+
         return $puids;
     }
 
     public function getCacheKey(int $platform_id, mixed $puid): string
     {
-        return 'puid-' . $platform_id . '-' . $puid;
+        return 'puid-'.$platform_id.'-'.$puid;
     }
 
     private function checkDuplicatesInCache(array $puids, int $platformId): void
     {
-        $this->info("🔍 Test 1: Checking if PUIDs exist in cache (expect: not found)");
+        $this->info('🔍 Test 1: Checking if PUIDs exist in cache (expect: not found)');
 
         $start = microtime(true);
         $duplicates = collect();
@@ -130,15 +134,15 @@ class PerformanceMultiPuid extends Command
         $duration = (microtime(true) - $start) * 1000;
         $perItem = $duration / count($puids);
 
-        $this->line("  ✓ Checked " . count($puids) . " PUIDs in " . number_format($duration, 2) . "ms");
-        $this->line("  ✓ Average: " . number_format($perItem, 3) . "ms per PUID");
+        $this->line('  ✓ Checked '.count($puids).' PUIDs in '.number_format($duration, 2).'ms');
+        $this->line('  ✓ Average: '.number_format($perItem, 3).'ms per PUID');
         $this->line("  ✓ Found: {$duplicates->count()} (expected 0)");
         $this->newLine();
     }
 
     private function addPuidsToCache(array $puids, int $platformId): void
     {
-        $this->info("💾 Test 3: Adding PUIDs to cache");
+        $this->info('💾 Test 3: Adding PUIDs to cache');
 
         $start = microtime(true);
         $added = 0;
@@ -155,14 +159,14 @@ class PerformanceMultiPuid extends Command
         $duration = (microtime(true) - $start) * 1000;
         $perItem = $duration / count($puids);
 
-        $this->line("  ✓ Added " . $added . " PUIDs in " . number_format($duration, 2) . "ms");
-        $this->line("  ✓ Average: " . number_format($perItem, 3) . "ms per PUID");
+        $this->line('  ✓ Added '.$added.' PUIDs in '.number_format($duration, 2).'ms');
+        $this->line('  ✓ Average: '.number_format($perItem, 3).'ms per PUID');
         $this->newLine();
     }
 
     private function checkDuplicatesInPlatformPuids(array $puids, int $platformId): void
     {
-        $this->info("🔍 Test 2: Checking if PUIDs exist in database (expect: not found)");
+        $this->info('🔍 Test 2: Checking if PUIDs exist in database (expect: not found)');
 
         $start = microtime(true);
 
@@ -176,22 +180,22 @@ class PerformanceMultiPuid extends Command
 
         $this->line("  ✓ DB PlatformPuid whereIn query took {$duration}ms");
         if (count($found)) {
-            $this->line("  ✗ Found: " . count($found) . ": " . implode(', ', $found));
+            $this->line('  ✗ Found: '.count($found).': '.implode(', ', $found));
         }
         $this->newLine();
     }
 
     private function displaySummary(): void
     {
-        $this->info("📊 Performance Summary");
+        $this->info('📊 Performance Summary');
         $this->table(
             ['Metric', 'Value'],
             [
-                ['Redis Connection', config('database.redis.default.host') . ':' . config('database.redis.default.port')],
+                ['Redis Connection', config('database.redis.default.host').':'.config('database.redis.default.port')],
                 ['Database Connection', config('database.default')],
                 ['Cache Driver', config('cache.default')],
                 ['Total PUIDs Tested', count($this->cacheKeys)],
-                ['Memory Usage', number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) . ' MB'],
+                ['Memory Usage', number_format(memory_get_peak_usage(true) / 1024 / 1024, 2).' MB'],
             ]
         );
         $this->newLine();
@@ -199,19 +203,19 @@ class PerformanceMultiPuid extends Command
 
     private function cleanup(): void
     {
-        $this->info("🧹 Cleaning up test data...");
+        $this->info('🧹 Cleaning up test data...');
 
         // Remove from cache
-        if (!empty($this->cacheKeys)) {
+        if (! empty($this->cacheKeys)) {
             $start = microtime(true);
             foreach ($this->cacheKeys as $key) {
                 Cache::forget($key);
             }
             $duration = (microtime(true) - $start) * 1000;
-            $this->line("  ✓ Removed " . count($this->cacheKeys) . " cache entries in " . number_format($duration, 2) . "ms");
+            $this->line('  ✓ Removed '.count($this->cacheKeys).' cache entries in '.number_format($duration, 2).'ms');
         }
 
         $this->newLine();
-        $this->info("✅ Cleanup complete!");
+        $this->info('✅ Cleanup complete!');
     }
 }

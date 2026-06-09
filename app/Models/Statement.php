@@ -6,18 +6,14 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
-
 
 class Statement extends Model
 {
     use HasFactory;
-    use Searchable;
     use SoftDeletes;
 
     protected $table = 'statements_beta';
@@ -34,17 +30,16 @@ class Statement extends Model
         'METHOD_API_MULTI' => self::METHOD_API_MULTI,
     ];
 
-    public const LABEL_STATEMENT_ACCOUNT_TYPE = "Type of Account";
+    public const LABEL_STATEMENT_ACCOUNT_TYPE = 'Type of Account';
 
-    public const ACCOUNT_TYPE_BUSINESS = "Business";
+    public const ACCOUNT_TYPE_BUSINESS = 'Business';
 
-    public const ACCOUNT_TYPE_PRIVATE = "Private";
+    public const ACCOUNT_TYPE_PRIVATE = 'Private';
 
     public const ACCOUNT_TYPES = [
         'ACCOUNT_TYPE_BUSINESS' => self::ACCOUNT_TYPE_BUSINESS,
         'ACCOUNT_TYPE_PRIVATE' => self::ACCOUNT_TYPE_PRIVATE,
     ];
-
 
     public const LABEL_STATEMENT_SOURCE_TYPE = 'Information source';
 
@@ -64,7 +59,6 @@ class Statement extends Model
         'SOURCE_TYPE_OTHER_NOTIFICATION' => self::SOURCE_TYPE_OTHER_NOTIFICATION,
         'SOURCE_VOLUNTARY' => self::SOURCE_VOLUNTARY,
     ];
-
 
     public const LABEL_STATEMENT_CONTENT_TYPE = 'Content Type';
 
@@ -106,7 +100,6 @@ class Statement extends Model
         self::AUTOMATED_DETECTION_NO,
     ];
 
-
     public const LABEL_STATEMENT_AUTOMATED_DECISION = 'Was the decision taken using other automated means?';
 
     public const AUTOMATED_DECISION_FULLY = 'Fully automated';
@@ -121,7 +114,6 @@ class Statement extends Model
         'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED,
     ];
 
-
     public const LABEL_STATEMENT_DECISION_GROUND = 'Decision Ground';
 
     public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
@@ -134,7 +126,6 @@ class Statement extends Model
         'DECISION_GROUND_ILLEGAL_CONTENT' => self::DECISION_GROUND_ILLEGAL_CONTENT,
         'DECISION_GROUND_INCOMPATIBLE_CONTENT' => self::DECISION_GROUND_INCOMPATIBLE_CONTENT,
     ];
-
 
     public const LABEL_STATEMENT_ILLEGAL_CONTENT_GROUND = 'Legal ground relied on';
 
@@ -223,7 +214,7 @@ class Statement extends Model
         'DECISION_PROVISION_TOTAL_TERMINATION' => self::DECISION_PROVISION_TOTAL_TERMINATION,
     ];
 
-    public const LABEL_STATEMENT_DECISION_ACCOUNT = "Account restriction";
+    public const LABEL_STATEMENT_DECISION_ACCOUNT = 'Account restriction';
 
     public const DECISION_ACCOUNT_SUSPENDED = 'Suspension of the account';
 
@@ -235,7 +226,6 @@ class Statement extends Model
     ];
 
     public const LABEL_STATEMENT_TERRITORIAL_SCOPE = 'Territorial scope of the decision';
-
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
 
@@ -272,7 +262,6 @@ class Statement extends Model
     public const STATEMENT_CATEGORY_UNSAFE_AND_PROHIBITED_PRODUCTS = 'Unsafe, non-compliant or prohibited products';
 
     public const STATEMENT_CATEGORY_VIOLENCE = 'Violence';
-
 
     public const STATEMENT_CATEGORIES = [
         'STATEMENT_CATEGORY_ANIMAL_WELFARE' => self::STATEMENT_CATEGORY_ANIMAL_WELFARE,
@@ -519,7 +508,7 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_FORM_OTHER = 'Other';
 
-    public const LABEL_STATEMENT_CONTENT_LANGUAGE = "The language of the content";
+    public const LABEL_STATEMENT_CONTENT_LANGUAGE = 'The language of the content';
 
     public const LABEL_STATEMENT_END_DATE_ACCOUNT_RESTRICTION = 'End date of the account restriction';
 
@@ -566,6 +555,7 @@ class Statement extends Model
     ];
 
     protected $hidden = [
+        'id',
         'deleted_at',
         'updated_at',
         'method',
@@ -594,8 +584,6 @@ class Statement extends Model
 
     /**
      * Get the name of the index associated with the model.
-     *
-     * @return string
      */
     public function searchableAs(): string
     {
@@ -606,20 +594,20 @@ class Statement extends Model
 
     public function platformNameCached(): string
     {
-        if (!is_null($this->platform)) {
-            return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => $this->platform->name);
-        } else {
-            return Cache::remember('platform-' . $this->platform_id . '-name', 3600, fn() => 'deleted-name-' . $this->platform_id);
-        }
+        return Cache::remember('platform-'.$this->platform_id.'-name', 3600, function () {
+            $platform = Platform::find($this->platform_id);
+
+            return $platform->name ?? 'deleted-name-'.$this->platform_id;
+        });
     }
 
     public function platformUuidCached(): string
     {
-        if (!is_null($this->platform)) {
-            return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => $this->platform->uuid);
-        } else {
-            return Cache::remember('platform-' . $this->platform_id . '-uuid', 3600, fn() => 'deleted-uuid-' . $this->platform_id);
-        }
+        return Cache::remember('platform-'.$this->platform_id.'-uuid', 3600, function () {
+            $platform = Platform::find($this->platform_id);
+
+            return $platform->uuid ?? 'deleted-uuid-'.$this->platform_id;
+        });
     }
 
     public function toSearchableArray(): array
@@ -632,7 +620,7 @@ class Statement extends Model
         return [
             'id' => $this->id,
             'decision_visibility' => $this->decision_visibility,
-            'decision_visibility_single' => implode("__", $this->decision_visibility),
+            'decision_visibility_single' => implode('__', $this->decision_visibility),
             'category_specification' => $this->category_specification,
             'decision_visibility_other' => $this->decision_visibility_other,
             'decision_monetary' => $this->decision_monetary,
@@ -671,103 +659,26 @@ class Statement extends Model
         ];
     }
 
-    public function toSyncableArray(): array
-    {
-
-        return [
-            'id' => $this->getRawOriginal('id'),
-            'uuid' => $this->getRawOriginal('uuid'),
-            'decision_visibility' => $this->getRawOriginal('decision_visibility'),
-            'decision_visibility_other' => $this->getRawOriginal('decision_visibility_other'),
-            'decision_monetary' => $this->getRawOriginal('decision_monetary'),
-            'decision_monetary_other' => $this->getRawOriginal('decision_monetary_other'),
-            'decision_provision' => $this->getRawOriginal('decision_provision'),
-            'decision_account' => $this->getRawOriginal('decision_account'),
-            'account_type' => $this->getRawOriginal('account_type'),
-            'decision_ground' => $this->getRawOriginal('decision_ground'),
-            'decision_ground_reference_url' => $this->getRawOriginal('decision_ground_reference_url'),
-            'content_type' => $this->getRawOriginal('content_type'),
-            'content_type_other' => $this->getRawOriginal('content_type_other'),
-            'content_language' => $this->getRawOriginal('content_language'),
-            'content_date' => $this->getRawOriginal('content_date'),
-            'application_date' => $this->getRawOriginal('application_date'),
-            'illegal_content_legal_ground' => $this->getRawOriginal('illegal_content_legal_ground'),
-            'illegal_content_explanation' => $this->getRawOriginal('illegal_content_explanation'),
-            'incompatible_content_ground' => $this->getRawOriginal('incompatible_content_ground'),
-            'incompatible_content_explanation' => $this->getRawOriginal('incompatible_content_explanation'),
-            'incompatible_content_illegal' => $this->getRawOriginal('incompatible_content_illegal'),
-            'source_type' => $this->getRawOriginal('source_type'),
-            'source_identity' => $this->getRawOriginal('source_identity'),
-            'decision_facts' => $this->getRawOriginal('decision_facts'),
-            'automated_detection' => $this->getRawOriginal('automated_detection'),
-            'automated_decision' => $this->getRawOriginal('automated_decision'),
-            'category' => $this->getRawOriginal('category'),
-            'category_addition' => $this->getRawOriginal('category_addition'),
-            'category_specification' => $this->getRawOriginal('category_specification'),
-            'category_specification_other' => $this->getRawOriginal('category_specification_other'),
-            'platform_id' => $this->getRawOriginal('platform_id'),
-            'user_id' => $this->getRawOriginal('user_id'),
-            'created_at' => $this->getRawOriginal('created_at'),
-            'updated_at' => $this->getRawOriginal('updated_at'),
-            'deleted_at' => $this->getRawOriginal('deleted_at'),
-            'puid' => $this->getRawOriginal('puid'),
-            'territorial_scope' => $this->getRawOriginal('territorial_scope'),
-            'method' => $this->getRawOriginal('method'),
-            'end_date' => $this->getRawOriginal('end_date'),
-            'end_date_visibility_restriction' => $this->getRawOriginal('end_date_visibility_restriction'),
-            'end_date_monetary_restriction' => $this->getRawOriginal('end_date_monetary_restriction'),
-            'end_date_service_restriction' => $this->getRawOriginal('end_date_service_restriction'),
-            'end_date_account_restriction' => $this->getRawOriginal('end_date_account_restriction'),
-            'content_id_ean' => $this->getRawOriginal('content_id_ean'),
-        ];
-    }
-
-    /**
-     * Get the value used to index the model.
-     */
-    public function getScoutKey(): mixed
-    {
-        return $this->id;
-    }
-
-    /**
-     * Get the key name used to index the model.
-     */
-    public function getScoutKeyName(): string
-    {
-        return 'id';
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function platform(): HasOne
+    public function platform(): BelongsTo
     {
-        return $this->hasOne(Platform::class, 'id', 'platform_id');
+        return $this->belongsTo(Platform::class, 'platform_id');
     }
 
-    /**
-     * @return string
-     */
     public function getPermalinkAttribute(): string
     {
-        return route('statement.show', [$this]);
+        return route('statement.show', [$this->uuid]);
     }
 
-
-    /**
-     * @return string
-     */
     public function getSelfAttribute(): string
     {
-        return route('api.v' . config('app.api_latest') . '.statement.show', [$this]);
+        return route('api.v'.config('app.api_latest').'.statement.show', [$this->uuid]);
     }
 
-    /**
-     * @return string
-     */
     public function getPlatformNameAttribute(): string
     {
         return $this->platform->name ?? '';
@@ -798,18 +709,14 @@ class Statement extends Model
         return $this->getRawKeys('category_specification');
     }
 
-
     /**
      * Return a nice string of the restrictions this statement had.
      *
      * (window dressing)
-     *
-     * @return string
      */
     public function restrictions(): string
     {
         $decisions = [];
-
 
         if ($this->decision_visibility) {
             $decisions[] = 'Visibility';
@@ -827,7 +734,7 @@ class Statement extends Model
             $decisions[] = 'Account';
         }
 
-        return implode(", ", $decisions);
+        return implode(', ', $decisions);
     }
 
     // Function to convert enum keys to their corresponding values
@@ -838,8 +745,8 @@ class Statement extends Model
 
         foreach ($keys as $key) {
             // Use defined() to check if constant exists before trying to get its value
-            if (defined(self::class . '::' . $key)) {
-                $value = constant(self::class . '::' . $key);
+            if (defined(self::class.'::'.$key)) {
+                $value = constant(self::class.'::'.$key);
                 if ($value !== null) {
                     $enumValues[] = $value;
                 }
@@ -847,14 +754,10 @@ class Statement extends Model
         }
 
         sort($enumValues);
+
         return $enumValues;
     }
 
-    /**
-     * @param $key
-     *
-     * @return array
-     */
     public function getRawKeys($key): array
     {
         $raw_original = (string) $this->getRawOriginal($key);
@@ -867,9 +770,9 @@ class Statement extends Model
             $out = json_decode($raw_original, false, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $exception) {
             Log::error('Statement::getRawKeys', ['exception' => $exception]);
+
             return [];
         }
-
 
         if (is_array($out)) {
             $out = array_unique($out);
@@ -879,31 +782,5 @@ class Statement extends Model
         }
 
         return $out;
-    }
-
-    /**
-     * Save a batch of statements coming from the Multi API endpoint
-     * @param array $statements
-     *
-     * @return void
-     */
-    public static function insertBulk(array $statements): void
-    {
-        // @codeCoverageIgnoreStart
-        if (env('APP_ENV_REAL') === 'production') {
-            // Bulk insert on production, the cron will index later.
-            Statement::insert($statements);
-            // @codeCoverageIgnoreEnd
-        } else {
-            $opensearch = app('App\Services\StatementSearchService');
-            // Not production, we index at the moment.
-            $id_before = Statement::query()->orderBy('id', 'DESC')->first()->id;
-
-            Statement::insert($statements);
-            $id_after = Statement::query()->orderBy('id', 'DESC')->first()->id;
-
-            $statements = Statement::query()->where('id', '>=', $id_before)->where('id', '<=', $id_after)->get();
-            $opensearch->bulkIndexStatements($statements);
-        }
     }
 }

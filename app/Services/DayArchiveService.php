@@ -5,19 +5,55 @@ namespace App\Services;
 use App\Exports\StatementExportTrait;
 use App\Models\DayArchive;
 use App\Models\Platform;
-use App\Models\Statement;
-use App\Models\StatementAlpha;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DayArchiveService
 {
     use StatementExportTrait;
 
-    public function __construct(protected StatementSearchService $statement_search_service, protected PlatformQueryService $platform_query_service) {}
+    private const int DEFAULT_BOUNDARY_WINDOW_MINUTES = 2;
 
+    // Table to use for fetching statements
+    public $statements_table = 'statements_beta';
+
+    // Database connection to use (defaults to pgsql, can be overridden for testing)
+    public $connection = 'pgsql';
+
+    // Define the versions of CSV exports
+    public $versions = [
+        'full',
+        'light',
+    ];
+
+    // Number of statements to process in each subpart
+    public $chunk = 100000;
+
+    public $platforms = [];
+
+    public function __construct(protected PlatformQueryService $platform_query_service)
+    {
+        $this->platforms = $platform_query_service->getPlatformsById();
+    }
+
+    /**
+     * Build the basic exports array structure.
+     *
+     * this will include the 'global' export as well as one for each platform
+     *
+     * the structure is:
+     * [
+     *   ['id' => null, 'slug' => 'global'],
+     *   ['id' => 1, 'slug' => 'platform-name'],
+     *   ...
+     * ]
+     *
+     * @return array<array|array{id: null, slug: string}>
+     */
     public function buildBasicExportsArray(): array
     {
         $exports = [];
@@ -41,62 +77,81 @@ class DayArchiveService
         return $exports;
     }
 
-    public function getFirstIdOfDate(Carbon $date)
+    public function getFirstIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
     {
-        // Start at the beginning of the specified minute
-        $startOfMinute = $date->copy()->setTime(0, 0, 0);
-        $firstId = false;
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
 
-        for ($i = 0; $i < 60; $i++) {
-            // For each iteration, add seconds to the starting point
-            $currentSecond = $startOfMinute->copy()->addSeconds($i);
+        return $this->getFirstIdFromBoundaryWindow('statements_beta', $startOfDay, $endOfDay, $boundaryMinutes);
+    }
 
-            $query = $date->lt('2025-07-01 00:00:00') ? StatementAlpha::query() : Statement::query();
+    public function getFirstPlatformPuidIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
+    {
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
 
-            // Query the database for the minimum ID created exactly at this second
-            $first = $query->selectRaw('min(id) as min')
-                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
-                ->first();
+        return $this->getFirstIdFromBoundaryWindow('platform_puids', $startOfDay, $endOfDay, $boundaryMinutes);
+    }
 
-            // If a result is found, return the id
-            if ($first && $first->min) {
-                return $first->min;
+    public function getLastIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
+    {
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
+
+        return $this->getLastIdFromBoundaryWindow('statements_beta', $startOfDay, $endOfDay, $boundaryMinutes);
+    }
+
+    public function getLastPlatformPuidIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
+    {
+        $startOfDay = $date->copy()->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
+
+        return $this->getLastIdFromBoundaryWindow('platform_puids', $startOfDay, $endOfDay, $boundaryMinutes);
+    }
+
+    private function getFirstIdFromBoundaryWindow(string $table, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)
+    {
+        if ($boundaryMinutes > 0) {
+            $boundaryEnd = $startOfDay->copy()->addMinutes($boundaryMinutes)->min($endOfDay);
+            $id = DB::table($table)
+                ->where('created_at', '>=', $startOfDay)
+                ->where('created_at', '<', $boundaryEnd)
+                ->min('id');
+
+            if ($id) {
+                return $id;
             }
         }
 
-        // Return false if no ID is found within the minute
-        return $firstId;
+        return DB::table($table)
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->value('id') ?: false;
     }
 
-
-    public function getLastIdOfDate(Carbon $date)
+    private function getLastIdFromBoundaryWindow(string $table, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)
     {
-        // Set the time to 23:59:59 of the given date
-        $endOfDay = $date->copy()->setTime(23, 59, 59); // '2030-01-01 23:59:59'
-        $lastId = false;
+        if ($boundaryMinutes > 0) {
+            $boundaryStart = $endOfDay->copy()->subMinutes($boundaryMinutes)->max($startOfDay);
+            $id = DB::table($table)
+                ->where('created_at', '>=', $boundaryStart)
+                ->where('created_at', '<', $endOfDay)
+                ->max('id');
 
-        // Loop through the last minute, going backwards from 23:59:59 to 23:59:00
-        for ($i = 0; $i < 60; $i++) {
-            // Subtract seconds to move backwards
-            $currentSecond = $endOfDay->copy()->subSeconds($i);
-
-            $query = $date->lt('2025-07-01 00:00:00') ? StatementAlpha::query() : Statement::query();
-
-            // Query the database for the maximum ID created exactly at this second
-            $last = $query->selectRaw('max(id) as max')
-                ->where('created_at', $currentSecond->format('Y-m-d H:i:s'))
-                ->first();
-
-            // If a result is found, return the id immediately
-            if ($last && $last->max) {
-                return $last->max;
+            if ($id) {
+                return $id;
             }
         }
 
-        // Return false if no ID is found within the last minute
-        return $lastId;
+        return DB::table($table)
+            ->where('created_at', '>=', $startOfDay)
+            ->where('created_at', '<', $endOfDay)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->value('id') ?: false;
     }
-
 
     public function globalList(): Builder
     {
@@ -134,59 +189,140 @@ class DayArchiveService
     public function getSelectRawString(string $table = 'statements_beta'): string
     {
         $selects = [];
-        $selects[] = "id";
-        $selects[] = "uuid";
-        $selects[] = "decision_visibility";
-        $selects[] = $this->cleanTextField("decision_visibility_other");
-        $selects[] = "end_date_visibility_restriction";
+        $selects[] = 'id';
+        $selects[] = 'uuid';
+        $selects[] = 'decision_visibility';
+        $selects[] = $this->cleanTextField('decision_visibility_other');
+        $selects[] = 'end_date_visibility_restriction';
 
-        $selects[] = "decision_monetary";
-        $selects[] = $this->cleanTextField("decision_monetary_other");
-        $selects[] = "end_date_monetary_restriction";
+        $selects[] = 'decision_monetary';
+        $selects[] = $this->cleanTextField('decision_monetary_other');
+        $selects[] = 'end_date_monetary_restriction';
 
-        $selects[] = "decision_provision";
-        $selects[] = "end_date_service_restriction";
+        $selects[] = 'decision_provision';
+        $selects[] = 'end_date_service_restriction';
 
-        $selects[] = "decision_account";
-        $selects[] = "end_date_account_restriction";
-        $selects[] = "account_type";
+        $selects[] = 'decision_account';
+        $selects[] = 'end_date_account_restriction';
+        $selects[] = 'account_type';
 
-        $selects[] = "decision_ground";
-        $selects[] = $this->cleanTextField("decision_ground_reference_url");
+        $selects[] = 'decision_ground';
+        $selects[] = $this->cleanTextField('decision_ground_reference_url');
 
-        $selects[] = $this->cleanTextField("illegal_content_legal_ground");
-        $selects[] = $this->cleanTextField("illegal_content_explanation");
-        $selects[] = $this->cleanTextField("incompatible_content_ground");
-        $selects[] = $this->cleanTextField("incompatible_content_explanation");
-        $selects[] = "incompatible_content_illegal";
+        $selects[] = $this->cleanTextField('illegal_content_legal_ground');
+        $selects[] = $this->cleanTextField('illegal_content_explanation');
+        $selects[] = $this->cleanTextField('incompatible_content_ground');
+        $selects[] = $this->cleanTextField('incompatible_content_explanation');
+        $selects[] = 'incompatible_content_illegal';
 
-        $selects[] = "category";
-        $selects[] = "category_addition";
-        $selects[] = "category_specification";
-        $selects[] = $this->cleanTextField("category_specification_other");
+        $selects[] = 'category';
+        $selects[] = 'category_addition';
+        $selects[] = 'category_specification';
+        $selects[] = $this->cleanTextField('category_specification_other');
 
-        $selects[] = "content_type";
-        $selects[] = $this->cleanTextField("content_type_other");
-        $selects[] = "content_language";
-        $selects[] = "content_date";
-        if ($table === 'statements_beta') {
-            $selects[] = "content_id_ean";
+        $selects[] = 'content_type';
+        $selects[] = $this->cleanTextField('content_type_other');
+        $selects[] = 'content_language';
+        $selects[] = 'content_date';
+        $selects[] = 'content_id_ean';
+
+        $selects[] = 'territorial_scope';
+        $selects[] = 'application_date';
+        $selects[] = $this->cleanTextField('decision_facts');
+
+        $selects[] = 'source_type';
+        $selects[] = $this->cleanTextField('source_identity');
+
+        $selects[] = 'automated_detection';
+        $selects[] = 'automated_decision';
+
+        $selects[] = $this->cleanTextField('puid');
+        $selects[] = 'created_at';
+        $selects[] = 'platform_id';
+
+        return implode(', ', $selects);
+    }
+
+    public function prepareHeadingsArray(): array
+    {
+        $headings = [];
+        $headings['full'] = $this->headings();
+        $headings['light'] = $this->headingsLight();
+
+        return $headings;
+    }
+
+    /**
+     * Map the statement to rows for each version.
+     *
+     * @param  mixed  $statement  The raw statement object from database query.
+     * @return array<string, array<int, string|null>> An associative array where keys are version names
+     *                                                ('full', 'light', etc.) and values are arrays representing the mapped rows for each version.
+     */
+    public function mapRows(mixed $statement): array
+    {
+        $rows = [];
+
+        foreach ($this->versions as $version) {
+            $function = 'mapRaw'.Str::ucfirst($version);
+            $row = $this->$function($statement, $this->platforms);
+            $rows[$version] = $row;
         }
 
-        $selects[] = "territorial_scope";
-        $selects[] = "application_date";
-        $selects[] = $this->cleanTextField("decision_facts");
+        return $rows;
+    }
 
-        $selects[] = "source_type";
-        $selects[] = $this->cleanTextField("source_identity");
+    public function csvstr(array $fields): string
+    {
+        $f = fopen('php://memory', 'wb+');
+        fputcsv($f, $fields);
 
-        $selects[] = "automated_detection";
-        $selects[] = "automated_decision";
+        rewind($f);
+        $csv_line = stream_get_contents($f);
 
-        $selects[] = $this->cleanTextField("puid");
-        $selects[] = "created_at";
-        $selects[] = "platform_id";
+        return rtrim($csv_line);
+    }
 
-        return implode(", ", $selects);
+    /**
+     * Build CSV lines for each version from the given statement.
+     *
+     * @param  mixed  $statement  The raw statement object from database query to convert to CSV lines.
+     * @return array<string, string> An associative array where keys are version names ('full', 'light', etc.)
+     *                               and values are the corresponding CSV lines as strings.
+     */
+    public function buildCsvLines(mixed $statement): array
+    {
+        $csvs = [];
+        $rows = $this->mapRows($statement);
+        foreach ($this->versions as $version) {
+            $csvs[$version] = $this->csvstr($rows[$version]);
+        }
+
+        return $csvs;
+    }
+
+    public function getRawStatements(int $start, int $end, string $date = ''): Collection
+    {
+        $select_raw = $this->getSelectRawString();
+        $statements = DB::connection($this->connection)
+            ->table($this->statements_table)
+            ->selectRaw($select_raw)
+            ->where('id', '>=', $start)
+            ->where('id', '<=', $end)
+            ->when($date, function ($query, $date) {
+
+                $startOfDay = $date.' 00:00:00';
+                $endOfDay = $date.' 23:59:59';
+
+                $query->where('created_at', '>=', $startOfDay)
+                    ->where('created_at', '<=', $endOfDay);
+
+                return $query;
+
+            })
+            ->orderBy('id')
+            ->get();
+
+        return $statements;
     }
 }

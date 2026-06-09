@@ -6,9 +6,6 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
 
-/**
- * @codeCoverageIgnore
- */
 class GiveRole extends Command
 {
     /**
@@ -34,6 +31,7 @@ class GiveRole extends Command
             $role = Role::findByName($this->argument('role'));
         } catch (\Exception) {
             $this->error('The role was not found.');
+
             return;
         }
 
