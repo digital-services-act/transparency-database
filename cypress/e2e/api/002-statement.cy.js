@@ -6,6 +6,7 @@ import { generateStatementRequestBody } from "../../support/e2e";
 const _ = Cypress._;
 const url = `${Cypress.env("apiUrl")}/statement`;
 const token = Cypress.env("token");
+const elasticSearchEnabled = Cypress.env("elasticSearchEnabled");
 const headers = {
   "Content-Type": "application/json",
   Accept: "application/json",
@@ -38,25 +39,27 @@ context("Single statement endpoint", () => {
         body: body,
       }).then((response) => {
         expect(response.status).to.eq(201);
-        expect(response.body).to.have.property("id");
+        expect(response.body).to.have.property("uuid");
 
-        cy.wait(5000);
-        // Let's check Opensearch for the puid
-        cy.request({
-          method: "POST",
-          url: `${Cypress.env("apiUrl")}/opensearch/sql`,
-          headers: { ...headers, Authorization: `Bearer ${token}` },
-          body: {
-            query: `SELECT puid from statement_index order by id desc`,
-          },
-          failOnStatusCode: false,
-        }).then((searchResponse) => {
-          expect(searchResponse.status).to.eq(200);
-          expect(searchResponse.body.datarows).to.not.be.undefined;
+        if (elasticSearchEnabled) {
+          cy.wait(5000);
+          // Let's check ElasticSearch for the puid
+          cy.request({
+            method: "POST",
+            url: `${Cypress.env("apiUrl")}/elastic/sql`,
+            headers: { ...headers, Authorization: `Bearer ${token}` },
+            body: {
+              query: `SELECT puid from statement_index order by id desc`,
+            },
+            failOnStatusCode: false,
+          }).then((searchResponse) => {
+            expect(searchResponse.status).to.eq(200);
+            expect(searchResponse.body.datarows).to.not.be.undefined;
 
-          const rows = searchResponse.body.datarows.flat();
-          expect(rows).to.contain(puid);
-        });
+            const rows = searchResponse.body.datarows.flat();
+            expect(rows).to.contain(puid);
+          });
+        }
       });
     });
   });
@@ -110,7 +113,7 @@ context("Single statement endpoint", () => {
           body: body,
         }).then((response) => {
           expect(response.status).to.eq(201);
-          expect(response.body).to.have.property("id");
+          expect(response.body).to.have.property("uuid");
         });
       });
     });
@@ -131,7 +134,7 @@ context("Single statement endpoint", () => {
           body: body,
         }).then((response) => {
           expect(response.status).to.eq(201);
-          expect(response.body).to.have.property("id");
+          expect(response.body).to.have.property("uuid");
         });
       });
     });
@@ -290,7 +293,7 @@ context("Single statement endpoint", () => {
         body: body,
       }).then((response) => {
         expect(response.status).to.eq(201);
-        expect(response.body).to.have.property("id");
+        expect(response.body).to.have.property("uuid");
       });
 
       cy.request({

@@ -2,11 +2,12 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Foundation\Testing\TestCase;
-use Tests\CreatesApplication;
 use App\Console\Commands\Heartbeat;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Tests\CreatesApplication;
 
 class HeartbeatTest extends TestCase
 {
@@ -26,14 +27,13 @@ class HeartbeatTest extends TestCase
 
         // Register the Heartbeat command
         $this->app->singleton('command.heartbeat', function ($app) {
-            return new Heartbeat();
+            return new Heartbeat;
         });
-        $this->app->make(\Illuminate\Contracts\Console\Kernel::class)
+        $this->app->make(Kernel::class)
             ->registerCommand($this->app->make('command.heartbeat'));
     }
 
-    /** @test */
-    public function it_reports_when_database_is_up()
+    public function test_it_reports_when_database_is_up()
     {
         // Act & Assert
         $this->artisan('heartbeat')
@@ -42,8 +42,7 @@ class HeartbeatTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
-    public function it_reports_when_database_is_down()
+    public function test_it_reports_when_database_is_down()
     {
         // Arrange - Set an invalid database connection
         Config::set('database.connections.testing.database', '/invalid/database.sqlite');
@@ -56,8 +55,7 @@ class HeartbeatTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /** @test */
-    public function it_respects_custom_timeout()
+    public function test_it_respects_custom_timeout()
     {
         // Act & Assert
         $this->artisan('heartbeat', ['--timeout' => 10])
@@ -66,8 +64,7 @@ class HeartbeatTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
-    public function it_displays_help_information()
+    public function test_it_displays_help_information()
     {
         // Act & Assert
         $this->artisan('heartbeat --help')

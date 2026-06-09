@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
 use App\Models\Platform;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -13,6 +12,7 @@ class PlatformAPIControllerTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+
     private array $requiredFields;
 
     private Platform $platform;
@@ -28,10 +28,7 @@ class PlatformAPIControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_store_requires_auth(): void
+    public function test_api_platform_store_requires_auth(): void
     {
         // Not signing in.
         $this->assertCount(20, Platform::all());
@@ -43,10 +40,7 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_store_works(): void
+    public function test_api_platform_store_works(): void
     {
 
         $user = $this->signInAsOnboarding();
@@ -68,10 +62,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertCount(21, Platform::all());
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_store_handles_duplicate_platform(): void
+    public function test_api_platform_store_handles_duplicate_platform(): void
     {
         $user = $this->signInAsOnboarding();
 
@@ -79,14 +70,14 @@ class PlatformAPIControllerTest extends TestCase
         Platform::create([
             'name' => 'Duplicate Platform',
             'vlop' => 0,
-            'dsa_common_id' => 'unique-id-123'
+            'dsa_common_id' => 'unique-id-123',
         ]);
 
         // Try to create another platform with the same dsa_common_id
         $response = $this->post(route('api.v1.platform.store'), [
             'name' => 'Another Platform',
             'vlop' => 0,
-            'dsa_common_id' => 'unique-id-123'
+            'dsa_common_id' => 'unique-id-123',
         ], [
             'Accept' => 'application/json',
         ]);
@@ -95,10 +86,7 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertJsonStructure(['message', 'errors']);
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_update_works(): void
+    public function test_api_platform_update_works(): void
     {
 
         $user = $this->signInAsOnboarding();
@@ -109,12 +97,12 @@ class PlatformAPIControllerTest extends TestCase
         Platform::factory()->create([
             'name' => 'my test platform',
             'dsa_common_id' => 'foobar',
-            'vlop'=> 0
+            'vlop' => 0,
         ]);
 
         $response = $this->put(route('api.v1.platform.update', ['platform' => 'foobar']), [
             'name' => 'updated name for my test platform',
-            'vlop' => 1
+            'vlop' => 1,
         ], [
             'Accept' => 'application/json',
         ]);
@@ -128,10 +116,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertCount(21, Platform::all());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_give_platform_data(): void
+    public function test_it_should_give_platform_data(): void
     {
         $this->withoutExceptionHandling();
 
@@ -144,28 +129,24 @@ class PlatformAPIControllerTest extends TestCase
 
         $response = $this->get(route('api.v1.platform.get', ['platform' => 'foobar']), $this->requiredFields);
 
-
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_store_returns_existing_platform_with_same_name(): void
+    public function test_api_platform_store_returns_existing_platform_with_same_name(): void
     {
         $user = $this->signInAsOnboarding();
 
         // Create an initial platform without dsa_common_id
         $existingPlatform = Platform::create([
             'name' => 'Existing Platform',
-            'vlop' => 0
+            'vlop' => 0,
         ]);
 
         // Try to create a platform with the same name but different case
         $response = $this->post(route('api.v1.platform.store'), [
             'name' => 'EXISTING PLATFORM',
             'vlop' => 0,
-            'dsa_common_id' => 'new-id-123'
+            'dsa_common_id' => 'new-id-123',
         ], [
             'Accept' => 'application/json',
         ]);
@@ -178,24 +159,21 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertCount(21, Platform::all()); // No new platform should be created
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_store_updates_dsa_common_id_for_platform_without_dsa_id(): void
+    public function test_api_platform_store_updates_dsa_common_id_for_platform_without_dsa_id(): void
     {
         $user = $this->signInAsOnboarding();
 
         // Create an initial platform without dsa_common_id
         $existingPlatform = Platform::create([
             'name' => 'Existing Platform',
-            'vlop' => 0
+            'vlop' => 0,
         ]);
 
         // Try to create a platform with the same name and add a dsa_common_id
         $response = $this->post(route('api.v1.platform.store'), [
             'name' => 'Existing Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'new-id-456'
+            'dsa_common_id' => 'new-id-456',
         ], [
             'Accept' => 'application/json',
         ]);
@@ -211,10 +189,7 @@ class PlatformAPIControllerTest extends TestCase
         $this->assertEquals('new-id-456', Platform::find($existingPlatform->id)->dsa_common_id);
     }
 
-    /**
-     * @test
-     */
-    public function api_platform_store_fails_when_existing_platform_has_dsa_id(): void
+    public function test_api_platform_store_fails_when_existing_platform_has_dsa_id(): void
     {
         $user = $this->signInAsOnboarding();
 
@@ -222,14 +197,14 @@ class PlatformAPIControllerTest extends TestCase
         $existingPlatform = Platform::create([
             'name' => 'Existing Platform',
             'vlop' => 0,
-            'dsa_common_id' => 'existing-id-123'
+            'dsa_common_id' => 'existing-id-123',
         ]);
 
         // Try to create a platform with the same name and different dsa_common_id
         $response = $this->post(route('api.v1.platform.store'), [
             'name' => 'Existing Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'new-id-456'
+            'dsa_common_id' => 'new-id-456',
         ], [
             'Accept' => 'application/json',
         ]);

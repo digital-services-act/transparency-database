@@ -1,4 +1,4 @@
-const url = `${Cypress.env("apiUrl")}/research/labels`;
+const url = `${Cypress.env("apiUrl")}/platform/DSA-TEAM`;
 const token = Cypress.env("token");
 const headers = {
     "Content-Type": "application/json",

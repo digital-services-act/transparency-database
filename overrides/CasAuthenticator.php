@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace EcPhp\LaravelCas\Middleware;
+namespace EcDoris\LaravelCas\Middleware;
 
 use Closure;
 use EcPhp\CasLib\Contract\CasInterface;
@@ -23,12 +23,11 @@ final readonly class CasAuthenticator
     public function __construct(
         private CasInterface $cas,
         private ServerRequestInterface $serverRequest
-    ) {
-    }
+    ) {}
 
     public function handle(Request $request, Closure $next): mixed
     {
-        if (!$this->cas->supportAuthentication($this->serverRequest)) {
+        if (! $this->cas->supportAuthentication($this->serverRequest)) {
             return $next($request);
         }
 

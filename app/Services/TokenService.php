@@ -10,6 +10,7 @@ class TokenService
     public function getTotalVlopValidTokens()
     {
         $dsa_team_platform_id = Platform::dsaTeamPlatformId();
+
         return User::join('personal_access_tokens', 'personal_access_tokens.tokenable_id', '=', 'users.id')
             ->join('platforms', 'platforms.id', '=', 'users.platform_id')
             ->where('platforms.vlop', 1)
@@ -22,6 +23,7 @@ class TokenService
     public function getTotalNonVlopValidTokens()
     {
         $dsa_team_platform_id = Platform::dsaTeamPlatformId();
+
         return User::join('personal_access_tokens', 'personal_access_tokens.tokenable_id', '=', 'users.id')
             ->join('platforms', 'platforms.id', '=', 'users.platform_id')
             ->where('platforms.vlop', 0)

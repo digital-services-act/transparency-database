@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\DatabaseVelocityController;
+use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
-use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PlatformController;
@@ -37,6 +38,7 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::prefix('/admin/')->group(static function () {
             Route::group(['middleware' => ['can:administrate']], static function () {
                 Route::delete('log-messages', [LogMessagesController::class, 'destroy'])->name('log-messages.destroy');
+                Route::get('database-velocity', [DatabaseVelocityController::class, 'index'])->name('database-velocity.index');
             });
             Route::get('onboarding', [OnboardingController::class, 'index'])->name('onboarding.index')->can('view platforms');
             Route::get('log-messages', [LogMessagesController::class, 'index'])->name('log-messages.index')->can('view logs');
@@ -49,26 +51,31 @@ Route::middleware(['force.auth'])->group(static function () {
         Route::get('/profile/page/{page}', [PageController::class, 'profileShow'])->name('profile.page.show');
         Route::get('/profile/api', [ProfileController::class, 'apiIndex'])->name('profile.api.index')->can('generate-api-key');
         Route::post('/profile/api/new-token', [ProfileController::class, 'newToken'])->name('profile.api.new-token')->can('generate-api-key');
-    });
 
+    });
 
     Route::get('/statement', [StatementController::class, 'index'])->name('statement.index');
 
     Route::get('/statement/csv', [StatementController::class, 'exportCsv'])->name('statement.export');
-    Route::get('/statement/{statement}', [StatementController::class, 'show'])
-        ->where('statement', '[0-9]+')  // Only accept digits for a statement
-        ->name('statement.show');
-    Route::get('/statement/uuid/{uuid}', [StatementController::class, 'showUuid'])->name('statement.show.uuid');
+    Route::get('/statement-search', [StatementController::class, 'search'])->name('statement.search');
 
-    Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index');
+    Route::get('/statement/{statement:uuid}', [StatementController::class, 'show'])
+        ->name('statement.show');
+
+    // Aggregates download
+    Route::get('/explore-data/download/aggregates-{date}.{ext}', [DataDownloadController::class, 'aggregates'])->name('aggregates.download');
+
+    Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index')->whereUuid('uuid');
+    Route::get('/explore-data/download-file/{dayArchive}/{type}', [DataDownloadController::class, 'download'])->name('dayarchive.download');
 
     Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');
     Route::view('/explore-data/toolbox', 'explore-data.toolbox')->name('explore-data.toolbox');
 
-    Route::get('/daily-archives', static fn() => Redirect::to(route('dayarchive.index'), 301));
-    Route::get('/data-download', static fn() => Redirect::to(route('dayarchive.index'), 301));
+    Route::get('/daily-archives', static fn () => Redirect::to(route('dayarchive.index'), 301));
+    Route::get('/data-download', static fn () => Redirect::to(route('dayarchive.index'), 301));
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/page/{page}', [PageController::class, 'show'])->name('page.show');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
 });

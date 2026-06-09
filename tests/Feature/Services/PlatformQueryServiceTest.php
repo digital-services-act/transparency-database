@@ -2,47 +2,53 @@
 
 namespace Tests\Feature\Services;
 
-use App\Exceptions\PuidNotUniqueSingleException;
-use App\Models\PlatformPuid;
 use App\Services\PlatformQueryService;
-use App\Services\PlatformUniqueIdService;
+use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Override;
 use Tests\TestCase;
 
 class PlatformQueryServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected PlatformQueryService $platformQueryService;
 
-    #[Override] protected function setUp(): void
+    #[Override]
+    protected function setUp(): void
     {
         parent::setUp();
         $this->platformQueryService = app(PlatformQueryService::class);
         $this->assertNotNull($this->platformQueryService);
     }
 
-
-    /**
-     * @return void
-     * @test
-     */
-    public function it_queries_on_s(): void
+    public function test_it_queries_on_s(): void
     {
         $filters = [];
         $filters['s'] = 'zaphod';
         $query = $this->platformQueryService->query($filters);
         $sql = $query->toRawSql();
-        $this->assertStringContainsString('"name" LIKE \'%zaphod%\'', $sql);
+        $this->assertStringContainsString('"name" like \'%zaphod%\'', $sql);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_queries_on_has_tokens(): void
+    public function test_it_uses_case_insensitive_search_on_postgres(): void
+    {
+        $connection = DB::connection();
+        $originalGrammar = $connection->getQueryGrammar();
+
+        try {
+            $connection->setQueryGrammar(new PostgresGrammar($connection));
+
+            $query = $this->platformQueryService->query(['s' => 'zaphod']);
+
+            $this->assertStringContainsString('"name"::text ilike \'%zaphod%\'', $query->toRawSql());
+        } finally {
+            $connection->setQueryGrammar($originalGrammar);
+        }
+    }
+
+    public function test_it_queries_on_has_tokens(): void
     {
         $filters = [];
         $filters['has_tokens'] = 0;
@@ -63,11 +69,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"has_tokens"', $sql);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_queries_on_has_statements(): void
+    public function test_it_queries_on_has_statements(): void
     {
         $filters = [];
         $filters['has_statements'] = 0;
@@ -88,11 +90,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"has_statements"', $sql);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_queries_on_vlop(): void
+    public function test_it_queries_on_vlop(): void
     {
         $filters = [];
         $filters['vlop'] = 0;
@@ -113,11 +111,7 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"vlop"', $sql);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_queries_on_onboarded(): void
+    public function test_it_queries_on_onboarded(): void
     {
         $filters = [];
         $filters['onboarded'] = 0;
@@ -138,44 +132,27 @@ class PlatformQueryServiceTest extends TestCase
         $this->assertStringNotContainsString('"onboarded"', $sql);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_gets_platform_dropdown_options(): void
+    public function test_it_gets_platform_dropdown_options(): void
     {
         $options = $this->platformQueryService->getPlatformDropDownOptions();
         $this->assertIsArray($options);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_gets_platforms_by_id(): void
+    public function test_it_gets_platforms_by_id(): void
     {
         $platforms_by_id = $this->platformQueryService->getPlatformsById();
         $this->assertIsArray($platforms_by_id);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_gets_platform_ids(): void
+    public function test_it_gets_platform_ids(): void
     {
         $platform_ids = $this->platformQueryService->getPlatformIds();
         $this->assertIsArray($platform_ids);
     }
 
-    /**
-     * @return void
-     * @test
-     */
-    public function it_gets_platform_vlop_ids(): void
+    public function test_it_gets_platform_vlop_ids(): void
     {
         $platform_ids = $this->platformQueryService->getVlopPlatformIds();
         $this->assertIsArray($platform_ids);
     }
-
 }

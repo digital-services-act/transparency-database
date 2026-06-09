@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 return [
 
     /*
@@ -15,7 +17,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-//        'guard' => 'laravel-cas',
+        //        'guard' => 'laravel-cas',
         'passwords' => 'users',
     ],
 
@@ -40,6 +42,10 @@ return [
         'web' => [
             'driver' => 'laravel-cas',
             'provider' => 'users',
+        ],
+        'laravel-cas' => [
+            'driver' => 'laravel-cas',
+            'provider' => 'laravel-cas',
         ],
         'api' => [
             'driver' => 'token',
@@ -69,8 +75,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ]
+            'model' => User::class,
+        ],
+
+        'laravel-cas' => [
+            'driver' => 'laravel-cas',
+            'model' => User::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',

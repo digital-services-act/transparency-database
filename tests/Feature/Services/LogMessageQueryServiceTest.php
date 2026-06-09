@@ -2,21 +2,20 @@
 
 namespace Tests\Feature\Services;
 
-use App\Services\DayArchiveService;
 use App\Services\LogMessageQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LogMessageQueryServiceTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected LogMessageQueryService $log_message_query_service;
 
     private array $required_fields;
 
-    #[\Override]protected function setUp(): void
+    #[\Override]
+    protected function setUp(): void
     {
         parent::setUp();
         $this->log_message_query_service = app(LogMessageQueryService::class);
@@ -24,36 +23,24 @@ class LogMessageQueryServiceTest extends TestCase
 
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function it_filters_on_s() : void
+    public function test_it_filters_on_s(): void
     {
         $result = $this->log_message_query_service->query(['s' => 'cow']);
         $raw = $result->toRawSql();
-        $this->assertEquals('select * from "log_messages" where "message" LIKE \'%cow%\' or "context" LIKE \'%cow%\'', $raw);
+        $this->assertEquals('select * from "log_messages" where "message" like \'%cow%\' or "context" like \'%cow%\'', $raw);
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function it_searches_id_on_int() : void
+    public function test_it_searches_id_on_int(): void
     {
         $result = $this->log_message_query_service->query(['s' => 5]);
         $raw = $result->toRawSql();
         $this->assertEquals('select * from "log_messages" where "id" = 5', $raw);
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function it_escapes_potentially_dangerous_stuff() : void
+    public function test_it_escapes_potentially_dangerous_stuff(): void
     {
         $result = $this->log_message_query_service->query(['s' => "'; select * FROM statements;"]);
         $raw = $result->toRawSql();
-        $this->assertEquals('select * from "log_messages" where "message" LIKE \'%\'\'; select * FROM statements;%\' or "context" LIKE \'%\'\'; select * FROM statements;%\'', $raw);
+        $this->assertEquals('select * from "log_messages" where "message" like \'%\'\'; select * FROM statements;%\' or "context" like \'%\'\'; select * FROM statements;%\'', $raw);
     }
 }
