@@ -62,6 +62,55 @@ class DataDownloadController extends Controller
 
     public function download(DayArchive $dayArchive, string $type): RedirectResponse
     {
+        return $this->redirectToArchiveUrl($dayArchive, $type);
+    }
+
+    public function archiveByFilename(string $platformSlug, string $date, string $version): RedirectResponse
+    {
+        $dayArchive = $this->findCompletedArchive($platformSlug, $date);
+
+        return $this->redirectToArchiveUrl($dayArchive, $version);
+    }
+
+    public function archiveChecksumByFilename(string $platformSlug, string $date, string $version): RedirectResponse
+    {
+        $dayArchive = $this->findCompletedArchive($platformSlug, $date);
+        $type = $version === 'full' ? 'sha1' : 'sha1light';
+
+        return $this->redirectToArchiveUrl($dayArchive, $type);
+    }
+
+    private function findCompletedArchive(string $platformSlug, string $date): DayArchive
+    {
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            abort(404, 'Invalid date format');
+        }
+
+        $query = DayArchive::query()
+            ->whereDate('date', $date)
+            ->whereNotNull('completed_at');
+
+        if ($platformSlug === 'global') {
+            $dayArchive = $query->whereNull('platform_id')->first();
+        } else {
+            $platform = Platform::query()
+                ->get(['id', 'name'])
+                ->first(static fn (Platform $platform): bool => $platform->slugifyName() === $platformSlug);
+
+            $dayArchive = $platform
+                ? $query->where('platform_id', $platform->id)->first()
+                : null;
+        }
+
+        if (! $dayArchive) {
+            abort(404, 'Archive not found');
+        }
+
+        return $dayArchive;
+    }
+
+    private function redirectToArchiveUrl(DayArchive $dayArchive, string $type): RedirectResponse
+    {
         $urlMap = [
             'full' => $dayArchive->url,
             'light' => $dayArchive->urllight,
