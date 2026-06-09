@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 class Authenticate extends Middleware
 {
     /**
-<<<<<<< HEAD
-=======
      * Handle an unauthenticated user.
      *
      * API requests must always receive a JSON 401 response instead of being
@@ -32,7 +30,6 @@ class Authenticate extends Middleware
     }
 
     /**
->>>>>>> dev
      * Get the path the user should be redirected to when they are not authenticated.
      */
     #[\Override]

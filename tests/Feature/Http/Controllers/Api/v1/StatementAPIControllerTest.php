@@ -214,8 +214,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertNull($statement->content_language);
     }
 
-<<<<<<< HEAD
-=======
     public function test_api_statement_store_response_includes_raw_id(): void
     {
         $this->setUpFullySeededDatabase();
@@ -233,7 +231,6 @@ class StatementAPIControllerTest extends TestCase
         $this->assertSame($statement->id, $response->json('id'));
     }
 
->>>>>>> dev
     public function test_api_statement_content_language_is_stored(): void
     {
         $this->setUpFullySeededDatabase();

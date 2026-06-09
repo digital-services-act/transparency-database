@@ -136,8 +136,6 @@ class DataDownloadControllerTest extends TestCase
         $response->assertRedirect($legacyUrl);
     }
 
-<<<<<<< HEAD
-=======
     public function test_can_download_global_full_archive_by_deterministic_filename(): void
     {
         Storage::fake('s3ds');
@@ -220,7 +218,6 @@ class DataDownloadControllerTest extends TestCase
         $response->assertNotFound();
     }
 
->>>>>>> dev
     public function test_download_returns_404_for_invalid_type(): void
     {
         $dayArchive = DayArchive::factory()->completed()->create();

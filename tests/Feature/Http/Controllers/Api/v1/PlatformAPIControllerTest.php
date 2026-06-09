@@ -40,8 +40,6 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-<<<<<<< HEAD
-=======
     public function test_api_platform_get_returns_json_401_without_accept_header(): void
     {
         // No Accept: application/json header and no auth. The API must still
@@ -55,7 +53,6 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertJson(['message' => 'Unauthenticated.']);
     }
 
->>>>>>> dev
     public function test_api_platform_store_works(): void
     {
 

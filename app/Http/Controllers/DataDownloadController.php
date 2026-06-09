@@ -62,8 +62,6 @@ class DataDownloadController extends Controller
 
     public function download(DayArchive $dayArchive, string $type): RedirectResponse
     {
-<<<<<<< HEAD
-=======
         return $this->redirectToArchiveUrl($dayArchive, $type);
     }
 
@@ -113,7 +111,6 @@ class DataDownloadController extends Controller
 
     private function redirectToArchiveUrl(DayArchive $dayArchive, string $type): RedirectResponse
     {
->>>>>>> dev
         $urlMap = [
             'full' => $dayArchive->url,
             'light' => $dayArchive->urllight,
