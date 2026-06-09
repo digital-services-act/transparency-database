@@ -10,7 +10,6 @@ use Spatie\Permission\PermissionRegistrar;
 
 class PermissionsSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -29,15 +28,15 @@ class PermissionsSeeder extends Seeder
         Permission::query()->delete();
 
         $admin = Role::create([
-            'name' => 'Admin'
+            'name' => 'Admin',
         ]);
 
         $user = Role::create([
-            'name' => 'User'
+            'name' => 'User',
         ]);
 
         $contributor = Role::create([
-            'name' => 'Contributor'
+            'name' => 'Contributor',
         ]);
 
         $permissions = [
@@ -47,17 +46,15 @@ class PermissionsSeeder extends Seeder
             'create statements',
             'impersonate',
             'view dashboard',
-            'view statements'
+            'view statements',
         ];
 
-        foreach ($permissions as $permission_name)
-        {
+        foreach ($permissions as $permission_name) {
             Permission::create(['name' => $permission_name]);
         }
 
         $user->givePermissionTo('view statements');
         $user->givePermissionTo('view dashboard');
-
 
         $contributor->givePermissionTo('view statements');
         $contributor->givePermissionTo('view dashboard');
@@ -65,9 +62,8 @@ class PermissionsSeeder extends Seeder
         $contributor->givePermissionTo('create statements');
 
         $admin_emails = config('dsa.ADMIN_EMAILS');
-        $admin_emails = explode(",", $admin_emails);
-        foreach ($admin_emails as $admin_email)
-        {
+        $admin_emails = explode(',', $admin_emails);
+        foreach ($admin_emails as $admin_email) {
             if (filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
                 $admin = User::where('email', $admin_email)->first();
                 if ($admin) {

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,19 +44,8 @@ return [
         ],
 
         'mysql' => [
-            'sticky' => true,
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'read' => [
-                'host' => [
-                    env('DB_HOST_READER', env('DB_HOST', '127.0.0.1')),
-                ],
-            ],
-            'write' => [
-                'host' => [
-                    env('DB_HOST', '127.0.0.1'),
-                ],
-            ],
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
@@ -65,54 +54,31 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
         ],
 
-        'mysqlpreprod' => [
-            'sticky' => true,
-            'driver' => 'mysql',
-            'url' => env('DATABASE_URL_PREPROD'),
-            'read' => [
-                'host' => [
-                    env('DB_HOST_READER_PREPROD', env('DB_HOST_PREPROD', '127.0.0.1')),
-                ],
-            ],
-            'write' => [
-                'host' => [
-                    env('DB_HOST_PREPROD', '127.0.0.1'),
-                ],
-            ],
-            'port' => env('DB_PORT_PREPROD', '3306'),
-            'database' => env('DB_DATABASE_PREPROD', 'forge'),
-            'username' => env('DB_USERNAME_PREPROD', 'forge'),
-            'password' => env('DB_PASSWORD_PREPROD', ''),
-            'unix_socket' => env('DB_SOCKET_PREPROD', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
+        'pgsql_direct' => [
+            'driver' => 'pgsql',
+            'host' => env('POSTGRESQL_ADDON_DIRECT_HOST', '127.0.0.1'),
+            'port' => env('POSTGRESQL_ADDON_DIRECT_PORT', '5432'),
+            'database' => env('POSTGRESQL_ADDON_DB', 'forge'),
+            'username' => env('POSTGRESQL_ADDON_USER', 'forge'),
+            'password' => env('POSTGRESQL_ADDON_PASSWORD', ''),
+            'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA_PREPROD'),
-            ]) : [],
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
         ],
-
-
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => env('POSTGRESQL_ADDON_HOST', '127.0.0.1'),
+            'port' => env('POSTGRESQL_ADDON_PORT', '5432'),
+            'database' => env('POSTGRESQL_ADDON_DB', 'forge'),
+            'username' => env('POSTGRESQL_ADDON_USER', 'forge'),
+            'password' => env('POSTGRESQL_ADDON_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -189,5 +155,42 @@ return [
         ],
 
     ],
+
+//    'redis' => [
+//
+//        'client' => env('REDIS_CLIENT', 'phpredis'),
+//
+//        'options' => [
+//            'cluster' => env('REDIS_CLUSTER', 'redis'),
+//            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_')
+//        ],
+//
+//
+//        'clusters' => [
+//            'default' => [
+//                ['host' => 'bewg7wuwurmmcotmpqp0-redis.services.clever-cloud.com', 'port' => 40428, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+//                ['host' => 'bx4ojeq3aztvwsla4kwr-redis.services.clever-cloud.com', 'port' => 40487, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+//                ['host' => 'bpy29tm60cugl9nwdq1u-redis.services.clever-cloud.com', 'port' => 40499, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+//                ['host' => 'bmecjbzvy7jqjy6cqc40-redis.services.clever-cloud.com', 'port' => 40517, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+//                ['host' => 'blyv1dzzmh3lh72yhlnv-redis.services.clever-cloud.com', 'port' => 40518, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+//                ['host' => 'b3o65ktuzby6uyenhbsu-redis.services.clever-cloud.com', 'port' => 40522, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'default'],
+//            ],
+//
+//            'cache' => [
+//                ['host' => 'bewg7wuwurmmcotmpqp0-redis.services.clever-cloud.com', 'port' => 40428, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+//                ['host' => 'bx4ojeq3aztvwsla4kwr-redis.services.clever-cloud.com', 'port' => 40487, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+//                ['host' => 'bpy29tm60cugl9nwdq1u-redis.services.clever-cloud.com', 'port' => 40499, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+//                ['host' => 'bmecjbzvy7jqjy6cqc40-redis.services.clever-cloud.com', 'port' => 40517, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+//                ['host' => 'blyv1dzzmh3lh72yhlnv-redis.services.clever-cloud.com', 'port' => 40518, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+//                ['host' => 'b3o65ktuzby6uyenhbsu-redis.services.clever-cloud.com', 'port' => 40522, 'password' => env('REDIS_PASSWORD'), 'persistent' => true, 'persistent_id' => 'cache'],
+//            ],
+//
+//            'options' => [
+//                'password' => env('REDIS_PASSWORD'),
+//                'username' => env('REDIS_USERNAME'),
+//            ],
+//        ],
+//
+//    ],
 
 ];

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,8 +22,8 @@ class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
-    use Notifiable;
     use HasRoles;
+    use Notifiable;
     use SoftDeletes;
 
     public const API_TOKEN_KEY = 'api-token';
@@ -35,7 +36,7 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
-        'platform_id'
+        'platform_id',
     ];
 
     /**
@@ -63,17 +64,31 @@ class User extends Authenticatable
      */
     public static function firstOrCreateByAttributes(array $attributes): Model|User
     {
-        if (!isset ($attributes['email'])) {
-            throw new Exception("Fatal Error: CAS callback did not contain an email");
+        if (! isset($attributes['email'])) {
+            throw new Exception('Fatal Error: CAS callback did not contain an email');
         }
 
+        $email = strtolower((string) $attributes['email']);
+
+        $existing = User::query()
+            ->whereRaw('lower(email) = ?', [$email])
+            ->orderBy('id')
+            ->first();
+
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        $attributes['email'] = $email;
         $attributes['password'] = Str::random(16);
 
-        return User::firstOrCreate(
-            [
-                'email' => $attributes['email'],
-            ],
-            $attributes
+        return User::create($attributes);
+    }
+
+    protected function email(): Attribute
+    {
+        return Attribute::make(
+            set: static fn (?string $value): ?string => $value === null ? null : strtolower($value),
         );
     }
 
@@ -84,6 +99,7 @@ class User extends Authenticatable
                 return true;
             }
         }
+
         return false;
     }
 
@@ -91,7 +107,6 @@ class User extends Authenticatable
     {
         return $this->hasValidApiToken() ? 'Yes' : 'No';
     }
-
 
     public function platform(): HasOne
     {
@@ -102,5 +117,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Statement::class, 'user_id', 'id');
     }
-
 }

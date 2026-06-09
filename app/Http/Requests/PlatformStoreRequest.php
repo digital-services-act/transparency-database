@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Platform;
 use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Models\ApiLog;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
@@ -37,19 +36,18 @@ class PlatformStoreRequest extends FormRequest
             'onboarded' => ['int', 'nullable', 'sometimes'],
             'has_tokens' => ['int', 'nullable', 'sometimes'],
             'has_statements' => ['int', 'nullable', 'sometimes'],
-            'dsa_common_id' => ['nullable','string', 'unique:platforms,dsa_common_id']
+            'dsa_common_id' => ['nullable', 'string', 'unique:platforms,dsa_common_id'],
         ];
     }
 
     private function in(array $array): string
     {
-        return 'in:' . implode(',', $array);
+        return 'in:'.implode(',', $array);
     }
 
     /**
      * Handle a failed validation attempt.
      *
-     * @param Validator $validator
      * @return void
      *
      * @throws ValidationException
@@ -58,7 +56,7 @@ class PlatformStoreRequest extends FormRequest
     {
         $responseData = [
             'message' => $validator->errors()->first(),
-            'errors' => $validator->errors()
+            'errors' => $validator->errors(),
         ];
 
         $response = response()->json($responseData, Response::HTTP_UNPROCESSABLE_ENTITY);

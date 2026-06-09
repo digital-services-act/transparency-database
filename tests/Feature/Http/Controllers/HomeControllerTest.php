@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticStatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -21,19 +21,19 @@ class HomeControllerTest extends TestCase
     public function test_index_displays_view(): void
     {
         // Arrange
-        $mockSearchService = $this->mock(StatementSearchService::class);
+        $mockSearchService = $this->mock(StatementElasticStatsService::class);
         $mockSearchService->shouldReceive('grandTotal')->once()->andReturn(100);
         $mockSearchService->shouldReceive('topCategories')->once()->andReturn([
             ['value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'count' => 50],
             ['value' => 'STATEMENT_CATEGORY_VIOLENCE', 'count' => 30],
             ['value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE', 'count' => 20],
-            ['value' => 'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS', 'count' => 10]
+            ['value' => 'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS', 'count' => 10],
         ]);
         $mockSearchService->shouldReceive('topDecisionVisibilities')->once()->andReturn([
             ['value' => 'DECISION_VISIBILITY_CONTENT_REMOVED', 'count' => 40],
             ['value' => 'DECISION_VISIBILITY_CONTENT_DISABLED', 'count' => 30],
             ['value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED', 'count' => 20],
-            ['value' => 'DECISION_VISIBILITY_CONTENT_LABELLED', 'count' => 10]
+            ['value' => 'DECISION_VISIBILITY_CONTENT_LABELLED', 'count' => 10],
         ]);
         $mockSearchService->shouldReceive('fullyAutomatedDecisionPercentage')->once()->andReturn(75);
 
@@ -48,13 +48,13 @@ class HomeControllerTest extends TestCase
         // Assert
         $response->assertStatus(200);
         $response->assertViewIs('home');
-        
+
         $viewData = $response->viewData('total');
         $this->assertEquals(100, $viewData);
-        
+
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(3, $viewData);
-        
+
         // Check only top 3 categories are passed
         $viewData = $response->viewData('top_categories');
         $this->assertCount(3, $viewData);
@@ -76,7 +76,7 @@ class HomeControllerTest extends TestCase
     public function test_platforms_total_is_cached(): void
     {
         // Arrange
-        $mockSearchService = $this->mock(StatementSearchService::class);
+        $mockSearchService = $this->mock(StatementElasticStatsService::class);
         $mockSearchService->shouldReceive('grandTotal')->andReturn(100);
         $mockSearchService->shouldReceive('topCategories')->andReturn([]);
         $mockSearchService->shouldReceive('topDecisionVisibilities')->andReturn([]);
@@ -96,7 +96,7 @@ class HomeControllerTest extends TestCase
 
         // Act - Second request
         $response = $this->get('/');
-        
+
         // Assert - Should still show 3 from cache
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(3, $viewData);
@@ -105,7 +105,7 @@ class HomeControllerTest extends TestCase
     public function test_minimum_platform_total_is_one(): void
     {
         // Arrange
-        $mockSearchService = $this->mock(StatementSearchService::class);
+        $mockSearchService = $this->mock(StatementElasticStatsService::class);
         $mockSearchService->shouldReceive('grandTotal')->andReturn(100);
         $mockSearchService->shouldReceive('topCategories')->andReturn([]);
         $mockSearchService->shouldReceive('topDecisionVisibilities')->andReturn([]);
@@ -113,10 +113,10 @@ class HomeControllerTest extends TestCase
 
         // Clear any existing platforms
         Platform::query()->delete();
-        
+
         // Act
         $response = $this->get('/');
-        
+
         // Assert - Even with no platforms, minimum should be 1
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(1, $viewData);

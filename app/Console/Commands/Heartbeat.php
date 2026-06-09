@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\DocumentableTrait;
+use App\Console\Commands\Traits\LoggableTrait;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use App\Console\Commands\Traits\LoggableTrait;
-use App\Console\Commands\Traits\DocumentableTrait;
 
 class Heartbeat extends Command
 {
-    use LoggableTrait;
     use DocumentableTrait;
+    use LoggableTrait;
 
     /**
      * The name and signature of the console command.
@@ -52,12 +52,12 @@ class Heartbeat extends Command
     {
         try {
             $timeout = $this->option('timeout');
-            
+
             // Configure database timeout if specified
             if ($timeout) {
                 $driver = config('database.default');
                 config(["database.connections.{$driver}.options" => [
-                    \PDO::ATTR_TIMEOUT => (int)$timeout
+                    \PDO::ATTR_TIMEOUT => (int) $timeout,
                 ]]);
                 DB::reconnect();
             }
@@ -69,7 +69,7 @@ class Heartbeat extends Command
 
             $this->logInfo("Database is up (took {$duration}ms)", [
                 'duration_ms' => $duration,
-                'timeout' => $timeout
+                'timeout' => $timeout,
             ]);
 
             return Command::SUCCESS;
@@ -77,7 +77,7 @@ class Heartbeat extends Command
             $this->logError('Database connection failed', [
                 'error' => $e->getMessage(),
                 'timeout' => $timeout ?? null,
-                'exception_class' => get_class($e)
+                'exception_class' => get_class($e),
             ]);
 
             return Command::FAILURE;

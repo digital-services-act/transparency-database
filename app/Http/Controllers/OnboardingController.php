@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Platform;
 use App\Services\PlatformQueryService;
-use App\Services\StatementSearchService;
+use App\Services\StatementElasticStatsService;
 use App\Services\TokenService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -14,19 +14,21 @@ use Illuminate\Http\Request;
 class OnboardingController extends Controller
 {
     protected TokenService $tokenService;
-    protected StatementSearchService $statement_search_service;
+
+    protected StatementElasticStatsService $statement_elastic_stats_service;
+
     protected PlatformQueryService $platform_query_service;
 
-    public function __construct(PlatformQueryService $platform_query_service, StatementSearchService $statement_search_service, TokenService $tokenService)
+    public function __construct(PlatformQueryService $platform_query_service, StatementElasticStatsService $statement_elastic_stats_service, TokenService $tokenService)
     {
         $this->platform_query_service = $platform_query_service;
-        $this->statement_search_service = $statement_search_service;
+        $this->statement_elastic_stats_service = $statement_elastic_stats_service;
         $this->tokenService = $tokenService;
     }
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $platform_ids_methods_data = $this->statement_search_service->methodsByPlatformAll();
+        $platform_ids_methods_data = $this->statement_elastic_stats_service->methodsByPlatformAll();
 
         $filters = [];
         $filters['s'] = $request->get('s');
@@ -35,21 +37,20 @@ class OnboardingController extends Controller
         $filters['has_tokens'] = $request->get('has_tokens');
         $filters['has_statements'] = $request->get('has_statements');
 
-        $sorting_query_base = "?" . http_build_query($filters);
+        $sorting_query_base = '?'.http_build_query($filters);
 
         $allowed_orderbys = [
             'name',
-            'created_at'
+            'created_at',
         ];
 
         $allowed_directions = [
             'asc',
-            'desc'
+            'desc',
         ];
 
         $sorting = $request->get('sorting', 'name:asc');
-        $parts = explode(":", $sorting);
-
+        $parts = explode(':', $sorting);
 
         $orderby = $parts[0] ?? $allowed_orderbys[0];
         $direction = $parts[1] ?? $allowed_directions[0];
@@ -80,15 +81,15 @@ class OnboardingController extends Controller
 
         $tags = [];
         foreach ($filters as $filter => $value) {
-            $key = $filter . ':' . $value;
+            $key = $filter.':'.$value;
             if (isset($possible_tags[$key])) {
                 $filters_copy = $filters;
                 unset($filters_copy[$filter]);
-                $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
+                $url = '?'.http_build_query($filters_copy).'&sorting='.$sorting;
                 $tag = [
                     'label' => $possible_tags[$key],
                     'url' => $url,
-                    'removable' => true
+                    'removable' => true,
                 ];
                 $tags[] = $tag;
             }
@@ -97,11 +98,11 @@ class OnboardingController extends Controller
         if (isset($filters['s']) && $filters['s'] !== '') {
             $filters_copy = $filters;
             unset($filters_copy['s']);
-            $url = '?' . http_build_query($filters_copy) . '&sorting=' . $sorting;
+            $url = '?'.http_build_query($filters_copy).'&sorting='.$sorting;
             $tags[] = [
-                'label' => 'matching term: "' . htmlentities($filters['s']) . '"',
+                'label' => 'matching term: "'.htmlentities($filters['s']).'"',
                 'url' => $url,
-                'removable' => true
+                'removable' => true,
             ];
         }
 
@@ -111,7 +112,7 @@ class OnboardingController extends Controller
             'options' => $options,
             'all_platforms_count' => $all_platforms_count,
             'sorting_query_base' => $sorting_query_base,
-            'tags' => $tags
+            'tags' => $tags,
         ]);
     }
 
@@ -120,83 +121,84 @@ class OnboardingController extends Controller
         $vlops = [
             [
                 'label' => 'VLOPs',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'Non-Vlops',
-                'value' => 0
+                'value' => 0,
             ],
             [
                 'label' => 'All Platforms',
-                'value' => -1
+                'value' => -1,
             ],
         ];
         $onboardeds = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
+                'value' => 0,
             ],
             [
                 'label' => 'All Platforms',
-                'value' => -1
+                'value' => -1,
             ],
         ];
         $has_tokens = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
+                'value' => 0,
             ],
             [
                 'label' => 'All Platforms',
-                'value' => -1
+                'value' => -1,
             ],
         ];
         $has_statements = [
             [
                 'label' => 'Yes',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'label' => 'No',
-                'value' => 0
+                'value' => 0,
             ],
             [
                 'label' => 'All Platforms',
-                'value' => -1
-            ]
+                'value' => -1,
+            ],
         ];
         $sorting = [
             [
                 'label' => 'A to Z',
-                'value' => 'name:asc'
+                'value' => 'name:asc',
             ],
             [
                 'label' => 'Z to A',
-                'value' => 'name:desc'
+                'value' => 'name:desc',
             ],
             [
                 'label' => 'Created New Old',
-                'value' => 'created_at:desc'
+                'value' => 'created_at:desc',
             ],
             [
                 'label' => 'Created Old New',
-                'value' => 'created_at:asc'
+                'value' => 'created_at:asc',
             ],
         ];
+
         return [
             'vlops' => $vlops,
             'onboardeds' => $onboardeds,
             'has_tokens' => $has_tokens,
             'has_statements' => $has_statements,
-            'sorting' => $sorting
+            'sorting' => $sorting,
         ];
     }
 }

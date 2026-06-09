@@ -3,15 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Jobs\StatementCreation;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-/**
- * @codeCoverageIgnore
- */
 class GenerateStatements extends Command
 {
     use CommandTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -42,7 +39,7 @@ class GenerateStatements extends Command
             $date->addSeconds($date->secondsUntilEndOfDay());
         }
 
-        for ($cpt = 0; $cpt < $amount; ++$cpt) {
+        for ($cpt = 0; $cpt < $amount; $cpt++) {
             StatementCreation::dispatch($date->timestamp);
         }
     }

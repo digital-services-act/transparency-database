@@ -9,6 +9,7 @@ use Tests\TestCase;
 class TrustHostsTest extends TestCase
 {
     protected bool $seed = false;
+
     protected bool $runMigrations = false;
 
     private TrustHosts $middleware;
@@ -20,8 +21,7 @@ class TrustHostsTest extends TestCase
         $this->middleware = new TrustHosts($this->app);
     }
 
-    /** @test */
-    public function it_returns_array_with_application_url_pattern()
+    public function test_it_returns_array_with_application_url_pattern()
     {
         // Set a test application URL
         Config::set('app.url', 'https://example.com');
@@ -33,8 +33,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?example\.com$', $hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_application_url_with_subdomain()
+    public function test_it_handles_application_url_with_subdomain()
     {
         // Set a test application URL with subdomain
         Config::set('app.url', 'https://api.example.com');
@@ -46,8 +45,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?api\.example\.com$', $hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_application_url_with_port()
+    public function test_it_handles_application_url_with_port()
     {
         // Set a test application URL with port
         Config::set('app.url', 'https://example.com:8080');
@@ -59,8 +57,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?example\.com$', $hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_application_url_with_path()
+    public function test_it_handles_application_url_with_path()
     {
         // Set a test application URL with path
         Config::set('app.url', 'https://example.com/path');
@@ -72,8 +69,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?example\.com$', $hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_localhost()
+    public function test_it_handles_localhost()
     {
         // Set localhost as application URL
         Config::set('app.url', 'http://localhost');
@@ -85,8 +81,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?localhost$', $hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_ip_address()
+    public function test_it_handles_ip_address()
     {
         // Set IP address as application URL
         Config::set('app.url', 'http://127.0.0.1');
@@ -98,8 +93,7 @@ class TrustHostsTest extends TestCase
         $this->assertEquals('^(.+\.)?127\.0\.0\.1$', $hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_empty_application_url()
+    public function test_it_handles_empty_application_url()
     {
         // Set empty application URL
         Config::set('app.url', '');
@@ -111,8 +105,7 @@ class TrustHostsTest extends TestCase
         $this->assertNull($hosts[0]);
     }
 
-    /** @test */
-    public function it_handles_invalid_application_url()
+    public function test_it_handles_invalid_application_url()
     {
         // Set invalid URL
         Config::set('app.url', 'not-a-url');

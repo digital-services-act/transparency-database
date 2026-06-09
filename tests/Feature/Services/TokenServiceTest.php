@@ -5,33 +5,31 @@ namespace Tests\Feature\Services;
 use App\Models\PersonalAccessToken;
 use App\Models\Platform;
 use App\Models\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\TokenService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class TokenServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function it_calculates_total_vlop_valid_tokens_correctly()
+    public function test_it_calculates_total_vlop_valid_tokens_correctly()
     {
         // Seed the test database with some data
         $this->seedTestData();
 
-        $tokenService = new TokenService();
+        $tokenService = new TokenService;
         $total_vlop_valid_tokens = $tokenService->getTotalVlopValidTokens();
 
         $this->assertEquals(2, $total_vlop_valid_tokens);
     }
 
-    /** @test */
-    public function it_calculates_total_non_vlop_valid_tokens_correctly()
+    public function test_it_calculates_total_non_vlop_valid_tokens_correctly()
     {
         // Seed the test database with some data
         $this->seedTestData();
 
-        $tokenService = new TokenService();
+        $tokenService = new TokenService;
         $total_non_vlop_valid_tokens = $tokenService->getTotalNonVlopValidTokens();
 
         $this->assertEquals(1, $total_non_vlop_valid_tokens);

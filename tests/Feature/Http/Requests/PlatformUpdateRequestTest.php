@@ -15,7 +15,9 @@ class PlatformUpdateRequestTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Platform $platform;
+
     private PlatformUpdateRequest $request;
 
     protected function setUp(): void
@@ -32,7 +34,7 @@ class PlatformUpdateRequestTest extends TestCase
         })->middleware('web')->name('test-platform-update');
 
         // Create the request
-        $this->request = new PlatformUpdateRequest();
+        $this->request = new PlatformUpdateRequest;
         $this->request->setContainer($this->app);
         $this->request->setRedirector($this->app->make('redirect'));
         $this->request->setRouteResolver(function () {
@@ -40,11 +42,10 @@ class PlatformUpdateRequestTest extends TestCase
         });
     }
 
-    /** @test */
-    public function authorized_users_can_update_platform()
+    public function test_authorized_users_can_update_platform()
     {
         $this->actingAs($this->user);
-        
+
         // Allow the permission
         Gate::define('create platforms', function ($user) {
             return true;
@@ -53,17 +54,16 @@ class PlatformUpdateRequestTest extends TestCase
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
             'name' => 'Updated Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'test-id'
+            'dsa_common_id' => 'test-id',
         ]);
 
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function users_with_view_permission_can_update_platform()
+    public function test_users_with_view_permission_can_update_platform()
     {
         $this->actingAs($this->user);
-        
+
         // Allow only view permission
         Gate::define('view platforms', function ($user) {
             return true;
@@ -72,17 +72,16 @@ class PlatformUpdateRequestTest extends TestCase
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
             'name' => 'Updated Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'test-id'
+            'dsa_common_id' => 'test-id',
         ]);
 
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function unauthorized_users_cannot_update_platform()
+    public function test_unauthorized_users_cannot_update_platform()
     {
         $this->actingAs($this->user);
-        
+
         // Deny all permissions
         Gate::define('create platforms', function ($user) {
             return false;
@@ -93,45 +92,42 @@ class PlatformUpdateRequestTest extends TestCase
 
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
             'name' => 'Updated Platform',
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function name_is_required()
+    public function test_name_is_required()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
-            'vlop' => 1
+            'vlop' => 1,
         ]);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
-    public function vlop_is_required()
+    public function test_vlop_is_required()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
-            'name' => 'Updated Platform'
+            'name' => 'Updated Platform',
         ]);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['vlop']);
     }
 
-    /** @test */
-    public function dsa_common_id_must_be_unique()
+    public function test_dsa_common_id_must_be_unique()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         // Create another platform with a DSA common ID
         $otherPlatform = Platform::factory()->create(['dsa_common_id' => 'existing-id']);
@@ -139,18 +135,17 @@ class PlatformUpdateRequestTest extends TestCase
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
             'name' => 'Updated Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'existing-id'
+            'dsa_common_id' => 'existing-id',
         ]);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['dsa_common_id']);
     }
 
-    /** @test */
-    public function dsa_common_id_can_remain_same()
+    public function test_dsa_common_id_can_remain_same()
     {
         $this->actingAs($this->user);
-        Gate::define('create platforms', fn() => true);
+        Gate::define('create platforms', fn () => true);
 
         // Set a DSA common ID for our platform
         $this->platform->dsa_common_id = 'my-id';
@@ -159,18 +154,17 @@ class PlatformUpdateRequestTest extends TestCase
         $response = $this->putJson("test-platform-update/{$this->platform->id}", [
             'name' => 'Updated Platform',
             'vlop' => 1,
-            'dsa_common_id' => 'my-id'
+            'dsa_common_id' => 'my-id',
         ]);
 
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function in_method_builds_validation_rule_correctly()
+    public function test_in_method_builds_validation_rule_correctly()
     {
         // Create a request instance
-        $request = new PlatformUpdateRequest();
-        
+        $request = new PlatformUpdateRequest;
+
         // Use reflection to access private method
         $reflectionClass = new \ReflectionClass($request);
         $method = $reflectionClass->getMethod('in');

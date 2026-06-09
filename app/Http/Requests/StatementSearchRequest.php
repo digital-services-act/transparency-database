@@ -5,11 +5,12 @@ namespace App\Http\Requests;
 use App\Models\Statement;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StatementSearchRequest extends FormRequest
 {
-    public const ADVANCED_FILTERS =  [
+    public const ADVANCED_FILTERS = [
         'account_type',
         'category_specification',
         'territorial_scope',
@@ -32,7 +33,7 @@ class StatementSearchRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(EuropeanLanguagesService $langService): array
     {
@@ -79,7 +80,7 @@ class StatementSearchRequest extends FormRequest
             'content_type.*' => ['string'],
 
             'content_language' => ['nullable', 'array'],
-            'content_language.*' => ['string', 'in:' . implode(',', array_keys($langService->getAllLanguages()))],
+            'content_language.*' => ['string', 'in:'.implode(',', array_keys($langService->getAllLanguages()))],
 
             'automated_detection' => ['nullable', 'array'],
             'automated_detection.*' => ['string'],
@@ -101,8 +102,8 @@ class StatementSearchRequest extends FormRequest
 
     public function prepareForValidation(): void
     {
-        $countriesService = new EuropeanCountriesService();
-        $langService = new EuropeanLanguagesService();
+        $countriesService = new EuropeanCountriesService;
+        $langService = new EuropeanLanguagesService;
 
         $this->merge([
             'decision_ground' => array_values(array_intersect(

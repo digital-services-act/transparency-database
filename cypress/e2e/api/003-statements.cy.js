@@ -3,6 +3,7 @@ import { generateStatementRequestBody } from "../../support/e2e";
 const _ = Cypress._;
 const url = `${Cypress.env("apiUrl")}/statements`;
 const token = Cypress.env("token");
+const elasticSearchEnabled = Cypress.env("elasticSearchEnabled");
 const headers = {
   "Content-Type": "application/json",
   Accept: "application/json",
@@ -39,24 +40,26 @@ context("Multiple statements endpoint", () => {
 
         const puids = response.body.statements.map((s) => s.puid);
 
-        cy.wait(2000);
+        if (elasticSearchEnabled) {
+          cy.wait(2000);
 
-        // Let's check Opensearch for the puids
-        cy.request({
-          method: "POST",
-          url: `${Cypress.env("apiUrl")}/opensearch/sql`,
-          headers: { ...headers, Authorization: `Bearer ${token}` },
-          body: {
-            query: `SELECT puid from statement_index order by id desc`,
-          },
-        }).then((searchResponse) => {
-          expect(searchResponse.status).to.eq(200);
-          const rows = searchResponse.body.datarows.flat();
+          // Let's check ElasticSearch for the puids
+          cy.request({
+            method: "POST",
+            url: `${Cypress.env("apiUrl")}/elastic/sql`,
+            headers: { ...headers, Authorization: `Bearer ${token}` },
+            body: {
+              query: `SELECT puid from statement_index order by id desc`,
+            },
+          }).then((searchResponse) => {
+            expect(searchResponse.status).to.eq(200);
+            const rows = searchResponse.body.datarows.flat();
 
-          puids.forEach((puid) => {
-            expect(rows).to.contain(puid);
+            puids.forEach((puid) => {
+              expect(rows).to.contain(puid);
+            });
           });
-        });
+        }
       });
     });
   });

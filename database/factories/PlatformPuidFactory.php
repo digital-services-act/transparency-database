@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Platform;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\PlatformPuid;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PlatformPuidFactory extends Factory
 {

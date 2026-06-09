@@ -11,6 +11,7 @@ module.exports = defineConfig({
     env: {
         "apiUrl": process.env.API_URL,
         "token": process.env.API_TOKEN,
+        "elasticSearchEnabled": process.env.CYPRESS_ELASTIC_SEARCH_ENABLED === "true",
     },
     setupNodeEvents(on, config) {
       // implement node event listeners here

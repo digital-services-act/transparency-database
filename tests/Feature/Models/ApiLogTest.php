@@ -5,14 +5,15 @@ namespace Tests\Feature\Models;
 use App\Models\ApiLog;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
+use Tests\TestCase;
 
 class ApiLogTest extends TestCase
 {
     use RefreshDatabase;
 
     private Platform $platform;
+
     private array $defaultLogData;
 
     protected function setUp(): void
@@ -52,7 +53,7 @@ class ApiLogTest extends TestCase
     public function test_api_log_can_be_created_with_platform_relationship()
     {
         $apiLog = ApiLog::create(array_merge($this->defaultLogData, [
-            'platform_id' => $this->platform->id
+            'platform_id' => $this->platform->id,
         ]));
 
         $this->assertDatabaseHas('api_logs', [
@@ -125,7 +126,7 @@ class ApiLogTest extends TestCase
     {
         $data = array_merge($this->defaultLogData, [
             'platform_id' => $this->platform->id,
-            'error_message' => 'Test error'
+            'error_message' => 'Test error',
         ]);
 
         $apiLog = new ApiLog($data);
@@ -213,7 +214,7 @@ class ApiLogTest extends TestCase
         // Query logs within a date range
         $logs = ApiLog::whereBetween('created_at', [
             '2025-01-09 17:00:00',
-            '2025-01-09 18:00:00'
+            '2025-01-09 18:00:00',
         ])->get();
 
         $this->assertCount(1, $logs);
@@ -232,8 +233,8 @@ class ApiLogTest extends TestCase
         ApiLog::create($this->defaultLogData);
 
         $logs = ApiLog::where('endpoint', '/api/v1/platform')
-                     ->where('method', 'POST')
-                     ->get();
+            ->where('method', 'POST')
+            ->get();
 
         $this->assertCount(1, $logs);
         $this->assertEquals('/api/v1/platform', $logs->first()->endpoint);

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('puid', 500);
             $table->timestamps();
             $table->index(['platform_id', 'puid'], 'platform_puid_index');
+            $table->index(['created_at'], 'platform_puid_created_at_index');
         });
     }
 

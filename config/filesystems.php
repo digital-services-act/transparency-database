@@ -58,15 +58,28 @@ return [
 
         's3ds' => [
             'driver' => 's3',
-            'key' => env('AWS_DS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_DS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_DS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'key' => env('CELLAR_ADDON_KEY_ID'),
+            'secret' => env('CELLAR_ADDON_KEY_SECRET'),
+            'region' => env('CELLAR_ADDON_DEFAULT_REGION', 'eu-central-1'),
+            'bucket' => env('CELLAR_ADDON_DS_BUCKET', 'dsa-sor-data-dumps'),
+            'url' => 'https://'.env('CELLAR_ADDON_HOST', ''),
+            'endpoint' => 'https://'.env('CELLAR_ADDON_HOST', ''),
+            'use_path_style_endpoint' => env('CELLAR_ADDON_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'visibility' => 'public'
+            'visibility' => 'private',
+        ],
+
+        'ovh' => [
+            'driver' => 's3',
+            'key' => env('AWS_OVH_ACCESS_KEY_ID'),
+            'secret' => env('AWS_OVH_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_OVH_DEFAULT_REGION'),
+            'bucket' => env('AWS_OVH_BUCKET'),
+            'url' => env('AWS_OVH_URL'),
+            'endpoint' => env('AWS_OVH_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_OVH_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => true,
+            'visibility' => 'private',
         ],
 
     ],
