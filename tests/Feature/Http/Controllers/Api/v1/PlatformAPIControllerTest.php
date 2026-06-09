@@ -40,6 +40,19 @@ class PlatformAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
+    public function test_api_platform_get_returns_json_401_without_accept_header(): void
+    {
+        // No Accept: application/json header and no auth. The API must still
+        // return a JSON 401 rather than redirecting to the CAS login flow.
+        $response = $this->get(route('api.v1.platform.get', ['platform' => 'ASL']), [
+            'Authorization' => 'Bearer wrong-api-key',
+            'Accept' => '*/*',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+    }
+
     public function test_api_platform_store_works(): void
     {
 
