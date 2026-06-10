@@ -8,11 +8,11 @@ use App\Jobs\StatementCsvExportGroupParts;
 use App\Jobs\StatementCsvExportSha1;
 use App\Jobs\StatementCsvExportZ;
 use App\Services\DayArchiveService;
+use App\Services\DayArchiveWorkspace;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Throwable;
@@ -48,7 +48,7 @@ class StatementsDayArchiveZ extends Command
      * @throws Exception
      * @throws Throwable
      */
-    public function handle(DayArchiveService $day_archive_service): void
+    public function handle(DayArchiveService $day_archive_service, DayArchiveWorkspace $day_archive_workspace): void
     {
         // if ( ! config('filesystems.disks.s3ds.bucket')) {
         //     Log::error('In order to make day archives, you need to define the "s3ds" bucket.');
@@ -142,13 +142,13 @@ class StatementsDayArchiveZ extends Command
         ];
 
         Log::info('Day Archiving Started for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
-        File::delete(File::glob(storage_path('app').'/*'.$date_string.'*'));
+        $day_archive_workspace->deleteFilesForDate($date_string);
         Bus::batch($luggage['csv_export_jobs'])->onQueue('csv')->finally(static function () use ($luggage) {
             Bus::batch($luggage['group_zip_jobs'])->onQueue('zip')->finally(static function () use ($luggage) {
                 Bus::batch($luggage['sha1_jobs'])->onQueue('sha1')->finally(static function () use ($luggage) {
                     Bus::batch($luggage['copys3_jobs'])->onQueue('s3copy')->finally(static function () use ($luggage) {
                         Bus::batch($luggage['archive_jobs'])->onQueue('archive')->finally(static function () use ($luggage) {
-                            File::delete(File::glob(storage_path('app').'/*'.$luggage['date_string'].'*'));
+                            app(DayArchiveWorkspace::class)->deleteFilesForDate($luggage['date_string']);
                             Log::info('Day Archiving Ended for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
                         })->dispatch();
                     })->dispatch();

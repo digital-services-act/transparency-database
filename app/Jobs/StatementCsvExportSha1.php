@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Services\DayArchiveWorkspace;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 
 class StatementCsvExportSha1 implements ShouldQueue
 {
@@ -20,11 +20,10 @@ class StatementCsvExportSha1 implements ShouldQueue
 
     public function __construct(public string $date, public string $platform, public string $version) {}
 
-    public function handle(): void
+    public function handle(DayArchiveWorkspace $day_archive_workspace): void
     {
-        $path = Storage::path('');
         $zipfile = 'sor-'.$this->platform.'-'.$this->date.'-'.$this->version.'.zip';
         $sha1 = 'sor-'.$this->platform.'-'.$this->date.'-'.$this->version.'.zip.sha1';
-        Storage::put($sha1, sha1_file($path.$zipfile).'  '.basename($zipfile));
+        $day_archive_workspace->put($sha1, sha1_file($day_archive_workspace->path($zipfile)).'  '.basename($zipfile));
     }
 }

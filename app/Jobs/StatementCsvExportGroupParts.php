@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Services\DayArchiveWorkspace;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 /**
@@ -24,9 +24,9 @@ class StatementCsvExportGroupParts implements ShouldQueue
 
     public function __construct(public string $date, public string $platform, public string $version) {}
 
-    public function handle(): void
+    public function handle(DayArchiveWorkspace $day_archive_workspace): void
     {
-        $path = Storage::path('');
+        $path = $day_archive_workspace->path();
         $zip_parts_pattern = $path.'sor-'.$this->platform.'-'.$this->date.'-'.$this->version.'-*.csv.zip';
         $zip_file = 'sor-'.$this->platform.'-'.$this->date.'-'.$this->version.'.zip';
 

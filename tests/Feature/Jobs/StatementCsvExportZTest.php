@@ -6,9 +6,10 @@ use App\Jobs\StatementCsvExportZ;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DayArchiveService;
+use App\Services\DayArchiveWorkspace;
 use App\Services\PlatformQueryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 use ZipArchive;
 
@@ -16,10 +17,28 @@ class StatementCsvExportZTest extends TestCase
 {
     use RefreshDatabase;
 
+    private string $archive_workspace_path;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->archive_workspace_path = sys_get_temp_dir().'/day_archive_export_workspace_'.uniqid();
+        File::makeDirectory($this->archive_workspace_path);
+        $this->app->instance(DayArchiveWorkspace::class, new DayArchiveWorkspace($this->archive_workspace_path));
+    }
+
+    protected function tearDown(): void
+    {
+        if (isset($this->archive_workspace_path) && File::isDirectory($this->archive_workspace_path)) {
+            File::deleteDirectory($this->archive_workspace_path);
+        }
+
+        parent::tearDown();
+    }
+
     public function test_it_exports_only_the_requested_day_when_other_days_have_ids_inside_the_chunk_window(): void
     {
-        Storage::fake('local');
-
         $admin = $this->signInAsAdmin();
         $platform = Platform::nonDsa()->first();
         $other_platform = Platform::nonDsa()->where('id', '!=', $platform->id)->first();

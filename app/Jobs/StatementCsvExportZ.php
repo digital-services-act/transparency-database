@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Services\DayArchiveService;
+use App\Services\DayArchiveWorkspace;
 use App\Services\PlatformQueryService;
 use Carbon\Carbon;
 use Illuminate\Bus\Batchable;
@@ -12,7 +13,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @codeCoverageIgnore
@@ -43,7 +43,7 @@ class StatementCsvExportZ implements ShouldQueue
 
     public function zipFilePathForSlugAndVersion(string $slug, string $version): string
     {
-        return Storage::path('sor-' . $slug . '-' . $this->date . '-' . $version . '-' . $this->part . '.csv.zip');
+        return app(DayArchiveWorkspace::class)->path('sor-' . $slug . '-' . $this->date . '-' . $version . '-' . $this->part . '.csv.zip');
     }
 
     public function csvFilenameForSlugAndVersionAndSubpart(string $slug, string $version, int $subpart): string

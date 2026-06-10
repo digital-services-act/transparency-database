@@ -5,13 +5,35 @@ namespace Tests\Feature\Console\Commands;
 use App\Jobs\StatementCsvExportZ;
 use App\Models\Platform;
 use App\Models\Statement;
+use App\Services\DayArchiveWorkspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class StatementsDayArchiveZTest extends TestCase
 {
     use RefreshDatabase;
+
+    private string $archive_workspace_path;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->archive_workspace_path = sys_get_temp_dir().'/day_archive_command_workspace_'.uniqid();
+        File::makeDirectory($this->archive_workspace_path);
+        $this->app->instance(DayArchiveWorkspace::class, new DayArchiveWorkspace($this->archive_workspace_path));
+    }
+
+    protected function tearDown(): void
+    {
+        if (isset($this->archive_workspace_path) && File::isDirectory($this->archive_workspace_path)) {
+            File::deleteDirectory($this->archive_workspace_path);
+        }
+
+        parent::tearDown();
+    }
 
     public function test_it_skips_configured_id_gaps_when_queueing_csv_export_jobs(): void
     {

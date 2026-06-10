@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Services\DayArchiveService;
+use App\Services\DayArchiveWorkspace;
 use App\Services\StatementElasticStatsService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -13,7 +14,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 /**
@@ -46,9 +46,9 @@ class StatementCsvExportArchiveZ implements ShouldQueue
         return $totalSize;
     }
 
-    public function handle(StatementElasticStatsService $statement_elastic_stats_service, DayArchiveService $day_archive_service): void
+    public function handle(StatementElasticStatsService $statement_elastic_stats_service, DayArchiveService $day_archive_service, DayArchiveWorkspace $day_archive_workspace): void
     {
-        $path = Storage::path('');
+        $path = $day_archive_workspace->path();
         // $base_s3_url = 'https://' . config('filesystems.disks.s3ds.bucket') . '.s3.' . config('filesystems.disks.s3ds.region') . '.amazonaws.com/';
         $base_s3_url = config('filesystems.disks.s3ds.url').'/'.config('filesystems.disks.s3ds.bucket').'/';
         $date = Carbon::createFromFormat('Y-m-d', $this->date);

@@ -3,8 +3,9 @@
 namespace Tests\Feature\Jobs;
 
 use App\Jobs\StatementCsvExportSha1;
+use App\Services\DayArchiveWorkspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class StatementCsvExportSha1Test extends TestCase
@@ -14,34 +15,28 @@ class StatementCsvExportSha1Test extends TestCase
     public function test_it_runs_without_errors(): void
     {
         // Create a temporary directory and file for testing
-        $tempDir = sys_get_temp_dir().'/test_storage';
-        if (! is_dir($tempDir)) {
-            mkdir($tempDir, 0777, true);
-        }
+        $tempDir = sys_get_temp_dir().'/test_storage_'.uniqid();
+        File::makeDirectory($tempDir);
 
         $zipFileName = 'sor-test-platform-2025-09-05-v1.0.zip';
         $tempZipFile = $tempDir.'/'.$zipFileName;
 
         // Create a dummy zip file
-        file_put_contents($tempZipFile, 'dummy zip content');
-
-        // Mock Storage facade
-        Storage::shouldReceive('path')->with('')->andReturn($tempDir.'/');
-        Storage::shouldReceive('put')->once()->with(
-            'sor-test-platform-2025-09-05-v1.0.zip.sha1',
-            \Mockery::type('string')
-        );
+        File::put($tempZipFile, 'dummy zip content');
 
         $job = new StatementCsvExportSha1('2025-09-05', 'test-platform', 'v1.0');
+        $workspace = new DayArchiveWorkspace($tempDir);
 
-        // This should run without throwing exceptions
-        $job->handle();
+        try {
+            // This should run without throwing exceptions
+            $job->handle($workspace);
 
-        // Clean up
-        unlink($tempZipFile);
-        rmdir($tempDir);
-
-        // The test passes if no exceptions were thrown
-        $this->assertTrue(true);
+            $this->assertSame(
+                sha1_file($tempZipFile).'  '.$zipFileName,
+                File::get($tempDir.'/'.$zipFileName.'.sha1')
+            );
+        } finally {
+            File::deleteDirectory($tempDir);
+        }
     }
 }
