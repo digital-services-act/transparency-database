@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Console\Commands;
 
+use App\Services\DayArchiveWorkspace;
 use App\Services\StatementElasticAggregationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
@@ -44,20 +46,19 @@ class AggregatesFreezeTest extends TestCase
 
         Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
 
-        $tempDir = sys_get_temp_dir().'/test_aggregates_'.time().'/';
-        mkdir($tempDir, 0755, true);
-        Storage::shouldReceive('path')->with('')->andReturn($tempDir);
+        $tempDir = sys_get_temp_dir().'/test_aggregates_'.uniqid().'/';
+        File::makeDirectory($tempDir);
+        $this->app->instance(DayArchiveWorkspace::class, new DayArchiveWorkspace($tempDir));
 
         // Mock Log facade
         Log::shouldReceive('info')->once()->with(Mockery::pattern('/Number of aggregates.*1/'));
 
-        // Run the command
-        $this->artisan('aggregates-freeze', ['date' => '30']);
-
-        // Clean up
-        if (is_dir($tempDir)) {
-            array_map('unlink', glob("$tempDir/*"));
-            rmdir($tempDir);
+        try {
+            // Run the command
+            $this->artisan('aggregates-freeze', ['date' => '30']);
+        } finally {
+            // Clean up
+            File::deleteDirectory($tempDir);
         }
 
         $this->assertTrue(true);
@@ -66,9 +67,7 @@ class AggregatesFreezeTest extends TestCase
     public function test_it_logs_error_and_returns_early_when_no_aggregates(): void
     {
         // Mock Storage first, before any other setup
-        $s3DiskMock = Mockery::mock();
-        Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
-        Storage::shouldReceive('path')->with('')->andReturn('/tmp/');
+        Storage::shouldReceive('disk')->never();
 
         // Mock the StatementElasticAggregationService
         $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
@@ -99,7 +98,8 @@ class AggregatesFreezeTest extends TestCase
         Carbon::setTestNow(Carbon::parse('2026-06-03 12:00:00', 'UTC'));
 
         $tempDir = sys_get_temp_dir().'/test_aggregates_yesterday_'.uniqid().'/';
-        mkdir($tempDir, 0755, true);
+        File::makeDirectory($tempDir);
+        $this->app->instance(DayArchiveWorkspace::class, new DayArchiveWorkspace($tempDir));
 
         $mockResults = [
             'aggregates' => [
@@ -126,10 +126,22 @@ class AggregatesFreezeTest extends TestCase
 
         $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
 
+        $expectedCsvPath = $tempDir.'aggregates-2026-06-02.csv';
+
         $s3DiskMock = Mockery::mock();
         $s3DiskMock->shouldReceive('put')
             ->once()
-            ->with('aggregates-2026-06-02.csv', Mockery::type('resource'))
+            ->with('aggregates-2026-06-02.csv', Mockery::on(
+                static function (mixed $resource) use ($expectedCsvPath): bool {
+                    if (! is_resource($resource)) {
+                        return false;
+                    }
+
+                    $metadata = stream_get_meta_data($resource);
+
+                    return ($metadata['uri'] ?? null) === $expectedCsvPath;
+                }
+            ))
             ->andReturn(true);
         $s3DiskMock->shouldReceive('put')
             ->once()
@@ -137,19 +149,17 @@ class AggregatesFreezeTest extends TestCase
             ->andReturn(true);
 
         Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
-        Storage::shouldReceive('path')->with('')->andReturn($tempDir);
 
         Log::shouldReceive('info')->once()->with(Mockery::pattern('/Number of aggregates.*1/'));
 
         try {
             $this->artisan('aggregates-freeze', ['date' => 'yesterday'])->assertSuccessful();
+
+            $this->assertFileDoesNotExist($expectedCsvPath);
         } finally {
             Carbon::setTestNow();
 
-            if (is_dir($tempDir)) {
-                array_map('unlink', glob("$tempDir/*"));
-                rmdir($tempDir);
-            }
+            File::deleteDirectory($tempDir);
         }
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 
 class PlatformSeeder extends Seeder
 {
+    private const PLATFORM_COUNT = 19;
+
     /**
      * Run the database seeds.
      */
@@ -18,7 +20,14 @@ class PlatformSeeder extends Seeder
     public static function resetPlatforms()
     {
         Platform::query()->forceDelete();
-        Platform::factory()->count(19)->create();
+
+        for ($i = 1; $i <= self::PLATFORM_COUNT; $i++) {
+            Platform::create([
+                'name' => 'Platform '.$i,
+                'dsa_common_id' => 'seed-platform-'.$i,
+                'vlop' => 1,
+            ]);
+        }
 
         // Create the generic DSA platform for the DSA Team
         Platform::create([
