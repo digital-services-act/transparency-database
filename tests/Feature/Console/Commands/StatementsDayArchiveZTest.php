@@ -3,6 +3,7 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Jobs\StatementCsvExportZ;
+use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Models\Statement;
 use App\Services\DayArchiveWorkspace;
@@ -69,6 +70,37 @@ class StatementsDayArchiveZTest extends TestCase
         $this->assertSame('00001', $secondJob->part);
         $this->assertSame(2000001, $secondJob->start_id);
         $this->assertSame(2500000, $secondJob->end_id);
+    }
+
+    public function test_it_deletes_existing_day_archives_for_the_target_date_before_queueing_jobs(): void
+    {
+        Bus::fake();
+
+        $admin = $this->signInAsAdmin();
+        $platform = Platform::nonDsa()->first();
+
+        Statement::query()->forceDelete();
+
+        $this->createStatementWithId(100, '2030-01-02 00:00:00', 'TARGET_FIRST', $platform->id, $admin->id);
+        $this->createStatementWithId(200, '2030-01-02 23:59:59', 'TARGET_LAST', $platform->id, $admin->id);
+
+        $globalArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2030-01-02',
+        ]);
+        $platformArchive = DayArchive::factory()->completed()->forPlatform($platform)->create([
+            'date' => '2030-01-02',
+        ]);
+        $otherDateArchive = DayArchive::factory()->completed()->forPlatform($platform)->create([
+            'date' => '2030-01-03',
+        ]);
+
+        $this->artisan('statements:day-archive-z', [
+            'date' => '2030-01-02',
+        ])->assertSuccessful();
+
+        $this->assertDatabaseMissing('day_archives', ['id' => $globalArchive->id]);
+        $this->assertDatabaseMissing('day_archives', ['id' => $platformArchive->id]);
+        $this->assertDatabaseHas('day_archives', ['id' => $otherDateArchive->id]);
     }
 
     public function test_it_supports_repeated_skip_id_ranges(): void

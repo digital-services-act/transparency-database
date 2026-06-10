@@ -181,6 +181,11 @@ class DayArchiveService
         return DayArchive::query()->whereDate('date', $date);
     }
 
+    public function deleteDayArchivesByDate(Carbon $date): int
+    {
+        return $this->getDayArchivesByDate($date)->delete();
+    }
+
     private function cleanTextField(string $fieldName): string
     {
         return "REPLACE(REPLACE({$fieldName}, '\n', ' '), '\\\\\"', '\"') AS {$fieldName}";

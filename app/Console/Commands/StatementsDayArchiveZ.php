@@ -143,6 +143,12 @@ class StatementsDayArchiveZ extends Command
 
         Log::info('Day Archiving Started for: '.$luggage['date_string'].' at '.Carbon::now()->format('Y-m-d H:i:s'));
         $day_archive_workspace->deleteFilesForDate($date_string);
+        $deleted_day_archives = $day_archive_service->deleteDayArchivesByDate($date);
+
+        if ($deleted_day_archives > 0) {
+            Log::info('Deleted '.$deleted_day_archives.' existing DayArchive rows for: '.$date_string);
+        }
+
         Bus::batch($luggage['csv_export_jobs'])->onQueue('csv')->finally(static function () use ($luggage) {
             Bus::batch($luggage['group_zip_jobs'])->onQueue('zip')->finally(static function () use ($luggage) {
                 Bus::batch($luggage['sha1_jobs'])->onQueue('sha1')->finally(static function () use ($luggage) {
