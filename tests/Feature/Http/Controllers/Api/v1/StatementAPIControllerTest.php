@@ -231,6 +231,34 @@ class StatementAPIControllerTest extends TestCase
         $this->assertSame($statement->id, $response->json('id'));
     }
 
+    public function test_api_statement_store_response_keeps_documented_identifiers_and_links(): void
+    {
+        $this->setUpFullySeededDatabase();
+        $user = $this->signInAsAdmin();
+
+        $response = $this->post(route('api.v1.statement.store'), $this->required_fields, [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure([
+            'id',
+            'uuid',
+            'platform_name',
+            'permalink',
+            'self',
+            'puid',
+        ]);
+
+        $statement = Statement::where('uuid', $response->json('uuid'))->first();
+        $this->assertNotNull($statement);
+        $this->assertSame($statement->id, $response->json('id'));
+        $this->assertSame($user->platform->name, $response->json('platform_name'));
+        $this->assertSame($this->required_fields['puid'], $response->json('puid'));
+        $this->assertSame(route('statement.show', [$statement->uuid]), $response->json('permalink'));
+        $this->assertSame(route('api.v'.config('app.api_latest').'.statement.show', [$statement->uuid]), $response->json('self'));
+    }
+
     public function test_api_statement_content_language_is_stored(): void
     {
         $this->setUpFullySeededDatabase();
