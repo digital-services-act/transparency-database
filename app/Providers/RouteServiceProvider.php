@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Route;
  */
 class RouteServiceProvider extends ServiceProvider
 {
+    private const ELEVATED_WEB_DOWNLOAD_ROUTES = [
+        'aggregates.download',
+        'dayarchive.download',
+        'dayarchive.download.filename',
+        'dayarchive.download.filename.sha1',
+    ];
+
     /**
      * The path to the "home" route for your application.
      *
@@ -57,8 +64,26 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', static fn (Request $request) => $request->user() ? Limit::perMinute(12000)->by($request->user()->id) : Limit::perMinute(100)->by($request->ip())
             ->response(static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
 
-        RateLimiter::for('web', static fn (Request $request) => $request->user() ? Limit::perMinute(50)->by($request->user()->id) : Limit::perMinute(20)->by($request->ip())
-            ->response(static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the application', 429, $headers)));
+        RateLimiter::for('web', static function (Request $request) {
+            $isElevatedDownloadRoute = $request->routeIs(...self::ELEVATED_WEB_DOWNLOAD_ROUTES);
+
+            return self::webRateLimit(
+                $request,
+                $isElevatedDownloadRoute ? 200 : ($request->user() ? 50 : 20),
+                $isElevatedDownloadRoute ? 'downloads' : 'general',
+            );
+        });
+    }
+
+    private static function webRateLimit(Request $request, int $maxAttempts, string $bucket): Limit
+    {
+        $identifier = $request->user()
+            ? 'user:'.$request->user()->id
+            : 'ip:'.$request->ip();
+
+        return Limit::perMinute($maxAttempts)
+            ->by($bucket.':'.$identifier)
+            ->response(static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the application', 429, $headers));
     }
 
     /**v

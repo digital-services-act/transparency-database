@@ -59,6 +59,44 @@ class DataDownloadControllerTest extends TestCase
         $response->assertDontSee('https://example.com/bucket/archive-2024-01-01-light.zip', false);
     }
 
+    public function test_file_download_routes_use_elevated_web_rate_limit_without_consuming_general_web_bucket(): void
+    {
+        Storage::fake('s3ds');
+        Storage::disk('s3ds')->put('aggregates-2026-06-01.csv', 'platform_id,count');
+
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip',
+            'sha1url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip.sha1',
+        ]);
+
+        $downloadRoutes = [
+            route('aggregates.download', ['date' => '2026-06-01', 'ext' => 'csv']),
+            route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'full']),
+            route('dayarchive.download.filename', [
+                'platformSlug' => 'global',
+                'date' => '2026-06-01',
+                'version' => 'full',
+            ]),
+            route('dayarchive.download.filename.sha1', [
+                'platformSlug' => 'global',
+                'date' => '2026-06-01',
+                'version' => 'full',
+            ]),
+        ];
+
+        foreach ($downloadRoutes as $downloadRoute) {
+            $this->get($downloadRoute)
+                ->assertRedirect()
+                ->assertHeader('X-RateLimit-Limit', '1000');
+        }
+
+        $this->get(route('dayarchive.index'))
+            ->assertOk()
+            ->assertHeader('X-RateLimit-Limit', '50')
+            ->assertHeader('X-RateLimit-Remaining', '49');
+    }
+
     public function test_download_redirects_to_presigned_url_for_full_type(): void
     {
         Storage::fake('s3ds');
