@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Http\Controllers\DataDownloadController;
 use App\Models\DayArchive;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
 
 class DataDownloadControllerTest extends TestCase
@@ -209,6 +211,24 @@ class DataDownloadControllerTest extends TestCase
         ]));
 
         $response->assertNotFound();
+    }
+
+    public function test_deterministic_archive_download_returns_404_for_unknown_platform_slug(): void
+    {
+        $response = $this->get(route('dayarchive.download.filename', [
+            'platformSlug' => 'unknown-platform',
+            'date' => '2026-06-01',
+            'version' => 'full',
+        ]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_deterministic_archive_lookup_rejects_invalid_date_format(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        app(DataDownloadController::class)->archiveByFilename('global', '2026-6-01', 'full');
     }
 
     public function test_deterministic_archive_download_returns_404_for_invalid_version(): void

@@ -337,7 +337,9 @@ class StatementElasticIndexerService
             }
         }
 
+        // @codeCoverageIgnoreStart
         throw new RuntimeException('Elasticsearch bulk retry loop exited unexpectedly.');
+        // @codeCoverageIgnoreEnd
     }
 
     private function shouldRetryBulkException(Throwable $exception): bool

@@ -20,6 +20,7 @@ class DayArchiveWorkspaceTest extends TestCase
         try {
             $workspace = new DayArchiveWorkspace($bucket_data_path);
 
+            $this->assertSame($bucket_data_path.DIRECTORY_SEPARATOR, $workspace->path());
             $this->assertSame($bucket_data_path.DIRECTORY_SEPARATOR.'archive.zip', $workspace->path('archive.zip'));
 
             $workspace->put('archive.zip', 'archive');
