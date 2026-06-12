@@ -1050,13 +1050,6 @@ The value provided must be an array with one or more of the following:
       <li class='ecl-unordered-list__item'>Right to be forgotten</li>
     </ul>
   </li>
-  <li class='ecl-unordered-list__item'>
-    KEYWORD_OTHER
-    <ul class='ecl-unordered-list'>
-      <li class='ecl-unordered-list__item'>Not captured by any other keyword</li>
-    </ul>
-  </li>
-
 
 
   <li class='ecl-unordered-list__item'>
