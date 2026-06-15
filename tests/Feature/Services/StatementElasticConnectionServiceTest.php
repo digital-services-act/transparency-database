@@ -82,11 +82,36 @@ class StatementElasticConnectionServiceTest extends TestCase
         $this->assertTrue($service->isConfigured());
     }
 
+    public function test_client_lazily_builds_when_configuration_becomes_available(): void
+    {
+        config([
+            'elasticsearch.enabled' => true,
+            'elasticsearch.uri' => [],
+            'elasticsearch.retries' => 0,
+        ]);
+
+        $service = new StatementElasticConnectionService;
+
+        $this->assertFalse($service->isConfigured());
+
+        config(['elasticsearch.uri' => ['http://localhost:9200']]);
+
+        $this->assertTrue($service->isConfigured());
+        $this->assertInstanceOf(Client::class, $service->client());
+    }
+
     public function test_configured_uri_detection_accepts_string_config_values(): void
     {
         config(['elasticsearch.uri' => ' http://localhost:9200 ']);
 
         $this->assertTrue(StatementElasticConnectionService::hasConfiguredUris());
+    }
+
+    public function test_configured_uri_detection_ignores_non_string_values(): void
+    {
+        config(['elasticsearch.uri' => [false, null, 42, '   ']]);
+
+        $this->assertFalse(StatementElasticConnectionService::hasConfiguredUris());
     }
 
     public function test_enabled_configuration_defaults_to_configured_hosts(): void
