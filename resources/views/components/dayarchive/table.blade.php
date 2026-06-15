@@ -9,7 +9,7 @@
         }
     }
 @endphp
-@props(['dayarchives' => null, 'reindexing' => false])
+@props(['dayarchives' => null])
 
 <style>
     .dayarchive-row:hover {
@@ -21,7 +21,7 @@
     <thead class="ecl-table__head">
     <tr class="ecl-table__row">
         <th class="ecl-table__header">Date</th>
-        @if(!$reindexing)<th class="ecl-table__header">Statements of Reasons</th>@endif
+        <th class="ecl-table__header">Statements of Reasons</th>
         <th class="ecl-table__header">Full</th>
         <th class="ecl-table__header">Size</th>
         <th class="ecl-table__header">Light</th>
@@ -33,7 +33,7 @@
 
         <tr class="ecl-table__row dayarchive-row">
             <td class="ecl-table__cell" data-ecl-table-header="Date">{{$dayarchive->date->format('Y-m-d')}}</td>
-            @if(!$reindexing)<td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>@endif
+            <td class="ecl-table__cell" data-ecl-table-header="Statements of Reasons">@aif($dayarchive->total)</td>
             <td class="ecl-table__cell" data-ecl-table-header="Full">
                 <a href="{{ route('dayarchive.download', ['dayArchive' => $dayarchive->id, 'type' => 'full']) }}"
                    title="Download full archive"

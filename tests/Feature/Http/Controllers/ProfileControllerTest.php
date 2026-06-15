@@ -3,10 +3,11 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
+use App\Models\Statement;
 use App\Models\User;
-use App\Services\StatementElasticStatsService;
 use App\Services\TokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ProfileControllerTest extends TestCase
@@ -41,17 +42,10 @@ class ProfileControllerTest extends TestCase
         $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
         $user = $this->createUserWithPlatform();
 
-        // Mock the StatementElasticStatsService
-        $this->mock(StatementElasticStatsService::class, function ($mock) {
-            $mock->shouldReceive('methodsByPlatformAll')->once()->andReturn(['platform1' => ['api']]);
-            $mock->shouldReceive('allSendingPlatformIds')->once()->andReturn([1, 2]);
-            $mock->shouldReceive('totalVlopPlatformsSending')->once()->andReturn(1);
-            $mock->shouldReceive('totalVlopPlatformsSendingApi')->once()->andReturn(1);
-            $mock->shouldReceive('totalVlopPlatformsSendingWebform')->once()->andReturn(0);
-            $mock->shouldReceive('totalNonVlopPlatformsSending')->once()->andReturn(1);
-            $mock->shouldReceive('totalNonVlopPlatformsSendingApi')->once()->andReturn(0);
-            $mock->shouldReceive('totalNonVlopPlatformsSendingWebform')->once()->andReturn(1);
-        });
+        ElasticMocker::fake()->sqlRowsReturn([
+            [5, Statement::METHOD_API, $vlopPlatform->id],
+            [7, Statement::METHOD_FORM, $nonVlopPlatform->id],
+        ]);
 
         // Mock the TokenService
         $this->mock(TokenService::class, function ($mock) {

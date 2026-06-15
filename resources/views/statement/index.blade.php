@@ -75,11 +75,7 @@
     <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mt-xl">
 
         <div class="item ecl-u-type-paragraph">
-            @if (!$reindexing)
-                Statements of Reasons: {{ $total }}
-            @else
-                Statements of Reasons Found: {{ $total }}
-            @endif
+            Statements of Reasons: {{ $total }}
         </div>
 
 

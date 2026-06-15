@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Services;
 
+use App\Models\Statement;
 use App\Services\StatementElasticStatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class StatementElasticStatsServiceTest extends TestCase
@@ -18,6 +20,7 @@ class StatementElasticStatsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Cache::flush();
         $this->statement_elastic_stats_service = app(StatementElasticStatsService::class);
         $this->assertNotNull($this->statement_elastic_stats_service);
     }
@@ -78,6 +81,8 @@ class StatementElasticStatsServiceTest extends TestCase
 
     public function test_it_get_the_grand_total(): void
     {
+        $this->fakeElasticStats()->sqlCountReturns(888);
+
         $cache = Cache::get('grand_total');
         $this->assertNull($cache);
         $result = $this->statement_elastic_stats_service->grandTotal();
@@ -86,10 +91,14 @@ class StatementElasticStatsServiceTest extends TestCase
         $this->assertNotNull($cache);
     }
 
-    public function test_it_extracts_count_query_results(): void
+    public function test_it_extracts_count_query_results_from_sql_rows(): void
     {
-        $this->statement_elastic_stats_service->setMockCountQueryAnswer(777);
-        $result = $this->statement_elastic_stats_service->extractCountQueryResult($this->statement_elastic_stats_service->mockCountQueryResult());
+        $result = $this->statement_elastic_stats_service->extractCountQueryResult([
+            'rows' => [
+                [777],
+            ],
+        ]);
+
         $this->assertEquals(777, $result);
     }
 
@@ -101,62 +110,92 @@ class StatementElasticStatsServiceTest extends TestCase
 
     public function test_it_can_get_the_top_categories(): void
     {
-        $result = $this->statement_elastic_stats_service->topCategories();
-        $this->assertEquals(888, $result[4]['total']);
+        $this->queueCategoryCounts($this->fakeElasticStats(), 888);
 
-        $this->statement_elastic_stats_service->setMockCountQueryAnswer(777);
+        $result = $this->statement_elastic_stats_service->topCategories();
+        $this->assertNotContains(false, array_map(static fn (array $row): bool => $row['total'] === 888, $result));
+
+        $this->queueCategoryCounts($this->fakeElasticStats(), 777);
 
         // This answer should be cached and not 777
         $result = $this->statement_elastic_stats_service->topCategories();
-        $this->assertNotEquals(777, $result[6]['total']);
+        $this->assertNotContains(777, array_column($result, 'total'));
 
         // run the no cache version
         $result = $this->statement_elastic_stats_service->topCategoriesNoCache();
-        $this->assertEquals(777, $result[6]['total']);
+        $this->assertNotContains(false, array_map(static fn (array $row): bool => $row['total'] === 777, $result));
 
         // Forget it
         Cache::forget('top_categories');
+        $this->queueCategoryCounts($this->fakeElasticStats(), 777);
         $result = $this->statement_elastic_stats_service->topCategories();
         // Now it should be 777
-        $this->assertEquals(777, $result[6]['total']);
+        $this->assertNotContains(false, array_map(static fn (array $row): bool => $row['total'] === 777, $result));
 
     }
 
     public function test_it_can_get_the_top_decisions_visibility(): void
     {
-        $result = $this->statement_elastic_stats_service->topDecisionVisibilities();
-        $this->assertEquals(888, $result[2]['total']);
+        $this->queueDecisionVisibilityCounts($this->fakeElasticStats(), 888);
 
-        $this->statement_elastic_stats_service->setMockCountQueryAnswer(777);
+        $result = $this->statement_elastic_stats_service->topDecisionVisibilities();
+        $this->assertNotContains(false, array_map(static fn (array $row): bool => $row['total'] === 888, $result));
+
+        $this->queueDecisionVisibilityCounts($this->fakeElasticStats(), 777);
 
         // This answer should be cached and not 777
         $result = $this->statement_elastic_stats_service->topDecisionVisibilities();
-        $this->assertNotEquals(777, $result[3]['total']);
+        $this->assertNotContains(777, array_column($result, 'total'));
 
         // run the no cache version
         $result = $this->statement_elastic_stats_service->topDecisionVisibilitiesNoCache();
-        $this->assertEquals(777, $result[3]['total']);
+        $this->assertNotContains(false, array_map(static fn (array $row): bool => $row['total'] === 777, $result));
 
         // Forget it
         Cache::forget('top_decisions_visibility');
+        $this->queueDecisionVisibilityCounts($this->fakeElasticStats(), 777);
         $result = $this->statement_elastic_stats_service->topDecisionVisibilities();
         // Now it should be 777
-        $this->assertEquals(777, $result[3]['total']);
+        $this->assertNotContains(false, array_map(static fn (array $row): bool => $row['total'] === 777, $result));
     }
 
     public function test_it_gets_the_automated_decision_percentage(): void
     {
-        $this->statement_elastic_stats_service->setMockCountQueryAnswer(1000);
+        $this->fakeElasticStats()
+            ->sqlCountReturns(1000)
+            ->sqlCountReturns(777)
+            ->sqlCountReturns(773);
+
         $this->statement_elastic_stats_service->grandTotal();
 
-        $this->statement_elastic_stats_service->setMockCountQueryAnswer(777);
         // this will round up to 78.
         $result = $this->statement_elastic_stats_service->fullyAutomatedDecisionPercentage();
         $this->assertEquals(78, $result);
 
         Cache::forget('automated_decisions_percentage');
-        $this->statement_elastic_stats_service->setMockCountQueryAnswer(773); // This will round down to 77.
         $result = $this->statement_elastic_stats_service->fullyAutomatedDecisionPercentage();
         $this->assertEquals(77, $result);
+    }
+
+    private function fakeElasticStats(): ElasticMocker
+    {
+        $elastic = ElasticMocker::fake();
+        $this->statement_elastic_stats_service = app(StatementElasticStatsService::class);
+
+        return $elastic;
+    }
+
+    private function queueCategoryCounts(ElasticMocker $elastic, int $count): void
+    {
+        foreach (Statement::STATEMENT_CATEGORIES as $category) {
+            $elastic->sqlCountReturns($count);
+        }
+    }
+
+    private function queueDecisionVisibilityCounts(ElasticMocker $elastic, int $count): void
+    {
+        foreach (Statement::DECISION_VISIBILITIES as $decisionVisibility) {
+            $elastic->sqlCountReturns($count);
+        }
     }
 }

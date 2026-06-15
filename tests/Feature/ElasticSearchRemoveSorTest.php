@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use RuntimeException;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ElasticSearchRemoveSorTest extends TestCase
@@ -14,20 +13,7 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_successfully_removes_document(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'document_id' => 12345,
-            'deleted' => true,
-            'result' => 'deleted',
-            'version' => 2,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('test_index', 12345)
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->removeDocumentSucceeds(version: 2);
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'test_index',
@@ -38,20 +24,7 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_handles_document_removal_without_version(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'document_id' => 67890,
-            'deleted' => true,
-            'result' => 'deleted',
-            'version' => null,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('test_index', 67890)
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->removeDocumentSucceeds();
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'test_index',
@@ -62,12 +35,7 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('nonexistent_index', 12345)
-            ->andThrow(new RuntimeException('Index does not exist'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exists(false);
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'nonexistent_index',
@@ -78,12 +46,7 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_handles_invalid_document_id(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('test_index', 0)
-            ->andThrow(new RuntimeException('Invalid document ID'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exists();
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'test_index',
@@ -94,12 +57,9 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_handles_document_not_found(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('test_index', 99999)
-            ->andThrow(new RuntimeException('Document not found in index'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->exists()
+            ->exception(new RuntimeException('not_found'));
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'test_index',
@@ -110,12 +70,7 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_handles_general_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('error_index', 12345)
-            ->andThrow(new RuntimeException('Connection timeout'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exception(new RuntimeException('Connection timeout'));
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'error_index',
@@ -126,23 +81,12 @@ class ElasticSearchRemoveSorTest extends TestCase
 
     public function test_command_handles_negative_document_id(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('removeDocumentFromIndex')
-            ->with('test_index', -1)
-            ->andThrow(new RuntimeException('Invalid document ID'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exists();
 
         $this->artisan('elasticsearch:index-removestatement', [
             'index' => 'test_index',
             'id' => '-1',
         ])
             ->assertExitCode(0);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

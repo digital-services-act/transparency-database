@@ -28,7 +28,7 @@ class DataDownloadControllerTest extends TestCase
         $response = $this->get('/explore-data/download');
         $response->assertStatus(200);
         $response->assertViewIs('explore-data.download');
-        $response->assertViewHas(['dayarchives', 'options', 'platform', 'reindexing']);
+        $response->assertViewHas(['dayarchives', 'options', 'platform']);
     }
 
     public function test_can_view_day_archive_index_page_with_platform_uuid()

@@ -3,11 +3,11 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Models\Platform;
-use App\Services\StatementElasticStatsService;
+use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Mockery;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class EnrichHomePageCacheTest extends TestCase
@@ -16,25 +16,28 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_runs_with_all_option(): void
     {
-        // Mock the StatementElasticStatsService
-        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
-        $serviceMock->shouldReceive('grandTotalNoCache')->once()->andReturn(12345);
-        $serviceMock->shouldReceive('fullyAutomatedDecisionPercentageNoCache')->once()->andReturn(67);
-        $serviceMock->shouldReceive('topCategoriesNoCache')->once()->andReturn(['category1', 'category2']);
-        $serviceMock->shouldReceive('topDecisionVisibilitiesNoCache')->once()->andReturn(['visibility1', 'visibility2']);
+        $elastic = ElasticMocker::fake()
+            ->sqlCountReturns(12345)
+            ->sqlCountReturns(8271);
 
-        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
+        foreach (Statement::STATEMENT_CATEGORIES as $category) {
+            $elastic->sqlCountReturns($category === Statement::STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH ? 50 : 10);
+        }
+
+        foreach (Statement::DECISION_VISIBILITIES as $decisionVisibility) {
+            $elastic->sqlCountReturns($decisionVisibility === Statement::DECISION_VISIBILITY_CONTENT_REMOVED ? 40 : 10);
+        }
 
         // Create test platforms to avoid mocking the model
         Platform::factory()->count(5)->create();
 
         // Mock Cache facade - using 90000 which is 25 * 60 * 60
-        Cache::shouldReceive('get')->with('reindexing', false)->andReturn(false);
+        Cache::shouldReceive('remember')->with('grand_total', 90000, Mockery::type('Closure'))->andReturn(12345);
         Cache::shouldReceive('put')->with('grand_total', 12345, 90000);
         Cache::shouldReceive('put')->with('platforms_total', Mockery::type('int'), 90000);
         Cache::shouldReceive('put')->with('automated_decisions_percentage', 67, 90000);
-        Cache::shouldReceive('put')->with('top_categories', ['category1', 'category2'], 90000);
-        Cache::shouldReceive('put')->with('top_decisions_visibility', ['visibility1', 'visibility2'], 90000);
+        Cache::shouldReceive('put')->with('top_categories', Mockery::type('array'), 90000);
+        Cache::shouldReceive('put')->with('top_decisions_visibility', Mockery::type('array'), 90000);
 
         // Run the command
         $this->artisan('enrich-home-page-cache', ['--all' => true])
@@ -43,33 +46,10 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_runs_with_grandtotal_option(): void
     {
-        // Mock the StatementElasticStatsService
-        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
-        $serviceMock->shouldReceive('grandTotalNoCache')->once()->andReturn(54321);
-
-        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
+        ElasticMocker::fake()->sqlCountReturns(54321);
 
         // Mock Cache facade
-        Cache::shouldReceive('get')->with('reindexing', false)->andReturn(false);
         Cache::shouldReceive('put')->with('grand_total', 54321, 90000);
-
-        // Run the command
-        $this->artisan('enrich-home-page-cache', ['--grandtotal' => true])
-            ->assertExitCode(0);
-    }
-
-    public function test_it_handles_reindexing_scenario_for_grandtotal(): void
-    {
-        // Mock the StatementElasticStatsService
-        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
-        $serviceMock->shouldReceive('totalForDate')->with(Mockery::type(Carbon::class))->once()->andReturn(100);
-
-        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
-
-        // Mock Cache facade for reindexing scenario
-        Cache::shouldReceive('get')->with('reindexing', false)->andReturn(true);
-        Cache::shouldReceive('get')->with('grand_total')->andReturn(1000);
-        Cache::shouldReceive('put')->with('grand_total', 1100, 90000);
 
         // Run the command
         $this->artisan('enrich-home-page-cache', ['--grandtotal' => true])
@@ -91,13 +71,10 @@ class EnrichHomePageCacheTest extends TestCase
 
     public function test_it_runs_with_automateddecisionspercentage_option(): void
     {
-        // Mock the StatementElasticStatsService
-        $serviceMock = Mockery::mock(StatementElasticStatsService::class);
-        $serviceMock->shouldReceive('fullyAutomatedDecisionPercentageNoCache')->once()->andReturn(85);
-
-        $this->app->instance(StatementElasticStatsService::class, $serviceMock);
+        ElasticMocker::fake()->sqlCountReturns(85);
 
         // Mock Cache facade
+        Cache::shouldReceive('remember')->with('grand_total', 90000, Mockery::type('Closure'))->andReturn(100);
         Cache::shouldReceive('put')->with('automated_decisions_percentage', 85, 90000);
 
         // Run the command

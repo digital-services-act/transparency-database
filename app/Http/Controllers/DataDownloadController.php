@@ -12,7 +12,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class DataDownloadController extends Controller
@@ -30,7 +29,6 @@ class DataDownloadController extends Controller
         $dayarchives = $this->day_archive_query_service->query($request->query());
         $dayarchives = $dayarchives->orderBy('date', 'DESC')->paginate(50)->withQueryString()->appends('query');
 
-        $reindexing = Cache::get('reindexing', false);
         $platform = false;
         $uuid = trim((string) $request->get('uuid'));
         if ($uuid !== '' && $uuid !== '0') {
@@ -44,7 +42,6 @@ class DataDownloadController extends Controller
             'dayarchives' => $dayarchives,
             'options' => $options,
             'platform' => $platform,
-            'reindexing' => $reindexing,
         ]);
     }
 
@@ -161,7 +158,7 @@ class DataDownloadController extends Controller
 
         $filename = "aggregates-{$date}.{$ext}";
         $disk = Storage::disk('s3ds');
-        
+
         if (! $disk->exists($filename)) {
             abort(404, 'File not found');
         }

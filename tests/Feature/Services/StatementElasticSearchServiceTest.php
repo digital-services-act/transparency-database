@@ -74,8 +74,7 @@ class StatementElasticSearchServiceTest extends TestCase
         ];
         $query = $this->statement_elastic_search_service->buildQuery($filters);
         $this->assertNotNull($query);
-        $this->assertEquals('(decision_visibility_other:"example" OR decision_monetary_other:"example" OR illegal_content_legal_ground:"example" OR illegal_content_explanation:"example" OR incompatible_content_ground:"example" OR incompatible_content_explanation:"example" OR decision_facts:"example" OR content_type_other:"example" OR source_identity:"example" OR uuid:"example" OR puid:"example" OR content_id_ean:"example")',
-            $query);
+        $this->assertEquals('(example)', $query);
     }
 
     public function test_it_filters_on_decision_visibility(): void

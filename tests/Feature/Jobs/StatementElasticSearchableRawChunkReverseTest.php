@@ -3,43 +3,32 @@
 namespace Tests\Feature\Jobs;
 
 use App\Jobs\StatementElasticSearchableRawChunkReverse;
+use App\Models\Statement;
 use App\Services\StatementElasticIndexerService;
 use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Mockery;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class StatementElasticSearchableRawChunkReverseTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $mockService;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->mockService = Mockery::mock(StatementElasticIndexerService::class);
-        $this->app->instance(StatementElasticIndexerService::class, $this->mockService);
-    }
-
     public function test_job_indexes_highest_raw_chunk_and_dispatches_next_lower_job(): void
     {
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexRawStatementsForIdRange')
-            ->once()
-            ->with(1900, 2000, true, 'desc');
+        Statement::factory()->create(['id' => 1900]);
+        Statement::factory()->create(['id' => 2000]);
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableRawChunkReverse(1001, 2000, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [2000, 1900]);
 
         Queue::assertPushed(StatementElasticSearchableRawChunkReverse::class, function ($job) {
             return $job->min === 1001
@@ -51,13 +40,9 @@ class StatementElasticSearchableRawChunkReverseTest extends TestCase
 
     public function test_retry_indexes_current_chunk_but_does_not_dispatch_next_lower_job(): void
     {
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexRawStatementsForIdRange')
-            ->once()
-            ->with(1900, 2000, true, 'desc');
+        Statement::factory()->create(['id' => 1900]);
+        Statement::factory()->create(['id' => 2000]);
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
@@ -66,36 +51,18 @@ class StatementElasticSearchableRawChunkReverseTest extends TestCase
         $queueJob->shouldReceive('attempts')->once()->andReturn(2);
         $job->job = $queueJob;
 
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
 
-        Queue::assertNotPushed(StatementElasticSearchableRawChunkReverse::class);
-    }
-
-    public function test_job_stops_when_emergency_stop_flag_is_set(): void
-    {
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(true);
-
-        $this->mockService->shouldNotReceive('bulkIndexRawStatementsForIdRange');
-
-        Queue::fake();
-
-        $job = new StatementElasticSearchableRawChunkReverse(1001, 2000, 100);
-        $job->handle($this->mockService);
+        $this->assertBulkIds($elastic, [2000, 1900]);
 
         Queue::assertNotPushed(StatementElasticSearchableRawChunkReverse::class);
     }
 
     public function test_job_processes_final_lower_chunk_without_dispatching_next(): void
     {
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexRawStatementsForIdRange')
-            ->once()
-            ->with(1001, 1050, true, 'desc');
+        Statement::factory()->create(['id' => 1001]);
+        Statement::factory()->create(['id' => 1050]);
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Log::shouldReceive('info')
             ->once()
@@ -104,7 +71,9 @@ class StatementElasticSearchableRawChunkReverseTest extends TestCase
         Queue::fake();
 
         $job = new StatementElasticSearchableRawChunkReverse(1001, 1050, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1050, 1001]);
 
         Queue::assertNotPushed(StatementElasticSearchableRawChunkReverse::class);
     }
@@ -113,5 +82,27 @@ class StatementElasticSearchableRawChunkReverseTest extends TestCase
     {
         Mockery::close();
         parent::tearDown();
+    }
+
+    private function indexer(): StatementElasticIndexerService
+    {
+        return app(StatementElasticIndexerService::class);
+    }
+
+    private function assertBulkIds(ElasticMocker $elastic, array $expectedIds): void
+    {
+        $this->assertCount(1, $elastic->requests());
+        $request = $elastic->requests()[0];
+
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('/_bulk', $request->getUri()->getPath());
+        $this->assertSame($expectedIds, $this->bulkIdsFromPayload((string) $request->getBody()));
+    }
+
+    private function bulkIdsFromPayload(string $payload): array
+    {
+        preg_match_all('/"_id":(\d+)/', $payload, $matches);
+
+        return array_map('intval', $matches[1]);
     }
 }

@@ -2,14 +2,15 @@
 
 namespace Tests\Feature\Console\Commands;
 
+use App\Models\Platform;
 use App\Services\DayArchiveWorkspace;
-use App\Services\StatementElasticAggregationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class AggregatesFreezeTest extends TestCase
@@ -18,27 +19,10 @@ class AggregatesFreezeTest extends TestCase
 
     public function test_it_runs_with_successful_aggregates(): void
     {
-        // Mock the StatementElasticAggregationService
-        $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
-        $serviceMock->shouldReceive('getAllowedAggregateAttributes')
-            ->twice() // Once at start, once for headers
-            ->andReturn(['category']);
-
-        $mockResults = [
-            'aggregates' => [
-                [
-                    'category' => 'test_category',
-                    'platform_name' => 'Test Platform',
-                    'total' => 100,
-                ],
-            ],
-        ];
-
-        $serviceMock->shouldReceive('processDateAggregate')
-            ->once()
-            ->andReturn($mockResults);
-
-        $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
+        $platform = Platform::factory()->create(['name' => 'Test Platform']);
+        ElasticMocker::fake()->aggregateBucketsReturn([
+            $this->aggregateBucket($platform),
+        ]);
 
         // Mock Storage facades
         $s3DiskMock = Mockery::mock();
@@ -69,19 +53,7 @@ class AggregatesFreezeTest extends TestCase
         // Mock Storage first, before any other setup
         Storage::shouldReceive('disk')->never();
 
-        // Mock the StatementElasticAggregationService
-        $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
-        $serviceMock->shouldReceive('getAllowedAggregateAttributes')
-            ->once() // Only called once, returns before headers call
-            ->andReturn(['category']);
-
-        // Return empty results
-        $emptyResults = ['aggregates' => []];
-        $serviceMock->shouldReceive('processDateAggregate')
-            ->once()
-            ->andReturn($emptyResults);
-
-        $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
+        ElasticMocker::fake()->aggregateBucketsReturn([]);
 
         // Mock Log facade - expect info and error messages
         Log::shouldReceive('info')->once()->with(Mockery::pattern('/Number of aggregates.*0/'));
@@ -101,30 +73,10 @@ class AggregatesFreezeTest extends TestCase
         File::makeDirectory($tempDir);
         $this->app->instance(DayArchiveWorkspace::class, new DayArchiveWorkspace($tempDir));
 
-        $mockResults = [
-            'aggregates' => [
-                [
-                    'category' => 'test_category',
-                    'platform_name' => 'Test Platform',
-                    'total' => 100,
-                ],
-            ],
-        ];
-
-        $serviceMock = Mockery::mock(StatementElasticAggregationService::class);
-        $serviceMock->shouldReceive('getAllowedAggregateAttributes')
-            ->twice()
-            ->andReturn(['category']);
-        $serviceMock->shouldReceive('processDateAggregate')
-            ->once()
-            ->with(
-                Mockery::on(fn (Carbon $date): bool => $date->equalTo(Carbon::parse('2026-06-02 00:00:00', 'UTC'))),
-                ['category'],
-                false
-            )
-            ->andReturn($mockResults);
-
-        $this->app->instance(StatementElasticAggregationService::class, $serviceMock);
+        $platform = Platform::factory()->create(['name' => 'Test Platform']);
+        ElasticMocker::fake()->aggregateBucketsReturn([
+            $this->aggregateBucket($platform, Carbon::parse('2026-06-02 00:00:00', 'UTC')),
+        ]);
 
         $expectedCsvPath = $tempDir.'aggregates-2026-06-02.csv';
 
@@ -145,7 +97,14 @@ class AggregatesFreezeTest extends TestCase
             ->andReturn(true);
         $s3DiskMock->shouldReceive('put')
             ->once()
-            ->with('aggregates-2026-06-02.json', json_encode($mockResults, JSON_THROW_ON_ERROR))
+            ->with('aggregates-2026-06-02.json', Mockery::on(static function (string $json): bool {
+                $payload = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+                return ($payload['date'] ?? null) === '2026-06-02'
+                    && ($payload['aggregates'][0]['category'] ?? null) === 'test_category'
+                    && ($payload['aggregates'][0]['platform_name'] ?? null) === 'Test Platform'
+                    && ($payload['aggregates'][0]['total'] ?? null) === 100;
+            }))
             ->andReturn(true);
 
         Storage::shouldReceive('disk')->with('s3ds')->andReturn($s3DiskMock);
@@ -161,5 +120,28 @@ class AggregatesFreezeTest extends TestCase
 
             File::deleteDirectory($tempDir);
         }
+    }
+
+    private function aggregateBucket(Platform $platform, ?Carbon $receivedDate = null): array
+    {
+        $receivedDate ??= Carbon::parse('2026-06-01 00:00:00', 'UTC');
+
+        return [
+            'key' => [
+                'automated_decision' => 'AUTOMATED_DECISION_FULLY',
+                'automated_detection' => 1,
+                'category' => 'test_category',
+                'content_type_single' => 'CONTENT_TYPE_TEXT',
+                'decision_account' => 'DECISION_ACCOUNT_SUSPENDED',
+                'decision_ground' => 'DECISION_GROUND_ILLEGAL_CONTENT',
+                'decision_monetary' => 'DECISION_MONETARY_SUSPENSION',
+                'decision_provision' => 'DECISION_PROVISION_TOTAL_SUSPENSION',
+                'decision_visibility_single' => 'DECISION_VISIBILITY_CONTENT_REMOVED',
+                'platform_id' => $platform->id,
+                'received_date' => $receivedDate->getTimestampMs(),
+                'source_type' => 'SOURCE_ARTICLE_16',
+            ],
+            'doc_count' => 100,
+        ];
     }
 }

@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use Symfony\Component\VarDumper\VarDumper;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class PidPuid2IdsTest extends TestCase
@@ -14,15 +13,7 @@ class PidPuid2IdsTest extends TestCase
 
     public function test_it_runs_without_errors(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
-        $serviceMock->shouldReceive('PlatformIdPuidToIds')
-            ->once()
-            ->with(123, 'test-puid-456')
-            ->andReturn(['id1', 'id2', 'id3']);
-
-        // Bind the mock to the container
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        ElasticMocker::fake()->puidSearchReturns(['id1', 'id2', 'id3']);
 
         // Mock VarDumper::dump
         VarDumper::setHandler(function ($var) {
@@ -37,15 +28,7 @@ class PidPuid2IdsTest extends TestCase
 
     public function test_it_handles_string_platform_id_conversion(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
-        $serviceMock->shouldReceive('PlatformIdPuidToIds')
-            ->once()
-            ->with(999, 'another-puid')
-            ->andReturn(['result1']);
-
-        // Bind the mock to the container
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        ElasticMocker::fake()->puidSearchReturns(['result1']);
 
         // Mock VarDumper::dump
         VarDumper::setHandler(function ($var) {
@@ -59,15 +42,7 @@ class PidPuid2IdsTest extends TestCase
 
     public function test_it_handles_empty_result(): void
     {
-        // Mock the StatementElasticSearchService
-        $serviceMock = Mockery::mock(StatementElasticSearchService::class);
-        $serviceMock->shouldReceive('PlatformIdPuidToIds')
-            ->once()
-            ->with(456, 'empty-puid')
-            ->andReturn([]);
-
-        // Bind the mock to the container
-        $this->app->instance(StatementElasticSearchService::class, $serviceMock);
+        ElasticMocker::fake()->puidSearchReturns([]);
 
         // Mock VarDumper::dump
         VarDumper::setHandler(function ($var) {

@@ -3,9 +3,10 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
-use App\Services\StatementElasticStatsService;
+use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class HomeControllerTest extends TestCase
@@ -20,22 +21,7 @@ class HomeControllerTest extends TestCase
 
     public function test_index_displays_view(): void
     {
-        // Arrange
-        $mockSearchService = $this->mock(StatementElasticStatsService::class);
-        $mockSearchService->shouldReceive('grandTotal')->once()->andReturn(100);
-        $mockSearchService->shouldReceive('topCategories')->once()->andReturn([
-            ['value' => 'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH', 'count' => 50],
-            ['value' => 'STATEMENT_CATEGORY_VIOLENCE', 'count' => 30],
-            ['value' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE', 'count' => 20],
-            ['value' => 'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS', 'count' => 10],
-        ]);
-        $mockSearchService->shouldReceive('topDecisionVisibilities')->once()->andReturn([
-            ['value' => 'DECISION_VISIBILITY_CONTENT_REMOVED', 'count' => 40],
-            ['value' => 'DECISION_VISIBILITY_CONTENT_DISABLED', 'count' => 30],
-            ['value' => 'DECISION_VISIBILITY_CONTENT_DEMOTED', 'count' => 20],
-            ['value' => 'DECISION_VISIBILITY_CONTENT_LABELLED', 'count' => 10],
-        ]);
-        $mockSearchService->shouldReceive('fullyAutomatedDecisionPercentage')->once()->andReturn(75);
+        $this->fakeHomeStats();
 
         // Create test platforms and clear any existing ones
         Platform::query()->delete();
@@ -75,12 +61,7 @@ class HomeControllerTest extends TestCase
 
     public function test_platforms_total_is_cached(): void
     {
-        // Arrange
-        $mockSearchService = $this->mock(StatementElasticStatsService::class);
-        $mockSearchService->shouldReceive('grandTotal')->andReturn(100);
-        $mockSearchService->shouldReceive('topCategories')->andReturn([]);
-        $mockSearchService->shouldReceive('topDecisionVisibilities')->andReturn([]);
-        $mockSearchService->shouldReceive('fullyAutomatedDecisionPercentage')->andReturn(0);
+        $this->fakeHomeStats();
 
         // Create test platforms and clear any existing ones
         Platform::query()->delete();
@@ -104,12 +85,7 @@ class HomeControllerTest extends TestCase
 
     public function test_minimum_platform_total_is_one(): void
     {
-        // Arrange
-        $mockSearchService = $this->mock(StatementElasticStatsService::class);
-        $mockSearchService->shouldReceive('grandTotal')->andReturn(100);
-        $mockSearchService->shouldReceive('topCategories')->andReturn([]);
-        $mockSearchService->shouldReceive('topDecisionVisibilities')->andReturn([]);
-        $mockSearchService->shouldReceive('fullyAutomatedDecisionPercentage')->andReturn(0);
+        $this->fakeHomeStats();
 
         // Clear any existing platforms
         Platform::query()->delete();
@@ -120,5 +96,32 @@ class HomeControllerTest extends TestCase
         // Assert - Even with no platforms, minimum should be 1
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(1, $viewData);
+    }
+
+    private function fakeHomeStats(): void
+    {
+        $elastic = ElasticMocker::fake()->sqlCountReturns(100);
+
+        foreach (array_keys(Statement::STATEMENT_CATEGORIES) as $category) {
+            $elastic->sqlCountReturns(match ($category) {
+                'STATEMENT_CATEGORY_ILLEGAL_OR_HARMFUL_SPEECH' => 50,
+                'STATEMENT_CATEGORY_VIOLENCE' => 30,
+                'STATEMENT_CATEGORY_ANIMAL_WELFARE' => 20,
+                'STATEMENT_CATEGORY_DATA_PROTECTION_AND_PRIVACY_VIOLATIONS' => 10,
+                default => 1,
+            });
+        }
+
+        foreach (array_keys(Statement::DECISION_VISIBILITIES) as $decisionVisibility) {
+            $elastic->sqlCountReturns(match ($decisionVisibility) {
+                'DECISION_VISIBILITY_CONTENT_REMOVED' => 40,
+                'DECISION_VISIBILITY_CONTENT_DISABLED' => 30,
+                'DECISION_VISIBILITY_CONTENT_DEMOTED' => 20,
+                'DECISION_VISIBILITY_CONTENT_LABELLED' => 10,
+                default => 1,
+            });
+        }
+
+        $elastic->sqlCountReturns(75);
     }
 }

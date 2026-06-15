@@ -140,6 +140,6 @@
 
 </script>
 
-<x-dayarchive.table :dayarchives="$dayarchives" :reindexing="$reindexing" />
+<x-dayarchive.table :dayarchives="$dayarchives" />
 
 @endsection

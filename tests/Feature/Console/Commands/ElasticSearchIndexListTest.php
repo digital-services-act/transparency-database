@@ -3,9 +3,8 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Console\Commands\ElasticSearchIndexList;
-use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ElasticSearchIndexListTest extends TestCase
@@ -21,22 +20,15 @@ class ElasticSearchIndexListTest extends TestCase
         $this->assertEquals('Get some info about the elasticsearch.', $command->getDescription());
     }
 
-    public function test_it_lists_elasticsearch_indices_with_dependency_injection(): void
+    public function test_it_lists_elasticsearch_indices_with_elastic_mocker(): void
     {
-        // Now with business logic in the service, testing is much simpler!
-
-        $serviceMock = Mockery::mock(StatementElasticToolsService::class);
-        $serviceMock->shouldReceive('getIndexList')
-            ->once()
-            ->andReturn([
+        ElasticMocker::fake()
+            ->indexListReturns([
                 'statements-2025-09-16',
                 'statements-2025-09-15',
                 'test-index',
             ]);
 
-        $this->app->instance(StatementElasticToolsService::class, $serviceMock);
-
-        // Run the command and verify it shows the expected table
         $this->artisan('elasticsearch:index-list')
             ->expectsTable(['Indexes'], [
                 ['statements-2025-09-16'],
@@ -48,12 +40,7 @@ class ElasticSearchIndexListTest extends TestCase
 
     public function test_it_handles_empty_index_list_gracefully(): void
     {
-        $serviceMock = Mockery::mock(StatementElasticToolsService::class);
-        $serviceMock->shouldReceive('getIndexList')
-            ->once()
-            ->andReturn([]); // No indices
-
-        $this->app->instance(StatementElasticToolsService::class, $serviceMock);
+        ElasticMocker::fake()->indexListReturns([]);
 
         // Should show empty table but not crash
         $this->artisan('elasticsearch:index-list')
@@ -63,12 +50,7 @@ class ElasticSearchIndexListTest extends TestCase
 
     public function test_it_handles_single_index(): void
     {
-        $serviceMock = Mockery::mock(StatementElasticToolsService::class);
-        $serviceMock->shouldReceive('getIndexList')
-            ->once()
-            ->andReturn(['single-index']);
-
-        $this->app->instance(StatementElasticToolsService::class, $serviceMock);
+        ElasticMocker::fake()->indexListReturns(['single-index']);
 
         $this->artisan('elasticsearch:index-list')
             ->expectsTable(['Indexes'], [

@@ -18,8 +18,6 @@ class StatementElasticStatsService
 
     public const ONE_HOUR = 1 * 60 * 60;
 
-    private int $mockCountQueryAnswer = 888;
-
     public function __construct(
         protected PlatformQueryService $platformQueryService,
         private readonly StatementElasticConnectionService $connectionService,
@@ -186,37 +184,17 @@ class StatementElasticStatsService
 
     public function runSql(string $sql): array
     {
-        if ($this->connectionService->isConfigured()) {
-            return $this->client()->sql()->query([
-                'body' => [
-                    'query' => $sql,
-                ],
-                'format' => 'json',
-            ])->asArray();
-        }
-
-        return $this->mockCountQueryResult();
+        return $this->client()->sql()->query([
+            'body' => [
+                'query' => $sql,
+            ],
+            'format' => 'json',
+        ])->asArray();
     }
 
     public function runAndExtractCountQuerySql(string $sql): int
     {
         return $this->extractCountQueryResult($this->runSql($sql));
-    }
-
-    public function mockCountQueryResult(): array
-    {
-        return [
-            'rows' => [
-                [
-                    $this->mockCountQueryAnswer,
-                ],
-            ],
-        ];
-    }
-
-    public function setMockCountQueryAnswer(int $answer): void
-    {
-        $this->mockCountQueryAnswer = $answer;
     }
 
     public function getCountQueryResult(array $conditions = []): int

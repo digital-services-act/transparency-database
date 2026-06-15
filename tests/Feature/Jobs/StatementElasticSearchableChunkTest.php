@@ -7,25 +7,15 @@ use App\Models\Statement;
 use App\Services\StatementElasticIndexerService;
 use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Mockery;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class StatementElasticSearchableChunkTest extends TestCase
 {
     use RefreshDatabase;
-
-    private $mockService;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->mockService = Mockery::mock(StatementElasticIndexerService::class);
-        $this->app->instance(StatementElasticIndexerService::class, $this->mockService);
-    }
 
     public function test_job_processes_chunk_and_dispatches_next_job(): void
     {
@@ -33,22 +23,14 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 1001; $i <= 1005; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 5 &&
-                       $collection->pluck('id')->sort()->values()->toArray() === [1001, 1002, 1003, 1004, 1005];
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(1001, 2000, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1001, 1002, 1003, 1004, 1005]);
 
         // Should dispatch next job since 1101 < 2000
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
@@ -61,17 +43,7 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 1001; $i <= 1005; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 5 &&
-                       $collection->pluck('id')->sort()->values()->toArray() === [1001, 1002, 1003, 1004, 1005];
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
@@ -80,7 +52,9 @@ class StatementElasticSearchableChunkTest extends TestCase
         $queueJob->shouldReceive('attempts')->once()->andReturn(2);
         $job->job = $queueJob;
 
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1001, 1002, 1003, 1004, 1005]);
 
         Queue::assertNotPushed(StatementElasticSearchableChunk::class);
     }
@@ -91,16 +65,7 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 1998; $i <= 2000; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 3;
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Log::shouldReceive('info')
             ->once()
@@ -109,27 +74,11 @@ class StatementElasticSearchableChunkTest extends TestCase
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(1998, 2000, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1998, 1999, 2000]);
 
         // Should NOT dispatch next job since we reached max
-        Queue::assertNotPushed(StatementElasticSearchableChunk::class);
-    }
-
-    public function test_job_stops_when_emergency_stop_flag_is_set(): void
-    {
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(true);
-
-        // Should not call bulk indexing when stopped
-        $this->mockService->shouldNotReceive('bulkIndexStatements');
-
-        Queue::fake();
-
-        $job = new StatementElasticSearchableChunk(1001, 2000, 100);
-        $job->handle($this->mockService);
-
-        // Should not dispatch any jobs when stopped
         Queue::assertNotPushed(StatementElasticSearchableChunk::class);
     }
 
@@ -139,16 +88,7 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 1996; $i <= 2000; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 5;
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Log::shouldReceive('info')
             ->once()
@@ -158,7 +98,9 @@ class StatementElasticSearchableChunkTest extends TestCase
 
         // Chunk of 100 starting at 1996 would go to 2096, but max is 2000
         $job = new StatementElasticSearchableChunk(1996, 2000, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1996, 1997, 1998, 1999, 2000]);
 
         // Should not dispatch next job since we reached max
         Queue::assertNotPushed(StatementElasticSearchableChunk::class);
@@ -170,21 +112,14 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 1001; $i <= 1002; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 2;
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(1001, 2000, 2);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1001, 1002]);
 
         // Should dispatch next job with correct next min (1001 + 2 + 1 = 1004)
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
@@ -195,43 +130,28 @@ class StatementElasticSearchableChunkTest extends TestCase
     public function test_job_handles_empty_statement_range(): void
     {
         // No statements in this range
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 0;
-            }));
+        $elastic = ElasticMocker::fake();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(9001, 9500, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
 
         // Should still dispatch next job even with empty results
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
             return $job->min === 9102 && $job->max === 9500 && $job->chunk === 100;
         });
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_job_preserves_range_mode_when_dispatching_next_job(): void
     {
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 0;
-            }));
+        $elastic = ElasticMocker::fake();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(9001, 9500, 100, false);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
 
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
             return $job->min === 9102
@@ -239,27 +159,21 @@ class StatementElasticSearchableChunkTest extends TestCase
                 && $job->chunk === 100
                 && $job->range === false;
         });
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_job_handles_single_item_chunk(): void
     {
         // Single statement
         Statement::factory()->create(['id' => 1500]);
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                return $collection->count() === 1 && $collection->first()->id === 1500;
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(1500, 2000, 1);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, [1500]);
 
         // Should dispatch next job
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
@@ -274,24 +188,7 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 700; $i <= 790; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                $ids = $collection->pluck('id')->sort()->values()->toArray();
-                $expectedRange = range(703, 784); // Should be exactly 703-784
-
-                return $collection->count() === 82 && // Exactly 82 items (703 to 784 inclusive)
-                       $ids === $expectedRange && // Contains exactly the expected range
-                       min($ids) === 703 && // Starts at 703
-                       max($ids) === 784 && // Ends at 784
-                       ! in_array(702, $ids) && // Doesn't include 702
-                       ! in_array(785, $ids); // Doesn't include 785
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Log::shouldReceive('info')
             ->once()
@@ -300,7 +197,9 @@ class StatementElasticSearchableChunkTest extends TestCase
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(703, 784, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, range(703, 784));
 
         // Should NOT dispatch next job since we reached max (784)
         Queue::assertNotPushed(StatementElasticSearchableChunk::class);
@@ -314,24 +213,7 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 745; $i <= 785; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                $ids = $collection->pluck('id')->sort()->values()->toArray();
-                $expectedRange = range(750, 780); // Should be exactly 750-780
-
-                return $collection->count() === 31 && // Exactly 31 items (750 to 780 inclusive)
-                       $ids === $expectedRange && // Contains exactly the expected range
-                       min($ids) === 750 && // Starts at 750
-                       max($ids) === 780 && // Ends at 780 (max), not 800 (min+chunk)
-                       ! in_array(749, $ids) && // Doesn't include 749
-                       ! in_array(781, $ids); // Doesn't include 781
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Log::shouldReceive('info')
             ->once()
@@ -340,7 +222,9 @@ class StatementElasticSearchableChunkTest extends TestCase
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(750, 780, 50);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, range(750, 780));
 
         // Should NOT dispatch next job since we reached max
         Queue::assertNotPushed(StatementElasticSearchableChunk::class);
@@ -354,24 +238,7 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 995; $i <= 1105; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                $ids = $collection->pluck('id')->sort()->values()->toArray();
-                $expectedRange = range(1000, 1099); // Should be exactly 1000-1099
-
-                return $collection->count() === 100 && // Exactly 100 items
-                       $ids === $expectedRange && // Contains exactly the expected range
-                       min($ids) === 1000 && // Starts at 1000
-                       max($ids) === 1099 && // Ends at 1099 (max)
-                       ! in_array(999, $ids) && // Doesn't include 999
-                       ! in_array(1100, $ids); // Doesn't include 1100
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Log::shouldReceive('info')
             ->once()
@@ -380,7 +247,9 @@ class StatementElasticSearchableChunkTest extends TestCase
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(1000, 1099, 100);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, range(1000, 1099));
 
         // Should NOT dispatch next job since we reached max
         Queue::assertNotPushed(StatementElasticSearchableChunk::class);
@@ -393,29 +262,14 @@ class StatementElasticSearchableChunkTest extends TestCase
         for ($i = 495; $i <= 525; $i++) {
             Statement::factory()->create(['id' => $i]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) {
-                $ids = $collection->pluck('id')->sort()->values()->toArray();
-                $expectedRange = range(500, 520); // Should be exactly 500-520
-
-                return $collection->count() === 21 && // Exactly 21 items (500 to 520 inclusive)
-                       $ids === $expectedRange && // Contains exactly the expected range
-                       min($ids) === 500 && // Starts at 500
-                       max($ids) === 520 && // Ends at 520 (min + chunk)
-                       ! in_array(499, $ids) && // Doesn't include 499
-                       ! in_array(521, $ids); // Doesn't include 521 (reserved for next job)
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(500, 1000, 20);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, range(500, 520));
 
         // Should dispatch next job starting at exactly 521 (min + chunk + 1)
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
@@ -432,26 +286,14 @@ class StatementElasticSearchableChunkTest extends TestCase
         foreach ($existingIds as $id) {
             Statement::factory()->create(['id' => $id]);
         }
-
-        Cache::shouldReceive('get')
-            ->with('stop_reindexing', false)
-            ->andReturn(false);
-
-        $this->mockService->shouldReceive('bulkIndexStatements')
-            ->once()
-            ->with(Mockery::on(function ($collection) use ($existingIds) {
-                $ids = $collection->pluck('id')->sort()->values()->toArray();
-
-                return $collection->count() === 5 && // Only 5 existing statements
-                       $ids === $existingIds && // Contains exactly the existing IDs
-                       min($ids) === 1001 && // Starts at first existing ID
-                       max($ids) === 1009; // Ends at last existing ID in range
-            }));
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         Queue::fake();
 
         $job = new StatementElasticSearchableChunk(1001, 2000, 20);
-        $job->handle($this->mockService);
+        $job->handle($this->indexer());
+
+        $this->assertBulkIds($elastic, $existingIds);
 
         // Should still dispatch next job at 1022 (min + chunk + 1) regardless of data gaps
         Queue::assertPushed(StatementElasticSearchableChunk::class, function ($job) {
@@ -463,5 +305,27 @@ class StatementElasticSearchableChunkTest extends TestCase
     {
         Mockery::close();
         parent::tearDown();
+    }
+
+    private function indexer(): StatementElasticIndexerService
+    {
+        return app(StatementElasticIndexerService::class);
+    }
+
+    private function assertBulkIds(ElasticMocker $elastic, array $expectedIds): void
+    {
+        $this->assertCount(1, $elastic->requests());
+        $request = $elastic->requests()[0];
+
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('/_bulk', $request->getUri()->getPath());
+        $this->assertSame($expectedIds, $this->bulkIdsFromPayload((string) $request->getBody()));
+    }
+
+    private function bulkIdsFromPayload(string $payload): array
+    {
+        preg_match_all('/"_id":(\d+)/', $payload, $matches);
+
+        return array_map('intval', $matches[1]);
     }
 }

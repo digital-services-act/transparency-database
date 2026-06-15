@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use RuntimeException;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ElasticSearchIndexAliasDeleteTest extends TestCase
@@ -14,19 +13,7 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_successfully_deletes_alias(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'alias' => 'test_alias',
-            'deleted' => true,
-            'acknowledged' => true,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('test_index', 'test_alias')
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->deleteAliasSucceeds();
 
         $this->artisan('elasticsearch:index-alias-delete', [
             'index' => 'test_index',
@@ -37,19 +24,7 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_handles_unacknowledged_deletion(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'alias' => 'problematic_alias',
-            'deleted' => true,
-            'acknowledged' => false,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('test_index', 'problematic_alias')
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->deleteAliasSucceeds(false);
 
         $this->artisan('elasticsearch:index-alias-delete', [
             'index' => 'test_index',
@@ -60,12 +35,7 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('nonexistent_index', 'test_alias')
-            ->andThrow(new RuntimeException('Index does not exist'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exists(false);
 
         $this->artisan('elasticsearch:index-alias-delete', [
             'index' => 'nonexistent_index',
@@ -76,12 +46,9 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_handles_non_existent_alias(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('existing_index', 'nonexistent_alias')
-            ->andThrow(new RuntimeException('Alias does not exist on this index'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->exists()
+            ->exists(false);
 
         $this->artisan('elasticsearch:index-alias-delete', [
             'index' => 'existing_index',
@@ -92,12 +59,7 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_handles_general_runtime_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('error_index', 'error_alias')
-            ->andThrow(new RuntimeException('Connection timeout'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exception(new RuntimeException('Connection timeout'));
 
         $this->artisan('elasticsearch:index-alias-delete', [
             'index' => 'error_index',
@@ -108,19 +70,7 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_handles_complex_index_and_alias_names(): void
     {
-        $result = [
-            'index' => 'statements_production_2024.09.17',
-            'alias' => 'old-production-index',
-            'deleted' => true,
-            'acknowledged' => true,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('statements_production_2024.09.17', 'old-production-index')
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->deleteAliasSucceeds();
 
         $this->artisan('elasticsearch:index-alias-delete', [
             'index' => 'statements_production_2024.09.17',
@@ -131,29 +81,9 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
 
     public function test_command_handles_cleanup_multiple_aliases(): void
     {
-        $result1 = [
-            'index' => 'shared_index',
-            'alias' => 'old_alias_one',
-            'deleted' => true,
-            'acknowledged' => true,
-        ];
-
-        $result2 = [
-            'index' => 'shared_index',
-            'alias' => 'old_alias_two',
-            'deleted' => true,
-            'acknowledged' => true,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('shared_index', 'old_alias_one')
-            ->andReturn($result1);
-        $mockService->shouldReceive('deleteIndexAlias')
-            ->with('shared_index', 'old_alias_two')
-            ->andReturn($result2);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->deleteAliasSucceeds()
+            ->deleteAliasSucceeds();
 
         // Delete first alias
         $this->artisan('elasticsearch:index-alias-delete', [
@@ -168,11 +98,5 @@ class ElasticSearchIndexAliasDeleteTest extends TestCase
             'alias' => 'old_alias_two',
         ])
             ->assertExitCode(0);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

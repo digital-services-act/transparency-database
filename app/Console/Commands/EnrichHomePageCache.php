@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Platform;
 use App\Services\StatementElasticStatsService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class EnrichHomePageCache extends Command
@@ -54,15 +53,7 @@ class EnrichHomePageCache extends Command
 
     public function doGrandTotal(StatementElasticStatsService $statement_elastic_stats_service): void
     {
-        $reindexing = Cache::get('reindexing', false);
-        if (! $reindexing) {
-            Cache::put('grand_total', $statement_elastic_stats_service->grandTotalNoCache(), $this->one_day);
-        } else {
-            $old = (int) Cache::get('grand_total');
-            $yesterday = $statement_elastic_stats_service->totalForDate(Carbon::yesterday());
-            $new = $old + $yesterday;
-            Cache::put('grand_total', $new, $this->one_day);
-        }
+        Cache::put('grand_total', $statement_elastic_stats_service->grandTotalNoCache(), $this->one_day);
     }
 
     public function doPlatformsTotal(): void

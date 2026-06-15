@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
+use RuntimeException;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ElasticSearchTasksCancelTest extends TestCase
@@ -13,17 +13,13 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_successfully_cancels_tasks(): void
     {
-        $cancelResult = [
-            'cancelled_tasks' => 3,
-            'acknowledged' => true,
-            'response' => ['nodes' => []],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andReturn($cancelResult);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->tasksReturn([
+                'task_1' => ['cancellable' => true],
+                'task_2' => ['cancellable' => true],
+                'task_3' => ['cancellable' => true],
+            ])
+            ->tasksCancelReturns();
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -31,35 +27,29 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_no_cancellable_tasks(): void
     {
-        $cancelResult = [
-            'cancelled_tasks' => 0,
-            'acknowledged' => true,
-            'response' => ['nodes' => []],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andReturn($cancelResult);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->tasksReturn([
+                'task_1' => ['cancellable' => false],
+            ])
+            ->tasksCancelReturns();
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
     }
 
-    public function test_command_handles_unacknowledged_cancellation(): void
+    public function test_command_handles_cancel_response_with_node_failures(): void
     {
-        $cancelResult = [
-            'cancelled_tasks' => 2,
-            'acknowledged' => false,
-            'response' => ['nodes' => []],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andReturn($cancelResult);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->tasksReturn([
+                'task_1' => ['cancellable' => true],
+                'task_2' => ['cancellable' => true],
+            ])
+            ->tasksCancelReturns([
+                'nodes' => [],
+                'node_failures' => [
+                    ['reason' => ['reason' => 'task already completed']],
+                ],
+            ]);
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -67,17 +57,14 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_large_number_of_cancelled_tasks(): void
     {
-        $cancelResult = [
-            'cancelled_tasks' => 50,
-            'acknowledged' => true,
-            'response' => ['nodes' => []],
-        ];
+        $tasks = [];
+        for ($i = 1; $i <= 50; $i++) {
+            $tasks["task_{$i}"] = ['cancellable' => true];
+        }
 
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andReturn($cancelResult);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->tasksReturn($tasks)
+            ->tasksCancelReturns();
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -85,11 +72,7 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andThrow(new \Exception('Connection timeout'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exception(new RuntimeException('Connection timeout'));
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -97,11 +80,9 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_elasticsearch_error(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andThrow(new \Exception('Cluster unavailable'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->tasksReturn(['task_1' => ['cancellable' => true]])
+            ->exception(new RuntimeException('Cluster unavailable'));
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
@@ -109,25 +90,11 @@ class ElasticSearchTasksCancelTest extends TestCase
 
     public function test_command_handles_single_task_cancellation(): void
     {
-        $cancelResult = [
-            'cancelled_tasks' => 1,
-            'acknowledged' => true,
-            'response' => ['nodes' => []],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('cancelAllTasks')
-            ->andReturn($cancelResult);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->tasksReturn(['task_1' => ['cancellable' => true]])
+            ->tasksCancelReturns();
 
         $this->artisan('elasticsearch:tasks-cancel')
             ->assertExitCode(0);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

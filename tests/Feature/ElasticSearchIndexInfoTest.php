@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
-use RuntimeException;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ElasticSearchIndexInfoTest extends TestCase
@@ -14,31 +12,22 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_displays_index_information(): void
     {
-        $indexInfo = [
-            'uuid' => 'test-uuid-123-456',
-            'documents' => 15000,
-            'size_bytes' => 2097152, // 2MB
-            'fields' => [
-                ['id', 'long'],
-                ['title', 'text'],
-                ['category', 'keyword'],
+        ElasticMocker::fake()->indexInfoReturns(
+            'test_index',
+            'test-uuid-123-456',
+            15000,
+            2097152,
+            [
+                'id' => ['type' => 'long'],
+                'title' => ['type' => 'text'],
+                'category' => ['type' => 'keyword'],
             ],
-            'shards' => [
-                ['0', 'STARTED', '7500', '1.1mb'],
-                ['1', 'STARTED', '7500', '1.1mb'],
+            [
+                ['shard' => '0', 'prirep' => 'p', 'state' => 'STARTED', 'docs' => '7500', 'store' => '1.1mb'],
+                ['shard' => '1', 'prirep' => 'p', 'state' => 'STARTED', 'docs' => '7500', 'store' => '1.1mb'],
             ],
-            'aliases' => [
-                ['alias' => 'current_index'],
-                ['alias' => 'search_index'],
-            ],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('test_index')
-            ->andReturn($indexInfo);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+            ['current_index', 'search_index'],
+        );
 
         $this->artisan('elasticsearch:index-info', ['index' => 'test_index'])
             ->assertExitCode(0);
@@ -46,25 +35,16 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_index_with_no_aliases(): void
     {
-        $indexInfo = [
-            'uuid' => 'no-alias-uuid-789',
-            'documents' => 500,
-            'size_bytes' => 1024, // 1KB
-            'fields' => [
-                ['id', 'long'],
+        ElasticMocker::fake()->indexInfoReturns(
+            'no_alias_index',
+            'no-alias-uuid-789',
+            500,
+            1024,
+            ['id' => ['type' => 'long']],
+            [
+                ['shard' => '0', 'prirep' => 'p', 'state' => 'STARTED', 'docs' => '500', 'store' => '1kb'],
             ],
-            'shards' => [
-                ['0', 'STARTED', '500', '1kb'],
-            ],
-            'aliases' => [],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('no_alias_index')
-            ->andReturn($indexInfo);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        );
 
         $this->artisan('elasticsearch:index-info', ['index' => 'no_alias_index'])
             ->assertExitCode(0);
@@ -72,25 +52,16 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_large_index_with_gigabyte_size(): void
     {
-        $indexInfo = [
-            'uuid' => 'large-index-uuid',
-            'documents' => 1000000,
-            'size_bytes' => 3221225472, // 3GB
-            'fields' => [
-                ['content', 'text'],
+        ElasticMocker::fake()->indexInfoReturns(
+            'large_index',
+            'large-index-uuid',
+            1000000,
+            3221225472,
+            ['content' => ['type' => 'text']],
+            [
+                ['shard' => '0', 'prirep' => 'p', 'state' => 'STARTED', 'docs' => '250000', 'store' => '800mb'],
             ],
-            'shards' => [
-                ['0', 'STARTED', '250000', '800mb'],
-            ],
-            'aliases' => [],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('large_index')
-            ->andReturn($indexInfo);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        );
 
         $this->artisan('elasticsearch:index-info', ['index' => 'large_index'])
             ->assertExitCode(0);
@@ -98,12 +69,7 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('nonexistent_index')
-            ->andThrow(new RuntimeException('Index does not exist'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exists(false);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'nonexistent_index'])
             ->assertExitCode(0);
@@ -111,12 +77,9 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_alias_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('alias_index')
-            ->andThrow(new RuntimeException('Index is not in the indices stats, probably you used an alias?'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()
+            ->exists()
+            ->indicesStatsReturns(['indices' => []]);
 
         $this->artisan('elasticsearch:index-info', ['index' => 'alias_index'])
             ->assertExitCode(0);
@@ -124,23 +87,13 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_command_handles_empty_index(): void
     {
-        $indexInfo = [
-            'uuid' => 'empty-index-uuid',
-            'documents' => 0,
-            'size_bytes' => 283, // bytes only
-            'fields' => [
-                ['_id', 'keyword'],
-            ],
-            'shards' => [],
-            'aliases' => [],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('empty_index')
-            ->andReturn($indexInfo);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->indexInfoReturns(
+            'empty_index',
+            'empty-index-uuid',
+            0,
+            283,
+            ['_id' => ['type' => 'keyword']],
+        );
 
         $this->artisan('elasticsearch:index-info', ['index' => 'empty_index'])
             ->assertExitCode(0);
@@ -148,31 +101,15 @@ class ElasticSearchIndexInfoTest extends TestCase
 
     public function test_human_file_size_formatting(): void
     {
-        $indexInfo = [
-            'uuid' => 'size-test-uuid',
-            'documents' => 1000,
-            'size_bytes' => 1073741824, // 1GB exactly
-            'fields' => [
-                ['data', 'text'],
-            ],
-            'shards' => [],
-            'aliases' => [],
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('getIndexInfo')
-            ->with('size_test')
-            ->andReturn($indexInfo);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->indexInfoReturns(
+            'size_test',
+            'size-test-uuid',
+            1000,
+            1073741824,
+            ['data' => ['type' => 'text']],
+        );
 
         $this->artisan('elasticsearch:index-info', ['index' => 'size_test'])
             ->assertExitCode(0);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

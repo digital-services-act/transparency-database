@@ -22,7 +22,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Excel;
 
 class StatementController extends Controller
@@ -56,7 +55,6 @@ class StatementController extends Controller
         $statements = $statements->orderBy('created_at', 'DESC')->get();
         $pagination_max = min(10000, $total);
         $similarity_results = null;
-        $reindexing = Cache::get('reindexing', false);
         $paginator = new LengthAwarePaginator($statements, $pagination_max, $pagination_per_page, $page);
         $parameters = $request->query();
         unset($parameters['page']);
@@ -67,7 +65,6 @@ class StatementController extends Controller
             'options' => $options,
             'total' => $total,
             'similarity_results' => $similarity_results,
-            'reindexing' => $reindexing,
         ]);
     }
 

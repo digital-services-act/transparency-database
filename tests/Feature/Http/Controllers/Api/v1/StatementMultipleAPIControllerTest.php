@@ -5,13 +5,13 @@ namespace Tests\Feature\Http\Controllers\Api\v1;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementElasticIndexerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 // use JMac\Testing\Traits\AdditionalAssertions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class StatementMultipleAPIControllerTest extends TestCase
@@ -807,57 +807,42 @@ class StatementMultipleAPIControllerTest extends TestCase
     {
         $this->signInAsAdmin();
 
-        // Set the environment to non-production
         config()->set('app.env', 'testing');
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
-
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('bulkIndexStatements')->once();
+        $elastic = ElasticMocker::fake()->bulkReturns();
 
         $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
             'Accept' => 'application/json',
-        ]);
+        ])->assertCreated();
+
+        $this->assertCount(1, $elastic->requests());
+        $this->assertSame('POST', $elastic->requests()[0]->getMethod());
     }
 
     public function test_store_bulk_does_not_index_statement_in_production(): void
     {
         $this->signInAsAdmin();
 
-        // Set the environment to production
         config()->set('app.env', 'production');
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
-
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('bulkIndexStatements')->never();
+        $elastic = ElasticMocker::fake();
 
         $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
             'Accept' => 'application/json',
-        ]);
+        ])->assertCreated();
+
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_store_bulk_does_not_index_statement_when_elastic_is_not_configured(): void
     {
         $this->signInAsAdmin();
 
-        // Set the environment to non-production
         config()->set('app.env', 'testing');
-        // Ensure elasticsearch is not configured
         config()->set('elasticsearch.enabled', false);
         config()->set('elasticsearch.uri', [null]);
 
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('bulkIndexStatements')->never();
-
         $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
             'Accept' => 'application/json',
-        ]);
+        ])->assertCreated();
     }
 
     public function test_store_uses_transactional_bulk_puid_reservation(): void

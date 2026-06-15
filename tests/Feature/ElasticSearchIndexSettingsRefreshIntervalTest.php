@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Services\StatementElasticToolsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use RuntimeException;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
@@ -14,20 +13,7 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_successfully_updates_refresh_interval(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'previous_interval' => '1s',
-            'new_interval' => '30s',
-            'updated' => true,
-            'acknowledged' => true,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('updateIndexRefreshInterval')
-            ->with('test_index', 30)
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->refreshIntervalUpdateSucceeds('test_index', '1s');
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'test_index',
@@ -38,20 +24,7 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_handles_unacknowledged_update(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'previous_interval' => '1s',
-            'new_interval' => '60s',
-            'updated' => true,
-            'acknowledged' => false,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('updateIndexRefreshInterval')
-            ->with('test_index', 60)
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->refreshIntervalUpdateSucceeds('test_index', '1s', false);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'test_index',
@@ -62,12 +35,7 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_handles_non_existent_index(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('updateIndexRefreshInterval')
-            ->with('nonexistent_index', 15)
-            ->andThrow(new RuntimeException('Index does not exist'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exists(false);
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'nonexistent_index',
@@ -78,12 +46,7 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_handles_general_exception(): void
     {
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('updateIndexRefreshInterval')
-            ->with('error_index', 5)
-            ->andThrow(new RuntimeException('Connection timeout'));
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->exception(new RuntimeException('Connection timeout'));
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'error_index',
@@ -94,31 +57,12 @@ class ElasticSearchIndexSettingsRefreshIntervalTest extends TestCase
 
     public function test_command_handles_zero_interval(): void
     {
-        $result = [
-            'index' => 'test_index',
-            'previous_interval' => '30s',
-            'new_interval' => '0s',
-            'updated' => true,
-            'acknowledged' => true,
-        ];
-
-        $mockService = Mockery::mock(StatementElasticToolsService::class);
-        $mockService->shouldReceive('updateIndexRefreshInterval')
-            ->with('test_index', 0)
-            ->andReturn($result);
-
-        $this->app->instance(StatementElasticToolsService::class, $mockService);
+        ElasticMocker::fake()->refreshIntervalUpdateSucceeds('test_index', '30s');
 
         $this->artisan('elasticsearch:index-settings-refresh-interval', [
             'index' => 'test_index',
             'interval' => '0',
         ])
             ->assertExitCode(0);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

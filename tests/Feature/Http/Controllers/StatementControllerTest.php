@@ -4,14 +4,13 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\StatementController;
 use App\Models\Statement;
-use App\Services\StatementElasticIndexerService;
-use App\Services\StatementElasticSearchService;
 use App\Services\StatementQueryService;
 // use JMac\Testing\Traits\AdditionalAssertions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
 use Tests\Feature\Http\Controllers\Api\v1\StatementAPIControllerTest;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 /**
@@ -214,20 +213,25 @@ class StatementControllerTest extends TestCase
     public function test_index_uses_elasticsearch_when_configured(): void
     {
         $this->signInAsAdmin();
+        $statement = Statement::query()->firstOrFail();
 
-        // Mock the elastic search service
-        $mock = $this->mock(StatementElasticSearchService::class);
-        $mock->shouldReceive('query')->once()->andReturn([
-            'statements' => Statement::query(),
-            'total' => 0,
-        ]);
-
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+        ElasticMocker::fake()
+            ->searchReturns([
+                'hits' => [
+                    'total' => ['value' => 1],
+                    'hits' => [
+                        ['_id' => $statement->id],
+                    ],
+                ],
+            ]);
 
         $response = $this->get(route('statement.index'));
-        $response->assertOk();
+
+        $response
+            ->assertOk()
+            ->assertViewHas('total', 1)
+            ->assertViewHas('statements', fn ($statements): bool => $statements->total() === 1
+                && $statements->getCollection()->contains('id', $statement->id));
     }
 
     public function test_index_uses_database_when_elasticsearch_is_not_configured(): void
@@ -250,50 +254,38 @@ class StatementControllerTest extends TestCase
     {
         $this->signInAsAdmin();
 
-        // Set the environment to non-production
         config()->set('app.env', 'testing');
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+        $elastic = ElasticMocker::fake()->indexReturns();
 
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('indexStatement')->once();
+        $this->post(route('statement.store'), $this->dummy_attributes)
+            ->assertRedirect();
 
-        $this->post(route('statement.store'), $this->dummy_attributes);
+        $this->assertCount(1, $elastic->requests());
+        $this->assertSame('PUT', $elastic->requests()[0]->getMethod());
     }
 
     public function test_store_does_not_index_statement_in_production(): void
     {
         $this->signInAsAdmin();
 
-        // Set the environment to production
         config()->set('app.env', 'production');
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
+        $elastic = ElasticMocker::fake();
 
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('indexStatement')->never();
+        $this->post(route('statement.store'), $this->dummy_attributes)
+            ->assertRedirect();
 
-        $this->post(route('statement.store'), $this->dummy_attributes);
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_store_does_not_index_statement_when_elastic_is_not_configured(): void
     {
         $this->signInAsAdmin();
 
-        // Set the environment to non-production
         config()->set('app.env', 'testing');
-        // Ensure elasticsearch is not configured
         config()->set('elasticsearch.enabled', false);
         config()->set('elasticsearch.uri', [null]);
 
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('indexStatement')->never();
-
-        $this->post(route('statement.store'), $this->dummy_attributes);
+        $this->post(route('statement.store'), $this->dummy_attributes)
+            ->assertRedirect();
     }
 }

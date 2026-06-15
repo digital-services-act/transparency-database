@@ -153,34 +153,7 @@ class StatementElasticSearchService
 
     private function applySFilter(string $filter_value): string
     {
-        $filter_value = preg_replace("/[^a-zA-Z0-9\ \-\_]+/", '', $filter_value);
-        $textfields = [
-            'decision_visibility_other',
-            'decision_monetary_other',
-            'illegal_content_legal_ground',
-            'illegal_content_explanation',
-            'incompatible_content_ground',
-            'incompatible_content_explanation',
-            'decision_facts',
-            'content_type_other',
-            'source_identity',
-            'uuid',
-            'puid',
-            'content_id_ean',
-        ];
-
-        $ors = [];
-        foreach ($textfields as $textfield) {
-            $ors[] = $textfield.':"'.$filter_value.'"';
-        }
-
-        if (config('app.env', '') !== 'testing') {
-
-            return $filter_value;
-
-        }
-
-        return implode(' OR ', $ors);
+        return preg_replace("/[^a-zA-Z0-9\ \-\_]+/", '', $filter_value);
     }
 
     private function applyDecisionVisibilityFilter(array $filter_values): string

@@ -7,8 +7,6 @@ use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Models\User;
 use App\Services\PlatformUniqueIdService;
-use App\Services\StatementElasticIndexerService;
-use App\Services\StatementElasticSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -16,7 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 // use JMac\Testing\Traits\AdditionalAssertions;
-use Mockery\MockInterface;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class StatementAPIControllerTest extends TestCase
@@ -104,11 +102,7 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
-        $statement = $this->statement;
-
-        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) use ($statement) {
-            $mock->shouldReceive('PlatformIdPuidToId')->andReturn($statement->id);
-        });
+        ElasticMocker::fake()->puidSearchReturns([$this->statement->id]);
 
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
             'Accept' => 'application/json',
@@ -130,11 +124,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->platformUniqueIdService->addPuidToCache($admin->platform_id, $this->statement->puid);
 
-        $statement = $this->statement;
-
-        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) {
-            $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
-        });
+        $elastic = ElasticMocker::fake();
 
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
             'Accept' => 'application/json',
@@ -143,6 +133,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals('statement of reason found', $response->json('message'));
         $this->assertEquals($this->statement->puid, $response->json('puid'));
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_api_statement_existing_puid_gives_404(): void
@@ -154,9 +145,7 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
-        $this->mock(StatementElasticSearchService::class, static function (MockInterface $mock) {
-            $mock->shouldReceive('PlatformIdPuidToId')->andReturn(0);
-        });
+        ElasticMocker::fake()->puidSearchReturns([]);
 
         $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
             'Accept' => 'application/json',
@@ -1037,56 +1026,41 @@ class StatementAPIControllerTest extends TestCase
     {
         $this->signInAsAdmin();
 
-        // Set the environment to non-production
         config()->set('app.env', 'testing');
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
-
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('indexStatement')->once();
+        $elastic = ElasticMocker::fake()->indexReturns();
 
         $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json',
-        ]);
+        ])->assertCreated();
+
+        $this->assertCount(1, $elastic->requests());
+        $this->assertSame('PUT', $elastic->requests()[0]->getMethod());
     }
 
     public function test_store_does_not_index_statement_in_production(): void
     {
         $this->signInAsAdmin();
 
-        // Set the environment to production
         config()->set('app.env', 'production');
-        // Set the config to use elasticsearch
-        config()->set('elasticsearch.enabled', true);
-        config()->set('elasticsearch.uri', ['http://localhost:9200']);
-
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('indexStatement')->never();
+        $elastic = ElasticMocker::fake();
 
         $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json',
-        ]);
+        ])->assertCreated();
+
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_store_does_not_index_statement_when_elastic_is_not_configured(): void
     {
         $this->signInAsAdmin();
 
-        // Set the environment to non-production
         config()->set('app.env', 'testing');
-        // Ensure elasticsearch is not configured
         config()->set('elasticsearch.enabled', false);
         config()->set('elasticsearch.uri', [null]);
 
-        // Mock the elastic indexer service
-        $mock = $this->mock(StatementElasticIndexerService::class);
-        $mock->shouldReceive('indexStatement')->never();
-
         $this->post(route('api.v1.statement.store'), $this->required_fields, [
             'Accept' => 'application/json',
-        ]);
+        ])->assertCreated();
     }
 }
