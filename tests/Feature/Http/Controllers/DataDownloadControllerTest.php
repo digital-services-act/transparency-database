@@ -88,7 +88,7 @@ class DataDownloadControllerTest extends TestCase
         foreach ($downloadRoutes as $downloadRoute) {
             $this->get($downloadRoute)
                 ->assertRedirect()
-                ->assertHeader('X-RateLimit-Limit', '1000');
+                ->assertHeader('X-RateLimit-Limit', '200');
         }
 
         $this->get(route('dayarchive.index'))

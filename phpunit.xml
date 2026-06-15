@@ -15,6 +15,7 @@
     <env name="QUEUE_DRIVER" value="sync"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="MAIL_DRIVER" value="array"/>
+    <env name="ELASTICSEARCH_ENABLED" value="false" force="true"/>
     <env name="BCRYPT_ROUNDS" value="4"/>
     <env name="TELESCOPE_ENABLED" value="false"/>
     <env name="CAS_MASQUERADE" value="some-user"/>

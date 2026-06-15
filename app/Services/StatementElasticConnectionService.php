@@ -19,6 +19,10 @@ class StatementElasticConnectionService
 
     private function makeClient(): ?Client
     {
+        if (! self::isEnabledByConfig()) {
+            return null;
+        }
+
         $hosts = $this->configuredHosts();
 
         if ($hosts === []) {
@@ -41,8 +45,12 @@ class StatementElasticConnectionService
 
     public function client(): Client
     {
+        if (! $this->isConfigured()) {
+            throw new RuntimeException('Elasticsearch is disabled or not configured. Set ELASTICSEARCH_ENABLED=true and ES_ADDON_HOST, or leave ELASTICSEARCH_ENABLED unset and configure ES_ADDON_HOST.');
+        }
+
         if ($this->client === null) {
-            throw new RuntimeException('Elasticsearch is not configured. Set ES_ADDON_HOST, ES_ADDON_USER, and ES_ADDON_PASSWORD.');
+            $this->client = $this->makeClient();
         }
 
         return $this->client;
@@ -60,7 +68,18 @@ class StatementElasticConnectionService
 
     public function isConfigured(): bool
     {
-        return $this->client !== null;
+        return self::isEnabledByConfig() && self::hasConfiguredUris();
+    }
+
+    public static function isEnabledByConfig(): bool
+    {
+        $enabled = config('elasticsearch.enabled');
+
+        if ($enabled === null || $enabled === '') {
+            return self::hasConfiguredUris();
+        }
+
+        return filter_var($enabled, FILTER_VALIDATE_BOOLEAN);
     }
 
     public static function hasConfiguredUris(): bool

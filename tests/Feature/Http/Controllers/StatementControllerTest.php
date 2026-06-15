@@ -223,6 +223,7 @@ class StatementControllerTest extends TestCase
         ]);
 
         // Set the config to use elasticsearch
+        config()->set('elasticsearch.enabled', true);
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
         $response = $this->get(route('statement.index'));
@@ -238,6 +239,7 @@ class StatementControllerTest extends TestCase
         $mock->shouldReceive('query')->twice()->andReturn(Statement::query());
 
         // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.enabled', false);
         config()->set('elasticsearch.uri', [null]);
 
         $response = $this->get(route('statement.index'));
@@ -251,6 +253,7 @@ class StatementControllerTest extends TestCase
         // Set the environment to non-production
         config()->set('app.env', 'testing');
         // Set the config to use elasticsearch
+        config()->set('elasticsearch.enabled', true);
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
         // Mock the elastic indexer service
@@ -267,6 +270,7 @@ class StatementControllerTest extends TestCase
         // Set the environment to production
         config()->set('app.env', 'production');
         // Set the config to use elasticsearch
+        config()->set('elasticsearch.enabled', true);
         config()->set('elasticsearch.uri', ['http://localhost:9200']);
 
         // Mock the elastic indexer service
@@ -283,6 +287,7 @@ class StatementControllerTest extends TestCase
         // Set the environment to non-production
         config()->set('app.env', 'testing');
         // Ensure elasticsearch is not configured
+        config()->set('elasticsearch.enabled', false);
         config()->set('elasticsearch.uri', [null]);
 
         // Mock the elastic indexer service

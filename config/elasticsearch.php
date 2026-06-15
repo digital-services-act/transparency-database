@@ -83,6 +83,7 @@ $bulkRetryDelaysMs = array_values(array_filter(
 ));
 
 return [
+    'enabled' => env('ELASTICSEARCH_ENABLED', null),
     'hosts' => $hosts,
     'uri' => $uris,
     'basicAuthentication' => [

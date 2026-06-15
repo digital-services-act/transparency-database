@@ -15,6 +15,7 @@ class StatementElasticConnectionServiceTest extends TestCase
     public function test_client_throws_when_elasticsearch_is_not_configured(): void
     {
         config([
+            'elasticsearch.enabled' => true,
             'elasticsearch.uri' => [],
             'elasticsearch.basicAuthentication.username' => null,
             'elasticsearch.basicAuthentication.password' => null,
@@ -25,7 +26,24 @@ class StatementElasticConnectionServiceTest extends TestCase
         $this->assertFalse($service->isConfigured());
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Elasticsearch is not configured.');
+        $this->expectExceptionMessage('Elasticsearch is disabled or not configured.');
+
+        $service->client();
+    }
+
+    public function test_client_throws_when_elasticsearch_is_disabled(): void
+    {
+        config([
+            'elasticsearch.enabled' => false,
+            'elasticsearch.uri' => ['http://localhost:9200'],
+        ]);
+
+        $service = new StatementElasticConnectionService;
+
+        $this->assertFalse($service->isConfigured());
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Elasticsearch is disabled or not configured.');
 
         $service->client();
     }
@@ -33,6 +51,7 @@ class StatementElasticConnectionServiceTest extends TestCase
     public function test_it_builds_a_configured_client_with_basic_authentication(): void
     {
         config([
+            'elasticsearch.enabled' => true,
             'elasticsearch.uri' => ['http://localhost:9200'],
             'elasticsearch.basicAuthentication.username' => 'elastic',
             'elasticsearch.basicAuthentication.password' => 'secret',
@@ -47,7 +66,10 @@ class StatementElasticConnectionServiceTest extends TestCase
 
     public function test_it_rebuilds_client_after_configuration_changes(): void
     {
-        config(['elasticsearch.uri' => []]);
+        config([
+            'elasticsearch.enabled' => true,
+            'elasticsearch.uri' => [],
+        ]);
 
         $service = new StatementElasticConnectionService;
 
@@ -65,5 +87,15 @@ class StatementElasticConnectionServiceTest extends TestCase
         config(['elasticsearch.uri' => ' http://localhost:9200 ']);
 
         $this->assertTrue(StatementElasticConnectionService::hasConfiguredUris());
+    }
+
+    public function test_enabled_configuration_defaults_to_configured_hosts(): void
+    {
+        config([
+            'elasticsearch.enabled' => null,
+            'elasticsearch.uri' => ' http://localhost:9200 ',
+        ]);
+
+        $this->assertTrue(StatementElasticConnectionService::isEnabledByConfig());
     }
 }
