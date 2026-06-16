@@ -821,11 +821,12 @@ class StatementMultipleAPIControllerTest extends TestCase
     public function test_store_bulk_does_not_index_statement_in_production(): void
     {
         $this->signInAsAdmin();
+        $statements = $this->createFullStatements(2);
 
         config()->set('app.env', 'production');
         $elastic = ElasticMocker::fake();
 
-        $this->post(route('api.v1.statements.store'), ['statements' => $this->createFullStatements(2)], [
+        $this->post(route('api.v1.statements.store'), ['statements' => $statements], [
             'Accept' => 'application/json',
         ])->assertCreated();
 

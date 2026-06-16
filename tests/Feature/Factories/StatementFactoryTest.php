@@ -6,6 +6,8 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use RuntimeException;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class StatementFactoryTest extends TestCase
@@ -28,6 +30,39 @@ class StatementFactoryTest extends TestCase
         $this->assertSame($statement->user->platform_id, $statement->platform_id);
         $this->assertSame($statement->user->platform_id, $statement->platform->id);
         $this->assertNotSame(Platform::LABEL_DSA_TEAM, $statement->user->platform->name);
+    }
+
+    public function test_it_cannot_be_used_in_production(): void
+    {
+        $initialCount = Statement::query()->count();
+
+        config()->set('app.env', 'production');
+
+        try {
+            Statement::factory()->create();
+            $this->fail('StatementFactory was allowed to create a statement in production.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('StatementFactory cannot be used in production.', $exception->getMessage());
+            $this->assertSame($initialCount, Statement::query()->count());
+        } finally {
+            config()->set('app.env', 'testing');
+        }
+    }
+
+    public function test_it_indexes_created_statement_when_elastic_is_configured_outside_production(): void
+    {
+        $elastic = ElasticMocker::fake()->indexReturns();
+
+        $statement = Statement::factory()->create();
+
+        $this->assertCount(1, $elastic->requests());
+
+        $request = $elastic->requests()[0];
+        parse_str($request->getUri()->getQuery(), $query);
+
+        $this->assertSame('PUT', $request->getMethod());
+        $this->assertSame('/statement_index/_doc/'.$statement->id, $request->getUri()->getPath());
+        $this->assertSame('true', $query['require_alias']);
     }
 
     public function test_it_creates_eligible_user_when_none_exists(): void

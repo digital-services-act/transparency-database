@@ -7,9 +7,12 @@ use App\Models\Statement;
 use App\Models\User;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use App\Services\StatementElasticConnectionService;
+use App\Services\StatementElasticIndexerService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use RuntimeException;
 
 class StatementFactory extends Factory
 {
@@ -22,11 +25,25 @@ class StatementFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterMaking(static function (Statement $statement): void {
-            if ($statement->created_at !== null && $statement->updated_at === null) {
-                $statement->updated_at = $statement->created_at;
-            }
-        });
+        return $this
+            ->afterMaking(static function (Statement $statement): void {
+                if ($statement->created_at !== null && $statement->updated_at === null) {
+                    $statement->updated_at = $statement->created_at;
+                }
+            })
+            ->afterCreating(static function (Statement $statement): void {
+                if (strtolower((string) config('app.env')) === 'production') {
+                    return;
+                }
+
+                $connection = app(StatementElasticConnectionService::class);
+
+                if (! $connection->isConfigured()) {
+                    return;
+                }
+
+                app(StatementElasticIndexerService::class)->indexStatement($statement);
+            });
     }
 
     /**
@@ -38,6 +55,10 @@ class StatementFactory extends Factory
      */
     public function definition()
     {
+        if (strtolower((string) config('app.env')) === 'production') {
+            throw new RuntimeException('StatementFactory cannot be used in production.');
+        }
+
         $create_date = Carbon::instance($this->faker->dateTimeBetween('-2 years'))->startOfDay();
         $created_at = $create_date->copy()->addSeconds($this->faker->numberBetween(0, 86399));
         $content_date = $create_date->clone();

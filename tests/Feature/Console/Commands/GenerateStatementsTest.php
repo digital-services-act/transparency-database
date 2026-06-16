@@ -33,6 +33,18 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 1000);
     }
 
+    public function test_it_cannot_run_in_production(): void
+    {
+        config()->set('app.env', 'production');
+        Queue::fake();
+
+        $this->artisan('statements:generate')
+            ->expectsOutputToContain('The statements:generate command cannot run in production.')
+            ->assertExitCode(1);
+
+        Queue::assertNothingPushed();
+    }
+
     public function test_it_dispatches_custom_amount_of_jobs(): void
     {
         Queue::fake();

@@ -27,14 +27,22 @@ class GenerateStatements extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
+        if (strtolower((string) config('app.env')) === 'production') {
+            $this->error('The statements:generate command cannot run in production.');
+
+            return self::FAILURE;
+        }
+
         $date = $this->sanitizeDateArgument();
         $amount = $this->intifyArgument('amount');
 
         for ($cpt = 0; $cpt < $amount; $cpt++) {
             StatementCreation::dispatch($this->statementTimestamp($date));
         }
+
+        return self::SUCCESS;
     }
 
     private function statementTimestamp(Carbon $date): int
