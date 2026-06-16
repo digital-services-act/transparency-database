@@ -38,7 +38,6 @@ class StatementFactory extends Factory
      */
     public function definition()
     {
-        $id = $this->faker->numberBetween(100000000000, 100000000000 + 100000000000);
         $create_date = Carbon::instance($this->faker->dateTimeBetween('-2 years'))->startOfDay();
         $created_at = $create_date->copy()->addSeconds($this->faker->numberBetween(0, 86399));
         $content_date = $create_date->clone();
@@ -68,7 +67,6 @@ class StatementFactory extends Factory
 
         return [
 
-            'id' => $id,
             'decision_visibility' => $this->faker->randomElements(
                 array_keys(Statement::DECISION_VISIBILITIES),
                 2,
