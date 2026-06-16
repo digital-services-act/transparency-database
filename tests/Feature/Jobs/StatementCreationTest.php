@@ -5,6 +5,7 @@ namespace Tests\Feature\Jobs;
 use App\Jobs\StatementCreation;
 use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class StatementCreationTest extends TestCase
@@ -57,8 +58,6 @@ class StatementCreationTest extends TestCase
 
     public function test_job_creates_statement_with_specific_timestamp_behavior(): void
     {
-        // Test that the job ATTEMPTS to set specific timestamps
-        // The factory might override them, but we can verify the behavior path
         $specificTimestamp = 1623762600;
         $initialCount = Statement::count();
 
@@ -68,14 +67,16 @@ class StatementCreationTest extends TestCase
         // Verify a new statement was created
         $this->assertEquals($initialCount + 1, Statement::count());
 
-        // Get the newly created statement
-        $statement = Statement::latest('id')->first();
+        $expected = Carbon::createFromTimestamp($specificTimestamp)->format('Y-m-d H:i:s');
+        $statement = Statement::query()
+            ->where('created_at', $expected)
+            ->where('updated_at', $expected)
+            ->first();
+
         $this->assertNotNull($statement);
 
-        // At minimum, verify the statement has proper timestamps
-        // Even if they're not the exact ones we requested due to factory behavior
-        $this->assertNotNull($statement->created_at);
-        $this->assertNotNull($statement->updated_at);
+        $this->assertSame($expected, $statement->created_at->format('Y-m-d H:i:s'));
+        $this->assertSame($expected, $statement->updated_at->format('Y-m-d H:i:s'));
 
         // Verify it's a valid Statement with all required fields
         $this->assertNotNull($statement->uuid);

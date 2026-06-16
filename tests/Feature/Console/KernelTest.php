@@ -76,6 +76,41 @@ class KernelTest extends TestCase
         }));
     }
 
+    public function test_generate_statements_is_scheduled_on_dev_and_acc_task_servers(): void
+    {
+        foreach (['dev', 'acc'] as $environment) {
+            config()->set('app.is_task_server', true);
+            config()->set('app.env', $environment);
+
+            $kernel = $this->app->make(Kernel::class);
+            $schedule = new Schedule;
+            $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
+
+            $events = collect($schedule->events());
+
+            $this->assertTrue($events->contains(function ($event) {
+                return str_contains($event->command, 'statements:generate')
+                    && $event->expression === '0 23 * * *';
+            }), 'The statement generator was not scheduled for '.$environment.'.');
+        }
+    }
+
+    public function test_generate_statements_is_not_scheduled_on_sandbox_task_server(): void
+    {
+        config()->set('app.is_task_server', true);
+        config()->set('app.env', 'sandbox');
+
+        $kernel = $this->app->make(Kernel::class);
+        $schedule = new Schedule;
+        $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
+
+        $events = collect($schedule->events());
+
+        $this->assertFalse($events->contains(function ($event) {
+            return str_contains($event->command, 'statements:generate');
+        }));
+    }
+
     /**
      * Helper to invoke a protected method on an object.
      *

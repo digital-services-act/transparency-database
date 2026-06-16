@@ -48,20 +48,18 @@ class StatementController extends Controller
 
         $options = $this->prepareOptions(true);
 
-        $setup = $this->setupQuery($request, $page - 1, $pagination_per_page);
+        $setup = $this->paginatedStatements($request, $page, $pagination_per_page);
         $statements = $setup['statements'];
         $total = $setup['total'];
 
-        $statements = $statements->orderBy('created_at', 'DESC')->get();
-        $pagination_max = min(10000, $total);
         $similarity_results = null;
-        $paginator = new LengthAwarePaginator($statements, $pagination_max, $pagination_per_page, $page);
         $parameters = $request->query();
         unset($parameters['page']);
-        $paginator->setPath(route('statement.index', $parameters));
+        $statements->setPath(route('statement.index'));
+        $statements->appends($parameters);
 
         return view('statement.index', [
-            'statements' => $paginator,
+            'statements' => $statements,
             'options' => $options,
             'total' => $total,
             'similarity_results' => $similarity_results,
@@ -73,12 +71,36 @@ class StatementController extends Controller
         $setup = $this->setupQuery($request, 0, 1000);
 
         $statements = $setup['statements'];
-        $statements->limit = 1000;
 
         $export = new StatementsExport;
         $export->setCollection($statements->orderBy('created_at', 'DESC')->get());
 
         return $export->download('statements-of-reason.csv', Excel::CSV);
+    }
+
+    private function paginatedStatements(Request $request, int $page, int $perPage): array
+    {
+        if ($this->statement_elastic_connection_service->isConfigured()) {
+            $elastic_results = $this->statement_elastic_search_service->query($request->query(), [], $page - 1, $perPage);
+            $total = $elastic_results['total'];
+            $statements = $elastic_results['statements']->orderBy('created_at', 'DESC')->get();
+            $pagination_max = min(10000, $total);
+
+            return [
+                'statements' => new LengthAwarePaginator($statements, $pagination_max, $perPage, $page),
+                'total' => $total,
+            ];
+        }
+
+        $statements = $this->statement_query_service
+            ->query($request->query())
+            ->orderBy('created_at', 'DESC')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return [
+            'statements' => $statements,
+            'total' => $statements->total(),
+        ];
     }
 
     private function setupQuery(Request $request, int $page, int $perPage): array
@@ -95,7 +117,8 @@ class StatementController extends Controller
             // raw queries on the statement table is very bad
             // maybe ok for a local dev sure
             $statements = $this->statement_query_service->query($request->query());
-            $total = $this->statement_query_service->query($request->query())->count();
+            $total = (clone $statements)->count();
+            $statements->offset($page * $perPage)->limit($perPage);
         }
 
         return [

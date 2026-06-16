@@ -16,12 +16,12 @@ class GenerateStatementsTest extends TestCase
     {
         Queue::fake();
 
-        // Run command with defaults (200 statements, today)
+        // Run command with defaults (1000 statements, today)
         $this->artisan('statements:generate')
             ->assertExitCode(0);
 
-        // Verify 200 jobs were dispatched (default amount)
-        Queue::assertPushed(StatementCreation::class, 200);
+        // Verify 1000 jobs were dispatched (default amount)
+        Queue::assertPushed(StatementCreation::class, 1000);
     }
 
     public function test_it_dispatches_custom_amount_of_jobs(): void
@@ -59,13 +59,17 @@ class GenerateStatementsTest extends TestCase
         // Verify 3 jobs were dispatched
         Queue::assertPushed(StatementCreation::class, 3);
 
-        // Verify jobs were dispatched with correct timestamp
-        Queue::assertPushed(StatementCreation::class, function ($job) {
-            // Check that the timestamp corresponds to 2025-01-15
-            $date = Carbon::createFromTimestamp($job->when);
+        $timestamps = $this->pushedStatementCreationTimestamps();
+        $startOfDay = Carbon::parse('2025-01-15 00:00:00')->timestamp;
+        $endOfDay = Carbon::parse('2025-01-15 23:59:59')->timestamp;
 
-            return $date->format('Y-m-d') === '2025-01-15';
-        });
+        $this->assertContainsOnly('int', $timestamps);
+        $this->assertNotCount(1, array_unique($timestamps));
+
+        foreach ($timestamps as $timestamp) {
+            $this->assertGreaterThanOrEqual($startOfDay, $timestamp);
+            $this->assertLessThanOrEqual($endOfDay, $timestamp);
+        }
     }
 
     public function test_it_handles_sod_option_correctly(): void
@@ -76,12 +80,11 @@ class GenerateStatementsTest extends TestCase
         $this->artisan('statements:generate', ['amount' => 2, 'date' => '2025-01-15', '--sod' => true])
             ->assertExitCode(0);
 
-        // Verify jobs were dispatched with start of day timestamp
-        Queue::assertPushed(StatementCreation::class, function ($job) {
-            $date = Carbon::createFromTimestamp($job->when);
+        $timestamps = $this->pushedStatementCreationTimestamps();
 
-            return $date->format('Y-m-d H:i:s') === '2025-01-15 00:00:00';
-        });
+        $this->assertSame([
+            Carbon::parse('2025-01-15 00:00:00')->timestamp,
+        ], array_values(array_unique($timestamps)));
     }
 
     public function test_it_handles_eod_option_correctly(): void
@@ -92,12 +95,11 @@ class GenerateStatementsTest extends TestCase
         $this->artisan('statements:generate', ['amount' => 2, 'date' => '2025-01-15', '--eod' => true])
             ->assertExitCode(0);
 
-        // Verify jobs were dispatched with end of day timestamp
-        Queue::assertPushed(StatementCreation::class, function ($job) {
-            $date = Carbon::createFromTimestamp($job->when);
+        $timestamps = $this->pushedStatementCreationTimestamps();
 
-            return $date->format('Y-m-d H:i:s') === '2025-01-15 23:59:59';
-        });
+        $this->assertSame([
+            Carbon::parse('2025-01-15 23:59:59')->timestamp,
+        ], array_values(array_unique($timestamps)));
     }
 
     public function test_it_handles_both_sod_and_eod_options(): void
@@ -109,11 +111,17 @@ class GenerateStatementsTest extends TestCase
         $this->artisan('statements:generate', ['amount' => 1, 'date' => '2025-01-15', '--sod' => true, '--eod' => true])
             ->assertExitCode(0);
 
-        // Verify job was dispatched with end of day timestamp (eod overrides sod)
-        Queue::assertPushed(StatementCreation::class, function ($job) {
-            $date = Carbon::createFromTimestamp($job->when);
+        $timestamps = $this->pushedStatementCreationTimestamps();
 
-            return $date->format('Y-m-d H:i:s') === '2025-01-15 23:59:59';
-        });
+        $this->assertSame([
+            Carbon::parse('2025-01-15 23:59:59')->timestamp,
+        ], array_values(array_unique($timestamps)));
+    }
+
+    private function pushedStatementCreationTimestamps(): array
+    {
+        return Queue::pushed(StatementCreation::class)
+            ->map(static fn (StatementCreation $job): int => $job->when)
+            ->all();
     }
 }

@@ -4,8 +4,8 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\StatementController;
 use App\Models\Statement;
-use App\Services\StatementQueryService;
 // use JMac\Testing\Traits\AdditionalAssertions;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
@@ -238,16 +238,45 @@ class StatementControllerTest extends TestCase
     {
         $this->signInAsAdmin();
 
-        // Mock the statement query service
-        $mock = $this->mock(StatementQueryService::class);
-        $mock->shouldReceive('query')->twice()->andReturn(Statement::query());
-
         // Ensure elasticsearch is not configured
         config()->set('elasticsearch.enabled', false);
         config()->set('elasticsearch.uri', [null]);
 
         $response = $this->get(route('statement.index'));
-        $response->assertOk();
+        $response
+            ->assertOk()
+            ->assertViewHas('total', 10)
+            ->assertViewHas('statements', fn ($statements): bool => $statements->total() === 10
+                && $statements->count() === 10);
+    }
+
+    public function test_index_database_fallback_paginates_statement_results(): void
+    {
+        $this->signInAsAdmin();
+
+        config()->set('elasticsearch.enabled', false);
+        config()->set('elasticsearch.uri', [null]);
+
+        Statement::query()->delete();
+        Statement::factory()
+            ->count(75)
+            ->sequence(fn (Sequence $sequence): array => [
+                'created_at' => Carbon::parse('2026-01-01 00:00:00')->addSeconds($sequence->index),
+                'updated_at' => Carbon::parse('2026-01-01 00:00:00')->addSeconds($sequence->index),
+            ])
+            ->create();
+
+        $response = $this->get(route('statement.index', ['page' => 2]));
+
+        $response
+            ->assertOk()
+            ->assertViewHas('total', 75)
+            ->assertViewHas('statements', function ($statements): bool {
+                return $statements->currentPage() === 2
+                    && $statements->perPage() === 50
+                    && $statements->total() === 75
+                    && $statements->count() === 25;
+            });
     }
 
     public function test_store_indexes_statement_in_non_production_with_elastic(): void

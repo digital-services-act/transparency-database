@@ -20,6 +20,15 @@ class StatementFactory extends Factory
      */
     protected $model = Statement::class;
 
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (Statement $statement): void {
+            if ($statement->created_at !== null && $statement->updated_at === null) {
+                $statement->updated_at = $statement->created_at;
+            }
+        });
+    }
+
     /**
      * Define the model's default state.
      *
@@ -30,7 +39,8 @@ class StatementFactory extends Factory
     public function definition()
     {
         $id = $this->faker->numberBetween(100000000000, 100000000000 + 100000000000);
-        $create_date = Carbon::createMidnightDate($this->faker->dateTimeBetween('-2 years'));
+        $create_date = Carbon::instance($this->faker->dateTimeBetween('-2 years'))->startOfDay();
+        $created_at = $create_date->copy()->addSeconds($this->faker->numberBetween(0, 86399));
         $content_date = $create_date->clone();
         $application_date = $create_date->clone();
         $end_date_account_restriction = $create_date->clone();
@@ -45,7 +55,6 @@ class StatementFactory extends Factory
         $end_date_service_restriction->addDays(55);
         $end_date_visibility_restriction->addDays(66);
 
-        $create_date = $create_date->format('Y-n-j').' 00:00:00';
         $content_date = $content_date->format('Y-n-j').' 00:00:00';
         $application_date = $application_date->format('Y-n-j').' 00:00:00';
         $end_date_account_restriction = $end_date_account_restriction->format('Y-n-j').' 00:00:00';
@@ -53,8 +62,7 @@ class StatementFactory extends Factory
         $end_date_service_restriction = $end_date_service_restriction->format('Y-n-j').' 00:00:00';
         $end_date_visibility_restriction = $end_date_visibility_restriction->format('Y-n-j').' 00:00:00';
 
-        $dsa_platform = Platform::where('name', Platform::LABEL_DSA_TEAM)->first();
-        $user = User::whereNot('platform_id', $dsa_platform->id)->get()->random();
+        $user = $this->randomNonDsaUser();
 
         $decision_ground = $this->faker->randomElement(array_keys(Statement::DECISION_GROUNDS));
 
@@ -124,7 +132,7 @@ class StatementFactory extends Factory
             'platform_id' => $user->platform_id,
             'user_id' => $user->id,
             'method' => $this->faker->randomElement([Statement::METHOD_API, Statement::METHOD_FORM]),
-            'created_at' => $create_date,
+            'created_at' => $created_at,
 
             // Add content_id with EAN-13 code
             'content_id_ean' => $this->faker->boolean(30) ?
@@ -132,5 +140,27 @@ class StatementFactory extends Factory
                 : null,
 
         ];
+    }
+
+    private function randomNonDsaUser(): User
+    {
+        $user = User::query()
+            ->whereNotNull('platform_id')
+            ->whereHas('platform', static function ($query): void {
+                $query->nonDsa();
+            })
+            ->inRandomOrder()
+            ->first();
+
+        if ($user !== null) {
+            return $user;
+        }
+
+        $platform = Platform::query()->nonDsa()->inRandomOrder()->first()
+            ?? Platform::factory()->create();
+
+        return User::factory()->create([
+            'platform_id' => $platform->id,
+        ]);
     }
 }

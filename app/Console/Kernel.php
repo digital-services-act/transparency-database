@@ -7,7 +7,11 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    private const array GENERATE_STATEMENTS_ENVIRONMENTS = ['dev', 'acc'];
+
     private const string DAILY_AFTER_MIDNIGHT = '00:10';
+
+    private const string DAILY_ELEVEN_PM = '23:00';
 
     private const string DAILY_TEST = '07:30';
 
@@ -75,6 +79,10 @@ class Kernel extends ConsoleKernel
             $schedule->command('enrich-home-page-cache --topcategories')->dailyAt(self::DAILY_NINE_O_TWO_AM);
             $schedule->command('enrich-home-page-cache --topdecisionsvisibility')->dailyAt(self::DAILY_NINE_O_THREE_AM);
             $schedule->command('enrich-home-page-cache --platformstotal')->dailyAt(self::DAILY_NINE_O_FOUR_AM);
+
+            if (in_array(config('app.env'), self::GENERATE_STATEMENTS_ENVIRONMENTS, true)) {
+                $schedule->command('statements:generate')->dailyAt(self::DAILY_ELEVEN_PM);
+            }
 
         }
     }

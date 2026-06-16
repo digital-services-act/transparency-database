@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatementCreation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 class GenerateStatements extends Command
 {
@@ -14,7 +15,7 @@ class GenerateStatements extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:generate {amount=200} {date=today} {--sod} {--eod}';
+    protected $signature = 'statements:generate {amount=1000} {date=today} {--sod} {--eod}';
 
     /**
      * The console command description.
@@ -31,16 +32,24 @@ class GenerateStatements extends Command
         $date = $this->sanitizeDateArgument();
         $amount = $this->intifyArgument('amount');
 
-        if ($this->option('sod')) {
-            $date->subSeconds($date->secondsSinceMidnight());
-        }
-
-        if ($this->option('eod')) {
-            $date->addSeconds($date->secondsUntilEndOfDay());
-        }
-
         for ($cpt = 0; $cpt < $amount; $cpt++) {
-            StatementCreation::dispatch($date->timestamp);
+            StatementCreation::dispatch($this->statementTimestamp($date));
         }
+    }
+
+    private function statementTimestamp(Carbon $date): int
+    {
+        if ($this->option('eod')) {
+            return $date->copy()->endOfDay()->timestamp;
+        }
+
+        if ($this->option('sod')) {
+            return $date->copy()->startOfDay()->timestamp;
+        }
+
+        return $date->copy()
+            ->startOfDay()
+            ->addSeconds(random_int(0, 86399))
+            ->timestamp;
     }
 }
