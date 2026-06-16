@@ -3,6 +3,7 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Jobs\StatementCreation;
+use App\Models\Statement;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -116,6 +117,56 @@ class GenerateStatementsTest extends TestCase
         $this->assertSame([
             Carbon::parse('2025-01-15 23:59:59')->timestamp,
         ], array_values(array_unique($timestamps)));
+    }
+
+    public function test_it_creates_statements_on_requested_date_with_random_times(): void
+    {
+        Statement::query()->forceDelete();
+
+        $this->artisan('statements:generate', ['amount' => 25, 'date' => '2026-06-01'])
+            ->assertExitCode(0);
+
+        $statements = Statement::query()->get();
+
+        $this->assertCount(25, $statements);
+        $this->assertSame(25, Statement::query()
+            ->whereBetween('created_at', [
+                '2026-06-01 00:00:00',
+                '2026-06-01 23:59:59',
+            ])
+            ->count());
+        $this->assertGreaterThan(1, $statements
+            ->map(static fn (Statement $statement): string => $statement->created_at->format('H:i:s'))
+            ->unique()
+            ->count());
+    }
+
+    public function test_it_creates_statements_at_start_of_day_when_sod_is_given(): void
+    {
+        Statement::query()->forceDelete();
+
+        $this->artisan('statements:generate', ['amount' => 3, 'date' => '2026-06-01', '--sod' => true])
+            ->assertExitCode(0);
+
+        $this->assertSame(3, Statement::query()->count());
+        Statement::query()->each(function (Statement $statement): void {
+            $this->assertSame('2026-06-01 00:00:00', $statement->created_at->format('Y-m-d H:i:s'));
+            $this->assertSame('2026-06-01 00:00:00', $statement->updated_at->format('Y-m-d H:i:s'));
+        });
+    }
+
+    public function test_it_creates_statements_at_end_of_day_when_eod_is_given(): void
+    {
+        Statement::query()->forceDelete();
+
+        $this->artisan('statements:generate', ['amount' => 3, 'date' => '2026-06-01', '--eod' => true])
+            ->assertExitCode(0);
+
+        $this->assertSame(3, Statement::query()->count());
+        Statement::query()->each(function (Statement $statement): void {
+            $this->assertSame('2026-06-01 23:59:59', $statement->created_at->format('Y-m-d H:i:s'));
+            $this->assertSame('2026-06-01 23:59:59', $statement->updated_at->format('Y-m-d H:i:s'));
+        });
     }
 
     private function pushedStatementCreationTimestamps(): array
