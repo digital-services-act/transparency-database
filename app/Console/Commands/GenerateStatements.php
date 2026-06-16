@@ -47,9 +47,10 @@ class GenerateStatements extends Command
             return $date->copy()->startOfDay()->timestamp;
         }
 
+        $now = Carbon::now();
+
         return $date->copy()
-            ->startOfDay()
-            ->addSeconds(random_int(0, 86399))
+            ->setTime($now->hour, $now->minute, $now->second)
             ->timestamp;
     }
 }

@@ -4,14 +4,22 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Jobs\StatementCreation;
 use App\Models\Statement;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class GenerateStatementsTest extends TestCase
 {
     use RefreshDatabase;
+
+    #[\Override]
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+
+        parent::tearDown();
+    }
 
     public function test_it_dispatches_default_amount_of_jobs(): void
     {
@@ -49,9 +57,10 @@ class GenerateStatementsTest extends TestCase
         Queue::assertNothingPushed();
     }
 
-    public function test_it_dispatches_jobs_with_custom_date(): void
+    public function test_it_dispatches_jobs_with_custom_date_and_current_time_of_day(): void
     {
         Queue::fake();
+        Carbon::setTestNow(Carbon::parse('2026-06-16 13:15:42'));
 
         // Run command with custom date
         $this->artisan('statements:generate', ['amount' => 3, 'date' => '2025-01-15'])
@@ -61,16 +70,11 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 3);
 
         $timestamps = $this->pushedStatementCreationTimestamps();
-        $startOfDay = Carbon::parse('2025-01-15 00:00:00')->timestamp;
-        $endOfDay = Carbon::parse('2025-01-15 23:59:59')->timestamp;
 
         $this->assertContainsOnly('int', $timestamps);
-        $this->assertNotCount(1, array_unique($timestamps));
-
-        foreach ($timestamps as $timestamp) {
-            $this->assertGreaterThanOrEqual($startOfDay, $timestamp);
-            $this->assertLessThanOrEqual($endOfDay, $timestamp);
-        }
+        $this->assertSame([
+            Carbon::parse('2025-01-15 13:15:42')->timestamp,
+        ], array_values(array_unique($timestamps)));
     }
 
     public function test_it_handles_sod_option_correctly(): void
@@ -108,7 +112,7 @@ class GenerateStatementsTest extends TestCase
         Queue::fake();
 
         // Run command with both --sod and --eod options
-        // EOD should override SOD since it's processed after
+        // EOD should override SOD.
         $this->artisan('statements:generate', ['amount' => 1, 'date' => '2025-01-15', '--sod' => true, '--eod' => true])
             ->assertExitCode(0);
 
@@ -119,9 +123,10 @@ class GenerateStatementsTest extends TestCase
         ], array_values(array_unique($timestamps)));
     }
 
-    public function test_it_creates_statements_on_requested_date_with_random_times(): void
+    public function test_it_creates_statements_on_requested_date_with_current_time_of_day(): void
     {
         Statement::query()->forceDelete();
+        Carbon::setTestNow(Carbon::parse('2026-06-16 13:15:42'));
 
         $this->artisan('statements:generate', ['amount' => 25, 'date' => '2026-06-01'])
             ->assertExitCode(0);
@@ -135,10 +140,10 @@ class GenerateStatementsTest extends TestCase
                 '2026-06-01 23:59:59',
             ])
             ->count());
-        $this->assertGreaterThan(1, $statements
-            ->map(static fn (Statement $statement): string => $statement->created_at->format('H:i:s'))
-            ->unique()
-            ->count());
+        Statement::query()->each(function (Statement $statement): void {
+            $this->assertSame('2026-06-01 13:15:42', $statement->created_at->format('Y-m-d H:i:s'));
+            $this->assertSame('2026-06-01 13:15:42', $statement->updated_at->format('Y-m-d H:i:s'));
+        });
     }
 
     public function test_it_creates_statements_at_start_of_day_when_sod_is_given(): void
