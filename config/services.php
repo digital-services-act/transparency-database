@@ -31,6 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'mailpace' => [
+        'key' => env('MAILPACE_API_KEY'),
+    ],
+
     'drivein' => [
         'key' => env('DRIVEIN_KEY'),
         'base' => env('DRIVEIN_BASE', 'https://analytics-api.cnect.eu/'),

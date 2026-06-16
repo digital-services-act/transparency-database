@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => in_array(env('APP_ENV'), ['local', 'testing'], true)
+        ? env('MAIL_MAILER', 'smtp')
+        : 'mailpace',
 
     /*
     |--------------------------------------------------------------------------
@@ -54,6 +56,11 @@ return [
 
         'postmark' => [
             'transport' => 'postmark',
+        ],
+
+        'mailpace' => [
+            'transport' => 'mail-pace',
+            'key' => env('MAILPACE_API_KEY'),
         ],
 
         'sendmail' => [

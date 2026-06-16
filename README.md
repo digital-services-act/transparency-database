@@ -21,7 +21,7 @@ Development
 
 #### Stack
 
-* php 8.1
+* php 8.4
 * Mysql 8
 
 #### Pre-requisites
