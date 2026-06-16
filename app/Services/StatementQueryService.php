@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Platform;
 use App\Models\Statement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -64,6 +65,195 @@ class StatementQueryService
         }
 
         return $statements;
+    }
+
+    public function grandTotal(): int
+    {
+        return Statement::query()->count();
+    }
+
+    /**
+     * @return array<int, array{value: string, total: int}>
+     */
+    public function topCategories(): array
+    {
+        return $this->rankedColumnCounts(array_keys(Statement::STATEMENT_CATEGORIES), 'category');
+    }
+
+    /**
+     * @return array<int, array{value: string, total: int}>
+     */
+    public function topDecisionVisibilities(): array
+    {
+        $results = [];
+
+        foreach (array_keys(Statement::DECISION_VISIBILITIES) as $decision_visibility) {
+            $results[] = [
+                'value' => $decision_visibility,
+                'total' => $this->query(['decision_visibility' => [$decision_visibility]])->count(),
+            ];
+        }
+
+        return $this->sortRankedCounts($results);
+    }
+
+    public function fullyAutomatedDecisionPercentage(): int
+    {
+        $automated_decision_count = Statement::query()
+            ->where('automated_decision', 'AUTOMATED_DECISION_FULLY')
+            ->count();
+
+        return (int) round((($automated_decision_count / max(1, $this->grandTotal())) * 100));
+    }
+
+    public function allSendingPlatformIds(): array
+    {
+        $sending_platform_ids = [];
+
+        foreach ($this->methodsByPlatformAll() as $platform_id => $methods) {
+            if ($this->hasAnyMethodTotal($methods)) {
+                $sending_platform_ids[] = (int) $platform_id;
+            }
+        }
+
+        return $sending_platform_ids;
+    }
+
+    public function totalNonVlopPlatformsSending(): int
+    {
+        return $this->countSendingPlatforms(false);
+    }
+
+    public function totalNonVlopPlatformsSendingApi(): int
+    {
+        return $this->countSendingPlatforms(false, [
+            Statement::METHOD_API,
+            Statement::METHOD_API_MULTI,
+        ]);
+    }
+
+    public function totalNonVlopPlatformsSendingWebform(): int
+    {
+        return $this->countSendingPlatforms(false, [Statement::METHOD_FORM]);
+    }
+
+    public function totalVlopPlatformsSending(): int
+    {
+        return $this->countSendingPlatforms(true);
+    }
+
+    public function totalVlopPlatformsSendingApi(): int
+    {
+        return $this->countSendingPlatforms(true, [
+            Statement::METHOD_API,
+            Statement::METHOD_API_MULTI,
+        ]);
+    }
+
+    public function totalVlopPlatformsSendingWebform(): int
+    {
+        return $this->countSendingPlatforms(true, [Statement::METHOD_FORM]);
+    }
+
+    public function methodsByPlatformAll(): array
+    {
+        $rows = Statement::query()
+            ->selectRaw('COUNT(*) as total, method, platform_id')
+            ->where('platform_id', '<>', Platform::dsaTeamPlatformId())
+            ->groupBy('platform_id', 'method')
+            ->get();
+
+        $out = [];
+        foreach ($rows as $row) {
+            $platform_id = (int) $row->platform_id;
+            $out[$platform_id][$row->method] = (int) $row->total;
+        }
+
+        foreach ($out as $platform_id => $methods) {
+            $out[$platform_id][Statement::METHOD_FORM] ??= 0;
+            $out[$platform_id][Statement::METHOD_API] ??= 0;
+            $out[$platform_id][Statement::METHOD_API_MULTI] ??= 0;
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param  array<int, string>  $values
+     * @return array<int, array{value: string, total: int}>
+     */
+    private function rankedColumnCounts(array $values, string $column): array
+    {
+        $counts = Statement::query()
+            ->select($column)
+            ->selectRaw('COUNT(*) as total')
+            ->whereIn($column, $values)
+            ->groupBy($column)
+            ->pluck('total', $column)
+            ->toArray();
+
+        $results = array_map(static fn (string $value): array => [
+            'value' => $value,
+            'total' => (int) ($counts[$value] ?? 0),
+        ], $values);
+
+        return $this->sortRankedCounts($results);
+    }
+
+    /**
+     * @param  array<int, array{value: string, total: int}>  $results
+     * @return array<int, array{value: string, total: int}>
+     */
+    private function sortRankedCounts(array $results): array
+    {
+        usort($results, static fn (array $a, array $b): int => $b['total'] <=> $a['total']);
+
+        return $results;
+    }
+
+    /**
+     * @param  array<int, string>|null  $method_filter
+     */
+    private function countSendingPlatforms(bool $vlop, ?array $method_filter = null): int
+    {
+        $count = 0;
+        $vlop_ids = $this->vlopIds();
+
+        foreach ($this->methodsByPlatformAll() as $platform_id => $methods) {
+            $platform_is_vlop = in_array((int) $platform_id, $vlop_ids, true);
+            if ($platform_is_vlop !== $vlop) {
+                continue;
+            }
+
+            $method_totals = $method_filter === null
+                ? $methods
+                : array_intersect_key($methods, array_flip($method_filter));
+
+            if ($this->hasAnyMethodTotal($method_totals)) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    private function hasAnyMethodTotal(array $methods): bool
+    {
+        foreach ($methods as $total) {
+            if ((int) $total > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function vlopIds(): array
+    {
+        return Platform::Vlops()
+            ->pluck('id')
+            ->map(static fn (int $id): int => $id)
+            ->toArray();
     }
 
     private function applySFilter(Builder $query, string $filter_value): void

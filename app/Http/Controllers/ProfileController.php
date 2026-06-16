@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Platform;
 use App\Models\User;
 use App\Services\PlatformQueryService;
+use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticStatsService;
+use App\Services\StatementQueryService;
 use App\Services\TokenService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -19,38 +21,49 @@ class ProfileController extends Controller
 {
     protected TokenService $tokenService;
 
+    protected StatementElasticConnectionService $statement_elastic_connection_service;
+
     protected StatementElasticStatsService $statement_elastic_stats_service;
+
+    protected StatementQueryService $statement_query_service;
 
     protected PlatformQueryService $platform_query_service;
 
-    public function __construct(PlatformQueryService $platform_query_service, StatementElasticStatsService $statement_elastic_stats_service, TokenService $tokenService)
-    {
+    public function __construct(
+        PlatformQueryService $platform_query_service,
+        StatementElasticConnectionService $statement_elastic_connection_service,
+        StatementElasticStatsService $statement_elastic_stats_service,
+        StatementQueryService $statement_query_service,
+        TokenService $tokenService
+    ) {
         $this->platform_query_service = $platform_query_service;
+        $this->statement_elastic_connection_service = $statement_elastic_connection_service;
         $this->statement_elastic_stats_service = $statement_elastic_stats_service;
+        $this->statement_query_service = $statement_query_service;
         $this->tokenService = $tokenService;
     }
 
     public function profile(Request $request): Factory|View|Application
     {
-        // Get and cache the global platform method data.
-        $platform_ids_methods_data = $this->statement_elastic_stats_service->methodsByPlatformAll();
+        $service = $this->statement_elastic_connection_service->isConfigured()
+            ? $this->statement_elastic_stats_service
+            : $this->statement_query_service;
 
-        // All calls after this one should be using the cached data.
+        $platform_ids_methods_data = $service->methodsByPlatformAll();
 
-        $all_sending_platform_ids = $this->statement_elastic_stats_service->allSendingPlatformIds();
+        $all_sending_platform_ids = $service->allSendingPlatformIds();
         $this->platform_query_service->updateHasStatements($all_sending_platform_ids);
 
         // Establish the counts.
         $vlop_count = Platform::Vlops()->count();
         $non_vlop_count = Platform::nonVlops()->count();
 
-        // Should be coming from the cached opensearch result.
-        $total_vlop_platforms_sending = $this->statement_elastic_stats_service->totalVlopPlatformsSending();
-        $total_vlop_platforms_sending_api = $this->statement_elastic_stats_service->totalVlopPlatformsSendingApi();
-        $total_vlop_platforms_sending_webform = $this->statement_elastic_stats_service->totalVlopPlatformsSendingWebform();
-        $total_non_vlop_platforms_sending = $this->statement_elastic_stats_service->totalNonVlopPlatformsSending();
-        $total_non_vlop_platforms_sending_api = $this->statement_elastic_stats_service->totalNonVlopPlatformsSendingApi();
-        $total_non_vlop_platforms_sending_webform = $this->statement_elastic_stats_service->totalNonVlopPlatformsSendingWebform();
+        $total_vlop_platforms_sending = $service->totalVlopPlatformsSending();
+        $total_vlop_platforms_sending_api = $service->totalVlopPlatformsSendingApi();
+        $total_vlop_platforms_sending_webform = $service->totalVlopPlatformsSendingWebform();
+        $total_non_vlop_platforms_sending = $service->totalNonVlopPlatformsSending();
+        $total_non_vlop_platforms_sending_api = $service->totalNonVlopPlatformsSendingApi();
+        $total_non_vlop_platforms_sending_webform = $service->totalNonVlopPlatformsSendingWebform();
 
         $total_vlop_valid_tokens = $this->tokenService->getTotalVlopValidTokens();
         $total_non_vlop_valid_tokens = $this->tokenService->getTotalNonVlopValidTokens();

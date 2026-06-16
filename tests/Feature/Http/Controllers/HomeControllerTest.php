@@ -98,6 +98,40 @@ class HomeControllerTest extends TestCase
         $this->assertEquals(1, $viewData);
     }
 
+    public function test_index_uses_database_stats_when_elasticsearch_is_not_configured(): void
+    {
+        config([
+            'elasticsearch.enabled' => false,
+            'elasticsearch.uri' => [],
+        ]);
+
+        Statement::query()->delete();
+        Statement::factory()->count(3)->create([
+            'category' => 'STATEMENT_CATEGORY_VIOLENCE',
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_REMOVED'],
+            'automated_decision' => 'AUTOMATED_DECISION_FULLY',
+        ]);
+        Statement::factory()->count(1)->create([
+            'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED'],
+            'automated_decision' => 'AUTOMATED_DECISION_NOT_AUTOMATED',
+        ]);
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $this->assertEquals(4, $response->viewData('total'));
+        $this->assertEquals(75, $response->viewData('automated_decision_percentage'));
+
+        $topCategories = $response->viewData('top_categories');
+        $this->assertEquals('STATEMENT_CATEGORY_VIOLENCE', $topCategories[0]['value']);
+        $this->assertEquals(3, $topCategories[0]['total']);
+
+        $topDecisionVisibilities = $response->viewData('top_decisions_visibility');
+        $this->assertEquals('DECISION_VISIBILITY_CONTENT_REMOVED', $topDecisionVisibilities[0]['value']);
+        $this->assertEquals(3, $topDecisionVisibilities[0]['total']);
+    }
+
     private function fakeHomeStats(): void
     {
         $elastic = ElasticMocker::fake()->sqlCountReturns(100);

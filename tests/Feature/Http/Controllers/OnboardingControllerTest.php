@@ -3,6 +3,8 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Platform;
+use App\Models\Statement;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -31,6 +33,47 @@ class OnboardingControllerTest extends TestCase
         $response->assertOk();
         $response->assertViewIs('onboarding.index');
         $response->assertViewHas(['platforms', 'options', 'all_platforms_count', 'platform_ids_methods_data']);
+    }
+
+    public function test_index_uses_database_statement_methods_when_elasticsearch_is_not_configured()
+    {
+        config([
+            'elasticsearch.enabled' => false,
+            'elasticsearch.uri' => [],
+        ]);
+
+        Statement::query()->delete();
+
+        $this->signInAsOnboarding();
+        $vlopPlatform = Platform::factory()->create(['vlop' => true]);
+        $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
+        $vlopUser = User::factory()->create(['platform_id' => $vlopPlatform->id]);
+        $nonVlopUser = User::factory()->create(['platform_id' => $nonVlopPlatform->id]);
+
+        Statement::factory()->count(2)->create([
+            'platform_id' => $vlopPlatform->id,
+            'user_id' => $vlopUser->id,
+            'method' => Statement::METHOD_API,
+        ]);
+        Statement::factory()->create([
+            'platform_id' => $vlopPlatform->id,
+            'user_id' => $vlopUser->id,
+            'method' => Statement::METHOD_API_MULTI,
+        ]);
+        Statement::factory()->count(3)->create([
+            'platform_id' => $nonVlopPlatform->id,
+            'user_id' => $nonVlopUser->id,
+            'method' => Statement::METHOD_FORM,
+        ]);
+
+        $response = $this->get(route('onboarding.index'));
+
+        $response->assertOk();
+        $methodsByPlatform = $response->viewData('platform_ids_methods_data');
+        $this->assertEquals(2, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API]);
+        $this->assertEquals(1, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API_MULTI]);
+        $this->assertEquals(0, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_FORM]);
+        $this->assertEquals(3, $methodsByPlatform[$nonVlopPlatform->id][Statement::METHOD_FORM]);
     }
 
     public function test_index_displays_correct_platform_count()

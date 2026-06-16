@@ -26,10 +26,6 @@ class ElasticSearchAPIController extends Controller
     use ApiLoggingTrait;
     use ExceptionHandlingTrait;
 
-    private Client $client;
-
-    private string $index_name;
-
     private int $error_code = Response::HTTP_UNPROCESSABLE_ENTITY;
 
     private int $response_size_limit = 5242880;
@@ -38,9 +34,16 @@ class ElasticSearchAPIController extends Controller
         private readonly StatementElasticConnectionService $statement_elastic_connection_service,
         private readonly StatementElasticAggregationService $statement_elastic_aggregation_service,
         private readonly StatementElasticStatsService $statement_elastic_stats_service,
-    ) {
-        $this->client = $this->statement_elastic_connection_service->client();
-        $this->index_name = $this->statement_elastic_connection_service->statementIndexName();
+    ) {}
+
+    private function client(): Client
+    {
+        return $this->statement_elastic_connection_service->client();
+    }
+
+    private function indexName(): string
+    {
+        return $this->statement_elastic_connection_service->statementIndexName();
     }
 
     public function indices(Request $request): JsonResponse
@@ -49,7 +52,7 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () {
                 try {
-                    $response = $this->client->cat()->indices([
+                    $response = $this->client()->cat()->indices([
                         'index' => '*',
                         'format' => 'json',
                     ])->asArray();
@@ -68,8 +71,8 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    return response()->json($this->client->search([
-                        'index' => $this->index_name,
+                    return response()->json($this->client()->search([
+                        'index' => $this->indexName(),
                         'track_total_hits' => true,
                         'size' => 10000,
                         'from' => 0,
@@ -88,8 +91,8 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    return response()->json($this->client->count([
-                        'index' => $this->index_name,
+                    return response()->json($this->client()->count([
+                        'index' => $this->indexName(),
                         'body' => $request->toArray(),
                     ])->asArray());
                 } catch (Exception $exception) {
@@ -105,7 +108,7 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    $response = $this->client->sql()->query([
+                    $response = $this->client()->sql()->query([
                         'body' => [
                             'query' => $request->input('query'),
                         ],
@@ -125,8 +128,8 @@ class ElasticSearchAPIController extends Controller
             $request,
             function () use ($request) {
                 try {
-                    $response = $this->client->search([
-                        'index' => $this->index_name,
+                    $response = $this->client()->search([
+                        'index' => $this->indexName(),
                         'q' => $request->input('query'),
                     ])->asArray();
 

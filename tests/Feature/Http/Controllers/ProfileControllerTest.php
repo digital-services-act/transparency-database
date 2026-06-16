@@ -74,6 +74,69 @@ class ProfileControllerTest extends TestCase
         ]);
     }
 
+    public function test_profile_uses_database_statistics_when_elasticsearch_is_not_configured(): void
+    {
+        config([
+            'elasticsearch.enabled' => false,
+            'elasticsearch.uri' => [],
+        ]);
+
+        Statement::query()->delete();
+
+        $vlopPlatform = Platform::factory()->create(['vlop' => true]);
+        $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
+        $vlopUser = User::factory()->create(['platform_id' => $vlopPlatform->id]);
+        $nonVlopUser = User::factory()->create(['platform_id' => $nonVlopPlatform->id]);
+        $user = $this->createUserWithPlatform();
+
+        Statement::factory()->count(2)->create([
+            'platform_id' => $vlopPlatform->id,
+            'user_id' => $vlopUser->id,
+            'method' => Statement::METHOD_API,
+        ]);
+        Statement::factory()->create([
+            'platform_id' => $vlopPlatform->id,
+            'user_id' => $vlopUser->id,
+            'method' => Statement::METHOD_API_MULTI,
+        ]);
+        Statement::factory()->count(3)->create([
+            'platform_id' => $nonVlopPlatform->id,
+            'user_id' => $nonVlopUser->id,
+            'method' => Statement::METHOD_FORM,
+        ]);
+
+        $this->mock(TokenService::class, function ($mock) {
+            $mock->shouldReceive('getTotalVlopValidTokens')->once()->andReturn(4);
+            $mock->shouldReceive('getTotalNonVlopValidTokens')->once()->andReturn(5);
+        });
+
+        $response = $this->actingAs($user)->get(route('profile.start'));
+
+        $response->assertStatus(200);
+        $methodsByPlatform = $response->viewData('platform_ids_methods_data');
+        $this->assertEquals(2, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API]);
+        $this->assertEquals(1, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API_MULTI]);
+        $this->assertEquals(0, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_FORM]);
+        $this->assertEquals(3, $methodsByPlatform[$nonVlopPlatform->id][Statement::METHOD_FORM]);
+
+        $this->assertEquals(1, $response->viewData('total_vlop_platforms_sending'));
+        $this->assertEquals(1, $response->viewData('total_vlop_platforms_sending_api'));
+        $this->assertEquals(0, $response->viewData('total_vlop_platforms_sending_webform'));
+        $this->assertEquals(1, $response->viewData('total_non_vlop_platforms_sending'));
+        $this->assertEquals(0, $response->viewData('total_non_vlop_platforms_sending_api'));
+        $this->assertEquals(1, $response->viewData('total_non_vlop_platforms_sending_webform'));
+        $this->assertEquals(4, $response->viewData('total_vlop_valid_tokens'));
+        $this->assertEquals(5, $response->viewData('total_non_vlop_valid_tokens'));
+        $this->assertDatabaseHas('platforms', [
+            'id' => $vlopPlatform->id,
+            'has_statements' => 1,
+        ]);
+        $this->assertDatabaseHas('platforms', [
+            'id' => $nonVlopPlatform->id,
+            'has_statements' => 1,
+        ]);
+    }
+
     public function test_api_index_requires_authentication(): void
     {
         $response = $this->get(route('profile.api.index'));

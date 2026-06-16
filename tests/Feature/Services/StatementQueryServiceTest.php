@@ -38,6 +38,91 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals(10, $total);
     }
 
+    public function test_it_can_calculate_homepage_stats_from_the_database(): void
+    {
+        Statement::query()->delete();
+
+        Statement::factory()->count(3)->create([
+            'category' => 'STATEMENT_CATEGORY_VIOLENCE',
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_REMOVED'],
+            'automated_decision' => 'AUTOMATED_DECISION_FULLY',
+        ]);
+        Statement::factory()->count(2)->create([
+            'category' => 'STATEMENT_CATEGORY_ANIMAL_WELFARE',
+            'decision_visibility' => ['DECISION_VISIBILITY_CONTENT_DISABLED'],
+            'automated_decision' => 'AUTOMATED_DECISION_NOT_AUTOMATED',
+        ]);
+
+        $this->assertEquals(5, $this->statement_query_service->grandTotal());
+
+        $topCategories = $this->statement_query_service->topCategories();
+        $this->assertEquals('STATEMENT_CATEGORY_VIOLENCE', $topCategories[0]['value']);
+        $this->assertEquals(3, $topCategories[0]['total']);
+        $this->assertEquals('STATEMENT_CATEGORY_ANIMAL_WELFARE', $topCategories[1]['value']);
+        $this->assertEquals(2, $topCategories[1]['total']);
+
+        $topDecisionVisibilities = $this->statement_query_service->topDecisionVisibilities();
+        $this->assertEquals('DECISION_VISIBILITY_CONTENT_REMOVED', $topDecisionVisibilities[0]['value']);
+        $this->assertEquals(3, $topDecisionVisibilities[0]['total']);
+        $this->assertEquals('DECISION_VISIBILITY_CONTENT_DISABLED', $topDecisionVisibilities[1]['value']);
+        $this->assertEquals(2, $topDecisionVisibilities[1]['total']);
+
+        $this->assertEquals(60, $this->statement_query_service->fullyAutomatedDecisionPercentage());
+    }
+
+    public function test_it_can_calculate_platform_method_stats_from_the_database(): void
+    {
+        Statement::query()->delete();
+
+        $vlopPlatform = Platform::factory()->create(['vlop' => true]);
+        $nonVlopPlatform = Platform::factory()->create(['vlop' => false]);
+        $dsaPlatform = Platform::getDsaPlatform();
+
+        $vlopUser = User::factory()->create(['platform_id' => $vlopPlatform->id]);
+        $nonVlopUser = User::factory()->create(['platform_id' => $nonVlopPlatform->id]);
+        $dsaUser = User::factory()->create(['platform_id' => $dsaPlatform->id]);
+
+        Statement::factory()->count(2)->create([
+            'platform_id' => $vlopPlatform->id,
+            'user_id' => $vlopUser->id,
+            'method' => Statement::METHOD_API,
+        ]);
+        Statement::factory()->create([
+            'platform_id' => $vlopPlatform->id,
+            'user_id' => $vlopUser->id,
+            'method' => Statement::METHOD_API_MULTI,
+        ]);
+        Statement::factory()->count(3)->create([
+            'platform_id' => $nonVlopPlatform->id,
+            'user_id' => $nonVlopUser->id,
+            'method' => Statement::METHOD_FORM,
+        ]);
+        Statement::factory()->create([
+            'platform_id' => $dsaPlatform->id,
+            'user_id' => $dsaUser->id,
+            'method' => Statement::METHOD_FORM,
+        ]);
+
+        $methodsByPlatform = $this->statement_query_service->methodsByPlatformAll();
+
+        $this->assertEquals(2, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API]);
+        $this->assertEquals(1, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API_MULTI]);
+        $this->assertEquals(0, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_FORM]);
+        $this->assertEquals(3, $methodsByPlatform[$nonVlopPlatform->id][Statement::METHOD_FORM]);
+        $this->assertArrayNotHasKey($dsaPlatform->id, $methodsByPlatform);
+
+        $this->assertEqualsCanonicalizing(
+            [$vlopPlatform->id, $nonVlopPlatform->id],
+            $this->statement_query_service->allSendingPlatformIds()
+        );
+        $this->assertEquals(1, $this->statement_query_service->totalVlopPlatformsSending());
+        $this->assertEquals(1, $this->statement_query_service->totalVlopPlatformsSendingApi());
+        $this->assertEquals(0, $this->statement_query_service->totalVlopPlatformsSendingWebform());
+        $this->assertEquals(1, $this->statement_query_service->totalNonVlopPlatformsSending());
+        $this->assertEquals(0, $this->statement_query_service->totalNonVlopPlatformsSendingApi());
+        $this->assertEquals(1, $this->statement_query_service->totalNonVlopPlatformsSendingWebform());
+    }
+
     public function test_it_filters_on_automated_detection(): void
     {
         // 10 statements
