@@ -59,8 +59,7 @@ return [
         ],
 
         'mailpace' => [
-            'transport' => 'mail-pace',
-            'key' => env('MAILPACE_API_KEY'),
+            'transport' => 'php-mail',
         ],
 
         'sendmail' => [

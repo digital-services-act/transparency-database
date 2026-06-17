@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
+use App\Mail\Transports\PhpMailTransport;
 use App\Services\EuropeanLanguagesService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
@@ -14,8 +15,6 @@ use loophp\psr17\Psr17;
 use loophp\psr17\Psr17Interface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
-use Symfony\Component\Mailer\Bridge\MailPace\Transport\MailPaceTransportFactory;
-use Symfony\Component\Mailer\Transport\Dsn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -54,15 +53,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Mail::extend('mail-pace', static function (array $config) {
-            return (new MailPaceTransportFactory())->create(
-                new Dsn(
-                    'mailpace+api',
-                    'default',
-                    $config['key'] ?? config('services.mailpace.key')
-                )
-            );
-        });
+        Mail::extend('php-mail', static fn (array $config): PhpMailTransport => new PhpMailTransport);
 
         Sanctum::usePersonalAccessTokenModel(
             PersonalAccessToken::class
