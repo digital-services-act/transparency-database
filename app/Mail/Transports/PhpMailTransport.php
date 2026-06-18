@@ -82,7 +82,9 @@ class PhpMailTransport extends AbstractTransport
 
         foreach ($lines as $line) {
             if ($line === '') {
+                // @codeCoverageIgnoreStart
                 continue;
+                // @codeCoverageIgnoreEnd
             }
 
             if (preg_match('/^\s/', $line)) {
