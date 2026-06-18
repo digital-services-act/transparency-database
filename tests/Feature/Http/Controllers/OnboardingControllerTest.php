@@ -6,6 +6,8 @@ use App\Models\Platform;
 use App\Models\Statement;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Tests\Support\ElasticMocker;
 use Tests\TestCase;
 
 class OnboardingControllerTest extends TestCase
@@ -74,6 +76,26 @@ class OnboardingControllerTest extends TestCase
         $this->assertEquals(1, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_API_MULTI]);
         $this->assertEquals(0, $methodsByPlatform[$vlopPlatform->id][Statement::METHOD_FORM]);
         $this->assertEquals(3, $methodsByPlatform[$nonVlopPlatform->id][Statement::METHOD_FORM]);
+    }
+
+    public function test_index_uses_elasticsearch_statement_methods_when_configured(): void
+    {
+        Cache::forget('methods_by_platform_all');
+
+        $this->signInAsOnboarding();
+        $platform = Platform::nonDsa()->firstOrFail();
+
+        ElasticMocker::fake()->sqlRowsReturn([
+            [2, Statement::METHOD_API, $platform->id],
+        ]);
+
+        $response = $this->get(route('onboarding.index'));
+
+        $response->assertOk();
+        $methodsByPlatform = $response->viewData('platform_ids_methods_data');
+        $this->assertSame(2, $methodsByPlatform[$platform->id][Statement::METHOD_API]);
+        $this->assertSame(0, $methodsByPlatform[$platform->id][Statement::METHOD_API_MULTI]);
+        $this->assertSame(0, $methodsByPlatform[$platform->id][Statement::METHOD_FORM]);
     }
 
     public function test_index_displays_correct_platform_count()

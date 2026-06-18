@@ -4,9 +4,11 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\DataDownloadController;
 use App\Models\DayArchive;
+use App\Models\DownloadEvent;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
@@ -111,6 +113,89 @@ class DataDownloadControllerTest extends TestCase
         ]));
 
         $response->assertRedirect();
+    }
+
+    public function test_successful_archive_download_records_privacy_minimal_activity(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip',
+        ]);
+
+        $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'full',
+        ]))->assertRedirect();
+
+        $event = DownloadEvent::query()->sole();
+
+        $this->assertSame($dayArchive->id, $event->day_archive_id);
+        $this->assertNull($event->platform_id);
+        $this->assertSame('2026-06-01', $event->archive_date->format('Y-m-d'));
+        $this->assertSame('archive', $event->download_kind);
+        $this->assertSame('full', $event->file_type);
+        $this->assertSame('sor-global-2026-06-01-full.zip', $event->filename);
+        $this->assertSame('dayarchive.download', $event->route_name);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $event->session_hash);
+
+        $columns = Schema::getColumnListing('download_events');
+        $this->assertNotContains('ip_address', $columns);
+        $this->assertNotContains('user_agent', $columns);
+        $this->assertNotContains('referer', $columns);
+    }
+
+    public function test_checksum_download_records_checksum_activity(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'sha1url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip.sha1',
+        ]);
+
+        $this->get(route('dayarchive.download.filename.sha1', [
+            'platformSlug' => 'global',
+            'date' => '2026-06-01',
+            'version' => 'full',
+        ]))->assertRedirect();
+
+        $this->assertDatabaseHas('download_events', [
+            'day_archive_id' => $dayArchive->id,
+            'download_kind' => 'checksum',
+            'file_type' => 'sha1',
+            'filename' => 'sor-global-2026-06-01-full.zip.sha1',
+            'route_name' => 'dayarchive.download.filename.sha1',
+        ]);
+    }
+
+    public function test_multiple_downloads_in_one_session_share_a_session_hash(): void
+    {
+        Storage::fake('s3ds');
+
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'url' => 'https://example.com/bucket/archive-full.zip',
+            'urllight' => 'https://example.com/bucket/archive-light.zip',
+        ]);
+
+        $this->withSession(['download_activity_id' => 'same-browser-session']);
+        $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'full',
+        ]))->assertRedirect();
+
+        $this->withSession(['download_activity_id' => 'same-browser-session']);
+        $this->get(route('dayarchive.download', [
+            'dayArchive' => $dayArchive->id,
+            'type' => 'light',
+        ]))->assertRedirect();
+
+        $sessionHashes = DownloadEvent::query()->pluck('session_hash');
+
+        $this->assertCount(2, $sessionHashes);
+        $this->assertNotNull($sessionHashes[0]);
+        $this->assertSame($sessionHashes[0], $sessionHashes[1]);
     }
 
     public function test_download_redirects_to_presigned_url_for_light_type(): void
@@ -286,6 +371,7 @@ class DataDownloadControllerTest extends TestCase
         ]));
 
         $response->assertNotFound();
+        $this->assertDatabaseCount('download_events', 0);
     }
 
     public function test_download_returns_404_for_nonexistent_archive(): void
@@ -365,6 +451,16 @@ class DataDownloadControllerTest extends TestCase
         ]));
 
         $response->assertRedirect();
+
+        $this->assertDatabaseHas('download_events', [
+            'day_archive_id' => null,
+            'platform_id' => null,
+            'archive_date' => '2026-06-01',
+            'download_kind' => 'aggregate',
+            'file_type' => 'csv',
+            'filename' => 'aggregates-2026-06-01.csv',
+            'route_name' => 'aggregates.download',
+        ]);
     }
 
     public function test_aggregates_download_redirects_to_presigned_url_for_json(): void
@@ -390,6 +486,7 @@ class DataDownloadControllerTest extends TestCase
         ]));
 
         $response->assertNotFound();
+        $this->assertDatabaseCount('download_events', 0);
     }
 
     public function test_aggregates_download_returns_404_for_invalid_extension(): void

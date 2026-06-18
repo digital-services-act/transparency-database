@@ -6,6 +6,7 @@ use App\Models\DayArchive;
 use App\Models\Platform;
 use App\Services\DayArchiveQueryService;
 use App\Services\DayArchiveService;
+use App\Services\DownloadActivityTracker;
 use App\Services\PlatformQueryService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -16,7 +17,12 @@ use Illuminate\Support\Facades\Storage;
 
 class DataDownloadController extends Controller
 {
-    public function __construct(protected DayArchiveService $day_archive_service, protected DayArchiveQueryService $day_archive_query_service, protected PlatformQueryService $platform_query_service) {}
+    public function __construct(
+        protected DayArchiveService $day_archive_service,
+        protected DayArchiveQueryService $day_archive_query_service,
+        protected PlatformQueryService $platform_query_service,
+        protected DownloadActivityTracker $download_activity_tracker,
+    ) {}
 
     public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
@@ -125,18 +131,21 @@ class DataDownloadController extends Controller
             abort(404, 'File not found');
         }
 
+        $filename = basename((string) parse_url($storedUrl, PHP_URL_PATH));
+
         // amazonaws
         // if the url is an older s3 url, we can redirect directly to it
         if (str_contains($storedUrl, 'amazonaws')) {
+            $this->download_activity_tracker->trackArchive(request(), $dayArchive, $type, $filename);
+
             return redirect()->away($storedUrl);
         }
-
-        // Extract filename from stored URL
-        $filename = basename(parse_url($storedUrl, PHP_URL_PATH));
 
         // Generate presigned URL valid for 60 minutes (sufficient for large file downloads)
         $disk = Storage::disk('s3ds');
         $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(60));
+
+        $this->download_activity_tracker->trackArchive(request(), $dayArchive, $type, $filename);
 
         return redirect()->away($presignedUrl);
     }
@@ -148,7 +157,7 @@ class DataDownloadController extends Controller
         // "aggregates-2026-06-01.json",
 
         $allowedExts = ['csv', 'json'];
-        if (! in_array($ext, $allowedExts)) {
+        if (! in_array($ext, $allowedExts, true)) {
             abort(404, 'Invalid file extension');
         }
 
@@ -164,6 +173,8 @@ class DataDownloadController extends Controller
         }
 
         $presignedUrl = $disk->temporaryUrl($filename, now()->addMinutes(60));
+
+        $this->download_activity_tracker->trackAggregate(request(), $date, $ext, $filename);
 
         return redirect()->away($presignedUrl);
     }

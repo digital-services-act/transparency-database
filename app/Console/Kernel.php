@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel
 
     private const string DAILY_TWO_AM = '02:00';
 
+    private const string DAILY_TWO_THIRTY_AM = '02:30';
+
     private const string DAILY_SIX_AM = '06:00';
 
     private const string DAILY_SIX_O_FIVE_AM = '06:05';
@@ -47,6 +49,10 @@ class Kernel extends ConsoleKernel
                 ->dailyAt(self::DAILY_TWO_AM)
                 ->withoutOverlapping()
                 ->runInBackground();
+
+            $schedule->command('downloads:prune-activity')
+                ->dailyAt(self::DAILY_TWO_THIRTY_AM)
+                ->withoutOverlapping();
 
             $schedule->command('statements:day-archive-z')
                 ->dailyAt(self::DAILY_SIX_AM);

@@ -111,6 +111,28 @@ class StatementControllerTest extends TestCase
         $response->assertDownload();
     }
 
+    public function test_export_uses_elasticsearch_when_configured(): void
+    {
+        $this->signInAsAdmin();
+        $statement = Statement::query()->firstOrFail();
+
+        ElasticMocker::fake()
+            ->searchReturns([
+                'hits' => [
+                    'total' => ['value' => 1],
+                    'hits' => [
+                        ['_id' => $statement->id],
+                    ],
+                ],
+            ]);
+
+        $response = $this->get(route('statement.export'));
+
+        $response->assertOk();
+        $response->assertDownload('statements-of-reason.csv');
+        $this->assertStringContainsString($statement->uuid, $response->streamedContent());
+    }
+
     public function test_create_displays_view(): void
     {
 
