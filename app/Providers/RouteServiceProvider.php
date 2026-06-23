@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
  */
 class RouteServiceProvider extends ServiceProvider
 {
-    private const AUTHENTICATED_API_REQUESTS_PER_SECOND = 450;
+    private const AUTHENTICATED_API_REQUESTS_PER_SECOND = 200;
 
-    private const AUTHENTICATED_API_REQUESTS_PER_MINUTE = 25000;
+    private const AUTHENTICATED_API_REQUESTS_PER_MINUTE = 12000;
 
     private const ELEVATED_WEB_DOWNLOAD_ROUTES = [
         'aggregates.download',
