@@ -2,6 +2,15 @@
 
 use Illuminate\Support\Str;
 
+// The socket path is only injected once Pgpool is available, so its presence
+// is the source of truth and a missing path gracefully falls back to TCP.
+$pgpoolSocketPath = env('CC_PGPOOL_SOCKET_PATH') ?: null;
+$postgresDirectUri = env('POSTGRESQL_ADDON_DIRECT_URI') ?: null;
+$postgresDirectHost = env('POSTGRESQL_ADDON_DIRECT_HOST') ?: null;
+$postgresDirectPort = env('POSTGRESQL_ADDON_DIRECT_PORT') ?: null;
+$postgresHost = env('POSTGRESQL_ADDON_HOST') ?: '127.0.0.1';
+$postgresPort = env('POSTGRESQL_ADDON_PORT') ?: '5432';
+
 return [
 
     /*
@@ -74,8 +83,13 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => env('POSTGRESQL_ADDON_HOST', '127.0.0.1'),
-            'port' => env('POSTGRESQL_ADDON_PORT', '5432'),
+            'url' => $pgpoolSocketPath ? null : $postgresDirectUri,
+            'host' => $pgpoolSocketPath
+                ?? $postgresDirectHost
+                ?? $postgresHost,
+            'port' => $pgpoolSocketPath
+                ? null
+                : ($postgresDirectPort ?? $postgresPort),
             'database' => env('POSTGRESQL_ADDON_DB', 'forge'),
             'username' => env('POSTGRESQL_ADDON_USER', 'forge'),
             'password' => env('POSTGRESQL_ADDON_PASSWORD', ''),
