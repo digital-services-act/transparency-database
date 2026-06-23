@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
  */
 class RouteServiceProvider extends ServiceProvider
 {
+    private const AUTHENTICATED_API_REQUESTS_PER_SECOND = 450;
+
+    private const AUTHENTICATED_API_REQUESTS_PER_MINUTE = 25000;
+
     private const ELEVATED_WEB_DOWNLOAD_ROUTES = [
         'aggregates.download',
         'dayarchive.download',
@@ -58,11 +62,25 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
-        // RateLimiter::for('api', static fn(Request $request) => $request->user() ? Limit::perMinute(100000)->by($request->user()->id) : Limit::perMinute(50)->by($request->ip())
-        //     ->response(static fn(Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
+        RateLimiter::for('api', static function (Request $request): Limit|array {
+            $response = static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers);
+            $user = $request->user();
 
-        RateLimiter::for('api', static fn (Request $request) => $request->user() ? Limit::perMinute(25000)->by($request->user()->id) : Limit::perMinute(100)->by($request->ip())
-            ->response(static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers)));
+            if (! $user) {
+                return Limit::perMinute(100)
+                    ->by($request->ip())
+                    ->response($response);
+            }
+
+            return [
+                Limit::perSecond(self::AUTHENTICATED_API_REQUESTS_PER_SECOND)
+                    ->by('second:user:'.$user->id)
+                    ->response($response),
+                Limit::perMinute(self::AUTHENTICATED_API_REQUESTS_PER_MINUTE)
+                    ->by('minute:user:'.$user->id)
+                    ->response($response),
+            ];
+        });
 
         RateLimiter::for('web', static function (Request $request) {
             $isElevatedDownloadRoute = $request->routeIs(...self::ELEVATED_WEB_DOWNLOAD_ROUTES);
