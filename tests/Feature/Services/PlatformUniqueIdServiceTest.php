@@ -152,6 +152,52 @@ class PlatformUniqueIdServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function test_run_with_reserved_puid_rejects_cached_puid_before_database_work(): void
+    {
+        $platform_id = 1;
+        $puid = 'cached-single-puid';
+        $callbackWasCalled = false;
+
+        $this->platformUniqueIdService->refreshPuidsInCache([$puid], $platform_id);
+
+        $this->expectException(PuidNotUniqueSingleException::class);
+
+        try {
+            $this->platformUniqueIdService->runWithReservedPuid($platform_id, $puid, function () use (&$callbackWasCalled): void {
+                $callbackWasCalled = true;
+            });
+        } finally {
+            $this->assertFalse($callbackWasCalled);
+            $this->assertDatabaseMissing(PlatformPuid::class, [
+                'platform_id' => $platform_id,
+                'puid' => $puid,
+            ]);
+        }
+    }
+
+    public function test_run_with_reserved_puids_rejects_cached_puids_before_database_work(): void
+    {
+        $platform_id = 1;
+        $cachedPuid = 'cached-bulk-puid';
+        $newPuid = 'new-bulk-puid';
+        $callbackWasCalled = false;
+
+        $this->platformUniqueIdService->refreshPuidsInCache([$cachedPuid], $platform_id);
+
+        try {
+            $this->platformUniqueIdService->runWithReservedPuids([$cachedPuid, $newPuid], $platform_id, function () use (&$callbackWasCalled): void {
+                $callbackWasCalled = true;
+            });
+
+            $this->fail('Expected cached duplicate PUID detection to throw.');
+        } catch (PuidNotUniqueMultipleException $exception) {
+            $this->assertSame([$cachedPuid], $exception->getDuplicates());
+        } finally {
+            $this->assertFalse($callbackWasCalled);
+            $this->assertDatabaseCount(PlatformPuid::class, 0);
+        }
+    }
+
     public function test_it_bulk_adds_puids_to_database_and_ignores_existing_records(): void
     {
         PlatformPuid::create([

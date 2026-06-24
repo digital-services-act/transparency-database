@@ -42,6 +42,10 @@ class PlatformUniqueIdService
         $lock = $this->acquirePuidLock($platform_id, $puid);
 
         try {
+            if ($this->isPuidInCache($platform_id, $puid)) {
+                throw new PuidNotUniqueSingleException($puid);
+            }
+
             $result = DB::transaction(function () use ($platform_id, $puid, $callback) {
                 $this->addPuidToDatabase($platform_id, $puid);
 
@@ -67,6 +71,8 @@ class PlatformUniqueIdService
         $locks = $this->acquirePuidLocks($puids, $platform_id);
 
         try {
+            $this->checkDuplicatesInCache($puids, $platform_id);
+
             $result = DB::transaction(function () use ($puids, $platform_id, $callback) {
                 $this->checkDuplicatesInPlatformPuids($puids, $platform_id);
                 $this->addPuidRecordsToDatabase($puids, $platform_id);
