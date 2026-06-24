@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
-          php-version: '8.3'
+          php-version: "8.4"
           tools: composer:v2
       - uses: actions/checkout@v3
         with:
@@ -33,15 +33,15 @@ jobs:
       - name: Code Coverage Check
         uses: sourcetoad/phpunit-coverage-action@v1
         with:
-            clover_report_path: clover.xml
-            min_coverage_percent: 100
-            fail_build_on_under: true
-#      - name: Require Vapor CLI
-#        run: composer global require laravel/vapor-cli
-#      - name: Deploy Environment
-#        run: vapor deploy dev
-#        env:
-#          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+          clover_report_path: clover.xml
+          min_coverage_percent: 100
+          fail_build_on_under: true
+  #      - name: Require Vapor CLI
+  #        run: composer global require laravel/vapor-cli
+  #      - name: Deploy Environment
+  #        run: vapor deploy dev
+  #        env:
+  #          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
   #          VAPOR_PROJECT: ${{ secrets.VAPOR_PROJECT }}
 
   cypress-tests:
@@ -54,7 +54,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Install Cypress dependencies
         run: npm install
       - name: Run Cypress Tests on Sandbox
