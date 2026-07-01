@@ -1,17 +1,18 @@
-#### [Announcement - DB] Update to the submissions by Google Play
-
+#### [Announcement – DB] Update to the submissions by Google Play
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/06/2026</p>
 
 Due to a technical error, statements of reasons transmitted to the DSA Transparency Database related to actions taken on a portion of Google Play contained some incorrect information. Specifically, the field indicating whether a violation was detected via automated means was inverted. Consequently, from September 2023 to May 2026, a portion of records related to Google Play marked as "automated" were actually manual, and records marked as "manual" were actually “automated”. The issue was remediated as of 29 May 2026.
 
-#### [Announcement - DB] Update to the submissions by Facebook and Instagram
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
+#### [Announcement – DB] Update to the submissions by Facebook and Instagram
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/11/2025</p>
 
 On 27 October 2025, Meta identified and fixed an issue affecting the submissions to the DSA Transparency Database from Facebook and Instagram from Trusted Flaggers. Prior to this date, statements of reasons sourcing from Trusted Flaggers might not have been labelled as such. The issue was fixed on submissions starting from 28/10/2025.
 
-#### [Announcement – DB] Schema update of the DSA Transparency Database completed
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
+#### [Announcement – DB] Schema update of the DSA Transparency Database completed
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 01/07/2025</p>
 
 To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database has been updated to reflect the requirements laid down in the [Implementing Regulation on Transparency Reporting](https://eur-lex.europa.eu/eli/reg_impl/2024/2835/oj/eng). As of today, all statements of reasons need to be submitted to the DSA Transparency Database in line with the updated schema, documented [here](/page/api-documentation). Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 remain available according to the old schema in line with the [data retention policy](https://transparency.dsa.ec.europa.eu/page/data-retention-policy) of the DSA Transparency Database.
@@ -19,7 +20,6 @@ To ensure consistency between the transparency tools of the DSA, the submission 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
 #### [Announcement – DB] Update to the submissions by Google Shopping
-
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 03/06/2025</p>
 
 Starting from 30 May 2025, statements of reasons submissions to the DSA Transparency Database from Google Shopping no longer include automated notifications to merchants about additional grounds for a restriction they are already subject to.
@@ -27,32 +27,32 @@ Starting from 30 May 2025, statements of reasons submissions to the DSA Transpar
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
 #### [Announcement – Access to data] New file formats available for download
-
-
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
 Today, two new formats for data download have been added to the DSA Transparency Database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). See [the dsa-tdb documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/data_sources.html) for more information on how to download these data. You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from [the dsa-tdb package documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/). We provide two types of aggregated data: the basic aggregation currently feeding the [Dashboard](/dashboard) and an advanced one aggregating the data on all the database’s non-free-text fields columns.
-<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
-#### [Announcement – Access to data] Update to the data retention policy
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
+#### [Announcement – Access to data] Update to the data retention policy
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
 Starting from 18th of February 2025, the data retention policy of the DSA Transparency Database (TDB) will be updated to extend the availability of the daily dumps files from 18 months to five years after their creation and to include additional file formats. After this period, they will be archived in a cold storage. The rest of the data retention policy remains unchanged.
+
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – Dashboard] New pages and filters for better separation between platforms
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/12/2024</p>
 
 On 19th December 2024, the [dashboard](/dashboard) of the DSA Transparency Database was updated to include a clearer separation between the Statements of Reasons submitted by Very Large Online Platforms (VLOPs)  and the rest (non-VLOP) platforms. The changes are particularly notable in the first and second pages of the dashboard; unified information for all platforms is available in page 6 (‘all platforms’). A new taxonomy was also added in the ‘Platforms’ filter that allows users to select with a single click all the VLOPs or all the non-VLOPs.
+
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – DB] 2025 Update of the DSA Transparency Database schema in line with the Implementing Regulation on Transparency Reporting
-
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 04/11/2024</p>
-
 
 Today, the Commission <a href="https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations" class="ecl-link">published the Implementing Act on Transparency Reporting</a>, which standardizes the form, content and reporting periods of DSA transparency reports. To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database will be updated to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. As of 1 July 2025, statements of reasons that are submitted to the DSA Transparency Database therefore will have to comply with the updated schema. To allow providers to prepare, the updated schema will be available for extensive testing in the sandbox environment of the DSA Transparency Database from 2 April to 30 June 2025.
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
-
 
 #### [Announcement – DSA-TDB] New open-source package on code.europa.eu
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 29/10/2024</p>
@@ -88,15 +88,16 @@ A following announcement will be published to flag that: i) the data consistency
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
-#### [Announcement - API] Restoring the 422 error for duplicated platform uid (puid)
+#### [Announcement – API] Restoring the 422 error for duplicated platform uid (puid)
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/04/2024</p>
+
 On 8th of April 2024, the European Commission restored the 422 – Unprocessable Content error. The API endpoint will return the error whenever a platform is submitting a Statement of Reasons (SoR) containing a platform unique identifier (puid) already found in the SoR previously submitted to the database by the same platform.
 
 Please refer to the [Errors section](/page/api-documentation#errors) of the [API documentation](/page/api-documentation) for further details.
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
-#### [Change - API] Enforcing the platform_uid (puid) format
+#### [Change – API] Enforcing the platform_uid (puid) format
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/04/2024</p>
 
 Starting from 18th of April 2024, the Transparency Database team will enforce the format of the Platform Unique Identifier (puid) to be a 500-characters maximum string containing alphanumeric characters (a-z, A-Z, 0-9), hyphens "-" and underscores "_" only. No spaces, new-line or any other special characters will be accepted.
@@ -133,7 +134,7 @@ The [daily dumps files](/data-download) will be available for 18 months (540 day
 Lastly, the [Dashboard](/dashboard) will contain the aggregated statistics for the last 5 years of data.
 
 <p class="ecl-u-type-paragraph" style="font-style: italic">
-<img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png">
+<img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png" alt="Timeline of the DSA Transparency Database retention policy: statements are removed from search after 6 months; daily dumps are archived and dashboard statistics stop after 5 years." title="DSA Transparency Database data retention policy timeline">
 </p>
 <p class="ecl-u-type-paragraph" style="width:100%; text-align:center; font-style: italic !important; margin-top:-20px"><span style="font-size: smaller">The Data Retention Policy of the DSA Transparency Database.</span></p>
 
