@@ -53,7 +53,7 @@
 
         Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the dashboard
         can show aggregated data over a longer period of time in the past compared to the data available on the “<a
-            href="{{route('statement.index')}}">Search for statements of reasons</a>” page. This might result in different
+            href="{{ route('statement.index') }}">Search for statements of reasons</a>” page. This might result in different
         numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering
         settings are applied.
 
@@ -66,40 +66,40 @@
     </div>
 
 
-
     <h2 class="ecl-u-type-heading-2">Instructions</h2>
-    <div style="width:110%; !important;
+    <div class="ecl-container ecl-u-mh-auto ecl-u-pa-none ecl-u-border-all ecl-u-border-color-white">
+        <div class="ecl-u-d-flex ecl-u-flex-wrap ecl-u-pa-none ecl-u-justify-content-center" style="gap: 2rem;">
+            <div class="ecl-u-flex-grow-1 ecl-u-flex-shrink-0 ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s"
+                style="flex: 0 0 calc(33.333% - 2rem); min-width: 280px; max-width: 100%; padding: 0;">
 
-                            margin-left: -20px;
-                            max-height:100%">
-
-
-        <div class="ecl-u-d-flex">
-            <div
-                class="ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s ecl-u-pl-l ecl-u-pr-l">
                 <div class="ecl-u-type-bold ecl-u-mb-s">Introduction</div>
 
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The purpose of this dashboard is to help users
-                    without programming skills explore aggregated data in the DSA Transparency Database. These instructions
+                    without programming skills explore aggregated data in the DSA Transparency Database. These
+                    instructions
                     are to assist you in making the best use of all the available features.
                 </div>
 
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Overview</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">This dashboard comprises 6 pages, in addition to
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">This dashboard comprises 6 pages, in addition
+                    to
                     these instructions. Each page contains some visualizations, typically grouped by theme, such as
-                    timelines, violations, or restrictions. In addition, the last “Other analyses” page shows a breakdown of
+                    timelines, violations, or restrictions. In addition, the last “Other analyses” page shows a
+                    breakdown of
                     statements of reasons by content type.
                 </div>
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">
-                    It also shows how the grounds for the restrictions imposed and the information source used relate to one
+                    It also shows how the grounds for the restrictions imposed and the information source used relate to
+                    one
                     another as well as the relationship between automatic content moderation decisions and automatic
                     detection of content for moderation.
                 </div>
 
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">
-                    Unless otherwise specified, the date used to aggregate the data is the creation date of the statement of
+                    Unless otherwise specified, the date used to aggregate the data is the creation date of the
+                    statement of
                     reasons (the
                     <a class="ecl-link" href="/page/api-documentation#creating-a-statement">created_at</a>
                     datetime field truncated at the day level), that is, the day on which the statement of reasons was
@@ -115,28 +115,38 @@
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Definitions</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">For definitions of terms used, please refer to the
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">For definitions of terms used, please refer to
+                    the
                     <a
                         href="https://digital-strategy.ec.europa.eu/en/faqs/dsa-transparency-database-questions-and-answers">FAQ</a>
                     section and the
-                    <a href="{{ route('page.show', ['api-documentation']) }}">API documentation</a> of the DSA Transparency
+                    <a href="{{ route('page.show', ['api-documentation']) }}">API documentation</a> of the DSA
+                    Transparency
                     Database.
                     Kindly note that “violations” refer to the variable “category” of the API documentation.
                 </div>
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">
-                    Please note that the terminology used to describe the violations has been updated on 1 July 2025 to <a href="https://digital-strategy.ec.europa.eu/en/news/harmonised-transparency-reporting-rules-under-digital-services-act-now-effect" target="_blank"> harmonize the transparency reporting rules under the Digital Services Act</a>.
-                    Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 are displayed in the dashboard with the old terminology.
-                    A correspondence table between the old and the new terminology is available <a href="{{ route('page.show', ['api-documentation']) }}#changelog" target="_blank">here</a>.
+                    Please note that the terminology used to describe the violations has been updated on 1 July 2025 to
+                    <a href="https://digital-strategy.ec.europa.eu/en/news/harmonised-transparency-reporting-rules-under-digital-services-act-now-effect"
+                        target="_blank"> harmonize the transparency reporting rules under the Digital Services Act</a>.
+                    Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 are displayed in
+                    the
+                    dashboard with the old terminology.
+                    A correspondence table between the old and the new terminology is available <a
+                        href="{{ route('page.show', ['api-documentation']) }}#changelog" target="_blank">here</a>.
                 </div>
 
             </div>
-            <div
-                class="ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s ecl-u-pl-l ecl-u-pr-l">
+            <div class="ecl-u-flex-grow-1 ecl-u-flex-shrink-0 ecl-u-flex-grow-1 ecl-u-flex-shrink-0 ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s"
+                style="flex: 0 0 calc(33.333% - 2rem); min-width: 280px; max-width: 100%;">
                 <div class="ecl-u-type-bold ecl-u-mb-s">Interactivity</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Each visualization is interactive: 1) additional
-                    information is provided when the mouse hovers over a visualization, and 2) you can click on any of the
-                    elements (e.g. bars, charts, labels) to highlight specific data. The rest of the visualizations in the
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Each visualization is interactive: 1)
+                    additional
+                    information is provided when the mouse hovers over a visualization, and 2) you can click on any of
+                    the
+                    elements (e.g. bars, charts, labels) to highlight specific data. The rest of the visualizations in
+                    the
                     page will accordingly highlight the relevant data.
                 </div>
 
@@ -147,12 +157,14 @@
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Filters</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The three lines on the top left of the dashboard
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The three lines on the top left of the
+                    dashboard
                     open the filters menu.
                 </div>
 
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Select the element you want to focus on (e.g.,
-                    specific platform(s), types of violations or restrictions), and the visualizations on all the pages will
+                    specific platform(s), types of violations or restrictions), and the visualizations on all the pages
+                    will
                     update accordingly.
                 </div>
 
@@ -160,7 +172,8 @@
                     button on the right of the menu.
                 </div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">To remove all applied filters, press the ‘Remove
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">To remove all applied filters, press the
+                    ‘Remove
                     all filters’ button at the bottom of the menu.
                 </div>
 
@@ -171,7 +184,8 @@
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Selecting multiple elements</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Keep the ‘Ctrl’ button pressed to select multiple
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">Keep the ‘Ctrl’ button pressed to select
+                    multiple
                     items on any interactive element of the dashboard or filters.
                 </div>
 
@@ -179,21 +193,21 @@
                     social media platforms or all online marketplaces, or different combinations of violations or
                     restrictions.
                 </div>
-
-
             </div>
-            <div
-                class="ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s ecl-u-pl-l ecl-u-pr-l">
+            <div class="ecl-u-flex-grow-1 ecl-u-flex-grow-m-0 ecl-u-flex-shrink-0 ecl-u-border-all ecl-u-border-color-white ecl-u-type-color-black ecl-u-type-s"
+                style="flex: 0 0 calc(33.333% - 2rem); min-width: 280px; max-width: 100%;">
                 <div class="ecl-u-type-bold ecl-u-mb-s">Zooming on the Y-axis</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">In some visualizations, the orders of magnitude of
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">In some visualizations, the orders of
+                    magnitude of
                     data vary significantly, from thousands to billions. In these cases, ‘zoom in’ on the y-axis by
                     scrolling the bar on the left of the graph, where it is available.
                 </div>
 
                 <div class="ecl-u-type-bold ecl-u-mb-s">Focus mode</div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">You can maximize any visualization by pressing the
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">You can maximize any visualization by pressing
+                    the
                     'focus mode' button, on the top right of the visualization.
                 </div>
 
@@ -216,16 +230,13 @@
                     instead of DD/MM/YYYY. To see dates in the latter format, change your browser’s language preference.
                 </div>
 
-                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">For example, for Google Chrome, type on the URL
+                <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">For example, for Google Chrome, type on the
+                    URL
                     box: chrome://settings/languages and choose “English (United Kingdom, Oxford English Dictionary
                     spelling)” as the preferred language. For Firefox, go to 'Settings', select 'Languages' and choose
                     'English (GB)'.
                 </div>
             </div>
         </div>
-
     </div>
-
-
-
 @endsection
