@@ -13,11 +13,13 @@ use TypeError;
 
 class DayArchiveQueryService
 {
+    private const string DATE_FILTER_FORMAT = 'd-m-Y';
+
     private array $allowed_filters = [
         'platform_id',
         'from_date',
         'to_date',
-        'uuid'
+        'uuid',
     ];
 
     public function query(array $filters): Builder
@@ -39,31 +41,63 @@ class DayArchiveQueryService
         }
 
         // if there was no uuid filter then lock it into the global archives
-        if (!isset($filters['platform_id']) || !$filters['platform_id']) {
+        if (! isset($filters['platform_id']) || ! $filters['platform_id']) {
             $query->whereNull('platform_id');
         }
 
         return $query;
     }
 
-    private function applyUuidFilter(Builder $query, string $filter_value): void
+    private function applyUuidFilter(Builder $query, mixed $filter_value): void
     {
+        if (! is_string($filter_value) || ! Str::isUuid($filter_value)) {
+            return;
+        }
+
         $platform = Platform::query()->where('uuid', $filter_value)->first();
         if ($platform) {
             $query->where('platform_id', $platform->id);
         }
     }
 
-    private function applyFromDateFilter(Builder $query, string $filter_value): void
+    private function applyFromDateFilter(Builder $query, mixed $filter_value): void
     {
-        $date = Carbon::createFromFormat('d-m-Y', $filter_value);
+        $date = $this->parseDateFilter($filter_value);
+        if (! $date) {
+            return;
+        }
+
         $query->whereDate('date', '>=', $date);
     }
 
-    private function applyToDateFilter(Builder $query, string $filter_value): void
+    private function applyToDateFilter(Builder $query, mixed $filter_value): void
     {
-        $date = Carbon::createFromFormat('d-m-Y', $filter_value);
+        $date = $this->parseDateFilter($filter_value);
+        if (! $date) {
+            return;
+        }
+
         $query->whereDate('date', '<=', $date);
+    }
+
+    private function parseDateFilter(mixed $filter_value): ?Carbon
+    {
+        if (! is_string($filter_value)) {
+            return null;
+        }
+
+        $filter_value = trim($filter_value);
+        if (! preg_match('/^\d{2}-\d{2}-\d{4}$/', $filter_value)) {
+            return null;
+        }
+
+        try {
+            $date = Carbon::createFromFormat('!'.self::DATE_FILTER_FORMAT, $filter_value);
+        } catch (Exception) {
+            return null;
+        }
+
+        return $date->format(self::DATE_FILTER_FORMAT) === $filter_value ? $date : null;
     }
 
     private function applyPlatformIdFilter(Builder $query, $value): void
