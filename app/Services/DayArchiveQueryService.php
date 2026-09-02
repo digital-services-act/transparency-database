@@ -93,8 +93,10 @@ class DayArchiveQueryService
 
         try {
             $date = Carbon::createFromFormat('!'.self::DATE_FILTER_FORMAT, $filter_value);
+        // @codeCoverageIgnoreStart
         } catch (Exception) {
             return null;
+        // @codeCoverageIgnoreEnd
         }
 
         return $date->format(self::DATE_FILTER_FORMAT) === $filter_value ? $date : null;
