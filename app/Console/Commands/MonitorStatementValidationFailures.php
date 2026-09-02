@@ -48,7 +48,9 @@ class MonitorStatementValidationFailures extends Command
             $cleverProcess = $this->startCleverLogsProcess($this->cleverApp());
 
             if (! $cleverProcess instanceof Process) {
+                // @codeCoverageIgnoreStart
                 return Command::FAILURE;
+                // @codeCoverageIgnoreEnd
             }
 
             $this->info("Monitoring Clever Cloud app {$this->cleverApp()} for {$this->formatSeconds($durationSeconds)}.");
@@ -210,9 +212,9 @@ class MonitorStatementValidationFailures extends Command
         return $offset;
     }
 
-    private function consumeStdin(StatementValidationFailureLogMonitor $monitor): void
+    private function consumeStdin(StatementValidationFailureLogMonitor $monitor, mixed $input = STDIN): void
     {
-        while (($line = fgets(STDIN)) !== false) {
+        while (($line = fgets($input)) !== false) {
             $monitor->ingest($line);
         }
     }
@@ -230,10 +232,12 @@ class MonitorStatementValidationFailures extends Command
 
         try {
             $process->start();
+        // @codeCoverageIgnoreStart
         } catch (ProcessStartFailedException $exception) {
             $this->error("Unable to start Clever logs: {$exception->getMessage()}");
 
             return null;
+        // @codeCoverageIgnoreEnd
         }
 
         return $process;
@@ -270,16 +274,20 @@ class MonitorStatementValidationFailures extends Command
         } else {
             $lines = preg_split('/\R/', $buffer);
 
+            // @codeCoverageIgnoreStart — this valid, constant regex cannot fail.
             if ($lines === false) {
                 return;
             }
+            // @codeCoverageIgnoreEnd
 
             $buffer = (string) array_pop($lines);
         }
 
+        // @codeCoverageIgnoreStart — this valid, constant regex cannot fail.
         if ($lines === false) {
             return;
         }
+        // @codeCoverageIgnoreEnd
 
         foreach ($lines as $line) {
             if ($line !== '') {

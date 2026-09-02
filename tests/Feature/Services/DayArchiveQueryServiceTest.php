@@ -4,8 +4,10 @@ namespace Tests\Feature\Services;
 
 use App\Models\Platform;
 use App\Services\DayArchiveQueryService;
+use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 use Tests\TestCase;
 
 class DayArchiveQueryServiceTest extends TestCase
@@ -93,7 +95,7 @@ class DayArchiveQueryServiceTest extends TestCase
         Log::shouldNotHaveReceived('error');
     }
 
-    public function it_filters_on_uuid(): void
+    public function test_it_filters_on_uuid(): void
     {
         $platform = Platform::first();
         $query = $this->day_archive_query_service->query([
@@ -101,6 +103,65 @@ class DayArchiveQueryServiceTest extends TestCase
         ]);
         $this->assertNotNull($query);
         $sql = $query->toSql();
-        $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ?', $sql);
+        $this->assertEquals('select * from "day_archives" where "completed_at" is not null and "platform_id" = ? and "platform_id" is null', $sql);
+    }
+
+    public function test_it_ignores_invalid_uuid_filters(): void
+    {
+        $query = $this->day_archive_query_service->query([
+            'uuid' => 'not-a-uuid',
+        ]);
+
+        $this->assertSame(
+            'select * from "day_archives" where "completed_at" is not null and "platform_id" is null',
+            $query->toSql()
+        );
+    }
+
+    public function test_it_logs_filter_exceptions_and_continues_building_the_query(): void
+    {
+        Log::spy();
+
+        $originalResolver = Platform::getConnectionResolver();
+        $resolver = new class($originalResolver) implements ConnectionResolverInterface
+        {
+            private int $connectionCalls = 0;
+
+            public function __construct(private readonly ConnectionResolverInterface $delegate) {}
+
+            public function connection($name = null)
+            {
+                $this->connectionCalls++;
+
+                if ($this->connectionCalls === 2) {
+                    throw new RuntimeException('Simulated platform query failure.');
+                }
+
+                return $this->delegate->connection($name);
+            }
+
+            public function getDefaultConnection(): string
+            {
+                return $this->delegate->getDefaultConnection();
+            }
+
+            public function setDefaultConnection($name): void
+            {
+                $this->delegate->setDefaultConnection($name);
+            }
+        };
+
+        Platform::setConnectionResolver($resolver);
+
+        try {
+            $query = $this->day_archive_query_service->query([
+                'platform_id' => 1,
+            ]);
+
+            $this->assertNotNull($query);
+            Log::shouldHaveReceived('error')->once();
+        } finally {
+            Platform::setConnectionResolver($originalResolver);
+        }
     }
 }

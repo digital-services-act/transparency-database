@@ -100,6 +100,73 @@ class StatementValidationFailureLogMonitorTest extends TestCase
         $this->assertSame(0, $monitor->summary()['failures']);
     }
 
+    public function test_it_rejects_invalid_json_and_unclosed_json_objects(): void
+    {
+        $monitor = new StatementValidationFailureLogMonitor;
+
+        $this->assertFalse($monitor->ingest(
+            '[2026-06-24 12:00:00] production.INFO: Statement Store Request Validation Failure {"platform":"TikTok"'
+        ));
+        $this->assertFalse($monitor->ingest(
+            '[2026-06-24 12:00:00] production.INFO: Statement Store Request Validation Failure {invalid}'
+        ));
+
+        $this->assertSame(0, $monitor->summary()['failures']);
+    }
+
+    public function test_it_handles_top_level_and_non_string_error_values(): void
+    {
+        $monitor = new StatementValidationFailureLogMonitor;
+
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => '  Top-level issue.  ',
+            'platform' => '',
+        ]));
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => null,
+            'platform' => [],
+        ]));
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => [],
+            'platform' => 'Empty errors',
+        ]));
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => [123],
+            'platform' => 'Non-string errors',
+        ]));
+
+        $summary = $monitor->summary();
+
+        $this->assertSame(4, $summary['failures']);
+        $this->assertSame(1, $summary['mistakes']);
+        $this->assertSame('(unknown platform)', $summary['platforms'][0]['platform']);
+        $this->assertSame([
+            'Top-level issue.' => 1,
+        ], $summary['platforms'][0]['mistakes']);
+    }
+
+    public function test_it_ranks_equal_attempts_by_mistakes_then_platform_name(): void
+    {
+        $monitor = new StatementValidationFailureLogMonitor;
+
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => ['first' => ['First issue.'], 'second' => ['Second issue.']],
+            'platform' => 'Alpha',
+        ]));
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => ['first' => ['First issue.']],
+            'platform' => 'Beta',
+        ]));
+        $monitor->ingest($this->logLine('Statement Store Request Validation Failure', [
+            'errors' => ['first' => ['First issue.']],
+            'platform' => 'Gamma',
+        ]));
+
+        $platforms = $monitor->topPlatforms(3);
+
+        $this->assertSame(['Alpha', 'Beta', 'Gamma'], array_column($platforms, 'platform'));
+    }
+
     public function test_it_parses_clever_logs_with_ansi_reset_suffix(): void
     {
         $monitor = new StatementValidationFailureLogMonitor;
