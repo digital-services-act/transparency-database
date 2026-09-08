@@ -1,3 +1,10 @@
+
+#### [Announcement – DB] Update to the submissions by Google Shopping
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/09/2026</p>
+
+Starting from 31 August 2026, Google Shopping is introducing asset-level moderation on its service, in addition to the existing offer-level moderation. This means that where an asset (e.g. a video, text or image) provided by a merchant for their offer is found to violate an applicable policy or law, only that asset may be disabled while the offer may still run. For example, if the offer is a shoe, it may be that only one of the videos depicting that shoe is disabled rather than the entire shoe offer. This change is meant to provide more transparency and choice to merchants. All transparency requirements of the DSA equally apply to asset-level moderation.
+
 #### [Announcement - DB] Update to the submissions by Google Play
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/06/2026</p>
