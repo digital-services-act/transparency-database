@@ -45,8 +45,9 @@
                     return moment(date).format(format);
                 },
                 parse(dateString, format) {
-                    return moment(dateString, format).toDate();
+                    var parsedDate = moment(dateString, format, true);
 
+                    return parsedDate.isValid() ? parsedDate.toDate() : null;
                 },
                 setDefaultDate: false,
                 defaultDate: null,

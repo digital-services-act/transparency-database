@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DatabaseVelocityController;
 use App\Http\Controllers\DataDownloadController;
-use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogMessagesController;
 use App\Http\Controllers\OnboardingController;
@@ -28,8 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['force.auth'])->group(static function () {
     // Your routes that require authentication in non-production environments
     Route::middleware(['auth'])->group(static function () {
-        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
-        Route::post('feedback', [FeedbackController::class, 'send'])->name('feedback.send');
+        Route::view('feedback', 'feedback.feedback')->name('feedback.index');
         Route::group(['middleware' => ['can:create statements']], static function () {
             Route::get('/statement/create', [StatementController::class, 'create'])->name('statement.create');
             Route::post('/statement', [StatementController::class, 'store'])->name('statement.store');

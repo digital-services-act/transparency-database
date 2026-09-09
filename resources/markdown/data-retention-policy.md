@@ -7,7 +7,7 @@
 **Daily Dumps Files**: Daily dumps and aggregated data views will be available for download for a period of 5 years after their creation date. Once this period has elapsed, daily dumps will be transferred to cold storage.
 
 <p class="ecl-u-type-paragraph" style="font-style: italic">
-    <img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png">
+    <img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png" alt="Timeline of the DSA Transparency Database retention policy: statements are removed from search after 6 months; daily dumps are archived and dashboard statistics stop after 5 years." title="DSA Transparency Database data retention policy timeline">
 </p>
 <p class="ecl-u-type-paragraph" style="width:100%; text-align:center; font-style: italic !important; margin-top:-20px"><span style="font-size: smaller">The Data Retention Policy of the DSA Transparency Database.</span></p>
 
