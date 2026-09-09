@@ -41,6 +41,25 @@ class DataDownloadControllerTest extends TestCase
         $response->assertViewIs('explore-data.download');
     }
 
+    public function test_day_archive_index_renders_strict_day_month_year_datepicker(): void
+    {
+        $response = $this->get('/explore-data/download');
+
+        $response->assertStatus(200);
+        $response->assertSee('placeholder="DD-MM-YYYY"', false);
+        $response->assertSee("format: 'DD-MM-YYYY'", false);
+        $response->assertSee('moment(dateString, format, true)', false);
+    }
+
+    public function test_day_archive_index_rejects_date_filters_outside_picker_format(): void
+    {
+        $response = $this->from('/explore-data/download')
+            ->get('/explore-data/download?from_date=2026-07-08&to_date=07/08/2026');
+
+        $response->assertRedirect('/explore-data/download');
+        $response->assertSessionHasErrors(['from_date', 'to_date']);
+    }
+
     public function test_day_archive_table_links_to_internal_download_route(): void
     {
         $dayArchive = DayArchive::factory()->completed()->global()->create([
