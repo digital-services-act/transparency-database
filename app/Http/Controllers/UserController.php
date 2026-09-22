@@ -208,7 +208,7 @@ class UserController extends Controller
         }
 
         return $roles->reject(static function ($role) {
-            $names_to_remove = ['Admin', 'Onboarding', 'User'];
+            $names_to_remove = ['Admin', 'Onboarding'];
 
             return in_array($role->name, $names_to_remove, true);
         });
