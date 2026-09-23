@@ -140,7 +140,7 @@ The [daily dumps files](/data-download) will be available for 18 months (540 day
 Lastly, the [dashboard](/dashboard) will contain the aggregated statistics for the last 5 years of data.
 
 <p class="ecl-u-type-paragraph" style="font-style: italic">
-<img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png">
+<img width="100%" src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-retention-policy_v2.png" alt="Timeline of the DSA transparency database retention policy: statements are removed from search after 6 months; daily dumps are archived and dashboard statistics stop after 5 years." title="DSA transparency database data retention policy timeline">
 </p>
 <p class="ecl-u-type-paragraph" style="width:100%; text-align:center; font-style: italic !important; margin-top:-20px"><span style="font-size: smaller">The data retention policy of the DSA transparency database.</span></p>
 

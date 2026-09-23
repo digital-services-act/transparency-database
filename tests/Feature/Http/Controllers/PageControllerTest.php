@@ -105,4 +105,12 @@ class PageControllerTest extends TestCase
 
         File::delete($testfile);
     }
+
+    public function test_markdown_images_include_alternative_text(): void
+    {
+        $response = $this->get('/page/announcements');
+
+        $response->assertStatus(200);
+        $response->assertSee('alt="Timeline of the DSA transparency database retention policy: statements are removed from search after 6 months; daily dumps are archived and dashboard statistics stop after 5 years."', false);
+    }
 }

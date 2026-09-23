@@ -88,7 +88,7 @@
 
                                 src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/toolbox.png"
 
-                                alt="Digital Services Act"></picture>
+                                alt="Illustration of the dsa-tdb data analysis toolbox"></picture>
                     </div>
                 </figure>
             </div>

@@ -26,7 +26,7 @@
                 Logged in
                 <span>&nbsp;</span>
                 <svg class="ecl-u-d-none ecl-u-d-l-block ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-site-header__icon"
-                     focusable="false" aria-hidden="false">
+                     focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="corner-arrow"/>
                 </svg>
             </a>
@@ -49,4 +49,3 @@
 
     @endauth
 </div>
-

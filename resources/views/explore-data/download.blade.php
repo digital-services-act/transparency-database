@@ -74,7 +74,7 @@
                     <picture class="ecl-picture ecl-media-container__picture"><img
                             class="ecl-media-container__media"
                             src="https://dsa-images-disk.s3.eu-central-1.amazonaws.com/sor-graph.png"
-                            alt="Digital Services Act"></picture>
+                            alt="Graph illustrating statement of reasons data"></picture>
                 </div>
             </figure>
         </div>
