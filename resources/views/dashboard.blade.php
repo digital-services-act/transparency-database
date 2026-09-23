@@ -51,7 +51,7 @@
         <strong>By default</strong>, the dashboard displays data from the <strong>last 30 days</strong>; you can apply
         filters to view data for other time periods.<br /><br />
 
-        Please note that a <a href='/page/data-retention-policy'>Data Retention Policy</a> applies and that the dashboard
+        Please note that a <a href='/page/data-retention-policy'>Data retention policy</a> applies and that the dashboard
         can show aggregated data over a longer period of time in the past compared to the data available on the “<a
             href="{{ route('statement.index') }}">Search for statements of reasons</a>” page. This might result in different
         numbers of statements of reasons being returned by the dashboard and the search page even when the same filtering
@@ -60,7 +60,7 @@
     </p>
 
     <div class="responsive-iframe-container">
-        <iframe title="Transparency Database Dashboard - {{ config('app.env_real') }}" class="responsive-iframe"
+        <iframe title="Transparency database dashboard - {{ config('app.env_real') }}" class="responsive-iframe"
             src="{{ config('dsa.POWERBI') }}" frameborder="0" allowfullscreen="true">
         </iframe>
     </div>
@@ -75,7 +75,7 @@
                 <div class="ecl-u-type-bold ecl-u-mb-s">Introduction</div>
 
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">The purpose of this dashboard is to help users
-                    without programming skills explore aggregated data in the DSA Transparency Database. These
+                    without programming skills explore aggregated data in the DSA transparency database. These
                     instructions
                     are to assist you in making the best use of all the available features.
                 </div>
@@ -104,7 +104,7 @@
                     <a class="ecl-link" href="/page/api-documentation#creating-a-statement">created_at</a>
                     datetime field truncated at the day level), that is, the day on which the statement of reasons was
                     submitted
-                    to the DSA Transparency Database by its provider)
+                    to the DSA transparency database by its provider)
 
                 </div>
 
@@ -129,7 +129,7 @@
                     Please note that the terminology used to describe the violations has been updated on 1 July 2025 to
                     <a href="https://digital-strategy.ec.europa.eu/en/news/harmonised-transparency-reporting-rules-under-digital-services-act-now-effect"
                         target="_blank"> harmonize the transparency reporting rules under the Digital Services Act</a>.
-                    Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 are displayed in
+                    Statements of reasons submitted to the DSA transparency database before 1 July 2025 are displayed in
                     the
                     dashboard with the old terminology.
                     A correspondence table between the old and the new terminology is available <a
@@ -219,7 +219,7 @@
 
                 <div class="ecl-u-type-paragraph ecl-u-type-s ecl-u-mb-s">It is not possible to download individual
                     statements of reason from the dashboard. For this, kindly use the <a
-                        href="{{ route('dayarchive.index') }}">Data Download</a> functionality.
+                        href="{{ route('dayarchive.index') }}">Data download</a> functionality.
                 </div>
 
 

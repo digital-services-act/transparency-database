@@ -145,7 +145,7 @@ class OnboardingController extends Controller
                 'value' => 0,
             ],
             [
-                'label' => 'All Platforms',
+                'label' => 'All platforms',
                 'value' => -1,
             ],
         ];
@@ -159,7 +159,7 @@ class OnboardingController extends Controller
                 'value' => 0,
             ],
             [
-                'label' => 'All Platforms',
+                'label' => 'All platforms',
                 'value' => -1,
             ],
         ];
@@ -173,7 +173,7 @@ class OnboardingController extends Controller
                 'value' => 0,
             ],
             [
-                'label' => 'All Platforms',
+                'label' => 'All platforms',
                 'value' => -1,
             ],
         ];
@@ -187,7 +187,7 @@ class OnboardingController extends Controller
                 'value' => 0,
             ],
             [
-                'label' => 'All Platforms',
+                'label' => 'All platforms',
                 'value' => -1,
             ],
         ];
@@ -201,11 +201,11 @@ class OnboardingController extends Controller
                 'value' => 'name:desc',
             ],
             [
-                'label' => 'Created New Old',
+                'label' => 'Created new to old',
                 'value' => 'created_at:desc',
             ],
             [
-                'label' => 'Created Old New',
+                'label' => 'Created old to new',
                 'value' => 'created_at:asc',
             ],
         ];

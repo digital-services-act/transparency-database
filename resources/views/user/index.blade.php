@@ -1,10 +1,10 @@
 @extends('layouts/ecl')
 
-@section('title', 'Manage Users')
+@section('title', 'Manage users')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}" />
+    <x-ecl.breadcrumb label="User profile" url="{{ route('profile.start') }}" />
     <x-ecl.breadcrumb label="Users" />
 @endsection
 
@@ -32,7 +32,7 @@
     </p>
 
     <p class="ecl-u-type-paragraph">
-        <x-ecl.cta-button label="Create a User" url="{{ route('user.create') }}"/>
+        <x-ecl.cta-button label="Create a user" url="{{ route('user.create') }}"/>
     </p>
 
     <x-users.table :users="$users" />

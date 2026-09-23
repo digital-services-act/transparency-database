@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Explore Data"/>
+    <x-ecl.breadcrumb label="Explore data"/>
     <x-ecl.breadcrumb label="Toolbox" more="true"/>
 @endsection
 
@@ -16,7 +16,7 @@
     <div class="ecl-row ecl-u-mt-l">
         <div class="ecl-col-l-8">
             <p class="ecl-u-type-paragraph">
-                To streamline the analysis of data downloaded from the DSA Transparency Database, you can use the
+                To streamline the analysis of data downloaded from the DSA transparency database, you can use the
                 open-source dsa-tdb python package. The package allows to efficiently carry out a number of data pre-
                 and post-processing tasks at scale thanks to its high-performance data processing backend. Specifically,
                 the package allows you to:
@@ -63,12 +63,12 @@
                     code.europa.eu</a>.
             </p>
             <p class="ecl-u-type-paragraph">
-                If you use the data from the DSA Transparency Database for your research work, please cite it using the
+                If you use the data from the DSA transparency database for your research work, please cite it using the
                 following information:
             </p>
             <p class="ecl-u-type-m" style="font-size: 0.85em;">
 
-                European Commission-DG CONNECT, Digital Services Act Transparency Database, Directorate-General for
+                European Commission-DG CONNECT, Digital Services Act transparency database, Directorate-General for
                 Communications Networks, Content and Technology, 2023<br/>
 
                 <a href="https://doi.org/10.2906/134353607485211">https://doi.org/10.2906/134353607485211</a>

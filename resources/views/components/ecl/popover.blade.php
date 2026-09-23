@@ -1,4 +1,4 @@
-@props(['text'=>'','select_item'=>'Select an Item', 'justlabel' => false, 'select_all' => 'Select All', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => []])
+@props(['text'=>'','select_item'=>'Select an item', 'justlabel' => false, 'select_all' => 'Select all', 'label' => 'label', 'required' => false, 'help' => false, 'name' => 'name', 'id' => 'id', 'options' => [], 'size' => 'l', 'default' => []])
 @php
     $randomID = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(10/strlen('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')))), 1, 10);
 @endphp

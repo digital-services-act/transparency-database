@@ -1,4 +1,4 @@
-## Copyright Notice
+## Copyright notice
 
 © European Union, 1995-2024
 
@@ -8,11 +8,11 @@ Unless otherwise indicated (e.g. in individual copyright notices), content owned
 
 You may be required to clear additional rights if a specific content depicts identifiable private individuals or includes third-party works. To use or reproduce content that is not owned by the EU, you may need to seek permission directly from the rightholders. Software or documents covered by industrial property rights, such as patents, trade marks, registered designs, logos and names, are excluded from the Commission's reuse policy and are not licensed to you.
 
-If you use the DSA Transparency Database data in your research work, please cite it using the following citation:
+If you use the DSA transparency database data in your research work, please cite it using the following citation:
 
 <pre style="font-size: 0.85em;">
 European Commission-DG CONNECT, 
-‘Digital Services Act Transparency Database’, 
+‘Digital Services Act transparency database’,
 Directorate-General for Communications Networks, Content and Technology, 2023
 <a href="https://doi.org/10.2906/134353607485211">https://doi.org/10.2906/134353607485211</a>
 </pre>

@@ -1,13 +1,13 @@
 @extends('layouts/ecl')
 
-@section('title', 'User Profile')
+@section('title', 'User profile')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home
                 " url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="User Profile
+    <x-ecl.breadcrumb label="User profile
                 " url="{{ route('profile.start') }}" />
-    <x-ecl.breadcrumb label="API Token Management
+    <x-ecl.breadcrumb label="API token management
                 " />
 @endsection
 
@@ -17,13 +17,13 @@
     <div class="ecl-row">
         <div class="ecl-col-12">
 
-            <h2 class="ecl-u-type-heading-2">Your API Token
+            <h2 class="ecl-u-type-heading-2">Your API token
             </h2>
             @if($token_plain_text)
                 <p class="ecl-u-type-paragraph">
                     Your token for accessing the API is:
                 <pre id="plaintoken">{{ $token_plain_text }}</pre>
-                <button class="ecl-button ecl-button--primary" onclick="copyContent()">Copy To Clipboard
+                <button class="ecl-button ecl-button--primary" onclick="copyContent()">Copy to clipboard
                 </button>
                 <script>
                     let text = document.getElementById('plaintoken').innerHTML;
@@ -47,7 +47,7 @@
                 <p class="ecl-u-type-paragraph">
                 <form method="POST" action="{{ route('profile.api.new-token') }}">
                     @csrf
-                    <input type="submit" class="ecl-button ecl-button--primary" value="Generate New Token" />
+                    <input type="submit" class="ecl-button ecl-button--primary" value="Generate new token" />
                 </form>
                 </p>
             @endif
@@ -60,7 +60,7 @@
                 </p>
                 <p class="ecl-u-type-paragraph">
                     <a href="{{ route('page.show', ['api-documentation']) }}" class="ecl-button ecl-button--primary">
-                        Statement API Documentation
+                        Statement API documentation
                     </a>
                 </p>
             @endcan

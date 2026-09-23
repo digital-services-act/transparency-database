@@ -11,7 +11,7 @@
                 <title>Log in</title>
                 <x-ecl.icon icon="log-in"/>
             </svg>
-            Log In</a>
+                Log in</a>
     @endguest
     @auth
 
@@ -23,7 +23,7 @@
                      focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="logged-in"/>
                 </svg>
-                Logged In
+                Logged in
                 <span>&nbsp;</span>
                 <svg class="ecl-u-d-none ecl-u-d-l-block ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-site-header__icon"
                      focusable="false" aria-hidden="false">
@@ -34,10 +34,10 @@
             <div id="login-box-id" class="ecl-site-header__login-box"
                  data-ecl-login-box="true">
                 <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
-                                 title="Your Profile"/>
+                                 title="Your profile"/>
                 @can('create statements')
                     <x-ecl.menu-item icon="settings" :link="route('profile.api.index')"
-                                     title="API Token Management"/>
+                                     title="API token management"/>
 
                     <x-ecl.menu-item icon="edit" :link="route('statement.create')"
                                      title="Submit statements of reasons"/>
@@ -49,5 +49,4 @@
 
     @endauth
 </div>
-
 

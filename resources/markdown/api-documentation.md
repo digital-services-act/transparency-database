@@ -9,17 +9,17 @@ efficiency and allows for automation.
 To set up your statement of reasons submission process, please
 register [here](https://ec.europa.eu/eusurvey/runner/DSA-ComplianceStamentsReasons) regarding your obligations under
 article 24(5) of the DSA.
-After receiving your registration form, the Digital Service Coordinator of your Member State will contact you providing
+After receiving your registration form, the digital service coordinator of your Member State will contact you providing
 the details on how to complete the onboarding of your online platform.
 
-Once you are onboarded via your Digital Service Coordinator, you will gain access to a sandbox environment to test your
-submissions to the DSA Transparency Database, which you can perform either via an Application Programming Interface (
+Once you are onboarded via your digital service coordinator, you will gain access to a sandbox environment to test your
+submissions to the DSA transparency database, which you can perform either via an Application Programming Interface (
 API) or a webform, according to the volume of your data and technical needs.
 
-Once the testing phase is completed, you will be able to move to the production environment of the DSA Transparency
-Database, where you can start submitting your statement of reasons via an API or a webform.
+Once the testing phase is completed, you will be able to move to the production environment of the DSA transparency
+database, where you can start submitting your statement of reasons via an API or a webform.
 
-## Your API Token
+## Your API token
 
 When your account is given the ability to use the API then you are able to
 generate a private secure token that will allow you to use the API.
@@ -37,12 +37,12 @@ This token will be shown one time, so it will need to be copied and stored safel
 
 __Each time you generate a new token the old token becomes invalid!__
 
-<x-ecl.message type="warning" icon="warning" title="Security Warning" message="This token identifies
+<x-ecl.message type="warning" icon="warning" title="Security warning" message="This token identifies
 calls to the API as you! Do not share this token with other entities.
 They will be able to impersonate and act as you! If you believe that someone is using your token
 please generate a new token immediately to invalidate the old one." close="" />
 
-## Creating a Statement
+## Creating a statement
 
 To create a statement of reason using the API you will need to make a
 ```POST``` request to this endpoint.
@@ -106,7 +106,7 @@ Example JSON payload body:
 }
 ```
 
-### The Response
+### The response
 
 When the request has been sent and it is correct, a response of ```201``` ```Created``` will be
 sent back.
@@ -179,7 +179,7 @@ This ID is then used in the urls for retrieving and viewing the statement online
 
 These urls are present in the response after creating as the, "permalink" and "self" attributes.
 
-## Creating Multiple Statements
+## Creating multiple statements
 
 We highly encourage all platforms to bundle and create multiple Statements of Reason in one API call using the multiple
 endpoint.
@@ -293,7 +293,7 @@ uuid, created_at, self, and permalink attribute to reflect that it was created.
 }
 ```
 
-## Statement Attributes
+## Statement attributes
 
 The attributes of the statement take on two main forms.
 
@@ -305,13 +305,13 @@ regular basis we will do checks on the database to ensure that no personal data 
 submitted. However, in accordance with Article 24(5), it is the obligation of providers of online platforms to ensure
 that the information submitted does not contain personal data.
 
-## Additional Explanation For Statement Attributes
+## Additional explanation for statement attributes
 
 Please refer to
-our [Additional Explanation For Statement Attributes](/page/additional-explanation-for-statement-attributes) page for
+our [additional explanation for statement attributes](/page/additional-explanation-for-statement-attributes) page for
 more information about the attributes.
 
-### Decision Visibility (decision_visibility)
+### Decision visibility (decision_visibility)
 
 This attribute tells us the visibility restriction of specific items of information provided by the
 recipient of the service.
@@ -332,7 +332,7 @@ The value provided must be an array with at least one of the following:
 @endphp
 </ul>
 
-### Decision Visibility Other (decision_visibility_other)
+### Decision visibility other (decision_visibility_other)
 
 This is required if DECISION_VISIBILITY_OTHER was the decision_visibility.
 
@@ -358,7 +358,7 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Decision Monetary Other (decision_monetary_other)
+### Decision monetary other (decision_monetary_other)
 
 This is required if DECISION_MONETARY_OTHER was the decision_monetary.
 
@@ -404,7 +404,7 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Account Type (account_type)
+### Account type (account_type)
 
 This is an attribute that tells us about the account's type.
 
@@ -430,7 +430,7 @@ taking the decision.
 
 Limited to 5000 characters.
 
-### Decision Grounds (decision_ground)
+### Decision grounds (decision_ground)
 
 This is a required field and tells us the basis on which the decision was taken.
 
@@ -445,46 +445,46 @@ This is a required field and tells us the basis on which the decision was taken.
 @endphp
 </ul>
 
-### Decision Ground Reference Url (decision_ground_reference_url)
+### Decision ground reference URL (decision_ground_reference_url)
 
 This is an url to the TOS or Law relied upon in taking the decision.
 
 This is an optional attribute.
 
-### Illegal Content Legal Grounds (illegal_content_legal_ground)
+### Illegal content legal grounds (illegal_content_legal_ground)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 It is the legal grounds relied on.
 
 Limited to 500 characters.
 
-### Illegal Content Explanation (illegal_content_explanation)
+### Illegal content explanation (illegal_content_explanation)
 
 This is required if the DECISION_GROUND_ILLEGAL_CONTENT was the decision_ground.
 This is a text that explains why the content was illegal.
 
 Limited to 2000 characters.
 
-### Incompatible Content Grounds (incompatible_content_ground)
+### Incompatible content grounds (incompatible_content_ground)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 It is the reference to contractual grounds.
 
 Limited to 500 characters.
 
-### Incompatible Content Explanation (incompatible_content_explanation)
+### Incompatible content explanation (incompatible_content_explanation)
 
 This is required if DECISION_GROUND_INCOMPATIBLE_CONTENT was the decision_ground.
 This is a text that explains why the content is considered as incompatible on that ground.
 
 Limited to 2000 characters.
 
-### Incompatible Content Illegal (incompatible_content_illegal)
+### Incompatible content illegal (incompatible_content_illegal)
 
 This is an optional attribute and it can be in the form "Yes" or "No".
 This is a possibility to indicate that the content was not only considered incompatible but also illegal.
 
-### Content Type (content_type)
+### Content type (content_type)
 
 This is a required attribute, and it tells us what type of content is targeted by the statement
 of reason.
@@ -502,7 +502,7 @@ The value provided must be an array with at least one of the following:
 @endphp
 </ul>
 
-### Content Type Other (content_type_other)
+### Content type other (content_type_other)
 
 This is required if CONTENT_TYPE_OTHER was the content_type.
 It is a content type that is not part of provided content type list.
@@ -614,7 +614,7 @@ The value provided must be one of the following:
   </li>
 </ul>
 
-### Additional Categories (category_addition)
+### Additional categories (category_addition)
 
 This is an optional attribute, and it tells us which additional categories the statement belongs to.
 
@@ -719,7 +719,7 @@ The value provided must be one of the following:
   </li>
 </ul>
 
-### Category Specification (category_specification)
+### Category specification (category_specification)
 
 This is an optional attribute, and it tells us which additional keywords the statement belongs to.
 
@@ -1160,13 +1160,13 @@ The attribute must be provided in key-value format.
 Currently, the only foreseen key that will be accepted is “EAN-13”, with which a product identifier in the form of an
 EAN-13 code can be submitted as a value.
 
-### Other Keyword (category_specification_other)
+### Other keyword (category_specification_other)
 
 This field can be provided if KEYWORD_OTHER is part of the category_specification.
 
 Limited to 500 characters.
 
-### Territorial Scope (territorial_scope)
+### Territorial scope (territorial_scope)
 
 This is a required attribute that defines territorial scope of the restriction. Each value must be the 2-letter iso code
 for the country and the countries must be (EU/EEA) countries.
@@ -1186,7 +1186,7 @@ For European Economic Area (EEA) use:
 @php echo '["' . implode('", "', \App\Services\EuropeanCountriesService::EUROPEAN_ECONOMIC_AREA_COUNTRY_CODES) . '"]';
 @endphp
 
-### Content Language (content_language)
+### Content language (content_language)
 
 This is the language that the content was in.
 
@@ -1199,7 +1199,7 @@ Ex,
 
 @php echo '"' . implode('", "', \App\Services\EuropeanLanguagesService::EUROPEAN_LANGUAGE_CODES) . '"'; @endphp
 
-### Content Date (content_date)
+### Content date (content_date)
 
 This is a required date field that indicates the upload or posting date of the content. The date should follow this
 format:
@@ -1210,7 +1210,7 @@ The day and the month have leading zeroes.
 
 The date must be after or equal to 2000-01-01.
 
-### Application Date (application_date)
+### Application date (application_date)
 
 This is the date that this decision starts from. The date needs to take the form of:
 
@@ -1220,7 +1220,7 @@ The day and the month have leading zeroes.
 
 The date must be after or equal to 2020-01-01.
 
-### End Date of account restriction (end_date_account_restriction)
+### End date of account restriction (end_date_account_restriction)
 
 This is the date that the decision on the account ends. Leave blank for indefinite.
 
@@ -1232,7 +1232,7 @@ The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
-### End Date of monetary restriction (end_date_monetary_restriction)
+### End date of monetary restriction (end_date_monetary_restriction)
 
 This is the date that the monetary decision ends. Leave blank for indefinite.
 
@@ -1244,7 +1244,7 @@ The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
-### End Date of service restriction (end_date_service_restriction)
+### End date of service restriction (end_date_service_restriction)
 
 This is the date that the provision decision ends. Leave blank for indefinite.
 
@@ -1256,7 +1256,7 @@ The day and the month have leading zeroes.
 
 The date must be after or equal to the application date.
 
-### End Date of visibility restriction (end_date_visibility_restriction)
+### End date of visibility restriction (end_date_visibility_restriction)
 
 This is the date that the visibility decision ends. Leave blank for indefinite.
 
@@ -1286,19 +1286,19 @@ The value provided must be one of the following:
 @endphp
 </ul>
 
-### Source Identity (source_identity)
+### Source identity (source_identity)
 
 This is an optional field to describe the source/notifier if needed. Will not be taken into account if the 'source_type'
 is set to 'SOURCE_VOLUNTARY'
 
 Limited to 500 characters.
 
-### Automated Detection (automated_detection)
+### Automated detection (automated_detection)
 
 This is a required attribute and it must be in the form "Yes" or "No".
 This indicates to us that decision taken in respect of automatically detected means.
 
-### Automated Decision (automated_decision)
+### Automated decision (automated_decision)
 
 This is a required attribute and it must be one of the following:
 
@@ -1313,7 +1313,7 @@ This is a required attribute and it must be one of the following:
 @endphp
 </ul>
 
-### Platform Unique Identifier (puid)
+### Platform unique identifier (puid)
 
 This is a string that uniquely identifies this statement within the platform. This attribute is required and it must be
 unique within your platform.
@@ -1334,7 +1334,7 @@ To check if an existing PUID is already used in a statement of reason using the 
 
 Replace ```<PUID>``` with the actual PUID you want to check.
 
-### Required Headers
+### Required headers
 
 <pre>
     Authorization: Bearer YOUR_TOKEN
@@ -1344,7 +1344,7 @@ Replace ```<PUID>``` with the actual PUID you want to check.
 
 ### Responses
 
-#### 1. SoR Not Found
+#### 1. SoR not found
 
 * HTTP Status: ```404 Not Found```
 * Response Body
@@ -1356,7 +1356,7 @@ Replace ```<PUID>``` with the actual PUID you want to check.
 }
 ```
 
-#### 2. SoR Found
+#### 2. SoR found
 
 * HTTP Status: ```302 Found```.
 * Response Body
@@ -1500,7 +1500,7 @@ If you sent
 }
 ```
 
-### Errors when Creating Multiple Statements of Reason
+### Errors when creating multiple statements of reason
 
 When you are you calling the multiple endpoint you will encounter the same errors as the single endpoint.
 However, the errors will be indexed to the Statement of Reason that you are trying to create.
@@ -1551,14 +1551,14 @@ This means that the decision provision is invalid in the statement of reason at 
 
 In this case, **NONE** of the statements where created, the request needs to be fixed and resent.
 
-### Token Error
+### Token error
 
 Another common error that may occur when calling the API is that the authorization token is not valid.
 
 This will result in a HTTP status code of ```401 Unauthorized```
 
 The API authorization token needs to be double checked or a new API authorization token needs to be
-generated. See again the section above: [Your API Token](#your-api-token)
+generated. See again the section above: [Your API token](#your-api-token)
 
 In addition to the common ```422``` and ```401``` errors, Any of the standard 4XX HTTP can be
 encountered. 4XX statuses generally indicate that there is an issue with your request. Please try to
@@ -1567,7 +1567,7 @@ troubleshoot and resolve the problem.
 When there is an error of 5XX we are immediately notified and there is no need
 to report the issue.
 
-### PUID Error
+### PUID error
 
 When you attempt to create a statement for your platform and there exists a statement with the same puid, the
 response will still be ```422 Unproccessable Content``` and the error returned will contain the existing
@@ -1610,11 +1610,11 @@ the statement. This will look like the following:
 }
 ```
 
-## Source Code
+## Source code
 
 The source code for this application can be viewed here:
 
-[DSA Transparency Database Source - GitHub](https://github.com/digital-services-act/transparency-database)
+[DSA transparency database source - GitHub](https://github.com/digital-services-act/transparency-database)
 
 Using the repository code you can even setup and run a local replica development testing area.
 
@@ -1624,7 +1624,7 @@ reviews concerning the source code.
 
 ## Changelog
 
-To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA Transparency Database has been updated on 1 July 2025 to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. Statements of reasons submitted to the DSA Transparency Database before 1 July 2025 remain available according to the old schema in line with the data retention policy of the DSA Transparency Database. For attributes which have undergone a change, the correspondence table below lists the data labels used under the old schema as well as their corresponding updates.
+To ensure consistency between the transparency tools of the DSA, the submission schema of the DSA transparency database has been updated on 1 July 2025 to reflect the requirements laid down in the Implementing Regulation on Transparency Reporting. Statements of reasons submitted to the DSA transparency database before 1 July 2025 remain available according to the old schema in line with the data retention policy of the DSA transparency database. For attributes which have undergone a change, the correspondence table below lists the data labels used under the old schema as well as their corresponding updates.
 
 
 | Attribute | Attribute option API v1 <br> (description in webform) | Attribute option API v2 <br> (description in webform) |

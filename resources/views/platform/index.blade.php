@@ -1,10 +1,10 @@
 @extends('layouts/ecl')
 
-@section('title', 'Manage Platforms')
+@section('title', 'Manage platforms')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}"/>
+    <x-ecl.breadcrumb label="User profile" url="{{ route('profile.start') }}"/>
     <x-ecl.breadcrumb label="Platforms"/>
 @endsection
 
@@ -25,7 +25,7 @@
     </p>
 
     <p class="ecl-u-type-paragraph">
-        <x-ecl.cta-button label="Create a Platform" url="{{ route('platform.create') }}"/>
+        <x-ecl.cta-button label="Create a platform" url="{{ route('platform.create') }}"/>
     </p>
 
     <table class="ecl-table ecl-table--zebra">

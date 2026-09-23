@@ -1,15 +1,15 @@
 @extends('layouts/ecl')
 
-@section('title', 'User Profile')
+@section('title', 'User profile')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile"/>
+    <x-ecl.breadcrumb label="User profile"/>
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1 ecl-u-mb-xl-6xl">User Profile </h1>
+    <h1 class="ecl-u-type-heading-1 ecl-u-mb-xl-6xl">User profile </h1>
     <p class="ecl-u-type-paragraph ecl-u-mb-xl-2xl"
        style="font-size:16pc; margin-top:-26px; font-style: italic !important">{{auth()->user()->email}}
         <a class="ecl-button ecl-button--ghost" href="/logout">Logout</a>
@@ -20,7 +20,7 @@
         @can('generate-api-key')
             <div class="ecl-col ecl-u-flex-item-grow">
                 <a class="ecl-button ecl-button--primary"
-                   href="{{ route('profile.api.index') }}">API Token Management</a>
+                   href="{{ route('profile.api.index') }}">API token management</a>
             </div>
         @endcan
         @can('create statements')
@@ -39,28 +39,28 @@
             @can('create users')
                 <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
-                       href="{{ route('user.index') }}">Manage Users</a>
+                       href="{{ route('user.index') }}">Manage users</a>
                 </div>
             @endcan
 
             @can('create platforms')
                 <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
-                       href="{{ route('platform.index') }}">Manage Platforms</a>
+                       href="{{ route('platform.index') }}">Manage platforms</a>
                 </div>
             @endcan
 
             @can('view logs')
                 <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
-                       href="{{ route('log-messages.index') }}">Log Messages</a>
+                       href="{{ route('log-messages.index') }}">Log messages</a>
                 </div>
             @endcan
 
             @can('view platforms')
                 <div class="ecl-col ecl-u-flex-item-grow">
                     <a class="ecl-button ecl-button--primary"
-                       href="{{ route('onboarding.index') }}">Onboarding Dashboard</a>
+                       href="{{ route('onboarding.index') }}">Onboarding dashboard</a>
                 </div>
             @endcan
         </div>
@@ -69,7 +69,7 @@
 
 
     @can('view platforms')
-    <h2 class="ecl-u-type-heading-2">Onboarding Statistics</h2>
+    <h2 class="ecl-u-type-heading-2">Onboarding statistics</h2>
 
     <h3 class="ecl-u-type-heading-3">VLOPs</h3>
 
@@ -84,7 +84,7 @@
             <tbody class="ecl-table__body">
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Onboarded Platforms
+                    Onboarded platforms
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $vlop_count }}
@@ -109,7 +109,7 @@
 
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Valid Tokens
+                    Valid tokens
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_vlop_valid_tokens }}
@@ -133,7 +133,7 @@
 
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Onboarded Platforms
+                    Onboarded platforms
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $non_vlop_count }}
@@ -159,7 +159,7 @@
 
             <tr class="ecl-table__row">
                 <td class="ecl-table__cell" data-ecl-table-header="Description">
-                    Valid Tokens
+                    Valid tokens
                 </td>
                 <td class="ecl-table__cell" data-ecl-table-header="Total">
                     {{ $total_non_vlop_valid_tokens }}

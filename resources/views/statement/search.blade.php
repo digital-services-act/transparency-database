@@ -4,13 +4,13 @@
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="Search for Statements of Reasons" url="{{ route('statement.index') }}" />
-    <x-ecl.breadcrumb label="Advanced Search" />
+    <x-ecl.breadcrumb label="Search for statements of reasons" url="{{ route('statement.index') }}" />
+    <x-ecl.breadcrumb label="Advanced search" />
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statements of Reasons: Advanced Search</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Statements of reasons: advanced search</h1>
 
     <p class="ecl-u-type-paragraph">
         On this page, you can search for statements of reasons submitted by providers
@@ -19,7 +19,7 @@
         providers of online platforms-to be specific, searching for the platform name
         in that box does not guarantee that you will get that platform's data, please
         use the “Platform” dropdown selector to select one or more platforms.
-        The data is updated once every day and a Data Retention Policy applies.
+        The data is updated once every day and a data retention policy applies.
     </p>
     <p class="ecl-u-type-paragraph">
         You can easily filter the statements of reasons submitted by each platform,

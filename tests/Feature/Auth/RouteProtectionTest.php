@@ -40,7 +40,7 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->contributor, $this->onboarding, $this->researcher];
 
         $this->check_route('profile.api.index', $allowed, $rejected);
-        $this->check_route_for_text('profile.start', $allowed, $rejected, 'API Token');
+        $this->check_route_for_text('profile.start', $allowed, $rejected, 'API token');
 
     }
 
@@ -52,7 +52,7 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->onboarding, $this->support];
 
         $this->check_route('platform.create', $allowed, $rejected);
-        $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage Platforms');
+        $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage platforms');
     }
 
     public function test_manage_users(): void
@@ -63,7 +63,7 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->onboarding, $this->support];
 
         $this->check_route('user.create', $allowed, $rejected);
-        $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage Users');
+        $this->check_route_for_text('profile.start', $allowed, $rejected, 'Manage users');
     }
 
     public function test_onboarding_dashboard(): void
@@ -76,7 +76,7 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->support, $this->onboarding];
 
         $this->check_route($route, $allowed, $rejected);
-        $this->check_route_for_text($route, $allowed, $rejected, 'Onboarding Dashboard');
+        $this->check_route_for_text($route, $allowed, $rejected, 'Onboarding dashboard');
 
     }
 
@@ -90,7 +90,7 @@ class RouteProtectionTest extends TestCase
         $allowed = [$this->support];
 
         $this->check_route($route, $allowed, $rejected);
-        //        $this->check_route_for_text($route, $allowed, $rejected, 'Log Messages');
+        //        $this->check_route_for_text($route, $allowed, $rejected, 'Log messages');
 
     }
 

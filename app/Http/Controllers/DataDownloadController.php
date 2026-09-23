@@ -57,7 +57,7 @@ class DataDownloadController extends Controller
 
         array_unshift($platforms, [
             'value' => ' ',
-            'label' => 'All Platforms',
+            'label' => 'All platforms',
         ]);
 
         return ['platforms' => $platforms];

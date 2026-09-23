@@ -10,7 +10,7 @@
 
 @section('breadcrumbs')
 <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-<x-ecl.breadcrumb label="Explore Data" />
+<x-ecl.breadcrumb label="Explore data" />
 <x-ecl.breadcrumb label="Download" more="true" />
 @endsection
 
@@ -62,7 +62,7 @@
             on all the
             database's non-free-text fields columns.<br />
             <br />
-            Please note that a <a class="ecl-link" href="/page/data-retention-policy">Data Retention Policy</a> applies to all files available for download.
+            Please note that a <a class="ecl-link" href="/page/data-retention-policy">Data retention policy</a> applies to all files available for download.
         </p>
 
     </div>
@@ -92,7 +92,7 @@
             <x-ecl.datepicker label="To" id="to_date" justlabel="true" name="to_date" :value="request()->get('to_date', '')" />
         </div>
         <div class="ecl-col-l-4">
-            <x-ecl.select label="Select a Platform" name="platform_id" id="platform_id" justlabel="true"
+            <x-ecl.select label="Select a platform" name="platform_id" id="platform_id" justlabel="true"
                 :options="$options['platforms']" :default="request()->get('platform_id', '')" />
 
         </div>
