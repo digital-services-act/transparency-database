@@ -3,50 +3,21 @@
     'unique' => uniqid(),
     'open' => false
 ])
-<div class="ecl-accordion ecl-u-mt-l" data-ecl-accordion id="accordion-{{ $unique }}">
-    <div class="ecl-accordion__item">
-        <h3 class="ecl-accordion__title" id="accordion-title-{{ $unique }}">
-            <button type="button"
-                    class="ecl-accordion__toggle"
-                    data-ecl-accordion-toggle
-                    data-ecl-label-expanded="Close"
-                    data-ecl-label-collapsed="Open"
-                    aria-controls="accordion-content-{{ $unique }}">
-                <span class="ecl-accordion__toggle-flex">
-                    <span class="ecl-accordion__toggle-title">
-                        {{ $label }}
-                    </span>
-                    <span class="ecl-accordion__toggle-indicator">
-                        <svg class="ecl-icon ecl-icon--s ecl-accordion__toggle-icon" focusable="false" aria-hidden="true" data-ecl-accordion-icon>
-                            <x-ecl.icon icon="plus" />
-                        </svg>
-                        <svg class="ecl-icon ecl-icon--s ecl-accordion__toggle-icon" focusable="false" aria-hidden="true" data-ecl-accordion-icon>
-                            <x-ecl.icon icon="minus" />
-                        </svg>
-                    </span>
-                </span>
-            </button>
-        </h3>
-        <div class="ecl-accordion__content" hidden="" id="accordion-content-{{ $unique }}" role="region">
+<div class="ecl-accordion ecl-u-mt-l" data-ecl-auto-init="Accordion">
+    <details class="ecl-accordion__item is-first" @if($open) open @endif>
+        <summary class="ecl-accordion__toggle">
+            {{ $label }}
+            <svg class="ecl-icon ecl-icon--s ecl-accordion__toggle-icon"
+                 focusable="false" aria-hidden="true">
+                <x-ecl.icon icon="plus" />
+            </svg>
+            <svg class="ecl-icon ecl-icon--s ecl-accordion__toggle-icon"
+                 focusable="false" aria-hidden="true">
+                <x-ecl.icon icon="minus" />
+            </svg>
+        </summary>
+        <div class="ecl-accordion__content">
             {{ $slot }}
         </div>
-    </div>
+    </details>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-    var elt = document.querySelector('#accordion-{{ $unique }}');
-    var accordion = new ECL.Accordion(elt);
-    accordion.init();
-
-    const shouldOpen = @json($open);
-
-    if (shouldOpen) {
-        const toggle = elt.querySelector('[data-ecl-accordion-toggle]');
-        if (toggle && toggle.getAttribute('aria-expanded') !== 'true') {
-            toggle.click();
-        }
-    }
-  })
-</script>
-

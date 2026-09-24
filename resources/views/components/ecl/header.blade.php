@@ -43,29 +43,33 @@
              data-ecl-auto-init="Menu"
              data-ecl-menu-label-open="Menu"
              data-ecl-menu-label-close="Close"
-             aria-expanded="false"
-             role="navigation">
+             role="navigation"
+             aria-label="Main navigation">
             <div class="ecl-menu__overlay"></div>
             <div class="ecl-container ecl-menu__container">
 
-
-                <a href="{{ route('home') }}"
-                   class="ecl-link ecl-link--standalone ecl-link--icon ecl-button ecl-button--tertiary ecl-menu__open ecl-link--icon-only"
-                   data-ecl-menu-open>
-                    <svg class="ecl-icon ecl-icon--m ecl-link__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="hamburger"/>
-                    </svg>
-                    <svg class="ecl-icon ecl-icon--m ecl-link__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="close"/>
-                    </svg>
-                    <span class="ecl-link__label">Menu</span>
-                </a>
+                <button class="ecl-button ecl-button--tertiary ecl-button--neutral ecl-menu__open ecl-button--icon-only"
+                        data-ecl-menu-open
+                        type="button"
+                        aria-expanded="false">
+                    <span class="ecl-button__container">
+                        <svg class="ecl-icon ecl-icon--m ecl-button__icon ecl-icon--hamburger"
+                             focusable="false" aria-hidden="true" data-ecl-icon>
+                            <x-ecl.icon icon="hamburger"/>
+                        </svg>
+                        <svg class="ecl-icon ecl-icon--m ecl-button__icon ecl-icon--close"
+                             focusable="false" aria-hidden="true" data-ecl-icon>
+                            <x-ecl.icon icon="close"/>
+                        </svg>
+                        <span class="ecl-button__label" data-ecl-label="true">Menu</span>
+                    </span>
+                </button>
 
                 <section class="ecl-menu__inner" data-ecl-menu-inner role="application" aria-label="Menu">
 
                     <header class="ecl-menu__inner-header">
 
-                        <button class="ecl-button ecl-button--ghost ecl-menu__back"
+                        <button class="ecl-button ecl-button--tertiary ecl-menu__back"
                                 type="submit" data-ecl-menu-back>
                             <span class="ecl-button__container">
                                 <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-button__icon"

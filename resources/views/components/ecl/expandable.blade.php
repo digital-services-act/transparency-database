@@ -1,7 +1,7 @@
 @props(['label' => 'label', 'unique' => uniqid()])
 <div class="ecl-expandable" data-ecl-expandable="true" data-ecl-auto-init="Expandable">
-    <button class="ecl-button ecl-button--ghost ecl-expandable__toggle" type="button"
-        aria-controls="expandable-{{ $unique }}" data-ecl-expandable-toggle=""
+    <button class="ecl-button ecl-button--tertiary ecl-expandable__toggle" type="button"
+        aria-controls="expandable-{{ $unique }}-content" data-ecl-expandable-toggle=""
         data-ecl-label-expanded="{{ $label }}" data-ecl-label-collapsed="{{ $label }}" aria-expanded="false">
         <span class="ecl-button__container">
             <span class="ecl-button__label" data-ecl-label="true">{{ $label }}</span>
@@ -11,7 +11,7 @@
             </svg>
         </span>
     </button>
-    <div id="expandable-{{ $unique }}" class="ecl-expandable__content" hidden="">
+    <div id="expandable-{{ $unique }}-content" class="ecl-expandable__content" hidden="">
         {{ $slot }}
     </div>
 </div>
