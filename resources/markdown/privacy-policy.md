@@ -1,4 +1,4 @@
-<strong>Processing operation</strong>:  Access to the Digital Services Act (”DSA”) Transparency Database.
+<strong>Processing operation</strong>:  Access to the Digital Services Act (”DSA”) transparency database.
 
 <strong>Data Controller</strong>: European Commission, Directorate-General for Communications, Networks, Content and
 Technology, Unit F.1 and F.2 (hereafter “CNECT F.1 and F2”).
@@ -18,13 +18,13 @@ ensure protection of all personal data provided, how that information is used an
 your personal data. It also specifies the contact details of the responsible Data Controller with whom you may exercise
 your rights, the Data Protection Officer and the European Data Protection Supervisor.
 
-The information in relation to processing operation “Access to the Transparency Database for submission of statements
+The information in relation to processing operation “Access to the transparency database for submission of statements
 of reasons” undertaken by CNECT F.1 and F.2 is presented below.
 
 ## 2. Why and how do we process your personal data?
 
 Purpose of the processing operation: CNECT F.1 and F.2 process your personal data to grant you access to the
-Transparency Database, that is to say the database set up by the Commission to allow providers of online platforms to
+transparency database, that is to say the database set up by the Commission to allow providers of online platforms to
 submit the decisions and the statements of reasons referred to in Article 17(1) of the DSA.
 
 Your personal data will not be used for automated decision-making including profiling.

@@ -1,12 +1,12 @@
 @php use Symfony\Component\VarDumper\VarDumper; @endphp
 @extends('layouts/ecl')
 
-@section('title', 'Log Messages')
+@section('title', 'Log messages')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}" />
-    <x-ecl.breadcrumb label="Log Messages" />
+    <x-ecl.breadcrumb label="User profile" url="{{ route('profile.start') }}" />
+    <x-ecl.breadcrumb label="Log messages" />
 @endsection
 
 
@@ -19,7 +19,7 @@
         </form>
     </div>
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Log Messages</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Log messages</h1>
 
 
     <form action="{{ route('log-messages.destroy') }}" method="POST">

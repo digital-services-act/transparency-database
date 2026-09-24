@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <head>
 
-        <title>Login - DSA Transparency Database</title>
+        <title>Login - DSA transparency database</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 
@@ -66,7 +66,7 @@
 {{--                                            {{ auth()->user()->name }} &nbsp;--}}
 {{--                                        @endauth--}}
 {{--                                        @guest--}}
-{{--                                            Log In--}}
+{{--                                            Log in--}}
 {{--                                        @endguest--}}
 {{--                                    </a>--}}
 {{--                                </div>--}}
@@ -86,7 +86,7 @@
 
         <div class="ecl-site-header__banner">
             <div class="ecl-container">
-                <div class="ecl-site-header__site-name">DSA Transparency Database</div>
+                <div class="ecl-site-header__site-name">DSA transparency database</div>
             </div>
         </div>
 
@@ -157,7 +157,7 @@
                         <input type="password" name="password" id="password" class="ecl-text-input ecl-text-input--l"/>
                     </div>
 
-                    <button type="submit" class="ecl-button ecl-button--primary">Log In</button>
+                    <button type="submit" class="ecl-button ecl-button--primary">Log in</button>
                 </form>
 
 

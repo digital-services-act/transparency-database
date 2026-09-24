@@ -30,7 +30,7 @@ class Statement extends Model
         'METHOD_API_MULTI' => self::METHOD_API_MULTI,
     ];
 
-    public const LABEL_STATEMENT_ACCOUNT_TYPE = 'Type of Account';
+    public const LABEL_STATEMENT_ACCOUNT_TYPE = 'Type of account';
 
     public const ACCOUNT_TYPE_BUSINESS = 'Business';
 
@@ -60,7 +60,7 @@ class Statement extends Model
         'SOURCE_VOLUNTARY' => self::SOURCE_VOLUNTARY,
     ];
 
-    public const LABEL_STATEMENT_CONTENT_TYPE = 'Content Type';
+    public const LABEL_STATEMENT_CONTENT_TYPE = 'Content type';
 
     public const CONTENT_TYPE_APP = 'App';
 
@@ -68,7 +68,7 @@ class Statement extends Model
 
     public const CONTENT_TYPE_PRODUCT = 'Product';
 
-    public const CONTENT_TYPE_SYNTHETIC_MEDIA = 'Synthetic Media';
+    public const CONTENT_TYPE_SYNTHETIC_MEDIA = 'Synthetic media';
 
     public const CONTENT_TYPE_TEXT = 'Text';
 
@@ -106,7 +106,7 @@ class Statement extends Model
 
     public const AUTOMATED_DECISION_PARTIALLY = 'Partially automated';
 
-    public const AUTOMATED_DECISION_NOT_AUTOMATED = 'Not Automated';
+    public const AUTOMATED_DECISION_NOT_AUTOMATED = 'Not automated';
 
     public const AUTOMATED_DECISIONS = [
         'AUTOMATED_DECISION_FULLY' => self::AUTOMATED_DECISION_FULLY,
@@ -114,11 +114,11 @@ class Statement extends Model
         'AUTOMATED_DECISION_NOT_AUTOMATED' => self::AUTOMATED_DECISION_NOT_AUTOMATED,
     ];
 
-    public const LABEL_STATEMENT_DECISION_GROUND = 'Decision Ground';
+    public const LABEL_STATEMENT_DECISION_GROUND = 'Decision ground';
 
-    public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or Law relied upon in taking the decision';
+    public const LABEL_STATEMENT_DECISION_GROUND_REFERENCE_URL = 'TOS or law relied upon in taking the decision';
 
-    public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal Content';
+    public const DECISION_GROUND_ILLEGAL_CONTENT = 'Illegal content';
 
     public const DECISION_GROUND_INCOMPATIBLE_CONTENT = 'Content incompatible with terms and conditions';
 
@@ -229,7 +229,7 @@ class Statement extends Model
 
     public const LABEL_STATEMENT_CATEGORY = 'Category';
 
-    public const LABEL_STATEMENT_CATEGORY_ADDITION = 'Additional Categories';
+    public const LABEL_STATEMENT_CATEGORY_ADDITION = 'Additional categories';
 
     public const STATEMENT_CATEGORY_ANIMAL_WELFARE = 'Animal welfare';
 
@@ -498,7 +498,7 @@ class Statement extends Model
         'KEYWORD_OTHER' => self::KEYWORD_OTHER,
     ];
 
-    public const LABEL_STATEMENT_PUID = 'Platform Unique Identifier';
+    public const LABEL_STATEMENT_PUID = 'Platform unique identifier';
 
     public const LABEL_STATEMENT_DECISION_FACTS = 'Facts and circumstances relied on in taking the decision';
 

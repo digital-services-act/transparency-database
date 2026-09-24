@@ -1,44 +1,44 @@
 @extends('layouts/ecl')
 
-@section('title', 'Database Velocity')
+@section('title', 'Database velocity')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="Database Velocity" />
+    <x-ecl.breadcrumb label="Database velocity" />
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1">Database Velocity</h1>
+    <h1 class="ecl-u-type-heading-1">Database velocity</h1>
 
     @if($velocities->isEmpty())
         <p class="ecl-u-type-paragraph">No velocity data recorded yet. Data is collected every minute.</p>
     @else
         <div class="ecl-u-mb-l">
-            <h2 class="ecl-u-type-heading-2">Rows per Second (Last Hour)</h2>
+            <h2 class="ecl-u-type-heading-2">Rows per second (last hour)</h2>
             <canvas id="rpsChart" height="80"></canvas>
         </div>
 
         <div class="ecl-u-mb-l">
-            <h2 class="ecl-u-type-heading-2">Max Statement ID (Last Hour)</h2>
+            <h2 class="ecl-u-type-heading-2">Max statement ID (last hour)</h2>
             <canvas id="maxIdChart" height="80"></canvas>
         </div>
 
-        <h2 class="ecl-u-type-heading-2">Raw Data</h2>
+        <h2 class="ecl-u-type-heading-2">Raw data</h2>
         <table class="ecl-table ecl-table--zebra">
             <thead>
                 <tr class="ecl-table__row">
                     <th class="ecl-table__header">Time</th>
-                    <th class="ecl-table__header">Max Statement ID</th>
-                    <th class="ecl-table__header">Rows / Second</th>
+                    <th class="ecl-table__header">Max statement ID</th>
+                    <th class="ecl-table__header">Rows / second</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($velocities->reverse() as $velocity)
                     <tr class="ecl-table__row">
                         <td class="ecl-table__cell" data-ecl-table-header="Time">{{ $velocity->created_at->format('H:i:s') }}</td>
-                        <td class="ecl-table__cell" data-ecl-table-header="Max Statement ID">{{ number_format($velocity->max_statement_id) }}</td>
-                        <td class="ecl-table__cell" data-ecl-table-header="Rows / Second">{{ $velocity->rows_per_second }}</td>
+                        <td class="ecl-table__cell" data-ecl-table-header="Max statement ID">{{ number_format($velocity->max_statement_id) }}</td>
+                        <td class="ecl-table__cell" data-ecl-table-header="Rows / second">{{ $velocity->rows_per_second }}</td>
                     </tr>
                 @endforeach
             </tbody>

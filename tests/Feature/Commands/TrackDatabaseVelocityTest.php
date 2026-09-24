@@ -46,7 +46,7 @@ class TrackDatabaseVelocityTest extends TestCase
         $response = $this->withoutMiddleware(PreventRequestsDuringMaintenance::class)
             ->get(route('database-velocity.index'));
         $response->assertStatus(200);
-        $response->assertSee('Database Velocity');
+        $response->assertSee('Database velocity');
     }
 
     public function test_the_velocity_page_displays_recorded_data(): void
@@ -58,6 +58,6 @@ class TrackDatabaseVelocityTest extends TestCase
         $response = $this->withoutMiddleware(PreventRequestsDuringMaintenance::class)
             ->get(route('database-velocity.index'));
         $response->assertStatus(200);
-        $response->assertSee('Rows per Second');
+        $response->assertSee('Rows per second');
     }
 }

@@ -1,45 +1,45 @@
 ## Overview
 
-This documentation describes the DSA Transparency Database Research API. Its endpoints are designed to enable
+This documentation describes the DSA transparency database Research API. Its endpoints are designed to enable
 programmatic access to and queries of statements of reasons (SORs) for academic and policy research into platforms’
 content moderation practices.
 
-By providing specialized access to search and analyse data within the statement_index of the DSA Transparency Database
+By providing specialized access to search and analyse data within the statement_index of the DSA transparency database
 in OpenSearch, the Research API supports a wide range of technically advanced research and investigative applications.
-In enabling programmatic analysis, the DSA Transparency Database Research API complements the other analytical tools of
-the DSA Transparency Database, namely its public [dashboard](/dashboard) for quick exploration and visualisation of the
+In enabling programmatic analysis, the DSA transparency database Research API complements the other analytical tools of
+the DSA transparency database, namely its public [dashboard](/dashboard) for quick exploration and visualisation of the
 data and the [dsa-tdb](https://code.europa.eu/dsa/transparency-database/dsa-tdb) analytical package enabling advanced
 analysis of individually downloaded statements of reasons.
 
-## Purpose and Scope
+## Purpose and scope
 
-The DSA Transparency Database Research API empowers interested stakeholders with the relevant technical knowledge to
-retrieve specific subsets of data within the OpenSearch statement_index of the DSA Transparency Database and to perform
+The DSA transparency database Research API empowers interested stakeholders with the relevant technical knowledge to
+retrieve specific subsets of data within the OpenSearch statement_index of the DSA transparency database and to perform
 complex queries based on their research interests. As such, it lends itself in particular to facilitate longitudinal and
 cross-platform studies, i.e. to the systematic investigation of trends and patterns in the data.
 
-In line with the DSA Transparency Database [data retention policy](/page/data-retention-policy), the statement_index
+In line with the DSA transparency database [data retention policy](/page/data-retention-policy), the statement_index
 only contains statements of reasons submitted by platforms within the last 6 months. Older statements of reasons are not
-available through the Research API endpoints. The DSA Transparency Database Research API endpoints are specifically
+available through the Research API endpoints. The DSA transparency database Research API endpoints are specifically
 designed for programmatic statistical and pattern analysis, NOT for bulk data collection. You can find an overview of
-other tools to analyse the data in the DSA Transparency Database [here](/explore-data/overview).
+other tools to analyse the data in the DSA transparency database [here](/explore-data/overview).
 
-## How to Get Access
+## How to get access
 
-1.&nbsp;Create an EU Login Account. Please find the instructions to create an EU Login
-Account [here](https://trusted-digital-identity.europa.eu/eu-login-help/external-self-registered-account-faq/how-do-i-create-my-eu-login-account_en).
+1.&nbsp;Create an EU login account. Please find the instructions to create an EU login
+account [here](https://trusted-digital-identity.europa.eu/eu-login-help/external-self-registered-account-faq/how-do-i-create-my-eu-login-account_en).
 
-2.&nbsp;Visit the DSA Transparency Database Page by
+2.&nbsp;Visit the DSA transparency database page by
 clicking [here](https://transparency.dsa.ec.europa.eu/profile/start).
 
 3.&nbsp;Contact the DSA Helpdesk at [CNECT-DSA-HELPDESK@ec.europa.eu](mailto:CNECT-DSA-HELPDESK@ec.europa.eu) with your
 EU Login details and express your interest in obtaining an authentication token for the Research API. The DSA Helpdesk
 will process your request and update your account with the appropriate permissions.
 
-4.&nbsp;Log into the DSA Transparency Database website with your EU Login Account and test your access with basic
+4.&nbsp;Log into the DSA transparency database website with your EU login account and test your access with basic
 queries
 
-## Use Conditions & Limitations
+## Use conditions & limitations
 
 1.&nbsp;By receiving your authentication token, you agree to use it responsibly & within the limitations specified in
 this documentation.
@@ -57,7 +57,7 @@ temporarily blocked from making further requests.
 
 6.&nbsp;The maximum result size is 1000 rows per query and there is no pagination support.
 
-7.&nbsp;In line with the DSA Transparency Database [data retention policy](/page/data-retention-policy), the
+7.&nbsp;In line with the DSA transparency database [data retention policy](/page/data-retention-policy), the
 statement_index only contains statements of reasons submitted by platforms within the last 6 months. As such, older
 statements are not available through these API endpoints.
 
@@ -66,7 +66,7 @@ statements are not available through these API endpoints.
 9.&nbsp;The Research endpoints are NOT intended for downloading large volumes of individual statements of reasons.
 The [data download](/explore-data/download) section of the website enables bulk data download.
 
-## Available Endpoints
+## Available endpoints
 
 <table class="ecl-table">
   <thead>
@@ -144,7 +144,7 @@ https://transparency.dsa.ec.europa.eu/api/v1/research
 For detailed information on how to construct OpenSearch DSL queries, refer to
 the [OpenSearch Query DSL Documentation](https://opensearch.org/docs/latest/query-dsl/).
 
-## Statement Index Schema
+## Statement index schema
 
 The statement_index contains the following fields that can be used in your queries:
 
@@ -207,26 +207,26 @@ The statement_index contains the following fields that can be used in your queri
 - Fields of type boolean accept true/false values
 - Fields of type long are numeric identifiers
 
-## Detailed Endpoint Documentation
+## Detailed endpoint documentation
 
 ## SEARCH
 
 This endpoint enables complex search using OpenSearch DSL. For detailed information on how to construct OpenSearch DSL
 queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.org/docs/latest/query-dsl/).
 
-### Endpoint Name
+### Endpoint name
 
 **POST** `https://transparency.dsa.ec.europa.eu/api/v1/research/search`
 
-### Endpoint-Specific Limitations
+### Endpoint-specific limitations
 
 - Results are limited to **1000 rows** per query.
 - Total hits are tracked accurately (`track_total_hits` is enabled).
 - For bulk downloads, please use the [data download](/explore-data/download) section of the website.
 
-### Example Use Cases
+### Example use cases
 
-#### Analysis of Scams & Fraud Moderation Patterns
+#### Analysis of scams & fraud moderation patterns
 
 - Tracks scams & fraud moderation across a six-month period.
 - Compares platform responses to scams & fraud.
@@ -258,7 +258,7 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 }
 ```
 
-#### Regional Content Moderation Analysis
+#### Regional content moderation analysis
 
 - Compares content moderation approaches across EU member states.
 - Analyzes regional variations in moderation decisions based on illegality.
@@ -291,7 +291,7 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 }
 ```
 
-#### Analysis of the Use of Automated Means in Content Moderation
+#### Analysis of the use of automated means in content moderation
 
 - Evaluates the use of automated means in content moderation.
 
@@ -324,7 +324,7 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 }
 ```
 
-#### Basic Temporal Analysis:
+#### Basic temporal analysis:
 
 - Displays daily trends in content moderation
 - Tracks changes in platforms’ behaviour over time
@@ -373,9 +373,9 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 
 \* Use `platform_name.keyword` whenever you need to group, sort, or aggregate by this field. `platform_name` is a full-text (analyzed) field, meaning its value is broken into tokens for search (e.g. "TikTok EU" → ["tiktok", "eu"]). Aggregations require exact values, so OpenSearch provides a `.keyword` subfield that stores the original string unchanged.
 
-### Example Request Body & Response
+### Example request body & response
 
-### Request Body
+### Request body
 
 ```json
 {
@@ -455,7 +455,7 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 }
 ```
 
-### Response Fields
+### Response fields
 
 - **took**: Time in milliseconds for OpenSearch to execute the search.
 - **timed_out**: Whether the search timed out.
@@ -489,11 +489,11 @@ queries, refer to the [OpenSearch Query DSL Documentation](https://opensearch.or
 This endpoint enables SQL-like queries using OpenSearch SQL functionality. For detailed guidance, refer to
 the [OpenSearch SQL Documentation](https://opensearch.org/docs/latest/sql/).
 
-### Endpoint Name
+### Endpoint name
 
 **POST** `https://transparency.dsa.ec.europa.eu/api/v1/research/sql`
 
-### Endpoint-Specific Limitations
+### Endpoint-specific limitations
 
 - OpenSearch SQL is a subset of standard SQL with specific limitations.
 - Queries can ONLY be executed against the `statement_index`.
@@ -506,7 +506,7 @@ the [OpenSearch SQL Documentation](https://opensearch.org/docs/latest/sql/).
 - No support for `CTEs` (Common Table Expressions).
 - No support for `UNION` operations.
 
-### Query Constraints
+### Query constraints
 
 - `FROM` clause must always be `FROM statement_index`.
 - Results are always limited to **1000 rows**.
@@ -565,9 +565,9 @@ ORDER BY decision_count DESC;
 
 \* Use `platform_name.keyword` whenever you need to group, sort, or aggregate by this field. `platform_name` is a full-text (analyzed) field, meaning its value is broken into tokens for search (e.g. "TikTok EU" → ["tiktok", "eu"]). Aggregations require exact values, so OpenSearch provides a `.keyword` subfield that stores the original string unchanged.
 
-### Example Request Body & Response
+### Example request body & response
 
-### Request Body:
+### Request body:
 
 ```json
 {
@@ -577,7 +577,7 @@ ORDER BY decision_count DESC;
 }
 ```
 
-### Response Formats:
+### Response formats:
 
 #### Default format:
 
@@ -685,7 +685,7 @@ ORDER BY decision_count DESC;
 
 This endpoint returns the count of documents matching the provided OpenSearch DSL query.
 
-### Endpoint Name
+### Endpoint name
 
 **POST** `https://transparency.dsa.ec.europa.eu/api/v1/research/count`
 
@@ -722,7 +722,7 @@ This endpoint returns the count of documents matching the provided OpenSearch DS
 }
 ```
 
-2.&nbsp;Analysis of Content Type distribution:
+2.&nbsp;Analysis of content type distribution:
 
 - Shows distribution of content types across VLOPs
 - Reveals platform-specific content patterns
@@ -750,7 +750,7 @@ This endpoint returns the count of documents matching the provided OpenSearch DS
 }
 ```
 
-### Response Format
+### Response format
 
 ```json
 {
@@ -773,11 +773,11 @@ Performs searches using OpenSearch
 DQL ([Dashboards Query Language](https://opensearch.org/docs/latest/dashboards/dql/)). DQL is a simple text-based query
 language that uses field:value syntax to filter data. This query language resembles the Apache Lucene Query language.
 
-### Endpoint Name
+### Endpoint name
 
 **POST** `https://transparency.dsa.ec.europa.eu/api/v1/research/query`
 
-### Request Format:
+### Request format:
 
 ```json
 {
@@ -824,7 +824,7 @@ powerful way to group and analyze data based on specific fields, similar to SQL'
 summarizing and analyzing large datasets by grouping similar data together, calculating metrics, and discovering
 patterns in the data.
 
-### Endpoint Name
+### Endpoint name
 
 **GET** `https://transparency.dsa.ec.europa.eu/api/v1/research/aggregates/{date}[/{fields}]`
 
@@ -836,7 +836,7 @@ patterns in the data.
     - List of specific fields to aggregate on, separated by double underscores (e.g., decision_ground__platform_id)
     - The keyword all to aggregate on all available fields
 
-### Available Aggregation Fields:
+### Available aggregation fields:
 
 - automated_decision
 - automated_detection- category
@@ -845,9 +845,9 @@ patterns in the data.
 - decision_provision
 - decision_visibility_single- platform_id- received_date- source_type
 
-### Using Specific Fields vs 'all'
+### Using specific fields vs 'all'
 
-### Specific Fields Approach:
+### Specific fields approach:
 
 - More focused and performant
 - Useful when you have specific questions to answer
@@ -978,7 +978,7 @@ Response:
 }
 ```
 
-### Performance Considerations:
+### Performance considerations:
 
 - Specific attributes queries are more efficient as they compute fewer aggregations
 - 'All' queries might be slower and more resource-intensive
@@ -992,7 +992,7 @@ queries. Keystone values are machine-friendly strings that represent specific ca
 For example, when filtering statements by category in your queries, you would use the keystone value
 STATEMENT_CATEGORY_ANIMAL_WELFARE rather than the human-readable label "Animal Welfare".
 
-### Endpoint Name
+### Endpoint name
 
 **GET** `https://transparency.dsa.ec.europa.eu/api/v1/research/labels`
 
@@ -1030,11 +1030,11 @@ This endpoint returns a list of all platforms in the system along with their uni
 Online Platform) status. The platform IDs can be used for filtering in queries when you need to target specific
 platforms.
 
-### Endpoint Name
+### Endpoint name
 
 **GET** `https://transparency.dsa.ec.europa.eu/api/v1/research/platforms`
 
-## Support and Query Responsibility
+## Support and query responsibility
 
 These API endpoints are provided as-is and act as direct interfaces to the OpenSearch index. Please note:
 
@@ -1056,7 +1056,7 @@ For more detailed query guidance, refer to:
 - [OpenSearch Query DSL Documentation](https://opensearch.org/docs/latest/query-dsl/)
 - [OpenSearch SQL Documentation](https://opensearch.org/docs/latest/search-plugins/sql/sql/index/)- [OpenSearch DQL Documentation](https://opensearch.org/docs/latest/dashboards/dql/)
 
-## Error Handling
+## Error handling
 
 ### Common error responses and their implications:
 
@@ -1070,27 +1070,26 @@ For more detailed query guidance, refer to:
 - Insufficient permissions
 - Check authentication credentials
 
-#### 404: Not Found
+#### 404: Not found
 
 - Invalid endpoint or parameter
 - Verify API endpoint URLs
 - Check parameter formatting
 
-#### 500: Internal Server Error
+#### 500: Internal server error
 
 - Server-side processing issue
 - Document error context
 - Consider simplifying complex queries
 
-#### 504: Gateway Timeout
+#### 504: Gateway timeout
 
 - Query exceeded 30-second timeout
 - Optimize query performance
 - Break down into smaller time ranges
 
-#### 413: Payload Too Large
+#### 413: Payload too large
 
 - Response exceeds 5MB limit
 - Reduce query scope
 - Use pagination or date partitioning
-

@@ -2,7 +2,7 @@
 
 This sub-category consists of the following datapoints:
 
-[1. A Platform Unique Identifier (PUID)](#1-platform-unique-identifier-puid)
+[1. A platform unique identifier (PUID)](#1-platform-unique-identifier-puid)
 
 [2. Specifications on the content that is affected by the statement](#2-specifications-of-the-content-affected-by-the-decision)
 
@@ -14,12 +14,12 @@ also increase the database’s function to ensure transparency and to enable scr
 moderation decisions in line with recital 66 of the DSA._
 
 
-### 1. Platform Unique Identifier (PUID)
+### 1. Platform unique identifier (PUID)
 
 This is a string that uniquely identifies this statement within the platform’s systems.
 
 The PUID allows localisation of the exact information that is affected by the decision and 
-the Statement of Reasons within a platform’s own systems. It offers the opportunity to connect
+the statement of reasons within a platform’s own systems. It offers the opportunity to connect
 the data in this database with the information that was affected by the decision, including 
 the URL where the information is/was hosted by the platform. The characteristics of the PUID 
 are to be decided by the platform. It is a requirement that every PUID is unique and may not 
@@ -41,7 +41,7 @@ a video modified by (generative) AI tools could be described as both, a video an
 media. If none of the before-mentioned options adequately describe the type of content subject 
 to the restrictions imposed by the statement of reasons, “Other” can also be selected.
 
-#### 2.2. Specification of Content Type Other (content_type_other)
+#### 2.2. Specification of content type other (content_type_other)
 
 If the selected option for the attribute content_type was content_type_other, a further 
 specification is required. Please only indicate the nature of a content type that is not 
@@ -172,7 +172,7 @@ Taking the example above, the end_date_visibility_restriction attribute would be
 the end_date_account_restriction attribute would be set to a date three months after the 
 application_date attribute.
 
-#### 4.1. Application Date (application_date)
+#### 4.1. Application date (application_date)
 
 This is the date, from which the restriction(s) applies/y.
 
@@ -251,7 +251,7 @@ trusted flaggers are also notices under Article 16, but if they are submitted by
 flagger, this option should be selected. Alternatively, an investigation can be based on a 
 platform’s own voluntary initiative.
 
-#### 7.2. Source/Notifier (source_identity)
+#### 7.2. Source/notifier (source_identity)
 
 In accordance with Article 17(3)(b) of the Regulation, the identity of the notifier needs to 
 be included in the statement of reasons, but only if that is strictly necessary to identify the 
@@ -287,13 +287,13 @@ reasons to provide information on the use made of automated means in taking the 
 including information on whether the decision was taken in respect of content detected or 
 identified using automated means._
 
-### 9. Automated Detection
+### 9. Automated detection
 
 This attribute automated_detection indicates whether and to what extent automated means were 
 used to identify the specific information addressed by the decision. ‘Yes’ means that automated 
 means were used to identify the specific information addressed by the decision.
 
-### 10. Automated Decision
+### 10. Automated decision
 
 This attribute automated_decision indicates whether and to what extent automated means were used 
 to decide on the infringing nature of the specific information addressed by the decision. 
@@ -332,7 +332,7 @@ A category indicating the type of illegality, or the type of TOS incompatibility
 which the content was moderated, must be selected. The categories allow queries for information 
 necessary to enable scrutiny over content moderation decisions._
 
-### 11. Decision Grounds (decision_ground)
+### 11. Decision grounds (decision_ground)
 
 This attribute indicates whether the decision was taken in line with article 17(3)(d), meaning 
 that the information was allegedly illegal, or in line with article 17(3)(e), meaning that the 
@@ -353,12 +353,12 @@ refer to those.
 
 ### 13. For allegedly incompatible information: the contractual ground relied upon
 
-#### 13.1. Incompatible Content Grounds (incompatible_content_ground)
+#### 13.1. Incompatible content grounds (incompatible_content_ground)
 
 This is a field where the exact contractual ground (i.e. the relevant section in the applicable 
 terms and conditions) that was relied upon in taking the decision must be stated.
 
-#### 13.2. Incompatible Content Explanation (incompatible_content_explanation)
+#### 13.2. Incompatible content explanation (incompatible_content_explanation)
 
 This is a field to explain as to why the information is considered incompatible with a specific 
 section in the service’s terms and conditions. The explanation does not have to repeat the facts 
@@ -382,7 +382,7 @@ taking the decision, or a direct URL to the applicable law relied on to take a d
 alleged illegality of information. An example of the direct reference to the DSA is: 
 [https://eur-lex.europa.eu/eli/reg/2022/2065](https://eur-lex.europa.eu/eli/reg/2022/2065).
 
-### 16. Category & Specification (category, category_addition, category_specification)
+### 16. Category & specification (category, category_addition, category_specification)
 
 A list of categories and specifications are included to codify the type of illegality and/or the type of 
 incompatibility with terms and conditions that led to the restriction of the information. The 
