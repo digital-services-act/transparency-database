@@ -9,7 +9,7 @@
                         <picture class="ecl-picture ecl-site-header__picture" title="European Commission">
                             <source srcset="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                 media="(min-width: 576px)">
-                            <source srcset="{{asset('static/ecl/images/logo/logo-ec--mute.svg')}}"
+                            <source srcset="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                 media="(min-width: 1px)">
                             <img class="ecl-site-header__logo-image"
                                  src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
@@ -89,30 +89,35 @@
                                id="ecl-menu-home-link">Home</a>
                         </li>
 
-                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
+                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-dashboard">
                             <a href="{{ route('dashboard') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">Dashboard</a>
+                               id="ecl-menu-dashboard-link">Dashboard</a>
                         </li>
 
-                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                            data-ecl-has-children=""
-                            aria-expanded="false" id="ecl-menu-item-platforms">
+                        <li class="ecl-menu__item ecl-menu__item--has-children"
+                            data-ecl-menu-item
+                            data-ecl-has-children
+                            aria-haspopup
+                            data-expanded="false"
+                            id="ecl-menu-item-explore-data">
                             <a href="{{  route('explore-data.overview') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
-                               data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">Explore Data</a>
-                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
+                               data-ecl-menu-link
+                               id="ecl-menu-item-explore-data-link">Explore Data</a>
+                            <button class="ecl-button ecl-button--tertiary ecl-button--m ecl-button--neutral ecl-menu__button-caret"
                                     type="button"
-                                    data-ecl-menu-caret="" aria-label="Explore Data"
+                                    data-ecl-menu-caret
+                                    aria-label="Explore Data"
+                                    aria-describedby="ecl-menu-item-explore-data-link"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
                                             <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon"
                                                 focusable="false"
                                                 aria-hidden="true"
-                                                data-ecl-icon="">
+                                                data-ecl-icon>
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </span>
@@ -152,31 +157,36 @@
 
 
 
-                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
+                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-statements">
                             <a href="{{ route('statement.index') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">Search for Statements of Reasons</a>
+                               id="ecl-menu-statements-link">Search for Statements of Reasons</a>
                         </li>
 
 
-                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                            data-ecl-has-children=""
-                            aria-expanded="false" id="ecl-menu-item-platforms">
+                        <li class="ecl-menu__item ecl-menu__item--has-children"
+                            data-ecl-menu-item
+                            data-ecl-has-children
+                            aria-haspopup
+                            data-expanded="false"
+                            id="ecl-menu-item-documentation">
                             <a href="{{  route('page.show', ['documentation']) }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
-                               data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">Documentation</a>
-                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
+                               data-ecl-menu-link
+                               id="ecl-menu-item-documentation-link">Documentation</a>
+                            <button class="ecl-button ecl-button--tertiary ecl-button--m ecl-button--neutral ecl-menu__button-caret"
                                     type="button"
-                                    data-ecl-menu-caret="" aria-label="Platforms"
+                                    data-ecl-menu-caret
+                                    aria-label="Documentation"
+                                    aria-describedby="ecl-menu-item-documentation-link"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
                                             <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon"
                                                 focusable="false"
                                                 aria-hidden="true"
-                                                data-ecl-icon="">
+                                                data-ecl-icon>
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </span>
