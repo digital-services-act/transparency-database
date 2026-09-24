@@ -13,11 +13,6 @@
         cl.add('has-js');
     </script>
 
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.2/pikaday.js"
-        crossorigin="anonymous"
-    ></script>
-
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
     <link
@@ -48,6 +43,12 @@
     >
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+
+    <style>
+        .duet-date__dialog {
+            z-index: 1000;
+        }
+    </style>
 
 
     @section('extra-head')
@@ -95,12 +96,8 @@
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"
-        integrity="sha512-QoJS4DOhdmG8kbbHkxmB/rtPdN62cGWXAdAFWWJPvUFF1/zxcPSdAnn4HhYZSIlVoLVEJ0LesfNlusgm2bPfnA=="
-        crossorigin="anonymous"></script>
-
-
 <script defer src="https://webtools.europa.eu/load.js?globan=1110" type="text/javascript"></script>
+<script src="{{ asset('static/ecl/scripts/duet.js') }}"></script>
 <script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
 
 <script>
