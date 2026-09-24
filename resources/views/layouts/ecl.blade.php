@@ -28,6 +28,19 @@
         media="screen"
     >
 
+    {{-- Webtools' normal ECL icon definitions are hosted locally so icons also work on non-europa.eu hosts. --}}
+    <link
+        rel="stylesheet"
+        href="{{ asset('static/ecl/styles/webtools.icons.default.css') }}"
+        media="screen"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ asset('static/ecl/styles/ecl-icon-local.css') }}"
+        media="screen"
+    >
+
     <link
         rel="stylesheet"
         href="{{ asset('static/ecl/styles/optional/ecl-ec-utilities.css') }}"
@@ -99,6 +112,7 @@
 <script defer src="https://webtools.europa.eu/load.js?globan=1110" type="text/javascript"></script>
 <script src="{{ asset('static/ecl/scripts/duet.js') }}"></script>
 <script src="{{ asset('static/ecl/scripts/ecl-ec.js') }}" crossorigin="anonymous"></script>
+<script src="{{ asset('static/ecl/scripts/webtools-icons.js') }}"></script>
 
 <script>
 

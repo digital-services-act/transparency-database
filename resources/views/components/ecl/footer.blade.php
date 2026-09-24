@@ -107,27 +107,57 @@
                             <ul class="ecl-social-media-follow__list">
                                 <li class="ecl-social-media-follow__item">
                                     <a href="https://ec.social-network.europa.eu/@EUCommission"
-                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-social-media-follow__link">Mastodon</a>
+                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-link--icon ecl-social-media-follow__link ecl-link--icon-only"
+                                       data-section-label-untranslated="Follow us"
+                                       data-footer-link-label="Mastodon">
+                                        <x-ecl.social-icon network="mastodon" />
+                                        <span class="ecl-link__label">Mastodon</span>
+                                    </a>
                                 </li>
                                 <li class="ecl-social-media-follow__item">
                                     <a href="https://www.linkedin.com/company/european-commission"
-                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-social-media-follow__link">LinkedIn</a>
+                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-link--icon ecl-social-media-follow__link ecl-link--icon-only"
+                                       data-section-label-untranslated="Follow us"
+                                       data-footer-link-label="LinkedIn">
+                                        <x-ecl.social-icon network="linkedin" />
+                                        <span class="ecl-link__label">LinkedIn</span>
+                                    </a>
                                 </li>
                                 <li class="ecl-social-media-follow__item">
                                     <a href="https://wsocial.eu/profile/ec.europa.eu/"
-                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-social-media-follow__link">WSocial</a>
+                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-link--icon ecl-social-media-follow__link ecl-link--icon-only"
+                                       data-section-label-untranslated="Follow us"
+                                       data-footer-link-label="WSocial">
+                                        <x-ecl.social-icon network="wsocial" />
+                                        <span class="ecl-link__label">WSocial</span>
+                                    </a>
                                 </li>
                                 <li class="ecl-social-media-follow__item">
                                     <a href="https://www.facebook.com/EuropeanCommission"
-                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-social-media-follow__link">Facebook</a>
+                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-link--icon ecl-social-media-follow__link ecl-link--icon-only"
+                                       data-section-label-untranslated="Follow us"
+                                       data-footer-link-label="Facebook">
+                                        <x-ecl.social-icon network="facebook" />
+                                        <span class="ecl-link__label">Facebook</span>
+                                    </a>
                                 </li>
                                 <li class="ecl-social-media-follow__item">
                                     <a href="https://www.youtube.com/user/eutube"
-                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-social-media-follow__link">Youtube</a>
+                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-link--icon ecl-social-media-follow__link ecl-link--icon-only"
+                                       data-section-label-untranslated="Follow us"
+                                       data-footer-link-label="Youtube">
+                                        <x-ecl.social-icon network="youtube" />
+                                        <span class="ecl-link__label">Youtube</span>
+                                    </a>
                                 </li>
                                 <li class="ecl-social-media-follow__item">
                                     <a href="https://european-union.europa.eu/contact-eu/social-media-channels_en"
-                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-social-media-follow__link">Other networks</a>
+                                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-link--icon ecl-social-media-follow__link ecl-link--icon-only"
+                                       data-section-label-untranslated="Follow us"
+                                       data-footer-link-label="Other networks">
+                                        <x-ecl.social-icon network="other" />
+                                        <span class="ecl-link__label">Other networks</span>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
