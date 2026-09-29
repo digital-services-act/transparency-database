@@ -1,25 +1,25 @@
 @extends('layouts/ecl')
 
-@section('title', 'Onboarding Dashboard')
+@section('title', 'Onboarding dashboard')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="User Profile" url="{{ route('profile.start') }}"/>
-    <x-ecl.breadcrumb label="Onboarding Dashboard"/>
+    <x-ecl.breadcrumb label="User profile" url="{{ route('profile.start') }}"/>
+    <x-ecl.breadcrumb label="Onboarding dashboard"/>
 @endsection
 
 
 @section('content')
 
     <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">
-        Onboarding Dashboard
+        Onboarding dashboard
     </h1>
 
     <form class="ecl-u-mt-2xl">
 
         <div class="ecl-row">
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.select label="Select Type of Platform:"
+                <x-ecl.select label="Select type of platform:"
                               name="vlop"
                               id="vlop"
                               :options="$options['vlops']"
@@ -28,7 +28,7 @@
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.select label="Platform is Onboarded:"
+                <x-ecl.select label="Platform is onboarded:"
                               name="onboarded"
                               id="onboarded"
                               :options="$options['onboardeds']"
@@ -37,7 +37,7 @@
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.select label="Platform has Tokens:"
+                <x-ecl.select label="Platform has tokens:"
                               name="has_tokens"
                               id="has_tokens"
                               :options="$options['has_tokens']"
@@ -46,7 +46,7 @@
                 />
             </div>
             <div class="ecl-col-m-3 ecl-u-align-content-center">
-                <x-ecl.select label="Platform has Statements:"
+                <x-ecl.select label="Platform has statements:"
                               name="has_statements"
                               id="has_statements"
                               :options="$options['has_statements']"
@@ -106,7 +106,7 @@
             <h3 class="ecl-u-type-heading-3">
                 {{ $platform->name }}
                 <a href="{{ route('platform.edit', ['platform' => $platform, 'returnto' => request()->fullUrl()]) }}"
-                   class="ecl-link" title="Edit Platform">
+                   class="ecl-link" title="Edit platform">
                     <svg class="ecl-icon ecl-icon--m ecl-button__icon" focusable="false" aria-hidden="true"
                          data-ecl-icon>
                         <x-ecl.icon icon="edit"/>
@@ -134,7 +134,7 @@
             @if(count($platform->users) === 0)
                 <p class="ecl-u-type-paragraph">
                     No users found.
-                    <x-ecl.cta-button label="Create a User"
+                    <x-ecl.cta-button label="Create a user"
                                       url="{{ route('user.create', ['returnto' => request()->fullUrl(), 'platform_id' => $platform->id]) }}"/>
                 </p>
             @else

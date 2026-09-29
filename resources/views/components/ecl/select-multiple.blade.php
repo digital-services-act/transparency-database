@@ -1,8 +1,8 @@
 @props([
     'enter_keyword'=>'Enter keyword',
-    'select_item'=>'Select an Item',
+    'select_item'=>'Select an item',
     'justlabel' => false,
-    'select_all' => 'Select All',
+    'select_all' => 'Select all',
     'label' => 'label',
     'required' => false,
     'help' => false,
@@ -46,4 +46,3 @@
     <x-ecl.error-feedback :name="$name" :error="$error"/>
 
 </div>
-

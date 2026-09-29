@@ -1,7 +1,7 @@
 **Legal Disclaimer**: As established under Article 24(5) of Regulation (EU) 2022/2065 on a Single
 Market For Digital Services and amending Directive 2000/31/EC (Digital Services Act), or the ‘DSA’, providers
 of online platforms shall submit their decisions and statements of reasons referred to in Article 17(1) DSA to
-be included in the DSA Transparency Database. This publicly accessible machine-readable database is managed by
+be included in the DSA transparency database. This publicly accessible machine-readable database is managed by
 the Directorate-General for Communications Networks, Content and Technology of the Commission. The purpose of
 the database is to provide insights and transparency on the content moderation practices by online platforms.
 The Commission does not review the information submitted from the providers of online platforms.

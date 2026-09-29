@@ -31,7 +31,7 @@
                 @if ($similarity_results)
                     <div class="ecl-u-mb-l" style="width: 400px;">
                         <span class="ecl-u-type-paragraph">
-                            <strong>Similar Searches</strong>
+                            <strong>Similar searches</strong>
                         </span>
                         <br />
                         @foreach ($similarity_results as $result)
@@ -168,7 +168,7 @@
             </div>
         </div>
 
-        <x-ecl.accordion label="Advanced Filter" :open="$shouldOpenAdvancedFilter">
+        <x-ecl.accordion label="Advanced filter" :open="$shouldOpenAdvancedFilter">
 
             <x-ecl.select-multiple
                 :label="Statement::LABEL_STATEMENT_ACCOUNT_TYPE"
@@ -312,7 +312,7 @@
             />
 
             <x-ecl.datepicker
-                label="Created Starting"
+                label="Created starting"
                 id="created_at_start"
                 justlabel="true"
                 name="created_at_start"
@@ -322,7 +322,7 @@
             />
 
             <x-ecl.datepicker
-                label="Created Ending"
+                label="Created ending"
                 id="created_at_end"
                 justlabel="true"
                 name="created_at_end"

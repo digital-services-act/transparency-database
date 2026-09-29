@@ -6,12 +6,12 @@
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
     <x-ecl.breadcrumb label="Dashboard" url="{{ route('dashboard') }}" />
     <x-ecl.breadcrumb label="Permissions" url="{{ route('permission.index') }}" />
-    <x-ecl.breadcrumb label="Create a Permission" />
+    <x-ecl.breadcrumb label="Create a permission" />
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Create a Permission</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Create a permission</h1>
 
     <form method="post" action="{{route('permission.store')}}">
         @csrf
@@ -21,4 +21,3 @@
 
 
 @endsection
-

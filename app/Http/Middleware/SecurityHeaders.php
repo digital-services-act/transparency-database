@@ -32,7 +32,7 @@ class SecurityHeaders
         // X-Content-Type-Options
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
-        $response->headers->set('Strict-Transport-Security', 'Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
 
         return $response;
     }

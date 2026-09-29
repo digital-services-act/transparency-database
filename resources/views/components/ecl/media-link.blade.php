@@ -1,4 +1,4 @@
-@props(['url' => null, 'label' => '', 'image' => 'https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-text-logo.jpg'])
+@props(['url' => null, 'label' => '', 'image' => 'https://dsa-images-disk.s3.eu-central-1.amazonaws.com/dsa-text-logo.jpg', 'image_alt' => null])
 <div class="ecl-media-container">
     <figure class="ecl-media-container__figure">
         <div class="ecl-media-container__caption">
@@ -6,7 +6,7 @@
                 <picture class="ecl-picture ecl-media-container__picture">
                     <img class="ecl-media-container__media"
                          src="{{ $image }}"
-                         @if($label) alt="{{ $label }}" @endif>
+                         alt="{{ $image_alt ?? strip_tags($label) }}">
                 </picture>
             </a>
             @if($label)

@@ -10,40 +10,39 @@ This website is managed by the European Commission’s Directorate-General Commu
 
 This website is designed to comply with the [technical standard for websites and mobile apps EN 301 549 v.3.2.1](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/en_301549v030201p.pdf). This closely follows level ‘AA’ of the [Web Content Accessibility Guidelines (WCAG) version 2.1](https://www.w3.org/TR/WCAG21/).
 
-## Compliance Status
+## Compliance status
 This website is partially compliant with the [technical standard for websites and mobile apps EN 301 549 v.3.2.1](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/en_301549v030201p.pdf) and the [Web Content Accessibility Guidelines (WCAG) version 2.1](https://www.w3.org/TR/WCAG21/). See the [Non-accessible content](#non-accessible-content) section for more details.
 
 The website was last tested on 11/10/2024.
 
-## Preparation of this Statement
+## Preparation of this statement
 This statement was reviewed on 11/10/2024.  
 
 The statement is based on a review by an automated tool called Axe Monitor.
 
 ## Feedback
-We welcome your feedback on the accessibility of the DSA Transparency Database website. Please let us know if you encounter accessibility barriers:
+We welcome your feedback on the accessibility of the DSA transparency database website. Please let us know if you encounter accessibility barriers:
 
 - **Phone**: 00 800 6 7 8 9 10 11
 - **Contact form**: [Write to us](#) (please refrain from providing sensitive information in the form, e.g., any information that would reveal personal financial information, information related to your health, or any other sensitive topic).
 
 We try to respond to feedback within 15 business days from the date of receipt of the enquiry by the responsible Commission department.
 
-## Compatibility with Browsers and Assistive Technology
-The DSA Transparency Database website is designed to be compatible with the following most-used assistive technologies:
+## Compatibility with browsers and assistive technology
+The DSA transparency database website is designed to be compatible with the following most-used assistive technologies:
 - The latest version of Google Chrome and Apple Safari browsers
 - In combination with the latest versions of JAWS, NVDA, VoiceOver, and TalkBack
 
-## Technical Specifications
-The accessibility of the DSA Transparency Database website relies on the following technologies to work with the particular combination of web browser and any assistive technologies or plugins installed on your computer:
+## Technical specifications
+The accessibility of the DSA transparency database website relies on the following technologies to work with the particular combination of web browser and any assistive technologies or plugins installed on your computer:
 - HTML
 - WAI-ARIA
 - CSS
 - JavaScript
 
-## Non-accessible Content
-Despite our best efforts to ensure accessibility of the DSA Transparency Database website, we are aware of some limitations which we are working to fix. Below is a description of known limitations and potential solutions. Please contact us if you encounter an issue not listed below.
+## Non-accessible content
+Despite our best efforts to ensure accessibility of the DSA transparency database website, we are aware of some limitations which we are working to fix. Below is a description of known limitations and potential solutions. Please contact us if you encounter an issue not listed below.
 
-### Known limitations of the DSA Transparency Database website:
+### Known limitations of the DSA transparency database website:
 
 - Some selects are not clearly associated with form controls
-

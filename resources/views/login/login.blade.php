@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <head>
 
-        <title>Login - DSA Transparency Database</title>
+        <title>Login - DSA transparency database</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 
@@ -66,7 +66,7 @@
 {{--                                            {{ auth()->user()->name }} &nbsp;--}}
 {{--                                        @endauth--}}
 {{--                                        @guest--}}
-{{--                                            Log In--}}
+{{--                                            Log in--}}
 {{--                                        @endguest--}}
 {{--                                    </a>--}}
 {{--                                </div>--}}
@@ -86,7 +86,7 @@
 
         <div class="ecl-site-header__banner">
             <div class="ecl-container">
-                <div class="ecl-site-header__site-name">DSA Transparency Database</div>
+                <div class="ecl-site-header__site-name">DSA transparency database</div>
             </div>
         </div>
 
@@ -157,7 +157,7 @@
                         <input type="password" name="password" id="password" class="ecl-text-input ecl-text-input--l"/>
                     </div>
 
-                    <button type="submit" class="ecl-button ecl-button--primary">Log In</button>
+                    <button type="submit" class="ecl-button ecl-button--primary">Log in</button>
                 </form>
 
 
@@ -169,8 +169,8 @@
 
 
 <script src="https://unpkg.com/svg4everybody@2.1.9/dist/svg4everybody.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
-        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"
+        integrity="sha512-QoJS4DOhdmG8kbbHkxmB/rtPdN62cGWXAdAFWWJPvUFF1/zxcPSdAnn4HhYZSIlVoLVEJ0LesfNlusgm2bPfnA=="
         crossorigin="anonymous"></script>
 <script
     src="{{ asset('static/scripts/ecl-ec.js') }}"
@@ -182,4 +182,3 @@
 </script>
 </body>
 </html>
-

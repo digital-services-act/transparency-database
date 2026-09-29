@@ -15,7 +15,7 @@
       <th class="ecl-table__header">Platform</th>
       <th class="ecl-table__header">Restrictions</th>
       <th class="ecl-table__header">Category</th>
-      <th class="ecl-table__header">Creation Date</th>
+      <th class="ecl-table__header">Creation date</th>
     </tr>
   </thead>
   <tbody class="ecl-table__body">
@@ -26,7 +26,7 @@
       <td class="ecl-table__cell" data-ecl-table-header="Restrictions">{{$statement->restrictions()}}</td>
       <td class="ecl-table__cell" data-ecl-table-header="Category">
       {{Statement::STATEMENT_CATEGORIES[$statement->category]}}</td>
-      <td class="ecl-table__cell" data-ecl-table-header="Creation Date">{{ $statement->created_at->format('Y-m-d') }}
+      <td class="ecl-table__cell" data-ecl-table-header="Creation date">{{ $statement->created_at->format('Y-m-d') }}
       </td>
     </tr>
 

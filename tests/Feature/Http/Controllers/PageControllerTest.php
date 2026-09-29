@@ -23,8 +23,8 @@ class PageControllerTest extends TestCase
         $response->assertViewIs('page');
         $response->assertSee('Test Page');
         $response->assertSee('This is a test page content');
-        $response->assertViewHas('page_title', 'Test Page');
-        $response->assertViewHas('breadcrumb', 'Test Page');
+        $response->assertViewHas('page_title', 'Test page');
+        $response->assertViewHas('breadcrumb', 'Test page');
         $response->assertViewHas('show_feedback_link', false);
 
         File::delete($testfile);
@@ -66,8 +66,8 @@ class PageControllerTest extends TestCase
         $response = $this->get('/page/api-documentation');
 
         $response->assertStatus(200);
-        $response->assertViewHas('page_title', 'API and Schema');
-        $response->assertViewHas('breadcrumb', 'API and Schema');
+        $response->assertViewHas('page_title', 'API and schema');
+        $response->assertViewHas('breadcrumb', 'API and schema');
     }
 
     public function test_profile_show_sets_profile_flag(): void
@@ -104,5 +104,13 @@ class PageControllerTest extends TestCase
         $response->assertSee('id="another-section"', false);
 
         File::delete($testfile);
+    }
+
+    public function test_markdown_images_include_alternative_text(): void
+    {
+        $response = $this->get('/page/announcements');
+
+        $response->assertStatus(200);
+        $response->assertSee('alt="Timeline of the DSA transparency database retention policy: statements are removed from search after 6 months; daily dumps are archived and dashboard statistics stop after 5 years."', false);
     }
 }

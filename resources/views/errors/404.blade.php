@@ -1,10 +1,10 @@
 @extends('layouts/ecl')
 
-@section('title', '404 - Not Found')
+@section('title', '404 - Not found')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="404 - Not Found"/>
+    <x-ecl.breadcrumb label="404 - Not found"/>
 @endsection
 
 @section('extra-head')
@@ -27,7 +27,7 @@
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1">404 - Not Found</h1>
+    <h1 class="ecl-u-type-heading-1">404 - Not found</h1>
 
 
 

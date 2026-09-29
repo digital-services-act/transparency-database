@@ -34,16 +34,16 @@ class PageController extends Controller
             return redirect($redirects[$page]);
         }
 
-        $page_title = ucwords(str_replace('-', ' ', (string) $page));
+        $page_title = ucfirst(str_replace('-', ' ', (string) $page));
 
         $page_title_mods = [
-            'Api Documentation' => 'API and Schema',
-            'Research Api' => 'Research API',
-            'Onboarding Documentation' => 'Platform Onboarding Documentation',
-            'Legal Information' => 'Legal Notice',
-            'Documentation' => 'Overview Documentation',
-            'Webform Documentation' => 'Webform Documentation',
-            'Accessibility Statement' => 'Accessibility Statement',
+            'Api documentation' => 'API and schema',
+            'Research api' => 'Research API',
+            'Onboarding documentation' => 'Platform onboarding documentation',
+            'Legal information' => 'Legal notice',
+            'Documentation' => 'Overview documentation',
+            'Webform documentation' => 'Webform documentation',
+            'Accessibility statement' => 'Accessibility statement',
 
         ];
 
@@ -51,17 +51,17 @@ class PageController extends Controller
             $page_title = $page_title_mods[$page_title];
         }
 
-        $breadcrumb = ucwords(str_replace('-', ' ', (string) $page));
+        $breadcrumb = ucfirst(str_replace('-', ' ', (string) $page));
 
         $breadcrumb_mods = [
             'Home' => '',
-            'Onboarding Documentation' => 'Onboarding Documentation',
-            'Api Documentation' => 'API and Schema',
-            'Research Api' => 'Research API',
+            'Onboarding documentation' => 'Platform onboarding documentation',
+            'Api documentation' => 'API and schema',
+            'Research api' => 'Research API',
             'Documentation' => 'Documentation',
-            'Webform Documentation' => 'Webform Documentation',
-            'Legal Information' => 'Legal Notice',
-            'Accessibility Statement' => 'Accessibility Statement',
+            'Webform documentation' => 'Webform documentation',
+            'Legal information' => 'Legal notice',
+            'Accessibility statement' => 'Accessibility statement',
         ];
 
         if (isset($breadcrumb_mods[$breadcrumb])) {

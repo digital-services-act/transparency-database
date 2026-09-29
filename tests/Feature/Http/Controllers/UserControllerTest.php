@@ -156,10 +156,10 @@ class UserControllerTest extends TestCase
 
         $roles = $controller->getAvailableRolesToDisplay();
 
-        $this->assertCount(3, $roles); // Only Contributor, Support and Researcher roles should be visible
+        $this->assertCount(4, $roles); // Contributor, Support, Researcher, and User roles should be visible
         $this->assertFalse($roles->contains('name', 'Admin'));
         $this->assertFalse($roles->contains('name', 'Onboarding'));
-        $this->assertFalse($roles->contains('name', 'User'));
+        $this->assertTrue($roles->contains('name', 'User'));
     }
 
     public function test_deleting_user_deletes_the_rest(): void

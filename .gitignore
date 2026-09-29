@@ -35,3 +35,4 @@ database.sqlite
 !/storage/app/.gitignore
 .DS_Store
 scratch.sh
+AGENTS.md
