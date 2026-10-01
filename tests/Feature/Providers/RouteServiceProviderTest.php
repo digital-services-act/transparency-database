@@ -39,6 +39,32 @@ class RouteServiceProviderTest extends TestCase
         $this->assertLimit($limit, 100, 60, '203.0.113.10');
     }
 
+    public function test_multiple_statement_api_requests_have_a_lower_user_limit(): void
+    {
+        $user = User::factory()->create();
+        $request = Request::create('/api/v1/statements', 'POST');
+        $request->setUserResolver(static fn () => $user);
+
+        $limits = RateLimiter::limiter('api-multiple')($request);
+
+        $this->assertIsArray($limits);
+        $this->assertCount(2, $limits);
+
+        $this->assertLimit($limits[0], 2, 1, 'second:user:'.$user->id);
+        $this->assertLimit($limits[1], 120, 60, 'minute:user:'.$user->id);
+    }
+
+    public function test_anonymous_multiple_statement_api_requests_keep_the_same_ip_limit(): void
+    {
+        $request = Request::create('/api/v1/statements', 'POST', server: [
+            'REMOTE_ADDR' => '203.0.113.11',
+        ]);
+
+        $limit = RateLimiter::limiter('api-multiple')($request);
+
+        $this->assertLimit($limit, 100, 60, '203.0.113.11');
+    }
+
     private function assertLimit(Limit $limit, int $attempts, int $decaySeconds, string $key): void
     {
         $this->assertSame($attempts, $limit->maxAttempts);

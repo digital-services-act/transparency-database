@@ -17,6 +17,10 @@ class RouteServiceProvider extends ServiceProvider
 
     private const AUTHENTICATED_API_REQUESTS_PER_MINUTE = 12000;
 
+    private const AUTHENTICATED_MULTI_API_REQUESTS_PER_SECOND = 2;
+
+    private const AUTHENTICATED_MULTI_API_REQUESTS_PER_MINUTE = 120;
+
     private const ELEVATED_WEB_DOWNLOAD_ROUTES = [
         'aggregates.download',
         'dayarchive.download',
@@ -77,6 +81,26 @@ class RouteServiceProvider extends ServiceProvider
                     ->by('second:user:'.$user->id)
                     ->response($response),
                 Limit::perMinute(self::AUTHENTICATED_API_REQUESTS_PER_MINUTE)
+                    ->by('minute:user:'.$user->id)
+                    ->response($response),
+            ];
+        });
+
+        RateLimiter::for('api-multiple', static function (Request $request): Limit|array {
+            $response = static fn (Request $request, array $headers) => response('Limit Reached. Please do not overload the API', 429, $headers);
+            $user = $request->user();
+
+            if (! $user) {
+                return Limit::perMinute(100)
+                    ->by($request->ip())
+                    ->response($response);
+            }
+
+            return [
+                Limit::perSecond(self::AUTHENTICATED_MULTI_API_REQUESTS_PER_SECOND)
+                    ->by('second:user:'.$user->id)
+                    ->response($response),
+                Limit::perMinute(self::AUTHENTICATED_MULTI_API_REQUESTS_PER_MINUTE)
                     ->by('minute:user:'.$user->id)
                     ->response($response),
             ];

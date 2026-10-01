@@ -23,7 +23,10 @@ Route::middleware('auth:sanctum')->group(static function () {
 
     Route::get('statement/existing-puid/{puid}', [StatementAPIController::class, 'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
     Route::post('statement', [StatementAPIController::class, 'store'])->name('api.v1.statement.store')->can('create statements');
-    Route::post('statements', [StatementMultipleAPIController::class, 'store'])->name('api.v1.statements.store')->can('create statements');
+    Route::post('statements', [StatementMultipleAPIController::class, 'store'])
+        ->middleware('throttle:api-multiple')
+        ->name('api.v1.statements.store')
+        ->can('create statements');
 
     Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
         Route::get('indices', [ElasticSearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
