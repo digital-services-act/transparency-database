@@ -77,8 +77,16 @@ class DayArchiveService
         return $exports;
     }
 
-    public function getFirstIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
+    public function getFirstIdOfDate(
+        Carbon $date,
+        int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES,
+        bool $useLegacySecondBySecond = false,
+    )
     {
+        if ($useLegacySecondBySecond) {
+            return $this->getFirstIdBySecond($date);
+        }
+
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
 
@@ -93,8 +101,16 @@ class DayArchiveService
         return $this->getFirstIdFromBoundaryWindow('platform_puids', $startOfDay, $endOfDay, $boundaryMinutes);
     }
 
-    public function getLastIdOfDate(Carbon $date, int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES)
+    public function getLastIdOfDate(
+        Carbon $date,
+        int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES,
+        bool $useLegacySecondBySecond = false,
+    )
     {
+        if ($useLegacySecondBySecond) {
+            return $this->getLastIdBySecond($date);
+        }
+
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
 
@@ -107,6 +123,38 @@ class DayArchiveService
         $endOfDay = $startOfDay->copy()->addDay();
 
         return $this->getLastIdFromBoundaryWindow('platform_puids', $startOfDay, $endOfDay, $boundaryMinutes);
+    }
+
+    private function getFirstIdBySecond(Carbon $date): int|false
+    {
+        $startOfDay = $date->copy()->startOfDay();
+
+        for ($second = 0; $second < 60; $second++) {
+            $timestamp = $startOfDay->copy()->addSeconds($second)->format('Y-m-d H:i:s');
+            $id = DB::table('statements_beta')->where('created_at', $timestamp)->min('id');
+
+            if ($id) {
+                return (int) $id;
+            }
+        }
+
+        return false;
+    }
+
+    private function getLastIdBySecond(Carbon $date): int|false
+    {
+        $endOfDay = $date->copy()->endOfDay()->startOfSecond();
+
+        for ($second = 0; $second < 60; $second++) {
+            $timestamp = $endOfDay->copy()->subSeconds($second)->format('Y-m-d H:i:s');
+            $id = DB::table('statements_beta')->where('created_at', $timestamp)->max('id');
+
+            if ($id) {
+                return (int) $id;
+            }
+        }
+
+        return false;
     }
 
     private function getFirstIdFromBoundaryWindow(string $table, Carbon $startOfDay, Carbon $endOfDay, int $boundaryMinutes)

@@ -17,9 +17,9 @@ class RouteServiceProvider extends ServiceProvider
 
     private const AUTHENTICATED_API_REQUESTS_PER_MINUTE = 12000;
 
-    private const AUTHENTICATED_MULTI_API_REQUESTS_PER_SECOND = 2;
+    private const AUTHENTICATED_MULTI_API_REQUESTS_PER_SECOND = 4;
 
-    private const AUTHENTICATED_MULTI_API_REQUESTS_PER_MINUTE = 120;
+    private const AUTHENTICATED_MULTI_API_REQUESTS_PER_MINUTE = 240;
 
     private const ELEVATED_WEB_DOWNLOAD_ROUTES = [
         'aggregates.download',

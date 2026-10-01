@@ -27,6 +27,7 @@ class StatementsElasticIndexDateSeq extends Command
         {range=false}
         {chains=8 : Number of independent root indexing chains to dispatch per indexable ID range.}
         {--benchmark : Log per-chunk indexing timing metrics from the queued indexing jobs.}
+        {--legacy-second-by-second : Use the legacy second-by-second lookups in the first and last minute for daily ID bounds.}
         {--skip-id-range=* : Inclusive statement ID range(s) to skip while queueing indexing jobs, format start:end. May be repeated.}';
 
     /**
@@ -48,11 +49,12 @@ class StatementsElasticIndexDateSeq extends Command
         $use_range = $this->boolifyArgument('range');
         $chains = $this->positiveIntArgument('chains');
         $benchmark = (bool) $this->option('benchmark');
+        $useLegacySecondBySecond = (bool) $this->option('legacy-second-by-second');
 
         Log::info('Step 3');
-        $min = $day_archive_service->getFirstIdOfDate($date);
+        $min = $day_archive_service->getFirstIdOfDate($date, useLegacySecondBySecond: $useLegacySecondBySecond);
         Log::info('Step 4');
-        $max = $day_archive_service->getLastIdOfDate($date);
+        $max = $day_archive_service->getLastIdOfDate($date, useLegacySecondBySecond: $useLegacySecondBySecond);
 
         if ($min && $max) {
             $skip_id_ranges = $this->skipIdRanges();
@@ -85,6 +87,7 @@ class StatementsElasticIndexDateSeq extends Command
                 'chains_per_range' => $chains,
                 'root_jobs' => count($root_ranges),
                 'benchmark' => $benchmark,
+                'legacy_second_by_second' => $useLegacySecondBySecond,
             ]);
 
             foreach ($root_ranges as $range) {

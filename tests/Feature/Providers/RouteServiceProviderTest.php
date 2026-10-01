@@ -50,8 +50,8 @@ class RouteServiceProviderTest extends TestCase
         $this->assertIsArray($limits);
         $this->assertCount(2, $limits);
 
-        $this->assertLimit($limits[0], 2, 1, 'second:user:'.$user->id);
-        $this->assertLimit($limits[1], 120, 60, 'minute:user:'.$user->id);
+        $this->assertLimit($limits[0], 4, 1, 'second:user:'.$user->id);
+        $this->assertLimit($limits[1], 240, 60, 'minute:user:'.$user->id);
     }
 
     public function test_anonymous_multiple_statement_api_requests_keep_the_same_ip_limit(): void
