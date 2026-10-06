@@ -87,6 +87,24 @@ Additionally, your local installation will need to be hosted on a domain that en
 
 ex, https://transparency.test.europa.eu
 
+#### API token lookup cache
+
+Sanctum token records are cached for a fixed five minutes in the Redis cache store.
+Configure the existing `REDIS_*` connection settings and keep `SANCTUM_CACHE_STORE=redis`
+on every application instance. This store is independent of `CACHE_DRIVER`; automated
+tests use the array store instead. Redis must be available for bearer authentication:
+cache errors fail the request rather than bypassing authentication.
+
+Only token attributes are cached. Sanctum still verifies the secret and expiration,
+and user and permission data remain fresh. Cache hits do not extend the five-minute
+lifetime, and entries never outlive the token's configured expiration.
+
+Token changes and individual model deletions invalidate cached lookups. The profile
+token reset and API user deletion paths delete tokens individually for this reason.
+Future revocation code must also delete model instances: bulk SQL/Eloquent deletions
+bypass model events. An already-running cache miss can refill an entry after deletion;
+the fixed lifetime bounds this race to five minutes from the start of the lookup.
+
 License
 =======
 
