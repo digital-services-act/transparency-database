@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 #### [Announcement – DB] Update to the submissions by Google Shopping
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 16/09/2026</p>
-=======
-
-#### [Announcement – DB] Update to the submissions by Google Shopping
-
-<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/09/2026</p>
->>>>>>> sandbox
 
 Starting from 31 August 2026, Google Shopping is introducing asset-level moderation on its service, in addition to the existing offer-level moderation. This means that where an asset (e.g. a video, text or image) provided by a merchant for their offer is found to violate an applicable policy or law, only that asset may be disabled while the offer may still run. For example, if the offer is a shoe, it may be that only one of the videos depicting that shoe is disabled rather than the entire shoe offer. This change is meant to provide more transparency and choice to merchants. All transparency requirements of the DSA equally apply to asset-level moderation.
 
@@ -75,13 +68,6 @@ The DSA transparency database team is pleased to announce the release of a new o
 dsa-tdb is available for use in various formats, including a [command line interface](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/commands.html), an [interactive mode](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html), and a [Docker container](https://code.europa.eu/dsa/transparency-database/dsa-tdb/container_registry) serving a Jupyter notebook server out of the box. To access the package and start exploring the DSA transparency database data, visit the [dsa-tdb package homepage](https://code.europa.eu/dsa/transparency-database/dsa-tdb) and read the [online documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/index.html).
 
 We hope this new tool will enhance the user experience of the DSA transparency database and support the research community in extracting valuable insights from the database.
-
-<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
-
-#### [Announcement – DB] Update to the submissions by Google Shopping
-<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 15/07/2024</p>
-
-Starting from 28 June 2024, submissions to the DSA transparency database from Google Shopping no longer include automated notifications provided to merchants when their offers are not eligible for personalised ads targeting as such notifications seem to be outside the scope of the DSA transparency database.
 
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
