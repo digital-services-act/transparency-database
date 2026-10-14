@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -98,7 +99,16 @@ class UserAPIControllerTest extends TestCase
                 ['email' => 'foo@bar.com']
             );
 
-        $user->createToken(User::API_TOKEN_KEY)->plainTextToken;
+        $oldToken = $user->createToken(User::API_TOKEN_KEY);
+        $additionalToken = $user->createToken('additional-token');
+        $otherUserToken = User::factory()->create()->createToken(User::API_TOKEN_KEY);
+
+        foreach ([$oldToken, $additionalToken, $otherUserToken] as $token) {
+            $this->assertEquals(
+                $token->accessToken->id,
+                PersonalAccessToken::findToken($token->plainTextToken)->id,
+            );
+        }
 
         $this->assertNotNull(User::firstWhere('email', 'foo@bar.com'));
 
@@ -110,5 +120,19 @@ class UserAPIControllerTest extends TestCase
 
         $this->assertNull(User::firstWhere('email', 'foo@bar.com'));
 
+        foreach ([$oldToken, $additionalToken] as $token) {
+            $this->assertDatabaseMissing('personal_access_tokens', [
+                'id' => $token->accessToken->id,
+            ]);
+            $this->assertNull(PersonalAccessToken::findToken($token->plainTextToken));
+        }
+
+        $this->assertEquals(
+            $otherUserToken->accessToken->id,
+            PersonalAccessToken::findToken($otherUserToken->plainTextToken)->id,
+        );
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'id' => $otherUserToken->accessToken->id,
+        ]);
     }
 }

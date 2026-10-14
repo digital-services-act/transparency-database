@@ -33,8 +33,10 @@ class UserAPIController extends Controller
         // Find the user by email or return a 404 response
         $user = User::where('email', $email)->firstOrFail();
 
-        // Perform the delete operations
-        $user->tokens()->delete();
+        // Delete each model so its cache invalidation events are dispatched.
+        foreach ($user->tokens()->get() as $token) {
+            $token->delete();
+        }
         $user->delete();
 
         Log::info('API - Delete User - Success');

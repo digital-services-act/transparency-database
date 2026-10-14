@@ -108,7 +108,10 @@ class ProfileController extends Controller
 
     public function newToken(Request $request): Redirector|Application|RedirectResponse
     {
-        $request->user()->tokens()->delete();
+        // Delete each model so its cache invalidation events are dispatched.
+        foreach ($request->user()->tokens()->get() as $token) {
+            $token->delete();
+        }
 
         return redirect(route('profile.api.index'));
     }
