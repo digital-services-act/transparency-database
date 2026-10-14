@@ -36,7 +36,7 @@
                         <div class="ecl-u-mt-6xl">
                             <a href="{{ route('page.show', ['page' => 'accessibility-statement']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Data Retention Policy">Accessibility</a>
+                               aria-label="Data retention policy">Accessibility</a>
                         </div>
                     </ul>
                 </div>
@@ -49,7 +49,7 @@
                         <li class="ecl-site-footer__list-item">
                             <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&qid=1671203215141"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Digital Services Act Regulation">Digital Services Act Regulation</a></li>
+                               aria-label="Digital Services Act regulation">Digital Services Act regulation</a></li>
 
                         <li class="ecl-site-footer__list-item">
                             <a href="https://digital-strategy.ec.europa.eu/en/policies/safer-online"
@@ -76,21 +76,21 @@
                         <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', ['page' => 'privacy-policy']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label=" Privacy Policy">Privacy Policy</a></li>
+                               aria-label=" Privacy policy">Privacy policy</a></li>
                         <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', ['page' => 'legal-information']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Legal Notice">Legal Notice</a></li>
+                               aria-label="Legal notice">Legal notice</a></li>
 
                         <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', ['page' => 'data-retention-policy']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Data Retention Policy">Data Retention Policy</a></li>
+                               aria-label="Data retention policy">Data retention policy</a></li>
 
                         <li class="ecl-site-footer__list-item">
                             <a href="{{ route('page.show', ['page' => 'data-license']) }}"
                                class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__link"
-                               aria-label="Data Retention Policy">Data License</a></li>
+                               aria-label="Data retention policy">Data licence</a></li>
                     </ul>
                 </div>
 

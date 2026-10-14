@@ -1,6 +1,6 @@
-## Explanation of the information held in the DSA Transparency Database
+## Explanation of the information held in the DSA transparency database
 
-The DSA Transparency Database is structured in a way that enables transparency and scrutiny over the content moderation
+The DSA transparency database is structured in a way that enables transparency and scrutiny over the content moderation
 decisions of online platforms. This page explains what type of information is collected, and how the different data
 fields map onto Article 17 DSA, which lays down the requirements of sending statements of reasons to recipients of the
 service.
@@ -9,7 +9,7 @@ service.
 
 This sub-category consists of the following datapoints:
 
-[1. A Platform Unique Identifier (PUID)](#1-platform-unique-identifier-puid)
+[1. A platform unique identifier (PUID)](#1-platform-unique-identifier-puid)
 
 [2. Specifications on the content that is affected by the statement](#2-specifications-of-the-content-affected-by-the-decision)
 
@@ -21,7 +21,7 @@ circumstances referred to in Article 17(3)(b) of the DSA. The requirements under
 the database’s function to ensure transparency and to enable scrutiny over content moderation decisions in line with
 recital 66 of the DSA._
 
-### 1. Platform Unique Identifier (PUID)
+### 1. Platform unique identifier (PUID)
 
 This is a string that uniquely identifies a statement of reasons within the online platform’s systems.
 
@@ -43,7 +43,7 @@ text and video. For example, a post on a social media platform could consist of 
 video modified by (generative) AI tools could be described as both a video and synthetic media. If the specific options
 do note describe the type of restricted content adequately, “Other” can also be selected and further specified.
 
-#### 2.2. Specification of Content Type "Other"
+#### 2.2. Specification of content type "other"
 
 If the selected option for the attribute content_type was content_type_other, a further specification is required. Only
 those content types should be indicated here that are not included in the pre-defined list of content types.
@@ -83,7 +83,7 @@ This includes information on the type of restriction(s) imposed as well as their
 specified in Article 17(3)(a) DSA. In accordance with Article 17(1) (a)-(d) DSA, the types of restrictions included are
 visibility restrictions, monetary payment restrictions, service restrictions and account restrictions._
 
-### 3. THE TYPE OF RESTRICTION(S) IMPOSED
+### 3. The type of restriction(s) imposed
 
 Each statement of reasons needs to include at least one decision regarding a restriction imposed by the online platform.
 One of the four types of restrictions (visibility, monetary, provision of the service, service’s account) mentioned in
@@ -133,7 +133,7 @@ This attribute describes the restriction imposed on the recipient of the service
 into one of the following categories: Suspension of the account or termination of the account.
 ___
 
-### 4. THE DURATION OF THE RESTRICTION
+### 4. The duration of the restriction
 
 Each restriction decision has a temporal scope determined by its start and end date, or lack of end date. If a statement
 of reasons includes multiple restrictions, the duration can be different for each type of restriction imposed.
@@ -149,7 +149,7 @@ provided. Where no end date is indicated, this means that the relevant restricti
 Taking the example above, the end_date_visibility_restriction attribute would be blank, whereas the
 end_date_account_restriction attribute would be set to a date three months after the application_date attribute.
 
-#### 4.1. Application Date
+#### 4.1. Application date
 
 This is the date, from which the restriction(s) applies/y.
 
@@ -170,7 +170,7 @@ This is the date when the service restriction ends.
 This is the date when the account restriction ends.
 ___ 
 
-### 5. THE TERRITORIAL SCOPE OF THE DECISION
+### 5. The territorial scope of the decision
 
 **Territorial scope**
 This is the territorial scope of the restrictions imposed. Multiple or all EU or EEA countries can be indicated.
@@ -192,7 +192,7 @@ _Why is this information included?_
 _Article 17(3) DSA sets out minimum requirements for the information that is to be included in a statement of reasons.
 This includes the facts and circumstances relied on in taking the decision, as specified in Article 17(3)(b) DSA._
 
-### 6. DESCRIPTION OF THE FACTS AND CIRCUMSTANCES
+### 6. Description of the facts and circumstances
 
 The facts and circumstances of each content moderation may be different. Apart from the type, date and language of the
 content, online platforms need to provide adequate information which they relied on when taking the decision. It is
@@ -202,7 +202,7 @@ important that, in line with Article 24(5) DSA, online platforms should not incl
 
 This is a free text field to describe the facts and circumstances relied on in taking the decision.
 
-### 7. INFORMATION ON THE SOURCE OF THE INVESTIGATION
+### 7. Information on the source of the investigation
 
 #### 7.1. Information source
 
@@ -220,7 +220,7 @@ infringements of intellectual property rights.
 Even in such cases, providers of online platforms shall ensure that the information submitted does not contain personal
 data, in accordance with Article 24(5) DSA.
 
-### 8. INFORMATION ON THE ACCOUNT AFFECTED BY THE DECISION
+### 8. Information on the account affected by the decision
 
 **Account type**
 
@@ -245,13 +245,13 @@ reasons to provide information on the use made of automated means in taking the 
 including information on whether the decision was taken in respect of content detected or
 identified using automated means._
 
-### 9. Automated Detection
+### 9. Automated detection
 
 This attribute indicates whether and to what extent automated means were used to identify the specific information
 addressed by the decision. ‘Yes’ means that automated means were used to identify the specific information addressed by
 the decision.
 
-### 10. Automated Decision
+### 10. Automated decision
 
 This attribute indicates whether and to what extent automated means were used to decide on the infringing nature of the
 specific information addressed by the decision. ‘Fully automated’ means that the entire decision-process was carried out
@@ -287,7 +287,7 @@ type of illegality, or the type of incompatibility with the service’s terms an
 was moderated, must be selected. The categories allow queries for information necessary to enable scrutiny over content
 moderation decisions.  _
 
-### 11. Decision Grounds
+### 11. Decision grounds
 
 This attribute indicates whether the decision was taken in line with article 17(3)(d) DSA, meaning that the information
 was allegedly illegal, or in line with article 17(3)(e) DSA, meaning that the information was allegedly incompatible
@@ -307,12 +307,12 @@ explanation does not have to repeat the facts and circumstances but can refer to
 
 ### 13. For allegedly incompatible information: the contractual ground relied upon
 
-#### 13.1. Incompatible Content Grounds
+#### 13.1. Incompatible content grounds
 
 This is a field where the exact contractual ground (i.e. the relevant section in the applicable terms and conditions)
 that was relied upon in taking the decision must be stated.
 
-#### 13.2. Incompatible Content Explanation
+#### 13.2. Incompatible content explanation
 
 This is a field to explain as to why the information is considered incompatible with a specific section in the service’s
 terms and conditions. The explanation does not have to repeat the facts and circumstances but can refer to those.
@@ -334,7 +334,7 @@ taking the decision, or a direct URL to the applicable law relied on to take a d
 alleged illegality of information. An example of the direct reference to the DSA is:
 [https://eur-lex.europa.eu/eli/reg/2022/2065](https://eur-lex.europa.eu/eli/reg/2022/2065).
 
-### 16. CATEGORY & SPECIFICATION
+### 16. Category & specification
 
 A list of categories and specifications are included to codify the type of illegality and/or the type of incompatibility with terms and conditions that led to the restriction of the information. The available categories and specifications correspond to those set out in the [implementing regulation laying down templates concerning the transparency reporting obligations of providers of online platforms](https://digital-strategy.ec.europa.eu/en/library/implementing-regulation-laying-down-templates-concerning-transparency-reporting-obligations) to ensure consistency between the transparency tools of the DSA. The category and specifications section consists of three attributes:
 

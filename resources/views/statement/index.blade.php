@@ -1,15 +1,15 @@
 @extends('layouts/ecl')
 
-@section('title', 'Statements of Reasons')
+@section('title', 'Statements of reasons')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="Search “Statements of reasons”" />
+    <x-ecl.breadcrumb label="Search “statements of reasons”" />
 @endsection
 
 @section('content')
 
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Search “Statements of reasons”</h1>
+    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Search “statements of reasons”</h1>
 
     <div class="ecl-row ecl-u-mt-l ecl-u-mb-xl">
         <div class="ecl-col-l-12">
@@ -26,7 +26,7 @@
                 included.<br />
                 <br />
                 Please note that the search results returned cover the last 6 months of data submitted, in line with the
-                <a class="ecl-link" href="/page/data-retention-policy">Data Retention Policy</a>.
+                <a class="ecl-link" href="/page/data-retention-policy">Data retention policy</a>.
                 Data is updated once every day and only the first 10 000 results are paginated. The first 1000
                 statements of
                 reasons among those can be manually exported in .csv format.<br />
@@ -35,7 +35,7 @@
             </div>
 
 
-            <x-ecl.expandable label="How Search works">
+            <x-ecl.expandable label="How search works">
                 <p class="ecl-u-type-paragraph" style="max-width:none !important">
                     You can use the free-text search to look for specific words within the free text fields of each
                     statement of
@@ -55,7 +55,7 @@
                     were
                     submitted
                     by, the type of restriction(s) imposed, their information source and their category, please click on
-                    “Advanced Filter”
+                    “Advanced filter”
                     to expand the additional search filters.
                 </p>
             </x-ecl.expandable>
@@ -75,7 +75,7 @@
     <div class="ecl-u-d-flex ecl-u-justify-content-between ecl-u-mt-xl">
 
         <div class="item ecl-u-type-paragraph">
-            Statements of Reasons: {{ $total }}
+            Statements of reasons: {{ $total }}
         </div>
 
 

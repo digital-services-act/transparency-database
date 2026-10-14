@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>@yield('title', 'Home') - DSA Transparency Database</title>
+    <title>@yield('title', 'Home') - DSA transparency database</title>
 
     <meta content="width=device-width,initial-scale=1" name="viewport" />
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />

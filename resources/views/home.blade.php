@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1">Welcome to the DSA Transparency Database!</h1>
+    <h1 class="ecl-u-type-heading-1">Welcome to the DSA transparency database!</h1>
 
     <div class="ecl-row">
         <div class="ecl-col-l-8">
@@ -22,7 +22,7 @@
             <p class="ecl-u-type-paragraph">
                 To enhance transparency and facilitate scrutiny over content moderation decisions,
                 <strong>providers of online platforms need to submit these statements of reasons to the
-                    DSA Transparency Database</strong>. The database allows to track the content moderation decisions
+                    DSA transparency database</strong>. The database allows to track the content moderation decisions
                 taken by providers of online platforms in almost real-time. It also offers various tools for
                 accessing, analysing, and downloading the information that platforms need to make available when
                 they take content moderation decisions, contributing to the monitoring of the dissemination
@@ -51,7 +51,7 @@
             <p class="ecl-u-type-paragraph">
                 Below you can find some summary statistics on the statements of reasons submitted by providers of online
                 platforms to the Commission in the last six months (180 days, see the <a
-                    href="{{ route('page.show', ['page' => 'data-retention-policy']) }}">Data Retention Policy</a> for
+                    href="{{ route('page.show', ['page' => 'data-retention-policy']) }}">Data retention policy</a> for
                 details).
             </p>
         </div>
@@ -63,7 +63,7 @@
             </div>
             <div>
                 <x-ecl.cta-button url="{{ route('statement.index') }}" priority="primary"
-                    label="Search for Statements of Reasons" :icon="false" :fullwidth="true" />
+                    label="Search for statements of reasons" :icon="false" :fullwidth="true" />
             </div>
         </div>
 
@@ -83,7 +83,7 @@
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="list" />
                 </svg>
-                <div class="ecl-fact-figures__value">Most Reported Violations</div>
+                <div class="ecl-fact-figures__value">Most reported violations</div>
                 <div class="ecl-fact-figures__description">
                     <ol class="ecl-ordered-list">
                         @foreach ($top_categories as $top_category)
@@ -99,7 +99,7 @@
                 <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="list" />
                 </svg>
-                <div class="ecl-fact-figures__value">Top Restriction Types</div>
+                <div class="ecl-fact-figures__value">Top restriction types</div>
                 <div class="ecl-fact-figures__description">
                     <ol class="ecl-ordered-list">
 

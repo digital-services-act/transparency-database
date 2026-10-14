@@ -1,10 +1,10 @@
 @extends('layouts/ecl')
 
-@section('title', '404 - Not Found')
+@section('title', '405 - Method not allowed')
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}" />
-    <x-ecl.breadcrumb label="404 - Not Found" />
+    <x-ecl.breadcrumb label="405 - Method not allowed" />
 @endsection
 
 @section('extra-head')
@@ -25,7 +25,7 @@
 
 @section('content')
 
-    <h1 class="ecl-u-type-heading-1">405 - Method Not Allowed</h1>
+    <h1 class="ecl-u-type-heading-1">405 - Method not allowed</h1>
 
 
 

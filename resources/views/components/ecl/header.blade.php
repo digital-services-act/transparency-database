@@ -32,7 +32,7 @@
 
         <div class="ecl-site-header__banner">
             <div class="ecl-container">
-                <div class="ecl-site-header__site-name">DSA Transparency Database</div>
+                <div class="ecl-site-header__site-name">DSA transparency database</div>
             </div>
         </div>
 
@@ -102,10 +102,10 @@
                             <a href="{{  route('explore-data.overview') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">Explore Data</a>
+                               id="ecl-menu-item-platforms-link">Explore data</a>
                             <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
                                     type="button"
-                                    data-ecl-menu-caret="" aria-label="Explore Data"
+                                    data-ecl-menu-caret="" aria-label="Explore data"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
                                             <svg
@@ -156,7 +156,7 @@
                             <a href="{{ route('statement.index') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">Search for Statements of Reasons</a>
+                               id="ecl-menu-home-link">Search for statements of reasons</a>
                         </li>
 
 

@@ -24,6 +24,7 @@ class StatementsElasticDateTotal extends Command
      */
     protected $signature = 'statements:elastic-date-total
         {date=yesterday}
+        {--legacy-second-by-second : Use the legacy second-by-second lookups in the first and last minute for daily ID bounds.}
         {--raw-count : Count statements_beta rows for the date directly from the database.}';
 
     /**
@@ -43,9 +44,10 @@ class StatementsElasticDateTotal extends Command
     {
         $date = $this->sanitizeDateArgument();
         $date_string = $date->format('Y-m-d');
+        $useLegacySecondBySecond = (bool) $this->option('legacy-second-by-second');
 
-        $first_id = $day_archive_service->getFirstIdOfDate($date);
-        $last_id = $day_archive_service->getLastIdOfDate($date);
+        $first_id = $day_archive_service->getFirstIdOfDate($date, useLegacySecondBySecond: $useLegacySecondBySecond);
+        $last_id = $day_archive_service->getLastIdOfDate($date, useLegacySecondBySecond: $useLegacySecondBySecond);
 
         if ($first_id && $last_id) {
             $this->info('Date: '.$date_string);
@@ -70,7 +72,14 @@ class StatementsElasticDateTotal extends Command
             }
 
             if ($db_diff !== $es_total) {
-                $this->outputIdOverlapDiagnostics($day_archive_service, $date, (int) $first_id, (int) $last_id, $source_diff);
+                $this->outputIdOverlapDiagnostics(
+                    $day_archive_service,
+                    $date,
+                    (int) $first_id,
+                    (int) $last_id,
+                    $source_diff,
+                    $useLegacySecondBySecond,
+                );
             }
 
             $this->info('statements:index-date '.$date_string);
@@ -108,12 +117,13 @@ class StatementsElasticDateTotal extends Command
         int $first_id,
         int $last_id,
         int $source_diff,
+        bool $useLegacySecondBySecond,
     ): void {
         $previous_date = $date->copy()->subDay();
         $next_date = $date->copy()->addDay();
 
-        $previous_last_id = $day_archive_service->getLastIdOfDate($previous_date);
-        $next_first_id = $day_archive_service->getFirstIdOfDate($next_date);
+        $previous_last_id = $day_archive_service->getLastIdOfDate($previous_date, useLegacySecondBySecond: $useLegacySecondBySecond);
+        $next_first_id = $day_archive_service->getFirstIdOfDate($next_date, useLegacySecondBySecond: $useLegacySecondBySecond);
 
         $previous_overlap = $previous_last_id && $previous_last_id >= $first_id;
         $next_overlap = $next_first_id && $next_first_id <= $last_id;

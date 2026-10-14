@@ -14,7 +14,7 @@
 
 
     <p class="ecl-u-type-paragraph ecl-u-mb-l">
-        For feedback, questions, or assistance related to the DSA Transparency Database,
+        For feedback, questions, or assistance related to the DSA transparency database,
         please email the <a href="mailto:CNECT-DSA-HELPDESK@ec.europa.eu">DSA Helpdesk</a>.
         <br />
         <br />

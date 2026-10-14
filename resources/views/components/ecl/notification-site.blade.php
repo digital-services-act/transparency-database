@@ -3,7 +3,7 @@
         <div class="ecl-notification ecl-notification--info" data-ecl-notification role="alert"
              data-ecl-auto-init="Notification">
             <svg class="ecl-icon ecl-icon--l ecl-notification__icon" focusable="false"
-                 aria-hidden="false">
+                 aria-hidden="true">
                 <x-ecl.icon icon="information"/>
             </svg>
             <div class="ecl-notification__content">

@@ -18,7 +18,7 @@ class Controller extends BaseController
     {
         $result = array_map(static fn ($value) => ['value' => $value, 'label' => $value], $array);
         if ($noval) {
-            array_unshift($result, ['value' => '--noval--', 'label' => 'None Specified']);
+            array_unshift($result, ['value' => '--noval--', 'label' => 'None specified']);
         }
 
         return $result;
@@ -33,7 +33,7 @@ class Controller extends BaseController
     {
         $result = array_map(static fn ($key, $value) => ['value' => $key, 'label' => $value], array_keys($array), array_values($array));
         if ($noval) {
-            array_unshift($result, ['value' => '--noval--', 'label' => 'None Specified']);
+            array_unshift($result, ['value' => '--noval--', 'label' => 'None specified']);
         }
 
         return $result;

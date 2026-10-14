@@ -1,11 +1,11 @@
 @php use App\Models\Statement; @endphp
 @extends('layouts/ecl')
 
-@section('title', 'Statement of Reasons Details - ' . $statement->title)
+@section('title', 'Statement of reasons details - ' . $statement->title)
 
 @section('breadcrumbs')
     <x-ecl.breadcrumb label="Home" url="{{ route('home') }}"/>
-    <x-ecl.breadcrumb label="Statements of Reasons" url="{{ route('statement.index') }}"/>
+    <x-ecl.breadcrumb label="Statements of reasons" url="{{ route('statement.index') }}"/>
     <x-ecl.breadcrumb label="Statement of reasons details: {{$statement->uuid}}"/>
 @endsection
 
@@ -109,7 +109,7 @@
                 content="{{ implode(', ',$statement_content_types) }}"></x-infoline>
 
     @if(in_array('CONTENT_TYPE_OTHER',$statement->content_type))
-        <x-infoline title="Content Type Other" :content="$statement->content_type_other"></x-infoline>
+        <x-infoline title="Content type other" :content="$statement->content_type_other"></x-infoline>
     @endif
 
     <x-infoline :title="Statement::LABEL_STATEMENT_CONTENT_DATE"
@@ -156,7 +156,6 @@
 
 
 
-    <x-report :url="url()->current()" title="Report an Issue"></x-report>
+    <x-report :url="url()->current()" title="Report an issue"></x-report>
 
 @endsection
-
