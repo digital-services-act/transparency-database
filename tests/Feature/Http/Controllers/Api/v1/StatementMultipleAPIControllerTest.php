@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\v1;
 
+use App\Http\Middleware\LimitConcurrentMultiStatementRequests;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\PlatformUniqueIdService;
@@ -46,6 +47,8 @@ class StatementMultipleAPIControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->withoutMiddleware(LimitConcurrentMultiStatementRequests::class);
 
         $this->required_fields = [
             'decision_visibility' => [

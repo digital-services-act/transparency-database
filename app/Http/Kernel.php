@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'api_version' => \App\Http\Middleware\APIVersion::class,
         'force.auth' => \App\Http\Middleware\ForceAuthentication::class,
+        'multi.concurrency' => \App\Http\Middleware\LimitConcurrentMultiStatementRequests::class,
     ];
 }
