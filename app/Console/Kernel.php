@@ -39,6 +39,8 @@ class Kernel extends ConsoleKernel
 
     private const string DAILY_SIX_FIFTEEN_AM = '06:15';
 
+    private const string DAILY_SIX_THIRTY_AM = '06:30';
+
     #[\Override]
     protected function schedule(Schedule $schedule): void
     {
@@ -65,6 +67,10 @@ class Kernel extends ConsoleKernel
 
             $schedule->command('aggregates-freeze yesterday')
                 ->dailyAt(self::DAILY_SIX_FIFTEEN_AM);
+
+            // Retry yesterday's aggregate freeze in case Elasticsearch was unavailable earlier.
+            $schedule->command('aggregates-freeze yesterday')
+                ->dailyAt(self::DAILY_SIX_THIRTY_AM);
 
             if (config('app.env') === 'production') {
 
