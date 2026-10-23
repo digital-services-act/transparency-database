@@ -26,6 +26,8 @@ We apologise for any inconvenience and thank users for their understanding. We c
 
 For further updates, please consult this website.
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – DB] Update to the submissions by Google Shopping
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 16/09/2026</p>
