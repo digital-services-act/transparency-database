@@ -1,3 +1,31 @@
+#### [Announcement – Submission API] Temporary performance degradation and current rate limits
+
+<p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 23/10/2026</p>
+
+We would like to inform users of the DSA Transparency Database that the website and database have recently experienced intermittent downtime due to an unusually high volume of statements of reasons submitted via the API.
+
+To help stabilise the service and ensure continued access for all users, we have implemented several short-term technical measures. In particular, rate limits have been added to the multiple statements endpoint of the API, in addition to the existing limit for the single statement endpoint.
+
+The following limits per user are currently in place:
+
+* Single statement endpoint: 12'000 calls per minute
+* Multiple statements endpoint:
+  * 4 calls per second
+  * 240 calls per minute
+
+These limits may be reviewed as the situation evolves.
+
+These measures are intended to reduce pressure on the system while we continue work on improving its overall performance and resilience.
+
+**What this means for users**
+
+* Access to the website and database is now more stable as a result of these changes.
+* Users of the API multiple statements endpoint should adapt their submission rate to avoid exceeding the set limits.
+
+We apologise for any inconvenience and thank users for their understanding. We continue to closely monitor the service to ensure a reliable and consistent user experience.
+
+For further updates, please consult this website.
+
 #### [Announcement – DB] Update to the submissions by Google Shopping
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 16/09/2026</p>
