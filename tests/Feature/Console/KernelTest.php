@@ -36,7 +36,7 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(12, $events);
+        $this->assertCount(13, $events);
 
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'statements:elastic-index-date-seq yesterday 1000 false 8')
@@ -70,7 +70,7 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(11, $events);
+        $this->assertCount(12, $events);
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'statements:remove-date 181 10000 4') && $event->expression === '0 2 * * *';
         }));

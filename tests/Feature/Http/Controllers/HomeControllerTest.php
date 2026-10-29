@@ -123,6 +123,29 @@ class HomeControllerTest extends TestCase
         $this->assertStringContainsString('viewBox="0 0 256 256"', $stylesheet);
     }
 
+    public function test_local_ecl_assets_are_pinned_to_v5_4_0(): void
+    {
+        $assets = [
+            'static/ecl/styles/ecl-ec.css',
+            'static/ecl/styles/ecl-ec-print.css',
+            'static/ecl/styles/ecl-ec-color-modes.css',
+            'static/ecl/styles/optional/ecl-ec-default.css',
+            'static/ecl/styles/optional/ecl-ec-default-print.css',
+            'static/ecl/styles/optional/ecl-ec-easy-to-read.css',
+            'static/ecl/styles/optional/ecl-ec-utilities.css',
+            'static/ecl/styles/optional/ecl-reset.css',
+            'static/ecl/scripts/ecl-ec.js',
+            'static/ecl/scripts/ecl-esm-ec.js',
+        ];
+
+        foreach ($assets as $asset) {
+            $contents = file_get_contents(public_path($asset));
+
+            $this->assertNotFalse($contents, $asset . ' should be readable');
+            $this->assertStringContainsString('@ecl/preset-ec - 5.4.0', $contents, $asset);
+        }
+    }
+
     public function test_minimum_platform_total_is_one(): void
     {
         $this->fakeHomeStats();
