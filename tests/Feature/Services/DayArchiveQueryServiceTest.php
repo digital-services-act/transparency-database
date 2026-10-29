@@ -54,7 +54,7 @@ class DayArchiveQueryServiceTest extends TestCase
         $platform = Platform::first();
         $query = $this->day_archive_query_service->query([
             'platform_id' => $platform->id,
-            'from_date' => '2026-07-08',
+            'from_date' => '31-02-2026',
             'to_date' => '31-02-2026',
         ]);
         $this->assertNotNull($query);

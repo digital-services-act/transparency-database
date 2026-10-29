@@ -34,6 +34,25 @@ class HomeControllerTest extends TestCase
         // Assert
         $response->assertStatus(200);
         $response->assertViewIs('home');
+        $response->assertSee('data-wt-icon="data"', false);
+        $response->assertSee('static/ecl/styles/webtools.icons.default.css', false);
+        $response->assertSee('static/ecl/styles/ecl-icon-local.css', false);
+        $response->assertSee('static/ecl/scripts/webtools-icons.js', false);
+        $response->assertDontSee('icons.svg#', false);
+        $response->assertSee('ecl-site-header-with-logo-l', false);
+        $response->assertSee('ecl-site-header__site-name">DSA Transparency Database', false);
+        $response->assertSeeInOrder([
+            'ecl-site-footer__section ecl-site-footer__section--site-info',
+            'ecl-site-footer__title-link',
+            'DSA Transparency Database',
+            'ecl-site-footer__row ecl-site-footer__row--common',
+            'ecl-site-footer__logo-link',
+            'ecl-site-footer__extra-links-container',
+        ], false);
+
+        foreach (['mastodon', 'linkedin', 'wsocial', 'facebook', 'youtube', 'chain'] as $network) {
+            $response->assertSee('ecl-icon-networks--' . $network, false);
+        }
 
         $viewData = $response->viewData('total');
         $this->assertEquals(100, $viewData);
@@ -81,6 +100,27 @@ class HomeControllerTest extends TestCase
         // Assert - Should still show 3 from cache
         $viewData = $response->viewData('platforms_total');
         $this->assertEquals(3, $viewData);
+    }
+
+    public function test_success_notifications_use_the_local_webtools_icon_name(): void
+    {
+        $this->fakeHomeStats();
+
+        $response = $this->withSession(['success' => 'Saved'])->get('/');
+
+        $response->assertOk();
+        $response->assertSee('data-wt-icon="success-filled"', false);
+    }
+
+    public function test_local_webtools_stylesheet_contains_the_current_icon_set(): void
+    {
+        $stylesheet = file_get_contents(public_path('static/ecl/styles/webtools.icons.default.css'));
+
+        $this->assertNotFalse($stylesheet);
+        $this->assertSame(117, preg_match_all('/--wt-icon--[a-z0-9-]+:/', $stylesheet));
+        $this->assertStringContainsString('--wt-icon--smiley-very-happy:', $stylesheet);
+        $this->assertStringContainsString('--wt-icon--smiley-very-sad:', $stylesheet);
+        $this->assertStringContainsString('viewBox="0 0 256 256"', $stylesheet);
     }
 
     public function test_minimum_platform_total_is_one(): void

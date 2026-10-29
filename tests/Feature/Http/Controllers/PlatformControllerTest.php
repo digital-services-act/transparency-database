@@ -25,6 +25,9 @@ class PlatformControllerTest extends TestCase
         $response->assertViewIs('platform.index');
         $response->assertViewHas('platforms');
         $response->assertSee('Test Platform');
+        $response->assertSee('ecl-button--primary', false);
+        $response->assertSee('ecl-button__container', false);
+        $response->assertDontSee('ecl-button--cta', false);
     }
 
     public function test_index_can_search_platforms(): void

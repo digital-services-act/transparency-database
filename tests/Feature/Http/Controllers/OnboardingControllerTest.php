@@ -35,6 +35,9 @@ class OnboardingControllerTest extends TestCase
         $response->assertOk();
         $response->assertViewIs('onboarding.index');
         $response->assertViewHas(['platforms', 'options', 'all_platforms_count', 'platform_ids_methods_data']);
+        $response->assertSee('ecl-button--primary', false);
+        $response->assertSee('ecl-button__container', false);
+        $response->assertDontSee('ecl-button--cta', false);
     }
 
     public function test_index_uses_database_statement_methods_when_elasticsearch_is_not_configured()

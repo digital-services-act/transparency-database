@@ -81,7 +81,7 @@
     </div>
 
 </div>
-<form method="get" id="platform">
+<form method="get" action="{{ route('dayarchive.index') }}" id="platform">
     <div class="ecl-row ecl-u-mt-l" style="border-width: 50px;">
 
         <div class="ecl-col-l-2">
@@ -119,26 +119,6 @@
 
     </div>
 </form>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var form = document.getElementById("platform");
-
-        // Function to submit the form
-        function submitForm() {
-            form.submit();
-        }
-
-        // Attach event listeners to input fields
-        var fromInput = document.getElementById("from_date");
-        var toInput = document.getElementById("to_date");
-        var platformInput = document.getElementById("platform_id");
-
-        fromInput.addEventListener("change", submitForm);
-        toInput.addEventListener("change", submitForm);
-        platformInput.addEventListener("change", submitForm);
-    });
-
-</script>
 
 <x-dayarchive.table :dayarchives="$dayarchives" />
 
