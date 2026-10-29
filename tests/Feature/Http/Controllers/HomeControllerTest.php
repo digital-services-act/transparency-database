@@ -39,6 +39,16 @@ class HomeControllerTest extends TestCase
         $response->assertSee('static/ecl/styles/ecl-icon-local.css', false);
         $response->assertSee('static/ecl/scripts/webtools-icons.js', false);
         $response->assertDontSee('icons.svg#', false);
+        $response->assertSee('ecl-site-header-with-logo-l', false);
+        $response->assertSee('ecl-site-header__site-name">DSA Transparency Database', false);
+        $response->assertSeeInOrder([
+            'ecl-site-footer__section ecl-site-footer__section--site-info',
+            'ecl-site-footer__title-link',
+            'DSA Transparency Database',
+            'ecl-site-footer__row ecl-site-footer__row--common',
+            'ecl-site-footer__logo-link',
+            'ecl-site-footer__extra-links-container',
+        ], false);
 
         foreach (['mastodon', 'linkedin', 'wsocial', 'facebook', 'youtube', 'chain'] as $network) {
             $response->assertSee('ecl-icon-networks--' . $network, false);

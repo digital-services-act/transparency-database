@@ -1,8 +1,8 @@
-<header class="ecl-site-header ecl-site-header--has-menu" data-ecl-auto-init="SiteHeader">
+<header class="ecl-site-header ecl-site-header--has-menu ecl-site-header-with-logo-l" data-ecl-auto-init="SiteHeader">
     <div class="ecl-site-header__background">
         <div class="ecl-site-header__header">
             <div class="ecl-site-header__container ecl-container">
-                <div class="ecl-site-header__top" data-ecl-site-header-top>
+                <div class="ecl-site-header__top" data-ecl-site-header-top="">
                     <a href="{{ route('home') }}"
                        class="ecl-link ecl-link--standalone ecl-site-header__logo-link"
                        aria-label="European Commission">
@@ -11,7 +11,7 @@
                                 media="(min-width: 576px)">
                             <source srcset="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                 media="(min-width: 1px)">
-                            <img class="ecl-site-header__logo-image"
+                            <img class="ecl-site-header__logo-image ecl-site-header__logo-image--l"
                                  src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                  alt="European Commission logo"/>
                         </picture>

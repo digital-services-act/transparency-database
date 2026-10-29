@@ -3,16 +3,12 @@
         <div class="ecl-container ecl-site-footer__container">
             <div class="ecl-site-footer__row ecl-site-footer__row--specific">
                 <div class="ecl-site-footer__section ecl-site-footer__section--site-info">
-                    <a href="https://ec.europa.eu"
-                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__logo-link"
-                       aria-label="European Commission">
-                        <picture class="ecl-picture ecl-site-footer__picture">
-                            <img alt="European Commission logo"
-                                 title="European Commission"
-                                 class="ecl-site-footer__logo-image"
-                                 src="{{ asset('static/ecl/images/logo/negative/logo-ec--en.svg') }}">
-                        </picture>
-                    </a>
+                    <div class="ecl-site-footer__title">
+                        <a href="{{ route('home') }}"
+                           class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__title-link">
+                            DSA Transparency Database
+                        </a>
+                    </div>
                     <div class="ecl-site-footer__description">
                         This site is managed by the Directorate-General for "Communications Networks, Content and Technology"
                     </div>
@@ -101,6 +97,16 @@
 
             <div class="ecl-site-footer__row ecl-site-footer__row--common">
                 <div class="ecl-site-footer__section ecl-site-footer__section--common">
+                    <a href="https://commission.europa.eu/index_en"
+                       class="ecl-link ecl-link--standalone ecl-link--inverted ecl-site-footer__logo-link"
+                       aria-label="European Commission">
+                        <picture class="ecl-picture ecl-site-footer__picture">
+                            <img alt="European Commission logo"
+                                 title="European Commission"
+                                 class="ecl-site-footer__logo-image"
+                                 src="{{ asset('static/ecl/images/logo/negative/logo-ec--en.svg') }}">
+                        </picture>
+                    </a>
                     <div class="ecl-site-footer__extra-links-container">
                         <div class="ecl-social-media-follow ecl-social-media-follow--left ecl-social-media-follow--description_inline ecl-site-footer__social-media">
                             <p class="ecl-social-media-follow__description">Follow us</p>
