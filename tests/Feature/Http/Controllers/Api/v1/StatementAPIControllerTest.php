@@ -102,7 +102,11 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
-        ElasticMocker::fake()->puidSearchReturns([$this->statement->id]);
+        PlatformPuid::create([
+            'puid' => $this->statement->puid,
+            'platform_id' => $admin->platform_id,
+        ]);
+        $elastic = ElasticMocker::fake();
 
         $response = $this->get(route('api.v1.statement.existing-puid', [$this->statement->puid]), [
             'Accept' => 'application/json',
@@ -111,6 +115,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals('statement of reason found', $response->json('message'));
         $this->assertEquals($this->statement->puid, $response->json('puid'));
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_api_statement_existing_puid_works_with_record_in_cache(): void
@@ -145,7 +150,7 @@ class StatementAPIControllerTest extends TestCase
         $attributes['platform_id'] = $admin->platform_id;
         $this->statement = Statement::create($attributes);
 
-        ElasticMocker::fake()->puidSearchReturns([]);
+        $elastic = ElasticMocker::fake();
 
         $response = $this->get(route('api.v1.statement.existing-puid', ['a-bad-puid']), [
             'Accept' => 'application/json',
@@ -153,6 +158,7 @@ class StatementAPIControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_NOT_FOUND);
         $this->assertEquals('statement of reason not found', $response->json('message'));
         $this->assertEquals('a-bad-puid', $response->json('puid'));
+        $this->assertCount(0, $elastic->requests());
     }
 
     public function test_api_statement_show_requires_auth(): void
