@@ -13,7 +13,6 @@ use App\Services\EuropeanCountriesService;
 use App\Services\PlatformUniqueIdService;
 use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticIndexerService;
-use App\Services\StatementElasticSearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,7 +27,6 @@ class StatementAPIController extends Controller
 
     public function __construct(
         EuropeanCountriesService $european_countries_service,
-        protected StatementElasticSearchService $statement_elastic_search_service,
         protected PlatformUniqueIdService $puidService
 
     ) {
@@ -46,8 +44,10 @@ class StatementAPIController extends Controller
 
         $found = $this->puidService->checkPuidExists($platform_id, $puid);
 
-        if ($found || $this->statement_elastic_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0) {
-            // Return a minimal statement object with just the PUID when found in cache/database but not in OpenSearch
+        // Elasticsearch fallback is temporarily disabled; check only cache and database.
+        // Previous fallback: $found = $found || $this->statement_elastic_search_service->PlatformIdPuidToId($platform_id, $puid) !== 0;
+        if ($found) {
+            // Return a minimal statement object with just the PUID when found in cache/database.
             return response()->json(['message' => 'statement of reason found', 'puid' => $puid], Response::HTTP_FOUND);
         }
 
