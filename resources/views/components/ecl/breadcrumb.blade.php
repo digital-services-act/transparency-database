@@ -3,13 +3,13 @@
     @if($url)
         <a href="{{ $url }}"
            class="ecl-link ecl-link--standalone ecl-link--no-visited ecl-breadcrumb__link">{{ $label }}</a>
-        <svg class="ecl-icon ecl-icon--2xs ecl-icon--rotate-90 ecl-breadcrumb__icon" focusable="false"
+        <svg class="ecl-icon ecl-icon--2xs ecl-breadcrumb__icon" style="transform: rotate(90deg)" focusable="false"
              aria-hidden="true" role="presentation">
             <x-ecl.icon icon="corner-arrow"/>
         </svg>
     @else
         @if($more)
-            <svg class="ecl-icon ecl-icon--2xs ecl-icon--rotate-90 ecl-breadcrumb__icon" focusable="false"
+            <svg class="ecl-icon ecl-icon--2xs ecl-breadcrumb__icon" style="transform: rotate(90deg)" focusable="false"
                  aria-hidden="true" role="presentation">
                 <x-ecl.icon icon="corner-arrow"/>
             </svg>
