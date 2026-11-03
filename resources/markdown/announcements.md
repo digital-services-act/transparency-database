@@ -34,17 +34,23 @@ For further updates, please consult this website.
 
 Starting from 31 August 2026, Google Shopping is introducing asset-level moderation on its service, in addition to the existing offer-level moderation. This means that where an asset (e.g. a video, text or image) provided by a merchant for their offer is found to violate an applicable policy or law, only that asset may be disabled while the offer may still run. For example, if the offer is a shoe, it may be that only one of the videos depicting that shoe is disabled rather than the entire shoe offer. This change is meant to provide more transparency and choice to merchants. All transparency requirements of the DSA equally apply to asset-level moderation.
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement - DB] Update to the submissions by Google Play
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/06/2026</p>
 
 Due to a technical error, statements of reasons transmitted to the DSA transparency database related to actions taken on a portion of Google Play contained some incorrect information. Specifically, the field indicating whether a violation was detected via automated means was inverted. Consequently, from September 2023 to May 2026, a portion of records related to Google Play marked as "automated" were actually manual, and records marked as "manual" were actually “automated”. The issue was remediated as of 29 May 2026.
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement - DB] Update to the submissions by Facebook and Instagram
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/11/2025</p>
 
 On 27 October 2025, Meta identified and fixed an issue affecting the submissions to the DSA transparency database from Facebook and Instagram from Trusted Flaggers. Prior to this date, statements of reasons sourcing from Trusted Flaggers might not have been labelled as such. The issue was fixed on submissions starting from 28/10/2025.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
 #### [Announcement – DB] Schema update of the DSA transparency database completed
 
