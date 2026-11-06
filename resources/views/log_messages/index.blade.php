@@ -13,14 +13,16 @@
 @section('content')
 
 
-    <div class="ecl-u-mt-l ecl-u-mb-l ecl-u-f-r">
-        <form method="get">
-            <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('log-messages.index') }}'>reset</a>" placeholder="freetext search" justlabel="true" value="{{ request()->get('s', '') }}" />
-        </form>
+    <div class="ecl-row ecl-u-mt-l ecl-u-mb-l">
+        <div class="ecl-col-12 ecl-col-m-6">
+            <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Log messages</h1>
+        </div>
+        <div class="ecl-col-12 ecl-col-m-6">
+            <form method="get">
+                <x-ecl.textfield name="s" label="Search <a class='ecl-link' href='{{ route('log-messages.index') }}'>reset</a>" placeholder="freetext search" justlabel="true" value="{{ request()->get('s', '') }}" />
+            </form>
+        </div>
     </div>
-
-    <h1 class="ecl-page-header__title ecl-u-type-heading-1 ecl-u-mb-l">Log messages</h1>
-
 
     <form action="{{ route('log-messages.destroy') }}" method="POST">
         @csrf
