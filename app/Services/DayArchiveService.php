@@ -35,8 +35,10 @@ class DayArchiveService
 
     public $platforms = [];
 
-    public function __construct(protected PlatformQueryService $platform_query_service)
-    {
+    public function __construct(
+        protected PlatformQueryService $platform_query_service,
+        protected CsvRowWriterService $csv_row_writer_service,
+    ) {
         $this->platforms = $platform_query_service->getPlatformsById();
     }
 
@@ -81,8 +83,7 @@ class DayArchiveService
         Carbon $date,
         int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES,
         bool $useLegacySecondBySecond = false,
-    )
-    {
+    ) {
         if ($useLegacySecondBySecond) {
             return $this->getFirstIdBySecond($date);
         }
@@ -105,8 +106,7 @@ class DayArchiveService
         Carbon $date,
         int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES,
         bool $useLegacySecondBySecond = false,
-    )
-    {
+    ) {
         if ($useLegacySecondBySecond) {
             return $this->getLastIdBySecond($date);
         }
@@ -327,13 +327,7 @@ class DayArchiveService
 
     public function csvstr(array $fields): string
     {
-        $f = fopen('php://memory', 'wb+');
-        fputcsv($f, $fields);
-
-        rewind($f);
-        $csv_line = stream_get_contents($f);
-
-        return rtrim($csv_line);
+        return $this->csv_row_writer_service->formatRow($fields);
     }
 
     /**
