@@ -33,7 +33,7 @@ class StatementControllerTest extends TestCase
         'url' => 'https://www.test.com',
         'puid' => 'THX1138',
         'content_date' => '2023-05-12',
-        'application_date' => '2023-05-12',
+        'application_date' => '2023-10-12',
         'source_type' => 'SOURCE_ARTICLE_16',
         'decision_facts' => 'Facts and circumstances',
         'automated_detection' => 'Yes',
@@ -199,12 +199,31 @@ class StatementControllerTest extends TestCase
         $this->assertNotNull($statement);
         $this->assertEquals(Statement::METHOD_FORM, $statement->method);
         $this->assertEquals($user->id, $statement->user->id);
-        $this->assertEquals('2023-05-12 00:00:00', (string) $statement->application_date);
+        $this->assertEquals('2023-10-12 00:00:00', (string) $statement->application_date);
         $this->assertInstanceOf(Carbon::class, $statement->application_date);
         $this->assertEquals('2023-05-12 00:00:00', (string) $statement->content_date);
         $this->assertInstanceOf(Carbon::class, $statement->content_date);
 
         $response->assertRedirect(route('statement.show', $statement->uuid));
+    }
+
+    public function test_store_rejects_dates_outside_the_allowed_range(): void
+    {
+        $this->travelTo(Carbon::parse('2025-10-10 12:00:00'));
+        $this->signInAsAdmin();
+
+        $attributes = array_merge($this->dummy_attributes, [
+            'content_date' => '2014-12-31',
+            'application_date' => '2025-10-12',
+        ]);
+
+        $response = $this->post(route('statement.store'), $attributes);
+
+        $response->assertSessionHasErrors(['content_date', 'application_date']);
+        $errors = session('errors')->getBag('default');
+        $this->assertSame('The content date must be on or after 2015-01-01.', $errors->first('content_date'));
+        $this->assertSame('The application date must be no later than 24 hours from now.', $errors->first('application_date'));
+        $this->assertCount(10, Statement::all());
     }
 
     /**

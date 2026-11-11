@@ -70,7 +70,7 @@ class StatementAPIControllerTest extends TestCase
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
-            'application_date' => '2023-05-18',
+            'application_date' => '2023-10-18',
             'content_date' => '2023-05-18',
         ];
     }
@@ -391,7 +391,7 @@ class StatementAPIControllerTest extends TestCase
 
         $this->assertCount(10, Statement::all());
         $fields = array_merge($this->required_fields, [
-            'application_date' => '2023-07-15',
+            'application_date' => '2023-10-15',
 
         ]);
         $object = new \stdClass;
@@ -492,6 +492,55 @@ class StatementAPIControllerTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('The application date does not match the format YYYY-MM-DD.', $response->json('message'));
+    }
+
+    public function test_statement_dates_enforce_the_allowed_range(): void
+    {
+        $this->travelTo(Carbon::parse('2025-10-10 12:00:00'));
+        $this->setUpFullySeededDatabase();
+        $this->signInAsAdmin();
+
+        $cases = [
+            ['field' => 'content_date', 'value' => '2014-12-31', 'message' => 'The content date must be on or after 2015-01-01.'],
+            ['field' => 'application_date', 'value' => '2023-09-24', 'message' => 'The application date must be on or after 2023-09-25.'],
+            ['field' => 'content_date', 'value' => '2025-10-12', 'message' => 'The content date must be no later than 24 hours from now.'],
+            ['field' => 'application_date', 'value' => '2025-10-12', 'message' => 'The application date must be no later than 24 hours from now.'],
+        ];
+
+        foreach ($cases as $case) {
+            $fields = array_merge($this->required_fields, [
+                'content_date' => '2025-10-10',
+                'application_date' => '2025-10-10',
+            ]);
+            $fields[$case['field']] = $case['value'];
+
+            $response = $this->post(route('api.v1.statement.store'), $fields, [
+                'Accept' => 'application/json',
+            ]);
+
+            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+            $this->assertSame($case['message'], $response->json('errors.'.$case['field'].'.0'));
+        }
+
+        $earliestAllowed = array_merge($this->required_fields, [
+            'puid' => 'date-earliest-allowed',
+            'content_date' => '2015-01-01',
+            'application_date' => '2023-09-25',
+        ]);
+        $this->post(route('api.v1.statement.store'), $earliestAllowed, [
+            'Accept' => 'application/json',
+        ])->assertStatus(Response::HTTP_CREATED);
+
+        $latestAllowed = array_merge($this->required_fields, [
+            'puid' => 'date-latest-allowed',
+            'content_date' => '2025-10-11',
+            'application_date' => '2025-10-11',
+        ]);
+        $this->post(route('api.v1.statement.store'), $latestAllowed, [
+            'Accept' => 'application/json',
+        ])->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertCount(12, Statement::all());
     }
 
     public function test_api_statement_store_rejects_bad_decision_ground_urls(): void

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Statement;
+use App\Rules\StatementDateRules;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -334,18 +335,8 @@ class GroupedSubmissionsService
 
             'content_language' => [$this->rule_in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
-            'content_date' => [
-                'required',
-                'date_format:Y-m-d',
-                'after_or_equal:2000-01-01',
-                'before_or_equal:2038-01-01',
-            ],
-            'application_date' => [
-                'required',
-                'date_format:Y-m-d',
-                'after_or_equal:2020-01-01',
-                'before_or_equal:2038-01-01',
-            ],
+            'content_date' => StatementDateRules::rulesFor('content_date'),
+            'application_date' => StatementDateRules::rulesFor('application_date'),
             'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
             'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
             'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
@@ -379,6 +370,7 @@ class GroupedSubmissionsService
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',
             'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD.',
+            ...StatementDateRules::messages(),
             'end_date_account_restriction.date_format' => 'The end date of account restriction does not match the format YYYY-MM-DD.',
             'end_date_monetary_restriction.date_format' => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
             'end_date_service_restriction.date_format' => 'The end date of service restriction does not match the format YYYY-MM-DD.',
