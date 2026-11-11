@@ -9,6 +9,7 @@ use App\Services\PlatformUniqueIdService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 // use JMac\Testing\Traits\AdditionalAssertions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -70,7 +71,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
-            'application_date' => '2023-05-18',
+            'application_date' => '2023-10-18',
             'content_date' => '2023-05-18',
         ];
     }
@@ -137,6 +138,34 @@ class StatementMultipleAPIControllerTest extends TestCase
         $this->assertEquals('The selected content language is invalid.',
             $response->json('errors.statement_3.content_language.0'));
 
+        $this->assertCount(10, Statement::all());
+    }
+
+    public function test_api_statements_store_rejects_dates_outside_the_allowed_range(): void
+    {
+        $this->travelTo(Carbon::parse('2025-10-10 12:00:00'));
+        $this->signInAsAdmin();
+
+        $statement = array_merge($this->required_fields, [
+            'content_date' => '2014-12-31',
+            'application_date' => '2025-10-12',
+        ]);
+
+        $response = $this->post(route('api.v1.statements.store'), [
+            'statements' => [$statement],
+        ], [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertSame(
+            'The content date must be on or after 2015-01-01.',
+            $response->json('errors.statement_0.content_date.0')
+        );
+        $this->assertSame(
+            'The application date must be no later than 24 hours from now.',
+            $response->json('errors.statement_0.application_date.0')
+        );
         $this->assertCount(10, Statement::all());
     }
 
@@ -676,7 +705,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
-            'application_date' => '2023-05-18',
+            'application_date' => '2023-10-18',
             'content_date' => '2023-05-18',
             'puid' => 'sorLight',
         ];
@@ -756,7 +785,7 @@ class StatementMultipleAPIControllerTest extends TestCase
             'content_type' => ['CONTENT_TYPE_SYNTHETIC_MEDIA'],
             'automated_detection' => 'No',
             'automated_decision' => 'AUTOMATED_DECISION_PARTIALLY',
-            'application_date' => '2023-05-18',
+            'application_date' => '2023-10-18',
             'content_date' => '2023-05-18',
             'puid' => 'very bad + â pu+id !',
         ];
