@@ -99,6 +99,7 @@ class LimitConcurrentMultiStatementRequestsTest extends TestCase
     private function fakeRedisConnection(string $expected_key): MockInterface
     {
         $connection = Mockery::mock(Connection::class);
+        $connection->shouldReceive('isCluster')->andReturnFalse();
 
         Redis::shouldReceive('funnel')
             ->once()
