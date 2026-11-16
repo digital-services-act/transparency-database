@@ -41,6 +41,8 @@ class Kernel extends ConsoleKernel
 
     private const string DAILY_SIX_THIRTY_AM = '06:30';
 
+    private const string DAILY_NOON = '12:00';
+
     #[\Override]
     protected function schedule(Schedule $schedule): void
     {
@@ -73,6 +75,10 @@ class Kernel extends ConsoleKernel
                 ->dailyAt(self::DAILY_SIX_THIRTY_AM);
 
             if (config('app.env') === 'production') {
+
+                $schedule->command('exports:check-yesterday')
+                    ->dailyAt(self::DAILY_NOON)
+                    ->timezone('Europe/Brussels');
 
                 // Home page caching once daily at 9
                 $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);

@@ -325,6 +325,14 @@ class DayArchiveServiceTest extends TestCase
         $this->assertFalse($last_id);
     }
 
+    public function test_legacy_id_bounds_return_false_when_no_statements_exist(): void
+    {
+        $date = Carbon::createFromDate(2030, 1, 2);
+
+        $this->assertFalse($this->day_archive_service->getFirstIdOfDate($date, 2, true));
+        $this->assertFalse($this->day_archive_service->getLastIdOfDate($date, 2, true));
+    }
+
     public function test_it_gets_a_query_by_platform(): void
     {
         $platform = Platform::first();

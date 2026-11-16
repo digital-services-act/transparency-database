@@ -22,7 +22,7 @@ class CsvRowWriterService
      */
     public function formatRow(array $fields): string
     {
-        $stream = fopen('php://memory', 'wb+');
+        $stream = $this->openMemoryStream();
         if ($stream === false) {
             return '';
         }
@@ -33,7 +33,7 @@ class CsvRowWriterService
             }
 
             rewind($stream);
-            $csv_line = stream_get_contents($stream);
+            $csv_line = $this->readMemoryStream($stream);
             if ($csv_line === false) {
                 return '';
             }
@@ -44,5 +44,16 @@ class CsvRowWriterService
         } finally {
             fclose($stream);
         }
+    }
+
+    protected function openMemoryStream(): mixed
+    {
+        return fopen('php://memory', 'wb+');
+    }
+
+    /** @param resource $stream */
+    protected function readMemoryStream($stream): string|false
+    {
+        return stream_get_contents($stream);
     }
 }

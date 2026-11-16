@@ -51,4 +51,43 @@ class CsvRowWriterServiceTest extends TestCase
         $this->assertIsString($csv);
         $this->assertSame("field,value\r\n", $csv);
     }
+
+    public function test_format_row_returns_an_empty_string_when_the_memory_stream_cannot_open(): void
+    {
+        $writer = new class extends CsvRowWriterService
+        {
+            protected function openMemoryStream(): mixed
+            {
+                return false;
+            }
+        };
+
+        $this->assertSame('', $writer->formatRow(['field']));
+    }
+
+    public function test_format_row_returns_an_empty_string_when_writing_fails(): void
+    {
+        $writer = new class extends CsvRowWriterService
+        {
+            public function writeRow($stream, array $fields): int|false
+            {
+                return false;
+            }
+        };
+
+        $this->assertSame('', $writer->formatRow(['field']));
+    }
+
+    public function test_format_row_returns_an_empty_string_when_the_memory_stream_cannot_be_read(): void
+    {
+        $writer = new class extends CsvRowWriterService
+        {
+            protected function readMemoryStream($stream): string|false
+            {
+                return false;
+            }
+        };
+
+        $this->assertSame('', $writer->formatRow(['field']));
+    }
 }

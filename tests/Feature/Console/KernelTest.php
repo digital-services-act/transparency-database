@@ -36,7 +36,13 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(13, $events);
+        $this->assertCount(14, $events);
+
+        $this->assertTrue($events->contains(function ($event) {
+            return str_contains($event->command, 'exports:check-yesterday')
+                && $event->expression === '0 12 * * *'
+                && $event->timezone === 'Europe/Brussels';
+        }));
 
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'statements:elastic-index-date-seq yesterday 1000 false 8')
@@ -52,7 +58,6 @@ class KernelTest extends TestCase
         $this->assertFalse($events->contains(function ($event) {
             return str_contains($event->command, 'statements:prune-old');
         }));
-
         // Check for a specific command that is unique to production
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'enrich-home-page-cache --grandtotal') && $event->expression === '0 9 * * *';
@@ -79,6 +84,9 @@ class KernelTest extends TestCase
         }));
         $this->assertFalse($events->contains(function ($event) {
             return str_contains($event->command, 'statements:prune-old');
+        }));
+        $this->assertFalse($events->contains(function ($event) {
+            return str_contains($event->command, 'exports:check-yesterday');
         }));
     }
 

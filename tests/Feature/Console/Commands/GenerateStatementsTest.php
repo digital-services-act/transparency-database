@@ -83,7 +83,7 @@ class GenerateStatementsTest extends TestCase
 
         $timestamps = $this->pushedStatementCreationTimestamps();
 
-        $this->assertContainsOnly('int', $timestamps);
+        $this->assertContainsOnlyInt($timestamps);
         $this->assertSame([
             Carbon::parse('2025-01-15 13:15:42')->timestamp,
         ], array_values(array_unique($timestamps)));
