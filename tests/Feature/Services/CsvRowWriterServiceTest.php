@@ -90,4 +90,43 @@ class CsvRowWriterServiceTest extends TestCase
 
         $this->assertSame('', $writer->formatRow(['field']));
     }
+
+    public function test_format_row_sanitizes_stringable_json_and_malformed_utf8_values(): void
+    {
+        $writer = app(CsvRowWriterService::class);
+        $stringable = new class implements \Stringable
+        {
+            public function __toString(): string
+            {
+                return "printable\nvalue";
+            }
+        };
+        $throwingStringable = new class implements \Stringable
+        {
+            public function __toString(): string
+            {
+                throw new \RuntimeException('Cannot convert to string.');
+            }
+        };
+        $throwingJsonValue = new class implements \JsonSerializable
+        {
+            public function jsonSerialize(): mixed
+            {
+                throw new \RuntimeException('Cannot encode value.');
+            }
+        };
+
+        $csv = $writer->formatRow([
+            $stringable,
+            $throwingStringable,
+            ['key' => 'value'],
+            $throwingJsonValue,
+            "\xFF",
+        ]);
+
+        $this->assertSame(
+            ['printable value', '', '{"key":"value"}', '', '?'],
+            str_getcsv($csv, ',', '"', '')
+        );
+    }
 }

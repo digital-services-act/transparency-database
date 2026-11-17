@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Services\DayArchiveService;
 use App\Services\DayArchiveWorkspace;
-use App\Services\PlatformQueryService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -50,22 +49,16 @@ class StatementCsvExportZ implements ShouldQueue
         return 'sor-'.$slug.'-'.$this->date.'-'.$version.'-'.$this->part.'-'.sprintf('%05d', $subpart).'.csv';
     }
 
-    public function handle(DayArchiveService $day_archive_service, PlatformQueryService $platform_query_service): void
+    public function handle(DayArchiveService $day_archive_service): void
     {
-        // Fetch platforms
-        $platforms = $platform_query_service->getPlatformsById();
-
         // Prepare exports array for global and each platform
         $exports = $day_archive_service->buildBasicExportsArray();
-
-        // Get the raw select string for querying statements
-        $select_raw = $day_archive_service->getSelectRawString();
 
         // Prepare CSV headings
         $headings_arrays = $day_archive_service->prepareHeadingsArray();
         $headings = [];
         foreach ($headings_arrays as $version => $heading_array) {
-            $headings[$version] = $day_archive_service->csvstr($heading_array);
+            $headings[$version] = $day_archive_service->csvstr($heading_array, true);
         }
 
         // Start processing from the initial ID
