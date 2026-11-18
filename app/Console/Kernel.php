@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
 
     private const string DAILY_ELEVEN_PM = '23:00';
 
+    private const string DAILY_ELEVEN_O_ONE_PM = '23:01';
+
     private const string DAILY_TEST = '07:30';
 
     private const string DAILY_NINE_AM = '09:00';
@@ -100,6 +102,7 @@ class Kernel extends ConsoleKernel
 
             if (in_array(config('app.env'), self::GENERATE_STATEMENTS_ENVIRONMENTS, true)) {
                 $schedule->command('statements:generate')->dailyAt(self::DAILY_ELEVEN_PM);
+                $schedule->command('statements:generate --weird')->dailyAt(self::DAILY_ELEVEN_O_ONE_PM);
             }
 
         }

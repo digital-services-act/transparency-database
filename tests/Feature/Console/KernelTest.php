@@ -104,8 +104,13 @@ class KernelTest extends TestCase
 
             $this->assertTrue($events->contains(function ($event) {
                 return str_contains($event->command, 'statements:generate')
+                    && ! str_contains($event->command, '--weird')
                     && $event->expression === '0 23 * * *';
             }), 'The statement generator was not scheduled for '.$environment.'.');
+            $this->assertTrue($events->contains(function ($event) {
+                return str_contains($event->command, 'statements:generate --weird')
+                    && $event->expression === '1 23 * * *';
+            }), 'The weird statement generator was not scheduled for '.$environment.'.');
         }
     }
 
