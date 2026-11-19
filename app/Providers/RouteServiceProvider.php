@@ -17,6 +17,10 @@ class RouteServiceProvider extends ServiceProvider
 
     private const AUTHENTICATED_API_REQUESTS_PER_MINUTE = 12000;
 
+    private const AUTHENTICATED_SINGLE_STATEMENT_API_REQUESTS_PER_SECOND = 300;
+
+    private const AUTHENTICATED_SINGLE_STATEMENT_API_REQUESTS_PER_MINUTE = 18000;
+
     private const AUTHENTICATED_MULTI_API_REQUESTS_PER_SECOND = 4;
 
     private const AUTHENTICATED_MULTI_API_REQUESTS_PER_MINUTE = 240;
@@ -76,11 +80,19 @@ class RouteServiceProvider extends ServiceProvider
                     ->response($response);
             }
 
+            $isSingleStatementEndpoint = $request->routeIs('api.v1.statement.store');
+            $requestsPerSecond = $isSingleStatementEndpoint
+                ? self::AUTHENTICATED_SINGLE_STATEMENT_API_REQUESTS_PER_SECOND
+                : self::AUTHENTICATED_API_REQUESTS_PER_SECOND;
+            $requestsPerMinute = $isSingleStatementEndpoint
+                ? self::AUTHENTICATED_SINGLE_STATEMENT_API_REQUESTS_PER_MINUTE
+                : self::AUTHENTICATED_API_REQUESTS_PER_MINUTE;
+
             return [
-                Limit::perSecond(self::AUTHENTICATED_API_REQUESTS_PER_SECOND)
+                Limit::perSecond($requestsPerSecond)
                     ->by('second:user:'.$user->id)
                     ->response($response),
-                Limit::perMinute(self::AUTHENTICATED_API_REQUESTS_PER_MINUTE)
+                Limit::perMinute($requestsPerMinute)
                     ->by('minute:user:'.$user->id)
                     ->response($response),
             ];
