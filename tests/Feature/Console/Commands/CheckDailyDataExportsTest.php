@@ -3,9 +3,11 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Models\DayArchive;
+use App\Models\Statement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -22,6 +24,47 @@ class CheckDailyDataExportsTest extends TestCase
 
     public function test_it_counts_aggregates_and_posts_csv_metrics_to_teams_in_production(): void
     {
+        Statement::factory()->create([
+            'created_at' => '2024-03-02 08:00:00',
+            'updated_at' => '2024-03-02 08:00:00',
+        ]);
+        Statement::factory()->create([
+            'created_at' => '2024-04-02 08:00:00',
+            'updated_at' => '2024-04-02 08:00:00',
+        ]);
+        DB::table('platform_puids')->insert([
+            [
+                'platform_id' => 1,
+                'puid' => 'first-puid',
+                'created_at' => '2023-03-02 08:00:00',
+                'updated_at' => '2023-03-02 08:00:00',
+            ],
+            [
+                'platform_id' => 1,
+                'puid' => 'second-puid',
+                'created_at' => '2023-04-02 08:00:00',
+                'updated_at' => '2023-04-02 08:00:00',
+            ],
+        ]);
+        DB::table('failed_jobs')->insert([
+            [
+                'uuid' => '00000000-0000-4000-8000-000000000001',
+                'connection' => 'database',
+                'queue' => 'default',
+                'payload' => '{}',
+                'exception' => 'First failure',
+                'failed_at' => '2026-11-20 08:00:00',
+            ],
+            [
+                'uuid' => '00000000-0000-4000-8000-000000000002',
+                'connection' => 'database',
+                'queue' => 'default',
+                'payload' => '{}',
+                'exception' => 'Second failure',
+                'failed_at' => '2026-11-20 09:00:00',
+            ],
+        ]);
+
         config([
             'app.env' => 'production',
             'services.teams.daily_webhook' => 'https://teams.example.test/webhook',
@@ -41,12 +84,18 @@ class CheckDailyDataExportsTest extends TestCase
             '2026/11/19',
             'Aggregates -> Good 3 Combos',
             'CSVs -> Good, SORs total: 30 006 787 full size: 23 GB',
+            'failed_jobs -> 2 rows',
+            'statements_beta min(created_at) -> 2024-03-02 08:00:00',
+            'platform_puids min(created_at) -> 2023-03-02 08:00:00',
         ]);
 
         $this->artisan('exports:check-yesterday')
             ->expectsOutput('2026/11/19')
             ->expectsOutput('Aggregates -> Good 3 Combos')
             ->expectsOutput('CSVs -> Good, SORs total: 30 006 787 full size: 23 GB')
+            ->expectsOutput('failed_jobs -> 2 rows')
+            ->expectsOutput('statements_beta min(created_at) -> 2024-03-02 08:00:00')
+            ->expectsOutput('platform_puids min(created_at) -> 2023-03-02 08:00:00')
             ->expectsOutput('Teams card sent.')
             ->assertSuccessful();
 

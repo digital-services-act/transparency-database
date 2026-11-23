@@ -7,6 +7,7 @@ use App\Services\TeamsWebhookService;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use JsonException;
 use RuntimeException;
@@ -29,15 +30,19 @@ class CheckDailyDataExports extends Command
         $archive = $this->globalArchiveFor($date);
         [$csvStatus, $csvPassed] = $this->formatCsvStatus($archive);
 
-        $message = implode("\n", [
+        $report = [
             $date->format('Y/m/d'),
             $aggregateStatus,
             $csvStatus,
-        ]);
+            sprintf('failed_jobs -> %s rows', number_format(DB::table('failed_jobs')->count(), 0, '.', ' ')),
+            sprintf('statements_beta min(created_at) -> %s', DB::table('statements_beta')->min('created_at') ?? 'N/A'),
+            sprintf('platform_puids min(created_at) -> %s', DB::table('platform_puids')->min('created_at') ?? 'N/A'),
+        ];
+        $message = implode("\n", $report);
 
-        $this->line($date->format('Y/m/d'));
-        $this->line($aggregateStatus);
-        $this->line($csvStatus);
+        foreach ($report as $line) {
+            $this->line($line);
+        }
 
         if (config('app.env') === 'production') {
             try {
