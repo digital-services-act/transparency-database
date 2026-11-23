@@ -84,6 +84,7 @@ class CheckDailyDataExportsTest extends TestCase
             '2026/11/19',
             'Aggregates -> Good 3 Combos',
             'CSVs -> Good, SORs total: 30 006 787 full size: 23 GB',
+            'CSVs completed_at -> 2026-11-20 08:00:00',
             'failed_jobs -> 2 rows',
             'statements_beta min(created_at) -> 2024-03-02 08:00:00',
             'platform_puids min(created_at) -> 2023-03-02 08:00:00',
@@ -93,6 +94,7 @@ class CheckDailyDataExportsTest extends TestCase
             ->expectsOutput('2026/11/19')
             ->expectsOutput('Aggregates -> Good 3 Combos')
             ->expectsOutput('CSVs -> Good, SORs total: 30 006 787 full size: 23 GB')
+            ->expectsOutput('CSVs completed_at -> 2026-11-20 08:00:00')
             ->expectsOutput('failed_jobs -> 2 rows')
             ->expectsOutput('statements_beta min(created_at) -> 2024-03-02 08:00:00')
             ->expectsOutput('platform_puids min(created_at) -> 2023-03-02 08:00:00')

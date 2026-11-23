@@ -34,6 +34,7 @@ class CheckDailyDataExports extends Command
             $date->format('Y/m/d'),
             $aggregateStatus,
             $csvStatus,
+            sprintf('CSVs completed_at -> %s', $archive?->completed_at ?? 'N/A'),
             sprintf('failed_jobs -> %s rows', number_format(DB::table('failed_jobs')->count(), 0, '.', ' ')),
             sprintf('statements_beta min(created_at) -> %s', DB::table('statements_beta')->min('created_at') ?? 'N/A'),
             sprintf('platform_puids min(created_at) -> %s', DB::table('platform_puids')->min('created_at') ?? 'N/A'),
