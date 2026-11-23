@@ -7,7 +7,6 @@ use App\Models\Platform;
 use App\Models\PlatformPuid;
 use App\Models\Statement;
 use App\Services\DayArchiveService;
-use App\Services\CsvRowWriterService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -326,14 +325,6 @@ class DayArchiveServiceTest extends TestCase
         $this->assertFalse($last_id);
     }
 
-    public function test_legacy_id_bounds_return_false_when_no_statements_exist(): void
-    {
-        $date = Carbon::createFromDate(2030, 1, 2);
-
-        $this->assertFalse($this->day_archive_service->getFirstIdOfDate($date, 2, true));
-        $this->assertFalse($this->day_archive_service->getLastIdOfDate($date, 2, true));
-    }
-
     public function test_it_gets_a_query_by_platform(): void
     {
         $platform = Platform::first();
@@ -382,19 +373,6 @@ class DayArchiveServiceTest extends TestCase
         $result = $this->day_archive_service->getSelectRawString();
         $this->assertNotNull($result);
         $this->assertIsString($result);
-    }
-
-    public function test_it_uses_sql_control_character_sanitization_when_enabled(): void
-    {
-        $property = new \ReflectionProperty(DayArchiveService::class, 'csvTextSanitizedInSql');
-        $property->setValue($this->day_archive_service, true);
-
-        $select = $this->day_archive_service->getSelectRawString();
-
-        $this->assertStringContainsString(
-            "regexp_replace(uuid, '[[:cntrl:]]', ' ', 'g') AS uuid",
-            $select
-        );
     }
 
     public function test_it_prepares_headings_array_for_both_versions(): void
@@ -642,43 +620,6 @@ class DayArchiveServiceTest extends TestCase
         // Should contain escaped versions of the problematic data
         $this->assertStringContainsString('"field,with,commas"', $result);
         $this->assertStringContainsString('normal_field', $result);
-    }
-
-    public function test_csvstr_throws_when_the_writer_cannot_format_a_multi_field_row(): void
-    {
-        $writer = \Mockery::mock(CsvRowWriterService::class);
-        $writer->shouldReceive('formatRow')->once()->with(['first', 'second'])->andReturn('');
-        $service = new DayArchiveService(app(\App\Services\PlatformQueryService::class), $writer);
-
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Failed to format CSV row.');
-
-        $service->csvstr(['first', 'second']);
-    }
-
-    public function test_build_csv_lines_throws_when_row_width_differs_from_header(): void
-    {
-        $service = new class(
-            app(\App\Services\PlatformQueryService::class),
-            app(CsvRowWriterService::class)
-        ) extends DayArchiveService
-        {
-            public function mapRows(mixed $statement): array
-            {
-                return ['full' => ['only one field']];
-            }
-
-            public function prepareHeadingsArray(): array
-            {
-                return ['full' => []];
-            }
-        };
-        $service->versions = ['full'];
-
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessage('CSV row for version full has 1 fields; expected 0.');
-
-        $service->buildCsvLines(null);
     }
 
     private function createStatementWithId(int $id, string $created_at, string $puid, int $platform_id, int $user_id): Statement

@@ -7,7 +7,6 @@ use App\Http\Controllers\Traits\ApiLoggingTrait;
 use App\Http\Controllers\Traits\ExceptionHandlingTrait;
 use App\Models\Platform;
 use App\Models\Statement;
-use App\Services\CsvRowWriterService;
 use App\Services\StatementElasticAggregationService;
 use App\Services\StatementElasticConnectionService;
 use App\Services\StatementElasticStatsService;
@@ -35,7 +34,6 @@ class ElasticSearchAPIController extends Controller
         private readonly StatementElasticConnectionService $statement_elastic_connection_service,
         private readonly StatementElasticAggregationService $statement_elastic_aggregation_service,
         private readonly StatementElasticStatsService $statement_elastic_stats_service,
-        private readonly CsvRowWriterService $csv_row_writer_service,
     ) {}
 
     private function client(): Client
@@ -189,11 +187,11 @@ class ElasticSearchAPIController extends Controller
 
             $out = fopen('php://output', 'wb');
             if (request('headers', true)) {
-                $this->csv_row_writer_service->writeRow($out, $headers);
+                fputcsv($out, $headers);
             }
 
             foreach ($rows as $row) {
-                $this->csv_row_writer_service->writeRow($out, $row);
+                fputcsv($out, $row);
             }
 
             fclose($out);

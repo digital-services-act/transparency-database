@@ -57,19 +57,6 @@ class GenerateStatementsTest extends TestCase
         Queue::assertPushed(StatementCreation::class, 5);
     }
 
-    public function test_it_dispatches_jobs_with_weird_text_when_requested(): void
-    {
-        Queue::fake();
-
-        $this->artisan('statements:generate', ['amount' => 4, '--weird' => true])
-            ->assertExitCode(0);
-
-        $jobs = Queue::pushed(StatementCreation::class);
-
-        $this->assertCount(4, $jobs);
-        $this->assertTrue($jobs->every(static fn (StatementCreation $job): bool => $job->weird));
-    }
-
     public function test_it_handles_zero_amount(): void
     {
         Queue::fake();
@@ -96,7 +83,7 @@ class GenerateStatementsTest extends TestCase
 
         $timestamps = $this->pushedStatementCreationTimestamps();
 
-        $this->assertContainsOnlyInt($timestamps);
+        $this->assertContainsOnly('int', $timestamps);
         $this->assertSame([
             Carbon::parse('2025-01-15 13:15:42')->timestamp,
         ], array_values(array_unique($timestamps)));

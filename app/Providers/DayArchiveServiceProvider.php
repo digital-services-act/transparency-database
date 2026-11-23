@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\CsvRowWriterService;
 use App\Services\DayArchiveService;
 use App\Services\PlatformQueryService;
 use Illuminate\Contracts\Foundation\Application;
@@ -17,10 +16,7 @@ class DayArchiveServiceProvider extends ServiceProvider implements DeferrablePro
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(DayArchiveService::class, static fn (Application $app) => new DayArchiveService(
-            $app->make(PlatformQueryService::class),
-            $app->make(CsvRowWriterService::class),
-        ));
+        $this->app->singleton(DayArchiveService::class, static fn (Application $app) => new DayArchiveService(app(PlatformQueryService::class)));
     }
 
     /**

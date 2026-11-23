@@ -35,15 +35,9 @@ class DayArchiveService
 
     public $platforms = [];
 
-    private bool $csvTextSanitizedInSql = false;
-
-    private ?array $csvHeadingFieldCounts = null;
-
-    public function __construct(
-        protected PlatformQueryService $platform_query_service,
-        protected CsvRowWriterService $csv_row_writer_service,
-    ) {
-        $this->platforms = $platform_query_service->getPlatformsByIdForCsv();
+    public function __construct(protected PlatformQueryService $platform_query_service)
+    {
+        $this->platforms = $platform_query_service->getPlatformsById();
     }
 
     /**
@@ -87,7 +81,8 @@ class DayArchiveService
         Carbon $date,
         int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES,
         bool $useLegacySecondBySecond = false,
-    ) {
+    )
+    {
         if ($useLegacySecondBySecond) {
             return $this->getFirstIdBySecond($date);
         }
@@ -110,7 +105,8 @@ class DayArchiveService
         Carbon $date,
         int $boundaryMinutes = self::DEFAULT_BOUNDARY_WINDOW_MINUTES,
         bool $useLegacySecondBySecond = false,
-    ) {
+    )
+    {
         if ($useLegacySecondBySecond) {
             return $this->getLastIdBySecond($date);
         }
@@ -240,62 +236,58 @@ class DayArchiveService
 
     private function cleanTextField(string $fieldName): string
     {
-        if (! $this->csvTextSanitizedInSql) {
-            return $fieldName;
-        }
-
-        return "regexp_replace({$fieldName}, '[[:cntrl:]]', ' ', 'g') AS {$fieldName}";
+        return "REPLACE(REPLACE({$fieldName}, '\n', ' '), '\\\\\"', '\"') AS {$fieldName}";
     }
 
     public function getSelectRawString(string $table = 'statements_beta'): string
     {
         $selects = [];
         $selects[] = 'id';
-        $selects[] = $this->cleanTextField('uuid');
-        $selects[] = $this->cleanTextField('decision_visibility');
+        $selects[] = 'uuid';
+        $selects[] = 'decision_visibility';
         $selects[] = $this->cleanTextField('decision_visibility_other');
         $selects[] = 'end_date_visibility_restriction';
 
-        $selects[] = $this->cleanTextField('decision_monetary');
+        $selects[] = 'decision_monetary';
         $selects[] = $this->cleanTextField('decision_monetary_other');
         $selects[] = 'end_date_monetary_restriction';
 
-        $selects[] = $this->cleanTextField('decision_provision');
+        $selects[] = 'decision_provision';
         $selects[] = 'end_date_service_restriction';
 
-        $selects[] = $this->cleanTextField('decision_account');
+        $selects[] = 'decision_account';
         $selects[] = 'end_date_account_restriction';
-        $selects[] = $this->cleanTextField('account_type');
+        $selects[] = 'account_type';
 
-        $selects[] = $this->cleanTextField('decision_ground');
+        $selects[] = 'decision_ground';
         $selects[] = $this->cleanTextField('decision_ground_reference_url');
 
         $selects[] = $this->cleanTextField('illegal_content_legal_ground');
         $selects[] = $this->cleanTextField('illegal_content_explanation');
         $selects[] = $this->cleanTextField('incompatible_content_ground');
         $selects[] = $this->cleanTextField('incompatible_content_explanation');
-        $selects[] = $this->cleanTextField('incompatible_content_illegal');
+        $selects[] = 'incompatible_content_illegal';
 
-        $selects[] = $this->cleanTextField('category');
-        $selects[] = $this->cleanTextField('category_addition');
-        $selects[] = $this->cleanTextField('category_specification');
+        $selects[] = 'category';
+        $selects[] = 'category_addition';
+        $selects[] = 'category_specification';
         $selects[] = $this->cleanTextField('category_specification_other');
 
-        $selects[] = $this->cleanTextField('content_type');
+        $selects[] = 'content_type';
         $selects[] = $this->cleanTextField('content_type_other');
-        $selects[] = $this->cleanTextField('content_language');
+        $selects[] = 'content_language';
         $selects[] = 'content_date';
-        $selects[] = $this->cleanTextField('content_id_ean');
+        $selects[] = 'content_id_ean';
 
-        $selects[] = $this->cleanTextField('territorial_scope');
+        $selects[] = 'territorial_scope';
         $selects[] = 'application_date';
         $selects[] = $this->cleanTextField('decision_facts');
 
-        $selects[] = $this->cleanTextField('source_type');
+        $selects[] = 'source_type';
         $selects[] = $this->cleanTextField('source_identity');
 
-        $selects[] = $this->cleanTextField('automated_detection');
-        $selects[] = $this->cleanTextField('automated_decision');
+        $selects[] = 'automated_detection';
+        $selects[] = 'automated_decision';
 
         $selects[] = $this->cleanTextField('puid');
         $selects[] = 'created_at';
@@ -333,17 +325,15 @@ class DayArchiveService
         return $rows;
     }
 
-    public function csvstr(array $fields, bool $fieldsPreSanitized = false): string
+    public function csvstr(array $fields): string
     {
-        $csv_line = $fieldsPreSanitized
-            ? $this->csv_row_writer_service->formatPreSanitizedRow($fields)
-            : $this->csv_row_writer_service->formatRow($fields);
+        $f = fopen('php://memory', 'wb+');
+        fputcsv($f, $fields);
 
-        if ($csv_line === '' && count($fields) > 1) {
-            throw new \RuntimeException('Failed to format CSV row.');
-        }
+        rewind($f);
+        $csv_line = stream_get_contents($f);
 
-        return $csv_line;
+        return rtrim($csv_line);
     }
 
     /**
@@ -357,17 +347,8 @@ class DayArchiveService
     {
         $csvs = [];
         $rows = $this->mapRows($statement);
-        $heading_field_counts = $this->csvHeadingFieldCounts ??= array_map('count', $this->prepareHeadingsArray());
-
         foreach ($this->versions as $version) {
-            if (count($rows[$version]) !== $heading_field_counts[$version]) {
-                throw new \UnexpectedValueException(
-                    'CSV row for version '.$version.' has '.count($rows[$version]).
-                    ' fields; expected '.$heading_field_counts[$version].'.'
-                );
-            }
-
-            $csvs[$version] = $this->csvstr($rows[$version], $this->csvTextSanitizedInSql);
+            $csvs[$version] = $this->csvstr($rows[$version]);
         }
 
         return $csvs;
@@ -375,7 +356,6 @@ class DayArchiveService
 
     public function getRawStatements(int $start, int $end, string $date = ''): Collection
     {
-        $this->csvTextSanitizedInSql = DB::connection($this->connection)->getDriverName() === 'pgsql';
         $select_raw = $this->getSelectRawString();
         $statements = DB::connection($this->connection)
             ->table($this->statements_table)

@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Services\DayArchiveService;
 use App\Services\DayArchiveWorkspace;
+use App\Services\PlatformQueryService;
+use Carbon\Carbon;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,24 +43,43 @@ class StatementCsvExportZ implements ShouldQueue
 
     public function zipFilePathForSlugAndVersion(string $slug, string $version): string
     {
-        return app(DayArchiveWorkspace::class)->path('sor-'.$slug.'-'.$this->date.'-'.$version.'-'.$this->part.'.csv.zip');
+        return app(DayArchiveWorkspace::class)->path('sor-' . $slug . '-' . $this->date . '-' . $version . '-' . $this->part . '.csv.zip');
     }
 
     public function csvFilenameForSlugAndVersionAndSubpart(string $slug, string $version, int $subpart): string
     {
-        return 'sor-'.$slug.'-'.$this->date.'-'.$version.'-'.$this->part.'-'.sprintf('%05d', $subpart).'.csv';
+        return 'sor-' . $slug . '-' . $this->date . '-' . $version . '-' . $this->part . '-' . sprintf('%05d', $subpart) . '.csv';
     }
 
-    public function handle(DayArchiveService $day_archive_service): void
+    private function csvstr(array $fields): string
     {
+        $f = fopen('php://memory', 'wb+');
+        if (fputcsv($f, $fields) === false) {
+            return '';
+        }
+
+        rewind($f);
+        $csv_line = stream_get_contents($f);
+
+        return rtrim($csv_line);
+    }
+
+    public function handle(DayArchiveService $day_archive_service, PlatformQueryService $platform_query_service): void
+    {
+        // Fetch platforms
+        $platforms = $platform_query_service->getPlatformsById();
+
         // Prepare exports array for global and each platform
         $exports = $day_archive_service->buildBasicExportsArray();
+
+        // Get the raw select string for querying statements
+        $select_raw = $day_archive_service->getSelectRawString();
 
         // Prepare CSV headings
         $headings_arrays = $day_archive_service->prepareHeadingsArray();
         $headings = [];
         foreach ($headings_arrays as $version => $heading_array) {
-            $headings[$version] = $day_archive_service->csvstr($heading_array, true);
+            $headings[$version] = $this->csvstr($heading_array);
         }
 
         // Start processing from the initial ID
@@ -146,13 +167,13 @@ class StatementCsvExportZ implements ShouldQueue
 
                         try {
                             // Add the CSV file to the zip from memory
-                            $zip->addFromString($csv_file, $headings[$version]."\r\n".implode("\r\n", $rows));
+                            $zip->addFromString($csv_file, $headings[$version] . "\n" . implode("\n", $rows));
                         } catch (\Exception $e) {
                             // Handle exception if needed
-                            Log::error('Failed to add file to zip: '.$e->getMessage());
-                            Log::error('File: '.$csv_file);
-                            Log::error('Rows count: '.count($rows));
-                            Log::error('Rows: '.var_dump($rows, true));
+                            Log::error('Failed to add file to zip: ' . $e->getMessage());
+                            Log::error('File: ' . $csv_file);
+                            Log::error('Rows count: ' . count($rows));
+                            Log::error('Rows: ' . var_dump($rows, true));
                         }
                     }
                 }

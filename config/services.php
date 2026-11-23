@@ -37,8 +37,4 @@ return [
         'wss' => env('DRIVEIN_WSS_URL', 'wss://analytics-ws.cnect.eu'),
     ],
 
-    'teams' => [
-        'daily_webhook' => env('DAILY_TEAMS_WEBHOOK'),
-    ],
-
 ];

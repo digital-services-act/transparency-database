@@ -1,7 +1,3 @@
 @props(['icon' => 'global', 'set' => 'b6764719'])
-@php
-    $webToolsIcon = [
-        'success' => 'success-filled',
-    ][$icon] ?? $icon;
-@endphp
-<g data-wt-icon="{{ $webToolsIcon }}"></g>
+<use xlink:href="{{ '/static/ecl/images/icons/sprites/icons.svg#' . $icon }}"></use>
+

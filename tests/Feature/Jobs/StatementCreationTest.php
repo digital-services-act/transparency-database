@@ -4,7 +4,6 @@ namespace Tests\Feature\Jobs;
 
 use App\Jobs\StatementCreation;
 use App\Models\Statement;
-use App\Services\DayArchiveService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -83,41 +82,6 @@ class StatementCreationTest extends TestCase
         $this->assertNotNull($statement->uuid);
         $this->assertNotNull($statement->platform_id);
         $this->assertNotNull($statement->user_id);
-    }
-
-    public function test_job_creates_weird_text_statement_with_csv_edge_cases(): void
-    {
-        $timestamp = Carbon::parse('2026-11-17 23:01:00')->timestamp;
-
-        (new StatementCreation($timestamp, true))->handle();
-
-        $statement = Statement::query()
-            ->where('created_at', Carbon::createFromTimestamp($timestamp)->format('Y-m-d H:i:s'))
-            ->latest('id')
-            ->firstOrFail();
-
-        $this->assertStringContainsString('""double""', $statement->decision_visibility_other);
-        $this->assertStringContainsString('"comma, quote"', $statement->decision_visibility_other);
-        $this->assertStringContainsString("\n", $statement->decision_visibility_other);
-        $this->assertStringContainsString("\r\n", $statement->decision_visibility_other);
-        $this->assertStringContainsString("\t", $statement->decision_monetary_other);
-        $this->assertStringContainsString('中文', $statement->decision_visibility_other);
-        $this->assertStringContainsString('😀', $statement->decision_visibility_other);
-
-        $archiveService = app(DayArchiveService::class);
-        $archiveService->connection = config('database.default');
-        $rawStatement = $archiveService->getRawStatements($statement->id, $statement->id)->first();
-        $csvLine = $archiveService->buildCsvLines($rawStatement)['full'];
-        $csvFields = str_getcsv($csvLine, ',', '"', '');
-        $csvRecord = array_combine($archiveService->headings(), $csvFields);
-
-        $this->assertIsArray($csvRecord);
-        $this->assertStringContainsString('""double""', $csvRecord['decision_visibility_other']);
-        $this->assertStringContainsString('"comma, quote"', $csvRecord['decision_visibility_other']);
-        $this->assertStringContainsString('中文', $csvRecord['decision_visibility_other']);
-        $this->assertStringNotContainsString("\n", $csvRecord['decision_visibility_other']);
-        $this->assertStringNotContainsString("\r", $csvRecord['decision_visibility_other']);
-        $this->assertStringNotContainsString("\t", $csvRecord['decision_monetary_other']);
     }
 
     public function test_job_logic_branches_correctly_based_on_when_parameter(): void

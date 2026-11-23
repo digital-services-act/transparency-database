@@ -46,20 +46,6 @@ class StatementFactory extends Factory
             });
     }
 
-    public function withWeirdText(): static
-    {
-        $backslash = chr(92);
-        $backslashQuoteSequence = $backslash.$backslash.'"""'.$backslash.$backslash;
-
-        return $this->state([
-            'decision_visibility_other' => 'CSV edge cases: double double quotes: ""double""; embedded "comma, quote"; slashes '.$backslash.$backslash.'; sequence '.$backslashQuoteSequence.'; UTF-8 中文 日本語 café 😀; LF: first line'."\n".'second line; CRLF: third line'."\r\n".'fourth line.',
-            'decision_monetary_other' => 'Tab before'."\t".'and after'."\t".'the value.',
-            'content_type_other' => 'UTF-8 edge text: 中文字符 — Ελληνικά — café — 🧪',
-            'source_identity' => 'Odd punctuation: "quoted"; ""doubled""; path '.$backslash.'folder'.$backslash.'file; 中文.',
-            'decision_facts' => 'Quote sequence '.$backslashQuoteSequence.'; newline: first'."\n".'second; carriage return plus newline: third'."\r\n".'fourth; emoji 🧪 and 中文.',
-        ]);
-    }
-
     /**
      * Define the model's default state.
      *

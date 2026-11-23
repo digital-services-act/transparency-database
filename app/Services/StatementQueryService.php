@@ -396,41 +396,14 @@ class StatementQueryService
 
     private function applyCreatedAtStartFilter(Builder $query, string $filter_value): void
     {
-        $date = $this->parseCreatedAtFilter($filter_value, '00:00:00');
-
-        if (! $date) {
-            return;
-        }
-
+        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value.' 00:00:00');
         $query->where('created_at', '>=', $date);
     }
 
     private function applyCreatedAtEndFilter(Builder $query, string $filter_value): void
     {
-        $date = $this->parseCreatedAtFilter($filter_value, '23:59:59');
-
-        if (! $date) {
-            return;
-        }
-
+        $date = Carbon::createFromFormat('d-m-Y H:i:s', $filter_value.' 23:59:59');
         $query->where('created_at', '<=', $date);
-    }
-
-    private function parseCreatedAtFilter(string $filter_value, string $time): ?Carbon
-    {
-        foreach (['Y-m-d', 'd-m-Y', 'j-n-Y'] as $format) {
-            try {
-                $date = Carbon::createFromFormat('!'.$format.' H:i:s', $filter_value.' '.$time);
-
-                if ($date && $date->format($format) === $filter_value) {
-                    return $date;
-                }
-            } catch (\Exception) {
-                // Try the next supported date format.
-            }
-        }
-
-        return null;
     }
 
     private function applyTerritorialScopeFilter(Builder $query, array $filter_value): void

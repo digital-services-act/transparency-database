@@ -1,10 +1,9 @@
 <div class="ecl-site-header__login-container">
 
     @guest
-        <a class="ecl-button ecl-button--tertiary ecl-button--neutral ecl-site-header__login-toggle"
-           href="{{ route('profile.start') }}"
-           data-ecl-login-toggle>
-            <svg class="ecl-icon ecl-icon--m ecl-site-header__icon"
+        <a class="ecl-button ecl-button--tertiary ecl-site-header__login-toggle"
+           href="{{ route('profile.start') }}">
+            <svg class="ecl-icon ecl-icon--s ecl-site-header__icon"
                  focusable="false"
                  aria-hidden="false"
                  role="img"
@@ -12,22 +11,22 @@
                 <title>Log in</title>
                 <x-ecl.icon icon="log-in"/>
             </svg>
-            Log In</a>
+                Log in</a>
     @endguest
     @auth
 
-            <a class="ecl-button ecl-button--tertiary ecl-button--neutral ecl-site-header__login-toggle"
+            <a class="ecl-button ecl-button--tertiary ecl-site-header__login-toggle"
                href="#"
                data-ecl-login-toggle="true"
                aria-controls="login-box-id" aria-expanded="false">
-                <svg class="ecl-icon ecl-icon--m ecl-icon--rotate-0 ecl-site-header__icon"
+                <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-0 ecl-site-header__icon"
                      focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="logged-in"/>
                 </svg>
-                Logged In
+                Logged in
                 <span>&nbsp;</span>
                 <svg class="ecl-u-d-none ecl-u-d-l-block ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-site-header__icon"
-                     focusable="false" aria-hidden="false">
+                     focusable="false" aria-hidden="true">
                     <x-ecl.icon icon="corner-arrow"/>
                 </svg>
             </a>
@@ -35,10 +34,10 @@
             <div id="login-box-id" class="ecl-site-header__login-box"
                  data-ecl-login-box="true">
                 <x-ecl.menu-item icon="log-in" :link="route('profile.start')"
-                                 title="Your Profile"/>
+                                 title="Your profile"/>
                 @can('create statements')
                     <x-ecl.menu-item icon="settings" :link="route('profile.api.index')"
-                                     title="API Token Management"/>
+                                     title="API token management"/>
 
                     <x-ecl.menu-item icon="edit" :link="route('statement.create')"
                                      title="Submit statements of reasons"/>
@@ -50,4 +49,3 @@
 
     @endauth
 </div>
-

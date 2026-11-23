@@ -3,7 +3,6 @@
 namespace Tests\Feature\Services;
 
 use App\Services\PlatformQueryService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -143,42 +142,6 @@ class PlatformQueryServiceTest extends TestCase
     {
         $platforms_by_id = $this->platformQueryService->getPlatformsById();
         $this->assertIsArray($platforms_by_id);
-    }
-
-    public function test_it_gets_platforms_by_id_for_csv_on_sqlite(): void
-    {
-        $platforms_by_id = $this->platformQueryService->getPlatformsByIdForCsv();
-
-        $this->assertIsArray($platforms_by_id);
-    }
-
-    public function test_it_sanitizes_platform_names_in_the_postgres_csv_query(): void
-    {
-        $query = \Mockery::mock(Builder::class);
-        $model = \Mockery::mock(\App\Models\Platform::class);
-        $connection = \Mockery::mock(\Illuminate\Database\Connection::class);
-        $query->shouldReceive('getModel')->once()->andReturn($model);
-        $model->shouldReceive('getConnection')->once()->andReturn($connection);
-        $connection->shouldReceive('getDriverName')->once()->andReturn('pgsql');
-        $query->shouldReceive('selectRaw')
-            ->once()
-            ->with("id, regexp_replace(name, '[[:cntrl:]]', ' ', 'g') AS name")
-            ->andReturnSelf();
-        $query->shouldReceive('pluck')->once()->with('name', 'id')->andReturn(collect([7 => 'Platform']));
-
-        $service = new class($query) extends PlatformQueryService
-        {
-            public function __construct(private Builder $query)
-            {
-            }
-
-            protected function platformsForCsvQuery(): Builder
-            {
-                return $this->query;
-            }
-        };
-
-        $this->assertSame([7 => 'Platform'], $service->getPlatformsByIdForCsv());
     }
 
     public function test_it_gets_platform_ids(): void

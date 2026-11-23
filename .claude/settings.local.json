@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__laravel-boost__application-info",
+      "mcp__laravel-boost__list-routes",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(php artisan test:*)",
+      "mcp__laravel-boost__get-absolute-url",
+      "Bash(curl:*)",
+      "Bash(php artisan make:migration:*)",
+      "WebSearch",
+      "Bash(php artisan cache:table:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(php artisan make:model:*)",
+      "Bash(php artisan make:command:*)",
+      "Bash(php artisan make:controller:*)",
+      "Bash(php artisan make:test:*)",
+      "Bash(php artisan:*)",
+      "mcp__laravel-boost__get-config",
+      "mcp__laravel-boost__search-docs",
+      "mcp__laravel-boost__tinker",
+      "mcp__laravel-boost__read-log-entries",
+      "Bash(grep -r \"external\\\\|outbound\\\\|submit\\\\|POST.*api\\\\|batch.*process\" /Users/asl/code/transparency --include=\"*.php\" --include=\"*.yml\" --include=\"*.yaml\" --include=\".env*\" 2>/dev/null | grep -v node_modules | grep -v vendor | head -40)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "laravel-boost",
+    "herd"
+  ]
+}
