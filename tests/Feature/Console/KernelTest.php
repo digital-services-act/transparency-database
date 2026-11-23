@@ -36,7 +36,13 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(12, $events);
+        $this->assertCount(14, $events);
+
+        $this->assertTrue($events->contains(function ($event) {
+            return str_contains($event->command, 'exports:check-yesterday')
+                && $event->expression === '0 12 * * *'
+                && $event->timezone === 'Europe/Brussels';
+        }));
 
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'statements:elastic-index-date-seq yesterday 1000 false 8')
@@ -52,7 +58,6 @@ class KernelTest extends TestCase
         $this->assertFalse($events->contains(function ($event) {
             return str_contains($event->command, 'statements:prune-old');
         }));
-
         // Check for a specific command that is unique to production
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'enrich-home-page-cache --grandtotal') && $event->expression === '0 9 * * *';
@@ -70,7 +75,7 @@ class KernelTest extends TestCase
         $this->invokeProtectedMethod($kernel, 'schedule', [$schedule]);
 
         $events = collect($schedule->events());
-        $this->assertCount(11, $events);
+        $this->assertCount(12, $events);
         $this->assertTrue($events->contains(function ($event) {
             return str_contains($event->command, 'statements:remove-date 181 10000 4') && $event->expression === '0 2 * * *';
         }));
@@ -79,6 +84,9 @@ class KernelTest extends TestCase
         }));
         $this->assertFalse($events->contains(function ($event) {
             return str_contains($event->command, 'statements:prune-old');
+        }));
+        $this->assertFalse($events->contains(function ($event) {
+            return str_contains($event->command, 'exports:check-yesterday');
         }));
     }
 
@@ -96,8 +104,13 @@ class KernelTest extends TestCase
 
             $this->assertTrue($events->contains(function ($event) {
                 return str_contains($event->command, 'statements:generate')
+                    && ! str_contains($event->command, '--weird')
                     && $event->expression === '0 23 * * *';
             }), 'The statement generator was not scheduled for '.$environment.'.');
+            $this->assertTrue($events->contains(function ($event) {
+                return str_contains($event->command, 'statements:generate --weird')
+                    && $event->expression === '1 23 * * *';
+            }), 'The weird statement generator was not scheduled for '.$environment.'.');
         }
     }
 

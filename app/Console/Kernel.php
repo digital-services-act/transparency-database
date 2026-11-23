@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
 
     private const string DAILY_ELEVEN_PM = '23:00';
 
+    private const string DAILY_ELEVEN_O_ONE_PM = '23:01';
+
     private const string DAILY_TEST = '07:30';
 
     private const string DAILY_NINE_AM = '09:00';
@@ -38,6 +40,10 @@ class Kernel extends ConsoleKernel
     private const string DAILY_SIX_TEN_AM = '06:10';
 
     private const string DAILY_SIX_FIFTEEN_AM = '06:15';
+
+    private const string DAILY_SIX_THIRTY_AM = '06:30';
+
+    private const string DAILY_NOON = '12:00';
 
     #[\Override]
     protected function schedule(Schedule $schedule): void
@@ -66,7 +72,15 @@ class Kernel extends ConsoleKernel
             $schedule->command('aggregates-freeze yesterday')
                 ->dailyAt(self::DAILY_SIX_FIFTEEN_AM);
 
+            // Retry yesterday's aggregate freeze in case Elasticsearch was unavailable earlier.
+            $schedule->command('aggregates-freeze yesterday')
+                ->dailyAt(self::DAILY_SIX_THIRTY_AM);
+
             if (config('app.env') === 'production') {
+
+                $schedule->command('exports:check-yesterday')
+                    ->dailyAt(self::DAILY_NOON)
+                    ->timezone('Europe/Brussels');
 
                 // Home page caching once daily at 9
                 $schedule->command('enrich-home-page-cache --grandtotal')->dailyAt(self::DAILY_NINE_AM);
@@ -88,6 +102,7 @@ class Kernel extends ConsoleKernel
 
             if (in_array(config('app.env'), self::GENERATE_STATEMENTS_ENVIRONMENTS, true)) {
                 $schedule->command('statements:generate')->dailyAt(self::DAILY_ELEVEN_PM);
+                $schedule->command('statements:generate --weird')->dailyAt(self::DAILY_ELEVEN_O_ONE_PM);
             }
 
         }

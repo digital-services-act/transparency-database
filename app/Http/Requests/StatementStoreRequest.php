@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Models\Statement;
+use App\Rules\StatementDateRules;
 use App\Services\EuropeanCountriesService;
 use App\Services\EuropeanLanguagesService;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -71,8 +73,8 @@ class StatementStoreRequest extends FormRequest
 
             'content_language' => [$this->in(array_keys(EuropeanLanguagesService::ALL_LANGUAGES)), 'nullable'],
 
-            'content_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01', 'before_or_equal:2038-01-01'],
-            'application_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2020-01-01', 'before_or_equal:2038-01-01'],
+            'content_date' => StatementDateRules::rulesFor('content_date'),
+            'application_date' => StatementDateRules::rulesFor('application_date'),
             'end_date_account_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
             'end_date_monetary_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
             'end_date_service_restriction' => ['date_format:Y-m-d', 'nullable', 'before_or_equal:2038-01-01'],
@@ -113,6 +115,7 @@ class StatementStoreRequest extends FormRequest
             'incompatible_content_explanation.required_if' => 'The incompatible content explanation field is required when decision ground is incompatible content.',
             'content_date.date_format' => 'The content date does not match the format YYYY-MM-DD.',
             'application_date.date_format' => 'The application date does not match the format YYYY-MM-DD.',
+            ...StatementDateRules::messages(),
             'end_date_account_restriction.date_format' => 'The end date of account restriction does not match the format YYYY-MM-DD.',
             'end_date_monetary_restriction.date_format' => 'The end date of monetary restriction does not match the format YYYY-MM-DD.',
             'end_date_service_restriction.date_format' => 'The end date of service restriction does not match the format YYYY-MM-DD.',
@@ -143,7 +146,7 @@ class StatementStoreRequest extends FormRequest
     }
 
     #[\Override]
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
         if (Cache::get('validation_failure_logging', true)) {
             Log::info('Statement Store Request Validation Failure', [

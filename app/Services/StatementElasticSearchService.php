@@ -122,7 +122,11 @@ class StatementElasticSearchService
             // Start but no end.
             if (($filters['created_at_start'] ?? false) && ! ($filters['created_at_end'] ?? false)) {
                 $now = date('Y-m-d\TH:i:s');
-                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'].' 00:00:00');
+                $start = $this->parseCreatedAtFilter($filters['created_at_start'], '00:00:00');
+
+                if (! $start) {
+                    return '';
+                }
 
                 return 'created_at:['.$start->format('Y-m-d\TH:i:s').' TO '.$now.']';
             }
@@ -130,15 +134,23 @@ class StatementElasticSearchService
             // End but no start.
             if (($filters['created_at_end'] ?? false) && ! ($filters['created_at_start'] ?? false)) {
                 $beginning = date('Y-m-d\TH:i:s', strtotime('2020-01-01'));
-                $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'].' 23:59:59');
+                $end = $this->parseCreatedAtFilter($filters['created_at_end'], '23:59:59');
+
+                if (! $end) {
+                    return '';
+                }
 
                 return 'created_at:['.$beginning.' TO '.$end->format('Y-m-d\TH:i:s').']';
             }
 
             // both start and end.
             if (($filters['created_at_start'] ?? false) && ($filters['created_at_end'] ?? false)) {
-                $start = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_start'].' 00:00:00');
-                $end = Carbon::createFromFormat('d-m-Y H:i:s', $filters['created_at_end'].' 23:59:59');
+                $start = $this->parseCreatedAtFilter($filters['created_at_start'], '00:00:00');
+                $end = $this->parseCreatedAtFilter($filters['created_at_end'], '23:59:59');
+
+                if (! $start || ! $end) {
+                    return '';
+                }
 
                 return 'created_at:['.$start->format('Y-m-d\TH:i:s').' TO '.$end->format('Y-m-d\TH:i:s').']';
             }
@@ -149,6 +161,27 @@ class StatementElasticSearchService
 
         // Normally we don't get here.
         return '';
+    }
+
+    private function parseCreatedAtFilter(mixed $filter_value, string $time): ?Carbon
+    {
+        if (! is_string($filter_value)) {
+            return null;
+        }
+
+        foreach (['Y-m-d', 'd-m-Y', 'j-n-Y'] as $format) {
+            try {
+                $date = Carbon::createFromFormat('!'.$format.' H:i:s', $filter_value.' '.$time);
+
+                if ($date && $date->format($format) === $filter_value) {
+                    return $date;
+                }
+            } catch (Exception) {
+                // Try the next supported date format.
+            }
+        }
+
+        return null;
     }
 
     private function applySFilter(string $filter_value): string

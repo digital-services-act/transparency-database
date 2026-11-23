@@ -116,6 +116,25 @@ class PlatformQueryService
         return Platform::nonDsa()->pluck('name', 'id')->toArray();
     }
 
+    public function getPlatformsByIdForCsv(): array
+    {
+        $query = $this->platformsForCsvQuery();
+
+        if ($query->getModel()->getConnection()->getDriverName() !== 'pgsql') {
+            return $query->pluck('name', 'id')->toArray();
+        }
+
+        return $query
+            ->selectRaw("id, regexp_replace(name, '[[:cntrl:]]', ' ', 'g') AS name")
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    protected function platformsForCsvQuery(): Builder
+    {
+        return Platform::nonDsa();
+    }
+
     public function getPlatformIds(): array
     {
         return Platform::nonDsa()->pluck('id')->toArray();

@@ -1,17 +1,17 @@
-<header class="ecl-site-header ecl-site-header--has-menu" data-ecl-auto-init="SiteHeader">
+<header class="ecl-site-header ecl-site-header--has-menu ecl-site-header-with-logo-l" data-ecl-auto-init="SiteHeader">
     <div class="ecl-site-header__background">
         <div class="ecl-site-header__header">
             <div class="ecl-site-header__container ecl-container">
-                <div class="ecl-site-header__top" data-ecl-site-header-top>
+                <div class="ecl-site-header__top" data-ecl-site-header-top="">
                     <a href="{{ route('home') }}"
                        class="ecl-link ecl-link--standalone ecl-site-header__logo-link"
                        aria-label="European Commission">
                         <picture class="ecl-picture ecl-site-header__picture" title="European Commission">
                             <source srcset="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                 media="(min-width: 576px)">
-                            <source srcset="{{asset('static/ecl/images/logo/logo-ec--mute.svg')}}"
+                            <source srcset="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                 media="(min-width: 1px)">
-                            <img class="ecl-site-header__logo-image"
+                            <img class="ecl-site-header__logo-image ecl-site-header__logo-image--l"
                                  src="{{asset('static/ecl/images/logo/positive/logo-ec--en.svg')}}"
                                  alt="European Commission logo"/>
                         </picture>
@@ -32,7 +32,7 @@
 
         <div class="ecl-site-header__banner">
             <div class="ecl-container">
-                <div class="ecl-site-header__site-name">DSA transparency database</div>
+                <div class="ecl-site-header__site-name">DSA Transparency Database</div>
             </div>
         </div>
 
@@ -43,29 +43,33 @@
              data-ecl-auto-init="Menu"
              data-ecl-menu-label-open="Menu"
              data-ecl-menu-label-close="Close"
-             aria-expanded="false"
-             role="navigation">
+             role="navigation"
+             aria-label="Main navigation">
             <div class="ecl-menu__overlay"></div>
             <div class="ecl-container ecl-menu__container">
 
-
-                <a href="{{ route('home') }}"
-                   class="ecl-link ecl-link--standalone ecl-link--icon ecl-button ecl-button--tertiary ecl-menu__open ecl-link--icon-only"
-                   data-ecl-menu-open>
-                    <svg class="ecl-icon ecl-icon--m ecl-link__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="hamburger"/>
-                    </svg>
-                    <svg class="ecl-icon ecl-icon--m ecl-link__icon" focusable="false" aria-hidden="true">
-                        <x-ecl.icon icon="close"/>
-                    </svg>
-                    <span class="ecl-link__label">Menu</span>
-                </a>
+                <button class="ecl-button ecl-button--tertiary ecl-button--neutral ecl-menu__open ecl-button--icon-only"
+                        data-ecl-menu-open
+                        type="button"
+                        aria-expanded="false">
+                    <span class="ecl-button__container">
+                        <svg class="ecl-icon ecl-icon--m ecl-button__icon ecl-icon--hamburger"
+                             focusable="false" aria-hidden="true" data-ecl-icon>
+                            <x-ecl.icon icon="hamburger"/>
+                        </svg>
+                        <svg class="ecl-icon ecl-icon--m ecl-button__icon ecl-icon--close"
+                             focusable="false" aria-hidden="true" data-ecl-icon>
+                            <x-ecl.icon icon="close"/>
+                        </svg>
+                        <span class="ecl-button__label" data-ecl-label="true">Menu</span>
+                    </span>
+                </button>
 
                 <section class="ecl-menu__inner" data-ecl-menu-inner role="application" aria-label="Menu">
 
                     <header class="ecl-menu__inner-header">
 
-                        <button class="ecl-button ecl-button--ghost ecl-menu__back"
+                        <button class="ecl-button ecl-button--tertiary ecl-menu__back"
                                 type="submit" data-ecl-menu-back>
                             <span class="ecl-button__container">
                                 <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-270 ecl-button__icon"
@@ -89,30 +93,35 @@
                                id="ecl-menu-home-link">Home</a>
                         </li>
 
-                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
+                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-dashboard">
                             <a href="{{ route('dashboard') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">Dashboard</a>
+                               id="ecl-menu-dashboard-link">Dashboard</a>
                         </li>
 
-                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                            data-ecl-has-children=""
-                            aria-expanded="false" id="ecl-menu-item-platforms">
+                        <li class="ecl-menu__item ecl-menu__item--has-children"
+                            data-ecl-menu-item
+                            data-ecl-has-children
+                            aria-haspopup
+                            data-expanded="false"
+                            id="ecl-menu-item-explore-data">
                             <a href="{{  route('explore-data.overview') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
-                               data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">Explore data</a>
-                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
+                               data-ecl-menu-link
+                               id="ecl-menu-item-explore-data-link">Explore Data</a>
+                            <button class="ecl-button ecl-button--tertiary ecl-button--m ecl-button--neutral ecl-menu__button-caret"
                                     type="button"
-                                    data-ecl-menu-caret="" aria-label="Explore data"
+                                    data-ecl-menu-caret
+                                    aria-label="Explore Data"
+                                    aria-describedby="ecl-menu-item-explore-data-link"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
                                             <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon"
                                                 focusable="false"
                                                 aria-hidden="true"
-                                                data-ecl-icon="">
+                                                data-ecl-icon>
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </span>
@@ -152,31 +161,36 @@
 
 
 
-                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-home">
+                        <li class="ecl-menu__item" data-ecl-menu-item id="ecl-menu-statements">
                             <a href="{{ route('statement.index') }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
                                data-ecl-menu-link
-                               id="ecl-menu-home-link">Search for statements of reasons</a>
+                               id="ecl-menu-statements-link">Search for Statements of Reasons</a>
                         </li>
 
 
-                        <li class="ecl-menu__item ecl-menu__item--has-children" data-ecl-menu-item=""
-                            data-ecl-has-children=""
-                            aria-expanded="false" id="ecl-menu-item-platforms">
+                        <li class="ecl-menu__item ecl-menu__item--has-children"
+                            data-ecl-menu-item
+                            data-ecl-has-children
+                            aria-haspopup
+                            data-expanded="false"
+                            id="ecl-menu-item-documentation">
                             <a href="{{  route('page.show', ['documentation']) }}"
                                class="ecl-link ecl-link--standalone ecl-menu__link"
-                               data-ecl-menu-link=""
-                               id="ecl-menu-item-platforms-link">Documentation</a>
-                            <button class="ecl-button ecl-button--ghost ecl-menu__button-caret ecl-button--icon-only"
+                               data-ecl-menu-link
+                               id="ecl-menu-item-documentation-link">Documentation</a>
+                            <button class="ecl-button ecl-button--tertiary ecl-button--m ecl-button--neutral ecl-menu__button-caret"
                                     type="button"
-                                    data-ecl-menu-caret="" aria-label="Platforms"
+                                    data-ecl-menu-caret
+                                    aria-label="Documentation"
+                                    aria-describedby="ecl-menu-item-documentation-link"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
                                             <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
+                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon"
                                                 focusable="false"
                                                 aria-hidden="true"
-                                                data-ecl-icon="">
+                                                data-ecl-icon>
                                                 <x-ecl.icon icon="corner-arrow"/>
                                             </svg>
                                         </span>

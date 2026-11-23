@@ -28,8 +28,8 @@ class DataDownloadController extends Controller
     {
         $validated = $request->validate([
             'platform_id' => 'nullable|integer|exists:platforms,id',
-            'from_date' => 'nullable|date_format:d-m-Y',
-            'to_date' => 'nullable|date_format:d-m-Y',
+            'from_date' => 'nullable|date_format:Y-m-d,d-m-Y',
+            'to_date' => 'nullable|date_format:Y-m-d,d-m-Y',
         ]);
 
         $dayarchives = $this->day_archive_query_service->query($request->query());
