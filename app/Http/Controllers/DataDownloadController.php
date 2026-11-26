@@ -68,6 +68,16 @@ class DataDownloadController extends Controller
         return $this->redirectToArchiveUrl($dayArchive, $type);
     }
 
+    public function downloadParquet(DayArchive $dayArchive): RedirectResponse
+    {
+        return $this->redirectToArchiveUrl($dayArchive, 'parquet');
+    }
+
+    public function downloadParquetSha1(DayArchive $dayArchive): RedirectResponse
+    {
+        return $this->redirectToArchiveUrl($dayArchive, 'parquet_sha1');
+    }
+
     public function archiveByFilename(string $platformSlug, string $date, string $version): RedirectResponse
     {
         $dayArchive = $this->findCompletedArchive($platformSlug, $date);
@@ -119,6 +129,8 @@ class DataDownloadController extends Controller
             'light' => $dayArchive->urllight,
             'sha1' => $dayArchive->sha1url,
             'sha1light' => $dayArchive->sha1urllight,
+            'parquet' => $dayArchive->parquet_url,
+            'parquet_sha1' => $dayArchive->parquet_sha1_url,
         ];
 
         if (! isset($urlMap[$type])) {

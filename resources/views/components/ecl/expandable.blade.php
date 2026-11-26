@@ -5,10 +5,7 @@
         data-ecl-label-expanded="{{ $label }}" data-ecl-label-collapsed="{{ $label }}" aria-expanded="false">
         <span class="ecl-button__container">
             <span class="ecl-button__label" data-ecl-label="true">{{ $label }}</span>
-            <svg class="ecl-icon ecl-icon--fluid ecl-icon--rotate-180 ecl-button__icon ecl-button__icon--after"
-                focusable="false" aria-hidden="true" data-ecl-icon="">
-                <x-ecl.icon icon="corner-arrow" />
-            </svg>
+            <x-ecl.dropdown-caret size="fluid" extra-classes="ecl-button__icon" />
         </span>
     </button>
     <div id="expandable-{{ $unique }}-content" class="ecl-expandable__content" hidden="">

@@ -77,6 +77,10 @@ Route::middleware(['force.auth'])->group(static function () {
         ->name('dayarchive.download.filename');
 
     Route::get('/explore-data/download/{uuid?}', [DataDownloadController::class, 'index'])->name('dayarchive.index')->whereUuid('uuid');
+    Route::get('/explore-data/download-file/{dayArchive}/parquet', [DataDownloadController::class, 'downloadParquet'])
+        ->name('dayarchive.download.parquet');
+    Route::get('/explore-data/download-file/{dayArchive}/parquet-sha1', [DataDownloadController::class, 'downloadParquetSha1'])
+        ->name('dayarchive.download.parquet.sha1');
     Route::get('/explore-data/download-file/{dayArchive}/{type}', [DataDownloadController::class, 'download'])->name('dayarchive.download');
 
     Route::view('/explore-data/overview', 'explore-data.overview')->name('explore-data.overview');

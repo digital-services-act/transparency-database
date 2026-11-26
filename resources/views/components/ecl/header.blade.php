@@ -117,13 +117,7 @@
                                     aria-describedby="ecl-menu-item-explore-data-link"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
-                                            <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon"
-                                                focusable="false"
-                                                aria-hidden="true"
-                                                data-ecl-icon>
-                                                <x-ecl.icon icon="corner-arrow"/>
-                                            </svg>
+                                            <x-ecl.dropdown-caret size="xs" extra-classes="ecl-button__icon" />
                                         </span>
                             </button>
 
@@ -186,13 +180,7 @@
                                     aria-describedby="ecl-menu-item-documentation-link"
                                     aria-expanded="false">
                                         <span class="ecl-button__container">
-                                            <svg
-                                                class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-button__icon"
-                                                focusable="false"
-                                                aria-hidden="true"
-                                                data-ecl-icon>
-                                                <x-ecl.icon icon="corner-arrow"/>
-                                            </svg>
+                                            <x-ecl.dropdown-caret size="xs" extra-classes="ecl-button__icon" />
                                         </span>
                             </button>
 

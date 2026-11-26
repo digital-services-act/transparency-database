@@ -26,10 +26,7 @@
                 </svg>
                 Logged In
                 <span>&nbsp;</span>
-                <svg class="ecl-u-d-none ecl-u-d-l-block ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-site-header__icon"
-                     focusable="false" aria-hidden="false">
-                    <x-ecl.icon icon="corner-arrow"/>
-                </svg>
+                <x-ecl.dropdown-caret size="xs" extra-classes="ecl-u-d-none ecl-u-d-l-block ecl-site-header__icon" />
             </a>
 
             <div id="login-box-id" class="ecl-site-header__login-box"
