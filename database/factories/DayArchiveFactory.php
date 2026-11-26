@@ -37,6 +37,11 @@ class DayArchiveFactory extends Factory
             'platform_id' => null,
             'zipsize' => $this->faker->numberBetween(800000, 8000000), // 800KB to 8MB
             'ziplightsize' => $this->faker->numberBetween(400000, 4000000), // 400KB to 4MB
+            'parquet_size' => null,
+            'parquet_sha1' => null,
+            'parquet_url' => null,
+            'parquet_sha1_url' => null,
+            'total_parquet' => null,
         ];
     }
 

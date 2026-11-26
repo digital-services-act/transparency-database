@@ -1,7 +1,7 @@
 @props([
     'url' => null,
     'label' => 'label',
-    'priority' => 'cta',
+    'priority' => 'primary',
     'icon' => true,
     'fullwidth' => false,
     'newWindow' => false,

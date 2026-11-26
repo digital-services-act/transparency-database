@@ -19,7 +19,7 @@ class DownloadActivityTracker
             'day_archive_id' => $dayArchive->id,
             'platform_id' => $dayArchive->platform_id,
             'archive_date' => $dayArchive->date,
-            'download_kind' => in_array($type, ['sha1', 'sha1light'], true) ? 'checksum' : 'archive',
+            'download_kind' => in_array($type, ['sha1', 'sha1light', 'parquet_sha1'], true) ? 'checksum' : 'archive',
             'file_type' => $type,
             'filename' => $filename,
             'route_name' => $request->route()?->getName(),

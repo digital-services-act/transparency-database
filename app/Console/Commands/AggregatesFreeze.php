@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\CsvRowWriterService;
 use App\Services\DayArchiveWorkspace;
 use App\Services\StatementElasticAggregationService;
 use Illuminate\Console\Command;
@@ -33,8 +34,11 @@ class AggregatesFreeze extends Command
      *
      * @throws JsonException
      */
-    public function handle(StatementElasticAggregationService $statement_elastic_aggregation_service, DayArchiveWorkspace $day_archive_workspace): void
-    {
+    public function handle(
+        StatementElasticAggregationService $statement_elastic_aggregation_service,
+        DayArchiveWorkspace $day_archive_workspace,
+        CsvRowWriterService $csv_row_writer_service,
+    ): void {
         $date = $this->sanitizeDateArgument();
 
         $attributes = $statement_elastic_aggregation_service->getAllowedAggregateAttributes();
@@ -65,14 +69,14 @@ class AggregatesFreeze extends Command
 
         $out = fopen($csv_path, 'wb');
         try {
-            fputcsv($out, $headers);
+            $csv_row_writer_service->writeRow($out, $headers);
             foreach ($results['aggregates'] as $result) {
                 $row = [];
                 foreach ($headers as $header) {
                     $row[] = $result[$header];
                 }
 
-                fputcsv($out, $row);
+                $csv_row_writer_service->writeRow($out, $row);
             }
         } finally {
             if (is_resource($out)) {

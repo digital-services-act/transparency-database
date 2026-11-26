@@ -28,8 +28,8 @@ class DataDownloadController extends Controller
     {
         $validated = $request->validate([
             'platform_id' => 'nullable|integer|exists:platforms,id',
-            'from_date' => 'nullable|date_format:d-m-Y',
-            'to_date' => 'nullable|date_format:d-m-Y',
+            'from_date' => 'nullable|date_format:Y-m-d,d-m-Y',
+            'to_date' => 'nullable|date_format:Y-m-d,d-m-Y',
         ]);
 
         $dayarchives = $this->day_archive_query_service->query($request->query());
@@ -66,6 +66,16 @@ class DataDownloadController extends Controller
     public function download(DayArchive $dayArchive, string $type): RedirectResponse
     {
         return $this->redirectToArchiveUrl($dayArchive, $type);
+    }
+
+    public function downloadParquet(DayArchive $dayArchive): RedirectResponse
+    {
+        return $this->redirectToArchiveUrl($dayArchive, 'parquet');
+    }
+
+    public function downloadParquetSha1(DayArchive $dayArchive): RedirectResponse
+    {
+        return $this->redirectToArchiveUrl($dayArchive, 'parquet_sha1');
     }
 
     public function archiveByFilename(string $platformSlug, string $date, string $version): RedirectResponse
@@ -119,6 +129,8 @@ class DataDownloadController extends Controller
             'light' => $dayArchive->urllight,
             'sha1' => $dayArchive->sha1url,
             'sha1light' => $dayArchive->sha1urllight,
+            'parquet' => $dayArchive->parquet_url,
+            'parquet_sha1' => $dayArchive->parquet_sha1_url,
         ];
 
         if (! isset($urlMap[$type])) {

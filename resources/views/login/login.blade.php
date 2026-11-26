@@ -10,25 +10,25 @@
 
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec-default.css') }}"
+            href="{{ asset('static/ecl/styles/optional/ecl-ec-default.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-reset.css') }}"
+            href="{{ asset('static/ecl/styles/optional/ecl-reset.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec.css') }}"
             crossorigin="anonymous"
             media="screen"
         />
         <link
             rel="stylesheet"
-            href="{{ asset('static/styles/ecl-ec-print.css') }}"
+            href="{{ asset('static/ecl/styles/ecl-ec-print.css') }}"
             crossorigin="anonymous"
             media="print"
         />
@@ -47,7 +47,7 @@
                         <img alt="European Commission logo"
                              title="European Commission"
                              class="ecl-site-header__logo-image ecl-site-header__logo-image-desktop"
-                             src="{{asset('static/media/logo-ec--en.65cfd447.svg')}}"/>
+                             src="{{ asset('static/ecl/images/logo/positive/logo-ec--en.svg') }}"/>
                     </a>
 
 {{--                    <div class="ecl-site-header__action">--}}
@@ -173,7 +173,7 @@
         integrity="sha512-QoJS4DOhdmG8kbbHkxmB/rtPdN62cGWXAdAFWWJPvUFF1/zxcPSdAnn4HhYZSIlVoLVEJ0LesfNlusgm2bPfnA=="
         crossorigin="anonymous"></script>
 <script
-    src="{{ asset('static/scripts/ecl-ec.js') }}"
+    src="{{ asset('static/ecl/scripts/ecl-ec.js') }}"
     crossorigin="anonymous"
 ></script>
 <script>

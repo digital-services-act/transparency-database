@@ -24,6 +24,9 @@ class UserControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewHas('users');
         $response->assertSee('searchme@test.com');
+        $response->assertSee('ecl-button--primary', false);
+        $response->assertSee('ecl-button__container', false);
+        $response->assertDontSee('ecl-button--cta', false);
     }
 
     public function test_index_filters_by_platform_uuid(): void

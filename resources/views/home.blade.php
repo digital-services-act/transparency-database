@@ -70,67 +70,70 @@
     </div>
 
     <div class="ecl-fact-figures ecl-fact-figures--col-3">
-        <div class="ecl-fact-figures__items">
-            <div class="ecl-fact-figures__item">
-                <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="data" />
-                </svg>
-                <div class="ecl-fact-figures__value">@aif($total)</div>
-                <div class="ecl-fact-figures__title">Total number of statements of reasons submitted</div>
-            </div>
+        <div class="ecl-fact-figures__container">
+            <div class="ecl-fact-figures__items">
+                <div class="ecl-fact-figures__item is-first">
+                    <svg class="ecl-icon ecl-icon--l ecl-fact-figures__icon" focusable="false" aria-hidden="true">
+                        <x-ecl.icon icon="data" />
+                    </svg>
+                    <div class="ecl-fact-figures__value">
+                        @aif($total)
+                        <span class="ecl-fact-figures__title">Total number of statements of reasons submitted</span>
+                    </div>
+                </div>
 
-            <div class="ecl-fact-figures__item">
-                <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="list" />
-                </svg>
-                <div class="ecl-fact-figures__value">Most reported violations</div>
-                <div class="ecl-fact-figures__description">
-                    <ol class="ecl-ordered-list">
-                        @foreach ($top_categories as $top_category)
-                            <li class="ecl-ordered-list__item">
-                                {{ Statement::STATEMENT_CATEGORIES[$top_category['value']] }}
-                            </li>
-                        @endforeach
-                    </ol>
+                <div class="ecl-fact-figures__item">
+                    <svg class="ecl-icon ecl-icon--l ecl-fact-figures__icon" focusable="false" aria-hidden="true">
+                        <x-ecl.icon icon="list" />
+                    </svg>
+                    <div class="ecl-fact-figures__title">Most reported violations</div>
+                    <div class="ecl-fact-figures__description">
+                        <ol class="ecl-ordered-list">
+                            @foreach ($top_categories as $top_category)
+                                <li class="ecl-ordered-list__item">
+                                    {{ Statement::STATEMENT_CATEGORIES[$top_category['value']] }}
+                                </li>
+                            @endforeach
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="ecl-fact-figures__item">
+                    <svg class="ecl-icon ecl-icon--l ecl-fact-figures__icon" focusable="false" aria-hidden="true">
+                        <x-ecl.icon icon="list" />
+                    </svg>
+                    <div class="ecl-fact-figures__title">Top restriction types</div>
+                    <div class="ecl-fact-figures__description">
+                        <ol class="ecl-ordered-list">
+                            @foreach ($top_decisions_visibility as $top_decision_visibility)
+                                <li class="ecl-ordered-list__item">
+                                    {{ Statement::DECISION_VISIBILITIES[$top_decision_visibility['value']] }}
+                                </li>
+                            @endforeach
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="ecl-fact-figures__item">
+                    <svg class="ecl-icon ecl-icon--l ecl-fact-figures__icon" focusable="false" aria-hidden="true">
+                        <x-ecl.icon icon="data" />
+                    </svg>
+                    <div class="ecl-fact-figures__value">
+                        @aif($platforms_total)
+                        <span class="ecl-fact-figures__title">Number of active platforms</span>
+                    </div>
+                </div>
+
+                <div class="ecl-fact-figures__item">
+                    <svg class="ecl-icon ecl-icon--l ecl-fact-figures__icon" focusable="false" aria-hidden="true">
+                        <x-ecl.icon icon="growth" />
+                    </svg>
+                    <div class="ecl-fact-figures__value">
+                        @aif($automated_decision_percentage)%
+                        <span class="ecl-fact-figures__title">of fully automated decisions</span>
+                    </div>
                 </div>
             </div>
-
-            <div class="ecl-fact-figures__item">
-                <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="list" />
-                </svg>
-                <div class="ecl-fact-figures__value">Top restriction types</div>
-                <div class="ecl-fact-figures__description">
-                    <ol class="ecl-ordered-list">
-
-                        @foreach ($top_decisions_visibility as $top_decision_visibility)
-                            <li class="ecl-ordered-list__item">
-                                {{ Statement::DECISION_VISIBILITIES[$top_decision_visibility['value']] }}
-                            </li>
-                        @endforeach
-
-                    </ol>
-                </div>
-            </div>
-
-
-            <div class="ecl-fact-figures__item">
-                <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="data" />
-                </svg>
-                <div class="ecl-fact-figures__value">@aif($platforms_total)</div>
-                <div class="ecl-fact-figures__title">Number of active platforms</div>
-            </div>
-
-
-            <div class="ecl-fact-figures__item">
-                <svg class="ecl-icon ecl-icon--m ecl-fact-figures__icon" focusable="false" aria-hidden="true">
-                    <x-ecl.icon icon="growth" />
-                </svg>
-                <div class="ecl-fact-figures__value">@aif($automated_decision_percentage)%</div>
-                <div class="ecl-fact-figures__title">of fully automated decisions</div>
-            </div>
-
         </div>
     </div>
 

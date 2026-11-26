@@ -54,10 +54,7 @@
                                 <span class="ecl-inpage-navigation__trigger-current"
                                       data-ecl-inpage-navigation-trigger-current="true">
                                 </span>
-                                <svg class="ecl-icon ecl-icon--xs ecl-icon--rotate-180 ecl-inpage-navigation__trigger-icon"
-                                     focusable="false" aria-hidden="true">
-                                    <x-ecl.icon icon="corner-arrow"/>
-                                </svg>
+                                <x-ecl.dropdown-caret size="xs" extra-classes="ecl-inpage-navigation__trigger-icon" />
                             </button>
                         </div>
                         <ul class="ecl-inpage-navigation__list"

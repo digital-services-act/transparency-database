@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\PlatformAPIController;
 use App\Http\Controllers\Api\v1\PlatformUserAPIController;
 use App\Http\Controllers\Api\v1\StatementAPIController;
 use App\Http\Controllers\Api\v1\StatementMultipleAPIController;
+use App\Http\Controllers\Api\v1\StatementMultipleConcurrencyTestController;
 use App\Http\Controllers\Api\v1\UserAPIController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,9 +25,16 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('statement/existing-puid/{puid}', [StatementAPIController::class, 'existingPuid'])->name('api.v1.statement.existing-puid')->can('view statements');
     Route::post('statement', [StatementAPIController::class, 'store'])->name('api.v1.statement.store')->can('create statements');
     Route::post('statements', [StatementMultipleAPIController::class, 'store'])
-        ->middleware('throttle:api-multiple')
+        ->middleware(['throttle:api-multiple', 'multi.concurrency'])
         ->name('api.v1.statements.store')
         ->can('create statements');
+
+    if (! app()->environment('production')) {
+        Route::post('statements/concurrency-test', StatementMultipleConcurrencyTestController::class)
+            ->middleware(['throttle:api-multiple', 'multi.concurrency'])
+            ->name('api.v1.statements.concurrency-test')
+            ->can('create statements');
+    }
 
     Route::group(['prefix' => 'elastic', 'middleware' => ['can:administrate']], static function () {
         Route::get('indices', [ElasticSearchAPIController::class, 'indices'])->name('api.v1.elasticsearch.indices');
@@ -48,7 +56,7 @@ Route::middleware('auth:sanctum')->group(static function () {
         Route::get('datetotalsrange/{start}/{end}', [ElasticSearchAPIController::class, 'dateTotalsRange'])->name('api.v1.elasticsearch.datetotalsrange');
     });
 
-    Route::group(['prefix'=>'research','middleware' => ['can:research API','throttle:50,1']], static function () {
+    Route::group(['prefix' => 'research', 'middleware' => ['can:research API', 'throttle:50,1']], static function () {
         Route::post('search', [ElasticSearchAPIController::class, 'search']);
         Route::post('count', [ElasticSearchAPIController::class, 'count']);
         Route::post('sql', [ElasticSearchAPIController::class, 'sql']);

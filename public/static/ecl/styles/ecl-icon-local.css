@@ -1,0 +1,4 @@
+/* ECL icon SVGs need an inline formatting context for their CSS dimensions to apply. */
+.ecl-icon {
+    display: inline-block;
+}

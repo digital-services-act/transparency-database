@@ -13,7 +13,7 @@ use TypeError;
 
 class DayArchiveQueryService
 {
-    private const string DATE_FILTER_FORMAT = 'd-m-Y';
+    private const array DATE_FILTER_FORMATS = ['Y-m-d', 'd-m-Y'];
 
     private array $allowed_filters = [
         'platform_id',
@@ -87,19 +87,21 @@ class DayArchiveQueryService
         }
 
         $filter_value = trim($filter_value);
-        if (! preg_match('/^\d{2}-\d{2}-\d{4}$/', $filter_value)) {
-            return null;
+        foreach (self::DATE_FILTER_FORMATS as $format) {
+            try {
+                $date = Carbon::createFromFormat('!'.$format, $filter_value);
+
+                if ($date && $date->format($format) === $filter_value) {
+                    return $date;
+                }
+            // @codeCoverageIgnoreStart
+            } catch (Exception) {
+                // Try the next supported date format.
+            // @codeCoverageIgnoreEnd
+            }
         }
 
-        try {
-            $date = Carbon::createFromFormat('!'.self::DATE_FILTER_FORMAT, $filter_value);
-        // @codeCoverageIgnoreStart
-        } catch (Exception) {
-            return null;
-        // @codeCoverageIgnoreEnd
-        }
-
-        return $date->format(self::DATE_FILTER_FORMAT) === $filter_value ? $date : null;
+        return null;
     }
 
     private function applyPlatformIdFilter(Builder $query, $value): void

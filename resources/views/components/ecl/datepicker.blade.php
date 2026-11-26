@@ -1,61 +1,62 @@
 @props([
-    'size' => 'l',
+    'size' => 'm',
     'required' => false,
     'help' => false,
     'label' => 'label',
-    'required' => false,
     'name' => 'name',
     'id' => 'id',
     'value' => null,
     'justlabel' => false,
     'disableFuture' => false,
     'invalid' => false,
+    'disabled' => false,
+    'autoinit' => true,
+    'placeholder' => 'DD-MM-YYYY',
+    'firstDayOfWeek' => 1,
 ])
+
+@php
+    $rawValue = old($name, $value);
+    $defaultValue = '';
+
+    if ($rawValue instanceof \DateTimeInterface) {
+        $defaultValue = $rawValue->format('Y-m-d');
+    } elseif (is_string($rawValue) && $rawValue !== '') {
+        foreach (['Y-m-d', 'd-m-Y'] as $format) {
+            try {
+                $date = \Illuminate\Support\Carbon::createFromFormat('!' . $format, $rawValue);
+
+                if ($date && $date->format($format) === $rawValue) {
+                    $defaultValue = $date->format('Y-m-d');
+                    break;
+                }
+            } catch (\Exception) {
+                // Leave invalid submitted values empty in the datepicker.
+            }
+        }
+    }
+@endphp
+
 <div class="ecl-form-group ecl-u-mb-2xl">
     <x-ecl.label :label=$label :required=$required :name=$name :for=$id :justlabel="$justlabel" />
     <x-ecl.help :help=$help />
-    <div class="ecl-datepicker {{ $invalid ? 'ecl-datepicker--invalid' : '' }}">
-        <input
-            id="{{ $id }}"
-            class="ecl-datepicker__field ecl-text-input ecl-text-input--{{ $size }} {{ $invalid ? 'ecl-text-input--invalid' : '' }}"
-            type="text"
-            autoComplete="off"
-            data-ecl-datepicker-toggle=""
+    <div
+        class="ecl-datepicker ecl-datepicker--{{ $size }} {{ $invalid ? 'ecl-datepicker--invalid' : '' }}"
+        @if ($autoinit) data-ecl-auto-init="Datepicker" @endif
+        @if ($invalid) invalid @endif
+        @if ($defaultValue !== '') data-value="{{ $defaultValue }}" @endif
+        data-placeholder="{{ $placeholder }}"
+        data-ecl-datepicker-toggle
+    >
+        <duet-date-picker
+            identifier="{{ $id }}"
             name="{{ $name }}"
-            @if ($required) required="" @endif
-            placeholder="DD-MM-YYYY"
-            value="{{ old($name, $value) }}"
-        />
-        <svg class="ecl-icon ecl-icon--s ecl-datepicker__icon" focusable="false" aria-hidden="true">
-            <x-ecl.icon icon="calendar" />
-        </svg>
+            first-day-of-week="{{ $firstDayOfWeek }}"
+            @if ($defaultValue !== '') value="{{ $defaultValue }}" @endif
+            @if ($disableFuture) max="{{ now()->toDateString() }}" @endif
+            @if ($disabled) disabled @endif
+            @if ($required) required @endif
+        ></duet-date-picker>
     </div>
     <x-ecl.error-feedback :name="$name" />
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var field = document.getElementById('{{ $id }}');
-        if (field) {
-            new Pikaday({
-                field: field,
-                format: 'DD-MM-YYYY',
-                theme: 'ecl-datepicker-theme',
-                toString(date, format) {
-                    return moment(date).format(format);
-                },
-                parse(dateString, format) {
-                    var parsedDate = moment(dateString, format, true);
-
-                    return parsedDate.isValid() ? parsedDate.toDate() : null;
-                },
-                setDefaultDate: false,
-                defaultDate: null,
-                minDate: null,
-                @if ($disableFuture)
-                maxDate: new Date(),
-                @endif
-            });
-        }
-    });
-</script>

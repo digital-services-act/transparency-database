@@ -3,7 +3,7 @@
     <x-ecl.label :label="$label" :for="$id" :name="$name" :required="$required" :justlabel="$justlabel" />
     <x-ecl.help :help="$help" />
     <div class="ecl-select__container ecl-select__container--{{ $size }}">
-        <select name="{{ $name }}" id="{{ $id }}" class="ecl-select" @if($required)required=""@endif>
+        <select name="{{ $name }}" id="{{ $id }}" class="ecl-select" data-ecl-auto-init="Select" @if($required)required=""@endif>
             @if ($allow_null)
                 <option @if(old($name, $default) === '')selected @endif value="">-- Choose here --</option>
             @else
@@ -14,9 +14,12 @@
             @endforeach
         </select>
         <div class="ecl-select__icon">
-            <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape" focusable="false" aria-hidden="true">
-                <x-ecl.icon icon="corner-arrow" />
-            </svg>
+            <button class="ecl-button ecl-button--tertiary ecl-button--icon-only" tabindex="-1" type="button">
+                <span class="ecl-button__container">
+                    <span class="ecl-button__label" data-ecl-label="true">Toggle dropdown</span>
+                    <x-ecl.dropdown-caret size="xs" extra-classes="ecl-button__icon" />
+                </span>
+            </button>
         </div>
     </div>
     <x-ecl.error-feedback :name="$name" />
