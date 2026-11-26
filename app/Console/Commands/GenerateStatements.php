@@ -15,14 +15,14 @@ class GenerateStatements extends Command
      *
      * @var string
      */
-    protected $signature = 'statements:generate {amount=1000} {date=today} {--sod} {--eod}';
+    protected $signature = 'statements:generate {amount=1000} {date=today} {--sod} {--eod} {--weird}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create X Statements';
+    protected $description = 'Create fake statements, optionally with CSV edge-case text';
 
     /**
      * Execute the console command.
@@ -37,9 +37,10 @@ class GenerateStatements extends Command
 
         $date = $this->sanitizeDateArgument();
         $amount = $this->intifyArgument('amount');
+        $weird = (bool) $this->option('weird');
 
         for ($cpt = 0; $cpt < $amount; $cpt++) {
-            StatementCreation::dispatch($this->statementTimestamp($date));
+            StatementCreation::dispatch($this->statementTimestamp($date), $weird);
         }
 
         return self::SUCCESS;

@@ -20,20 +20,26 @@ class StatementCreation implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $when = 0) {}
+    public function __construct(public int $when = 0, public bool $weird = false) {}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
+        $factory = Statement::factory();
+
+        if ($this->weird) {
+            $factory = $factory->withWeirdText();
+        }
+
         if ($this->when !== 0) {
-            Statement::factory()->create([
+            $factory->create([
                 'created_at' => Carbon::createFromTimestamp($this->when),
                 'updated_at' => Carbon::createFromTimestamp($this->when),
             ]);
         } else {
-            Statement::factory()->create();
+            $factory->create();
         }
     }
 }

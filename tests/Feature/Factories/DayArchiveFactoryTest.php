@@ -32,6 +32,11 @@ class DayArchiveFactoryTest extends TestCase
         $this->assertNotNull($archive->sha1light);
         $this->assertNotNull($archive->sha1url);
         $this->assertNotNull($archive->sha1urllight);
+        $this->assertNull($archive->parquet_size);
+        $this->assertNull($archive->parquet_sha1);
+        $this->assertNull($archive->parquet_url);
+        $this->assertNull($archive->parquet_sha1_url);
+        $this->assertNull($archive->total_parquet);
     }
 
     public function test_it_creates_completed_archive()

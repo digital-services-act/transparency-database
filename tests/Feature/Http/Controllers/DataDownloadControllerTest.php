@@ -6,6 +6,7 @@ use App\Http\Controllers\DataDownloadController;
 use App\Models\DayArchive;
 use App\Models\DownloadEvent;
 use App\Models\Platform;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Schema;
@@ -41,23 +42,66 @@ class DataDownloadControllerTest extends TestCase
         $response->assertViewIs('explore-data.download');
     }
 
-    public function test_day_archive_index_renders_strict_day_month_year_datepicker(): void
+    public function test_day_archive_index_renders_ecl_v5_datepickers(): void
     {
         $response = $this->get('/explore-data/download');
 
         $response->assertStatus(200);
         $response->assertSee('placeholder="DD-MM-YYYY"', false);
-        $response->assertSee("format: 'DD-MM-YYYY'", false);
-        $response->assertSee('moment(dateString, format, true)', false);
+        $response->assertSee('data-ecl-auto-init="Datepicker"', false);
+        $response->assertSee('<duet-date-picker', false);
+        $response->assertDontSee('Pikaday', false);
+        $response->assertDontSee('moment(', false);
+        $response->assertDontSee('form.submit()', false);
     }
 
-    public function test_day_archive_index_rejects_date_filters_outside_picker_format(): void
+    public function test_day_archive_index_rejects_invalid_date_filters(): void
     {
         $response = $this->from('/explore-data/download')
-            ->get('/explore-data/download?from_date=2026-07-08&to_date=07/08/2026');
+            ->get('/explore-data/download?from_date=2026/07/08&to_date=07/08/2026');
 
         $response->assertRedirect('/explore-data/download');
         $response->assertSessionHasErrors(['from_date', 'to_date']);
+    }
+
+    public function test_day_archive_index_accepts_ecl_v5_iso_date_filters(): void
+    {
+        $response = $this->get('/explore-data/download?from_date=2026-07-08&to_date=2026-07-09');
+
+        $response->assertOk();
+        $response->assertSessionDoesntHaveErrors(['from_date', 'to_date']);
+    }
+
+    public function test_day_archive_index_filters_to_completed_global_archives_in_the_selected_date_range(): void
+    {
+        $platform = Platform::factory()->create();
+
+        DayArchive::factory()->completed()->global()->create(['date' => '2026-09-20']);
+        DayArchive::factory()->create(['date' => '2026-09-21']);
+        DayArchive::factory()->completed()->global()->create(['date' => '2026-09-22']);
+        DayArchive::factory()->completed()->global()->create(['date' => '2026-09-23']);
+        DayArchive::factory()->completed()->global()->create(['date' => '2026-09-25']);
+        DayArchive::factory()->completed()->forPlatform($platform)->create(['date' => '2026-09-22']);
+
+        $response = $this->get('/explore-data/download?from_date=2026-09-22&to_date=2026-09-23');
+
+        $response->assertOk();
+        $response->assertSee('2026-09-22', false);
+        $response->assertSee('2026-09-23', false);
+        $response->assertDontSee('2026-09-20', false);
+        $response->assertDontSee('2026-09-21', false);
+        $response->assertDontSee('2026-09-25', false);
+    }
+
+    public function test_day_archive_index_keeps_submitted_dates_in_the_datepickers(): void
+    {
+        $response = $this->get('/explore-data/download?from_date=2026-07-08&to_date=2026-07-09');
+
+        $response->assertOk();
+        $response->assertSee('data-value="2026-07-08"', false);
+        $response->assertSee('data-value="2026-07-09"', false);
+        $response->assertSee('value="2026-07-08"', false);
+        $response->assertSee('value="2026-07-09"', false);
     }
 
     public function test_day_archive_table_links_to_internal_download_route(): void
@@ -67,6 +111,8 @@ class DataDownloadControllerTest extends TestCase
             'urllight' => 'https://example.com/bucket/archive-2024-01-01-light.zip',
             'sha1url' => 'https://example.com/bucket/archive-2024-01-01-full.zip.sha1',
             'sha1urllight' => 'https://example.com/bucket/archive-2024-01-01-light.zip.sha1',
+            'parquet_url' => 'https://example.com/bucket/sor-global-2024-01-01-full.parquet',
+            'parquet_sha1_url' => 'https://example.com/bucket/sor-global-2024-01-01-full.parquet.sha1',
         ]);
 
         $response = $this->get('/explore-data/download');
@@ -76,8 +122,64 @@ class DataDownloadControllerTest extends TestCase
         $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'light']), false);
         $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'sha1']), false);
         $response->assertSee(route('dayarchive.download', ['dayArchive' => $dayArchive->id, 'type' => 'sha1light']), false);
+        $response->assertSee(route('dayarchive.download.parquet', ['dayArchive' => $dayArchive->id]), false);
+        $response->assertSee(route('dayarchive.download.parquet.sha1', ['dayArchive' => $dayArchive->id]), false);
         $response->assertDontSee('https://example.com/bucket/archive-2024-01-01-full.zip', false);
         $response->assertDontSee('https://example.com/bucket/archive-2024-01-01-light.zip', false);
+    }
+
+    public function test_admin_table_shows_parquet_counts_links_and_size_for_global_archives_only(): void
+    {
+        $globalArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'total' => 1234,
+            'total_parquet' => 1230,
+            'parquet_size' => 1234567,
+            'parquet_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet',
+            'parquet_sha1_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet.sha1',
+        ]);
+        $platform = Platform::factory()->create();
+        $platformArchive = DayArchive::factory()->completed()->forPlatform($platform)->create([
+            'date' => '2026-06-02',
+            'total' => 987,
+            'total_parquet' => 888,
+            'parquet_size' => 1234567,
+            'parquet_url' => 'https://example.com/bucket/sor-platform-2026-06-02-full.parquet',
+            'parquet_sha1_url' => 'https://example.com/bucket/sor-platform-2026-06-02-full.parquet.sha1',
+        ]);
+
+        $response = $this->get('/explore-data/download');
+
+        $response->assertOk();
+        $response->assertSee('<div class="ecl-table-responsive">', false);
+        $response->assertSee('<th class="ecl-table__header" scope="col">Parquet</th>', false);
+        $response->assertSee(route('dayarchive.download.parquet', ['dayArchive' => $globalArchive->id]), false);
+        $response->assertSee(route('dayarchive.download.parquet.sha1', ['dayArchive' => $globalArchive->id]), false);
+        $response->assertSee('1&nbsp;234', false);
+        $response->assertSee('1&nbsp;230', false);
+        $response->assertSee('1.18 MB', false);
+        $response->assertDontSee(route('dayarchive.download.parquet', ['dayArchive' => $platformArchive->id]), false);
+        $response->assertDontSee('888', false);
+    }
+
+    public function test_non_admin_does_not_see_parquet_column_counts_or_links(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'total' => 510,
+            'total_parquet' => 499,
+            'parquet_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet',
+            'parquet_sha1_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet.sha1',
+        ]);
+
+        $response = $this->get('/explore-data/download');
+
+        $response->assertOk();
+        $response->assertDontSee('<th class="ecl-table__header">Parquet</th>', false);
+        $response->assertDontSee(route('dayarchive.download.parquet', ['dayArchive' => $dayArchive->id]), false);
+        $response->assertDontSee('499', false);
+        $response->assertSee('510', false);
     }
 
     public function test_file_download_routes_use_elevated_web_rate_limit_without_consuming_general_web_bucket(): void
@@ -89,6 +191,8 @@ class DataDownloadControllerTest extends TestCase
             'date' => '2026-06-01',
             'url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip',
             'sha1url' => 'https://example.com/bucket/sor-global-2026-06-01-full.zip.sha1',
+            'parquet_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet',
+            'parquet_sha1_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet.sha1',
         ]);
 
         $downloadRoutes = [
@@ -104,6 +208,8 @@ class DataDownloadControllerTest extends TestCase
                 'date' => '2026-06-01',
                 'version' => 'full',
             ]),
+            route('dayarchive.download.parquet', ['dayArchive' => $dayArchive->id]),
+            route('dayarchive.download.parquet.sha1', ['dayArchive' => $dayArchive->id]),
         ];
 
         foreach ($downloadRoutes as $downloadRoute) {
@@ -263,6 +369,30 @@ class DataDownloadControllerTest extends TestCase
         ]));
 
         $response->assertRedirect();
+    }
+
+    public function test_parquet_download_routes_are_available_to_non_admins_and_track_checksums(): void
+    {
+        Storage::fake('s3ds');
+        $this->actingAs(User::factory()->create());
+        $dayArchive = DayArchive::factory()->completed()->global()->create([
+            'date' => '2026-06-01',
+            'parquet_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet',
+            'parquet_sha1_url' => 'https://example.com/bucket/sor-global-2026-06-01-full.parquet.sha1',
+        ]);
+
+        $this->get(route('dayarchive.download.parquet', ['dayArchive' => $dayArchive->id]))
+            ->assertRedirect();
+        $this->get(route('dayarchive.download.parquet.sha1', ['dayArchive' => $dayArchive->id]))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('download_events', [
+            'day_archive_id' => $dayArchive->id,
+            'download_kind' => 'checksum',
+            'file_type' => 'parquet_sha1',
+            'filename' => 'sor-global-2026-06-01-full.parquet.sha1',
+            'route_name' => 'dayarchive.download.parquet.sha1',
+        ]);
     }
 
     public function test_download_redirects_directly_for_legacy_amazonaws_url(): void

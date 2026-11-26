@@ -34,17 +34,23 @@ For further updates, please consult this website.
 
 Starting from 31 August 2026, Google Shopping is introducing asset-level moderation on its service, in addition to the existing offer-level moderation. This means that where an asset (e.g. a video, text or image) provided by a merchant for their offer is found to violate an applicable policy or law, only that asset may be disabled while the offer may still run. For example, if the offer is a shoe, it may be that only one of the videos depicting that shoe is disabled rather than the entire shoe offer. This change is meant to provide more transparency and choice to merchants. All transparency requirements of the DSA equally apply to asset-level moderation.
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement - DB] Update to the submissions by Google Play
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 08/06/2026</p>
 
 Due to a technical error, statements of reasons transmitted to the DSA transparency database related to actions taken on a portion of Google Play contained some incorrect information. Specifically, the field indicating whether a violation was detected via automated means was inverted. Consequently, from September 2023 to May 2026, a portion of records related to Google Play marked as "automated" were actually manual, and records marked as "manual" were actually “automated”. The issue was remediated as of 29 May 2026.
 
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement - DB] Update to the submissions by Facebook and Instagram
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/11/2025</p>
 
 On 27 October 2025, Meta identified and fixed an issue affecting the submissions to the DSA transparency database from Facebook and Instagram from Trusted Flaggers. Prior to this date, statements of reasons sourcing from Trusted Flaggers might not have been labelled as such. The issue was fixed on submissions starting from 28/10/2025.
+
+<p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
 
 #### [Announcement – DB] Schema update of the DSA transparency database completed
 
@@ -69,17 +75,20 @@ Starting from 30 May 2025, statements of reasons submissions to the DSA transpar
 
 Today, two new formats for data download have been added to the DSA transparency database. You can now download the full daily download files as Parquets (only available for the full, global version with all the platforms included). See [the dsa-tdb documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/data_sources.html) for more information on how to download these data. You can also download aggregates of the daily submissions of statements of reasons in csv or Parquet format from [the dsa-tdb package documentation](https://dsa.pages.code.europa.eu/transparency-database/dsa-tdb/). We provide two types of aggregated data: the basic aggregation currently feeding the [dashboard](/dashboard) and an advanced one aggregating the data on all the database’s non-free-text fields columns.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – Access to data] Update to the data retention policy
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 17/02/2025</p>
 
 Starting from 18th of February 2025, the data retention policy of the DSA transparency database (TDB) will be updated to extend the availability of the daily dumps files from 18 months to five years after their creation and to include additional file formats. After this period, they will be archived in a cold storage. The rest of the data retention policy remains unchanged.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – Dashboard] New pages and filters for better separation between platforms
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 19/12/2024</p>
 
 On 19th December 2024, the [dashboard](/dashboard) of the DSA transparency database was updated to include a clearer separation between the statements of reasons submitted by very large online platforms (VLOPs) and the rest (non-VLOP) platforms. The changes are particularly notable in the first and second pages of the dashboard; unified information for all platforms is available in page 6 (‘all platforms’). A new taxonomy was also added in the ‘platforms’ filter that allows users to select with a single click all the VLOPs or all the non-VLOPs.
 <p class="ecl-u-type-paragraph" style="margin-top:54px; margin-bottom:24px"><hr/></p>
+
 #### [Announcement – DB] 2025 update of the DSA transparency database schema in line with the Implementing Regulation on Transparency Reporting
 
 <p class="ecl-u-type-paragraph" style="margin-top:-20px; font-style: italic !important">Published 04/11/2024</p>

@@ -26,6 +26,8 @@ class RouteServiceProvider extends ServiceProvider
         'dayarchive.download',
         'dayarchive.download.filename',
         'dayarchive.download.filename.sha1',
+        'dayarchive.download.parquet',
+        'dayarchive.download.parquet.sha1',
     ];
 
     /**

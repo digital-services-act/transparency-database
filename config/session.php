@@ -48,6 +48,8 @@ return [
 
     'encrypt' => false,
 
+    'serialization' => 'php',
+
     /*
     |--------------------------------------------------------------------------
     | Session File Location

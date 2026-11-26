@@ -37,10 +37,12 @@
 
 
         <div class="ecl-select__icon">
-            <svg class="ecl-icon ecl-icon--s ecl-icon--rotate-180 ecl-select__icon-shape" focusable="false"
-                 aria-hidden="true">
-                <x-ecl.icon icon="corner-arrow"/>
-            </svg>
+            <button class="ecl-button ecl-button--tertiary ecl-button--icon-only" tabindex="-1" type="button">
+                <span class="ecl-button__container">
+                    <span class="ecl-button__label" data-ecl-label="true">Toggle dropdown</span>
+                    <x-ecl.dropdown-caret size="xs" extra-classes="ecl-button__icon" />
+                </span>
+            </button>
         </div>
     </div>
     <x-ecl.error-feedback :name="$name" :error="$error"/>

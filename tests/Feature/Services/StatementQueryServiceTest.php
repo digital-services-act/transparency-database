@@ -240,6 +240,16 @@ class StatementQueryServiceTest extends TestCase
         $this->assertEquals('select * from "statements_beta" where "created_at" <= ? and "statements_beta"."deleted_at" is null', $sql);
     }
 
+    public function test_it_ignores_invalid_created_at_filters(): void
+    {
+        $sql = $this->statement_query_service->query([
+            'created_at_start' => 'not-a-date',
+            'created_at_end' => 'also-not-a-date',
+        ])->toSql();
+
+        $this->assertEquals('select * from "statements_beta" where "statements_beta"."deleted_at" is null', $sql);
+    }
+
     public function test_it_filters_on_platform_id(): void
     {
         $filters = [
