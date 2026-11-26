@@ -23,6 +23,7 @@ import subprocess
 import sys
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path, PurePosixPath
 from typing import Any, Sequence
@@ -40,6 +41,16 @@ DOWNLOAD_TIMEOUT_SECONDS = 60
 
 class PipelineError(RuntimeError):
     """An expected error that should be reported without a traceback."""
+
+
+@dataclass
+class PipelineRunSummary:
+    archive_date: str = ""
+    archive_total: int | None = None
+    total_parquet: int | None = None
+    parquet_size: int | None = None
+    output_directory: Path | None = None
+    output_directory_created: bool = False
 
 
 def warn(message: str) -> None:
@@ -110,6 +121,7 @@ def load_settings(project_root: Path) -> dict[str, str]:
         "POSTGRESQL_ADDON_HOST",
         "POSTGRESQL_ADDON_PORT",
         "APP_URL",
+        "DAILY_TEAMS_WEBHOOK",
     )
     dotenv_values = read_dotenv(project_root / ".env")
     return {
@@ -224,9 +236,9 @@ def connect_database(settings: dict[str, str], driver: Any) -> Any:
     raise PipelineError("Could not connect to PostgreSQL using the configured details (" + "; ".join(failures) + ").")
 
 
-def find_archive_row(connection: Any, archive_date: date) -> tuple[int, str]:
+def find_archive_row(connection: Any, archive_date: date) -> tuple[int, str, int]:
     query = """
-        SELECT id, url
+        SELECT id, url, total
         FROM public.day_archives
         WHERE \"date\" = %s::date
           AND platform_id IS NULL
@@ -246,7 +258,7 @@ def find_archive_row(connection: Any, archive_date: date) -> tuple[int, str]:
         raise PipelineError(
             f"No completed full global archive with a URL exists for {archive_date.isoformat()}."
         )
-    return int(row[0]), str(row[1])
+    return int(row[0]), str(row[1]), int(row[2])
 
 
 def make_download_url(app_url: str, archive_id: int) -> str:
@@ -625,21 +637,22 @@ def update_archive_parquet_fields(
         connection.close()
 
 
-def run_pipeline(raw_date: str) -> Path:
+def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str, str]) -> Path:
     archive_date = parse_archive_date(raw_date)
     date_text = archive_date.isoformat()
+    summary.archive_date = date_text
 
     script_directory = Path(__file__).resolve().parent
     project_root = script_directory.parent
     bucket_data = project_root / "bucket-data"
     output_directory = bucket_data / f"pipeline-{date_text}"
+    summary.output_directory = output_directory
 
     if not bucket_data.is_dir():
         raise PipelineError(f"The required bucket-data directory does not exist: {bucket_data}")
     if output_directory.exists():
         raise PipelineError(f"The output directory already exists: {output_directory}")
 
-    settings = load_settings(project_root)
     app_url = settings.get("APP_URL", "").strip()
     if not app_url:
         raise PipelineError("APP_URL was not found in the environment or ../.env.")
@@ -654,7 +667,8 @@ def run_pipeline(raw_date: str) -> Path:
 
     connection = connect_database(settings, database_driver)
     try:
-        archive_id, stored_archive_url = find_archive_row(connection, archive_date)
+        archive_id, stored_archive_url, archive_total = find_archive_row(connection, archive_date)
+        summary.archive_total = archive_total
     finally:
         connection.close()
     print(f"Selected completed global day archive row {archive_id}.")
@@ -666,6 +680,7 @@ def run_pipeline(raw_date: str) -> Path:
         raise PipelineError(f"The output directory already exists: {output_directory}") from exc
     except OSError as exc:
         raise PipelineError(f"Could not create the output directory {output_directory}: {exc}") from exc
+    summary.output_directory_created = True
 
     archive_name = f"sor-global-{date_text}-full.zip"
     archive_path = output_directory / archive_name
@@ -780,6 +795,8 @@ def run_pipeline(raw_date: str) -> Path:
 
     total_parquet = arrow_parquet.ParquetFile(str(final_path)).metadata.num_rows
     parquet_size = final_path.stat().st_size
+    summary.total_parquet = total_parquet
+    summary.parquet_size = parquet_size
     parquet_sha1 = sha1_file(final_path)
     checksum_path = final_path.with_name(final_path.name + ".sha1")
     checksum_path.write_text(f"{parquet_sha1}  {final_path.name}", encoding="ascii")
@@ -805,6 +822,78 @@ def run_pipeline(raw_date: str) -> Path:
     return final_path
 
 
+def format_parquet_size(size_bytes: int | None) -> str:
+    if size_bytes is None:
+        return "N/A"
+    if size_bytes >= 1024**3:
+        return f"{size_bytes / (1024**3):.2f} GB"
+    return f"{size_bytes / (1024**2):.2f} MB"
+
+
+def build_teams_message(
+    summary: PipelineRunSummary,
+    status: str,
+    error_message: str | None = None,
+) -> str:
+    if summary.total_parquet is None:
+        archive_total = summary.archive_total if summary.archive_total is not None else "N/A"
+        total_line = f"total: N/A, could not compare with Elastic day_archive total ({archive_total})"
+    elif summary.archive_total is None:
+        total_line = f"total: {summary.total_parquet}, Elastic day_archive total unavailable"
+    elif summary.total_parquet == summary.archive_total:
+        total_line = f"total: {summary.total_parquet}, matches Elastic day_archive total ({summary.archive_total})"
+    else:
+        total_line = f"total: {summary.total_parquet}, does not match Elastic day_archive total ({summary.archive_total})"
+
+    report = [
+        f"Parquet Pipeline: {summary.archive_date or 'unknown'}",
+        f"status: {status}",
+        total_line,
+        f"size: {format_parquet_size(summary.parquet_size)}",
+    ]
+    if error_message:
+        report.append(f"error: {error_message}")
+    return "\n".join(report)
+
+
+def send_teams_message(webhook_url: str, message: str) -> None:
+    parts = urlsplit(webhook_url.strip())
+    if parts.scheme not in ("http", "https") or not parts.netloc:
+        raise PipelineError("DAILY_TEAMS_WEBHOOK is not a valid HTTP or HTTPS URL.")
+
+    payload = {
+        "type": "message",
+        "attachments": [
+            {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "contentUrl": None,
+                "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.2",
+                    "body": [{"type": "TextBlock", "text": message, "wrap": True}],
+                },
+            }
+        ],
+    }
+    request = Request(
+        webhook_url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urlopen(request, timeout=15) as response:
+            if not 200 <= response.status < 300:
+                raise PipelineError(f"The daily Teams webhook returned HTTP {response.status}.")
+    except HTTPError as exc:
+        raise PipelineError(f"The daily Teams webhook returned HTTP {exc.code}.") from exc
+    except URLError as exc:
+        raise PipelineError(f"Could not connect to the daily Teams webhook ({type(exc.reason).__name__}).") from exc
+    except OSError as exc:
+        raise PipelineError(f"Could not send to the daily Teams webhook ({type(exc).__name__}).") from exc
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Download and convert a global daily archive to Parquet.")
     parser.add_argument(
@@ -814,18 +903,70 @@ def main() -> int:
     )
     arguments = parser.parse_args()
 
+    script_directory = Path(__file__).resolve().parent
+    project_root = script_directory.parent
+    summary = PipelineRunSummary(archive_date=arguments.date)
+    settings: dict[str, str] = {}
+    webhook_url = os.environ.get("DAILY_TEAMS_WEBHOOK", "").strip()
+    status = "errors"
+    error_message: str | None = None
+    exit_code = 0
+
     try:
-        run_pipeline(arguments.date)
+        settings = load_settings(project_root)
+        webhook_url = settings.get("DAILY_TEAMS_WEBHOOK", "").strip() or webhook_url
+        if not webhook_url:
+            raise PipelineError("DAILY_TEAMS_WEBHOOK was not found in the environment or ../.env.")
+        webhook_parts = urlsplit(webhook_url)
+        if webhook_parts.scheme not in ("http", "https") or not webhook_parts.netloc:
+            raise PipelineError("DAILY_TEAMS_WEBHOOK is not a valid HTTP or HTTPS URL.")
+
+        run_pipeline(arguments.date, summary, settings)
+        status = "completed"
+        if summary.total_parquet != summary.archive_total:
+            status = "errors"
+            error_message = (
+                f"Parquet row count {summary.total_parquet} does not match "
+                f"Elastic day_archive total {summary.archive_total}."
+            )
+            warn(error_message)
+            exit_code = 1
     except PipelineError as exc:
         warn(str(exc))
-        return 1
+        error_message = str(exc)
+        exit_code = 1
     except KeyboardInterrupt:
-        warn("Pipeline interrupted. The partial output directory was left in place.")
-        return 130
+        error_message = "Pipeline interrupted."
+        warn(error_message)
+        exit_code = 130
     except Exception as exc:
-        warn(f"Pipeline failed ({type(exc).__name__}: {exc}). The partial output directory was left in place.")
-        return 1
-    return 0
+        error_message = f"Pipeline failed ({type(exc).__name__}: {exc})."
+        warn(error_message)
+        exit_code = 1
+
+    try:
+        if webhook_url:
+            try:
+                send_teams_message(webhook_url, build_teams_message(summary, status, error_message))
+                print("Teams message sent.")
+            except PipelineError as exc:
+                warn(str(exc))
+                exit_code = 1
+            except Exception as exc:
+                warn(f"Could not send the daily Teams message ({type(exc).__name__}).")
+                exit_code = 1
+        else:
+            warn("Could not send a Teams message because DAILY_TEAMS_WEBHOOK is not configured.")
+    finally:
+        if summary.output_directory_created and summary.output_directory is not None:
+            try:
+                shutil.rmtree(summary.output_directory)
+                print(f"Removed pipeline working directory {summary.output_directory}.")
+            except OSError as exc:
+                warn(f"Could not remove pipeline working directory {summary.output_directory}: {exc}")
+                exit_code = 1
+
+    return exit_code
 
 
 if __name__ == "__main__":
