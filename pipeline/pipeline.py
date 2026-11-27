@@ -3,7 +3,7 @@
 
 Run from any directory with:
 
-    python3 /path/to/pipeline/pipeline.py [--date YYYY-MM-DD|yesterday]
+    python3 /path/to/pipeline/pipeline.py [--date YYYY-MM-DD|yesterday] [--conversion-only]
 
 Requires a PostgreSQL driver (psycopg or psycopg2) and PyArrow to be installed
 in the Python environment used to run this script.
@@ -399,9 +399,80 @@ def csv_headers(csv_path: Path) -> tuple[str, ...]:
     return tuple(header)
 
 
+def load_parquet_schema(schema_path: Path, arrow: Any) -> tuple[list[dict[str, Any]], Any]:
+    """Load the versioned field contract and build its Arrow schema."""
+    try:
+        with schema_path.open("r", encoding="utf-8") as source:
+            schema_config = json.load(source)
+    except FileNotFoundError as exc:
+        raise PipelineError(f"The Parquet schema file does not exist: {schema_path}") from exc
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise PipelineError(f"Could not read the Parquet schema file {schema_path.name}: {exc}") from exc
+
+    if not isinstance(schema_config, dict):
+        raise PipelineError("The Parquet schema file must contain a JSON object.")
+
+    schema_version = schema_config.get("schema_version")
+    if not isinstance(schema_version, int) or isinstance(schema_version, bool) or schema_version < 1:
+        raise PipelineError("The Parquet schema must define a positive integer schema_version.")
+
+    fields = schema_config.get("fields")
+    if not isinstance(fields, list) or not fields:
+        raise PipelineError("The Parquet schema must define a non-empty fields array.")
+
+    arrow_types = {
+        "string": arrow.string(),
+        "timestamp": arrow.timestamp("us"),
+        "list<string>": arrow.list_(arrow.string()),
+    }
+    names: list[str] = []
+    arrow_fields = []
+    for position, field_config in enumerate(fields, start=1):
+        if not isinstance(field_config, dict):
+            raise PipelineError(f"Parquet schema field {position} must be a JSON object.")
+        name = field_config.get("name")
+        type_name = field_config.get("type")
+        nullable = field_config.get("nullable")
+        if not isinstance(name, str) or not name:
+            raise PipelineError(f"Parquet schema field {position} needs a non-empty name.")
+        if name in names:
+            raise PipelineError(f"The Parquet schema contains the duplicate field {name!r}.")
+        if not isinstance(type_name, str) or type_name not in arrow_types:
+            supported = ", ".join(arrow_types)
+            raise PipelineError(
+                f"Parquet schema field {name!r} uses unsupported type {type_name!r}; supported types are {supported}."
+            )
+        if not isinstance(nullable, bool):
+            raise PipelineError(f"Parquet schema field {name!r} must define nullable as true or false.")
+        names.append(name)
+        arrow_fields.append(arrow.field(name, arrow_types[type_name], nullable=nullable))
+
+    metadata = {b"parquet_schema_version": str(schema_version).encode("ascii")}
+    return fields, arrow.schema(arrow_fields, metadata=metadata)
+
+
+def parse_json_string_array(value: str | None, field_name: str, csv_path: Path, row_number: int) -> list[str] | None:
+    """Parse one JSON-encoded CSV cell for a list<string> Parquet field."""
+    if value is None or value == "":
+        return None
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise PipelineError(
+            f"Invalid JSON array in {csv_path.name}, field {field_name!r}, data row {row_number}."
+        ) from exc
+    if not isinstance(parsed, list) or any(not isinstance(item, str) for item in parsed):
+        raise PipelineError(
+            f"Expected a JSON array of strings in {csv_path.name}, field {field_name!r}, data row {row_number}."
+        )
+    return parsed
+
+
 def convert_csv_to_parquet(
     csv_path: Path,
     expected_headers: tuple[str, ...],
+    schema_fields: Sequence[dict[str, Any]],
+    expected_schema: Any,
     arrow_csv: Any,
     arrow_parquet: Any,
     arrow: Any,
@@ -412,13 +483,24 @@ def convert_csv_to_parquet(
     writer = None
     row_count = 0
     try:
+        # The CSV archive stores multi-value columns as JSON strings. Read those as
+        # strings first, then materialize them as Arrow list<string> arrays below.
+        input_column_types = {
+            field["name"]: (
+                arrow.string()
+                if field["type"] == "list<string>"
+                else expected_schema.field(field["name"]).type
+            )
+            for field in schema_fields
+        }
         reader = arrow_csv.open_csv(
             str(csv_path),
             read_options=arrow_csv.ReadOptions(use_threads=False, block_size=CSV_BLOCK_SIZE),
             parse_options=arrow_csv.ParseOptions(delimiter=","),
             convert_options=arrow_csv.ConvertOptions(
-                column_types={name: arrow.string() for name in expected_headers},
-                strings_can_be_null=False,
+                column_types=input_column_types,
+                null_values=[""],
+                strings_can_be_null=True,
             ),
         )
         if tuple(reader.schema.names) != expected_headers:
@@ -426,7 +508,7 @@ def convert_csv_to_parquet(
 
         writer = arrow_parquet.ParquetWriter(
             str(temporary_path),
-            reader.schema,
+            expected_schema,
             compression="zstd",
             use_dictionary=True,
         )
@@ -435,7 +517,20 @@ def convert_csv_to_parquet(
                 batch = reader.read_next_batch()
             except StopIteration:
                 break
-            writer.write_batch(batch, row_group_size=PARQUET_BATCH_SIZE)
+
+            output_arrays = []
+            for field in schema_fields:
+                column = batch.column(batch.schema.get_field_index(field["name"]))
+                if field["type"] == "list<string>":
+                    parsed_values = [
+                        parse_json_string_array(value, field["name"], csv_path, row_count + offset + 1)
+                        for offset, value in enumerate(column.to_pylist())
+                    ]
+                    column = arrow.array(parsed_values, type=expected_schema.field(field["name"]).type)
+                output_arrays.append(column)
+
+            typed_batch = arrow.RecordBatch.from_arrays(output_arrays, schema=expected_schema)
+            writer.write_batch(typed_batch, row_group_size=PARQUET_BATCH_SIZE)
             row_count += batch.num_rows
         writer.close()
         writer = None
@@ -637,7 +732,12 @@ def update_archive_parquet_fields(
         connection.close()
 
 
-def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str, str]) -> Path:
+def run_pipeline(
+    raw_date: str,
+    summary: PipelineRunSummary,
+    settings: dict[str, str],
+    conversion_only: bool = False,
+) -> Path:
     archive_date = parse_archive_date(raw_date)
     date_text = archive_date.isoformat()
     summary.archive_date = date_text
@@ -661,6 +761,11 @@ def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str,
 
     database_driver = load_database_driver()
     arrow, arrow_csv, arrow_parquet = load_pyarrow()
+    schema_fields, expected_schema = load_parquet_schema(
+        script_directory / "parquet_schema.json",
+        arrow,
+    )
+    expected_headers = tuple(field["name"] for field in schema_fields)
     workers = worker_count()
     print(f"Archive date: {date_text}")
     print(f"Using {workers} worker(s) for extraction, conversion, and part merging.")
@@ -744,6 +849,17 @@ def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str,
 
     all_csv_files = [csv_path for _, _, csv_files in csv_groups for csv_path in csv_files]
     headers = csv_headers(all_csv_files[0])
+    if headers != expected_headers:
+        missing = [name for name in expected_headers if name not in headers]
+        unexpected = [name for name in headers if name not in expected_headers]
+        details = []
+        if missing:
+            details.append("missing schema field(s): " + ", ".join(missing))
+        if unexpected:
+            details.append("unexpected CSV field(s): " + ", ".join(unexpected))
+        if not details:
+            details.append("the columns are in a different order")
+        raise PipelineError("The CSV header does not match parquet_schema.json (" + "; ".join(details) + ").")
     print(f"Converting {len(all_csv_files)} CSV file(s) to Parquet...")
     conversion_tasks = []
     with ThreadPoolExecutor(max_workers=workers) as executor:
@@ -752,7 +868,9 @@ def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str,
                 executor.submit(
                     convert_csv_to_parquet,
                     csv_path,
-                    headers,
+                    expected_headers,
+                    schema_fields,
+                    expected_schema,
                     arrow_csv,
                     arrow_parquet,
                     arrow,
@@ -769,7 +887,9 @@ def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str,
                 print(f"Converted {converted}/{len(conversion_tasks)} CSV file(s).", flush=True)
 
     first_csv_parquet = all_csv_files[0].with_suffix(".parquet")
-    expected_schema = parquet_schema(first_csv_parquet, arrow_parquet)
+    actual_schema = parquet_schema(first_csv_parquet, arrow_parquet)
+    if not actual_schema.equals(expected_schema, check_metadata=False):
+        raise PipelineError("The generated Parquet schema does not match parquet_schema.json.")
     part_parquets: list[Path] = []
     print(f"Combining CSV Parquet files into {len(csv_groups)} archive part(s)...")
 
@@ -800,6 +920,14 @@ def run_pipeline(raw_date: str, summary: PipelineRunSummary, settings: dict[str,
     parquet_sha1 = sha1_file(final_path)
     checksum_path = final_path.with_name(final_path.name + ".sha1")
     checksum_path.write_text(f"{parquet_sha1}  {final_path.name}", encoding="ascii")
+
+    if conversion_only:
+        print(
+            f"Conversion-only completed: {final_path} "
+            f"(rows={total_parquet}, size={parquet_size}, sha1={parquet_sha1}); "
+            "artifacts retained locally."
+        )
+        return final_path
 
     print(f"Uploading {final_name} and its SHA1 file to Cellar...")
     parquet_url, parquet_sha1_url = upload_parquet_artifacts(project_root, final_path, checksum_path)
@@ -901,27 +1029,36 @@ def main() -> int:
         default="yesterday",
         help="Archive date in YYYY-MM-DD format (default: yesterday).",
     )
+    parser.add_argument(
+        "--conversion-only",
+        action="store_true",
+        help=(
+            "Download and convert the archive, then retain all local files. "
+            "Skip Cellar upload, database update, Teams message, and cleanup."
+        ),
+    )
     arguments = parser.parse_args()
 
     script_directory = Path(__file__).resolve().parent
     project_root = script_directory.parent
     summary = PipelineRunSummary(archive_date=arguments.date)
     settings: dict[str, str] = {}
-    webhook_url = os.environ.get("DAILY_TEAMS_WEBHOOK", "").strip()
+    webhook_url = ""
     status = "errors"
     error_message: str | None = None
     exit_code = 0
 
     try:
         settings = load_settings(project_root)
-        webhook_url = settings.get("DAILY_TEAMS_WEBHOOK", "").strip() or webhook_url
-        if not webhook_url:
-            raise PipelineError("DAILY_TEAMS_WEBHOOK was not found in the environment or ../.env.")
-        webhook_parts = urlsplit(webhook_url)
-        if webhook_parts.scheme not in ("http", "https") or not webhook_parts.netloc:
-            raise PipelineError("DAILY_TEAMS_WEBHOOK is not a valid HTTP or HTTPS URL.")
+        if not arguments.conversion_only:
+            webhook_url = settings.get("DAILY_TEAMS_WEBHOOK", "").strip() or webhook_url
+            if not webhook_url:
+                raise PipelineError("DAILY_TEAMS_WEBHOOK was not found in the environment or ../.env.")
+            webhook_parts = urlsplit(webhook_url)
+            if webhook_parts.scheme not in ("http", "https") or not webhook_parts.netloc:
+                raise PipelineError("DAILY_TEAMS_WEBHOOK is not a valid HTTP or HTTPS URL.")
 
-        run_pipeline(arguments.date, summary, settings)
+        run_pipeline(arguments.date, summary, settings, conversion_only=arguments.conversion_only)
         status = "completed"
         if summary.total_parquet != summary.archive_total:
             status = "errors"
@@ -945,7 +1082,9 @@ def main() -> int:
         exit_code = 1
 
     try:
-        if webhook_url:
+        if arguments.conversion_only:
+            print("Conversion-only mode skipped the Teams message and retained the working directory.")
+        elif webhook_url:
             try:
                 send_teams_message(webhook_url, build_teams_message(summary, status, error_message))
                 print("Teams message sent.")
@@ -958,7 +1097,11 @@ def main() -> int:
         else:
             warn("Could not send a Teams message because DAILY_TEAMS_WEBHOOK is not configured.")
     finally:
-        if summary.output_directory_created and summary.output_directory is not None:
+        if (
+            not arguments.conversion_only
+            and summary.output_directory_created
+            and summary.output_directory is not None
+        ):
             try:
                 shutil.rmtree(summary.output_directory)
                 print(f"Removed pipeline working directory {summary.output_directory}.")
